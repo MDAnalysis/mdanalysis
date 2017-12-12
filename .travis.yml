@@ -1,4 +1,5 @@
 language: generic
+group: travis_latest
 
 # Only build for develop and master (and PRs)
 branches:
@@ -46,19 +47,19 @@ matrix:
   fast_finish: true
   include:
     - env: NAME="Doc"
-           MAIN_CMD="cd package && python setup.py"
-           SETUP_CMD="build_sphinx"
-           BUILD_DOCS=true
-           BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
-           INSTALL_HOLE="false"
+	   MAIN_CMD="cd package && python setup.py"
+	   SETUP_CMD="build_sphinx"
+	   BUILD_DOCS=true
+	   BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
+	   INSTALL_HOLE="false"
 
     - env: NAME="Lint"
-           PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
-           MAIN_CMD="pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests"
-           SETUP_CMD=""
-           BUILD_CMD=""
-           CONDA_DEPENDENCIES=""
-           INSTALL_HOLE="false"
+	   PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
+	   MAIN_CMD="pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests"
+	   SETUP_CMD=""
+	   BUILD_CMD=""
+	   CONDA_DEPENDENCIES=""
+	   INSTALL_HOLE="false"
 
     - os: osx
       env: PYTHON_VERSION=3.6
@@ -67,8 +68,8 @@ matrix:
       env: PYTHON_VERSION=2.7
 
     - env: NAME='minimal'
-           CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
-           INSTALL_HOLE="false"
+	   CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
+	   INSTALL_HOLE="false"
   allow_failures:
     - env: NUMPY_VERSION=dev EVENT_TYPE="cron"
 
@@ -77,9 +78,9 @@ install:
   # additional external tools (Issue #898) -- HOLE
   - |
     if [[ $INSTALL_HOLE == 'true' ]]; then \
-        bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}"; \
-        HOLE_BINDIR="${HOME}/hole2/exe"; \
-        export PATH=${PATH}:${HOLE_BINDIR}; \
+	bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}"; \
+	HOLE_BINDIR="${HOME}/hole2/exe"; \
+	export PATH=${PATH}:${HOLE_BINDIR}; \
     fi
   - git clone git://github.com/astropy/ci-helpers.git
   - source ci-helpers/travis/setup_conda.sh
@@ -98,5 +99,5 @@ after_success:
     fi
   # can't use test here since this leads to travis fails even though the build passes
   - if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] && [[ ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} ]]; then
-            bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh;
+	    bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh;
     fi
