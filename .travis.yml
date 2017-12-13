@@ -1,4 +1,5 @@
 language: generic
+group: travis_latest
 
 # Only build for develop and master (and PRs)
 branches:
@@ -18,7 +19,7 @@ env:
     - GIT_CI_EMAIL=TravisCI@mdanalysis.org
     - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
     # Set default python version to avoid repetition later
-    - PYTHON_VERSION=3.6
+    - PYTHON_VERSION=3.5
     - BUILD_DOCS=false
     - COVERALLS=false
     - PYTEST_FLAGS="--disable-pytest-warnings --numprocesses 2 --durations=50"
@@ -36,7 +37,7 @@ env:
   matrix:
     # Run a coverage test
     - COVERALLS="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=3.5
+    - PYTHON_VERSION=3.6
     - PYTHON_VERSION=3.4
     - PYTHON_VERSION=2.7
     - NUMPY_VERSION=1.10.4
