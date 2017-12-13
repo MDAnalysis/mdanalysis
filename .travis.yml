@@ -71,6 +71,7 @@ matrix:
            INSTALL_HOLE="false"
   allow_failures:
     - env: NUMPY_VERSION=dev EVENT_TYPE="cron"
+    - os: osx
 
 install:
   # download hole first to use system curl
