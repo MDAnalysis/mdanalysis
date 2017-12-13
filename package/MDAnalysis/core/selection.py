@@ -247,6 +247,23 @@ class DistanceSelection(Selection):
         if self.periodic:
             self.apply = self._apply_distmat
 
+    def validate_dimensions(self, dimensions):
+        r"""Check if the system is periodic.
+
+        Parameters
+        ----------
+        dimensions : numpy.ndarray
+            6-item array denoting system size and angles
+
+        Returns
+        -------
+        None or numpy.ndarray
+            Returns argument dimensions if system is periodic, otherwise
+            return None
+        """
+        if not self.periodic or not all(dimensions[:3]):
+            return None
+        return dimensions
 
 class AroundSelection(DistanceSelection):
     token = 'around'
@@ -265,7 +282,7 @@ class AroundSelection(DistanceSelection):
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
 
-        box = group.dimensions if self.periodic else None
+        box = self.validate_dimensions(group.dimensions)
         if box is None:
             kdtree = KDTree(dim=3, bucket_size=10)
             kdtree.set_coords(sys.positions)
@@ -289,7 +306,7 @@ class AroundSelection(DistanceSelection):
         sel = self.sel.apply(group)
         sys = group[~np.in1d(group.indices, sel.indices)]
 
-        box = group.dimensions if self.periodic else None
+        box = self.validate_dimensions(group.dimensions)
         dist = distances.distance_array(
             sys.positions, sel.positions, box)
 
@@ -312,7 +329,7 @@ class SphericalLayerSelection(DistanceSelection):
         """Selection using KDTree but periodic = True not supported.
         """
         sel = self.sel.apply(group)
-        box = group.dimensions if self.periodic else None
+        box = self.validate_dimensions(group.dimensions)
         ref = sel.center_of_geometry(pbc=self.periodic)
         if box is None:
             kdtree = KDTree(dim=3, bucket_size=10)
@@ -328,9 +345,11 @@ class SphericalLayerSelection(DistanceSelection):
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
-        ref = sel.center_of_geometry(pbc=self.periodic).reshape(1, 3).\
+        periodic = False if self.validate_dimensions(group.dimensions) is None\
+            else True
+        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).\
             astype(np.float32)
-        box = group.dimensions if self.periodic else None
+        box = self.validate_dimensions(group.dimensions)
         d = distances.distance_array(ref,
                                      group.positions,
                                      box=box)[0]
@@ -353,7 +372,7 @@ class SphericalZoneSelection(DistanceSelection):
         """Selection using KDTree
         """
         sel = self.sel.apply(group)
-        box = group.dimensions if self.periodic else None
+        box = self.validate_dimensions(group.dimensions)
         ref = sel.center_of_geometry(pbc=self.periodic)
         if box is None:
             kdtree = KDTree(dim=3, bucket_size=10)
@@ -366,9 +385,11 @@ class SphericalZoneSelection(DistanceSelection):
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
-        ref = sel.center_of_geometry(pbc=self.periodic).reshape(1, 3).\
+        periodic = False if self.validate_dimensions(group.dimensions) is None\
+            else True
+        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).\
             astype(np.float32)
-        box = group.dimensions if self.periodic else None
+        box = self.validate_dimensions(group.dimensions)
         d = distances.distance_array(ref,
                                      group.positions,
                                      box=box)[0]
