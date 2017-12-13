@@ -72,6 +72,7 @@ matrix:
            INSTALL_HOLE="false"
   allow_failures:
     - env: NUMPY_VERSION=dev EVENT_TYPE="cron"
+    - os: osx
 
 before_install:
   # Workaround for Travis CI macOS bug (https://github.com/travis-ci/travis-ci/issues/6307)
