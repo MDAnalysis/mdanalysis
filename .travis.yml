@@ -1,4 +1,5 @@
 language: generic
+group: travis_latest
 
 # Only build for develop and master (and PRs)
 branches:
@@ -18,7 +19,7 @@ env:
     - GIT_CI_EMAIL=TravisCI@mdanalysis.org
     - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
     # Set default python version to avoid repetition later
-    - PYTHON_VERSION=3.6
+    - PYTHON_VERSION=3.5
     - BUILD_DOCS=false
     - COVERALLS=false
     - PYTEST_FLAGS="--disable-pytest-warnings --numprocesses 2 --durations=50"
@@ -26,7 +27,7 @@ env:
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
-    - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython joblib matplotlib scipy griddataformats hypothesis"
+    - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython joblib matplotlib scipy griddataformats hypothesis gsd"
     - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn coveralls"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
@@ -36,7 +37,7 @@ env:
   matrix:
     # Run a coverage test
     - COVERALLS="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=3.5
+    - PYTHON_VERSION=3.6
     - PYTHON_VERSION=3.4
     - PYTHON_VERSION=2.7
     - NUMPY_VERSION=1.10.4
@@ -71,6 +72,16 @@ matrix:
            INSTALL_HOLE="false"
   allow_failures:
     - env: NUMPY_VERSION=dev EVENT_TYPE="cron"
+    - os: osx
+
+before_install:
+  # Workaround for Travis CI macOS bug (https://github.com/travis-ci/travis-ci/issues/6307)
+  # See https://github.com/searchivarius/nmslib/pull/259
+  - |
+     if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
+        command curl -sSL https://rvm.io/mpapis.asc | gpg --import -;
+        rvm get head || true
+     fi
 
 install:
   # download hole first to use system curl

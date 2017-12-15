@@ -140,6 +140,11 @@ the attributes they provide.
                                bonds, angles,    angles, and dihedrals.
                                dihedrals         :mod:`MDAnalysis.topology.HoomdXMLParser`
 
+   GSD               gsd       types, charges,   GSD topology file.  Reads atom types,
+                               radii, masses     masses, and charges if possible. Also reads bonds,
+                               bonds, angles,    angles, and dihedrals.
+                               dihedrals         :mod:`MDAnalysis.topology.GSDParser`
+
    Macromolecular    mmtf      altLocs,          `Macromolecular Transmission Format (MMTF)`_.
    transmission                bfactors, bonds,  An efficient compact format for biomolecular
    format                      charges, masses,  structures.
@@ -271,7 +276,7 @@ from __future__ import absolute_import
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
            'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
-           'HoomdXMLParser']
+           'HoomdXMLParser','GSDParser']
 
 from . import core
 from . import PSFParser
@@ -292,3 +297,4 @@ from . import GMSParser
 from . import DLPolyParser
 from . import HoomdXMLParser
 from . import MMTFParser
+from . import GSDParser

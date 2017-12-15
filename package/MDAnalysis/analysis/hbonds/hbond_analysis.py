@@ -792,8 +792,11 @@ class HydrogenBondAnalysis(object):
            :meth:`~HydrogenBondAnalysis._get_bonded_hydrogens_dist`.
 
         """
-        warnings.warn("_get_bonded_hydrogens_list() does not always find "
-                      "all hydrogens; detect_hydrogens='distance' is safer.",
+        warnings.warn("_get_bonded_hydrogens_list() (heuristic detection) does "
+                      "not always find "
+                      "all hydrogens; Using detect_hydrogens='distance', when "
+                      "constructing the HydrogenBondAnalysis class is safer. "
+                      "Removal of this feature is targeted for 1.0",
                       category=DeprecationWarning)
         try:
             hydrogens = [
