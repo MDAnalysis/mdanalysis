@@ -87,6 +87,7 @@ database or dataframe for further processing.
 :meth:`HydrogenBondAnalysis.save_table` saves the table to a pickled file. The
 table itself is a :class:`numpy.recarray`.
 
+.. _Detection-of-hydrogen-bonds:
 
 Detection of hydrogen bonds
 ---------------------------

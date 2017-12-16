@@ -68,6 +68,7 @@ Hydrogen bonding
 
    analysis/hbond_analysis
    analysis/hbond_autocorrel   
+   analysis/wbridge_analysis
 
 Membranes and membrane proteins
 ===============================
