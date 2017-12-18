@@ -35,6 +35,8 @@ Enhancements
   * introduce the water bridge analysis module (PR #1722)
   * Universe.add_TopologyAttr now accepts strings to add a given attribute
     to the Universe (Issue #1092, PR #1186)
+  * Fix py3 compatibility regarding the HydrogenBondAnalysis.save_table()
+    (Issue #1743, PR #1742)
 
 Deprecations
   * HydrogenBondAnalysis detect_hydrogens=heuristic is marked for deprecation in 1.0

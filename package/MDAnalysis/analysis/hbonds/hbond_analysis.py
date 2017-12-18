@@ -1194,7 +1194,7 @@ class HydrogenBondAnalysis(object):
         """
         if self.table is None:
             self.generate_table()
-        with open(filename, 'w') as f:
+        with open(filename, 'wb') as f:
             cPickle.dump(self.table, f, protocol=cPickle.HIGHEST_PROTOCOL)
 
     def _has_timeseries(self):
