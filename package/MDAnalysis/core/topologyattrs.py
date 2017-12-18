@@ -1349,7 +1349,7 @@ class Molnums(ResidueAttr):
     """
     attrname = 'molnums'
     singular = 'molnum'
-    target_classes = [Atom, Residue]
+    target_classes = [AtomGroup, ResidueGroup, Atom, Residue]
 
 
 # segment attributes
