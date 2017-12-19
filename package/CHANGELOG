@@ -37,6 +37,9 @@ Enhancements
   * The TPR parser populate the `moltypes` and `molnums` topology attributes;
     the `moltype` and `molnum` selection keyword are added
     (Issue #1555, PR #1578)
+  * use gridDataFormats >= 0.4.0 for new 'type' kwarg in
+    analysis.density.Density.export() to enable writing DX files
+    compatible with (buggy) PyMOL (#1725)
 
 Deprecations
   * HydrogenBondAnalysis detect_hydrogens=heuristic is marked for deprecation in 1.0

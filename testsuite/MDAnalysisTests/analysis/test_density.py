@@ -29,6 +29,8 @@ import sys
 
 from numpy.testing import assert_equal, assert_almost_equal
 
+import gridData.OpenDX
+
 import MDAnalysis as mda
 from MDAnalysis.analysis import density
 
@@ -52,7 +54,7 @@ class TestDensity(object):
             self.Lmax * np.sin(
                 np.linspace(0, 1,self.counts *3)).reshape(self.counts, 3),
             bins=bins)
-    
+
     @pytest.fixture()
     def D(self, h_and_edges):
         h, edges = h_and_edges
@@ -102,6 +104,17 @@ class TestDensity(object):
         with pytest.raises(ValueError):
             D._check_set_unit(units)
 
+    @pytest.mark.parametrize('dxtype',
+                             ("float", "double", "int", "byte"))
+    def test_export_types(self, D, dxtype, tmpdir, outfile="density.dx"):
+        with tmpdir.as_cwd():
+            D.export(outfile, type=dxtype)
+
+            dx = gridData.OpenDX.field(0)
+            dx.read(outfile)
+            data = dx.components['data']
+        assert data.type == dxtype
+
 
 class Test_density_from_Universe(object):
     topology = TPR
@@ -123,7 +136,7 @@ class Test_density_from_Universe(object):
     cutoffs = {'notwithin': 4.0, }
     precision = 5
     outfile = 'density.dx'
-    
+
     @pytest.fixture()
     def universe(self):
         return mda.Universe(self.topology, self.trajectory)
@@ -212,7 +225,7 @@ class TestGridImport(object):
 class TestNotWithin(object):
     # tests notwithin_coordinates_factory
     # only checks that KDTree and distance_array give same results
-    
+
     @staticmethod
     @pytest.fixture()
     def u():

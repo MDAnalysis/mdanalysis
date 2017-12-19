@@ -513,7 +513,7 @@ if __name__ == '__main__':
               'numpy>=1.10.4',
               'biopython>=1.59',
               'networkx>=1.0',
-              'GridDataFormats>=0.3.2',
+              'GridDataFormats>=0.4.0',
               'six>=1.4.0',
               'mmtf-python>=1.0.0',
               'joblib',
