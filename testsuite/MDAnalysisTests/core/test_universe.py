@@ -415,9 +415,9 @@ class TestInMemoryUniverse(object):
 
     def test_frame_interval_convention(self):
         universe1 = mda.Universe(PSF, DCD)
-        array1 = universe1.trajectory.timeseries(skip=10)
+        array1 = universe1.trajectory.timeseries(step=10)
         universe2 = mda.Universe(PSF, DCD, in_memory=True,
-                                        in_memory_step=10)
+                                 in_memory_step=10)
         array2 = universe2.trajectory.timeseries()
         assert_equal(array1, array2,
                      err_msg="Unexpected differences between arrays.")

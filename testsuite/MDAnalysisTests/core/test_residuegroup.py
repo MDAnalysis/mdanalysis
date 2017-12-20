@@ -56,19 +56,19 @@ class TestSequence(object):
                                 id="P69441", name="KAD_ECOLI Adenylate kinase",
                                 description="EcAdK from pdb 4AKE")
         assert_equal(s.id, "P69441")
-        assert_equal(s.seq.tostring(), self.ref_adk_sequence)
+        assert_equal(str(s.seq), self.ref_adk_sequence)
 
     def test_SeqRecord_default(self, u):
         p = u.select_atoms("protein")
         s = p.residues.sequence(id="P69441", name="KAD_ECOLI Adenylate kinase",
                                 description="EcAdK from pdb 4AKE")
         assert_equal(s.id, "P69441")
-        assert_equal(s.seq.tostring(), self.ref_adk_sequence)
+        assert_equal(str(s.seq), self.ref_adk_sequence)
 
     def test_Seq(self, u):
         p = u.select_atoms("protein")
         s = p.residues.sequence(format="Seq")
-        assert_equal(s.tostring(), self.ref_adk_sequence)
+        assert_equal(str(s), self.ref_adk_sequence)
 
     def test_nonIUPACresname_VE(self, u):
         """test_sequence_nonIUPACresname: non recognized amino acids raise

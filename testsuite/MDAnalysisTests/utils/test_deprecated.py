@@ -41,7 +41,8 @@ import pytest
 ])
 def test_import(package):
     try:
-        __import__(package)
+        with pytest.warns(DeprecationWarning):
+            __import__(package)
     except ImportError:
         pytest.fail('Failed to import {0}'.format(package))
 
