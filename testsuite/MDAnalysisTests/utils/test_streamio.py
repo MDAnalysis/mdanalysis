@@ -376,7 +376,7 @@ class TestStreamIO(RefAdKSmall):
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
         assert_almost_equal(u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
                             "Total charge (in CHARMM) does not match expected value.")
-        assert_almost_equal(u.atoms.H.charges, self.ref_charmm_Hcharges, 3,
+        assert_almost_equal(u.atoms.select_atoms('name H').charges, self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 
     def test_PDBQTReader(self):

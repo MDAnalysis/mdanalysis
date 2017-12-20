@@ -221,7 +221,7 @@ class _WriteAtoms(object):
             err_msg="CA coordinates do not agree with original")
 
     def test_write_Residue(self, universe, outfile):
-        G = universe.s4AKE.ARG[-2].atoms  # 2nd but last Arg
+        G = universe.select_atoms('segid 4AKE and resname ARG').residues[-2].atoms  # 2nd but last Arg
         G.write(outfile)
         u2 = self.universe_from_tmp(outfile)
         # check EVERYTHING, otherwise we might get false positives!
@@ -233,7 +233,7 @@ class _WriteAtoms(object):
             err_msg="Residue R206 coordinates do not agree with original")
 
     def test_write_ResidueGroup(self, universe, outfile):
-        G = universe.s4AKE.LEU.atoms
+        G = universe.select_atoms('segid 4AKE and resname LEU')
         G.write(outfile)
         u2 = self.universe_from_tmp(outfile)
         G2 = u2.atoms
@@ -244,7 +244,7 @@ class _WriteAtoms(object):
             err_msg="ResidueGroup LEU coordinates do not agree with original")
 
     def test_write_Segment(self, universe, outfile):
-        G = universe.s4AKE.atoms
+        G = universe.select_atoms('segid 4AKE')
         G.write(outfile)
         u2 = self.universe_from_tmp(outfile)
         G2 = u2.atoms
@@ -1102,10 +1102,12 @@ class TestAtomGroup(object):
                      "Direct selection from residue group does not match "
                      "expected I101.")
 
+    # remove in 1.0
     def test_segments(self, universe):
         u = universe
-        assert len(u.segments.s4AKE.atoms) == len(u.select_atoms(
-            'segid 4AKE').atoms), "Direct selection of segment 4AKE from segments failed."
+        with pytest.warns(DeprecationWarning):
+            assert len(u.segments.s4AKE.atoms) == len(u.select_atoms(
+                'segid 4AKE').atoms), "Direct selection of segment 4AKE from segments failed."
 
     def test_index_integer(self, universe):
         u = universe
@@ -1187,13 +1189,13 @@ class TestAtomGroup(object):
 
     def test_bond(self, universe):
         universe.trajectory.rewind()  # just to make sure...
-        sel2 = universe.s4AKE.r98.atoms.select_atoms("name OE1", "name OE2")
+        sel2 = universe.select_atoms('segid 4AKE and resid 98').select_atoms("name OE1", "name OE2")
         assert_almost_equal(sel2.bond.value(), 2.1210737228393555, 3,
                             "distance of Glu98 OE1--OE2 wrong")
 
     def test_bond_pbc(self, universe):
         universe.trajectory.rewind()
-        sel2 = universe.s4AKE.r98.atoms.select_atoms("name OE1", "name OE2")
+        sel2 = universe.select_atoms('segid 4AKE and resid 98').select_atoms("name OE1", "name OE2")
         assert_almost_equal(sel2.bond.value(pbc=True), 2.1210737228393555, 3,
                             "distance of Glu98 OE1--OE2 wrong")
 
@@ -1204,8 +1206,7 @@ class TestAtomGroup(object):
 
     def test_angle(self, universe):
         universe.trajectory.rewind()  # just to make sure...
-        sel3 = universe.s4AKE.r98.atoms.select_atoms("name OE1", "name CD",
-                                                          "name OE2")
+        sel3 = universe.select_atoms('segid 4AKE and resid 98').select_atoms("name OE1", 'name CD', "name OE2")
         assert_almost_equal(sel3.angle.value(), 117.46187591552734, 3,
                             "angle of Glu98 OE1-CD-OE2 wrong")
 
@@ -1215,11 +1216,11 @@ class TestAtomGroup(object):
             getattr(ag, 'angle')
 
     def test_shape_parameter(self, universe):
-        s = universe.s4AKE.atoms.shape_parameter()
+        s = universe.select_atoms('segid 4AKE').shape_parameter()
         assert_almost_equal(s, 0.00240753939086033, 6)
 
     def test_asphericity(self, universe):
-        a = universe.s4AKE.atoms.asphericity()
+        a = universe.select_atoms('segid 4AKE').asphericity()
         assert_almost_equal(a, 0.020227504542775828, 6)
 
     def test_positions(self, universe):
