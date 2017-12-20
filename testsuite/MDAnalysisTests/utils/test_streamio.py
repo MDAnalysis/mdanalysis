@@ -146,20 +146,17 @@ class TestNamedStream(object):
     def test_File_write(self):
         with tempdir.in_tempdir():
             outfile = "lookingglas.txt"
-            try:
-                obj = open(outfile, "w")
-                ns = util.NamedStream(obj, outfile, close=True)
-                ns.writelines(self.text)
-                ns.close()
-                text = open(outfile).readlines()
+            with open(outfile, "w") as obj:
+                with util.NamedStream(obj, outfile, close=True) as ns:
+                    assert_equal(ns.name, outfile)
+                    assert_equal(str(ns), outfile)
+                    ns.writelines(self.text)
 
-                assert_equal(ns.name, outfile)
-                assert_equal(str(ns), outfile)
-                assert_equal(len(text), len(self.text))
-                assert_equal("".join(text), "".join(self.text))
-            finally:
-                ns.close()
-                obj.close()
+            with open(outfile) as fh:
+                text = fh.readlines()
+
+            assert_equal(len(text), len(self.text))
+            assert_equal("".join(text), "".join(self.text))
 
     def test_matryoshka(self):
         obj = cStringIO()
