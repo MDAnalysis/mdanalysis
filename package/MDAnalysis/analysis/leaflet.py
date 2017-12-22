@@ -78,7 +78,6 @@ import networkx as NX
 
 from .. import core
 from . import distances
-from .. import selections
 
 
 class LeafletFinder(object):

@@ -87,7 +87,7 @@ class TestAtom(object):
     def test_hierarchy(self, universe, atom):
         u = universe
         a = atom
-        assert a.segment == u.s4AKE
+        assert a.segment == u.select_atoms('segid 4AKE').segments[0]
         assert a.residue == u.residues[66]
 
     def test_bad_add(self, atom):

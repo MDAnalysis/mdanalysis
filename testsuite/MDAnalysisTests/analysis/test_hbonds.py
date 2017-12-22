@@ -73,7 +73,12 @@ class TestHydrogenBondAnalysis(object):
         kw = self.kwargs.copy()
         # kw.update(kwargs)
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe, **kw)
-        h.run(verbose=False)
+        # remove in 1.0
+        if kw['detect_hydrogens'] == 'heuristic':
+            with pytest.warns(DeprecationWarning):
+                h.run(verbose=False)
+        else:
+            h.run(verbose=False)
         return h
 
     def test_helix_backbone(self, values, h):

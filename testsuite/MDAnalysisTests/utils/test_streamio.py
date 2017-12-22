@@ -146,20 +146,17 @@ class TestNamedStream(object):
     def test_File_write(self):
         with tempdir.in_tempdir():
             outfile = "lookingglas.txt"
-            try:
-                obj = open(outfile, "w")
-                ns = util.NamedStream(obj, outfile, close=True)
-                ns.writelines(self.text)
-                ns.close()
-                text = open(outfile).readlines()
+            with open(outfile, "w") as obj:
+                with util.NamedStream(obj, outfile, close=True) as ns:
+                    assert_equal(ns.name, outfile)
+                    assert_equal(str(ns), outfile)
+                    ns.writelines(self.text)
 
-                assert_equal(ns.name, outfile)
-                assert_equal(str(ns), outfile)
-                assert_equal(len(text), len(self.text))
-                assert_equal("".join(text), "".join(self.text))
-            finally:
-                ns.close()
-                obj.close()
+            with open(outfile) as fh:
+                text = fh.readlines()
+
+            assert_equal(len(text), len(self.text))
+            assert_equal("".join(text), "".join(self.text))
 
     def test_matryoshka(self):
         obj = cStringIO()
@@ -376,7 +373,7 @@ class TestStreamIO(RefAdKSmall):
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
         assert_almost_equal(u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
                             "Total charge (in CHARMM) does not match expected value.")
-        assert_almost_equal(u.atoms.H.charges, self.ref_charmm_Hcharges, 3,
+        assert_almost_equal(u.atoms.select_atoms('name H').charges, self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 
     def test_PDBQTReader(self):

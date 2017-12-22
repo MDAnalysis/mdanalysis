@@ -269,19 +269,21 @@ class TestUniverse(object):
         assert_allclose(u.dimensions, box)
 
 
+# remove for 1.0
 def test_chainid_quick_select():
     # check that chainIDs get grouped together when making the quick selectors
     # this pdb file has 2 segments with chainID A
     u = mda.Universe(PDB_chainidrepeat)
 
-    for sg in (u.A, u.B):
-        assert isinstance(sg, mda.core.groups.SegmentGroup)
-    for seg in (u.C, u.D):
-        assert isinstance(seg, mda.core.groups.Segment)
-    assert len(u.A.atoms) == 10
-    assert len(u.B.atoms) == 10
-    assert len(u.C.atoms) == 5
-    assert len(u.D.atoms) == 7
+    with pytest.warns(DeprecationWarning):
+        for sg in (u.A, u.B):
+            assert isinstance(sg, mda.core.groups.SegmentGroup)
+        for seg in (u.C, u.D):
+            assert isinstance(seg, mda.core.groups.Segment)
+        assert len(u.A.atoms) == 10
+        assert len(u.B.atoms) == 10
+        assert len(u.C.atoms) == 5
+        assert len(u.D.atoms) == 7
 
 
 class TestGuessBonds(object):
@@ -413,9 +415,9 @@ class TestInMemoryUniverse(object):
 
     def test_frame_interval_convention(self):
         universe1 = mda.Universe(PSF, DCD)
-        array1 = universe1.trajectory.timeseries(skip=10)
+        array1 = universe1.trajectory.timeseries(step=10)
         universe2 = mda.Universe(PSF, DCD, in_memory=True,
-                                        in_memory_step=10)
+                                 in_memory_step=10)
         array2 = universe2.trajectory.timeseries()
         assert_equal(array1, array2,
                      err_msg="Unexpected differences between arrays.")

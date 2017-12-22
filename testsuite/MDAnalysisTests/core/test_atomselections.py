@@ -65,14 +65,14 @@ class TestSelectionsCHARMM(object):
         sel = universe.select_atoms('segid 4AKE')
         assert_equal(sel.n_atoms, 3341, "failed to select segment 4AKE")
         assert_equal(sorted(sel.indices),
-                     sorted(universe.s4AKE.atoms.indices),
+                     sorted(universe.select_atoms('segid 4AKE').indices),
                      "selected segment 4AKE is not the same as auto-generated segment s4AKE")
 
     def test_protein(self, universe):
         sel = universe.select_atoms('protein')
         assert_equal(sel.n_atoms, 3341, "failed to select protein")
         assert_equal(sorted(sel.indices),
-                     sorted(universe.s4AKE.atoms.indices),
+                     sorted(universe.select_atoms('segid 4AKE').indices),
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
     @pytest.mark.parametrize('resname', MDAnalysis.core.selection.ProteinSelection.prot_res)
@@ -110,7 +110,7 @@ class TestSelectionsCHARMM(object):
     def test_fullselgroup(self, universe):
         sel1 = universe.select_atoms('resid 101')
         sel2 = universe.select_atoms('resid 100')
-        sel3 = sel1.select_atoms('fullgroup r100', r100=sel2)
+        sel3 = sel1.select_atoms('global group r100', r100=sel2)
         assert_equal(sel2.n_atoms, 7)
         assert_equal(sel2.residues.resnames, ['GLY'])
 
@@ -136,7 +136,7 @@ class TestSelectionsCHARMM(object):
         assert_equal(sel.n_residues, 16,
                      "Failed to find all 'resname LEU' residues.")
         assert_equal(sorted(sel.indices),
-                     sorted(universe.s4AKE.LEU.atoms.indices),
+                     sorted(universe.select_atoms('segid 4AKE and resname LEU').indices),
                      "selected 'resname LEU' atoms are not the same as auto-generated s4AKE.LEU")
 
     def test_name(self, universe):
@@ -303,7 +303,7 @@ class TestSelectionsCHARMM(object):
     # TODO:
     # test for checking ordering and multiple comma-separated selections
     def test_concatenated_selection(self, universe):
-        E151 = universe.s4AKE.atoms.select_atoms('resid 151')
+        E151 = universe.select_atoms('segid 4AKE').select_atoms('resid 151')
         # note that this is not quite phi... HN should be C of prec. residue
         phi151 = E151.atoms.select_atoms('name HN', 'name N', 'name CA',
                                          'name CB')
