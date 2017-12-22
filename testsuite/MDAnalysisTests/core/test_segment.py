@@ -65,6 +65,7 @@ class TestSegment(object):
                      sorted(universe.segments[0].atoms.indices))
 
 
+# remove in 1.0
 def test_generated_residueselection():
     """Test that a generated residue group always returns a ResidueGroup (Issue 47)
     unless there is a single residue (Issue 363 change)"""
