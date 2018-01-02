@@ -103,7 +103,6 @@ class TestMemoryReader(MultiframeReaderTest):
         assert_equal(universe1.trajectory.get_array().shape,
                      universe2.trajectory.get_array().shape)
 
-        
     def test_iteration(self, ref, reader):
         frames = 0
         for i, frame in enumerate(reader):
@@ -111,26 +110,29 @@ class TestMemoryReader(MultiframeReaderTest):
         assert frames == ref.n_frames
 
     def test_extract_array_afc(self,reader):
-        assert_equal(reader.timeseries(format='afc').shape, (3341, 98, 3))
+        assert_equal(reader.timeseries(order='afc').shape, (3341, 98, 3))
 
     def test_timeseries_deprecation(self, reader):
         with pytest.warns(DeprecationWarning):
             reader.timeseries(format='fac')
 
+    def test_extract_array_afc(self, reader):
+        assert_equal(reader.timeseries(order='afc').shape, (3341, 98, 3))
+
     def test_extract_array_fac(self, reader):
-        assert_equal(reader.timeseries(format='fac').shape, (98, 3341, 3))
+        assert_equal(reader.timeseries(order='fac').shape, (98, 3341, 3))
 
     def test_extract_array_cfa(self, reader):
-        assert_equal(reader.timeseries(format='cfa').shape, (3, 98, 3341))
+        assert_equal(reader.timeseries(order='cfa').shape, (3, 98, 3341))
 
     def test_extract_array_acf(self, reader):
-        assert_equal(reader.timeseries(format='acf').shape, (3341, 3, 98))
+        assert_equal(reader.timeseries(order='acf').shape, (3341, 3, 98))
 
     def test_extract_array_fca(self, reader):
-        assert_equal(reader.timeseries(format='fca').shape, (98, 3, 3341))
+        assert_equal(reader.timeseries(order='fca').shape, (98, 3, 3341))
 
     def test_extract_array_caf(self, reader):
-        assert_equal(reader.timeseries(format='caf').shape, (3, 3341, 98))
+        assert_equal(reader.timeseries(order='caf').shape, (3, 3341, 98))
 
     def test_timeseries_skip1(self, ref, reader):
         assert_equal(reader.timeseries(ref.universe.atoms).shape,
@@ -150,7 +152,7 @@ class TestMemoryReader(MultiframeReaderTest):
         # timeseries() is expected to provide a view of the underlying array
         # also in the case where we slice the array using the start, stop and
         # step options.
-        assert reader.timeseries(start=5,stop=15,step=2,format='fac').base is\
+        assert reader.timeseries(start=5,stop=15,step=2,order='fac').base is\
                reader.get_array()
 
     def test_timeseries_view_from_universe_atoms(self, ref, reader):

@@ -152,6 +152,6 @@ def get_ensemble_bootstrap_samples(ensemble,
             size=ensemble.trajectory.timeseries().shape[1])
         ensembles.append(
             mda.Universe(ensemble.filename,
-                        ensemble.trajectory.timeseries(format='fac')[indices,:,:],
+                        ensemble.trajectory.timeseries(order='fac')[indices,:,:],
                          format=mda.coordinates.memory.MemoryReader))
     return ensembles

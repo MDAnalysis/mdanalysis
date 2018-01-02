@@ -163,9 +163,9 @@ def test_list_indices(universe_dcd, indices):
      ([5, 0, -4], 2)])
 def test_timeseries_slices(slice, length, universe_dcd):
     start, stop, step = slice
-    allframes = universe_dcd.trajectory.timeseries(format='fac')
+    allframes = universe_dcd.trajectory.timeseries(order='fac')
     xyz = universe_dcd.trajectory.timeseries(start=start, stop=stop, step=step,
-                                             format='fac')
+                                             order='fac')
     assert len(xyz) == length
     assert_array_almost_equal(xyz, allframes[start:stop:step])
 
@@ -183,16 +183,16 @@ def test_timeseries_deprecation(universe_dcd):
     ('caf', (3, 3341, 98)),
     ('cfa', (3, 98, 3341)), ))
 def test_timeseries_order(order, shape, universe_dcd):
-    x = universe_dcd.trajectory.timeseries(format=order)
+    x = universe_dcd.trajectory.timeseries(order=order)
     assert x.shape == shape
 
 
 @pytest.mark.parametrize("indices", [[1, 2, 3, 4], [5, 10, 15, 19],
                                      [9, 4, 2, 0, 50]])
 def test_timeseries_atomindices(indices, universe_dcd):
-        allframes = universe_dcd.trajectory.timeseries(format='afc')
+        allframes = universe_dcd.trajectory.timeseries(order='afc')
         asel = universe_dcd.atoms[indices]
-        xyz = universe_dcd.trajectory.timeseries(asel=asel, format='afc')
+        xyz = universe_dcd.trajectory.timeseries(asel=asel, order='afc')
         assert len(xyz) == len(indices)
         assert_array_almost_equal(xyz, allframes[indices])
 
@@ -205,7 +205,7 @@ def test_timeseries_empty_selection(universe_dcd):
 
 def test_timeseries_skip(universe_dcd):
     with pytest.warns(DeprecationWarning):
-        xyz = universe_dcd.trajectory.timeseries(skip=2, format='fac')
+        xyz = universe_dcd.trajectory.timeseries(skip=2, order='fac')
     assert len(xyz) == universe_dcd.trajectory.n_frames / 2
 
 
