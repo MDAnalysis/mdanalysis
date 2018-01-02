@@ -266,7 +266,8 @@ class DCDReader(base.ReaderBase):
                    stop=None,
                    step=None,
                    skip=None,
-                   format='afc'):
+                   order='afc',
+                   format=None):
         """Return a subset of coordinate data for an AtomGroup
 
         Parameters
@@ -286,16 +287,21 @@ class DCDReader(base.ReaderBase):
         step : int (optional)
             Step size for reading; the default ``None`` is equivalent to 1 and
             means to read every frame.
-        format : str (optional)
+        order : str (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
             coordinates)
+        format : str (optional)
+            deprecated, equivalent to `order`
 
 
         .. deprecated:: 0.16.0
            `skip` has been deprecated in favor of the standard keyword `step`.
+
+        .. deprecated:: 0.17.0
+           `format` has been deprecated in favor of the standard keyword `order`.
         """
         if skip is not None:
             step = skip
@@ -314,8 +320,14 @@ class DCDReader(base.ReaderBase):
         else:
             atom_numbers = list(range(self.n_atoms))
 
+        if format is not None:
+            warnings.warn(
+                "'format' is deprecated and will be removed in 1.0. Use 'order' instead",
+                category=DeprecationWarning)
+            order = format
+
         frames = self._file.readframes(
-            start, stop, step, order=format, indices=atom_numbers)
+            start, stop, step, order=order, indices=atom_numbers)
         return frames.xyz
 
 
