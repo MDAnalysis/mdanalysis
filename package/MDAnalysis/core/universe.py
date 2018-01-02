@@ -503,7 +503,7 @@ class Universe(object):
             # trajectory file formats
             try:
                 coordinates = self.trajectory.timeseries(
-                    self.atoms, start=start, stop=stop, step=step, format='fac')
+                    self.atoms, start=start, stop=stop, step=step, order='fac')
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:

@@ -58,14 +58,14 @@ class TestEncore(object):
     def ens1(self, ens1_template):
         return mda.Universe(
             ens1_template.filename,
-            ens1_template.trajectory.timeseries(format='fac'),
+            ens1_template.trajectory.timeseries(order='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
     @pytest.fixture()
     def ens2(self, ens2_template):
         return mda.Universe(
             ens2_template.filename,
-            ens2_template.trajectory.timeseries(format='fac'),
+            ens2_template.trajectory.timeseries(order='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
     def test_triangular_matrix(self):
@@ -170,7 +170,7 @@ inconsistent results")
         selection_string = "name CA"
         selection = ens1.select_atoms(selection_string)
         reference_rmsd = []
-        coordinates = ens1.trajectory.timeseries(selection, format='fac')
+        coordinates = ens1.trajectory.timeseries(selection, order='fac')
         for coord in coordinates:
             reference_rmsd.append(rms.rmsd(coordinates[0], coord, superposition=False))
 
@@ -392,14 +392,14 @@ class TestEncoreClustering(object):
     def ens1(self, ens1_template):
         return mda.Universe(
                 ens1_template.filename,
-                ens1_template.trajectory.timeseries(format='fac'),
+                ens1_template.trajectory.timeseries(order='fac'),
                 format=mda.coordinates.memory.MemoryReader)
 
     @pytest.fixture()
     def ens2(self, ens2_template):
         return mda.Universe(
             ens2_template.filename,
-            ens2_template.trajectory.timeseries(format='fac'),
+            ens2_template.trajectory.timeseries(order='fac'),
             format=mda.coordinates.memory.MemoryReader)
     
     def test_clustering_one_ensemble(self, ens1):
@@ -453,7 +453,7 @@ class TestEncoreClustering(object):
         pytest.importorskip('sklearn')
         clusters = 10
         method = encore.KMeans(clusters)
-        coordinates = ens1.trajectory.timeseries(format='fac')
+        coordinates = ens1.trajectory.timeseries(order='fac')
         coordinates = np.reshape(coordinates,
                                  (coordinates.shape[0], -1))
         cluster_assignment, details = method(coordinates)
@@ -619,14 +619,14 @@ class TestEncoreDimensionalityReduction(object):
     def ens1(self, ens1_template):
         return mda.Universe(
             ens1_template.filename,
-            ens1_template.trajectory.timeseries(format='fac'),
+            ens1_template.trajectory.timeseries(order='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
     @pytest.fixture()
     def ens2(self, ens2_template):
         return mda.Universe(
             ens2_template.filename,
-            ens2_template.trajectory.timeseries(format='fac'),
+            ens2_template.trajectory.timeseries(order='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
     def test_dimensionality_reduction_one_ensemble(self, ens1):
@@ -676,7 +676,7 @@ class TestEncoreDimensionalityReduction(object):
         pytest.importorskip('sklearn')
         dimension = 2
         method = encore.PrincipalComponentAnalysis(dimension=dimension)
-        coordinates = ens1.trajectory.timeseries(format='fac')
+        coordinates = ens1.trajectory.timeseries(order='fac')
         coordinates = np.reshape(coordinates,
                                  (coordinates.shape[0], -1))
         coordinates, details = method(coordinates)

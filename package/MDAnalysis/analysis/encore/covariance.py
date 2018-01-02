@@ -205,7 +205,7 @@ def covariance_matrix(ensemble,
     # Extract coordinates from ensemble
     coordinates = ensemble.trajectory.timeseries(
         ensemble.select_atoms(selection),
-        format='fac')
+        order='fac')
 
     # Flatten coordinate matrix into n_frame x n_coordinates
     coordinates = np.reshape(coordinates, (coordinates.shape[0], -1))

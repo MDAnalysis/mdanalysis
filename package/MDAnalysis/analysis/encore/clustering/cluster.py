@@ -205,7 +205,7 @@ def cluster(ensembles,
             args += [(d,) for d in distance_matrix]
         else:
             for merged_ensemble in merged_ensembles:
-                coordinates = merged_ensemble.trajectory.timeseries(format="fac")
+                coordinates = merged_ensemble.trajectory.timeseries(order="fac")
 
                 # Flatten coordinate matrix into n_frame x n_coordinates
                 coordinates = np.reshape(coordinates,
