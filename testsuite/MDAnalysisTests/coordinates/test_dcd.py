@@ -170,6 +170,11 @@ def test_timeseries_slices(slice, length, universe_dcd):
     assert_array_almost_equal(xyz, allframes[start:stop:step])
 
 
+def test_timeseries_deprecation(universe_dcd):
+    with pytest.warns(DeprecationWarning):
+        universe_dcd.trajectory.timeseries(format='fac')
+
+
 @pytest.mark.parametrize("order, shape", (
     ('fac', (98, 3341, 3)),
     ('fca', (98, 3, 3341)),
