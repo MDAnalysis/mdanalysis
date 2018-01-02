@@ -38,6 +38,7 @@ Enhancements
 
 Deprecations
   * HydrogenBondAnalysis detect_hydrogens=heuristic is marked for deprecation in 1.0
+  * timeseries keyword format is replaced by order. The format keyword is marked for deprecation in 1.0
 
 Fixes
   * Fixed analysis.psa.dist_mat_to_vec not returning int values (Issue #1507)
