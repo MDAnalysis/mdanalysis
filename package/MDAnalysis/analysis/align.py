@@ -74,21 +74,21 @@ two structures, using :func:`rmsd`::
 
    >>> ref = mda.Universe(PDB_small)
    >>> mobile = mda.Universe(PSF,DCD)
-   >>> rmsd(mobile.atoms.CA.positions, ref.atoms.CA.positions)
+   >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions)
    16.282308620224068
 
 Note that in this example translations have not been removed. In order
 to look at the pure rotation one needs to superimpose the centres of
 mass (or geometry) first:
 
-   >>> rmsd(mobile.atoms.CA.positions, ref.atoms.CA.positions, center=True)
+   >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, center=True)
    12.639693690256898
 
 This has only done a translational superposition. If you want to also do a
 rotational superposition use the superposition keyword. This will calculate a
 minimized RMSD between the reference and mobile structure.
 
-   >>> rmsd(mobile.atoms.CA.positions, ref.atoms.CA.positions,
+   >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions,
    >>>      superposition=True)
    6.8093965864717951
 
@@ -96,8 +96,8 @@ The rotation matrix that superimposes *mobile* on *ref* while
 minimizing the CA-RMSD is obtained with the :func:`rotation_matrix`
 function ::
 
-   >>> mobile0 = mobile.atoms.CA.positions - mobile.atoms.center_of_mass()
-   >>> ref0 = ref.atoms.CA.positions - ref.atoms.center_of_mass()
+   >>> mobile0 = mobile.select_atoms('name CA').positions - mobile.atoms.center_of_mass()
+   >>> ref0 = ref.select_atoms('name CA').positions - ref.atoms.center_of_mass()
    >>> R, rmsd = align.rotation_matrix(mobile0, ref0)
    >>> print rmsd
    6.8093965864717951
@@ -108,9 +108,9 @@ function ::
 
 Putting all this together one can superimpose all of *mobile* onto *ref*::
 
-   >>> mobile.atoms.translate(-mobile.atoms.CA.center_of_mass())
+   >>> mobile.atoms.translate(-mobile.select_atoms('name CA').center_of_mass())
    >>> mobile.atoms.rotate(R)
-   >>> mobile.atoms.translate(ref.atoms.CA.center_of_mass())
+   >>> mobile.atoms.translate(ref.select_atoms('name CA').center_of_mass())
    >>> mobile.atoms.write("mobile_on_ref.pdb")
 
 

@@ -120,7 +120,7 @@ class TestAlign(object):
 
     def test_rmsd_custom_weights(self, universe, reference):
         weights = np.zeros(universe.atoms.n_atoms)
-        ca = universe.atoms.CA
+        ca = universe.select_atoms('name CA')
         weights[ca.indices] = 1
         rmsd = align.alignto(universe, reference, select='name CA')
         rmsd_weights = align.alignto(universe, reference, weights=weights)
@@ -191,7 +191,7 @@ class TestAlign(object):
 
     def test_AlignTraj_custom_weights(self, universe, reference, tmpdir):
         weights = np.zeros(universe.atoms.n_atoms)
-        ca = universe.atoms.CA
+        ca = universe.select_atoms('name CA')
         weights[ca.indices] = 1
 
         outfile = str(tmpdir.join('align_test.dcd'))
