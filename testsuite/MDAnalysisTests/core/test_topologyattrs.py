@@ -465,7 +465,7 @@ class TestInstantSelectorDeprecation(object):
         return mda.Universe(PSF, DCD)
 
     @pytest.mark.parametrize('instruction', (
-        'universe.select_atoms('name CA')',
+        'universe.select_atoms("name CA")',
         'universe.residues.LYS',
         'universe.segments.s4AKE',
         'universe.s4AKE',
