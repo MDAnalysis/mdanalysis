@@ -358,6 +358,7 @@ class TestRMSF(object):
                             err_msg="error: rmsfs should all be zero")
 
     def test_rmsf_old_run(self, universe):
+        # start/stop arguments should be given at class initialization
         with pytest.deprecated_call():
             rmsfs = rms.RMSF(universe.select_atoms('name CA')).run(start=5,
                                                                    stop=6)
