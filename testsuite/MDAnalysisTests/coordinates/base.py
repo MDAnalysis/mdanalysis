@@ -91,7 +91,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         assert_equal(1.0, self.universe.trajectory.dt)
 
     def test_coordinates(self):
-        A10CA = self.universe.atoms.CA[10]
+        A10CA = self.universe.select_atoms('name CA')[10]
         # restrict accuracy to maximum in PDB files (3 decimals)
         assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],

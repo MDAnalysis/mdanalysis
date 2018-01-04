@@ -160,7 +160,7 @@ inconsistent results")
             encore.confdistmatrix.set_rmsd_matrix_elements,
             selection="name CA",
             pairwise_align=True,
-            weights=(ens1.atoms.CA.masses, ens1.atoms.CA.masses),
+            weights=(ens1.select_atoms('name CA').masses, ens1.select_atoms('name CA').masses),
             n_jobs=1)
 
         for i in range(conf_dist_matrix_custom.size):
@@ -241,7 +241,8 @@ inconsistent results")
     def test_hes_custom_weights(self, ens1, ens2):
         results, details = encore.hes([ens1, ens2], weights='mass')
         results_custom, details_custom = encore.hes([ens1, ens2],
-                                                    weights=(ens1.atoms.CA.masses, ens2.atoms.CA.masses))
+                                                    weights=(ens1.select_atoms('name CA').masses,
+                                                             ens2.select_atoms('name CA').masses))
         result_value = results[0, 1]
         result_value_custom = results_custom[0, 1]
         assert_almost_equal(result_value, result_value_custom)

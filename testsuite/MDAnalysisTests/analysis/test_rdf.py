@@ -39,8 +39,8 @@ def u():
 def sels(u):
     for at, (x, y) in zip(u.atoms, zip([1] * 3 + [2] * 3, [2, 1, 3] * 2)):
         at.position = x, y, 0.0
-    s1 = u.atoms.OW
-    s2 = u.atoms.HW1 + u.atoms.HW2
+    s1 = u.select_atoms('name OW')
+    s2 = u.select_atoms('name HW1 HW2')
     return s1, s2
 
 

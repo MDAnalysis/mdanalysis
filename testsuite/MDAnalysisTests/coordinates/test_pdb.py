@@ -592,7 +592,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
 
     def test_coordinates(self):
-        A10CA = self.universe.atoms.CA[10]
+        A10CA = self.universe.select_atoms('name CA')[10]
         assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,

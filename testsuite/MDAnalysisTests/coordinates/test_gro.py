@@ -63,7 +63,7 @@ class TestGROReaderOld(RefAdK):
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
     def test_coordinates(self, universe):
-        A10CA = universe.atoms.CA[10]
+        A10CA = universe.select_atoms('name CA')[10]
         assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
@@ -102,7 +102,7 @@ class TestGROReaderNoConversionOld(RefAdK):
     def test_coordinates(self, universe):
         # note: these are the native coordinates in nm; for the test to succeed
         # we loaded with convert_units=False
-        A10CA = universe.atoms.CA[10]
+        A10CA = universe.select_atoms('name CA')[10]
         # coordinates in nm
         assert_almost_equal(A10CA.position,
                             RefAdK.ref_coordinates['A10CA'] / 10.0,
