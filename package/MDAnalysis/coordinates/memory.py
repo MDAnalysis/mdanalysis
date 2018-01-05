@@ -276,14 +276,14 @@ class MemoryReader(base.ProtoReader):
 
         self._dimensions_array = np.asanyarray(dimensions)
         if self._dimensions_array is not None:
-            if (len(self._dimensions_array.shape) == 1
+            if (self._dimensions_array.ndim == 1
                     and self._dimensions_array.shape[0] != 6):
                 raise ValueError('The *dimensions* array must be formated as '
                                  '[A B C alpha beta gamma] but your dimensions '
                                  'have {} elements.'
-                                 .format(self._dimensions_array.shape[0]))
-            if len(self._dimensions_array.shape) > 1:
-                if self._dimensions_array.shape[0] != self.n_frames):
+                                 .format(self._dimensions_array.size))
+            if self._dimensions_array.ndim > 1:
+                if self._dimensions_array.shape[0] != self.n_frames:
                     raise ValueError('The *dimensions* array does not have '
                                      'the same number of frames as the '
                                      'positions: {} dimensions frame but '
@@ -329,7 +329,7 @@ class MemoryReader(base.ProtoReader):
         self.ts.frame = -1
         self.ts.time = -1
 
-    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc', format=None):
+    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc', format=None, dimensions=False):
         """Return a subset of coordinate data for an AtomGroup in desired
         column order/format. If no selection is given, it will return a view of
         the underlying array, while a copy is returned otherwise.
@@ -400,11 +400,19 @@ class MemoryReader(base.ProtoReader):
         #   1) asel is None
         #   2) asel corresponds to the selection of all atoms.
         array = array[basic_slice]
-        if (asel is None or asel is asel.universe.atoms):
-            return array
-        else:
+        if not (asel is None or asel is asel.universe.atoms):
             # If selection is specified, return a copy
-            return array.take(asel.indices, a_index)
+            array = array.take(asel.indices, a_index)
+
+        if dimensions:
+            if self.dim_array.ndim != 1:
+                dim = self._dimensions_array[basic_slice]
+            else:
+                dim = np.ones((len(array), 6)) * self._dimensions_array
+
+            return array, dim
+        else:
+            return array
 
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""
