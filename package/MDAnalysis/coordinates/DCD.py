@@ -267,7 +267,8 @@ class DCDReader(base.ReaderBase):
                    step=None,
                    skip=None,
                    order='afc',
-                   format=None):
+                   format=None,
+                   dimensions=False):
         """Return a subset of coordinate data for an AtomGroup
 
         Parameters
@@ -328,7 +329,10 @@ class DCDReader(base.ReaderBase):
 
         frames = self._file.readframes(
             start, stop, step, order=order, indices=atom_numbers)
-        return frames.xyz
+        if not dimensions:
+            return frames.xyz
+        else:
+            return frames
 
 
 class DCDWriter(base.WriterBase):

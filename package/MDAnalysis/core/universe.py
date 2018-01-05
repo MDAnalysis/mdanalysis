@@ -503,8 +503,9 @@ class Universe(object):
             # This is significantly faster, but only implemented for certain
             # trajectory file formats
             try:
-                coordinates = self.trajectory.timeseries(
-                    self.atoms, start=start, stop=stop, step=step, order='fac')
+                coordinates, dimensions = self.trajectory.timeseries(
+                    self.atoms, start=start, stop=stop, step=step, order='fac',
+                    dimensions=True)
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
@@ -515,24 +516,13 @@ class Universe(object):
                 pm = ProgressMeter(n_frames, interval=1,
                                    verbose=verbose, format=pm_format)
                 coordinates = []  # TODO: use pre-allocated array
+                dimensions = []
                 for i, ts in enumerate(self.trajectory[start:stop:step]):
                     coordinates.append(np.copy(ts.positions))
                     dimensions.append(np.copy(ts.dimensions))
                     pm.echo(i, frame=ts.frame)
                 coordinates = np.array(coordinates)
-            # If we extrated the coordinates using Timeseries, we still need
-            # to go through the trajectory to extract the dimensions.
-            else:
-                n_frames = len(range(
-                    *self.trajectory.check_slice_indices(start, stop, step)
-                ))
-                pm_format = ('{step}/{numsteps} frame dimensions '
-                             'copied to memory (frame {frame})')
-                pm = ProgressMeter(n_frames, interval=1,
-                                   verbose=verbose, format=pm_format)
-                for i, ts in enumerate(self.trajectory[start:stop:step]):
-                    dimensions.append(np.copy(ts.dimensions))
-            dimensions = np.array(dimensions)
+                dimensions = np.array(dimensions)
 
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
@@ -543,7 +533,7 @@ class Universe(object):
                 coordinates,
                 dimensions=dimensions,
                 dt=self.trajectory.ts.dt * step,
-                filename=self.trajectory.filename)
+                filename=self.trajectory.filename,)
 
     # python 2 doesn't allow an efficient splitting of kwargs in function
     # argument signatures.
