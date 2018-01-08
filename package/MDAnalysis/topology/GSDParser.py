@@ -97,7 +97,7 @@ class GSDParser(TopologyReaderBase):
     """
     format = 'GSD'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse Hoomd GSD file
 
         .. versionadded:: 0.17.0

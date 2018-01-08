@@ -148,7 +148,7 @@ class ModelSelection(RangeSelection):
 class MMTFParser(base.TopologyReaderBase):
     format = 'MMTF'
 
-    def parse(self):
+    def parse(self, **kwargs):
         if isinstance(self.filename, mmtf.MMTFDecoder):
             mtop = self.filename
         else:

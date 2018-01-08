@@ -258,14 +258,7 @@ class Universe(object):
                 parser = get_parser_for(self.filename, format=topology_format)
                 try:
                     with parser(self.filename) as p:
-                        if parser is _PARSERS['MINIMAL']:
-                            # The MINIMAL parser just creates a n_atoms
-                            # topology. Providing kwargs with n_atoms allows
-                            # shortcutting and handling coordinate/trajectory
-                            # files not aware of their own atom count.
-                            self._topology = p.parse(**kwargs)
-                        else:
-                            self._topology = p.parse()
+                        self._topology = p.parse(**kwargs)
                 except (IOError, OSError) as err:
                     # There are 2 kinds of errors that might be raised here - one because the file isn't present
                     # or the permissions are bad, second when the parser fails

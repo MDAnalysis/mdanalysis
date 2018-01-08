@@ -41,27 +41,24 @@ Classes
 from __future__ import absolute_import
 
 from ..core._get_readers import get_reader_for
+from ..core.topology import Topology
 from .base import TopologyReaderBase
 
 
 class MinimalParser(TopologyReaderBase):
-    """Parses a coordinate file/trajectory. Reads only the number of atoms.
+    """Produces a minimal topology from only the number of atoms.
 
-    Produces a minimal topology from only the number of atoms via
-    :meth:`MDAnalysis.core.dummy.make_topology`.
+    TODO:
+    Clarify usage of coordinate file
     """
     format = 'MINIMAL'
 
     def parse(self, **kwargs):
-        """Return the minimal *Topology* object for the coordinate file"""
-        # Import here to prevent circular imports.
-        from ..core.dummy import make_topology
+        """Return the minimal *Topology* object"""
+        try:
+            n_atoms = kwargs['n_atoms']
+        except KeyError:
+            reader = get_reader_for(self.filename)
+            n_atoms = reader(self.filename, **kwargs).n_atoms
 
-        if 'size' not in kwargs:
-            n_atoms = kwargs.get('n_atoms')
-            if n_atoms is None:
-                reader = get_reader_for(self.filename)
-                n_atoms = reader(self.filename, **kwargs).n_atoms
-            kwargs['size'] = (n_atoms, 1, 1)
-        return make_topology(**kwargs)
-
+        return Topology(n_atoms, 1, 1)

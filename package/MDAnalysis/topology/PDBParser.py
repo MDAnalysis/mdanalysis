@@ -111,7 +111,7 @@ class PDBParser(TopologyReaderBase):
     """
     format = ['PDB','ENT']
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse atom information from PDB file
 
         Returns

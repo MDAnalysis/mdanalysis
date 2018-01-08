@@ -85,7 +85,7 @@ class HoomdXMLParser(TopologyReaderBase):
     """
     format = 'XML'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse Hoomd XML file
 
         Hoomd XML format does not contain a node for names. The parser will

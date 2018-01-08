@@ -97,7 +97,7 @@ class DMSParser(TopologyReaderBase):
     """
     format = 'DMS'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse DMS file *filename* and return the Topology object"""
         # Fix by SB: Needed because sqlite3.connect does not raise anything
         # if file is not there

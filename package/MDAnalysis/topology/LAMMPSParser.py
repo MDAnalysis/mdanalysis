@@ -190,7 +190,7 @@ class DATAParser(TopologyReaderBase):
 
         return header, sects
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parses a LAMMPS_ DATA file.
 
         Returns

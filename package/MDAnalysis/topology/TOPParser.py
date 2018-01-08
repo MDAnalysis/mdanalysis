@@ -129,7 +129,7 @@ class TOPParser(TopologyReaderBase):
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse Amber PRMTOP topology file *filename*.
 
         Returns
