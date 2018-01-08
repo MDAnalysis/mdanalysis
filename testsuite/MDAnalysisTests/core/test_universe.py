@@ -112,11 +112,11 @@ class TestUniverseCreation(object):
 
     def test_Universe_topology_unrecognizedformat_VE(self):
         with pytest.raises(ValueError):
-            mda.Universe('some.weird.not.pdb.but.converted.xtc')
+            mda.Universe('some.file.without.parser_or_coordinate_extension')
 
     def test_Universe_topology_unrecognizedformat_VE_msg(self):
         try:
-            mda.Universe('some.weird.not.pdb.but.converted.xtc')
+            mda.Universe('some.file.without.parser_or_coordinate_extension')
         except ValueError as e:
             assert 'isn\'t a valid topology format' in e.args[0]
         else:

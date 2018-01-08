@@ -93,7 +93,7 @@ import warnings
 import MDAnalysis
 import sys
 
-from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS
+from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressMeter, _set_verbose
@@ -168,6 +168,14 @@ class Universe(object):
         [``None``] Can also pass a subclass of
         :class:`MDAnalysis.coordinates.base.ProtoReader` to define a custom
         reader to be used on the trajectory file.
+    all_coordinates : bool
+        If set to ``True`` specifies that if more than one filename is passed
+        they are all to be used, if possible, as coordinate files (employing a
+        :class:`MDAnalysis.coordinates.chain.ChainReader`). [``False``] The
+        default behavior is to take the first file as a topology and the
+        remaining as coordinates. The first argument will always always be used
+        to infer a topology regardless of *all_coordinates*. This parameter is
+        ignored if only one argument is passed.
     guess_bonds : bool, optional
         Once Universe has been loaded, attempt to guess the connectivity
         between atoms.  This will populate the .bonds .angles and .dihedrals
@@ -219,7 +227,7 @@ class Universe(object):
         self._trajectory = None
         self._cache = {}
 
-        if len(args) == 0:
+        if not args:
             # create an empty universe
             self._topology = None
             self.atoms = None
@@ -250,7 +258,14 @@ class Universe(object):
                 parser = get_parser_for(self.filename, format=topology_format)
                 try:
                     with parser(self.filename) as p:
-                        self._topology = p.parse()
+                        if parser is _PARSERS['MINIMAL']:
+                            # The MINIMAL parser just creates a n_atoms
+                            # topology. Providing kwargs with n_atoms allows
+                            # shortcutting and handling coordinate/trajectory
+                            # files not aware of their own atom count.
+                            self._topology = p.parse(**kwargs)
+                        else:
+                            self._topology = p.parse()
                 except (IOError, OSError) as err:
                     # There are 2 kinds of errors that might be raised here - one because the file isn't present
                     # or the permissions are bad, second when the parser fails
@@ -272,22 +287,25 @@ class Universe(object):
             self._generate_from_topology()
 
             # Load coordinates
-            if len(args) == 1:
+            if len(args) == 1 or kwargs.get('all_coordinates', False):
                 if self.filename is None:
                     # If we got the topology as a Topology object, then we
                     # cannot read coordinates from it.
-                    coordinatefile = None
+                    coordinatefile = args[1:]
                 else:
                     # Can the topology file also act as coordinate file?
                     try:
                         _ = get_reader_for(self.filename,
                                            format=kwargs.get('format', None))
                     except ValueError:
-                        coordinatefile = None
+                        coordinatefile = args[1:]
                     else:
-                        coordinatefile = [self.filename]
+                        coordinatefile = (self.filename,) + args[1:]
             else:
                 coordinatefile = args[1:]
+
+            if not coordinatefile:
+                coordinatefile = None
             self.load_new(coordinatefile, **kwargs)
 
         # Check for guess_bonds
@@ -351,6 +369,56 @@ class Universe(object):
                 if len(segment) == 1:
                     segment = segment[0]
                 self._instant_selectors[name] = segment
+
+    @classmethod
+    def empty(cls, n_atoms, n_residues=None, n_segments=None,
+              atom_resindex=None, residue_segindex=None,
+              trajectory=False, velocities=False, forces=False):
+        """Create a blank Universe
+
+        Useful for building a topology.
+
+        Parameters
+        ----------
+        n_atoms : int
+          number of Atoms in the Universe
+        n_residues : int, optional
+          number of Residues in the Universe, defaults to 1
+        n_segments : int, optional
+          number of Segments in the Universe, defaults to 1
+        atom_resindex : numpy.array, optional
+          mapping of atoms to residues
+        residue_segindex : numpy.array, optional
+          mapping of residues to segments
+        trajectory : bool, optional
+          if True, attaches a dummy reader to the Universe, therefore
+          allowing coordinates to be set and written.  Default is False
+        velocities : bool, optional
+          include velocities in the dummy Reader
+        forces : bool, optional
+          include forces in the dummy Reader
+
+        Returns
+        -------
+        MDAnalysis.Universe object
+
+        Examples
+        --------
+        TODO!
+
+        .. versionadded:: 0.17.0
+        """
+        u = cls()
+
+        if n_residues is None:
+            n_residues = 1
+        if n_segments is None:
+            n_segments = 1
+        top = Topology(n_atoms, n_residues, n_segments)
+
+        u._topology = top
+
+        return u
 
     def __getattr__(self, key):
         # This implements the instant selector of segments from a Universe.

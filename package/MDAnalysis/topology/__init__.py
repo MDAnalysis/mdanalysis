@@ -122,7 +122,7 @@ the attributes they provide.
                                                  :mod:`MDAnalysis.topology.XYZParser`
 
    TXYZ [#a]_        txyz,     names, atomids,   Tinker XYZ File Parser. Reads atom labels, numbers
-                     arc       masses, types,    and connectivity; masses are guessed from atoms names.                
+                     arc       masses, types,    and connectivity; masses are guessed from atoms names.
                                bonds             :mod:`MDAnalysis.topology.TXYZParser`
 
    GAMESS [#a]_      gms,      names,            GAMESS output parser. Read only atoms of assembly
@@ -298,3 +298,4 @@ from . import DLPolyParser
 from . import HoomdXMLParser
 from . import MMTFParser
 from . import GSDParser
+from . import MinimalParser
