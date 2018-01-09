@@ -410,9 +410,15 @@ class Universe(object):
             n_residues = 1
         if n_segments is None:
             n_segments = 1
-        top = Topology(n_atoms, n_residues, n_segments)
+        top = Topology(n_atoms, n_residues, n_segments,
+                       atom_resindex=atom_resindex,
+                       residue_segindex=residue_segindex,
+        )
 
         u._topology = top
+        u._generate_from_topology()
+
+        # TODO, add trajectory jazz
 
         return u
 
