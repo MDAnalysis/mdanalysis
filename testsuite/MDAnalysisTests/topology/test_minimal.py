@@ -101,3 +101,9 @@ def test_memory_universe(array, order):
     u = mda.Universe(array, order=order)
 
     assert len(u.atoms) == 10
+
+
+def test_minimal_n_atoms_kwarg():
+    u = mda.Universe(TRZ, n_atoms=8184)
+
+    assert len(u.atoms) == 8184
