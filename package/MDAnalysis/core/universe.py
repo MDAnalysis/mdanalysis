@@ -260,21 +260,24 @@ class Universe(object):
                     with parser(self.filename) as p:
                         self._topology = p.parse(**kwargs)
                 except (IOError, OSError) as err:
-                    # There are 2 kinds of errors that might be raised here - one because the file isn't present
+                    # There are 2 kinds of errors that might be raised here:
+                    # one because the file isn't present
                     # or the permissions are bad, second when the parser fails
-                    if err.errno is not None and errno.errorcode[err.errno] in ['ENOENT', 'EACCES']:
-                        # Runs if the error is propagated due to no permission/ file not found
+                    if (err.errno is not None and
+                        errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
+                        # Runs if the error is propagated due to no permission / file not found
                         six.reraise(*sys.exc_info())
-
                     else:
                         # Runs when the parser fails
-                        raise IOError("Failed to load from the topology file {0}"
-                                      " with parser {1}.\n"
-                                      "Error: {2}".format(self.filename, parser, err))
-                except ValueError as err:
-                    raise ValueError("Failed to construct topology from file {0}"
-                                     " with parser {1} \n"
-                                     "Error: {2}".format(self.filename, parser, err))
+                        raise IOError(
+                            "Failed to load from the topology file {0}"
+                            " with parser {1}.\n"
+                            "Error: {2}".format(self.filename, parser, err))
+                except (ValueError, NotImplementedError) as err:
+                    raise ValueError(
+                        "Failed to construct topology from file {0}"
+                        " with parser {1}.\n"
+                        "Error: {2}".format(self.filename, parser, err))
 
             # generate and populate Universe version of each class
             self._generate_from_topology()

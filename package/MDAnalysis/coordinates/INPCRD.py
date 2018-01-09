@@ -75,3 +75,10 @@ class INPReader(base.SingleFrameReaderBase):
                 line = inf.readline()
                 for i in range(3):
                     self.ts._pos[-1, i] = float(line[i*12:(i+1)*12])
+
+    @staticmethod
+    def parse_n_atoms(filename):
+        with open(filename, 'r') as f:
+            f.readline()
+            n_atoms = int(f.readline().split()[0])
+        return n_atoms

@@ -1174,6 +1174,23 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
     def __len__(self):
         return self.n_frames
 
+    @classmethod
+    def parse_n_atoms(cls, filename):
+        """Read the coordinate file and deduce the number of atoms
+
+        Returns
+        -------
+        n_atoms : int
+          the number of atoms in the coordinate file
+
+        Raises
+        ------
+        NotImplementedError
+          when the number of atoms can't be deduced
+        """
+        raise NotImplementedError("{} cannot deduce the number of atoms"
+                                  "".format(cls.__name__))
+
     def next(self):
         """Forward one step to next frame."""
         try:

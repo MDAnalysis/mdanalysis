@@ -286,6 +286,11 @@ class MemoryReader(base.ProtoReader):
         self.ts.time = -1
         self._read_next_timestep()
 
+    @staticmethod
+    def parse_n_atoms(filename):
+        # assume filename is a numpy array
+        return filename.shape[0]
+
     def set_array(self, coordinate_array, order='fac'):
         """
         Set underlying array in desired column order.

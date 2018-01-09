@@ -161,6 +161,12 @@ class XDRBaseReader(base.ReaderBase):
         if self.convert_units:
             self.convert_pos_from_native(self.ts.dimensions[:3])
 
+    @classmethod
+    def parse_n_atoms(cls, filename):
+        with cls._file(filename) as f:
+            n_atoms = f.n_atoms
+        return n_atoms
+
     def close(self):
         """close reader"""
         self._xdr.close()
