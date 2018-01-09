@@ -515,7 +515,7 @@ class NCDFReader(base.ReaderBase):
         self._read_frame(0)
 
     @staticmethod
-    def parse_n_atoms(filename):
+    def parse_n_atoms(filename, **kwargs):
         with scipy.io.netcdf.netcdf_file(filename, mmap=True) as f:
             n_atoms = f.dimensions['atom']
         return n_atoms

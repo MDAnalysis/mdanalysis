@@ -59,6 +59,6 @@ class MinimalParser(TopologyReaderBase):
             n_atoms = kwargs['n_atoms']
         except KeyError:
             reader = get_reader_for(self.filename)
-            n_atoms = reader.parse_n_atoms(self.filename)
+            n_atoms = reader.parse_n_atoms(self.filename, **kwargs)
 
         return Topology(n_atoms, 1, 1)

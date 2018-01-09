@@ -21,9 +21,11 @@
 #
 from __future__ import absolute_import
 
+import itertools
 import numpy as np
 import pytest
 
+import MDAnalysis as mda
 from MDAnalysis.topology.MinimalParser import MinimalParser
 
 from MDAnalysisTests.datafiles import (
@@ -39,7 +41,7 @@ from MDAnalysisTests.datafiles import (
 )
 
 
-@pytest.mark.parametrize(
+working_readers = pytest.mark.parametrize(
     'filename,expected_n_atoms', [
         (DCD, 3341),
         (INPCRD, 5),
@@ -47,8 +49,10 @@ from MDAnalysisTests.datafiles import (
         (NCDF, 2661),
         (TRR, 47681),
         (XTC, 47681),
-        (np.zeros((10, 3)), 10),  # memory reader
+        (np.zeros((1, 10, 3)), 10),  # memory reader default
     ])
+
+@working_readers
 def test_minimal_parser(filename, expected_n_atoms):
     with MinimalParser(filename) as p:
         top = p.parse()
@@ -64,3 +68,36 @@ def test_minimal_parser_fail(filename):
     with MinimalParser(filename) as p:
         with pytest.raises(NotImplementedError):
             p.parse()
+
+
+@working_readers
+def test_universe_with_minimal(filename, expected_n_atoms):
+    u = mda.Universe(filename)
+
+    assert len(u.atoms) == expected_n_atoms
+
+
+def memory_possibilities():
+    # iterate over all possible shapes for a MemoryReader array
+    # number of frames, atoms and coordinates
+    n = {'f': 1, 'a': 10, 'c': 3}
+    for permutation in itertools.permutations('fac', 3):
+        order = ''.join(permutation)
+        array = np.zeros([n[val] for val in permutation])
+
+        yield array, order
+
+
+memory_reader = pytest.mark.parametrize('array,order', list(memory_possibilities()))
+
+@memory_reader
+def test_memory_minimal_parser(array, order):
+    with MinimalParser(array) as p:
+        top = p.parse(order=order)
+    assert top.n_atoms == 10
+
+@memory_reader
+def test_memory_universe(array, order):
+    u = mda.Universe(array, order=order)
+
+    assert len(u.atoms) == 10

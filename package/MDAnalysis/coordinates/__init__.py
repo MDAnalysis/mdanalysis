@@ -532,7 +532,7 @@ deal with missing methods gracefully.
      :class:`MDAnalysis.coordinates.base.ProtoReader.__iter__` (which is always
      implemented) and other slices raise :exc:`TypeError`.
 
- ``parse_n_atoms(filename)``
+ ``parse_n_atoms(filename, **kwargs)``
      Provide the number of atoms in the trajectory file, allowing the Reader
      to be used to provide an extremely minimal Topology.
      Must be implemented as either a staticmethod or a classmethod.

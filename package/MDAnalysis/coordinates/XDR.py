@@ -162,7 +162,7 @@ class XDRBaseReader(base.ReaderBase):
             self.convert_pos_from_native(self.ts.dimensions[:3])
 
     @classmethod
-    def parse_n_atoms(cls, filename):
+    def parse_n_atoms(cls, filename, **kwargs):
         with cls._file(filename) as f:
             n_atoms = f.n_atoms
         return n_atoms

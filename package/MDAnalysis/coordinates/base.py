@@ -1175,7 +1175,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         return self.n_frames
 
     @classmethod
-    def parse_n_atoms(cls, filename):
+    def parse_n_atoms(cls, filename, **kwargs):
         """Read the coordinate file and deduce the number of atoms
 
         Returns

@@ -77,7 +77,7 @@ class INPReader(base.SingleFrameReaderBase):
                     self.ts._pos[-1, i] = float(line[i*12:(i+1)*12])
 
     @staticmethod
-    def parse_n_atoms(filename):
+    def parse_n_atoms(filename, **kwargs):
         with open(filename, 'r') as f:
             f.readline()
             n_atoms = int(f.readline().split()[0])
