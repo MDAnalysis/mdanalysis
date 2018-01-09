@@ -73,9 +73,6 @@ class TopologyReaderBase(six.with_metaclass(_Topologymeta, IOBase)):
     universe : Universe, optional
         Supply a Universe to the Parser.  This then passes it to the
         atom instances that are created within parsers.
-    kwargs : optional
-        Other keyword arguments that can vary with the specific format.
-        These are stored as self.kwargs
 
     All topology readers must define a `parse` method which
     returns a Topology object
