@@ -418,7 +418,10 @@ class Universe(object):
         u._topology = top
         u._generate_from_topology()
 
-        # TODO, add trajectory jazz
+        if trajectory:
+            u.trajectory = get_reader_for('', format='dummy')(
+                n_atoms=n_atoms,
+                velocities=velocities, forces=forces)
 
         return u
 

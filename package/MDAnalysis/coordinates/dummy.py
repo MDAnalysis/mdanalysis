@@ -33,7 +33,7 @@ class DummyReader(SingleFrameReaderBase):
 
     def __init__(self, n_atoms=None, velocities=False, forces=False):
         self.n_atoms = n_atoms
-        self.filename = 'FakeReader'
+        self.filename = 'DummyReader'
         self.n_frames = 1
         self._read_first_frame(velocities, forces)
 
