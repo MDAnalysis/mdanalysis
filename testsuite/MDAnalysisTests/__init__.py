@@ -117,7 +117,7 @@ from MDAnalysisTests.util import (
     in_dir,
     assert_nowarns,
 )
-from .dummy import make_Universe
+from MDAnalysisTests.dummy import make_Universe
 
 
 def run(*args, **kwargs):
