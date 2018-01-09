@@ -57,7 +57,7 @@ from MDAnalysis.topology.base import TopologyReaderBase
 
 
 class IOErrorParser(TopologyReaderBase):
-    def parse(self):
+    def parse(self, **kwargs):
         raise IOError("Useful information")
 
 # This string is not in the `TestUniverseCreation` class or its method because of problems
