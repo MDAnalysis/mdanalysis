@@ -14,7 +14,7 @@ class PSA_sqnormBench(object):
         """
 
         params = ([2,3,4],
-                  [100,1000,1e4],
+                  [100,1000,10000],
                   [None, 0, 1, -1])
 
         # num_cols is equivalent to dimensions
@@ -111,7 +111,7 @@ class PSA_metricBench(object):
     in the psa module.
     """
 
-    params = ([10,100,1000],
+    params = ([10,100,200],
               [5,25,50])
 
     param_names = ['time_steps',
