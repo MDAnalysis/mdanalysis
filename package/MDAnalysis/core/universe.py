@@ -404,8 +404,6 @@ class Universe(object):
 
         .. versionadded:: 0.17.0
         """
-        u = cls()
-
         if n_residues is None:
             n_residues = 1
         if n_segments is None:
@@ -415,8 +413,7 @@ class Universe(object):
                        residue_segindex=residue_segindex,
         )
 
-        u._topology = top
-        u._generate_from_topology()
+        u = cls(top)
 
         if trajectory:
             u.trajectory = get_reader_for('', format='dummy')(
