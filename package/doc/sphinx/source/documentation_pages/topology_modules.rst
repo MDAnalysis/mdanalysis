@@ -32,6 +32,7 @@ topology file format in the *topology_format* keyword argument to
    topology/GROParser
    topology/HoomdXMLParser
    topology/LAMMPSParser
+   topology/MinimalParser
    topology/MMTFParser
    topology/MOL2Parser
    topology/PDBParser
