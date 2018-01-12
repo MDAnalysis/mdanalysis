@@ -248,7 +248,7 @@ class DistanceSelection(Selection):
             self.apply = self._apply_distmat
 
     def validate_dimensions(self, dimensions):
-        r"""Check if the system is periodic.
+        r"""Check if the system is periodic in all three-dimensions.
 
         Parameters
         ----------
@@ -258,12 +258,12 @@ class DistanceSelection(Selection):
         Returns
         -------
         None or numpy.ndarray
-            Returns argument dimensions if system is periodic, otherwise
-            return None
+            Returns argument dimensions if system is periodic in all
+            three-dimensions, otherwise returns None
         """
-        if not self.periodic or not all(dimensions[:3]):
-            return None
-        return dimensions
+        if self.periodic and all(dimensions[:3]):
+            return dimensions
+        return None
 
 class AroundSelection(DistanceSelection):
     token = 'around'
