@@ -326,7 +326,8 @@ class SphericalLayerSelection(DistanceSelection):
         self.sel = parser.parse_expression(self.precedence)
 
     def _apply_KDTree(self, group):
-        """Selection using KDTree but periodic = True not supported.
+        """Selection using KDTree and PeriodicKDTree for aperiodic and
+        fully-periodic systems, respectively.
         """
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
@@ -368,7 +369,8 @@ class SphericalZoneSelection(DistanceSelection):
         self.sel = parser.parse_expression(self.precedence)
 
     def _apply_KDTree(self, group):
-        """Selection using KDTree
+        """Selection using KDTree and PeriodicKDTree for aperiodic and
+        fully-periodic systems, respectively.
         """
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
