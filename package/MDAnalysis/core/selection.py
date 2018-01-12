@@ -345,11 +345,10 @@ class SphericalLayerSelection(DistanceSelection):
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
-        periodic = False if self.validate_dimensions(group.dimensions) is None\
-            else True
-        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).\
-            astype(np.float32)
         box = self.validate_dimensions(group.dimensions)
+        periodic = box is not None
+        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).astype(
+            np.float32)
         d = distances.distance_array(ref,
                                      group.positions,
                                      box=box)[0]
@@ -385,11 +384,10 @@ class SphericalZoneSelection(DistanceSelection):
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
-        periodic = False if self.validate_dimensions(group.dimensions) is None\
-            else True
+        box = self.validate_dimensions(group.dimensions)
+        periodic = box is not None
         ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).\
             astype(np.float32)
-        box = self.validate_dimensions(group.dimensions)
         d = distances.distance_array(ref,
                                      group.positions,
                                      box=box)[0]
