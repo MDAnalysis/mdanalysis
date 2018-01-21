@@ -216,19 +216,19 @@ import six
 from six.moves import range, cPickle
 from six import string_types
 
+import os
+import warnings
+import numbers
+
 import numpy as np
 from scipy import spatial, cluster
 from scipy.spatial.distance import directed_hausdorff
 import matplotlib
 
-import warnings
-import numbers
-
 import MDAnalysis
 import MDAnalysis.analysis.align
 from MDAnalysis import NoDataError
-
-import os
+from MDAnalysis.lib.util import deprecate
 
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.psa')
@@ -1506,14 +1506,27 @@ class PSAnalysis(object):
         store : bool
              if ``True`` then writes :attr:`PSAnalysis.D` to text and
              compressed npz (numpy) files [``True``]
+
+             .. deprecated:: 0.19.0
+                `store` will be removed together with :meth:`save_results` in 1.0.0.
+
         filename : str
              string, filename to save :attr:`PSAnalysis.D`
+
+             .. deprecated:: 0.19.0
+                `filename` will be removed together with :meth:`save_results` in 1.0.0.
+
 
         """
         metric = kwargs.pop('metric', 'hausdorff')
         start = kwargs.pop('start', None)
         stop = kwargs.pop('stop', None)
         step = kwargs.pop('step', None)
+        # DEPRECATED 0.19.0: remove in 1.0
+        if 'store' in kwargs:
+            warnings.warn("PSAnalysis.run(): 'store' was deprecated in 0.19.0 "
+                          "and will be removed in 1.0",
+                          category=DeprecationWarning)
         store = kwargs.pop('store', True)
 
         if isinstance(metric, string_types):
@@ -1531,6 +1544,11 @@ class PSAnalysis(object):
                 D[j,i] = D[i,j]
         self.D = D
         if store:
+            # DEPRECATED 0.19.0: remove in 1.0
+            if 'filename' in kwargs:
+                warnings.warn("PSAnalysis.run(): 'filename' was deprecated in "
+                              "0.19.0 and will be removed in 1.0",
+                              category=DeprecationWarning)
             filename = kwargs.pop('filename', metric)
             if not isinstance(metric, string_types):
                 filename = 'custom_metric'
@@ -1594,7 +1612,9 @@ class PSAnalysis(object):
                     self._HP.append(pp.get_hausdorff_pair())
         self.D = D
 
-
+    @deprecate(release="0.19.0", remove="1.0.0",
+               message="You can save the distance matrix :attr:`D` to a numpy "
+               "file with ``np.save(filename, PSAnalysis.D)``.")
     def save_result(self, filename=None):
         """Save distance matrix :attr:`PSAnalysis.D` to a numpy compressed npz
         file and text file.

@@ -83,9 +83,8 @@ indicates comments that are not part of the output.)::
 
 Using the :meth:`HydrogenBondAnalysis.generate_table` method one can reformat
 the results as a flat "normalised" table that is easier to import into a
-database or dataframe for further processing.
-:meth:`HydrogenBondAnalysis.save_table` saves the table to a pickled file. The
-table itself is a :class:`numpy.recarray`.
+database or dataframe for further processing. The table itself is a
+:class:`numpy.recarray`.
 
 .. _Detection-of-hydrogen-bonds:
 
@@ -320,15 +319,17 @@ from __future__ import division, absolute_import
 import six
 from six.moves import range, zip, map, cPickle
 
-from collections import defaultdict
-import numpy as np
 import warnings
 import logging
+from collections import defaultdict
+
+import numpy as np
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib import distances
+from MDAnalysis.lib.util import deprecate
 
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
@@ -1168,6 +1169,9 @@ class HydrogenBondAnalysis(object):
         self.table = out.view(np.recarray)
         logger.debug("HBond: Stored results as table with %(num_records)d entries.", vars())
 
+    @deprecate(release="0.19.0", remove="1.0.0",
+               message="You can instead use ``np.save(filename, "
+               "HydrogendBondAnalysis.table)``.")
     def save_table(self, filename="hbond_table.pickle"):
         """Saves :attr:`~HydrogenBondAnalysis.table` to a pickled file.
 

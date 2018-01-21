@@ -285,9 +285,10 @@ from __future__ import absolute_import, division
 import six
 
 from collections import defaultdict
-import numpy as np
 import logging
 import warnings
+
+import numpy as np
 
 from .hbond_analysis import HydrogenBondAnalysis
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
@@ -843,26 +844,6 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
         WaterBridgeAnalysis.table
         """
         super(WaterBridgeAnalysis, self).generate_table()
-
-    def save_table(self, filename="wbridge_table.pickle"):
-        """Saves :attr:`~WaterBridgeAnalysis.table` to a pickled file.
-
-        If :attr:`~WaterBridgeAnalysis.table` does not exist yet,
-        :meth:`generate_table` is called first.
-
-        Parameters
-        ----------
-        filename : str (optional)
-             path to the filename
-
-        Example
-        -------
-        Load with ::
-
-           import cPickle
-           table = cPickle.load(open(filename))
-        """
-        super(WaterBridgeAnalysis, self).save_table(filename)
 
     def count_by_type(self):
         """Counts the frequency of water bridge of a specific type.
