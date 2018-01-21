@@ -21,6 +21,7 @@ mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
 
 Enhancements
   * added support for GSD format topology/trajectory parser (PR #1693)
+  * spherical selections tokens can use the periodic KDTree (PR #1733)
   * added Amber residue names to 'protein' atom selection (PR #1704)
   * KDTree for neighbor search on periodic systems (PR #1660, #1692)
   * Python versions 3.4 and upwards are now supported (Issue #260)

@@ -66,8 +66,9 @@ def test_AngularDistribution(universe):
                                                                SELECTION1,
                                                                40)
     ad.run()
-    assert str(ad.graph[0][39]) == str("0.951172947884 0.48313682125")
-
+    assert_almost_equal([float(x) for x in ad.graph[0][39].split()],
+                        [0.951172947884, 0.48313682125],
+                        decimal=12)
 
 def test_MeanSquareDisplacement(universe):
     msd = MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement(universe,
