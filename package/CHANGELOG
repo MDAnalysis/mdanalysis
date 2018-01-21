@@ -71,6 +71,11 @@ Changes
     updated or modified. (PR #1922)
   * The TPR parser reads SETTLE constraints as bonds. (Issue #1949)
 
+Deprecations
+  * almost all "save()", "save_results()", "save_table()" methods in
+    analysis classes were deprecated and will be removed in 1.0 (Issue
+    #1972 and #1745)
+
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
          orbeckst, xiki-tempula, navyakhare, zemanj, ayushsuhane, davidercruz,

@@ -170,11 +170,12 @@ from six.moves import range
 import logging
 import warnings
 
-from MDAnalysis.core.universe import Universe
 import numpy as np
 
+from MDAnalysis.core.universe import Universe
 from .rms import rmsd
 from .base import AnalysisBase
+from MDAnalysis.lib.util import deprecate
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
@@ -195,10 +196,6 @@ class DistanceMatrix(AnalysisBase):
         Array of all possible ij metric distances between frames in trajectory.
         This matrix is symmetric with zeros on the diagonal.
 
-    Methods
-    -------
-    save(filename)
-        Save the `dist_matrix` to a given filename
     """
     def __init__(self, u, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, start=None, stop=None, step=None,
@@ -276,7 +273,17 @@ class DistanceMatrix(AnalysisBase):
     def _conclude(self):
         self._calculated = True
 
+    @deprecate(release="0.19.0", remove="1.0.0",
+               message="Use ``np.save(filename, DistanceMatrix.dist_matrix)`` instead.")
     def save(self, filename):
+        """save squared distance matrix
+
+        Parameters
+        ----------
+        outfile : str
+            file to save distance matrix
+
+        """
         np.save(filename, self.dist_matrix)
         logger.info("Wrote the distance-squared matrix to file %r", filename)
 

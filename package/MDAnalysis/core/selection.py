@@ -585,7 +585,7 @@ class SelgroupSelection(Selection):
         mask = np.in1d(group.indices, self.grp.indices)
         return group[mask]
 
-
+# TODO: remove in 1.0 (should have been removed in 0.15.0)
 class FullSelgroupSelection(Selection):
     token = 'fullgroup'
 
