@@ -25,6 +25,8 @@ import MDAnalysis.analysis.waterdynamics
 import pytest
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
+
+import numpy as np
 from numpy.testing import assert_almost_equal
 
 SELECTION1 = "byres name OH2"
@@ -50,7 +52,8 @@ def test_WaterOrientationalRelaxation(universe):
         universe,
         SELECTION1, 0, 5, 2)
     wor.run()
-    assert round(wor.timeseries[1][2], 5) == 0.35887
+    assert_almost_equal(wor.timeseries[1][2], 0.35887,
+                        decimal=5)
 
 
 def test_WaterOrientationalRelaxation_zeroMolecules(universe):
@@ -58,7 +61,7 @@ def test_WaterOrientationalRelaxation_zeroMolecules(universe):
         universe,
         SELECTION2, 0, 5, 2)
     wor_zero.run()
-    assert wor_zero.timeseries[1] == (0.0, 0.0, 0.0)
+    assert_almost_equal(wor_zero.timeseries[1], (0.0, 0.0, 0.0))
 
 
 def test_AngularDistribution(universe):
@@ -66,16 +69,18 @@ def test_AngularDistribution(universe):
                                                                SELECTION1,
                                                                40)
     ad.run()
-    assert_almost_equal([float(x) for x in ad.graph[0][39].split()],
-                        [0.951172947884, 0.48313682125],
-                        decimal=12)
+    # convert a string with two "floats" into a float array
+    result = np.array(ad.graph[0][39].split(), dtype=np.float64)
+    assert_almost_equal(result, (0.951172947884, 0.48313682125))
+
 
 def test_MeanSquareDisplacement(universe):
     msd = MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement(universe,
                                                                    SELECTION1,
                                                                    0, 10, 2)
     msd.run()
-    assert round(msd.timeseries[1], 5) == 0.03984
+    assert_almost_equal(msd.timeseries[1], 0.03984,
+                        decimal=5)
 
 
 def test_MeanSquareDisplacement_zeroMolecules(universe):
@@ -83,7 +88,7 @@ def test_MeanSquareDisplacement_zeroMolecules(universe):
         universe,
         SELECTION2, 0, 10, 2)
     msd_zero.run()
-    assert msd_zero.timeseries[1] == 0.0
+    assert_almost_equal(msd_zero.timeseries[1], 0.0)
 
 
 def test_SurvivalProbability(universe):
@@ -91,7 +96,8 @@ def test_SurvivalProbability(universe):
                                                                SELECTION1,
                                                                0, 6, 3)
     sp.run()
-    assert round(sp.timeseries[1], 5) == 1.0
+    assert_almost_equal(sp.timeseries[1], 1.0,
+                        decimal=5)
 
 
 def test_SurvivalProbability_zeroMolecules(universe):
@@ -99,4 +105,4 @@ def test_SurvivalProbability_zeroMolecules(universe):
                                                                     SELECTION2,
                                                                     0, 6, 3)
     sp_zero.run()
-    assert sp_zero.timeseries[1] == 0.0
+    assert_almost_equal(sp_zero.timeseries[1], 0.0)
