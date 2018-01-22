@@ -433,12 +433,16 @@ def hausdorff(P, Q):
 
     """
     if len(P.shape) > 2:
+        N = P.shape[1]
         P = P.reshape(len(P), -1)
+    else:
+        N = P.shape[1] / 3
+
     if len(Q.shape) > 2:
         Q = Q.reshape(len(Q), -1)
 
     return max(directed_hausdorff(P,Q)[0],
-               directed_hausdorff(Q,P)[0])
+               directed_hausdorff(Q,P)[0]) / np.sqrt(N)
 
 
 def hausdorff_wavg(P, Q):
