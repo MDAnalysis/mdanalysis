@@ -1221,20 +1221,21 @@ class SurvivalProbability(object):
         """Analyze trajectory and produce timeseries"""
 
         # select all frames to an array
-        preloaded_selection = self._selection_serial(self.universe, self.selection)
+        selected = self._selection_serial(self.universe, self.selection)
 
-        if len(preloaded_selection) < self.dtmax:
+        if len(selected) < self.dtmax:
             print ("ERROR: Cannot select fewer frames than dtmax")
             return
 
         for window_size in list(range(1, self.dtmax + 1)):
-            output = self._getMeanOnePoint(preloaded_selection, window_size)
+            output = self._getMeanOnePoint(selected, window_size)
             self.timeseries.append(output)
 
 
     def _selection_serial(self, universe, selection_str):
         selected = []
-        pm = ProgressMeter(universe.trajectory.n_frames, interval=10, verbose=True)
+        pm = ProgressMeter(self.tf-self.t0, interval=10,
+                           verbose=True, offset=-self.t0)
         for ts in universe.trajectory[self.t0:self.tf]:
             selected.append(universe.select_atoms(selection_str))
             pm.echo(ts.frame)
@@ -1258,9 +1259,12 @@ class SurvivalProbability(object):
 
     def _getOneDeltaPoint(self, selected, t, tau):
         """
-        Gives one point to calculate the mean and gets one point of the plot C_vect vs t.
-        - Ex: t0=1 and tau=1 so calculate how many selected beads survive from the frame 1 to 2
-        - Ex: t0=5 and tau=3 so calculate how many selected beads survive from the frame 5 to 8
+        Gives one point to calculate the mean and
+        gets one point of the plot C_vect vs t.
+        - Ex: t0=1 and tau=1 so calculate
+        how many selected beads survive from the frame 1 to 2
+        - Ex: t0=5 and tau=3 so calculate
+        how many selected beads survive from the frame 5 to 8
         """
 
         Nt = len(selected[t])
@@ -1274,7 +1278,8 @@ class SurvivalProbability(object):
     def _NumPart_tau(self, selected, t, tau):
         """
         Compares the molecules in t selection and t+tau selection and
-        select only the particles that remain from t to t+tau and at each point in between.
+        select only the particles that remain from t to t+tau and
+        at each point in between.
         It returns the number of remaining particles.
         """
         survivors = set(selected[t])
