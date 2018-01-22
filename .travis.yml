@@ -72,6 +72,7 @@ matrix:
            INSTALL_HOLE="false"
   allow_failures:
     - env: NUMPY_VERSION=dev EVENT_TYPE="cron"
+    - env: PYTHON_VERSION=3.4
     - os: osx
 
 before_install:
