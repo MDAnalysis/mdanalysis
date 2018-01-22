@@ -218,6 +218,7 @@ from six import string_types
 
 import numpy as np
 from scipy import spatial, cluster
+from scipy.spatial.distance import directed_hausdorff
 import matplotlib
 
 import warnings
@@ -431,10 +432,8 @@ def hausdorff(P, Q):
     scipy.spatial.distance.directed_hausdorff
 
     """
-    N, axis = get_coord_axes(P)
-    d = get_msd_matrix(P, Q, axis=axis)
-    return (max(np.amax(np.amin(d, axis=0)),
-                np.amax(np.amin(d, axis=1))) / N)**0.5
+    return max(directed_hausdorff(P,Q)[0],
+               directed_hausdorff(Q,P)[0])
 
 
 def hausdorff_wavg(P, Q):
