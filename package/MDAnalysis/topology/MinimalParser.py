@@ -48,8 +48,13 @@ from .base import TopologyReaderBase
 class MinimalParser(TopologyReaderBase):
     """Produces a minimal topology from only the number of atoms.
 
-    TODO:
-    Clarify usage of coordinate file
+    This requires that the number of atoms be given in one of two ways:
+     - The number of atoms can be given as the 'n_atoms' keyword argument.
+     - If this is not given, then a Reader object for the filename will be
+       created and the `parse_n_atoms` method on this Reader will be called,
+       (requiring that the Reader has this capability).
+
+    This requires that the coordinate format has
     """
     format = 'MINIMAL'
 
