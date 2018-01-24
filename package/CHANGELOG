@@ -24,11 +24,14 @@ Enhancements
   * added Amber residue names to 'protein' atom selection (PR #1704)
   * KDTree for neighbor search on periodic systems (PR #1660, #1692)
   * Python versions 3.4 and upwards are now supported (Issue #260)
+  * added Universe.empty to allow Universes of custom size to be constructed
+    without any files (PR #1533)
   * add minimal topology reader that is able to load coordinate/trajectory
     files on their own without requiring a topology file (Issue #1371)
-  * promote make_Universe to MDAnalysis from the testsuite (Issue #1371)
-  * Universe can now also load the topology file as a frame of the reader
-    together with the trajectory files.
+  * added "parse_n_atoms" to Reader API and implemented this for DCD, INPCRD,
+    NCDF, TRR and XTC formats (PR #1533)
+  * added 'all_coordinates' keyword to Universe to also load the topology file
+    as a frame of the reader together with the trajectory files (PR #1533)
   * add low level lib.formats.libdcd module for reading/writing DCD (PR #1372)
   * replace old DCD reader with a Python 3 ready DCD reader (Issue #659)
   * The TPR parser populate the `moltypes` topology attribute and
