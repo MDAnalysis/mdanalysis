@@ -76,7 +76,7 @@ except ImportError:
     cmdclass = {}
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.17.0-dev"
+RELEASE = "0.17.0"
 
 is_release = 'dev' not in RELEASE
 
