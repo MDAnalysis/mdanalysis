@@ -372,7 +372,8 @@ class Universe(object):
               trajectory=False, velocities=False, forces=False):
         """Create a blank Universe
 
-        Useful for building a topology.
+        Useful for building a Universe without requiring existing files,
+        for example for system building.
 
         Parameters
         ----------
@@ -400,7 +401,14 @@ class Universe(object):
 
         Examples
         --------
-        TODO!
+        For example to create a new Universe with 6 atoms in 2 residues, with
+        positions for the atoms and a mass attribute:
+
+        >>> u = mda.Universe.empty(6, 2,
+                                   atom_resindex=np.array([0, 0, 0, 1, 1, 1]),
+                                   trajectory=True,
+                )
+        >>> u.add_TopologyAttr('masses')
 
         .. versionadded:: 0.17.0
         """
