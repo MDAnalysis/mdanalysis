@@ -59,22 +59,32 @@ def test_minimal_parser(filename, expected_n_atoms):
     assert top.n_atoms == expected_n_atoms
 
 
-@pytest.mark.parametrize('filename', [
-    TRJ,
-    TRJncdf,
-    TRZ,
-])
-def test_minimal_parser_fail(filename):
-    with MinimalParser(filename) as p:
-        with pytest.raises(NotImplementedError):
-            p.parse()
-
-
 @working_readers
 def test_universe_with_minimal(filename, expected_n_atoms):
     u = mda.Universe(filename)
 
     assert len(u.atoms) == expected_n_atoms
+
+
+nonworking_readers = pytest.mark.parametrize('filename,n_atoms', [
+    (TRJ, 252),
+    (TRJncdf, 2661),
+    (TRZ, 8184),
+])
+
+@nonworking_readers
+def test_minimal_parser_fail(filename,n_atoms):
+    with MinimalParser(filename) as p:
+        with pytest.raises(NotImplementedError):
+            p.parse()
+
+
+@nonworking_readers
+def test_minimal_n_atoms_kwarg(filename, n_atoms):
+    # test that these can load when we supply the number of atoms
+    u = mda.Universe(filename, n_atoms=n_atoms)
+
+    assert len(u.atoms) == n_atoms
 
 
 def memory_possibilities():
@@ -101,9 +111,3 @@ def test_memory_universe(array, order):
     u = mda.Universe(array, order=order)
 
     assert len(u.atoms) == 10
-
-
-def test_minimal_n_atoms_kwarg():
-    u = mda.Universe(TRZ, n_atoms=8184)
-
-    assert len(u.atoms) == 8184
