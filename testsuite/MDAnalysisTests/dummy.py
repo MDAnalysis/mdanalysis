@@ -31,8 +31,8 @@ import string
 import itertools
 
 
-# Elements  of the standard mock Universe
-# 5 atoms per residues, 5 residues per segment
+# Elements of the standard mock Universe
+# 5 atoms per residue, 5 residues per segment
 _N_ATOMS = 125
 _N_RESIDUES = 25
 _N_SEGMENTS = 5
@@ -53,18 +53,19 @@ def make_Universe(extras=None, size=None,
 
     Parameters
     ----------
-    extras : list of strings
+    extras : list of strings, optional
       extra attributes to add to Universe:
       u = make_Universe(('masses', 'charges'))
       Creates a lightweight Universe with only masses and charges.
-    size : tuple of int
+    size : tuple of int, optional
       number of elements of the Universe (n_atoms, n_residues, n_segments)
-    trajectory : bool
-      create a fake Reader object attached to Universe
-    velocities : bool
-      if the fake Reader provides velocities
-    force : bool
-      if the fake Reader provides forces
+      defaults to (125, 25, 5)
+    trajectory : bool, optional
+      create a fake Reader object attached to Universe, default False
+    velocities : bool, optional
+      if the fake Reader provides velocities, default False
+    force : bool, optional
+      if the fake Reader provides forces, default False
 
     Returns
     -------
