@@ -228,14 +228,18 @@ def get_parser_for(filename, format=None):
     try:
         return _PARSERS[format]
     except KeyError:
-        raise ValueError(
-            "'{0}' isn't a valid topology format\n"
-            "   You can use 'Universe(topology, ..., topology_format=FORMAT)' "
-            "   to explicitly specify the format and\n"
-            "   override automatic detection. Known FORMATs are:\n"
-            "   {1}\n"
-            "   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
-            "   For missing formats, raise an issue at "
-            "   http://issues.mdanalysis.org".format(format, _PARSERS.keys()))
-
-
+        try:
+            rdr = get_reader_for(filename)
+        except ValueError:
+            raise ValueError(
+                "'{0}' isn't a valid topology format, nor a coordinate format\n"
+                "   from which a topology can be minimally inferred.\n"
+                "   You can use 'Universe(topology, ..., topology_format=FORMAT)'\n"
+                "   to explicitly specify the format and\n"
+                "   override automatic detection. Known FORMATs are:\n"
+                "   {1}\n"
+                "   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
+                "   For missing formats, raise an issue at \n"
+                "   http://issues.mdanalysis.org".format(format, _PARSERS.keys()))
+        else:
+            return _PARSERS['MINIMAL']

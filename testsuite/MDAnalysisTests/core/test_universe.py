@@ -37,6 +37,7 @@ from numpy.testing import (
     assert_allclose,
     assert_almost_equal,
     assert_equal,
+    assert_array_equal,
 )
 import pytest
 
@@ -57,7 +58,7 @@ from MDAnalysis.topology.base import TopologyReaderBase
 
 
 class IOErrorParser(TopologyReaderBase):
-    def parse(self):
+    def parse(self, **kwargs):
         raise IOError("Useful information")
 
 # This string is not in the `TestUniverseCreation` class or its method because of problems
@@ -112,11 +113,11 @@ class TestUniverseCreation(object):
 
     def test_Universe_topology_unrecognizedformat_VE(self):
         with pytest.raises(ValueError):
-            mda.Universe('some.weird.not.pdb.but.converted.xtc')
+            mda.Universe('some.file.without.parser_or_coordinate_extension')
 
     def test_Universe_topology_unrecognizedformat_VE_msg(self):
         try:
-            mda.Universe('some.weird.not.pdb.but.converted.xtc')
+            mda.Universe('some.file.without.parser_or_coordinate_extension')
         except ValueError as e:
             assert 'isn\'t a valid topology format' in e.args[0]
         else:
@@ -570,3 +571,36 @@ class TestAddTopologyAttr(object):
 
         assert hasattr(universe.atoms, attrname)
         assert getattr(universe.atoms, attrname)[0] == default
+
+
+class TestAllCoordinatesKwarg(object):
+    @pytest.fixture(scope='class')
+    def u_GRO_TRR(self):
+        return mda.Universe(GRO, TRR)
+
+    @pytest.fixture(scope='class')
+    def u_GRO_TRR_allcoords(self):
+        return mda.Universe(GRO, TRR, all_coordinates=True)
+
+    @pytest.fixture(scope='class')
+    def u_GRO(self):
+        return mda.Universe(GRO)
+
+    def test_all_coordinates_length(self, u_GRO_TRR, u_GRO_TRR_allcoords):
+        # length with all_coords should be +1
+        assert (len(u_GRO_TRR.trajectory) + 1 ==
+                len(u_GRO_TRR_allcoords.trajectory))
+
+    def test_all_coordinates_frame(self, u_GRO_TRR_allcoords, u_GRO):
+        # check that first frame in u(GRO, TRR, allcords)
+        # are the coordinates from GRO
+        assert_array_equal(u_GRO_TRR_allcoords.atoms.positions,
+                           u_GRO.atoms.positions)
+
+    def test_second_frame(self, u_GRO_TRR_allcoords, u_GRO_TRR):
+        # check that second frame in u(GRO, TRR, allcoords)
+        # are the coordinates from TRR[0]
+        u_GRO_TRR_allcoords.trajectory[1]
+
+        assert_array_equal(u_GRO_TRR_allcoords.atoms.positions,
+                           u_GRO_TRR.atoms.positions)

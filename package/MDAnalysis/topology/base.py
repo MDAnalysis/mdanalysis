@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -73,9 +73,6 @@ class TopologyReaderBase(six.with_metaclass(_Topologymeta, IOBase)):
     universe : Universe, optional
         Supply a Universe to the Parser.  This then passes it to the
         atom instances that are created within parsers.
-    kwargs : optional
-        Other keyword arguments that can vary with the specific format.
-        These are stored as self.kwargs
 
     All topology readers must define a `parse` method which
     returns a Topology object
@@ -89,11 +86,10 @@ class TopologyReaderBase(six.with_metaclass(_Topologymeta, IOBase)):
     .. versionchanged:: 0.9.2
        Added keyword 'universe' to pass to Atom creation.
     """
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename):
         self.filename = filename
-        self.kwargs = kwargs
 
-    def parse(self):  # pragma: no cover
+    def parse(self, **kwargs):  # pragma: no cover
         raise NotImplementedError("Override this in each subclass")
 
 
@@ -134,7 +130,7 @@ def change_squash(criteria, to_squash):
       The Residue *index* that each Atom gets assigned to. [len(resids)]
     squashed : numpy array
       The to_squash arrays reduced down to per Residue values
-      
+
 
     Example
     -------
@@ -184,4 +180,3 @@ def change_squash(criteria, to_squash):
             # Should be the same for self consistency...
 
     return residx, new_others
-            

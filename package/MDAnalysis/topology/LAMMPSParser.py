@@ -190,7 +190,7 @@ class DATAParser(TopologyReaderBase):
 
         return header, sects
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parses a LAMMPS_ DATA file.
 
         Returns
@@ -198,7 +198,7 @@ class DATAParser(TopologyReaderBase):
         MDAnalysis Topology object.
         """
         # Can pass atom_style to help parsing
-        atom_style = self.kwargs.get('atom_style', None)
+        atom_style = kwargs.get('atom_style', None)
 
         head, sects = self.grab_datafile()
 

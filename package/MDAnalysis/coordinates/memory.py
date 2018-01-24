@@ -287,6 +287,29 @@ class MemoryReader(base.ProtoReader):
         self.ts.time = -1
         self._read_next_timestep()
 
+    @staticmethod
+    def parse_n_atoms(filename, order='fac', **kwargs):
+        """Deduce number of atoms in a given array of coordinates
+
+        Parameters
+        ----------
+        filename : numpy.ndarray
+          data which will be used later in MemoryReader
+        order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
+            the order/shape of the return data array, corresponding
+            to (a)tom, (f)rame, (c)oordinates all six combinations
+            of 'a', 'f', 'c' are allowed ie "fac" - return array
+            where the shape is (frame, number of atoms,
+            coordinates).
+
+        Returns
+        -------
+        n_atoms : int
+          number of atoms in system
+        """
+        # assume filename is a numpy array
+        return filename.shape[order.find('a')]
+
     def set_array(self, coordinate_array, order='fac'):
         """
         Set underlying array in desired column order.

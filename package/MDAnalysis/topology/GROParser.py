@@ -79,7 +79,7 @@ class GROParser(TopologyReaderBase):
     """
     format = 'GRO'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Return the *Topology* object for this file"""
         # Gro has the following columns
         # resid, resname, name, index, (x,y,z)

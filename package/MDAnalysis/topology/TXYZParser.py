@@ -73,7 +73,7 @@ class TXYZParser(TopologyReaderBase):
     """
     format = ['TXYZ', 'ARC']
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Read the file and return the structure.
 
         Returns

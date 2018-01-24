@@ -93,7 +93,7 @@ class PQRParser(TopologyReaderBase):
     """
     format = 'PQR'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse atom information from PQR file *filename*.
 
         Returns

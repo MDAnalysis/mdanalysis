@@ -83,7 +83,7 @@ class MOL2Parser(TopologyReaderBase):
     """
     format = 'MOL2'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse MOL2 file *filename* and return the dict `structure`.
 
         Returns

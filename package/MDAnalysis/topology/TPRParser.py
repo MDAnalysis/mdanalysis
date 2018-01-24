@@ -162,7 +162,7 @@ class TPRParser(TopologyReaderBase):
     """
     format = 'TPR'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
 
         Returns

@@ -160,6 +160,12 @@ class DCDReader(base.ReaderBase):
         if self.convert_units:
             self.convert_pos_from_native(self.ts.dimensions[:3])
 
+    @staticmethod
+    def parse_n_atoms(filename, **kwargs):
+        with DCDFile(filename) as f:
+            n_atoms = f.header['natoms']
+        return n_atoms
+
     def close(self):
         """close reader"""
         self._file.close()

@@ -100,7 +100,7 @@ class PDBQTParser(TopologyReaderBase):
     """
     format = 'PDBQT'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse atom information from PDBQT file *filename*.
 
         Returns

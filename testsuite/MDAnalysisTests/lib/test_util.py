@@ -592,39 +592,40 @@ class TestGuessFormat(object):
     given filename
     """
     # list of known formats, followed by the desired Parser and Reader
-    # None indicates that there isn't a Parser/Reader for this format
+    # None indicates that there isn't a Reader for this format
+    # All formats call fallback to the MinimalParser
     formats = [
-        ('CHAIN', None, mda.coordinates.chain.ChainReader),
+        ('CHAIN', mda.topology.MinimalParser.MinimalParser, mda.coordinates.chain.ChainReader),
         ('CONFIG', mda.topology.DLPolyParser.ConfigParser, mda.coordinates.DLPoly.ConfigReader),
         ('CRD', mda.topology.CRDParser.CRDParser, mda.coordinates.CRD.CRDReader),
         ('DATA', mda.topology.LAMMPSParser.DATAParser, mda.coordinates.LAMMPS.DATAReader),
-        ('DCD', None, mda.coordinates.DCD.DCDReader),
+        ('DCD', mda.topology.MinimalParser.MinimalParser, mda.coordinates.DCD.DCDReader),
         ('DMS', mda.topology.DMSParser.DMSParser, mda.coordinates.DMS.DMSReader),
         ('GMS', mda.topology.GMSParser.GMSParser, mda.coordinates.GMS.GMSReader),
         ('GRO', mda.topology.GROParser.GROParser, mda.coordinates.GRO.GROReader),
         ('HISTORY', mda.topology.DLPolyParser.HistoryParser, mda.coordinates.DLPoly.HistoryReader),
-        ('INPCRD', None, mda.coordinates.INPCRD.INPReader),
-        ('LAMMPS', None, mda.coordinates.LAMMPS.DCDReader),
-        ('MDCRD', None, mda.coordinates.TRJ.TRJReader),
+        ('INPCRD', mda.topology.MinimalParser.MinimalParser, mda.coordinates.INPCRD.INPReader),
+        ('LAMMPS', mda.topology.MinimalParser.MinimalParser, mda.coordinates.LAMMPS.DCDReader),
+        ('MDCRD', mda.topology.MinimalParser.MinimalParser, mda.coordinates.TRJ.TRJReader),
         ('MMTF', mda.topology.MMTFParser.MMTFParser, mda.coordinates.MMTF.MMTFReader),
         ('MOL2', mda.topology.MOL2Parser.MOL2Parser, mda.coordinates.MOL2.MOL2Reader),
-        ('NC', None, mda.coordinates.TRJ.NCDFReader),
-        ('NCDF', None, mda.coordinates.TRJ.NCDFReader),
+        ('NC', mda.topology.MinimalParser.MinimalParser, mda.coordinates.TRJ.NCDFReader),
+        ('NCDF', mda.topology.MinimalParser.MinimalParser, mda.coordinates.TRJ.NCDFReader),
         ('PDB', mda.topology.PDBParser.PDBParser, mda.coordinates.PDB.PDBReader),
         ('PDBQT', mda.topology.PDBQTParser.PDBQTParser, mda.coordinates.PDBQT.PDBQTReader),
         ('PRMTOP', mda.topology.TOPParser.TOPParser, None),
         ('PQR', mda.topology.PQRParser.PQRParser, mda.coordinates.PQR.PQRReader),
         ('PSF', mda.topology.PSFParser.PSFParser, None),
-        ('RESTRT', None, mda.coordinates.INPCRD.INPReader),
+        ('RESTRT', mda.topology.MinimalParser.MinimalParser, mda.coordinates.INPCRD.INPReader),
         ('TOP', mda.topology.TOPParser.TOPParser, None),
         ('TPR', mda.topology.TPRParser.TPRParser, None),
-        ('TRJ', None, mda.coordinates.TRJ.TRJReader),
-        ('TRR', None, mda.coordinates.TRR.TRRReader),
+        ('TRJ', mda.topology.MinimalParser.MinimalParser, mda.coordinates.TRJ.TRJReader),
+        ('TRR', mda.topology.MinimalParser.MinimalParser, mda.coordinates.TRR.TRRReader),
         ('XML', mda.topology.HoomdXMLParser.HoomdXMLParser, None),
         ('XPDB', mda.topology.ExtendedPDBParser.ExtendedPDBParser, mda.coordinates.PDB.ExtendedPDBReader),
-        ('XTC', None, mda.coordinates.XTC.XTCReader),
+        ('XTC', mda.topology.MinimalParser.MinimalParser, mda.coordinates.XTC.XTCReader),
         ('XYZ', mda.topology.XYZParser.XYZParser, mda.coordinates.XYZ.XYZReader),
-        ('TRZ', None, mda.coordinates.TRZ.TRZReader),
+        ('TRZ', mda.topology.MinimalParser.MinimalParser, mda.coordinates.TRZ.TRZReader),
     ]
     # list of possible compressed extensions
     # include no extension too!

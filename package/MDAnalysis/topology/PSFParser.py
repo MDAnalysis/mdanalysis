@@ -94,7 +94,7 @@ class PSFParser(TopologyReaderBase):
     """
     format = 'PSF'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse PSF file into Topology
 
         Returns

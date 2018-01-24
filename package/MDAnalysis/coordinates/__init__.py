@@ -532,6 +532,11 @@ deal with missing methods gracefully.
      :class:`MDAnalysis.coordinates.base.ProtoReader.__iter__` (which is always
      implemented) and other slices raise :exc:`TypeError`.
 
+ ``parse_n_atoms(filename, **kwargs)``
+     Provide the number of atoms in the trajectory file, allowing the Reader
+     to be used to provide an extremely minimal Topology.
+     Must be implemented as either a staticmethod or a classmethod.
+
  ``Writer(filename, **kwargs)``
      returns a :class:`~MDAnalysis.coordinates.base.WriterBase` which is set up with
      the same parameters as the trajectory that is being read (e.g. time step,
@@ -731,3 +736,4 @@ from . import memory
 from . import MMTF
 from . import GSD
 from . import null
+from . import dummy
