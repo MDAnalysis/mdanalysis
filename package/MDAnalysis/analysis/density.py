@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -24,8 +24,7 @@
 # Copyright (c) 2007-2011 Oliver Beckstein <orbeckst@gmail.com>
 # (based on code from Hop --- a framework to analyze solvation dynamics from MD simulations)
 
-r"""
-Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density`
+r"""Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density`
 =============================================================================
 
 :Author: Oliver Beckstein
@@ -53,15 +52,15 @@ To generate the density of water molecules around a protein::
   u = Universe(TPR, XTC)
   D = density_from_Universe(u, delta=1.0, atomselection="name OW")
   D.convert_density('TIP4P')
-  D.export("water.dx")
+  D.export("water.dx", type="double")
 
 The positions of all water oxygens are histogrammed on a grid with spacing
-*delta* = 1 Å. Initially the density is measured in :math:`\text{Å}^{-3}`. With the
-:meth:`Density.convert_density` method, the units of measurement are
+*delta* = 1 Å. Initially the density is measured in :math:`\text{Å}^{-3}`. With
+the :meth:`Density.convert_density` method, the units of measurement are
 changed. In the example we are now measuring the density relative to the
 literature value of the TIP4P water model at ambient conditions (see the values
-in :data:`MDAnalysis.units.water` for details). Finally, the density is
-writte as an OpenDX_ compatible file that can be read in VMD_ or PyMOL_.
+in :data:`MDAnalysis.units.water` for details). Finally, the density is written
+as an OpenDX_ compatible file that can be read in VMD_, Chimera_, or PyMOL_.
 
 See :class:`Density` for details. In particular, the density is stored
 as a NumPy array in :attr:`Density.grid`, which can be processed in
@@ -104,13 +103,14 @@ can be used in downstream processing).
 
 .. _OpenDX: http://www.opendx.org/
 .. _VMD:   http://www.ks.uiuc.edu/Research/vmd/
+.. _Chimera: https://www.cgl.ucsf.edu/chimera/
 .. _PyMOL: http://www.pymol.org/
-.. _GridDataFormats: https://github.com/MDAnalysis/GridDataFormats
 
 """
 
 from __future__ import print_function, division, absolute_import
 from six.moves import range, zip
+from six import string_types
 
 import numpy as np
 import sys
@@ -119,30 +119,7 @@ import os.path
 import errno
 import warnings
 
-try:
-    from gridData import Grid
-except ImportError:
-    raise ImportError(
-        """ImportError: The GridDataFormats package can not be found!
-
-        The 'gridData' module from GridDataFormats could not be
-        imported. Please install it first.  You can try installing
-        directly from the internet:
-
-          pip install GridDataFormats
-
-        or
-
-          conda config --add channels conda-forge
-          conda install griddataformats
-
-        Alternatively, download the package from
-
-          http://pypi.python.org/pypi/GridDataFormats/
-
-        and install in the usual manner.
-        """
-    )
+from gridData import Grid
 
 import MDAnalysis
 from MDAnalysis.core import groups
@@ -221,9 +198,14 @@ class Density(Grid):
     The attribute :attr:`Density.metadata` holds a user-defined dictionary that
     can be used to annotate the data. It is also saved with :meth:`Density.save`.
 
-    The :meth:`Density.export` method always exports a 3D object
-    (written in such a way to be readable in VMD_ and PyMOL_), the
-    rest should work for an array of any dimension.
+    The :meth:`Density.export` method always exports a 3D object (written in
+    such a way to be readable in VMD_, Chimera_, and PyMOL_), the rest should
+    work for an array of any dimension. Note that PyMOL_ only understands DX
+    files with the DX data type "double" in the "array" object (see `known
+    issues when writing OpenDX files`_ and issue
+    `MDAnalysis/GridDataFormats#35`_ for details). Using the keyword
+    ``type="double"`` for the method :meth:`Density.export`, the user can
+    ensure that the DX file is written in a format suitable for PyMOL_.
 
     If the input histogram consists of counts per cell then the
     :meth:`Density.make_density` method converts the grid to a physical density. For
@@ -236,6 +218,11 @@ class Density(Grid):
     data represent counts or a density. As a special convenience, if data are
     read from a file and the user has not set ``isDensity`` then it is assumed
     that the data are in fact a density.
+
+    .. _`MDAnalysis/GridDataFormats#35`:
+       https://github.com/MDAnalysis/GridDataFormats/issues/35
+    .. _`known issues when writing OpenDX files`:
+       https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenDX.html#known-issues-for-writing-opendx-files
 
     See Also
     --------
@@ -292,7 +279,7 @@ class Density(Grid):
         length_unit = MDAnalysis.core.flags['length_unit']
 
         parameters = kwargs.pop('parameters', {})
-        if (len(args) > 0 and type(args[0]) is str) or (type(kwargs.get('grid', None) is str)):
+        if len(args) > 0 and isinstance(args[0], string_types) or isinstance(kwargs.get('grid', None), string_types):
             # try to be smart: when reading from a file then it is likely that this
             # is a density
             parameters.setdefault('isDensity', True)
@@ -363,7 +350,7 @@ class Density(Grid):
 
         if self.parameters['isDensity']:
             msg = "Running make_density() makes no sense: Grid is already a density. Nothing done."
-            logger.warn(msg)
+            logger.warning(msg)
             warnings.warn(msg)
             return
 
@@ -931,7 +918,7 @@ class BfactorDensityCreator(object):
             # with the appropriate B-factor
             if np.any(group.bfactors == 0.0):
                 wmsg = "Some B-factors are Zero (will be skipped)."
-                logger.warn(wmsg)
+                logger.warning(wmsg)
                 warnings.warn(wmsg, category=MissingDataWarning)
             rmsf = Bfactor2RMSF(group.bfactors)
             grid *= 0.0  # reset grid

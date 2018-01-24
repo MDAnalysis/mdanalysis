@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -22,27 +22,31 @@
 from __future__ import print_function, division, absolute_import
 
 import MDAnalysis as mda
+import pytest
 from MDAnalysis.analysis import contacts
 from MDAnalysis.analysis.distances import distance_array
 
-from numpy.testing import (dec, assert_almost_equal, assert_equal, raises,
-                           assert_array_equal, assert_array_almost_equal)
+from numpy.testing import (
+    assert_almost_equal,
+    assert_array_equal,
+    assert_array_almost_equal
+)
 import numpy as np
 
-import os
+from MDAnalysisTests.datafiles import (
+    PSF,
+    DCD,
+    contacts_villin_folded,
+    contacts_villin_unfolded,
+    contacts_file
+)
 
-from MDAnalysisTests.datafiles import (PSF,
-                                       DCD,
-                                       contacts_villin_folded,
-                                       contacts_villin_unfolded,
-                                       contacts_file, )
-
-from MDAnalysisTests import parser_not_found, tempdir
+from MDAnalysisTests import tempdir
 
 
 def test_soft_cut_q():
     # just check some of the extremal points
-    assert_equal(contacts.soft_cut_q([0], [0]), .5)
+    assert contacts.soft_cut_q([0], [0]) == .5
     assert_almost_equal(contacts.soft_cut_q([100], [0]), 0)
     assert_almost_equal(contacts.soft_cut_q([-100], [0]), 1)
 
@@ -83,20 +87,28 @@ def test_soft_cut_q_unfolded():
     assert_almost_equal(Q.mean(), 0.0, decimal=1)
 
 
-def test_hard_cut_q():
+@pytest.mark.parametrize('r, cutoff, expected_value', [
+    ([1], 2, 1),
+    ([2], 1, 0),
+    ([2, 0.5], 1, 0.5),
+    ([2, 3], [3, 4], 1),
+    ([4, 5], [3, 4], 0)
+
+])
+def test_hard_cut_q(r, cutoff, expected_value):
     # just check some extremal points
-    assert_equal(contacts.hard_cut_q([1], 2), 1)
-    assert_equal(contacts.hard_cut_q([2], 1), 0)
-    assert_equal(contacts.hard_cut_q([2, 0.5], 1), 0.5)
-    assert_equal(contacts.hard_cut_q([2, 3], [3, 4]), 1)
-    assert_equal(contacts.hard_cut_q([4, 5], [3, 4]), 0)
+    assert contacts.hard_cut_q(r, cutoff) == expected_value
 
 
-def test_radius_cut_q():
+@pytest.mark.parametrize('r, r0, radius, expected_value', [
+    ([1], None, 2, 1),
+    ([2], None, 1, 0),
+    ([2, 0.5], None, 1, 0.5)
+
+])
+def test_radius_cut_q(r, r0, radius, expected_value):
     # check some extremal points
-    assert_equal(contacts.radius_cut_q([1], None, 2), 1)
-    assert_equal(contacts.radius_cut_q([2], None, 1), 0)
-    assert_equal(contacts.radius_cut_q([2, 0.5], None, 1), 0.5)
+    assert contacts.radius_cut_q(r, r0, radius) == expected_value
 
 
 def test_contact_matrix():
@@ -112,8 +124,6 @@ def test_contact_matrix():
     assert_array_equal(out, [True, True, True, False, False])
 
 
-@dec.skipif(parser_not_found('DCD'),
-            'DCD parser not available. Are you using python 3?')
 def test_new_selection():
     u = mda.Universe(PSF, DCD)
     selections = ('all', )
@@ -152,52 +162,44 @@ def soft_cut(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant=1.8):
 
 
 class TestContacts(object):
-    @dec.skipif(
-        parser_not_found('DCD'),
-        'DCD parser not available. Are you using python 3?')
-    def __init__(self):
-        self.universe = mda.Universe(PSF, DCD)
-        self.trajectory = self.universe.trajectory
+    sel_basic = "(resname ARG LYS) and (name NH* NZ)"
+    sel_acidic = "(resname ASP GLU) and (name OE* OD*)"
 
-        self.sel_basic = "(resname ARG LYS) and (name NH* NZ)"
-        self.sel_acidic = "(resname ASP GLU) and (name OE* OD*)"
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return mda.Universe(PSF, DCD)
 
-    def tearDown(self):
-        # reset trajectory
-        self.universe.trajectory[0]
-        del self.universe
-
-    def _run_Contacts(self, **kwargs):
-        acidic = self.universe.select_atoms(self.sel_acidic)
-        basic = self.universe.select_atoms(self.sel_basic)
+    def _run_Contacts(self, universe, **kwargs):
+        acidic = universe.select_atoms(self.sel_acidic)
+        basic = universe.select_atoms(self.sel_basic)
         return contacts.Contacts(
-            self.universe,
+            universe,
             selection=(self.sel_acidic, self.sel_basic),
             refgroup=(acidic, basic),
             radius=6.0,
             **kwargs).run()
 
-    def test_startframe(self):
+    def test_startframe(self, universe):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of
         Issue #624)
 
         """
-        CA1 = self._run_Contacts()
-        assert_equal(len(CA1.timeseries), self.universe.trajectory.n_frames)
+        CA1 = self._run_Contacts(universe)
+        assert len(CA1.timeseries) == universe.trajectory.n_frames
 
-    def test_end_zero(self):
+    def test_end_zero(self, universe):
         """test_end_zero: TestContactAnalysis1: stop frame 0 is not ignored"""
-        CA1 = self._run_Contacts(stop=0)
-        assert_equal(len(CA1.timeseries), 0)
+        CA1 = self._run_Contacts(universe, stop=0)
+        assert len(CA1.timeseries) == 0
 
-    def test_slicing(self):
+    def test_slicing(self, universe):
         start, stop, step = 10, 30, 5
-        CA1 = self._run_Contacts(start=start, stop=stop, step=step)
-        frames = np.arange(self.universe.trajectory.n_frames)[start:stop:step]
-        assert_equal(len(CA1.timeseries), len(frames))
+        CA1 = self._run_Contacts(universe, start=start, stop=stop, step=step)
+        frames = np.arange(universe.trajectory.n_frames)[start:stop:step]
+        assert len(CA1.timeseries) == len(frames)
 
-    @staticmethod
-    def test_villin_folded():
+    def test_villin_folded(self):
         # one folded, one unfolded
         f = mda.Universe(contacts_villin_folded)
         u = mda.Universe(contacts_villin_unfolded)
@@ -214,8 +216,8 @@ class TestContacts(object):
         results = soft_cut(f, u, sel, sel)
         assert_almost_equal(q.timeseries[:, 1], results[:, 1])
 
-    @staticmethod
-    def test_villin_unfolded():
+
+    def test_villin_unfolded(self):
 
         # both folded
         f = mda.Universe(contacts_villin_folded)
@@ -233,8 +235,8 @@ class TestContacts(object):
         results = soft_cut(f, u, sel, sel)
         assert_almost_equal(q.timeseries[:, 1], results[:, 1])
 
-    def test_hard_cut_method(self):
-        ca = self._run_Contacts()
+    def test_hard_cut_method(self, universe):
+        ca = self._run_Contacts(universe)
         expected = [1., 0.58252427, 0.52427184, 0.55339806, 0.54368932,
                     0.54368932, 0.51456311, 0.46601942, 0.48543689, 0.52427184,
                     0.46601942, 0.58252427, 0.51456311, 0.48543689, 0.48543689,
@@ -255,15 +257,15 @@ class TestContacts(object):
                     0.48543689, 0.44660194, 0.4368932, 0.40776699, 0.41747573,
                     0.48543689, 0.45631068, 0.46601942, 0.47572816, 0.51456311,
                     0.45631068, 0.37864078, 0.42718447]
-        assert_equal(len(ca.timeseries), len(expected))
+        assert len(ca.timeseries) == len(expected)
         assert_array_almost_equal(ca.timeseries[:, 1], expected)
 
     @staticmethod
     def _is_any_closer(r, r0, dist=2.5):
         return np.any(r < dist)
 
-    def test_own_method(self):
-        ca = self._run_Contacts(method=self._is_any_closer)
+    def test_own_method(self, universe):
+        ca = self._run_Contacts(universe, method=self._is_any_closer)
 
         bound_expected = [1., 1., 0., 1., 1., 0., 0., 1., 0., 1., 1., 0., 0.,
                           1., 0., 0., 0., 0., 1., 1., 0., 0., 0., 1., 0., 1.,
@@ -279,24 +281,25 @@ class TestContacts(object):
     def _weird_own_method(r, r0):
         return 'aaa'
 
-    @raises(ValueError)
-    def test_own_method_no_array_cast(self):
-        self._run_Contacts(method=self._weird_own_method, stop=2)
+    def test_own_method_no_array_cast(self, universe):
+        with pytest.raises(ValueError):
+            self._run_Contacts(universe, method=self._weird_own_method, stop=2)
 
-    @raises(ValueError)
-    def test_non_callable_method(self):
-        self._run_Contacts(method=2, stop=2)
+    def test_non_callable_method(self, universe):
+        with pytest.raises(ValueError):
+            self._run_Contacts(universe, method=2, stop=2)
 
-    def test_save(self):
+    def test_save(self, universe):
         with tempdir.in_tempdir():
-            ca = self._run_Contacts()
+            ca = self._run_Contacts(universe)
             ca.save('testfile.npy')
             saved = np.genfromtxt('testfile.npy')
             assert_array_almost_equal(ca.timeseries, saved)
+            # check the header was written correctly
+            with open('testfile.npy', 'r') as fin:
+                assert fin.readline().strip() == '# q1 analysis'
 
 
-@dec.skipif(parser_not_found('DCD'),
-            'DCD parser not available. Are you using python 3?')
 def test_q1q2():
     u = mda.Universe(PSF, DCD)
     q1q2 = contacts.q1q2(u, 'name CA', radius=8)

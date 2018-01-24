@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -158,7 +158,7 @@ class DATAParser(TopologyReaderBase):
     format = 'DATA'
 
     def iterdata(self):
-        with openany(self.filename, 'r') as f:
+        with openany(self.filename) as f:
             for line in f:
                 line = line.partition('#')[0].strip()
                 if line:
@@ -190,7 +190,7 @@ class DATAParser(TopologyReaderBase):
 
         return header, sects
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parses a LAMMPS_ DATA file.
 
         Returns
@@ -198,7 +198,7 @@ class DATAParser(TopologyReaderBase):
         MDAnalysis Topology object.
         """
         # Can pass atom_style to help parsing
-        atom_style = self.kwargs.get('atom_style', None)
+        atom_style = kwargs.get('atom_style', None)
 
         head, sects = self.grab_datafile()
 
@@ -561,7 +561,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
             self.title = "LAMMPS data file"
         else:
             # Open and check validity
-            with openany(filename, 'r') as file:
+            with openany(filename) as file:
                 file_iter = file.xreadlines()
                 self.title = file_iter.next()
                 # Parse headers
@@ -584,7 +584,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
 
             # Parse sections
             # XXX This is a crappy way to do it
-            with openany(filename, 'r') as file:
+            with openany(filename) as file:
                 file_iter = file.xreadlines()
                 # Create coordinate array
                 positions = np.zeros((headers['atoms'], 3), np.float64)

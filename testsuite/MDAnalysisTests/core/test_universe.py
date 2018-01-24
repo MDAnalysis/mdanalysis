@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,9 +20,12 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import, print_function
+
+
 from six.moves import cPickle
 
 import os
+
 try:
     from cStringIO import StringIO
 except:
@@ -31,14 +34,12 @@ from MDAnalysisTests.tempdir import TempDir
 
 import numpy as np
 from numpy.testing import (
-    dec,
-    assert_,
     assert_allclose,
     assert_almost_equal,
     assert_equal,
-    assert_raises,
+    assert_array_equal,
 )
-from nose.plugins.attrib import attr
+import pytest
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import (
@@ -50,7 +51,6 @@ from MDAnalysisTests.datafiles import (
     two_water_gro, two_water_gro_nonames,
     TRZ, TRZ_psf,
 )
-from MDAnalysisTests import parser_not_found
 
 import MDAnalysis as mda
 import MDAnalysis.coordinates
@@ -58,7 +58,7 @@ from MDAnalysis.topology.base import TopologyReaderBase
 
 
 class IOErrorParser(TopologyReaderBase):
-    def parse(self):
+    def parse(self, **kwargs):
         raise IOError("Useful information")
 
 # This string is not in the `TestUniverseCreation` class or its method because of problems
@@ -79,74 +79,65 @@ Single cholesterol molecule
 
 class TestUniverseCreation(object):
     # tests concerning Universe creation and errors encountered
-    @staticmethod
-    def test_load():
+    def test_load(self):
         # Universe(top, trj)
         u = mda.Universe(PSF, PDB_small)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
-    @staticmethod
-    def test_load_topology_stringio():
+    def test_load_topology_stringio(self):
         u = mda.Universe(StringIO(CHOL_GRO), format='GRO')
         assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
         assert_equal(u.trajectory.ts.positions[0], np.array([65.580002, 29.360001, 40.050003], dtype=np.float32))
 
-    @staticmethod
-    def test_load_trajectory_stringio():
+    def test_load_trajectory_stringio(self):
         u = mda.Universe(StringIO(CHOL_GRO), StringIO(CHOL_GRO),  format='GRO', topology_format='GRO')
         assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
 
-    @staticmethod
-    def test_make_universe_no_args():
+    def test_make_universe_no_args(self):
         # universe creation without args should work
         u = mda.Universe()
 
-        assert_(isinstance(u, mda.Universe))
-        assert_(u.atoms == None)
+        assert isinstance(u, mda.Universe)
+        assert u.atoms is None
 
-    @staticmethod
-    def test_make_universe_stringio_no_format():
+    def test_make_universe_stringio_no_format(self):
         # Loading from StringIO without format arg should raise TypeError
-        assert_raises(TypeError, mda.Universe, StringIO(CHOL_GRO))
+        with pytest.raises(TypeError):
+            mda.Universe(StringIO(CHOL_GRO))
 
-    @staticmethod
-    def test_Universe_no_trajectory_AE():
+    def test_Universe_no_trajectory_AE(self):
         # querying trajectory without a trajectory loaded (only topology)
         u = make_Universe()
+        with pytest.raises(AttributeError):
+            getattr(u, 'trajectory')
 
-        assert_raises(AttributeError, getattr, u, 'trajectory')
+    def test_Universe_topology_unrecognizedformat_VE(self):
+        with pytest.raises(ValueError):
+            mda.Universe('some.file.without.parser_or_coordinate_extension')
 
-    @staticmethod
-    def test_Universe_topology_unrecognizedformat_VE():
-        assert_raises(ValueError, mda.Universe, 'some.weird.not.pdb.but.converted.xtc')
-
-    @staticmethod
-    def test_Universe_topology_unrecognizedformat_VE_msg():
+    def test_Universe_topology_unrecognizedformat_VE_msg(self):
         try:
-            mda.Universe('some.weird.not.pdb.but.converted.xtc')
+            mda.Universe('some.file.without.parser_or_coordinate_extension')
         except ValueError as e:
-            assert_('isn\'t a valid topology format' in e.args[0])
+            assert 'isn\'t a valid topology format' in e.args[0]
         else:
             raise AssertionError
 
-    @staticmethod
-    def test_Universe_topology_IE():
-        assert_raises(IOError,
-                      mda.Universe, 'thisfile', topology_format=IOErrorParser)
+    def test_Universe_topology_IE(self):
+        with pytest.raises(IOError):
+            mda.Universe('thisfile', topology_format = IOErrorParser)
 
-    @staticmethod
-    def test_Universe_topology_IE_msg():
+    def test_Universe_topology_IE_msg(self):
         # should get the original error, as well as Universe error
         try:
             mda.Universe('thisfile', topology_format=IOErrorParser)
         except IOError as e:
-            assert_('Failed to load from the topology file' in e.args[0])
-            assert_('Useful information' in e.args[0])
+            assert 'Failed to load from the topology file' in e.args[0]
+            assert 'Useful information' in e.args[0]
         else:
             raise AssertionError
 
-    @staticmethod
-    def test_Universe_filename_IE_msg():
+    def test_Universe_filename_IE_msg(self):
         # check for non existent file
         try:
             mda.Universe('thisfile.xml')
@@ -155,8 +146,7 @@ class TestUniverseCreation(object):
         else:
             raise AssertionError
 
-    @staticmethod
-    def test_Universe_invalidfile_IE_msg():
+    def test_Universe_invalidfile_IE_msg(self):
         # check for invalid file (something with the wrong content)
         temp_dir = TempDir()
         with open(os.path.join(temp_dir.name, 'invalid.file.tpr'), 'w') as temp_file:
@@ -164,14 +154,13 @@ class TestUniverseCreation(object):
         try:
             mda.Universe(os.path.join(temp_dir.name, 'invalid.file.tpr'))
         except IOError as e:
-            assert_('file or cannot be recognized' in e.args[0])
+            assert 'file or cannot be recognized' in e.args[0]
         else:
             raise AssertionError
         finally:
             temp_dir.dissolve()
 
-    @staticmethod
-    def test_Universe_invalidpermissionfile_IE_msg():
+    def test_Universe_invalidpermissionfile_IE_msg(self):
         # check for file with invalid permissions (eg. no read access)
         temp_dir = TempDir()
         temp_file = os.path.join(temp_dir.name, 'permission.denied.tpr')
@@ -181,70 +170,72 @@ class TestUniverseCreation(object):
         try:
             mda.Universe(os.path.join(temp_dir.name, 'permission.denied.tpr'))
         except IOError as e:
-            assert_('Permission denied' in e.strerror)
+            assert 'Permission denied' in str(e.strerror)
         else:
             raise AssertionError
         finally:
             temp_dir.dissolve()
 
-    @staticmethod
-    def test_load_new_VE():
+    def test_load_new_VE(self):
         u = mda.Universe()
 
-        assert_raises(TypeError,
-                      u.load_new, 'thisfile', format='soup')
+        with pytest.raises(TypeError):
+            u.load_new('thisfile', format = 'soup')
 
-    @staticmethod
-    def test_universe_kwargs():
+    def test_universe_kwargs(self):
         u = mda.Universe(PSF, PDB_small, fake_kwarg=True)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
-        assert_(u.kwargs['fake_kwarg'] is True)
+        assert u.kwargs['fake_kwarg']
 
         # initialize new universe from pieces of existing one
         u2 = mda.Universe(u.filename, u.trajectory.filename,
                           **u.kwargs)
 
-        assert_(u2.kwargs['fake_kwarg'] is True)
+        assert u2.kwargs['fake_kwarg']
         assert_equal(u.kwargs, u2.kwargs)
 
-    @staticmethod
-    def test_universe_topology_class_with_coords():
+    def test_universe_topology_class_with_coords(self):
         u = mda.Universe(PSF, PDB_small)
         u2 = mda.Universe(u._topology, PDB_small)
-        assert_(isinstance(u2.trajectory, type(u.trajectory)))
+        assert isinstance(u2.trajectory, type(u.trajectory))
         assert_equal(u.trajectory.n_frames, u2.trajectory.n_frames)
-        assert_(u2._topology is u._topology)
+        assert u2._topology is u._topology
 
 
 class TestUniverse(object):
     # older tests, still useful
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def test_load_bad_topology(self):
         # tests that Universe builds produce the right error message
         def bad_load():
             return mda.Universe(PSF_BAD, DCD)
 
-        assert_raises(ValueError, bad_load)
+        with pytest.raises(ValueError):
+            bad_load()
 
-    @attr('issue')
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def test_load_new(self):
         u = mda.Universe(PSF, DCD)
         u.load_new(PDB_small)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB)")
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
+    def test_load_new_returns_Universe(self):
+        u = mda.Universe(PSF)
+        result = u.load_new(PDB_small)
+        assert result is u
+
+    def test_load_new_None_returns_Universe(self):
+        u = mda.Universe(PSF)
+        result = u.load_new(None)
+        assert result is u
+
     def test_load_new_TypeError(self):
         u = mda.Universe(PSF, DCD)
 
         def bad_load(uni):
             return uni.load_new('filename.notarealextension')
 
-        assert_raises(TypeError, bad_load, u)
+        with pytest.raises(TypeError):
+            bad_load(u)
 
     def test_load_structure(self):
         # Universe(struct)
@@ -253,8 +244,6 @@ class TestUniverse(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_almost_equal(u.atoms.positions, ref.atoms.positions)
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def test_load_multiple_list(self):
         # Universe(top, [trj, trj, ...])
         ref = mda.Universe(PSF, DCD)
@@ -262,8 +251,6 @@ class TestUniverse(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def test_load_multiple_args(self):
         # Universe(top, trj, trj, ...)
         ref = mda.Universe(PSF, DCD)
@@ -271,14 +258,11 @@ class TestUniverse(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def test_pickle_raises_NotImplementedError(self):
         u = mda.Universe(PSF, DCD)
-        assert_raises(NotImplementedError, cPickle.dumps, u, protocol=cPickle.HIGHEST_PROTOCOL)
+        with pytest.raises(NotImplementedError):
+            cPickle.dumps(u, protocol = cPickle.HIGHEST_PROTOCOL)
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def test_set_dimensions(self):
         u = mda.Universe(PSF, DCD)
         box = np.array([10, 11, 12, 90, 90, 90])
@@ -286,19 +270,21 @@ class TestUniverse(object):
         assert_allclose(u.dimensions, box)
 
 
+# remove for 1.0
 def test_chainid_quick_select():
     # check that chainIDs get grouped together when making the quick selectors
     # this pdb file has 2 segments with chainID A
     u = mda.Universe(PDB_chainidrepeat)
 
-    for sg in (u.A, u.B):
-        assert_(isinstance(sg, mda.core.groups.SegmentGroup))
-    for seg in (u.C, u.D):
-        assert_(isinstance(seg, mda.core.groups.Segment))
-    assert_(len(u.A.atoms) == 10)
-    assert_(len(u.B.atoms) == 10)
-    assert_(len(u.C.atoms) == 5)
-    assert_(len(u.D.atoms) == 7)
+    with pytest.warns(DeprecationWarning):
+        for sg in (u.A, u.B):
+            assert isinstance(sg, mda.core.groups.SegmentGroup)
+        for seg in (u.C, u.D):
+            assert isinstance(seg, mda.core.groups.Segment)
+        assert len(u.A.atoms) == 10
+        assert len(u.B.atoms) == 10
+        assert len(u.C.atoms) == 5
+        assert len(u.D.atoms) == 7
 
 
 class TestGuessBonds(object):
@@ -311,11 +297,9 @@ class TestGuessBonds(object):
      - fail properly if not
      - work again if vdwradii are passed.
     """
-    def setUp(self):
-        self.vdw = {'A':1.05, 'B':0.4}
-
-    def tearDown(self):
-        del self.vdw
+    @pytest.fixture()
+    def vdw(self):
+        return {'A': 1.05, 'B': 0.4}
 
     def _check_universe(self, u):
         """Verify that the Universe is created correctly"""
@@ -328,32 +312,33 @@ class TestGuessBonds(object):
         assert_equal(len(u.atoms[3].bonds), 2)
         assert_equal(len(u.atoms[4].bonds), 1)
         assert_equal(len(u.atoms[5].bonds), 1)
-        assert_('guess_bonds' in u.kwargs)
+        assert 'guess_bonds' in u.kwargs
 
     def test_universe_guess_bonds(self):
         """Test that making a Universe with guess_bonds works"""
         u = mda.Universe(two_water_gro, guess_bonds=True)
         self._check_universe(u)
-        assert_(u.kwargs['guess_bonds'] is True)
+        assert u.kwargs['guess_bonds']
 
     def test_universe_guess_bonds_no_vdwradii(self):
         """Make a Universe that has atoms with unknown vdwradii."""
-        assert_raises(ValueError, mda.Universe, two_water_gro_nonames, guess_bonds=True)
+        with pytest.raises(ValueError):
+            mda.Universe(two_water_gro_nonames, guess_bonds = True)
 
-    def test_universe_guess_bonds_with_vdwradii(self):
+    def test_universe_guess_bonds_with_vdwradii(self, vdw):
         """Unknown atom types, but with vdw radii here to save the day"""
         u = mda.Universe(two_water_gro_nonames, guess_bonds=True,
-                                vdwradii=self.vdw)
+                                vdwradii=vdw)
         self._check_universe(u)
-        assert_(u.kwargs['guess_bonds'] is True)
-        assert_equal(self.vdw, u.kwargs['vdwradii'])
+        assert u.kwargs['guess_bonds']
+        assert_equal(vdw, u.kwargs['vdwradii'])
 
     def test_universe_guess_bonds_off(self):
         u = mda.Universe(two_water_gro_nonames, guess_bonds=False)
 
         for attr in ('bonds', 'angles', 'dihedrals'):
-            assert_(not hasattr(u, attr))
-        assert_(u.kwargs['guess_bonds'] is False)
+            assert not hasattr(u, attr)
+        assert not u.kwargs['guess_bonds']
 
     def _check_atomgroup(self, ag, u):
         """Verify that the AtomGroup made bonds correctly,
@@ -384,75 +369,61 @@ class TestGuessBonds(object):
         u = mda.Universe(two_water_gro_nonames)
 
         ag = u.atoms[:3]
-        assert_raises(ValueError, ag.guess_bonds)
+        with pytest.raises(ValueError):
+            ag.guess_bonds()
 
-    def test_atomgroup_guess_bonds_with_vdwradii(self):
+    def test_atomgroup_guess_bonds_with_vdwradii(self, vdw):
         u = mda.Universe(two_water_gro_nonames)
 
         ag = u.atoms[:3]
-        ag.guess_bonds(vdwradii=self.vdw)
+        ag.guess_bonds(vdwradii=vdw)
         self._check_atomgroup(ag, u)
 
 
 class TestInMemoryUniverse(object):
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-               'DCD parser not available. Are you using python 3?')
-    def test_reader_w_timeseries():
+    def test_reader_w_timeseries(self):
         universe = mda.Universe(PSF, DCD, in_memory=True)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (3341, 98, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    def test_reader_wo_timeseries():
+    def test_reader_wo_timeseries(self):
         universe = mda.Universe(GRO, TRR, in_memory=True)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (47681, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-               'DCD parser not available. Are you using python 3?')
-    def test_reader_w_timeseries_frame_interval():
+    def test_reader_w_timeseries_frame_interval(self):
         universe = mda.Universe(PSF, DCD, in_memory=True,
                                        in_memory_step=10)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    def test_reader_wo_timeseries_frame_interval():
+    def test_reader_wo_timeseries_frame_interval(self):
         universe = mda.Universe(GRO, TRR, in_memory=True,
                                        in_memory_step=3)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (47681, 4, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_existing_universe():
+    def test_existing_universe(self):
         universe = mda.Universe(PDB_small, DCD)
         universe.transfer_to_memory()
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (3341, 98, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_frame_interval_convention():
+    def test_frame_interval_convention(self):
         universe1 = mda.Universe(PSF, DCD)
-        array1 = universe1.trajectory.timeseries(skip=10)
+        array1 = universe1.trajectory.timeseries(step=10)
         universe2 = mda.Universe(PSF, DCD, in_memory=True,
-                                        in_memory_step=10)
+                                 in_memory_step=10)
         array2 = universe2.trajectory.timeseries()
         assert_equal(array1, array2,
                      err_msg="Unexpected differences between arrays.")
 
-    @staticmethod
-    def test_slicing_with_start_stop():
+    def test_slicing_with_start_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=10, stop=20)
@@ -460,8 +431,7 @@ class TestInMemoryUniverse(object):
                      (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    def test_slicing_without_start():
+    def test_slicing_without_start(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(stop=10)
@@ -469,8 +439,7 @@ class TestInMemoryUniverse(object):
                      (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    def test_slicing_without_stop():
+    def test_slicing_without_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=10)
@@ -479,8 +448,7 @@ class TestInMemoryUniverse(object):
                      (3341, 88, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    def test_slicing_step_without_start_stop():
+    def test_slicing_step_without_start_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(step=2)
@@ -489,8 +457,7 @@ class TestInMemoryUniverse(object):
                      (3341, 49, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    def test_slicing_step_with_start_stop():
+    def test_slicing_step_with_start_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=10, stop=30, step=2)
@@ -499,8 +466,7 @@ class TestInMemoryUniverse(object):
                      (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    def test_slicing_step_dt():
+    def test_slicing_step_dt(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         times = [ts.time for ts in universe.trajectory]
         universe.transfer_to_memory(step=2)
@@ -509,8 +475,7 @@ class TestInMemoryUniverse(object):
                 err_msg="Unexpected in-memory timestep: "
                         + "dt not updated with step information")
 
-    @staticmethod
-    def test_slicing_negative_start():
+    def test_slicing_negative_start(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=-10)
@@ -519,8 +484,7 @@ class TestInMemoryUniverse(object):
                      (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    def test_slicing_negative_stop():
+    def test_slicing_negative_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(stop=-20)
@@ -534,8 +498,6 @@ class TestCustomReaders(object):
     """
     Can pass a reader as kwarg on Universe creation
     """
-    @dec.skipif(parser_not_found('TRZ'),
-                'TRZ parser not available. Are you using python 3?')
     def test_custom_reader(self):
         # check that reader passing works
         u = mda.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader)
@@ -556,17 +518,89 @@ class TestCustomReaders(object):
                                 topology_format=T, format=R)
         assert_equal(len(u.atoms), 6)
 
-    @dec.skipif(parser_not_found('TRZ'),
-                'TRZ parser not available. Are you using python 3?')
     def test_custom_parser(self):
         # topology reader passing works
         u = mda.Universe(TRZ_psf, TRZ, topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
 
-    @dec.skipif(parser_not_found('TRZ'),
-                'TRZ parser not available. Are you using python 3?')
     def test_custom_both(self):
         # use custom for both
         u = mda.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
                          topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
+
+
+class TestAddTopologyAttr(object):
+    @pytest.fixture()
+    def universe(self):
+        return make_Universe()
+
+    def test_add_TA_fail(self, universe):
+        with pytest.raises(ValueError):
+            universe.add_TopologyAttr('silly')
+
+    def test_nodefault_fail(self, universe):
+        with pytest.raises(NotImplementedError):
+            universe.add_TopologyAttr('bonds')
+
+    @pytest.mark.parametrize(
+        'toadd,attrname,default', (
+            ['charge', 'charges', 0.0], ['charges', 'charges', 0.0],
+            ['name', 'names', ''], ['names', 'names', ''],
+            ['type', 'types', ''], ['types', 'types', ''],
+            ['element', 'elements', ''], ['elements', 'elements', ''],
+            ['radius', 'radii', 0.0], ['radii', 'radii', 0.0],
+            ['chainID', 'chainIDs', ''], ['chainIDs', 'chainIDs', ''],
+            ['tempfactor', 'tempfactors', 0.0],
+            ['tempfactors', 'tempfactors', 0.0],
+            ['mass', 'masses', 0.0], ['masses', 'masses', 0.0],
+            ['charge', 'charges', 0.0], ['charges', 'charges', 0.0],
+            ['bfactor', 'bfactors', 0.0], ['bfactors', 'bfactors', 0.0],
+            ['occupancy', 'occupancies', 0.0],
+            ['occupancies', 'occupancies', 0.0],
+            ['altLoc', 'altLocs', ''], ['altLocs', 'altLocs', ''],
+            ['resid', 'resids', 1], ['resids', 'resids', 1],
+            ['resname', 'resnames', ''], ['resnames', 'resnames', ''],
+            ['resnum', 'resnums', 1], ['resnums', 'resnums', 1],
+            ['icode', 'icodes', ''], ['icodes', 'icodes', ''],
+            ['segid', 'segids', ''], ['segids', 'segids', ''],
+        )
+    )
+    def test_add_charges(self, universe, toadd, attrname, default):
+        universe.add_TopologyAttr(toadd)
+
+        assert hasattr(universe.atoms, attrname)
+        assert getattr(universe.atoms, attrname)[0] == default
+
+
+class TestAllCoordinatesKwarg(object):
+    @pytest.fixture(scope='class')
+    def u_GRO_TRR(self):
+        return mda.Universe(GRO, TRR)
+
+    @pytest.fixture(scope='class')
+    def u_GRO_TRR_allcoords(self):
+        return mda.Universe(GRO, TRR, all_coordinates=True)
+
+    @pytest.fixture(scope='class')
+    def u_GRO(self):
+        return mda.Universe(GRO)
+
+    def test_all_coordinates_length(self, u_GRO_TRR, u_GRO_TRR_allcoords):
+        # length with all_coords should be +1
+        assert (len(u_GRO_TRR.trajectory) + 1 ==
+                len(u_GRO_TRR_allcoords.trajectory))
+
+    def test_all_coordinates_frame(self, u_GRO_TRR_allcoords, u_GRO):
+        # check that first frame in u(GRO, TRR, allcords)
+        # are the coordinates from GRO
+        assert_array_equal(u_GRO_TRR_allcoords.atoms.positions,
+                           u_GRO.atoms.positions)
+
+    def test_second_frame(self, u_GRO_TRR_allcoords, u_GRO_TRR):
+        # check that second frame in u(GRO, TRR, allcoords)
+        # are the coordinates from TRR[0]
+        u_GRO_TRR_allcoords.trajectory[1]
+
+        assert_array_equal(u_GRO_TRR_allcoords.atoms.positions,
+                           u_GRO_TRR.atoms.positions)

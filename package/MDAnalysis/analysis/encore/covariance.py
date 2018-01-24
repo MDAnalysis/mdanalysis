@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -205,7 +205,7 @@ def covariance_matrix(ensemble,
     # Extract coordinates from ensemble
     coordinates = ensemble.trajectory.timeseries(
         ensemble.select_atoms(selection),
-        format='fac')
+        order='fac')
 
     # Flatten coordinate matrix into n_frame x n_coordinates
     coordinates = np.reshape(coordinates, (coordinates.shape[0], -1))

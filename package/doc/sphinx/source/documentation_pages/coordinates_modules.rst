@@ -34,11 +34,13 @@ provide the format in the keyword argument *format* to
    coordinates/PQR
    coordinates/TRJ
    coordinates/TRR
+   coordinates/TXYZ
    coordinates/XTC
    coordinates/XYZ
    coordinates/TRZ
    coordinates/memory
    coordinates/null
+   coordinates/dummy
 
 .. rubric:: Coordinate core modules
 

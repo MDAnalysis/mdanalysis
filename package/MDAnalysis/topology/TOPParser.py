@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -129,7 +129,7 @@ class TOPParser(TopologyReaderBase):
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse Amber PRMTOP topology file *filename*.
 
         Returns
@@ -153,24 +153,24 @@ class TOPParser(TopologyReaderBase):
         # Open and check top validity
         # Reading header info POINTERS
         with openany(self.filename) as self.topfile:
-            header = self.topfile.next()
+            header = next(self.topfile)
             if not header.startswith("%VE"):
                 raise ValueError(
                     "{0} is not a valid TOP file. %VE Missing in header"
                     "".format(self.filename))
-            title = self.topfile.next().split()
+            title = next(self.topfile).split()
             if not (title[1] == "TITLE"):
                 raise ValueError(
                     "{0} is not a valid TOP file. 'TITLE' missing in header"
                     "".format(self.filename))
             while not header.startswith('%FLAG POINTERS'):
-                header = self.topfile.next()
-            self.topfile.next()
+                header = next(self.topfile)
+            next(self.topfile)
 
-            topremarks = [self.topfile.next().strip() for i in range(4)]
+            topremarks = [next(self.topfile).strip() for i in range(4)]
             sys_info = [int(k) for i in topremarks for k in i.split()]
 
-            header = self.topfile.next()
+            header = next(self.topfile)
             # grab the next section title
             next_section = header.split("%FLAG")[1].strip()
 
@@ -179,7 +179,8 @@ class TOPParser(TopologyReaderBase):
                     (atoms_per, per_line,
                      func, name, sect_num) = sections[next_section]
                 except KeyError:
-                    next_getter = self.skipper
+                    def next_getter():
+                        return self.skipper()
                 else:
                     num = sys_info[sect_num]
                     numlines = (num // per_line)
@@ -188,7 +189,8 @@ class TOPParser(TopologyReaderBase):
 
                     attrs[name] = func(atoms_per, numlines)
 
-                    next_getter = self.topfile.next
+                    def next_getter():
+                        return next(self.topfile)
 
                 try:
                     line = next_getter()
@@ -221,7 +223,7 @@ class TOPParser(TopologyReaderBase):
         attrs['segids'] = Segids(np.array(['SYSTEM'], dtype=object))
 
         top = Topology(n_atoms, n_res, 1,
-                       attrs=attrs.values(),
+                       attrs=list(attrs.values()),
                        atom_resindex=residx,
                        residue_segindex=None)
 
@@ -229,9 +231,9 @@ class TOPParser(TopologyReaderBase):
 
     def skipper(self):
         """Skip until we find the next %FLAG entry and return that"""
-        line = self.topfile.next()
+        line = next(self.topfile)
         while not line.startswith("%FLAG"):
-            line = self.topfile.next()
+            line = next(self.topfile)
         return line
 
     def parse_names(self, atoms_per, numlines):
@@ -284,10 +286,10 @@ class TOPParser(TopologyReaderBase):
         return vals
 
     def parsebond(self, atoms_per, numlines):
-        y = self.topfile.next().strip("%FORMAT(")
+        y = next(self.topfile).strip("%FORMAT(")
         section = []
         for i in range(numlines):
-            l = self.topfile.next()
+            l = next(self.topfile)
             # Subtract 1 from each number to ensure zero-indexing for the atoms
             fields = np.int64(l.split()) - 1
             for j in range(0, len(fields), atoms_per):
@@ -296,11 +298,11 @@ class TOPParser(TopologyReaderBase):
 
     def parsesection_mapper(self, atoms_per, numlines, mapper):
         section = []
-        y = self.topfile.next().strip("%FORMAT(")
+        y = next(self.topfile).strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)
         for i in range(numlines):
-            l = self.topfile.next()
+            l = next(self.topfile)
             for j in range(len(x.entries)):
                 val = l[x.entries[j].start:x.entries[j].stop].strip()
                 if val:

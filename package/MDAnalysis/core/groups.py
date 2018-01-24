@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -153,15 +153,14 @@ def make_classes():
 
     # The 'GBase' middle man is needed so that a single topologyattr
     #  patching applies automatically to all groups.
-    GBase = bases[GroupBase] = _TopologyAttrContainer._subclass()
+    GBase = bases[GroupBase] = _TopologyAttrContainer._subclass(is_group=True)
     for cls in groups:
-        bases[cls] = GBase._subclass()
-
-    # In the current Group-centered topology scheme no attributes apply only
-    #  to ComponentBase, so no need to have a 'CB' middle man.
-    #CBase = _TopologyAttrContainer(singular=True)
+        bases[cls] = GBase._subclass(is_group=True)
+    # CBase for patching all components
+    CBase = bases[ComponentBase] = _TopologyAttrContainer._subclass(
+        is_group=False)
     for cls in components:
-        bases[cls] = _TopologyAttrContainer._subclass(singular=True)
+        bases[cls] = CBase._subclass(is_group=False)
 
     # Initializes the class cache.
     for cls in groups + components:
@@ -184,27 +183,37 @@ class _TopologyAttrContainer(object):
       The mixed subclasses become the final container classes specific to each
       :class:`Universe`.
     """
-    _singular = False
-
     @classmethod
-    def _subclass(cls, singular=None):
+    def _subclass(cls, is_group):
         """Factory method returning :class:`_TopologyAttrContainer` subclasses.
 
         Parameters
         ----------
-        singular : bool
-            The :attr:`_singular` of the returned class will be set to
-            *singular*. It controls the type of :class:`TopologyAttr` addition.
+        is_group : bool
+            The :attr:`_is_group` of the returned class will be set to
+            *is_group*. This is used to distinguish between Groups (AtomGroup
+            etc.) and Components (Atom etc.) in internal methods when
+            considering actions such as addition between objects, adding
+            TopologyAttributes to them.
 
         Returns
         -------
         type
             A subclass of :class:`_TopologyAttrContainer`, with the same name.
         """
-        if singular is not None:
-            return type(cls.__name__, (cls,), {'_singular': bool(singular)})
+        newcls = type(cls.__name__, (cls,), {'_is_group': bool(is_group)})
+        if is_group:
+            newcls._SETATTR_WHITELIST = {
+                'positions', 'velocities', 'forces', 'dimensions',
+                'atoms', 'residue', 'residues', 'segment', 'segments',
+            }
         else:
-            return type(cls.__name__, (cls,), {})
+            newcls._SETATTR_WHITELIST = {
+                'position', 'velocity', 'force', 'dimensions',
+                'atoms', 'residue', 'residues', 'segment',
+            }
+
+        return newcls
 
     @classmethod
     def _mix(cls, other):
@@ -249,12 +258,26 @@ class _TopologyAttrContainer(object):
         def setter(self, values):
             return attr.__setitem__(self, values)
 
-        if cls._singular:
-            setattr(cls, attr.singular,
-                    property(getter, setter, None, attr.singledoc))
-        else:
+        if cls._is_group:
             setattr(cls, attr.attrname,
                     property(getter, setter, None, attr.groupdoc))
+            cls._SETATTR_WHITELIST.add(attr.attrname)
+        else:
+            setattr(cls, attr.singular,
+                    property(getter, setter, None, attr.singledoc))
+            cls._SETATTR_WHITELIST.add(attr.singular)
+
+    def __setattr__(self, attr, value):
+        # `ag.this = 42` calls setattr(ag, 'this', 42)
+        if not (attr.startswith('_') or  # 'private' allowed
+                attr in self._SETATTR_WHITELIST or  # known attributes allowed
+                hasattr(self, attr)):  # preexisting (eg properties) allowed
+            raise AttributeError(
+                "Cannot set arbitrary attributes to a {}".format(
+                    'Group' if self._is_group else 'Component'))
+        # if it is, we allow the setattr to proceed by deferring to the super
+        # behaviour (ie do it)
+        super(_TopologyAttrContainer, self).__setattr__(attr, value)
 
 
 class _MutableBase(object):
@@ -429,7 +452,7 @@ class GroupBase(_MutableBase):
         return hash((self._u, self.__class__, tuple(self.ix.tolist())))
 
     def __len__(self):
-        return len(self._ix)
+        return len(self.ix)
 
     def __getitem__(self, item):
         # supports
@@ -822,11 +845,13 @@ class GroupBase(_MutableBase):
         point = np.asarray(point)
 
         # changes the coordinates (in place)
-        self.translate(-point)
+        if not np.allclose(point, np.zeros(3)):
+            self.translate(-point)
         x = self.atoms.unique.universe.trajectory.ts.positions
         idx = self.atoms.unique.indices
         x[idx] = np.dot(x[idx], R.T)
-        self.translate(point)
+        if not np.allclose(point, np.zeros(3)):
+            self.translate(point)
 
         return self
 
@@ -1743,23 +1768,39 @@ class AtomGroup(GroupBase):
         are not any duplicates, which can happen with complicated
         selections).
 
-        Existing :class:`AtomGroup` objects can be passed as named arguments,
-        which will then be available to the selection parser.
+        Examples
+        --------
+        All simple selection listed below support multiple arguments which are
+        implicitly combined with an or operator. For example
+
+           >>> sel = universe.select_atoms('resname MET GLY')
+           
+        is equivalent to 
+
+           >>> sel = universe.select_atoms('resname MET or resname GLY')
+
+        Will select all atoms with a residue name of either MET or GLY.
 
         Subselections can be grouped with parentheses.
 
-        Selections can be set to update automatically on frame change, by
-        setting the `updating` named argument to `True`.
-
-        Examples
-        --------
-
-           >>> sel = universe.select_atoms("segid DMPC and not ( name H* or name O* )")
+           >>> sel = universe.select_atoms("segid DMPC and not ( name H* O* )")
            >>> sel
            <AtomGroup with 3420 atoms>
 
+
+        Existing :class:`AtomGroup` objects can be passed as named arguments,
+        which will then be available to the selection parser.
+
            >>> universe.select_atoms("around 10 group notHO", notHO=sel)
            <AtomGroup with 1250 atoms>
+
+        Selections can be set to update automatically on frame change, by
+        setting the `updating` keyword argument to `True`.  This will return
+        a :class:`UpdatingAtomGroup` which can represent the solvation shell
+        around another object.
+
+           >>> universe.select_atoms("resname SOL and around 2.0 protein", updating=True)
+           <Updating AtomGroup with 100 atoms>
 
         Notes
         -----
@@ -1826,6 +1867,9 @@ class AtomGroup(GroupBase):
                 which is often the case with high-resolution crystal structures
                 e.g. `resid 4 and resname ALA and altloc B` selects only the
                 atoms of ALA-4 that have an altloc B record.
+            moltype *molecule-type*
+                select by molecule type, e.g. ``moltype Protein_A``. At the
+                moment, only the TPR format defines the molecule type.
 
         **Boolean**
 
@@ -1835,7 +1879,7 @@ class AtomGroup(GroupBase):
 
             and, or
                 combine two selections according to the rules of boolean
-                algebra, e.g. ``protein and not (resname ALA or resname LYS)``
+                algebra, e.g. ``protein and not resname ALA LYS``
                 selects all atoms that belong to a protein, but are not in a
                 lysine or alanine residue
 
@@ -1871,7 +1915,7 @@ class AtomGroup(GroupBase):
                 selection, e.g. specify the subselection after the byres keyword
             bonded *selection*
                 selects all atoms that are bonded to selection
-                eg: ``select name H bonded name O`` selects only hydrogens
+                eg: ``select name H and bonded name O`` selects only hydrogens
                 bonded to oxygens
 
         **Index**
@@ -1944,6 +1988,8 @@ class AtomGroup(GroupBase):
            Resid selection now takes icodes into account where present.
         .. versionadded:: 0.16.0
            Updating selections now possible by setting the ``updating`` argument.
+        .. versionadded:: 0.17.0
+           Added *moltype* and *molnum* selections.
 
         """
         updating = selgroups.pop('updating', False)
@@ -1963,13 +2009,16 @@ class AtomGroup(GroupBase):
 
         Parameters
         ----------
-        level : {'atom', 'residue', 'segment'}
+        level : {'atom', 'residue', 'molecule', 'segment'}
 
 
         .. versionadded:: 0.9.0
+        .. versionchanged:: 0.17.0
+           Added the 'molecule' level.
         """
         accessors = {'segment': 'segindices',
-                     'residue': 'resindices'}
+                     'residue': 'resindices',
+                     'molecule': 'molnums'}
 
         if level == "atom":
             return [self.universe.atoms[[a.ix]] for a in self]
@@ -1977,6 +2026,10 @@ class AtomGroup(GroupBase):
         # higher level groupings
         try:
             levelindices = getattr(self, accessors[level])
+        except AttributeError:
+            raise AttributeError('This universe does not have {} '
+                             'information. Maybe it is not provided in the '
+                             'topology format in use.'.format(level))
         except KeyError:
             raise ValueError("level = '{0}' not supported, "
                              "must be one of {1}".format(level,
@@ -2757,7 +2810,7 @@ class UpdatingAtomGroup(AtomGroup):
         # its check, no self.attribute access can be made before this line
         self._u = base_group.universe
         self._selections = selections
-        self.selection_strings = strings
+        self._selection_strings = strings
         self._base_group = base_group
         self._lastupdate = None
         self._derived_class = base_group._derived_class
@@ -2834,8 +2887,9 @@ class UpdatingAtomGroup(AtomGroup):
 
     def __getattribute__(self, name):
         # ALL attribute access goes through here
-        # If the requested attribute isn't in the shortcut list, update ourselves
-        if not name in _UAG_SHORTCUT_ATTRS:
+        # If the requested attribute is public (not starting with '_') and
+        # isn't in the shortcut list, update ourselves
+        if not (name.startswith('_') or name in _UAG_SHORTCUT_ATTRS):
             self._ensure_updated()
         # Going via object.__getattribute__ then bypasses this check stage
         return object.__getattribute__(self, name)
@@ -2846,13 +2900,13 @@ class UpdatingAtomGroup(AtomGroup):
         # - recreate UAG as created through select_atoms (basegroup and selstrs)
         # even if base_group is a UAG this will work through recursion
         return (_unpickle_uag,
-                (self._base_group.__reduce__(), self._selections, self.selection_strings))
+                (self._base_group.__reduce__(), self._selections, self._selection_strings))
 
     def __repr__(self):
         basestr = super(UpdatingAtomGroup, self).__repr__()
-        if not self.selection_strings:
+        if not self._selection_strings:
             return basestr
-        sels = "'{}'".format("' + '".join(self.selection_strings))
+        sels = "'{}'".format("' + '".join(self._selection_strings))
         # Cheap comparison. Might fail for corner cases but this is
         # mostly cosmetic.
         if self._base_group is self.universe.atoms:
@@ -2861,7 +2915,7 @@ class UpdatingAtomGroup(AtomGroup):
             basegrp = "another AtomGroup."
         # With a shorthand to conditionally append the 's' in 'selections'.
         return "{}, with selection{} {} on {}>".format(basestr[:-1],
-                    "s"[len(self.selection_strings)==1:], sels, basegrp)
+                    "s"[len(self._selection_strings)==1:], sels, basegrp)
 
 # Define relationships between these classes
 # with Level objects

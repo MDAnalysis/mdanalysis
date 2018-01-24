@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -50,6 +50,7 @@ import numpy as np
 from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
 
+from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.core import flags
 from ..lib import distances
 from ..exceptions import SelectionError, NoDataError
@@ -246,6 +247,23 @@ class DistanceSelection(Selection):
         if self.periodic:
             self.apply = self._apply_distmat
 
+    def validate_dimensions(self, dimensions):
+        r"""Check if the system is periodic in all three-dimensions.
+
+        Parameters
+        ----------
+        dimensions : numpy.ndarray
+            6-item array denoting system size and angles
+
+        Returns
+        -------
+        None or numpy.ndarray
+            Returns argument dimensions if system is periodic in all
+            three-dimensions, otherwise returns None
+        """
+        if self.periodic and all(dimensions[:3]):
+            return dimensions
+        return None
 
 class AroundSelection(DistanceSelection):
     token = 'around'
@@ -259,28 +277,36 @@ class AroundSelection(DistanceSelection):
     def _apply_KDTree(self, group):
         """KDTree based selection is about 7x faster than distmat
         for typical problems.
-        Limitations: always ignores periodicity
         """
         sel = self.sel.apply(group)
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
 
-        kdtree = KDTree(dim=3, bucket_size=10)
-        kdtree.set_coords(sys.positions)
-        found_indices = []
-        for atom in sel.positions:
-            kdtree.search(atom, self.cutoff)
-            found_indices.append(kdtree.get_indices())
+        box = self.validate_dimensions(group.dimensions)
+        if box is None:
+            kdtree = KDTree(dim=3, bucket_size=10)
+            kdtree.set_coords(sys.positions)
+            found_indices = []
+            for atom in sel.positions:
+                kdtree.search(atom, self.cutoff)
+                found_indices.append(kdtree.get_indices())
+            unique_idx = np.unique(np.concatenate(found_indices))
+
+        else:
+            kdtree = PeriodicKDTree(box, bucket_size=10)
+            kdtree.set_coords(sys.positions)
+            kdtree.search(sel.positions, self.cutoff)
+            unique_idx = np.asarray(kdtree.get_indices())
+
         # These are the indices from SYS that were seen when
         # probing with SEL
-        unique_idx = np.unique(np.concatenate(found_indices))
         return sys[unique_idx.astype(np.int32)].unique
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
         sys = group[~np.in1d(group.indices, sel.indices)]
 
-        box = group.dimensions if self.periodic else None
+        box = self.validate_dimensions(group.dimensions)
         dist = distances.distance_array(
             sys.positions, sel.positions, box)
 
@@ -300,14 +326,17 @@ class SphericalLayerSelection(DistanceSelection):
         self.sel = parser.parse_expression(self.precedence)
 
     def _apply_KDTree(self, group):
-        """Selection using KDTree but periodic = True not supported.
+        """Selection using KDTree and PeriodicKDTree for aperiodic and
+        fully-periodic systems, respectively.
         """
         sel = self.sel.apply(group)
-        ref = sel.center_of_geometry()
-
-        kdtree = KDTree(dim=3, bucket_size=10)
+        box = self.validate_dimensions(group.dimensions)
+        ref = sel.center_of_geometry(pbc=self.periodic)
+        if box is None:
+            kdtree = KDTree(dim=3, bucket_size=10)
+        else:
+            kdtree = PeriodicKDTree(box, bucket_size=10)
         kdtree.set_coords(group.positions)
-
         kdtree.search(ref, self.exRadius)
         found_ExtIndices = kdtree.get_indices()
         kdtree.search(ref, self.inRadius)
@@ -317,9 +346,10 @@ class SphericalLayerSelection(DistanceSelection):
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
-        ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
-
-        box = group.dimensions if self.periodic else None
+        box = self.validate_dimensions(group.dimensions)
+        periodic = box is not None
+        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).astype(
+            np.float32)
         d = distances.distance_array(ref,
                                      group.positions,
                                      box=box)[0]
@@ -339,24 +369,27 @@ class SphericalZoneSelection(DistanceSelection):
         self.sel = parser.parse_expression(self.precedence)
 
     def _apply_KDTree(self, group):
-        """Selection using KDTree but periodic = True not supported.
-        (KDTree routine is ca 15% slower than the distance matrix one)
+        """Selection using KDTree and PeriodicKDTree for aperiodic and
+        fully-periodic systems, respectively.
         """
         sel = self.sel.apply(group)
-        ref = sel.center_of_geometry()
-
-        kdtree = KDTree(dim=3, bucket_size=10)
+        box = self.validate_dimensions(group.dimensions)
+        ref = sel.center_of_geometry(pbc=self.periodic)
+        if box is None:
+            kdtree = KDTree(dim=3, bucket_size=10)
+        else:
+            kdtree = PeriodicKDTree(box, bucket_size=10)
         kdtree.set_coords(group.positions)
         kdtree.search(ref, self.cutoff)
         found_indices = kdtree.get_indices()
-
         return group[found_indices].unique
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
-        ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
-
-        box = group.dimensions if self.periodic else None
+        box = self.validate_dimensions(group.dimensions)
+        periodic = box is not None
+        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).\
+            astype(np.float32)
         d = distances.distance_array(ref,
                                      group.positions,
                                      box=box)[0]
@@ -458,11 +491,15 @@ class PointSelection(DistanceSelection):
         x = float(tokens.popleft())
         y = float(tokens.popleft())
         z = float(tokens.popleft())
-        self.ref = np.array([x, y, z])
+        self.ref = np.array([x, y, z], dtype=np.float32)
         self.cutoff = float(tokens.popleft())
 
     def _apply_KDTree(self, group):
-        kdtree = KDTree(dim=3, bucket_size=10)
+        box = group.dimensions if self.periodic else None
+        if box is None:
+            kdtree = KDTree(dim=3, bucket_size=10)
+        else:
+            kdtree = PeriodicKDTree(box, bucket_size=10)
         kdtree.set_coords(group.positions)
         kdtree.search(self.ref, self.cutoff)
         found_indices = kdtree.get_indices()
@@ -611,6 +648,12 @@ class ResidueNameSelection(StringSelection):
     field = 'resnames'
 
 
+class MoleculeTypeSelection(StringSelection):
+    """Select atoms based on 'moltypes' attribute"""
+    token = 'moltype'
+    field = 'moltypes'
+
+
 class SegmentNameSelection(StringSelection):
     """Select atoms based on 'segids' attribute"""
     token = 'segid'
@@ -746,6 +789,8 @@ class ResidSelection(Selection):
 
 
 class RangeSelection(Selection):
+    value_offset=0
+
     def __init__(self, parser, tokens):
         values = grab_not_keywords(tokens)
         if not values:
@@ -772,13 +817,9 @@ class RangeSelection(Selection):
         self.lowers = lowers
         self.uppers = uppers
 
-
-class ResnumSelection(RangeSelection):
-    token = 'resnum'
-
     def apply(self, group):
         mask = np.zeros(len(group), dtype=np.bool)
-        vals = group.resnums
+        vals = getattr(group, self.field) + self.value_offset
 
         for upper, lower in zip(self.uppers, self.lowers):
             if upper is not None:
@@ -789,25 +830,22 @@ class ResnumSelection(RangeSelection):
 
             mask |= thismask
         return group[mask].unique
+
+
+class ResnumSelection(RangeSelection):
+    token = 'resnum'
+    field = 'resnums'
 
 
 class ByNumSelection(RangeSelection):
     token = 'bynum'
+    field = 'indices'
+    value_offset = 1  # queries are in 1 based indices
 
-    def apply(self, group):
-        mask = np.zeros(len(group), dtype=np.bool)
-        vals = group.indices + 1  # queries are in 1 based indices
 
-        for upper, lower in zip(self.uppers, self.lowers):
-            if upper is not None:
-                thismask = vals >= lower
-                thismask &= vals <= upper
-            else:
-                thismask = vals == lower
-
-            mask |= thismask
-        return group[mask].unique
-
+class MolidSelection(RangeSelection):
+    token = 'molnum'
+    field = 'molnums'
 
 
 class ProteinSelection(Selection):
@@ -819,8 +857,6 @@ class ProteinSelection(Selection):
          awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_lipid.rtf
 
       * manually added special CHARMM, OPLS/AA and Amber residue names.
-
-      * still missing: Amber N- and C-terminal residue names
 
     See Also
     --------
@@ -842,11 +878,15 @@ class ProteinSelection(Selection):
         # from Gromacs 4.5.3 gromos53a6.ff/aminoacids.rtp
         'ASN1', 'CYS1', 'HISA', 'HISB', 'HIS2',
         # from Gromacs 4.5.3 amber03.ff/aminoacids.rtp
-        # Amber: there are also the C-term aas: 'CALA', 'CGLY', 'CSER', ...
-        # Amber: there are also the N-term aas: 'NALA', 'NGLY', 'NSER', ...
         'HID', 'HIE', 'HIP', 'ORN', 'DAB', 'LYN', 'HYP', 'CYM', 'CYX', 'ASH',
-        'GLH',
-        'ACE', 'NME',
+        'GLH', 'ACE', 'NME',
+        # from Gromacs 2016.3 amber99sb-star-ildn.ff/aminoacids.rtp
+        'NALA', 'NGLY', 'NSER', 'NTHR', 'NLEU', 'NILE', 'NVAL', 'NASN', 'NGLN',
+        'NARG', 'NHID', 'NHIE', 'NHIP', 'NTRP', 'NPHE', 'NTYR', 'NGLU', 'NASP',
+        'NLYS', 'NPRO', 'NCYS', 'NCYX', 'NMET', 'CALA', 'CGLY', 'CSER', 'CTHR',
+        'CLEU', 'CILE', 'CVAL', 'CASF', 'CASN', 'CGLN', 'CARG', 'CHID', 'CHIE',
+        'CHIP', 'CTRP', 'CPHE', 'CTYR', 'CGLU', 'CASP', 'CLYS', 'CPRO', 'CCYS',
+        'CCYX', 'CMET', 'CME', 'ASF',
     ])
 
     def __init__(self, parser, tokens):

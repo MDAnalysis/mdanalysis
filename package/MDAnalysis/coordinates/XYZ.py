@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -303,7 +303,7 @@ class XYZReader(base.ReaderBase):
         # coordinates::core.py so the last file extension will tell us if it is
         # bzipped or not
         root, ext = os.path.splitext(self.filename)
-        self.xyzfile = util.anyopen(self.filename, "r")
+        self.xyzfile = util.anyopen(self.filename)
         self.compression = ext[1:] if ext[1:] != "xyz" else None
         self._cache = dict()
 
@@ -318,7 +318,7 @@ class XYZReader(base.ReaderBase):
     @cached('n_atoms')
     def n_atoms(self):
         """number of atoms in a frame"""
-        with util.anyopen(self.filename, 'r') as f:
+        with util.anyopen(self.filename) as f:
             n = f.readline()
         # need to check type of n
         return int(n)
@@ -338,7 +338,7 @@ class XYZReader(base.ReaderBase):
         counter = 0
         offsets = []
 
-        with util.anyopen(self.filename, 'r') as f:
+        with util.anyopen(self.filename) as f:
             line = True
             while line:
                 if not counter % linesPerFrame:
@@ -386,7 +386,7 @@ class XYZReader(base.ReaderBase):
             raise IOError(
                 errno.EALREADY, 'XYZ file already opened', self.filename)
 
-        self.xyzfile = util.anyopen(self.filename, "r")
+        self.xyzfile = util.anyopen(self.filename)
 
         # reset ts
         ts = self.ts

@@ -4,7 +4,7 @@ Installing MDAnalysisTests
 
 The MDAnalysisTests package contains trajectories and structures
 that are used in the test suite of the MDAnalysis package
-http://www.mdanalysis.org. They should be installed together
+https://www.mdanalysis.org. They should be installed together
 with MDAnalysis.
 
 However, the test files change less frequently, take up about 70 MB
@@ -18,7 +18,7 @@ Help
 If you have any problems please read through the files INSTALL (this
 file) and README and check the MDAnalysis project pages at
 
-      http://www.mdanalysis.org
+      https://www.mdanalysis.org
 
 in particular https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL and
 related pages.
@@ -84,16 +84,17 @@ From sources
 
 From the top directory of the checked out sources:
 
-  ./testsuite/MDAnalysisTests/mda_nosetests --exe -v --processes=4 --process-timeout=120 
+  pytest /testsuite/MDAnalysisTests/ --numprocesses 4
 
-(use --processes=4 if you have 4 cores available to run in parallel or
+(use --numprocesses 4 if you have 4 cores available to run in parallel or
 adapt to available cores.)
 
+To run tests in parallel you will need pytest-xdist>=1.18.1 installed.
 
 From installed package
 ----------------------
 
 The test runner can be launched as
 
-  python -c 'from MDAnalysis.tests import test; test(argv=["--exe", "-v", "--processes=4", "--process-timeout=120"])'
+  python -c 'from MDAnalysis.tests import test; test()'
 

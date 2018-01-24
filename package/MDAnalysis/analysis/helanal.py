@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -731,7 +731,7 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
             logger.debug("Big Screw Up: screw_angle=%g degrees", np.rad2deg(screw_angle))
 
     if mdamath.norm(updown) == 0:
-        logger.warn("PROBLEM (vector is at 0 or 180)")
+        logger.warning("PROBLEM (vector is at 0 or 180)")
 
     helix_dot_rehelix = mdamath.angle(updown, helix_vector)
 

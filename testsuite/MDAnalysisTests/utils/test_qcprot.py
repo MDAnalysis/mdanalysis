@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -42,7 +42,6 @@ import numpy as np
 import MDAnalysis.lib.qcprot as qcp
 
 from numpy.testing import assert_almost_equal, assert_array_almost_equal
-from nose.plugins.attrib import attr
 import MDAnalysis.analysis.rms as rms
 
 

@@ -2,7 +2,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -111,7 +111,7 @@ class PDBParser(TopologyReaderBase):
     """
     format = ['PDB','ENT']
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse atom information from PDB file
 
         Returns
@@ -150,7 +150,7 @@ class PDBParser(TopologyReaderBase):
 
         self._wrapped_serials = False  # did serials go over 100k?
         last_wrapped_serial = 100000  # if serials wrap, start from here
-        with util.openany(self.filename) as f:
+        with util.openany(self.filename ) as f:
             for line in f:
                 line = line.strip()  # Remove extra spaces
                 if not line:  # Skip line if empty
@@ -287,7 +287,7 @@ class PDBParser(TopologyReaderBase):
         mapping = dict((s, i) for i, s in enumerate(serials))
 
         bonds = set()
-        with util.openany(self.filename, "r") as f:
+        with util.openany(self.filename) as f:
             lines = (line for line in f if line[:6] == "CONECT")
             for line in lines:
                 atom, atoms = _parse_conect(line.strip())

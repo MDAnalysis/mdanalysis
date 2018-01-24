@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -75,3 +75,10 @@ class INPReader(base.SingleFrameReaderBase):
                 line = inf.readline()
                 for i in range(3):
                     self.ts._pos[-1, i] = float(line[i*12:(i+1)*12])
+
+    @staticmethod
+    def parse_n_atoms(filename, **kwargs):
+        with open(filename, 'r') as f:
+            f.readline()
+            n_atoms = int(f.readline().split()[0])
+        return n_atoms

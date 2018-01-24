@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -83,6 +83,7 @@ __all__ = [
     "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
+    "TXYZ", "ARC", 	      # Tinker files
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
@@ -92,7 +93,7 @@ __all__ = [
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
     "PRMcs", # Amber (format, Issue 1331)
     "PQR",  # PQR v1
-    "PQR_icodes",  # PQR v2 with icodes 
+    "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
     "PDBQT_querypdb",
     "FASTA",  # sequence alignment, Issue 112 + 113
@@ -103,9 +104,7 @@ __all__ = [
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
     "TRZ", "TRZ_psf",
     "TRIC",
-    "XTC_single_frame",
     "XTC_multi_frame",
-    "TRR_single_frame",
     "TRR_multi_frame",
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
@@ -136,6 +135,7 @@ __all__ = [
     "Martini_membrane_gro", # for testing the leaflet finder
     "COORDINATES_XTC",
     "COORDINATES_TRR",
+    "COORDINATES_DCD",
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
     "GRO_empty_atom", "GRO_missing_atomname", # for testing GROParser exception raise
@@ -147,10 +147,20 @@ __all__ = [
     "MMTF", "MMTF_gz",
     "ALIGN_BOUND",  # two component bound system
     "ALIGN_UNBOUND", # two component unbound system
+    "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
+    "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
+    "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
+    "GSD",
 ]
 
 from pkg_resources import resource_filename
 
+legacy_DCD_NAMD_coords = resource_filename(__name__,
+'data/legacy_DCD_NAMD_coords.npy')
+legacy_DCD_ADK_coords = resource_filename(__name__,
+'data/legacy_DCD_adk_coords.npy')
+legacy_DCD_c36_coords = resource_filename(__name__,
+'data/legacy_DCD_c36_coords.npy')
 AUX_XVG_LOWF = resource_filename(__name__, 'data/test_lowf.xvg')
 AUX_XVG_HIGHF = resource_filename(__name__, 'data/test_highf.xvg')
 XVG_BAD_NCOL = resource_filename(__name__, 'data/bad_num_col.xvg')
@@ -167,6 +177,7 @@ COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')
 COORDINATES_XTC = resource_filename(__name__, 'data/coordinates/test.xtc')
 COORDINATES_TRR = resource_filename(__name__, 'data/coordinates/test.trr')
+COORDINATES_DCD = resource_filename(__name__, 'data/coordinates/test.dcd')
 COORDINATES_TOPOLOGY = resource_filename(__name__, 'data/coordinates/test_topology.pdb')
 
 PSF = resource_filename(__name__, 'data/adk.psf')
@@ -224,13 +235,9 @@ TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
 XTC_sub_sol = resource_filename(__name__, 'data/cobrotoxin.xtc')
 PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
 PDB_xlserial = resource_filename(__name__, 'data/xl_serial.pdb')
-XTC_single_frame = resource_filename(
-    __name__, 'data/xtc_test_only_single_frame_10_atoms.xtc')
 XTC_multi_frame = resource_filename(
     __name__, 'data/xtc_test_only_10_frame_10_atoms.xtc'
 )
-TRR_single_frame = resource_filename(
-    __name__, 'data/trr_test_only_single_frame_10_atoms.trr')
 TRR_multi_frame = resource_filename(
     __name__, 'data/trr_test_only_10_frame_10_atoms.trr'
 )
@@ -273,6 +280,8 @@ XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
 XYZ = resource_filename(__name__, 'data/2r9r-1b.xyz')
 XYZ_mini = resource_filename(__name__, 'data/mini.xyz')
 XYZ_five = resource_filename(__name__, 'data/five.xyz')
+TXYZ = resource_filename(__name__, 'data/coordinates/test.txyz')
+ARC = resource_filename(__name__, 'data/coordinates/test.arc')
 
 PRM = resource_filename(__name__, 'data/Amber/ache.prmtop')
 TRJ = resource_filename(__name__, 'data/Amber/ache.mdcrd')
@@ -390,6 +399,8 @@ MMTF_gz = resource_filename(__name__, 'data/5KIH.mmtf.gz')
 
 ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
 ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')
+
+GSD = resource_filename(__name__, 'data/example.gsd')
 
 # This should be the last line: clean up namespace
 del resource_filename

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,13 +20,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from six.moves import range
 
 import os
 from numpy.testing import (
-    assert_equal,assert_raises, assert_array_equal,
+    assert_equal, assert_array_equal,
     assert_array_almost_equal, TestCase,
-    assert_,
 )
 
 from MDAnalysisTests.datafiles import (
@@ -85,7 +86,8 @@ class TestMol2(TestCase):
         assert_array_equal(u.atoms.positions, ref.atoms.positions)
 
     def test_broken_molecule(self):
-        assert_raises(ValueError, Universe, mol2_broken_molecule)
+        with pytest.raises(ValueError):
+            Universe(mol2_broken_molecule)
 
         # This doesn't work with 2.6
         # Checks the text of the error message, so it low priority
@@ -144,11 +146,11 @@ class TestMOL2NoSubstructure(object):
 
     def test_load(self):
         r = mda.coordinates.MOL2.MOL2Reader(mol2_zinc, n_atoms=self.n_atoms)
-        assert_(r.n_atoms == 45)
+        assert r.n_atoms == 45
 
     def test_universe(self):
         u = mda.Universe(mol2_zinc)
-        assert_(len(u.atoms) == self.n_atoms)
+        assert len(u.atoms) == self.n_atoms
 
     def test_write_nostructure(self):
         mytempdir = tempdir.TempDir()
@@ -160,12 +162,12 @@ class TestMOL2NoSubstructure(object):
 
         u2 = mda.Universe(outfile)
 
-        assert_(len(u.atoms) == len(u2.atoms))
+        assert len(u.atoms) == len(u2.atoms)
 
 
 def test_mol2_write_NIE():
     mytempdir = tempdir.TempDir()
     outfile = os.path.join(mytempdir.name, 'test.mol2')
     u = make_Universe(trajectory=True)
-
-    assert_raises(NotImplementedError, u.atoms.write, outfile)
+    with pytest.raises(NotImplementedError):
+        u.atoms.write(outfile)

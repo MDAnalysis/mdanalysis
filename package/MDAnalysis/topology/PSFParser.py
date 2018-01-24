@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -94,7 +94,7 @@ class PSFParser(TopologyReaderBase):
     """
     format = 'PSF'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse PSF file into Topology
 
         Returns
@@ -102,7 +102,7 @@ class PSFParser(TopologyReaderBase):
         MDAnalysis *Topology* object
         """
         # Open and check psf validity
-        with openany(self.filename, 'r') as psffile:
+        with openany(self.filename) as psffile:
             header = next(psffile)
             if not header.startswith("PSF"):
                 err = ("{0} is not valid PSF file (header = {1})"
@@ -287,9 +287,9 @@ class PSFParser(TopologyReaderBase):
                 # space-separated "PSF" file from VMD version < 1.9.1
                 atom_parser = atom_parsers['NAMD']
                 vals = set_type(atom_parser(line))
-                logger.warn("Guessing that this is actually a"
-                            " NAMD-type PSF file..."
-                            " continuing with fingers crossed!")
+                logger.warning("Guessing that this is actually a"
+                               " NAMD-type PSF file..."
+                               " continuing with fingers crossed!")
                 logger.debug("First NAMD-type line: {0}: {1}"
                              "".format(i, line.rstrip()))
 

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -1174,6 +1174,23 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
     def __len__(self):
         return self.n_frames
 
+    @classmethod
+    def parse_n_atoms(cls, filename, **kwargs):
+        """Read the coordinate file and deduce the number of atoms
+
+        Returns
+        -------
+        n_atoms : int
+          the number of atoms in the coordinate file
+
+        Raises
+        ------
+        NotImplementedError
+          when the number of atoms can't be deduced
+        """
+        raise NotImplementedError("{} cannot deduce the number of atoms"
+                                  "".format(cls.__name__))
+
     def next(self):
         """Forward one step to next frame."""
         try:
@@ -1559,7 +1576,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         aux = self._check_for_aux(auxname)
         ts = self.ts
         # catch up auxiliary if it starts earlier than trajectory
-        while aux.step_to_frame(aux.step + 1, ts) < 0:
+        while aux.step_to_frame(aux.step + 1, ts) is None:
             next(aux)
         # find the next frame that'll have a representative value
         next_frame = aux.next_nonempty_frame(ts)
@@ -1586,7 +1603,10 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         self._reopen()
         aux._restart()
         while True:
-            yield self.next_as_aux(auxname)
+            try:
+                yield self.next_as_aux(auxname)
+            except StopIteration:
+                return
 
     def iter_auxiliary(self, auxname, start=None, stop=None, step=None,
                        selected=None):
@@ -1937,7 +1957,7 @@ class SingleFrameReaderBase(ProtoReader):
 
     def __iter__(self):
         yield self.ts
-        raise StopIteration
+        return
 
     def _read_frame(self, frame):
         if frame != 0:

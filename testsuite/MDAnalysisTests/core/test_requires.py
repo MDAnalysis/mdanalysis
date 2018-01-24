@@ -3,11 +3,8 @@
 """
 from __future__ import absolute_import
 import numpy as np
-from numpy.testing import (
-    assert_,
-    assert_raises,
-)
 
+import pytest
 from MDAnalysis.core.groups import requires
 from MDAnalysis import NoDataError
 
@@ -21,8 +18,9 @@ class TestRequires(object):
             return (ag1.masses + ag2.masses) * scalar
 
         u = make_Universe(('charges',))
+        with pytest.raises(NoDataError):
+            mass_multiplier(u.atoms[:10], u.atoms[20:30], 4.0)
 
-        assert_raises(NoDataError, mass_multiplier, u.atoms[:10], u.atoms[20:30], 4.0)
 
     def test_requires_failure_multiple(self):
         @requires('masses', 'charges')
@@ -31,8 +29,8 @@ class TestRequires(object):
         
 
         u = make_Universe(('masses', 'types'))
-
-        assert_raises(NoDataError, mass_multiplier, u.atoms[:10], u.atoms[20:30], 4.0)
+        with pytest.raises(NoDataError):
+            mass_multiplier(u.atoms[:10], u.atoms[20:30], 4.0)
 
     def test_requires_success(self):
         @requires('masses')
@@ -43,7 +41,7 @@ class TestRequires(object):
 
         result = mass_multiplier(u.atoms[:10], u.atoms[20:30], 4.0)
 
-        assert_(isinstance(result, np.ndarray))
+        assert isinstance(result, np.ndarray)
 
     def test_failure_errormessage(self):
         # failures should list all required attributes not
@@ -58,9 +56,9 @@ class TestRequires(object):
         except NoDataError as e:
             message = e.args[0]
             # Test function name gets returned (for debug)
-            assert_('animal_print' in message)
-            assert_('cats' in message)
-            assert_('dogs' in message)
-            assert_('frogs' in message)
+            assert 'animal_print' in message
+            assert 'cats' in message
+            assert 'dogs' in message
+            assert 'frogs' in message
         else:
-            raise AssertionError("Should raise NoDataError")
+            pytest.fail(msg="Should raise NoDataError")

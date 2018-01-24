@@ -28,7 +28,7 @@ atom :ref:`selection-commands-label` are implemented. Trajectories can
 also be manipulated (for instance, fit to a reference structure) and
 written out in a range of formats.
 
-.. _`www.mdanalysis.org`: http://www.mdanalysis.org
+.. _`www.mdanalysis.org`: https://www.mdanalysis.org
 .. _NumPy: http://numpy.scipy.org
 .. _CHARMM:  http://www.charmm.org/
 .. _Amber:   http://ambermd.org/
@@ -55,7 +55,7 @@ members agree and adhere to --- please read it.
 .. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues
 .. _`mdnalysis-discussion mailing list`:
    http://groups.google.com/group/mdnalysis-discussion
-.. _`Code of Conduct`: http://www.mdanalysis.org/pages/conduct/
+.. _`Code of Conduct`: https://www.mdanalysis.org/pages/conduct/
 
 .. _installation-instructions: 
 
@@ -113,13 +113,13 @@ examples in the documentation or the tutorials_, also install the
    conda install mdanalysistests            # with conda
 
 .. _install the latest release:
-   http://www.mdanalysis.org/pages/installation_quick_start/
+   https://www.mdanalysis.org/pages/installation_quick_start/
 .. _pip:
    http://www.pip-installer.org/en/latest/index.html
 .. _conda:
    http://conda.pydata.org/docs/
 .. _run the tests: http://wiki.mdanalysis.org/UnitTests   
-.. _tutorials: http://www.mdanalysis.org/pages/learning_MDAnalysis/
+.. _tutorials: https://www.mdanalysis.org/pages/learning_MDAnalysis/
 
 
 Source Code

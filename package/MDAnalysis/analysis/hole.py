@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -185,8 +185,9 @@ Analysis
 
       After running :meth:`HOLE.collect`, this dict contains all the
       HOLE profiles, indexed by the frame number. If only a single
-      frame was analyzed then this will be ``HOLE.profiles[0]``. Note
-      that the order is random; one needs to sort the keys first.
+      frame was analyzed then this will be ``HOLE.profiles[0]``.
+      The entries are stored in order of calculation, but one can
+      also sort it by the keys.
 
       .. Note::
          Duplicate keys are not possible. The last key overwrites
@@ -200,8 +201,9 @@ Analysis
 
       After running :meth:`HOLE.collect`, this dict contains all the
       HOLE profiles, indexed by the frame number or the order
-      parameter (if *orderparameters* was supplied). Note that the
-      order is random; one needs to sort the keys first.
+      parameter (if *orderparameters* was supplied).
+      The entries are stored in order of calculation, but one can
+      also sort it by the keys.
 
       .. Note::
          Duplicate keys are not possible. The last key overwrites
@@ -256,6 +258,11 @@ import tempfile
 import textwrap
 import logging
 from itertools import cycle
+from collections import OrderedDict
+
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
 import numpy as np
 import matplotlib
@@ -376,7 +383,7 @@ class BaseHOLE(object):
         kw = {}
         frames = kwargs.pop('frames', None)
         if frames is None:
-            frames = np.sort(self.profiles.keys()[::kwargs.pop('step', 1)])
+            frames = np.sort(list(self.profiles.keys())[::kwargs.pop('step', 1)])
         else:
             frames = asiterable(frames)
         kw['frames'] = frames
@@ -561,7 +568,7 @@ class BaseHOLE(object):
         The iterator produces tuples ``(q, profile)``.
         """
         if self.profiles is None:
-            raise StopIteration
+            return
         for q in sorted(self.profiles):
             yield (q, self.profiles[q])
 
@@ -855,14 +862,14 @@ class HOLE(BaseHOLE):
 
         # sanity checks
         if self.shorto > 2:
-            logger.warn("SHORTO (%d) needs to be < 3 in order to extract a HOLE profile!",
-                        self.shorto)
+            logger.warning("SHORTO (%d) needs to be < 3 in order to extract a HOLE profile!",
+                           self.shorto)
         for program, path in self.exe.items():
             if path is None or which(path) is None:
                 logger.error("Executable %(program)r not found, should have been %(path)r.",
                              vars())
         # results
-        self.profiles = {}
+        self.profiles = OrderedDict()
 
     def check_and_fix_long_filename(self, filename, tmpdir=os.path.curdir):
         """Return a file name suitable for HOLE.
@@ -948,7 +955,7 @@ class HOLE(BaseHOLE):
         logger.debug("%s <%s >%s", self.exe['hole'], (inpname if inpname else "(input)"), outname)
         with open(outname, "w") as output:
             hole = subprocess.Popen([self.exe['hole']], stdin=subprocess.PIPE, stdout=output)
-            stdout, stderr = hole.communicate(inp)
+            stdout, stderr = hole.communicate(inp.encode('utf-8'))
         with open(outname, "r") as output:
             # HOLE is not very good at setting returncodes so check ourselves
             for line in output:
@@ -1075,8 +1082,7 @@ class HOLE(BaseHOLE):
             logger.info("Found %d input frames in DCD trajectory %r", length, self.dcd)
 
         # one recarray for each frame, indexed by frame number
-        # TODO: use ordered dict
-        self.profiles = {}
+        self.profiles = OrderedDict()
 
         logger.info("Run %s: Reading %d HOLE profiles from %r", run, length, hole_output)
         hole_profile_no = 0
@@ -1128,7 +1134,8 @@ class HOLE(BaseHOLE):
         if len(self.profiles) == length:
             logger.info("Collected HOLE radius profiles for %d frames", len(self.profiles))
         else:
-            logger.warn("Missing data: Found %d HOLE profiles from %d frames.", len(self.profiles), length)
+            logger.warning("Missing data: Found %d HOLE profiles from %d frames.",
+                           len(self.profiles), length)
 
     def __del__(self):
         for f in self.tempfiles:
@@ -1264,7 +1271,7 @@ class HOLEtraj(BaseHOLE):
         hole_kw = self.hole_kwargs.copy()
         hole_kw.update(kwargs)
 
-        profiles = {}  # index by orderparameters: NOTE: can overwrite!
+        profiles = OrderedDict()  # index by orderparameters: NOTE: can overwrite!
 
         # better: if not a DCD, convert to DCD because HOLE can read it (does it need a PSF?)
         # ... maybe faster than splittinginto PDBs...
@@ -1293,7 +1300,7 @@ class HOLEtraj(BaseHOLE):
                     len(hole_profiles), hole_profiles.keys(), ts)
                 logger.error(err_msg)
                 warnings.warn(err_msg)
-            profiles[q] = hole_profiles.values()[0]
+            profiles[q] = list(hole_profiles.values())[0]
         self.profiles = profiles
 
     def run_hole(self, pdbfile, **kwargs):

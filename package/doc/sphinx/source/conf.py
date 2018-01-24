@@ -136,7 +136,8 @@ html_theme_options = {
     'logo' : "logos/mdanalysis-logo-200x150.png",
     'github_user': "MDAnalysis",
     'github_repo': "mdanalysis",
-    'travis_button': "MDAnalysis/mdanalysis",
+    #'travis_button': "MDAnalysis/mdanalysis",
+    'travis_button': False,
     'github_type': 'star',
     'github_banner': True,
     'show_related': True,
@@ -227,7 +228,7 @@ html_sidebars = {
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
 # base URL from which the finished HTML is served.
-html_use_opensearch = 'http://docs.mdanalysis.org'
+html_use_opensearch = 'https://docs.mdanalysis.org'
 
 # This is the file name suffix for HTML files (e.g. ".xhtml").
 #html_file_suffix = None
@@ -331,6 +332,6 @@ intersphinx_mapping = {'https://docs.python.org/': None,
                        'https://docs.scipy.org/doc/numpy/': None,
                        'https://docs.scipy.org/doc/scipy/reference/': None,
                        'http://matplotlib.org': None,
-                       'https://networkx.readthedocs.io/en/stable/': None,
-                       'https://gridDataFormats.readthedocs.io/en/stable/': None,
+                       'https://networkx.github.io/documentation/stable/': None,
+                       'https://www.mdanalysis.org/GridDataFormats/': None,
                        }

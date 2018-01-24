@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,6 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from six.moves import range
 
 import MDAnalysis as mda
@@ -31,19 +33,18 @@ from MDAnalysisTests.datafiles import (GMS_ASYMOPT, GMS_ASYMSURF, GMS_SYMOPT)
 
 
 class _GMSBase(object):
-    def tearDown(self):
-        del self.u
-        del self.n_frames
-        del self.flavour
-        del self.step5d
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(self.filename)
 
-    def test_n_frames(self):
-        assert_equal(self.u.trajectory.n_frames,
+    def test_n_frames(self, u):
+        assert_equal(u.trajectory.n_frames,
                      self.n_frames,
-                     err_msg="Wrong number of frames read from {}".format(self.flavour))
+                     err_msg="Wrong number of frames read from {}".format(
+                         self.flavour))
 
-    def test_random_access(self):
-        u = self.u
+    def test_random_access(self, u):
+        u = u
         pos1 = u.atoms[-1].position
 
         u.trajectory.next()
@@ -68,44 +69,43 @@ class _GMSBase(object):
         z2 = np.sqrt(sum(pp ** 2))
         return z1 - z2
 
-    def test_rewind(self):
-        self.u.trajectory.rewind()
-        assert_equal(self.u.trajectory.ts.frame, 0, "rewinding to frame 0")
+    def test_rewind(self, u):
+        u.trajectory.rewind()
+        assert_equal(u.trajectory.ts.frame, 0, "rewinding to frame 0")
 
-    def test_next(self):
-        self.u.trajectory.rewind()
-        self.u.trajectory.next()
-        assert_equal(self.u.trajectory.ts.frame, 1, "loading frame 1")
+    def test_next(self, u):
+        u.trajectory.rewind()
+        u.trajectory.next()
+        assert_equal(u.trajectory.ts.frame, 1, "loading frame 1")
 
-    def test_dt(self):
-        assert_almost_equal(self.u.trajectory.dt,
+    def test_dt(self, u):
+        assert_almost_equal(u.trajectory.dt,
                             1.0,
                             4,
                             err_msg="wrong timestep dt")
 
-    def test_step5distances(self):
-        assert_almost_equal(self._calcFD(self.u), self.step5d, decimal=5,
+    def test_step5distances(self, u):
+        assert_almost_equal(self._calcFD(u), self.step5d, decimal=5,
                             err_msg="Wrong 1-4 atom distance change after "
-                            "5 steps for {}".format(self.flavour))
+                                    "5 steps for {}".format(self.flavour))
 
 
 class TestGMSReader(_GMSBase):
-    def setUp(self):
-        self.u =  mda.Universe(GMS_ASYMOPT)
-        self.n_frames = 21
-        self.flavour = "GAMESS C1 optimization"
-        self.step5d = -0.0484664
+    n_frames = 21
+    flavour = "GAMESS C1 optimization"
+    step5d = -0.0484664
+    filename = GMS_ASYMOPT
+
 
 class TestGMSReaderSO(_GMSBase):
-    def setUp(self):
-        self.u = mda.Universe(GMS_SYMOPT)
-        self.n_frames = 8
-        self.flavour = "GAMESS D4H optimization"
-        self.step5d = 0.227637
+    n_frames = 8
+    flavour = "GAMESS D4H optimization"
+    step5d = 0.227637
+    filename = GMS_SYMOPT
+
 
 class TestGMSReaderASS(_GMSBase):
-    def setUp(self):
-        self.u = mda.Universe(GMS_ASYMSURF)
-        self.n_frames = 10
-        self.flavour = "GAMESS C1 surface"
-        self.step5d = -0.499996
+    n_frames = 10
+    flavour = "GAMESS C1 surface"
+    step5d = -0.499996
+    filename = GMS_ASYMSURF

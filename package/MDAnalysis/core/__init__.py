@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -93,7 +93,7 @@ from __future__ import absolute_import
 
 import six
 
-__all__ = ['AtomGroup', 'Selection', 'Timeseries']
+__all__ = ['AtomGroup', 'Selection']
 
 
 # set up flags for core routines (more convoluted than strictly necessary but

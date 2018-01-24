@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -335,9 +335,9 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
         the clustering ensemble similarity method
     """
     ens1_coordinates = ens1.trajectory.timeseries(ens1.select_atoms(selection),
-                                                  format='fac')
+                                                  order='fac')
     ens2_coordinates = ens2.trajectory.timeseries(ens2.select_atoms(selection),
-                                                  format='fac')
+                                                  order='fac')
     tmpA = np.array([np.where(c.metadata['ensemble_membership'] == ens1_id)[
                             0].shape[0] / float(ens1_coordinates.shape[0]) for
                         c in cc])
@@ -693,7 +693,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     """
 
     ens_size = ensemble.trajectory.timeseries(ensemble.select_atoms(selection),
-                                              format='fac').shape[0]
+                                              order='fac').shape[0]
 
     rest_slices = ens_size // window_size
     residuals = ens_size % window_size
@@ -708,7 +708,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     for s,sl in enumerate(slices_n[:-1]):
         tmp_ensembles.append(mda.Universe(
             ensemble.filename,
-            ensemble.trajectory.timeseries(format='fac')
+            ensemble.trajectory.timeseries(order='fac')
             [slices_n[s]:slices_n[s + 1], :, :],
             format=MemoryReader))
 
@@ -889,7 +889,7 @@ def hes(ensembles,
                 xs.append(np.average(
                     ensembles_list[i][t].trajectory.timeseries(
                         e_orig.select_atoms(selection),
-                        format=('fac')),
+                        order=('fac')),
                     axis=0).flatten())
                 sigmas.append(covariance_matrix(ensembles_list[i][t],
                                                 weights=weights[i],
@@ -916,7 +916,7 @@ def hes(ensembles,
     for e, w in zip(ensembles, weights):
         # Extract coordinates from each ensemble
         coordinates_system = e.trajectory.timeseries(e.select_atoms(selection),
-                                                     format='fac')
+                                                     order='fac')
 
         # Average coordinates in each system
         xs.append(np.average(coordinates_system, axis=0).flatten())

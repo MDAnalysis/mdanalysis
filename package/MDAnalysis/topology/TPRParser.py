@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -104,7 +104,7 @@ The TPR reader is a pure-python implementation of a basic TPR
 parser. Currently the following sections of the topology are parsed:
 
 * Atoms: number, name, type, resname, resid, segid, mass, charge,
-  [residue, segment, radius, bfactor, resnum]
+  [residue, segment, radius, bfactor, resnum, moltype]
 * Bonds
 * Angels
 * Dihedrals
@@ -145,7 +145,7 @@ __copyright__ = "GNU Public Licence, v2"
 import xdrlib
 
 from . import guessers
-from ..lib.util import anyopen
+from ..lib.util import openany
 from .tpr import utils as tpr_utils
 from .base import TopologyReaderBase
 from ..core.topologyattrs import Resnums
@@ -162,14 +162,15 @@ class TPRParser(TopologyReaderBase):
     """
     format = 'TPR'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
 
         Returns
         -------
         structure : dict
         """
-        tprf = anyopen(self.filename, mode='rb').read()
+        with openany(self.filename, mode='rb') as infile:
+            tprf = infile.read()
         data = xdrlib.Unpacker(tprf)
         try:
             th = tpr_utils.read_tpxheader(data)                    # tpxheader

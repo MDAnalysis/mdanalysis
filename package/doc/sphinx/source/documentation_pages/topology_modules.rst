@@ -32,6 +32,7 @@ topology file format in the *topology_format* keyword argument to
    topology/GROParser
    topology/HoomdXMLParser
    topology/LAMMPSParser
+   topology/MinimalParser
    topology/MMTFParser
    topology/MOL2Parser
    topology/PDBParser
@@ -41,6 +42,7 @@ topology file format in the *topology_format* keyword argument to
    topology/PSFParser
    topology/TOPParser
    topology/TPRParser
+   topology/TXYZParser
    topology/XYZParser
 
 .. rubric:: Topology core modules

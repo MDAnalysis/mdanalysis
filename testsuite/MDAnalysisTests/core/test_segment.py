@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -22,63 +22,61 @@
 from __future__ import absolute_import
 
 from numpy.testing import (
-    dec,
-    assert_,
     assert_equal,
 )
-from nose.plugins.attrib import attr
+import pytest
 
 import MDAnalysis as mda
 
-from MDAnalysisTests import parser_not_found, make_Universe
+from MDAnalysisTests import make_Universe
 from MDAnalysis.tests.datafiles import PSF, DCD
 
 
 class TestSegment(object):
-    def setUp(self):
-        self.universe = make_Universe(('segids',))
-        self.sB = self.universe.segments[1]
+    @pytest.fixture()
+    def universe(self):
+        return make_Universe(('segids',))
 
-    def test_type(self):
-        assert_(isinstance(self.sB, mda.core.groups.Segment))
-        assert_equal(self.sB.segid, "SegB")
+    @pytest.fixture()
+    def sB(self, universe):
+        return universe.segments[1]
 
-    def test_index(self):
-        s = self.sB
+    def test_type(self, sB):
+        assert isinstance(sB, mda.core.groups.Segment)
+        assert_equal(sB.segid, "SegB")
+
+    def test_index(self, sB):
+        s = sB
         res = s.residues[3]
-        assert_(isinstance(res, mda.core.groups.Residue))
+        assert isinstance(res, mda.core.groups.Residue)
 
-    def test_slicing(self):
-        res = self.sB.residues[:3]
+    def test_slicing(self, sB):
+        res = sB.residues[:3]
         assert_equal(len(res), 3)
-        assert_(isinstance(res, mda.core.groups.ResidueGroup))
+        assert isinstance(res, mda.core.groups.ResidueGroup)
 
-    def test_advanced_slicing(self):
-        res = self.sB.residues[[2, 1, 0, 2]]
+    def test_advanced_slicing(self, sB):
+        res = sB.residues[[2, 1, 0, 2]]
         assert_equal(len(res), 4)
-        assert_(isinstance(res, mda.core.groups.ResidueGroup))
+        assert isinstance(res, mda.core.groups.ResidueGroup)
 
-    def test_atom_order(self):
-        assert_equal(self.universe.segments[0].atoms.indices,
-                     sorted(self.universe.segments[0].atoms.indices))
+    def test_atom_order(self, universe):
+        assert_equal(universe.segments[0].atoms.indices,
+                     sorted(universe.segments[0].atoms.indices))
 
-@attr("issue")
-@dec.skipif(parser_not_found('DCD'),
-            'DCD parser not available. Are you using python 3?')
+
+# remove in 1.0
 def test_generated_residueselection():
     """Test that a generated residue group always returns a ResidueGroup (Issue 47)
     unless there is a single residue (Issue 363 change)"""
     universe = mda.Universe(PSF, DCD)
-    # only a single Cys in AdK
-    cys = universe.s4AKE.CYS
-    assert_(isinstance(cys, mda.core.groups.Residue),
-            "Single Cys77 is NOT returned as a single Residue (Issue 47)")
+    with pytest.warns(DeprecationWarning):
+        # only a single Cys in AdK
+        cys = universe.s4AKE.CYS
+        assert isinstance(cys, mda.core.groups.Residue), \
+            "Single Cys77 is NOT returned as a single Residue (Issue 47)"
 
-    # multiple Met
-    met = universe.s4AKE.MET
-    assert_(isinstance(met, mda.core.groups.ResidueGroup),
-            "Met selection does not return a ResidueGroup")
-
-    del universe
-
-
+        # multiple Met
+        met = universe.s4AKE.MET
+        assert isinstance(met, mda.core.groups.ResidueGroup), \
+            "Met selection does not return a ResidueGroup"

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -22,28 +22,26 @@
 from __future__ import print_function, absolute_import
 
 from six.moves import range
+import pytest
 
 import MDAnalysis
 import MDAnalysis.analysis.hole
 from MDAnalysis.analysis.hole import HOLEtraj, HOLE
 
-from numpy.testing import (TestCase, dec,
-                           assert_equal, assert_almost_equal,
-                           assert_array_equal,
-                           assert_array_almost_equal, assert_)
+from numpy.testing import (
+    assert_almost_equal,
+    assert_array_equal,
+    assert_array_almost_equal
+)
 import numpy as np
 import matplotlib
 import mpl_toolkits.mplot3d
 
-import nose
-from nose.plugins.attrib import attr
-
-import os
 import errno
 
 from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE
-from MDAnalysisTests import (executable_not_found, module_not_found,
-                             tempdir, in_dir)
+from MDAnalysisTests import executable_not_found
+
 
 def rlimits_missing():
     # return True if resources module not accesible (ie setting of rlimits)
@@ -57,48 +55,37 @@ def rlimits_missing():
     return False
 
 
-class TestHOLE(TestCase):
-    filename = PDB_HOLE
-
-    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    def setUp(self):
+@pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
+class TestHOLE(object):
+    @staticmethod
+    @pytest.fixture()
+    def H(tmpdir):
         # keep tempdir around for the whole lifetime of the class
-        self.tempdir = tempdir.TempDir()
-        with in_dir(self.tempdir.name):
-            H = HOLE(self.filename, raseed=31415)
+        with tmpdir.as_cwd():
+            filename = PDB_HOLE
+            H = HOLE(filename, raseed=31415)
             H.run()
             H.collect()
-        self.H = H
+        return H
 
-    def tearDown(self):
-        del self.H
-        del self.tempdir
+    def test_HOLE(self, H):
+        profiles_values = list(H.profiles.values())
+        assert len(profiles_values) == 1, "HOLE.profile should contain exactly 1 profile"
 
-    @attr('slow')
-    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    def test_HOLE(self):
-        profiles = self.H.profiles.values()
-        assert_equal(len(profiles), 1,
-                     err_msg="HOLE.profile should contain exactly 1 profile")
+        p = profiles_values[0]
 
-        p = profiles[0]
+        assert len(p) == 425, "wrong number of points in HOLE profile"
+        assert_almost_equal(p.rxncoord.mean(), -1.41225, err_msg="wrong mean HOLE rxncoord")
+        assert_almost_equal(p.radius.min(), 1.19707, err_msg="wrong min HOLE radius")
 
-        assert_equal(len(p), 425,
-                     err_msg="wrong number of points in HOLE profile")
-        assert_almost_equal(p.rxncoord.mean(), -1.41225,
-                            err_msg="wrong mean HOLE rxncoord")
-        assert_almost_equal(p.radius.min(), 1.19707,
-                            err_msg="wrong min HOLE radius")
+    def test_vmd_surface(self, tmpdir, H):
+        with tmpdir.as_cwd():
+            filename = H.create_vmd_surface(filename="hole.vmd")
+            assert len(open(filename).readlines()) == 6504, "HOLE VMD surface file is incomplete"
 
-    @attr('slow')
-    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    def test_vmd_surface(self):
-        with in_dir(self.tempdir.name):
-            filename = self.H.create_vmd_surface(filename="hole.vmd")
-            assert_equal(len(open(filename).readlines()), 6504,
-                         err_msg="HOLE VMD surface file is incomplete")
 
-class TestHOLEtraj(TestCase):
+@pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
+class TestHOLEtraj(object):
     filename = MULTIPDB_HOLE
     start = 5
     stop = 7
@@ -106,89 +93,70 @@ class TestHOLEtraj(TestCase):
     # HOLE is so slow so we only run it once and keep it in
     # the class; note that you may not change universe.trajectory
     # (eg iteration) because this is not safe in parallel
-    @classmethod
-    def setUpClass(cls):
-        cls.universe = MDAnalysis.Universe(cls.filename)
-        if not executable_not_found("hole"):
-            with tempdir.in_tempdir():
-                H = HOLEtraj(cls.universe, start=cls.start,
-                             stop=cls.stop, raseed=31415)
-                H.run()
-            cls.H = H
-        else:
-            cls.H = None
+    @pytest.fixture()
+    def universe(self):
+        return MDAnalysis.Universe(self.filename)
 
-        cls.frames = [ts.frame
-                      for ts in cls.universe.trajectory[cls.start:cls.stop]]
+    @pytest.fixture()
+    def H(self, universe, tmpdir):
+        with tmpdir.as_cwd():
+            H = HOLEtraj(universe, start=self.start, stop=self.stop, raseed=31415)
+            H.run()
+        return H
 
-    @classmethod
-    def tearDownClass(cls):
-        del cls.H
-        del cls.universe
+    @pytest.fixture()
+    def frames(self, universe):
+        return [ts.frame for ts in universe.trajectory[self.start:self.stop]]
 
     # This is VERY slow on 11 frames so we just take 2
-    @attr('slow')
-    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    def test_HOLEtraj(self):
-        assert_array_equal(sorted(self.H.profiles.keys()), self.frames,
+    def test_HOLEtraj(self, H, frames):
+        assert_array_equal(sorted(H.profiles.keys()), frames,
                            err_msg="H.profiles.keys() should contain the frame numbers")
 
         data = np.transpose([(len(p), p.rxncoord.mean(), p.radius.min())
-                             for p in self.H.profiles.values()])
+                             for p in H.profiles.values()])
 
-        assert_array_equal(data[0], [401, 399],
-                           err_msg="incorrect profile lengths")
-        assert_array_almost_equal(data[1], [1.98767,  0.0878],
-                                  err_msg="wrong mean HOLE rxncoord")
-        assert_array_almost_equal(data[2], [1.19819, 1.29628],
-                                  err_msg="wrong minimum radius")
+        assert_array_equal(data[0], [401, 399], err_msg="incorrect profile lengths")
+        assert_array_almost_equal(data[1], [1.98767,  0.0878], err_msg="wrong mean HOLE rxncoord")
+        assert_array_almost_equal(data[2], [1.19819, 1.29628], err_msg="wrong minimum radius")
 
-    @attr('slow')
-    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    def test_min_radius(self):
-        assert_array_almost_equal(self.H.min_radius(),
-                                  np.array([[ 5.     ,  1.19819],
-                                            [ 6.     ,  1.29628]]),
-                                  err_msg="min_radius() array not correct")
+    def test_min_radius(self, H):
+        assert_array_almost_equal(
+            H.min_radius(),
+            np.array([[5., 1.19819],
+                      [6., 1.29628]]),
+            err_msg="min_radius() array not correct"
+        )
 
-    @attr('slow')
-    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    def test_plot(self):
-        ax = self.H.plot(label=True)
-        assert_(isinstance(ax, matplotlib.axes.Axes),
-                msg="H.plot() did not produce an Axes instance")
+    def test_plot(self, H):
+        ax = H.plot(label=True)
+        assert isinstance(ax, matplotlib.axes.Axes), "H.plot() did not produce an Axes instance"
 
-    @attr('slow')
-    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    def test_plot3D(self):
-        ax = self.H.plot3D()
-        assert_(isinstance(ax, mpl_toolkits.mplot3d.Axes3D),
-                msg="H.plot3D() did not produce an Axes3D instance")
+    def test_plot3D(self, H):
+        ax = H.plot3D()
+        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), "H.plot3D() did not produce an Axes3D instance"
 
-    @attr('slow')
-    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    def test_plot3D_rmax(self):
-        ax = self.H.plot3D(rmax=2.5)
-        assert_(isinstance(ax, mpl_toolkits.mplot3d.Axes3D),
-                msg="H.plot3D(rmax=float) did not produce an Axes3D instance")
+    def test_plot3D_rmax(self, H):
+        ax = H.plot3D(rmax=2.5)
+        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), "H.plot3D(rmax=float) did not produce an Axes3D instance"
 
 
-class TestHoleModule(TestCase):
-    @dec.skipif(rlimits_missing, msg="Test skipped because platform does not allow setting rlimits")
-    def setUp(self):
-        self.universe = MDAnalysis.Universe(MULTIPDB_HOLE)
-        try:
-            # on Unix we can manipulate our limits: http://docs.python.org/2/library/resource.html
-            import resource
-            self.soft_max_open_files, self.hard_max_open_files = resource.getrlimit(resource.RLIMIT_NOFILE)
-        except ImportError:
-            pass
+@pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
+class TestHoleModule(object):
+    try:
+        # on Unix we can manipulate our limits: http://docs.python.org/2/library/resource.html
+        import resource
+        soft_max_open_files, hard_max_open_files = resource.getrlimit(resource.RLIMIT_NOFILE)
+    except ImportError:
+        pass
 
-    @attr('slow')
-    @attr('issue')
-    @dec.skipif(rlimits_missing, msg="Test skipped because platform does not allow setting rlimits")
-    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    def test_hole_module_fd_closure(self):
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return MDAnalysis.Universe(MULTIPDB_HOLE)
+
+    @pytest.mark.skipif(rlimits_missing, reason="Test skipped because platform does not allow setting rlimits")
+    def test_hole_module_fd_closure(self, universe, tmpdir):
         """test open file descriptors are closed (MDAnalysisTests.analysis.test_hole.TestHoleModule): Issue 129"""
         # If Issue 129 isn't resolved, this function will produce an OSError on
         # the system, and cause many other tests to fail as well.
@@ -216,9 +184,9 @@ class TestHoleModule(TestCase):
         resource.setrlimit(resource.RLIMIT_NOFILE,
                            (max_open_files, self.hard_max_open_files))
 
-        with tempdir.in_tempdir():
+        with tmpdir.as_cwd():
             try:
-                H = HOLEtraj(self.universe, cvect=[0, 1, 0], sample=20.0)
+                H = HOLEtraj(universe, cvect=[0, 1, 0], sample=20.0)
             finally:
                 self._restore_rlimits()
 
@@ -232,7 +200,7 @@ class TestHoleModule(TestCase):
                     H.run()
             except OSError as err:
                 if err.errno == errno.EMFILE:
-                    raise AssertionError("HOLEtraj does not close file descriptors (Issue 129)")
+                    raise pytest.fail("HOLEtraj does not close file descriptors (Issue 129)")
                 raise
             finally:
                 # make sure to restore open file limit !!
@@ -245,7 +213,3 @@ class TestHoleModule(TestCase):
                                (self.soft_max_open_files, self.hard_max_open_files))
         except ImportError:
             pass
-
-    def tearDown(self):
-        self._restore_rlimits()
-        del self.universe

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -61,8 +61,8 @@ class ConfigParser(TopologyReaderBase):
     """
     format = 'CONFIG'
 
-    def parse(self):
-        with openany(self.filename, 'r') as inf:
+    def parse(self, **kwargs):
+        with openany(self.filename) as inf:
             inf.readline()
             levcfg, imcon, megatm = np.int64(inf.readline().split()[:3])
             if not imcon == 0:
@@ -127,8 +127,8 @@ class HistoryParser(TopologyReaderBase):
     """
     format = 'HISTORY'
 
-    def parse(self):
-        with openany(self.filename, 'r') as inf:
+    def parse(self, **kwargs):
+        with openany(self.filename) as inf:
             inf.readline()
             levcfg, imcon, megatm = np.int64(inf.readline().split()[:3])
             inf.readline()

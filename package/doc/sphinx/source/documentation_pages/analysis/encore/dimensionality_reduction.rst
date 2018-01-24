@@ -14,5 +14,5 @@ Dimensionality reduction algorithms
 The following dimensionality reduction algorithms are always natively
 available:
 
-.. autoclass:: MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed
+.. automodule:: MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed
    :members:

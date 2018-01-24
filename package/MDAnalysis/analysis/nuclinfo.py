@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -312,11 +312,7 @@ def phase_cp(universe, seg, i):
          + (r5_d * cos(4 * pi * 4.0 / 5.0))) * sqrt(2.0 / 5.0)
 
     phase_ang = (atan2(D, C) + (pi / 2.)) * 180. / pi
-    if phase_ang < 0:
-        phase_ang = phase_ang + 360
-    else:
-        phase_ang
-    return phase_ang
+    return phase_ang % 360
 
 
 def phase_as(universe, seg, i):
@@ -385,11 +381,7 @@ def phase_as(universe, seg, i):
          + (data5 * cos(2 * 2 * pi * (5 - 1.) / 5.))) * 2. / 5.
 
     phase_ang = atan2(B, A) * 180. / pi
-    if phase_ang < 0:
-        phase_ang = phase_ang + 360
-    else:
-        phase_ang
-    return phase_ang
+    return phase_ang % 360
 
 
 def tors(universe, seg, i):
@@ -460,26 +452,14 @@ def tors(universe, seg, i):
                                   " atom {0!s} {1!s} N9 ".format(seg, i),
                                   " atom {0!s} {1!s} C4  ".format(seg, i))
 
-    alpha = a.dihedral.value()
-    beta = b.dihedral.value()
-    gamma = g.dihedral.value()
-    delta = d.dihedral.value()
-    epsilon = e.dihedral.value()
-    zeta = z.dihedral.value()
-    chi = c.dihedral.value()
+    alpha = a.dihedral.value() % 360
+    beta = b.dihedral.value() % 360
+    gamma = g.dihedral.value() % 360
+    delta = d.dihedral.value() % 360
+    epsilon = e.dihedral.value() % 360
+    zeta = z.dihedral.value() % 360
+    chi = c.dihedral.value() % 360
 
-    if alpha < 0:
-        alpha = alpha + 360
-    if beta < 0:
-        beta = beta + 360
-    if gamma < 0:
-        gamma = gamma + 360
-    if epsilon < 0:
-        epsilon = epsilon + 360
-    if zeta < 0:
-        zeta = zeta + 360
-    if chi < 0:
-        chi = chi + 360
     return [alpha, beta, gamma, delta, epsilon, zeta, chi]
 
 
@@ -509,9 +489,7 @@ def tors_alpha(universe, seg, i):
                               " atom {0!s} {1!s} P  ".format(seg, i),
                               " atom {0!s} {1!s} O5\' ".format(seg, i),
                               " atom {0!s} {1!s} C5\' ".format(seg, i))
-    alpha = a.dihedral.value()
-    if alpha < 0:
-        alpha = alpha + 360
+    alpha = a.dihedral.value() % 360
     return alpha
 
 
@@ -541,9 +519,7 @@ def tors_beta(universe, seg, i):
                               " atom {0!s} {1!s} O5\' ".format(seg, i),
                               " atom {0!s} {1!s} C5\' ".format(seg, i),
                               " atom {0!s} {1!s} C4\' ".format(seg, i))
-    beta = b.dihedral.value()
-    if beta < 0:
-        beta = beta + 360
+    beta = b.dihedral.value() % 360
     return beta
 
 
@@ -573,9 +549,7 @@ def tors_gamma(universe, seg, i):
                               " atom {0!s} {1!s} C5\' ".format(seg, i),
                               " atom {0!s} {1!s} C4\' ".format(seg, i),
                               " atom {0!s} {1!s} C3\' ".format(seg, i))
-    gamma = g.dihedral.value()
-    if gamma < 0:
-        gamma = gamma + 360
+    gamma = g.dihedral.value() % 360
     return gamma
 
 
@@ -605,9 +579,7 @@ def tors_delta(universe, seg, i):
                               " atom {0!s} {1!s} C4\' ".format(seg, i),
                               " atom {0!s} {1!s} C3\' ".format(seg, i),
                               " atom {0!s} {1!s} O3\' ".format(seg, i))
-    delta = d.dihedral.value()
-    if delta < 0:
-        delta = delta + 360
+    delta = d.dihedral.value() % 360
     return delta
 
 
@@ -637,9 +609,7 @@ def tors_eps(universe, seg, i):
                               " atom {0!s} {1!s} C3\' ".format(seg, i),
                               " atom {0!s} {1!s} O3\' ".format(seg, i),
                               " atom {0!s} {1!s} P    ".format(seg, i + 1))
-    epsilon = e.dihedral.value()
-    if epsilon < 0:
-        epsilon = epsilon + 360
+    epsilon = e.dihedral.value() % 360
     return epsilon
 
 
@@ -669,9 +639,7 @@ def tors_zeta(universe, seg, i):
                               " atom {0!s} {1!s} O3\' ".format(seg, i),
                               " atom {0!s} {1!s} P    ".format(seg, i + 1),
                               " atom {0!s} {1!s} O5\' ".format(seg, i + 1))
-    zeta = z.dihedral.value()
-    if zeta < 0:
-        zeta = zeta + 360
+    zeta = z.dihedral.value() % 360
     return zeta
 
 
@@ -706,9 +674,7 @@ def tors_chi(universe, seg, i):
                                   " atom {0!s} {1!s} C1\' ".format(seg, i),
                                   " atom {0!s} {1!s} N9 ".format(seg, i),
                                   " atom {0!s} {1!s} C4  ".format(seg, i))
-    chi = c.dihedral.value()
-    if chi < 0:
-        chi = chi + 360
+    chi = c.dihedral.value() % 360
     return chi
 
 
@@ -742,12 +708,10 @@ def hydroxyl(universe, seg, i):
                               " atom {0!s} {1!s} O2\' ".format(seg, i),
                               " atom {0!s} {1!s} H2\'\' ".format(seg, i))
     try:
-        hydr = h.dihedral.value()
+        hydr = h.dihedral.value() % 360
     except ValueError:
         raise ValueError("Resid {0} does not contain atoms C1', C2', O2', H2' but atoms {1}"
                          .format(i, str(list(h.atoms))))
-    if hydr < 0:
-        hydr = hydr + 360
     return hydr
 
 
@@ -796,7 +760,5 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i,
     x = [bf1.center_of_mass(), bf2.center_of_mass(),
          bf3.center_of_mass(), bf4.center_of_mass()]
     pseudo = mdamath.dihedral(x[0] - x[1], x[1] - x[2], x[2] - x[3])
-    pseudo = np.rad2deg(pseudo)
-    if pseudo < 0:
-        pseudo = pseudo + 360
+    pseudo = np.rad2deg(pseudo) % 360
     return pseudo

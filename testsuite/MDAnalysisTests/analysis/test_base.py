@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,19 +20,19 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import division, absolute_import
+
+import pytest
 from six.moves import range
 
 import numpy as np
 
-from numpy.testing import (
-    assert_, dec, raises, assert_raises, assert_equal, assert_array_equal
-)
+from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import base
 
 from MDAnalysisTests.datafiles import PSF, DCD
-from MDAnalysisTests import parser_not_found
+from MDAnalysisTests.util import no_deprecated_call
 
 
 class FrameAnalysis(base.AnalysisBase):
@@ -60,53 +60,55 @@ class OldAPIAnalysis(base.AnalysisBase):
         pass
 
 
-class TestAnalysisBase(object):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def setUp(self):
-        # has 98 frames
-        self.u = mda.Universe(PSF, DCD)
+@pytest.fixture()
+def u():
+    return mda.Universe(PSF, DCD)
 
-    def tearDown(self):
-        del self.u
 
-    def test_default(self):
-        an = FrameAnalysis(self.u.trajectory).run()
-        assert_equal(an.n_frames, len(self.u.trajectory))
-        assert_equal(an.frames, list(range(len(self.u.trajectory))))
+def test_default(u):
+    an = FrameAnalysis(u.trajectory).run()
+    assert an.n_frames == len(u.trajectory)
+    assert_equal(an.frames, list(range(len(u.trajectory))))
 
-    def test_start(self):
-        an = FrameAnalysis(self.u.trajectory, start=20).run()
-        assert_equal(an.n_frames, len(self.u.trajectory) - 20)
-        assert_equal(an.frames, list(range(20, len(self.u.trajectory))))
 
-    def test_stop(self):
-        an = FrameAnalysis(self.u.trajectory, stop=20).run()
-        assert_equal(an.n_frames, 20)
-        assert_equal(an.frames, list(range(20)))
+def test_start(u):
+    an = FrameAnalysis(u.trajectory, start=20).run()
+    assert an.n_frames == len(u.trajectory) - 20
+    assert_equal(an.frames, list(range(20, len(u.trajectory))))
 
-    def test_step(self):
-        an = FrameAnalysis(self.u.trajectory, step=20).run()
-        assert_equal(an.n_frames, 5)
-        assert_equal(an.frames, list(range(98))[::20])
 
-    def test_verbose(self):
-        a = FrameAnalysis(self.u.trajectory, verbose=True)
-        assert_(a._verbose)
-        assert_(not a._quiet)
+def test_stop(u):
+    an = FrameAnalysis(u.trajectory, stop=20).run()
+    assert an.n_frames == 20
+    assert_equal(an.frames, list(range(20)))
 
-    @raises(NotImplementedError)
-    def test_incomplete_defined_analysis(self):
-        IncompleteAnalysis(self.u.trajectory).run()
 
-    def test_old_api(self):
-        OldAPIAnalysis(self.u.trajectory).run()
+def test_step(u):
+    an = FrameAnalysis(u.trajectory, step=20).run()
+    assert an.n_frames == 5
+    assert_equal(an.frames, list(range(98))[::20])
 
-    def test_start_stop_step_conversion(self):
-        an = FrameAnalysis(self.u.trajectory)
-        assert_equal(an.start, 0)
-        assert_equal(an.stop, self.u.trajectory.n_frames)
-        assert_equal(an.step, 1)
+
+def test_verbose(u):
+    a = FrameAnalysis(u.trajectory, verbose=True)
+    assert a._verbose
+    assert not a._quiet
+
+
+def test_incomplete_defined_analysis(u):
+    with pytest.raises(NotImplementedError):
+        IncompleteAnalysis(u.trajectory).run()
+
+
+def test_old_api(u):
+    OldAPIAnalysis(u.trajectory).run()
+
+
+def test_start_stop_step_conversion(u):
+    an = FrameAnalysis(u.trajectory)
+    assert an.start == 0
+    assert an.stop == u.trajectory.n_frames
+    assert an.step == 1
 
 
 def test_filter_baseanalysis_kwargs():
@@ -118,36 +120,34 @@ def test_filter_baseanalysis_kwargs():
 
     kwargs = {'step': 3, 'foo': None}
 
-    assert_raises(ValueError, base._filter_baseanalysis_kwargs, bad_f, kwargs)
+    with pytest.raises(ValueError):
+        base._filter_baseanalysis_kwargs(bad_f, kwargs)
 
     base_kwargs, kwargs = base._filter_baseanalysis_kwargs(good_f, kwargs)
 
-    assert_equal(1, len(kwargs))
-    assert_equal(kwargs['foo'], None)
+    assert 1 == len(kwargs)
+    assert kwargs['foo'] == None
 
-    assert_equal(5, len(base_kwargs))
-    assert_equal(base_kwargs['start'], None)
-    assert_equal(base_kwargs['step'], 3)
-    assert_equal(base_kwargs['stop'], None)
-    assert_equal(base_kwargs['quiet'], None)
-    assert_equal(base_kwargs['verbose'], None)
+    assert 5 == len(base_kwargs)
+    assert base_kwargs['start'] is None
+    assert base_kwargs['step'] == 3
+    assert base_kwargs['stop'] is None
+    assert base_kwargs['quiet'] is None
+    assert base_kwargs['verbose'] is None
 
 
 def simple_function(mobile):
     return mobile.center_of_geometry()
 
 
-@dec.skipif(parser_not_found('DCD'),
-            'DCD parser not available. Are you using python 3?')
 def test_AnalysisFromFunction():
     u = mda.Universe(PSF, DCD)
     step = 2
-    ana1 = base.AnalysisFromFunction(simple_function, mobile=u.atoms,
-                                     step=step).run()
-    ana2 = base.AnalysisFromFunction(simple_function, u.atoms,
-                                     step=step).run()
-    ana3 = base.AnalysisFromFunction(simple_function, u.trajectory, u.atoms,
-                                     step=step).run()
+    ana1 = base.AnalysisFromFunction(
+        simple_function, mobile=u.atoms, step=step).run()
+    ana2 = base.AnalysisFromFunction(simple_function, u.atoms, step=step).run()
+    ana3 = base.AnalysisFromFunction(
+        simple_function, u.trajectory, u.atoms, step=step).run()
 
     results = []
     for ts in u.trajectory[::step]:
@@ -155,15 +155,13 @@ def test_AnalysisFromFunction():
     results = np.asarray(results)
 
     for ana in (ana1, ana2, ana3):
-        assert_array_equal(results, ana.results)
+        assert_equal(results, ana.results)
 
 
-@dec.skipif(parser_not_found('DCD'),
-            'DCD parser not available. Are you using python 3?')
 def test_analysis_class():
     ana_class = base.analysis_class(simple_function)
-    assert_(issubclass(ana_class, base.AnalysisBase))
-    assert_(issubclass(ana_class, base.AnalysisFromFunction))
+    assert issubclass(ana_class, base.AnalysisBase)
+    assert issubclass(ana_class, base.AnalysisFromFunction)
 
     u = mda.Universe(PSF, DCD)
     step = 2
@@ -174,6 +172,21 @@ def test_analysis_class():
         results.append(simple_function(u.atoms))
     results = np.asarray(results)
 
-    assert_array_equal(results, ana.results)
+    assert_equal(results, ana.results)
+    with pytest.raises(ValueError):
+        ana_class(2)
 
-    assert_raises(ValueError, ana_class, 2)
+
+def test_analysis_class_decorator():
+    # Issue #1511
+    # analysis_class should not raise
+    # a DeprecationWarning
+    u = mda.Universe(PSF, DCD)
+
+    def distance(a, b):
+        return np.linalg.norm((a.centroid() - b.centroid()))
+
+    Distances = base.analysis_class(distance)
+
+    with no_deprecated_call():
+        d = Distances(u.atoms[:10], u.atoms[10:20]).run()

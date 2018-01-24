@@ -101,7 +101,7 @@ def get_reader_for(filename, format=None):
             "Unknown coordinate trajectory format '{0}' for '{1}'. The FORMATs \n"
             "           {2}\n"
             "           are implemented in MDAnalysis.\n"
-            "           See http://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1\n"
+            "           See https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1\n"
             "           Use the format keyword to explicitly set the format: 'Universe(...,format=FORMAT)'\n"
             "           For missing formats, raise an issue at "
             "http://issues.mdanalysis.org".format(
@@ -163,9 +163,11 @@ def get_writer_for(filename, format=None, multiframe=None):
     elif format is None:
         try:
             root, ext = util.get_ext(filename)
-        except AttributeError:
+        except (TypeError, AttributeError):
             # An AttributeError is raised if filename cannot
             # be manipulated as a string.
+            # A TypeError is raised in py3.6
+            # "TypeError: expected str, bytes or os.PathLike object"
             raise ValueError('File format could not be guessed from "{0}"'
                              .format(filename))
         else:
@@ -226,14 +228,18 @@ def get_parser_for(filename, format=None):
     try:
         return _PARSERS[format]
     except KeyError:
-        raise ValueError(
-            "'{0}' isn't a valid topology format\n"
-            "   You can use 'Universe(topology, ..., topology_format=FORMAT)' "
-            "   to explicitly specify the format and\n"
-            "   override automatic detection. Known FORMATs are:\n"
-            "   {1}\n"
-            "   See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
-            "   For missing formats, raise an issue at "
-            "   http://issues.mdanalysis.org".format(format, _PARSERS.keys()))
-
-
+        try:
+            rdr = get_reader_for(filename)
+        except ValueError:
+            raise ValueError(
+                "'{0}' isn't a valid topology format, nor a coordinate format\n"
+                "   from which a topology can be minimally inferred.\n"
+                "   You can use 'Universe(topology, ..., topology_format=FORMAT)'\n"
+                "   to explicitly specify the format and\n"
+                "   override automatic detection. Known FORMATs are:\n"
+                "   {1}\n"
+                "   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
+                "   For missing formats, raise an issue at \n"
+                "   http://issues.mdanalysis.org".format(format, _PARSERS.keys()))
+        else:
+            return _PARSERS['MINIMAL']

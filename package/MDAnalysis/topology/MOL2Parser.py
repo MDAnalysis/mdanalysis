@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -83,7 +83,7 @@ class MOL2Parser(TopologyReaderBase):
     """
     format = 'MOL2'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Parse MOL2 file *filename* and return the dict `structure`.
 
         Returns

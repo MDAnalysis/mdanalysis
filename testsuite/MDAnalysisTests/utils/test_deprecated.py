@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -25,64 +25,30 @@
 #   will be removed in 1.0)
 from __future__ import absolute_import
 
-from numpy.testing import assert_raises
-
-class TestImports(object):
-    def test_core_units(self):
-        try:
-            import MDAnalysis.core.units
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.units not available")
-
-    def test_core_util(self):
-        try:
-            import MDAnalysis.core.util
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.util not available")
-
-    def test_core_log(self):
-        try:
-            import MDAnalysis.core.log
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.log not available")
-
-    def test_core_distances(self):
-        try:
-            import MDAnalysis.core.distances
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.distances not available")
-
-    def test_core_transformations(self):
-        try:
-            import MDAnalysis.core.transformations
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.transformations not available")
-
-    def test_core_qcprot(self):
-        try:
-            import MDAnalysis.core.qcprot
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.qcprot not available")
-
-    def test_KDTree(self):
-        try:
-            import MDAnalysis.KDTree
-        except ImportError:
-            raise AssertionError("MDAnalysis.KDTree not available")
-
-    def test_analysis_x3dna(self):
-        try:
-            import MDAnalysis.analysis.x3dna
-            from MDAnalysis.analysis.x3dna import X3DNA
-        except ImportError:
-            raise AssertionError("MDAnalysis.analysis.x3dna not available")
-
-def test_collections_NotImplementedError():
-    import MDAnalysis
-    with assert_raises(NotImplementedError):
-        MDAnalysis.collection.clear()
+import pytest
 
 
+@pytest.mark.parametrize('package', [
+    "MDAnalysis.core.units",
+    "MDAnalysis.core.util",
+    "MDAnalysis.core.log",
+    "MDAnalysis.core.distances",
+    "MDAnalysis.core.transformations",
+    "MDAnalysis.core.qcprot",
+    "MDAnalysis.KDTree",
+    "MDAnalysis.analysis.x3dna"
+
+])
+def test_import(package):
+    try:
+        with pytest.warns(DeprecationWarning):
+            __import__(package)
+    except ImportError:
+        pytest.fail('Failed to import {0}'.format(package))
 
 
-
+def test_analysis_x3dna():
+    try:
+        from MDAnalysis.analysis.x3dna import X3DNA
+    except ImportError:
+        raise AssertionError("MDAnalysis.analysis.x3dna not available")

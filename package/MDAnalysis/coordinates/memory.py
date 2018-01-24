@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -187,6 +187,7 @@ from __future__ import absolute_import
 import logging
 import errno
 import numpy as np
+import warnings
 
 from . import base
 
@@ -286,6 +287,29 @@ class MemoryReader(base.ProtoReader):
         self.ts.time = -1
         self._read_next_timestep()
 
+    @staticmethod
+    def parse_n_atoms(filename, order='fac', **kwargs):
+        """Deduce number of atoms in a given array of coordinates
+
+        Parameters
+        ----------
+        filename : numpy.ndarray
+          data which will be used later in MemoryReader
+        order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
+            the order/shape of the return data array, corresponding
+            to (a)tom, (f)rame, (c)oordinates all six combinations
+            of 'a', 'f', 'c' are allowed ie "fac" - return array
+            where the shape is (frame, number of atoms,
+            coordinates).
+
+        Returns
+        -------
+        n_atoms : int
+          number of atoms in system
+        """
+        # assume filename is a numpy array
+        return filename.shape[order.find('a')]
+
     def set_array(self, coordinate_array, order='fac'):
         """
         Set underlying array in desired column order.
@@ -316,7 +340,7 @@ class MemoryReader(base.ProtoReader):
         self.ts.frame = -1
         self.ts.time = -1
 
-    def timeseries(self, asel=None, start=0, stop=-1, step=1, format='afc'):
+    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc', format=None):
         """Return a subset of coordinate data for an AtomGroup in desired
         column order/format. If no selection is given, it will return a view of
         the underlying array, while a copy is returned otherwise.
@@ -332,12 +356,14 @@ class MemoryReader(base.ProtoReader):
         stop : int (optional)
         step : int (optional)
             range of trajectory to access, `start` and `stop` are *inclusive*
-        format : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
+        order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
             coordinates).
+        format : str (optional)
+            deprecated, equivalent to `order`
 
         Note
         ----
@@ -345,9 +371,16 @@ class MemoryReader(base.ProtoReader):
         :class:`MDAnalysis.coordinates.DCD.timeseries` interface. It is
         identical to the `order` parameter for :class:`MemoryReader`. In a
         future version, `format` will be renamed to `order`.
+
+
+        .. deprecated:: 0.17.0
+           `format` has been deprecated in favor of the standard keyword `order`.
         """
-        # Renaming 'format' to 'order' here for internal consistency in this class
-        order = format
+        if format is not None:
+            warnings.warn(
+                "'format' is deprecated and will be removed in 1.0. Use 'order' instead",
+                category=DeprecationWarning)
+            order = format
 
         array = self.get_array()
         if order == self.stored_order:

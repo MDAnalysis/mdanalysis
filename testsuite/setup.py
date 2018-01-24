@@ -2,7 +2,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -131,7 +131,7 @@ if __name__ == '__main__':
     except (OSError, IOError):
         warnings.warn('Cannot write the list of authors.')
 
-    RELEASE = "0.16.2"  # this must be in-sync with MDAnalysis
+    RELEASE = "0.17.0"  # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
@@ -164,7 +164,7 @@ For details see the report for `Issue 87`_.
           author_email='naveen.michaudagrawal@gmail.com',
           maintainer='Richard Gowers',
           maintainer_email='mdnalysis-discussion@googlegroups.com',
-          url='http://www.mdanalysis.org',
+          url='https://www.mdanalysis.org',
           download_url='https://github.com/MDAnalysis/mdanalysis/releases',
           license='GPL 2',
           packages=find_packages(),
@@ -206,17 +206,18 @@ For details see the report for `Issue 87`_.
                          'data/*.xml',
                          'data/coordinates/*',
                          'data/*xvg',
-                         'data/*.mmtf', 'data/*.mmtf.gz', 'data/analysis/*'
+                         'data/*.mmtf', 'data/*.mmtf.gz', 'data/analysis/*',
+                         'data/*.gsd',
                         ],
           },
           classifiers=CLASSIFIERS,
           long_description=LONG_DESCRIPTION,
           install_requires=[
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
-              'numpy>=1.10.4',
-              'nose>=1.3.7',
+              'pytest>=3.1.2',
+              'hypothesis',
               'psutil>=4.0.2',
-              'mock>=2.0.0',
+              'mock>=2.0.0',  # replace with unittest.mock in python 3 only version
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)

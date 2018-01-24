@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,26 +20,27 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+from os.path import abspath, basename, dirname, expanduser, normpath, relpath, split, splitext
+
 import six
 from six.moves import range, cStringIO, StringIO
 
+import pytest
 import numpy as np
-from numpy.testing import (TestCase, dec,
-                           assert_equal, assert_almost_equal,
-                           assert_array_almost_equal,
-                           )
+from numpy.testing import assert_equal, assert_almost_equal, assert_array_almost_equal
+
 
 import MDAnalysis
 import MDAnalysis.lib.util as util
 import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
-from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import tempdir
 
 import os
 
 
-class TestIsstream(TestCase):
+class TestIsstream(object):
     def test_hasmethod(self):
         obj = "random string"
         assert_equal(util.hasmethod(obj, "rfind"), True)
@@ -74,7 +75,7 @@ class TestIsstream(TestCase):
 
     def test_StringIO_read(self):
         with open(datafiles.PSF, "r") as f:
-            obj = StringIO(f)
+            obj = StringIO(f.read())
         assert_equal(util.isstream(obj), True)
         obj.close()
 
@@ -84,16 +85,15 @@ class TestIsstream(TestCase):
         obj.close()
 
 
-class TestNamedStream(TestCase):
-    def setUp(self):
-        self.filename = datafiles.PSF
-        self.numlines = 12326  # len(open(self.filename).readlines())
-        self.text = [
-            "The Jabberwock, with eyes of flame,\n",
-            "Came whiffling through the tulgey wood,\n",
-            "And burbled as it came!"]
-        self.textname = "jabberwock.txt"
-        self.numtextlines = len(self.text)
+class TestNamedStream(object):
+    filename = datafiles.PSF
+    numlines = 12326  # len(open(self.filename).readlines())
+    text = [
+        "The Jabberwock, with eyes of flame,\n",
+        "Came whiffling through the tulgey wood,\n",
+        "And burbled as it came!"
+    ]
+    textname = "jabberwock.txt"
 
     def test_closing(self):
         obj = cStringIO("".join(self.text))
@@ -116,9 +116,9 @@ class TestNamedStream(TestCase):
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.name, self.textname)
         assert_equal(str(ns), self.textname)
-        assert_equal(len(ns.readlines()), self.numtextlines)
+        assert_equal(len(ns.readlines()), len(self.text))
         ns.reset()
-        assert_equal(len(ns.readlines()), self.numtextlines)
+        assert_equal(len(ns.readlines()), len(self.text))
         ns.close(force=True)
 
     def test_File_read(self):
@@ -146,20 +146,25 @@ class TestNamedStream(TestCase):
     def test_File_write(self):
         with tempdir.in_tempdir():
             outfile = "lookingglas.txt"
-            try:
-                obj = open(outfile, "w")
-                ns = util.NamedStream(obj, outfile, close=True)
-                ns.writelines(self.text)
-                ns.close()
-                text = open(outfile).readlines()
+            with open(outfile, "w") as obj:
+                with util.NamedStream(obj, outfile, close=True) as ns:
+                    assert_equal(ns.name, outfile)
+                    assert_equal(str(ns), outfile)
+                    ns.writelines(self.text)
 
-                assert_equal(ns.name, outfile)
-                assert_equal(str(ns), outfile)
-                assert_equal(len(text), len(self.text))
-                assert_equal("".join(text), "".join(self.text))
-            finally:
-                ns.close()
-                obj.close()
+            with open(outfile) as fh:
+                text = fh.readlines()
+
+            assert_equal(len(text), len(self.text))
+            assert_equal("".join(text), "".join(self.text))
+
+    def test_matryoshka(self):
+        obj = cStringIO()
+        ns = util.NamedStream(obj, 'r')
+        with pytest.warns(RuntimeWarning):
+            ns2 = util.NamedStream(ns, 'f')
+        assert not isinstance(ns2.stream, util.NamedStream)
+        assert ns2.name == 'f'
 
 
 class TestNamedStream_filename_behavior(object):
@@ -173,38 +178,43 @@ class TestNamedStream_filename_behavior(object):
         obj = cStringIO()
         return util.NamedStream(obj, name)
 
-    def test_ospath_funcs(self):
-        ns = self.create_NamedStream()
-
+    @pytest.mark.parametrize('func', (
+            abspath,
+            basename,
+            dirname,
+            expanduser,
+            normpath,
+            relpath,
+            split,
+            splitext
+    ))
+    def test_func(self, func):
         # - "expandvars" gave Segmentation fault (OS X 10.6, Python 2.7.11 -- orbeckst)
         # - "expanduser" will either return a string if it carried out interpolation
         #   or "will do nothing" and return the NamedStream (see extra test below).
         #   On systems without a user or HOME, it will also do nothing and the test
         #   below will fail.
-        funcs = ("abspath", "basename", "dirname", "expanduser",
-                 "normpath", "relpath", "split", "splitext")
-        def _test_func(funcname, fn=self.textname, ns=ns):
-            func = getattr(os.path, funcname)
-            reference = func(fn)
-            value = func(ns)
-            assert_equal(value, reference,
-                         err_msg=("os.path.{0}() does not work with "
-                                  "NamedStream").format(funcname))
+        ns = self.create_NamedStream()
+        fn = self.textname
+        reference = func(fn)
+        value = func(ns)
+        assert_equal(value, reference,
+                     err_msg=("os.path.{0}() does not work with "
+                              "NamedStream").format(func.__name__))
+
+    def test_join(self, tmpdir, funcname="join"):
         # join not included because of different call signature
         # but added first argument for the sake of it showing up in the verbose
         # nose output
-        def _test_join(funcname="join", fn=self.textname, ns=ns, path="/tmp/MDAnalysisTests"):
-            reference = os.path.join(path, fn)
-            value = os.path.join(path, ns)
-            assert_equal(value, reference,
-                         err_msg=("os.path.{0}() does not work with "
-                                  "NamedStream").format(funcname))
-        for func in funcs:
-            yield _test_func, func
-        yield _test_join, "join"
+        ns = self.create_NamedStream()
+        fn = self.textname
+        reference = str(tmpdir.join(fn))
+        value = os.path.join(str(tmpdir), ns)
+        assert_equal(value, reference,
+                     err_msg=("os.path.{0}() does not work with "
+                              "NamedStream").format(funcname))
 
-    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
-    @dec.skipif(True)
+    @pytest.mark.skipif(True, reason='See #1534]')
     def test_expanduser_noexpansion_returns_NamedStream(self):
         ns = self.create_NamedStream("de/zipferlack.txt")  # no tilde ~ in name!
         reference = ns
@@ -213,11 +223,9 @@ class TestNamedStream_filename_behavior(object):
                      err_msg=("os.path.expanduser() without '~' did not "
                               "return NamedStream --- weird!!"))
 
-    # expandvars(NamedStream) does not work interactively, so it is a knownfailure
-    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
-    @dec.skipif(True)
-    @dec.skipif("HOME" not in os.environ)
-    @knownfailure
+    @pytest.mark.skipif(True, reason='See #1534')
+    @pytest.mark.skipif("HOME" not in os.environ, reason='It is needed')
+    @pytest.mark.xfail
     def test_expandvars(self):
         name = "${HOME}/stories/jabberwock.txt"
         ns = self.create_NamedStream(name)
@@ -226,8 +234,7 @@ class TestNamedStream_filename_behavior(object):
         assert_equal(value, reference,
                      err_msg="os.path.expandvars() did not expand HOME")
 
-    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
-    @dec.skipif(True)
+    @pytest.mark.skipif(True, reason='See #1534')
     def test_expandvars_noexpansion_returns_NamedStream(self):
         ns = self.create_NamedStream() # no $VAR constructs
         reference = ns
@@ -241,7 +248,7 @@ class TestNamedStream_filename_behavior(object):
         try:
             assert_equal(ns + "foo", self.textname + "foo")
         except TypeError:
-            raise AssertionError("NamedStream does not support  "
+            raise pytest.fail("NamedStream does not support  "
                                  "string concatenation, NamedStream + str")
 
     def test_radd(self):
@@ -249,7 +256,7 @@ class TestNamedStream_filename_behavior(object):
         try:
             assert_equal("foo" + ns, "foo" + self.textname)
         except TypeError:
-            raise AssertionError("NamedStream does not support right "
+            raise pytest.fail("NamedStream does not support right "
                                  "string concatenation, str + NamedStream")
 
 
@@ -335,7 +342,7 @@ del _StreamData
 
 
 # possibly add tests to individual readers instead?
-class TestStreamIO(TestCase, RefAdKSmall):
+class TestStreamIO(RefAdKSmall):
     def test_PrimitivePDBReader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
@@ -345,7 +352,7 @@ class TestStreamIO(TestCase, RefAdKSmall):
         try:
             u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         except Exception as err:
-            raise AssertionError("StreamIO not supported:\n>>>>> {0}".format(err))
+            raise pytest.fail("StreamIO not supported:\n>>>>> {0}".format(err))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
     def test_CRDReader(self):
@@ -366,7 +373,7 @@ class TestStreamIO(TestCase, RefAdKSmall):
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
         assert_almost_equal(u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
                             "Total charge (in CHARMM) does not match expected value.")
-        assert_almost_equal(u.atoms.H.charges, self.ref_charmm_Hcharges, 3,
+        assert_almost_equal(u.atoms.select_atoms('name H').charges, self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 
     def test_PDBQTReader(self):

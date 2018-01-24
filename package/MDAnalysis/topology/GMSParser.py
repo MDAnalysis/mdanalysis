@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -84,12 +84,12 @@ class GMSParser(TopologyReaderBase):
     """
     format = 'GMS'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Read list of atoms from a GAMESS file."""
         names = []
         at_charges = []
 
-        with openany(self.filename, 'rt') as inf:
+        with openany(self.filename) as inf:
             while True:
                 line = inf.readline()
                 if not line:

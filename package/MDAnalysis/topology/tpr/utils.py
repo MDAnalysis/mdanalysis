@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -62,6 +62,8 @@ from ...core.topologyattrs import (
     Charges,
     Resids,
     Resnames,
+    Moltypes,
+    Molnums,
     Segids,
     Bonds,
     Angles,
@@ -213,28 +215,35 @@ def do_mtop(data, fver):
     resnames = []
     atomnames = []
     atomtypes = []
+    moltypes = []
+    molnums = []
     charges = []
     masses = []
 
     atom_start_ndx = 0
     res_start_ndx = 0
+    molnum = 0
     for i in range(mtop.nmolblock):
         # molb_type is just an index for moltypes/molecule_types
         mb = do_molblock(data)
         # segment is made to correspond to the molblock as in gromacs, the
         # naming is kind of arbitrary
-        segid = "seg_{0}_{1}".format(i, mtop.moltypes[mb.molb_type].name)
+        molblock = mtop.moltypes[mb.molb_type].name.decode('utf-8')
+        segid = "seg_{0}_{1}".format(i, molblock)
         for j in range(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
                 atomids.append(atomkind.id + atom_start_ndx)
                 segids.append(segid)
                 resids.append(atomkind.resid + res_start_ndx)
-                resnames.append(atomkind.resname)
-                atomnames.append(atomkind.name)
-                atomtypes.append(atomkind.type)
+                resnames.append(atomkind.resname.decode())
+                atomnames.append(atomkind.name.decode())
+                atomtypes.append(atomkind.type.decode())
+                moltypes.append(molblock)
+                molnums.append(molnum)
                 charges.append(atomkind.charge)
                 masses.append(atomkind.mass)
+            molnum += 1
 
             # remap_ method returns [blah, blah, ..] or []
             bonds.extend(mt.remap_bonds(atom_start_ndx))
@@ -260,13 +269,26 @@ def do_mtop(data, fver):
     charges = Charges(np.array(charges, dtype=np.float32))
     masses = Masses(np.array(masses, dtype=np.float32))
 
+    moltypes = np.array(moltypes, dtype=object)
+    molnums = np.array(molnums, dtype=np.int32)
     segids = np.array(segids, dtype=object)
     resids = np.array(resids, dtype=np.int32)
     resnames = np.array(resnames, dtype=object)
     (residx, new_resids,
-     (new_resnames, perres_segids)) = squash_by(resids, resnames, segids)
+     (new_resnames,
+      new_moltypes,
+      new_molnums,
+      perres_segids
+      )
+     ) = squash_by(resids,
+                   resnames,
+                   moltypes,
+                   molnums,
+                   segids)
     residueids = Resids(new_resids)
     residuenames = Resnames(new_resnames)
+    residue_moltypes = Moltypes(new_moltypes)
+    residue_molnums = Molnums(new_molnums)
 
     segidx, perseg_segids = squash_by(perres_segids)[:2]
     segids = Segids(perseg_segids)
@@ -275,6 +297,7 @@ def do_mtop(data, fver):
                    attrs=[atomids, atomnames, atomtypes,
                           charges, masses,
                           residueids, residuenames,
+                          residue_moltypes, residue_molnums,
                           segids],
                    atom_resindex=residx,
                    residue_segindex=segidx)

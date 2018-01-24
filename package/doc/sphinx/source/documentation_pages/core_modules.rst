@@ -24,7 +24,6 @@ classes in this section, namely the
 
    core/universe
    core/groups
-   core/Timeseries
 
 
 .. _topology-system-label:

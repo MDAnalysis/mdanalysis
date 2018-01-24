@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -403,6 +403,6 @@ def merge_universes(universes):
 
     return mda.Universe(
         universes[0].filename,
-        np.concatenate(tuple([e.trajectory.timeseries(format='fac') for e in universes]),
+        np.concatenate(tuple([e.trajectory.timeseries(order='fac') for e in universes]),
                        axis=0),
         format=MemoryReader)

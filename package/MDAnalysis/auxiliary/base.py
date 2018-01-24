@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -413,8 +413,10 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         # the frame being read): the current step should be assigned to a
         # previous frame, and the next step to either the frame being read or a
         # following frame. Move to right position if not.
-        if not (self.step_to_frame(self.step, ts) < ts.frame
-                and self.step_to_frame(self.step+1, ts) >= ts.frame):
+        frame_for_step = self.step_to_frame(self.step, ts)
+        frame_for_next_step = self.step_to_frame(self.step+1, ts)
+        if (frame_for_step is not None and frame_for_next_step is not None
+                and not (frame_for_step < ts.frame <= frame_for_next_step)):
             self.move_to_ts(ts)
 
         self._reset_frame_data() # clear previous frame data

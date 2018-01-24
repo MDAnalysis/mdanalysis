@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -81,7 +81,7 @@ class GMSReader(base.ReaderBase):
         super(GMSReader, self).__init__(outfilename, **kwargs)
 
         # the filename has been parsed to be either b(g)zipped or not
-        self.outfile = util.anyopen(self.filename, 'rt')
+        self.outfile = util.anyopen(self.filename)
 
         # note that, like for xtc and trr files, _n_atoms and _n_frames are used quasi-private variables
         # to prevent the properties being recalculated
@@ -117,7 +117,7 @@ class GMSReader(base.ReaderBase):
             return self._runtyp
 
     def _determine_runtyp(self):
-        with util.openany(self.filename, 'rt') as out:
+        with util.openany(self.filename) as out:
             for line in out:
                 m = re.match(r'^.*RUNTYP=([A-Z]+)\s+.*', line)
                 if m is not None:
@@ -139,7 +139,7 @@ class GMSReader(base.ReaderBase):
             return self._n_atoms
 
     def _read_out_natoms(self):
-        with util.openany(self.filename, 'rt') as out:
+        with util.openany(self.filename) as out:
             for line in out:
                 m = re.match(r'\s*TOTAL NUMBER OF ATOMS\s*=\s*([0-9]+)\s*',line)
                 if m is not None:
@@ -161,14 +161,14 @@ class GMSReader(base.ReaderBase):
 
     def _read_out_n_frames(self):
         if self.runtyp == 'optimize':
-            trigger = re.compile(r'^.NSERCH=.*')
+            trigger = re.compile(b'^.NSERCH=.*')
         elif self.runtyp == 'surface':
-            trigger = re.compile(r'^.COORD 1=.*')
+            trigger = re.compile(b'^.COORD 1=.*')
 
         self._offsets = offsets = []
-        with util.openany(self.filename, 'rt') as out:
+        with util.openany(self.filename, 'rb') as out:
             line = True
-            while not line == '':  # while not EOF
+            while not line == b'':  # while not EOF
                 line = out.readline()
                 if re.match(trigger, line):
                     offsets.append(out.tell() - len(line))
@@ -251,7 +251,7 @@ class GMSReader(base.ReaderBase):
             # must check; otherwise might segmentation fault
             raise IOError(errno.ENOENT, 'GMS file not found', self.filename)
 
-        self.outfile = util.anyopen(self.filename, 'rt')
+        self.outfile = util.anyopen(self.filename)
 
         # reset ts
         ts = self.ts

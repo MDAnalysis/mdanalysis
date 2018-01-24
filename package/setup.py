@@ -2,7 +2,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -41,6 +41,7 @@ Also free to ask on the MDAnalysis mailing list for help:
 (Note that the group really is called `mdnalysis-discussion' because
 Google groups forbids any name that contains the string `anal'.)
 """
+
 from __future__ import print_function
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
@@ -75,7 +76,7 @@ except ImportError:
     cmdclass = {}
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.16.2"
+RELEASE = "0.17.0"
 
 is_release = 'dev' not in RELEASE
 
@@ -252,15 +253,17 @@ def extensions(config):
     use_cython = config.get('use_cython', default=not is_release)
     use_openmp = config.get('use_openmp', default=True)
 
+    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops']
+    define_macros = []
     if config.get('debug_cflags', default=False):
-        extra_compile_args = '\
-            -std=c99 -pedantic -Wall -Wcast-align -Wcast-qual -Wpointer-arith \
-            -Wchar-subscripts -Winline -Wnested-externs -Wbad-function-cast \
-            -Wunreachable-code -Werror'
-        define_macros = [('DEBUG', '1')]
-    else:
-        extra_compile_args = ''
-        define_macros = []
+        extra_compile_args.extend(['-Wall', '-pedantic'])
+        define_macros.extend([('DEBUG', '1')])
+
+    # allow using architecture specific instructions. This allows people to
+    # build optimized versions of MDAnalysis.
+    arch = config.get('march', default=False)
+    if arch:
+        extra_compile_args.append('-march={}'.format(arch))
 
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
@@ -294,16 +297,11 @@ def extensions(config):
 
     include_dirs = [get_numpy_include]
 
-    dcd = MDAExtension('coordinates._dcdmodule',
-                       ['MDAnalysis/coordinates/src/dcd.c'],
-                       include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
-                       define_macros=define_macros,
-                       extra_compile_args=extra_compile_args)
-    dcd_time = MDAExtension('coordinates.dcdtimeseries',
-                         ['MDAnalysis/coordinates/dcdtimeseries' + source_suffix],
-                         include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
-                         define_macros=define_macros,
-                         extra_compile_args=extra_compile_args)
+    libdcd = MDAExtension('lib.formats.libdcd',
+                          ['MDAnalysis/lib/formats/libdcd' + source_suffix],
+                          include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
+                          define_macros=define_macros,
+                          extra_compile_args=extra_compile_args)
     distances = MDAExtension('lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
@@ -315,12 +313,13 @@ def extensions(config):
                                  include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                                  libraries=['m'] + parallel_libraries,
                                  define_macros=define_macros + parallel_macros,
-                                 extra_compile_args=parallel_args,
+                                 extra_compile_args=parallel_args + extra_compile_args,
                                  extra_link_args=parallel_args)
     qcprot = MDAExtension('lib.qcprot',
                           ['MDAnalysis/lib/qcprot' + source_suffix],
                           include_dirs=include_dirs,
-                          extra_compile_args=["-O3", "-ffast-math"])
+                          define_macros=define_macros,
+                          extra_compile_args=extra_compile_args)
     transformation = MDAExtension('lib._transformations',
                                   ['MDAnalysis/lib/src/transformations/transformations.c'],
                                   libraries=['m'],
@@ -328,37 +327,45 @@ def extensions(config):
                                   include_dirs=include_dirs,
                                   extra_compile_args=extra_compile_args)
     libmdaxdr = MDAExtension('lib.formats.libmdaxdr',
-                          sources=['MDAnalysis/lib/formats/libmdaxdr' + source_suffix,
-                                   'MDAnalysis/lib/formats/src/xdrfile.c',
-                                   'MDAnalysis/lib/formats/src/xdrfile_xtc.c',
-                                   'MDAnalysis/lib/formats/src/xdrfile_trr.c',
-                                   'MDAnalysis/lib/formats/src/trr_seek.c',
-                                   'MDAnalysis/lib/formats/src/xtc_seek.c',
-                                   ],
-                          include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
-                                                       'MDAnalysis/lib/formats'],
-                          define_macros=largefile_macros)
+                             sources=['MDAnalysis/lib/formats/libmdaxdr' + source_suffix,
+                                      'MDAnalysis/lib/formats/src/xdrfile.c',
+                                      'MDAnalysis/lib/formats/src/xdrfile_xtc.c',
+                                      'MDAnalysis/lib/formats/src/xdrfile_trr.c',
+                                      'MDAnalysis/lib/formats/src/trr_seek.c',
+                                      'MDAnalysis/lib/formats/src/xtc_seek.c',
+                             ],
+                             include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
+                                                          'MDAnalysis/lib/formats'],
+                             define_macros=largefile_macros + define_macros,
+                             extra_compile_args=extra_compile_args)
     util = MDAExtension('lib.formats.cython_util',
                         sources=['MDAnalysis/lib/formats/cython_util' + source_suffix],
-                        include_dirs=include_dirs)
+                        include_dirs=include_dirs,
+                        define_macros=define_macros,
+                        extra_compile_args=extra_compile_args)
 
     encore_utils = MDAExtension('analysis.encore.cutils',
-                            sources = ['MDAnalysis/analysis/encore/cutils' + source_suffix],
-                            include_dirs = include_dirs,
-                            extra_compile_args = ["-O3", "-ffast-math"])
+                                sources=['MDAnalysis/analysis/encore/cutils' + source_suffix],
+                                include_dirs=include_dirs,
+                                define_macros=define_macros,
+                                extra_compile_args=extra_compile_args)
     ap_clustering = MDAExtension('analysis.encore.clustering.affinityprop',
-                            sources = ['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix, 'MDAnalysis/analysis/encore/clustering/src/ap.c'],
-                            include_dirs = include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
-                            libraries=["m"],
-                            extra_compile_args=["-O3", "-ffast-math","-std=c99"])
+                                 sources=['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix,
+                                          'MDAnalysis/analysis/encore/clustering/src/ap.c'],
+                                 include_dirs=include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
+                                 libraries=["m"],
+                                 define_macros=define_macros,
+                                 extra_compile_args=extra_compile_args)
     spe_dimred = MDAExtension('analysis.encore.dimensionality_reduction.stochasticproxembed',
-                            sources = ['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix, 'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
-                            include_dirs = include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
-                            libraries=["m"],
-                            extra_compile_args=["-O3", "-ffast-math","-std=c99"])
-    pre_exts = [dcd, dcd_time, distances, distances_omp, qcprot,
-                  transformation, libmdaxdr, util, encore_utils,
-                  ap_clustering, spe_dimred]
+                              sources=['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix,
+                                       'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
+                              include_dirs=include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
+                              libraries=["m"],
+                              define_macros=define_macros,
+                              extra_compile_args=extra_compile_args)
+    pre_exts = [libdcd, distances, distances_omp, qcprot,
+                transformation, libmdaxdr, util, encore_utils,
+                ap_clustering, spe_dimred]
 
     cython_generated = []
     if use_cython:
@@ -483,7 +490,7 @@ if __name__ == '__main__':
           author_email='naveen.michaudagrawal@gmail.com',
           maintainer='Richard Gowers',
           maintainer_email='mdnalysis-discussion@googlegroups.com',
-          url='http://www.mdanalysis.org',
+          url='https://www.mdanalysis.org',
           download_url='https://github.com/MDAnalysis/mdanalysis/releases',
           provides=['MDAnalysis'],
           license='GPL 2',
@@ -502,10 +509,11 @@ if __name__ == '__main__':
               'numpy>=1.10.4',
           ],
           install_requires=[
+              'gsd>=1.4.0',
               'numpy>=1.10.4',
               'biopython>=1.59',
               'networkx>=1.0',
-              'GridDataFormats>=0.3.2',
+              'GridDataFormats>=0.4.0',
               'six>=1.4.0',
               'mmtf-python>=1.0.0',
               'joblib',
@@ -516,8 +524,9 @@ if __name__ == '__main__':
           # you might prefer to use the version available through your
           # packaging system
           extras_require={
-              'AMBER': ['netCDF4>=1.0'],  # for AMBER netcdf, also needs HDF5
-                                          # and netcdf-4
+              'AMBER': [
+                  'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
+              ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
@@ -527,8 +536,7 @@ if __name__ == '__main__':
           },
           test_suite="MDAnalysisTests",
           tests_require=[
-              'nose>=1.3.7',
-              'MDAnalysisTests=={0}'.format(RELEASE),  # same as this release!
+              'MDAnalysisTests=={0!s}'.format(RELEASE),  # same as this release!
           ],
           zip_safe=False,  # as a zipped egg the *.so files are not found (at
                            # least in Ubuntu/Linux)

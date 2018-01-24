@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -71,14 +71,14 @@ class XYZParser(TopologyReaderBase):
     """
     format = 'XYZ'
 
-    def parse(self):
+    def parse(self, **kwargs):
         """Read the file and return the structure.
 
         Returns
         -------
         MDAnalysis Topology object
         """
-        with openany(self.filename, 'r') as inf:
+        with openany(self.filename) as inf:
             natoms = int(inf.readline().strip())
             inf.readline()
 

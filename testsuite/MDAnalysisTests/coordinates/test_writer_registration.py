@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,11 +20,11 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import assert_, assert_raises
+
+import pytest
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import WriterBase
-
 
 
 class TestWriterCreation(object):
@@ -44,17 +44,17 @@ class TestWriterCreation(object):
         singleframe = False
 
     def test_default_multiframe(self):
-        assert_(isinstance(mda.Writer('this.magic'), self.MultiMagicWriter))
+        assert isinstance(mda.Writer('this.magic'), self.MultiMagicWriter)
 
     def test_singleframe(self):
         # check that singleframe=False has been respected
-        assert_(isinstance(mda.Writer('this.magic', multiframe=False), self.MagicWriter))
+        assert isinstance(mda.Writer('this.magic', multiframe=False), self.MagicWriter)
 
     def test_multiframe_magic2(self):
         # this will work as we go for multiframe
-        assert_(isinstance(mda.Writer('that.magic2'), self.MultiMagicWriter))
+        assert isinstance(mda.Writer('that.magic2'), self.MultiMagicWriter)
 
     def test_singleframe_magic2(self):
         # this should fail, there isn't a singleframe writer for magic2
-        assert_raises(TypeError, 
-                      mda.Writer, 'that.magic2', multiframe=False)
+        with pytest.raises(TypeError):
+            mda.Writer('that.magic2', multiframe=False)

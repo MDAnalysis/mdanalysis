@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -170,7 +170,7 @@ cdef class _XDRFile:
     cdef str mode
     cdef np.ndarray box
     cdef np.ndarray _offsets
-    cdef int _has_offsets
+    cdef readonly int _has_offsets
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -227,7 +227,7 @@ cdef class _XDRFile:
             opening_mode = b'w'
         else:
             raise IOError('mode must be one of "r" or "w", you '
-                             'supplied {}'.format(mode))
+                          'supplied {}'.format(mode))
         self.mode = mode
 
         if self.mode == 'r':
@@ -274,6 +274,39 @@ cdef class _XDRFile:
             raise IOError('No file currently opened')
         return self.offsets.size
 
+    def __reduce__(self):
+        """low level pickle function. It gives instructions for unpickling which class
+        should be created with arguments to `__cinit__` and the current state
+
+        """
+        return (self.__class__, (self.fname.decode(), self.mode),
+                self.__getstate__())
+
+    def __getstate__(self):
+        """
+        current state
+        """
+        return (self.is_open, self.current_frame, self._offsets,
+                self._has_offsets)
+
+    def __setstate__(self, state):
+        """
+        reset state offsets and current frame
+        """
+        is_open = state[0]
+        # by default the file is open
+        if not is_open:
+            self.close()
+            return
+
+        # set them now to avoid recalculation
+        self._offsets = state[2]
+        self._has_offsets = state[3]
+
+        # where was I
+        current_frame = state[1]
+        self.seek(current_frame)
+
     def seek(self, frame):
         """Seek to Frame.
 
@@ -293,9 +326,11 @@ cdef class _XDRFile:
         cdef int64_t offset
         if frame == 0:
             offset = 0
+        elif frame < 0:
+            raise IOError("Can't seek to negative frame")
         else:
             if frame >= self.offsets.size:
-                raise IOError('Trying to seek over max number of frames')
+                raise EOFError('Trying to seek over max number of frames')
             offset = self.offsets[frame]
         self.reached_eof = False
         ok = xdr_seek(self.xfp, offset, SEEK_SET)
@@ -400,6 +435,11 @@ cdef class TRRFile(_XDRFile):
     >>> with TRRFile('foo.trr') as f:
     >>>     for frame in f:
     >>>         print(frame.x)
+
+    Notes
+    -----
+    This class can be pickled. The pickle will store filename, mode, current
+    frame and offsets
     """
 
     def _calc_natoms(self, fname):
@@ -446,7 +486,7 @@ cdef class TRRFile(_XDRFile):
         IOError
         """
         if self.reached_eof:
-            raise IOError('Reached last frame in TRR, seek to 0')
+            raise EOFError('Reached last frame in TRR, seek to 0')
         if not self.is_open:
             raise IOError('No file opened')
         if self.mode != 'r':
@@ -502,9 +542,13 @@ cdef class TRRFile(_XDRFile):
 
         Parameters
         ----------
-        xyz : ndarray, shape=(`n_atoms`, 3)
-            cartesion coordinates
-        box : ndarray, shape=(3, 3)
+        xyz : array_like, shape=(`n_atoms`, 3), optional
+            cartesion coordinates. Only written if not ``None``.
+        velocity : array_like, shape=(`n_atoms`, 3), optional
+            cartesion velocities. Only written if not ``None``.
+        forces : array_like, shape=(`n_atoms`, 3), optional
+            cartesion forces. Only written if not ``None``.
+        box : array_like, shape=(3, 3)
             Box vectors for this frame
         step : int
             current step number, 1 indexed
@@ -536,15 +580,19 @@ cdef class TRRFile(_XDRFile):
         cdef np.ndarray forces_helper
 
         if xyz is not None:
+            xyz = np.asarray(xyz)
             xyz_helper = np.ascontiguousarray(xyz, dtype=DTYPE)
             xyz_ptr = <float*>xyz_helper.data
         if velocity is not None:
+            velocity = np.asarray(velocity)
             velocity_helper = np.ascontiguousarray(velocity, dtype=DTYPE)
             velocity_ptr = <float*>velocity_helper.data
         if forces is not None:
+            forces = np.asarray(forces)
             forces_helper = np.ascontiguousarray(forces, dtype=DTYPE)
             forces_ptr = <float*>forces_helper.data
 
+        box = np.asarray(box)
         cdef np.ndarray box_helper = np.ascontiguousarray(box, dtype=DTYPE)
         cdef float* box_ptr = <float*>box_helper.data
 
@@ -604,6 +652,11 @@ cdef class XTCFile(_XDRFile):
     >>> with XTCFile('foo.trr') as f:
     >>>     for frame in f:
     >>>         print(frame.x)
+
+    Notes
+    -----
+    This class can be pickled. The pickle will store filename, mode, current
+    frame and offsets
     """
     cdef float precision
 
@@ -651,7 +704,7 @@ cdef class XTCFile(_XDRFile):
         IOError
         """
         if self.reached_eof:
-            raise IOError('Reached last frame in XTC, seek to 0')
+            raise EOFError('Reached last frame in XTC, seek to 0')
         if not self.is_open:
             raise IOError('No file opened')
         if self.mode != 'r':
@@ -685,9 +738,9 @@ cdef class XTCFile(_XDRFile):
 
         Parameters
         ----------
-        xyz : ndarray, shape=(`n_atoms`, 3)
+        xyz : array_like, shape=(`n_atoms`, 3)
             cartesion coordinates
-        box : ndarray, shape=(3, 3)
+        box : array_like, shape=(3, 3)
             Box vectors for this frame
         step : int
             current step number, 1 indexed
@@ -711,6 +764,9 @@ cdef class XTCFile(_XDRFile):
         if self.mode != 'w':
             raise IOError('File opened in mode: {}. Writing only allow '
                           'in mode "w"'.format('self.mode'))
+
+        xyz = np.asarray(xyz)
+        box = np.asarray(box)
 
         cdef DTYPE_T[:, ::1] xyz_view = np.ascontiguousarray(xyz, dtype=DTYPE)
         cdef DTYPE_T[:, ::1] box_view = np.ascontiguousarray(box, dtype=DTYPE)

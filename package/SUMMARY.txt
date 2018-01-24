@@ -22,7 +22,7 @@ out in a range of formats.
 Availability
 ============
 
-**Source code** is available from http://www.mdanalysis.org under the
+**Source code** is available from https://www.mdanalysis.org under the
 `GNU Public Licence, version 2`_, together with the `online
 documentation`_. **Packages** can be downloaded from
 
@@ -73,23 +73,23 @@ For citations of included algorithms and sub-modules please see the references_.
 
 .. Links
 
-.. _MDAnalysis: http://www.mdanalysis.org
+.. _MDAnalysis: https://www.mdanalysis.org
 .. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
-.. _references: http://docs.mdanalysis.org/documentation_pages/references.html
+.. _references: https://docs.mdanalysis.org/documentation_pages/references.html
 .. _GNU Public Licence, version 2: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 .. _Issue Tracker: http://issues.mdanalysis.org
 .. _`mdnalysis-discussion mailing list`:
    http://groups.google.com/group/mdnalysis-discussion
 .. _`online documentation`:
-   http://docs.mdanalysis.org
+   https://docs.mdanalysis.org
 .. _`Table of Supported Coordinate Formats`:
-   http://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1
+   https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1
 .. _`Table of Supported Topology Formats`:   
    https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats
 .. _`atom selection commands`:
-   http://docs.mdanalysis.org/documentation_pages/selections.html#selection-commands
+   https://docs.mdanalysis.org/documentation_pages/selections.html#selection-commands
 .. _`Selection exporters`:
-   http://docs.mdanalysis.org/documentation_pages/selections_modules.html#selection-exporters
+   https://docs.mdanalysis.org/documentation_pages/selections_modules.html#selection-exporters
 .. _NumPy: http://numpy.scipy.org
 .. _CHARMM:  http://www.charmm.org/
 .. _Amber:   http://ambermd.org/

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,17 +20,17 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from six.moves import zip
 import MDAnalysis as mda
 import os
 
-from numpy.testing import (assert_equal, assert_array_almost_equal,
-                           assert_almost_equal, assert_raises)
+from numpy.testing import (
+    assert_equal,
+    assert_almost_equal
+)
 import numpy as np
-
-from unittest import TestCase
-
-from MDAnalysis import NoDataError
 
 from MDAnalysisTests.coordinates.reference import RefTRZ
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
@@ -38,104 +38,103 @@ from MDAnalysisTests.datafiles import (TRZ_psf, TRZ, two_water_gro)
 from MDAnalysisTests import tempdir
 
 
-class TestTRZReader(TestCase, RefTRZ):
-    def setUp(self):
-        self.universe = mda.Universe(TRZ_psf, TRZ)
-        self.trz = self.universe.trajectory
-        self.ts = self.universe.trajectory.ts
-        self.prec = 3
+class TestTRZReader(RefTRZ):
+    prec = 3
 
-    def tearDown(self):
-        del self.universe
-        del self.trz
-        del self.ts
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(TRZ_psf, TRZ)
 
-    def test_load_trz(self):
-        U = self.universe
+    def test_load_trz(self, universe):
+        U = universe
         assert_equal(len(U.atoms), self.ref_n_atoms,
                      "load Universe from PSF and TRZ")
 
-    def test_next_trz(self):
-        assert_equal(self.ts.frame, 0, "starts at first frame")
-        self.trz.next()
-        assert_equal(self.ts.frame, 1, "next returns frame index 1")
+    def test_next_trz(self, universe):
+        assert_equal(universe.trajectory.ts.frame, 0, "starts at first frame")
+        universe.trajectory.next()
+        assert_equal(universe.trajectory.ts.frame, 1,
+                     "next returns frame index 1")
 
-    def test_rewind_trz(self):
+    def test_rewind_trz(self, universe):
         # move to different frame and rewind to get first frame back
-        self.trz[2]
-        self.trz.rewind()
-        assert_equal(self.ts.frame, 0, "rewinding to frame 1")
+        universe.trajectory[2]
+        universe.trajectory.rewind()
+        assert_equal(universe.trajectory.ts.frame, 0, "rewinding to frame 1")
 
-    def test_n_frames(self):
-        assert_equal(self.universe.trajectory.n_frames, self.ref_n_frames,
+    def test_n_frames(self, universe):
+        assert_equal(universe.trajectory.n_frames, self.ref_n_frames,
                      "wrong number of frames in trz")
 
-    def test_seeking(self):
-        self.universe.trajectory[3]
-        assert_equal(self.ts.frame, 3, "loading frame 3")
+    def test_seeking(self, universe):
+        universe.trajectory[3]
+        assert_equal(universe.trajectory.ts.frame, 3, "loading frame 3")
 
-        orig = self.universe.atoms[0:3].positions.copy()
+        orig = universe.atoms[0:3].positions.copy()
 
-        self.universe.trajectory[4]
-        assert_equal(self.ts.frame, 4, "loading frame 4")
-        self.universe.trajectory[3]
+        universe.trajectory[4]
+        assert_equal(universe.trajectory.ts.frame, 4, "loading frame 4")
+        universe.trajectory[3]
 
-        assert_almost_equal(self.universe.atoms[0:3].positions, orig,
+        assert_almost_equal(universe.atoms[0:3].positions, orig,
                             self.prec)
 
-        self.universe.trajectory[0]
-        assert_equal(self.ts.frame, 0, "loading frame 0")
-        self.universe.trajectory[3]
+        universe.trajectory[0]
+        assert_equal(universe.trajectory.ts.frame, 0, "loading frame 0")
+        universe.trajectory[3]
 
-        assert_almost_equal(self.universe.atoms[0:3].positions, orig,
+        assert_almost_equal(universe.atoms[0:3].positions, orig,
                             self.prec)
 
-    def test_volume(self):
+    def test_volume(self, universe):
         # Lower precision here because errors seem to accumulate and
         # throw this off (is rounded value**3)
-        assert_almost_equal(self.ts.volume, self.ref_volume, 1,
+        assert_almost_equal(universe.trajectory.ts.volume, self.ref_volume, 1,
                             "wrong volume for trz")
 
-    def test_unitcell(self):
-        assert_almost_equal(self.ts.dimensions, self.ref_dimensions, self.prec,
+    def test_unitcell(self, universe):
+        assert_almost_equal(universe.trajectory.ts.dimensions,
+                            self.ref_dimensions, self.prec,
                             "wrong dimensions for trz")
 
-    def test_coordinates(self):
-        fortytwo = self.universe.atoms[41]  # 41 because is 0 based
+    def test_coordinates(self, universe):
+        fortytwo = universe.atoms[41]  # 41 because is 0 based
         assert_almost_equal(fortytwo.position, self.ref_coordinates, self.prec,
                             "wrong coordinates in trz")
 
-    def test_velocities(self):
-        fortytwo = self.universe.select_atoms('bynum 42')
+    def test_velocities(self, universe):
+        fortytwo = universe.select_atoms('bynum 42')
         assert_almost_equal(fortytwo.velocities, self.ref_velocities,
                             self.prec, "wrong velocities in trz")
 
-    def test_delta(self):
-        assert_almost_equal(self.trz.delta, self.ref_delta, self.prec,
+    def test_delta(self, universe):
+        assert_almost_equal(universe.trajectory.delta, self.ref_delta,
+                            self.prec,
                             "wrong time delta in trz")
 
-    def test_time(self):
-        assert_almost_equal(self.trz.time, self.ref_time, self.prec,
+    def test_time(self, universe):
+        assert_almost_equal(universe.trajectory.time, self.ref_time, self.prec,
                             "wrong time value in trz")
 
-    def test_title(self):
-        assert_equal(self.ref_title, self.trz.title, "wrong title in trz")
+    def test_title(self, universe):
+        assert_equal(self.ref_title, universe.trajectory.title,
+                     "wrong title in trz")
 
-    def test_get_writer(self):
+    def test_get_writer(self, universe):
         with tempdir.in_tempdir():
             self.outfile = 'test-trz-writer.trz'
-            W = self.trz.Writer(self.outfile)
+            W = universe.trajectory.Writer(self.outfile)
             assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
-            assert_equal(W.n_atoms, self.trz.n_atoms)
+            assert_equal(W.n_atoms, universe.trajectory.n_atoms)
             try:
                 os.unlink(self.outfile)
             except OSError:
                 pass
 
-    def test_get_writer_2(self):
+    def test_get_writer_2(self, universe):
         with tempdir.in_tempdir():
             self.outfile = 'test-trz-writer-1.trz'
-            W = self.trz.Writer(self.outfile, n_atoms=100)
+            W = universe.trajectory.Writer(self.outfile, n_atoms=100)
             assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
             assert_equal(W.n_atoms, 100)
             try:
@@ -144,91 +143,82 @@ class TestTRZReader(TestCase, RefTRZ):
                 pass
 
 
-class TestTRZWriter(TestCase, RefTRZ):
-    def setUp(self):
-        self.universe = mda.Universe(TRZ_psf, TRZ)
-        self.prec = 3
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/test-trz-writer.trz'
-        self.outfile_long = self.tmpdir.name + '/test-trz-writer-long.trz'
-        self.Writer = mda.coordinates.TRZ.TRZWriter
-        self.title_to_write = 'Test title TRZ'
+class TestTRZWriter(RefTRZ):
+    prec = 3
+    writer = mda.coordinates.TRZ.TRZWriter
+    title_to_write = 'Test title TRZ'
 
-    def tearDown(self):
-        del self.universe
-        del self.prec
-        try:
-            os.unlink(self.outfile)
-            os.unlink(self.outfile_long)
-        except OSError:
-            pass
-        del self.Writer
-        del self.tmpdir
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(TRZ_psf, TRZ)
 
-    def test_write_trajectory(self):
-        t = self.universe.trajectory
-        W = self.Writer(self.outfile, t.n_atoms, title=self.title_to_write)
-        self._copy_traj(W)
+    @pytest.fixture()
+    def outfile(self, tmpdir):
+        return str(tmpdir.join('/test-trz-writer.trz'))
 
-    def _copy_traj(self, writer):
-        for ts in self.universe.trajectory:
+    def test_write_trajectory(self, universe, outfile):
+        t = universe.trajectory
+        W = self.writer(outfile, t.n_atoms, title=self.title_to_write)
+        self._copy_traj(W, universe, outfile)
+
+    def _copy_traj(self, writer, universe, outfile):
+        for ts in universe.trajectory:
             writer.write_next_timestep(ts)
         writer.close()
 
-        uw = mda.Universe(TRZ_psf, self.outfile)
+        uw = mda.Universe(TRZ_psf, outfile)
 
         assert_equal(uw.trajectory.title, self.title_to_write,
                      "Title mismatch between original and written files.")
 
-        for orig_ts, written_ts in zip(self.universe.trajectory,
+        for orig_ts, written_ts in zip(universe.trajectory,
                                        uw.trajectory):
-            assert_array_almost_equal(orig_ts._pos, written_ts._pos, self.prec,
-                                      err_msg="Coordinate mismatch between "
-                                      "orig and written at frame %d" %
-                                      orig_ts.frame)
-            assert_array_almost_equal(orig_ts._velocities,
-                                      written_ts._velocities, self.prec,
-                                      err_msg="Coordinate mismatch between "
-                                      "orig and written at frame %d" %
-                                      orig_ts.frame)
-            assert_array_almost_equal(orig_ts._unitcell, written_ts._unitcell,
-                                      self.prec, err_msg="Unitcell mismatch "
-                                      "between orig and written at frame %d" %
-                                      orig_ts.frame)
+            assert_almost_equal(orig_ts._pos, written_ts._pos, self.prec,
+                                err_msg="Coordinate mismatch between "
+                                        "orig and written at frame %d" %
+                                        orig_ts.frame)
+            assert_almost_equal(orig_ts._velocities,
+                                written_ts._velocities, self.prec,
+                                err_msg="Coordinate mismatch between "
+                                        "orig and written at frame %d" %
+                                        orig_ts.frame)
+            assert_almost_equal(orig_ts._unitcell, written_ts._unitcell,
+                                self.prec, err_msg="Unitcell mismatch "
+                                                   "between orig and written at frame %d" %
+                                                   orig_ts.frame)
             for att in orig_ts.data:
-                assert_array_almost_equal(orig_ts.data[att],
-                                          written_ts.data[att], self.prec,
-                                          err_msg="TS equal failed for {0!s}".format(att))
+                assert_almost_equal(orig_ts.data[att],
+                                    written_ts.data[att], self.prec,
+                                    err_msg="TS equal failed for {0!s}".format(
+                                        att))
 
-    def test_long_title(self):
+    def test_long_title(self, outfile):
         title = '*' * 81
-        assert_raises(ValueError,
-                      self.Writer, self.outfile, self.ref_n_atoms, title=title)
+        with pytest.raises(ValueError):
+            self.writer(outfile, self.ref_n_atoms, title=title)
 
 
 class TestTRZWriter2(object):
-    def setUp(self):
-        self.u = mda.Universe(two_water_gro)
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(two_water_gro)
 
-    def tearDown(self):
-        del self.u
-
-    def test_writer_trz_from_other(self):
+    def test_writer_trz_from_other(self, u):
         with tempdir.in_tempdir():
             outfile = 'trz-writer-2.trz'
             W = mda.coordinates.TRZ.TRZWriter(outfile,
-                                              n_atoms=len(self.u.atoms))
+                                              n_atoms=len(u.atoms))
 
-            W.write(self.u.trajectory.ts)
+            W.write(u.trajectory.ts)
             W.close()
 
             u2 = mda.Universe(two_water_gro, outfile)
 
-            assert_array_almost_equal(self.u.atoms.positions,
-                                      u2.atoms.positions, 3)
+            assert_almost_equal(u.atoms.positions,
+                                u2.atoms.positions, 3)
 
 
-class TestWrite_Partial_Timestep(TestCase):
+class TestWrite_Partial_Timestep(object):
     """Test writing a partial timestep made by passing only an atomgroup to
     Writer. (Issue 163)
 
@@ -236,36 +226,25 @@ class TestWrite_Partial_Timestep(TestCase):
     just checks that Writer is receiving this information properly.
 
     """
+    prec = 3
 
-    def setUp(self):
-        self.universe = mda.Universe(TRZ_psf, TRZ)
-        self.ag = self.universe.select_atoms('name N')
-        self.prec = 3
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/partial-write-test.pdb'
-        self.Writer = mda.Writer(self.outfile, n_atoms=len(self.ag))
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(TRZ_psf, TRZ)
 
-    def tearDown(self):
-        del self.universe
-        del self.ag
-        del self.prec
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.Writer
-        del self.tmpdir
+    def test_write_trajectory(self, universe, tmpdir):
+        ag = universe.select_atoms('name N')
+        outfile = str(tmpdir.join('/partial-write-test.pdb'))
+        writer = mda.Writer(outfile, n_atoms=len(ag))
+        writer.write(ag)
+        writer.close()
 
-    def test_write_trajectory(self):
-        self.Writer.write(self.ag)
-        self.Writer.close()
+        u_ag = mda.Universe(outfile)
 
-        u_ag = mda.Universe(self.outfile)
-
-        assert_array_almost_equal(self.ag.positions,
-                                  u_ag.atoms.positions,
-                                  self.prec,
-                                  err_msg="Writing AtomGroup timestep failed.")
+        assert_almost_equal(ag.positions,
+                            u_ag.atoms.positions,
+                            self.prec,
+                            err_msg="Writing AtomGroup timestep failed.")
 
 
 class TestTRZTimestep(BaseTimestepTest):

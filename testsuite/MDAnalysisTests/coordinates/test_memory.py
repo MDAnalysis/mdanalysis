@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -23,21 +23,19 @@ from __future__ import absolute_import
 import numpy as np
 
 import MDAnalysis as mda
+import pytest
 from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysisTests.datafiles import DCD, PSF
 from MDAnalysisTests.coordinates.base import (BaseReference,
                                               MultiframeReaderTest)
 from MDAnalysis.coordinates.memory import Timestep
-from numpy.testing import assert_equal, dec
-from MDAnalysisTests import parser_not_found
+from numpy.testing import assert_equal
 
 
 class MemoryReference(BaseReference):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def __init__(self):
         super(MemoryReference, self).__init__()
-        
+
         self.topology = PSF
         self.trajectory = DCD
         self.universe = mda.Universe(PSF, DCD)
@@ -81,9 +79,10 @@ class MemoryReference(BaseReference):
 
 
 class TestMemoryReader(MultiframeReaderTest):
-    def __init__(self):
-        reference = MemoryReference()
-        super(TestMemoryReader, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def ref():
+        return MemoryReference()
 
     def test_filename_transefer_to_memory(self):
         # MemoryReader should have a filename attribute set to the trajaectory filename
@@ -96,90 +95,88 @@ class TestMemoryReader(MultiframeReaderTest):
         universe = mda.Universe(PSF, DCD)
         coordinates = universe.trajectory.timeseries(universe.atoms)
         universe2 = mda.Universe(PSF, coordinates, format=MemoryReader, order='afc')
-        assert_equal(universe2.trajectory.filename, None)
+        assert universe2.trajectory.filename is None
 
     def test_default_memory_layout(self):
         universe1 = mda.Universe(PSF, DCD, in_memory=True)
         universe2 = mda.Universe(PSF, DCD, in_memory=True, order='fac')
         assert_equal(universe1.trajectory.get_array().shape,
                      universe2.trajectory.get_array().shape)
-        
-    def test_iteration(self):
+
+    def test_iteration(self, ref, reader):
         frames = 0
-        for i, frame in enumerate(self.reader):
+        for i, frame in enumerate(reader):
             frames += 1
-        assert_equal(frames, self.ref.n_frames)
+        assert frames == ref.n_frames
 
-    def test_extract_array_afc(self):
-        assert_equal(self.reader.timeseries(format='afc').shape, (3341, 98, 3))
+    def test_extract_array_afc(self,reader):
+        assert_equal(reader.timeseries(order='afc').shape, (3341, 98, 3))
 
-    def test_extract_array_fac(self):
-        assert_equal(self.reader.timeseries(format='fac').shape, (98, 3341, 3))
+    def test_timeseries_deprecation(self, reader):
+        with pytest.warns(DeprecationWarning):
+            reader.timeseries(format='fac')
 
-    def test_extract_array_cfa(self):
-        assert_equal(self.reader.timeseries(format='cfa').shape, (3, 98, 3341))
+    def test_extract_array_afc(self, reader):
+        assert_equal(reader.timeseries(order='afc').shape, (3341, 98, 3))
 
-    def test_extract_array_acf(self):
-        assert_equal(self.reader.timeseries(format='acf').shape, (3341, 3, 98))
+    def test_extract_array_fac(self, reader):
+        assert_equal(reader.timeseries(order='fac').shape, (98, 3341, 3))
 
-    def test_extract_array_fca(self):
-        assert_equal(self.reader.timeseries(format='fca').shape, (98, 3, 3341))
+    def test_extract_array_cfa(self, reader):
+        assert_equal(reader.timeseries(order='cfa').shape, (3, 98, 3341))
 
-    def test_extract_array_caf(self):
-        assert_equal(self.reader.timeseries(format='caf').shape, (3, 3341, 98))
+    def test_extract_array_acf(self, reader):
+        assert_equal(reader.timeseries(order='acf').shape, (3341, 3, 98))
 
-    def test_timeseries_skip1(self):
-        assert_equal(self.reader.timeseries(self.ref.universe.atoms).shape,
+    def test_extract_array_fca(self, reader):
+        assert_equal(reader.timeseries(order='fca').shape, (98, 3, 3341))
+
+    def test_extract_array_caf(self, reader):
+        assert_equal(reader.timeseries(order='caf').shape, (3, 3341, 98))
+
+    def test_timeseries_skip1(self, ref, reader):
+        assert_equal(reader.timeseries(ref.universe.atoms).shape,
                      (3341, 98, 3))
 
-    def test_timeseries_skip10(self):
+    def test_timeseries_skip10(self, reader):
         # Check that timeseries skip works similar to numpy slicing
-        array1 = self.reader.timeseries(step=10)
-        array2 = self.reader.timeseries()[:,::10,:]
+        array1 = reader.timeseries(step=10)
+        array2 = reader.timeseries()[:,::10,:]
         assert_equal(array1, array2)
 
-    def test_timeseries_view(self):
+    def test_timeseries_view(self, reader):
         # timeseries() is expected to provide a view of the underlying array
-        assert_equal(self.reader.timeseries().base is self.reader.get_array(),
-                     True)
+        assert reader.timeseries().base is reader.get_array()
 
-    def test_timeseries_subarray_view(self):
+    def test_timeseries_subarray_view(self, reader):
         # timeseries() is expected to provide a view of the underlying array
         # also in the case where we slice the array using the start, stop and
         # step options.
-        assert_equal(
-            self.reader.timeseries(start=5,
-                                   stop=15,
-                                   step=2,
-                                   format='fac').base is self.reader.get_array(),
-                     True)
+        assert reader.timeseries(start=5,stop=15,step=2,order='fac').base is\
+               reader.get_array()
 
-    def test_timeseries_view_from_universe_atoms(self):
+    def test_timeseries_view_from_universe_atoms(self, ref, reader):
         # timeseries() is expected to provide a view of the underlying array
         # also in the special case when asel=universe.atoms.
-        selection = self.ref.universe.atoms
-        assert_equal(self.reader.timeseries(
-            asel=selection).base is self.reader.get_array(),
-            True)
+        selection = ref.universe.atoms
+        assert reader.timeseries(asel=selection).base is reader.get_array()
 
-    def test_timeseries_view_from_select_all(self):
+    def test_timeseries_view_from_select_all(self, ref, reader):
         # timeseries() is expected to provide a view of the underlying array
         # also in the special case when using "all" in selections.
-        selection = self.ref.universe.select_atoms("all")
-        assert_equal(self.reader.timeseries(
-            asel=selection).base is self.reader.get_array(),
+        selection = ref.universe.select_atoms("all")
+        assert_equal(reader.timeseries(
+            asel=selection).base is reader.get_array(),
             True)
 
-    def test_timeseries_noview(self):
+    def test_timeseries_noview(self, ref, reader):
         # timeseries() is expected NOT to provide a view of the underlying array
         # for any other selection than "all".
-        selection = self.ref.universe.select_atoms("name CA")
-        assert_equal(self.reader.timeseries(
-            asel=selection).base is self.reader.get_array(),
-            False)
+        selection = ref.universe.select_atoms("name CA")
+        assert reader.timeseries(asel=selection).base is not reader.get_array()
 
-    def test_repr(self):
-        str_rep = str(self.reader)
+    def test_repr(self, reader):
+        str_rep = str(reader)
         expected = "<MemoryReader with 98 frames of 3341 atoms>"
         assert_equal(str_rep, expected)
 
@@ -189,8 +186,8 @@ class TestMemoryReader(MultiframeReaderTest):
     def test_get_writer_2(self):
         pass
 
-    def test_float32(self):
+    def test_float32(self, ref):
         # Check that we get float32 positions even when initializing with float64
-        coordinates = np.random.uniform(size=(100, self.ref.universe.atoms.n_atoms, 3)).cumsum(0)
-        universe = mda.Universe(self.ref.universe.filename, coordinates, format=MemoryReader)
+        coordinates = np.random.uniform(size=(100, ref.universe.atoms.n_atoms, 3)).cumsum(0)
+        universe = mda.Universe(ref.universe.filename, coordinates, format=MemoryReader)
         assert_equal(universe.trajectory.get_array().dtype, np.dtype('float32'))

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -25,23 +25,15 @@ import numpy as np
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysis.analysis.lineardensity import LinearDensity
-from numpy.testing import TestCase, assert_allclose
+from numpy.testing import assert_almost_equal
 
 
-class TestLinearDensity(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(waterPSF, waterDCD)
-        self.sel_string = 'all'
-        self.selection = self.universe.select_atoms(self.sel_string)
+def test_serial():
+    universe = mda.Universe(waterPSF, waterDCD)
+    sel_string = 'all'
+    selection = universe.select_atoms(sel_string)
 
-        self.xpos = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
-                              0., 0., 0., 0.])
-
-    def test_serial(self):
-        ld = LinearDensity(self.selection, binsize=5).run()
-        assert_allclose(self.xpos, ld.results['x']['pos'], rtol=1e-6, atol=0)
-
-#    def test_parallel(self):
-#        ld = LinearDensity(self.universe, self.selection, binsize=5)
-#        ld.run(parallel=True)
-#        assert_equal(self.xpos, ld.results['x']['pos'])
+    xpos = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
+                          0., 0., 0., 0.])
+    ld = LinearDensity(selection, binsize=5).run()
+    assert_almost_equal(xpos, ld.results['x']['pos'])

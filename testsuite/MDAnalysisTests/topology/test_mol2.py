@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,10 +20,9 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import (
-    assert_,
-    assert_equal,
-)
+
+import pytest
+from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 
@@ -32,36 +31,34 @@ from MDAnalysisTests.datafiles import (
     mol2_molecule,
     mol2_molecules,
 )
+from numpy.testing import assert_equal
 
 
-class MOL2Base(ParserBase):
+class TestMOL2Base(ParserBase):
     parser = mda.topology.MOL2Parser.MOL2Parser
-    expected_attrs = ['ids', 'names', 'types', 'charges',
-                      'resids', 'resnames', 'bonds']
+    expected_attrs = [
+        'ids', 'names', 'types', 'charges', 'resids', 'resnames', 'bonds'
+    ]
     guessed_attrs = ['elements', 'masses']
     expected_n_atoms = 49
     expected_n_residues = 1
     expected_n_segments = 1
 
-    def test_attr_size(self):
-        assert_(len(self.top.ids) == self.top.n_atoms)
-        assert_(len(self.top.names) == self.top.n_atoms)
-        assert_(len(self.top.types) == self.top.n_atoms)
-        assert_(len(self.top.charges) == self.top.n_atoms)
-        assert_(len(self.top.resids) == self.top.n_residues)
-        assert_(len(self.top.resnames) == self.top.n_residues)
+    def test_attr_size(self, top):
+        assert len(top.ids) == top.n_atoms
+        assert len(top.names) == top.n_atoms
+        assert len(top.types) == top.n_atoms
+        assert len(top.charges) == top.n_atoms
+        assert len(top.resids) == top.n_residues
+        assert len(top.resnames) == top.n_residues
 
-    def test_bonds(self):
-        assert_(len(self.top.bonds) == 49)  # bonds for 49 atoms
-        assert_(len(self.top.bonds.values) == 51)  # this many bonds
+    def test_bonds(self, top):
+        assert len(top.bonds) == 49  # bonds for 49 atoms
+        assert len(top.bonds.values) == 51  # this many bonds
 
-    
-class TestMOL2Parser(MOL2Base):
-    filename = mol2_molecule
-
-
-class TestMOL2Parser2(MOL2Base):
-    filename = mol2_molecules
+    @pytest.fixture(params=[mol2_molecule, mol2_molecules])
+    def filename(self, request):
+        return request.param
 
 
 def test_bond_orders():

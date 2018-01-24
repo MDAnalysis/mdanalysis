@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -97,7 +97,7 @@ def conformational_distance_matrix(ensemble,
 
     # framesn: number of frames
     framesn = len(ensemble.trajectory.timeseries(
-        ensemble.select_atoms(selection), format='fac'))
+        ensemble.select_atoms(selection), order='fac'))
 
     # Prepare metadata recarray
     if metadata:
@@ -122,7 +122,7 @@ def conformational_distance_matrix(ensemble,
 
     rmsd_coordinates = ensemble.trajectory.timeseries(
             ensemble.select_atoms(selection),
-            format='fac')
+            order='fac')
 
     if pairwise_align:
         if superimposition_selection:
@@ -132,7 +132,7 @@ def conformational_distance_matrix(ensemble,
 
         fitting_coordinates = ensemble.trajectory.timeseries(
             ensemble.select_atoms(subset_selection),
-            format='fac')
+            order='fac')
     else:
         fitting_coordinates = None
 
@@ -313,7 +313,7 @@ def get_distance_matrix(ensemble,
             TriangularMatrix(
                 size=ensemble.trajectory.timeseries(
                     ensemble.select_atoms(selection),
-                    format='fac').shape[0],
+                    order='fac').shape[0],
                 loadfile=load_matrix)
         logging.info("        Done!")
         for key in confdistmatrix.metadata.dtype.names:
@@ -324,7 +324,7 @@ def get_distance_matrix(ensemble,
         if not confdistmatrix.size == \
                 ensemble.trajectory.timeseries(
                     ensemble.select_atoms(selection),
-                    format='fac').shape[0]:
+                    order='fac').shape[0]:
             logging.error(
                 "ERROR: The size of the loaded matrix and of the ensemble"
                 " do not match")

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -39,6 +39,7 @@ from functools import wraps
 import importlib
 import mock
 import os
+import warnings
 
 from numpy.testing import assert_warns
 
@@ -90,35 +91,6 @@ def executable_not_found(*args):
         if MDAnalysis.lib.util.which(name) is not None:
             return False
     return True
-
-
-def module_not_found(module):
-    try:
-        importlib.import_module(module)
-    except ImportError:
-        return True
-    else:
-        return False
-
-
-def parser_not_found(parser_name):
-    """Return ``True`` if the parser of the given name cannot be found.
-
-    This allows to skip a test when the parser is unavailable (e.g in python 3
-    when the parser is not compatible).
-
-    To be used as the argument of::
-
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser is not available. Are you on python 3?')
-    """
-    import MDAnalysis.coordinates
-    try:
-        getattr(MDAnalysis.coordinates, parser_name)
-    except AttributeError:
-        return True
-    else:
-        return False
 
 
 @contextmanager
@@ -196,3 +168,44 @@ def assert_nowarns(warning_class, *args, **kwargs):
         # There was a warning even though we do not want to see one.
         raise AssertionError("function {0} raises warning of class {1}".format(
             func.__name__, warning_class.__name__))
+
+class _NoDeprecatedCallContext(object):
+	# modified version of similar pytest class object that checks for
+	# raised DeprecationWarning
+
+    def __enter__(self):
+        self._captured_categories = []
+        self._old_warn = warnings.warn
+        self._old_warn_explicit = warnings.warn_explicit
+        warnings.warn_explicit = self._warn_explicit
+        warnings.warn = self._warn
+
+    def _warn_explicit(self, message, category, *args, **kwargs):
+        self._captured_categories.append(category)
+
+    def _warn(self, message, category=None, *args, **kwargs):
+        if isinstance(message, Warning):
+            self._captured_categories.append(message.__class__)
+        else:
+            self._captured_categories.append(category)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        warnings.warn_explicit = self._old_warn_explicit
+        warnings.warn = self._old_warn
+
+        if exc_type is None:
+            deprecation_categories = (DeprecationWarning, PendingDeprecationWarning)
+            if any(issubclass(c, deprecation_categories) for c in self._captured_categories):
+                __tracebackhide__ = True
+                msg = "Produced DeprecationWarning or PendingDeprecationWarning"
+                raise AssertionError(msg)
+
+def no_deprecated_call(func=None, *args, **kwargs):
+	# modified version of similar pytest function
+	# check that DeprecationWarning is NOT raised
+    if not func:
+        return _NoDeprecatedCallContext()
+    else:
+        __tracebackhide__ = True
+        with _NoDeprecatedCallContext():
+            return func(*args, **kwargs)

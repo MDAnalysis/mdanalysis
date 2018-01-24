@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -214,6 +214,7 @@ from __future__ import division, absolute_import, print_function
 
 import six
 from six.moves import range, cPickle
+from six import string_types
 
 import numpy as np
 from scipy import spatial, cluster
@@ -235,12 +236,15 @@ logger = logging.getLogger('MDAnalysis.analysis.psa')
 def get_path_metric_func(name):
     """Selects a path metric function by name.
 
-    :Arguments:
-      *name*
-         string, name of path metric
+    Parameters
+    ----------
+    name : str
+        name of path metric
 
-    :Returns:
-      The path metric function specified by *name* (if found).
+    Returns
+    -------
+    path_metric : function
+        The path metric function specified by *name* (if found).
     """
     path_metrics = {
             'hausdorff' : hausdorff,
@@ -252,8 +256,9 @@ def get_path_metric_func(name):
     try:
         return path_metrics[name]
     except KeyError as key:
-        print("Path metric {0} not found. Valid selections: ".format(key))
-        for name in path_metrics.keys(): print("  \"{0}\"".format(name))
+        raise KeyError('Path metric "{}" not found. Valid selections: {}'
+                       ''.format(key, " ".join('"{}"'.format(n)
+                                               for n in path_metrics.keys())))
 
 
 def sqnorm(v, axis=None):
@@ -349,10 +354,10 @@ def get_coord_axes(path):
         N = path.shape[1] / 3
         axis = (1,) # 1st axis: 3N structural coords (x1,y1,z1,...,xN,xN,zN)
     else:
-        err_str = "Path must have 2 or 3 dimensions; the first dimensions (axis"\
-                + " 0) must correspond to frames, axis 1 (and axis 2, if"       \
-                + " present) must contain atomic coordinates."
-        raise ValueError(err_str)
+        raise ValueError("Path must have 2 or 3 dimensions; the first "
+                         "dimensions (axis 0) must correspond to frames, "
+                         "axis 1 (and axis 2, if present) must contain atomic "
+                         "coordinates.")
     return N, axis
 
 
@@ -675,25 +680,32 @@ def discrete_frechet(P, Q):
         between the two full paths *P* and *Q*  (i.e., the discrete Frechet
         distance) in terms of coupling distances between their partial paths.
 
-        :Arguments:
-          *i*
-             int, partial path of *P* through final frame *i-1*
-          *j*
-             int, partial path of *Q* through final frame *j-1*
+        Parameters
+        ----------
+        i : int
+            partial path of *P* through final frame *i-1*
+        j : int
+            partial path of *Q* through final frame *j-1*
 
-        :Returns:
-          float, the coupling distance between partial paths ``P[0:i]`` and
-          ``Q[0:j]``
+        Returns
+        -------
+        dist : float
+            the coupling distance between partial paths `P[0:i]` and `Q[0:j]`
         """
-        if ca[i,j] != -1 : return ca[i,j]
+        if ca[i,j] != -1 :
+            return ca[i,j]
         if i > 0:
-            if j > 0: ca[i,j] = max( min(c(i-1,j),c(i,j-1),c(i-1,j-1)), d[i,j] )
-            else:     ca[i,j] = max( c(i-1,0), d[i,0] )
-        elif j > 0:   ca[i,j] = max( c(0,j-1), d[0,j] )
-        else:         ca[i,j] = d[0,0]
-        return        ca[i,j]
+            if j > 0:
+                ca[i,j] = max( min(c(i-1,j),c(i,j-1),c(i-1,j-1)), d[i,j] )
+            else:
+                ca[i,j] = max( c(i-1,0), d[i,0] )
+        elif j > 0:
+            ca[i,j] = max( c(0,j-1), d[0,j] )
+        else:
+            ca[i,j] = d[0,0]
+        return ca[i,j]
 
-    return ( c(Np-1, Nq-1) / N )**0.5
+    return (c(Np-1, Nq-1) / N)**0.5
 
 
 def dist_mat_to_vec(N, i, j):
@@ -721,31 +733,29 @@ def dist_mat_to_vec(N, i, j):
 
     """
 
-    if not (isinstance(N, numbers.Integral) or isinstance(i, numbers.Integral)
-            or isinstance(j, numbers.Integral)):
-        err_str = "N, i, j all must be of type int"
-        raise ValueError(err_str)
+    if not (isinstance(N, numbers.Integral) and isinstance(i, numbers.Integral)
+            and isinstance(j, numbers.Integral)):
+        raise ValueError("N, i, j all must be of type int")
 
     if i < 0 or j < 0 or N < 2:
-        error_str = "Matrix indices are invalid; i and j must be greater than 0 and N must be greater the 2"
-        raise ValueError(error_str)
+        raise ValueError("Matrix indices are invalid; i and j must be greater "
+                         "than 0 and N must be greater the 2")
 
     if (j > i and (i > N - 1 or j > N)) or (j < i and (i > N or j > N - 1)):
-        err_str = "Matrix indices are out of range; i and j must be less than"  \
-                + " N = {0:d}".format(N)
-        raise ValueError(err_str)
+        raise ValueError("Matrix indices are out of range; i and j must be "
+                         "less than N = {0:d}".format(N))
     if j > i:
-        return (N*i) + j - (i+2)*(i+1)/2
+        return (N*i) + j - (i+2)*(i+1) // 2  # old-style division for int output
     elif j < i:
-        warn_str = "Column index entered (j = {:d} is smaller than row index"   \
-                 + " (i = {:d}). Using symmetric element in upper triangle of"  \
-                 + " distance matrix instead: i --> j, j --> i"
-        warnings.warn(warn_str.format(j, i))
-        return (N*j) + i - (j+2)*(j+1)/2
+        warnings.warn("Column index entered (j = {:d} is smaller than row "
+                      "index (i = {:d}). Using symmetric element in upper "
+                      "triangle of distance matrix instead: i --> j, "
+                      "j --> i".format(j, i))
+        return (N*j) + i - (j+2)*(j+1) // 2  # old-style division for int output
     else:
-        err_str = "Error in processing matrix indices; i and j must be integers"\
-                + " less than integer N = {0:d} such that j >= i+1.".format(N)
-        raise ValueError(err_str)
+        raise ValueError("Error in processing matrix indices; i and j must "
+                         "be integers less than integer N = {0:d} such that"
+                         " j >= i+1.".format(N))
 
 
 class Path(object):
@@ -814,7 +824,7 @@ class Path(object):
 
     def fit_to_reference(self, filename=None, prefix='', postfix='_fit',
                          rmsdfile=None, targetdir=os.path.curdir,
-                         mass_weighted=None, weights=None, tol_mass=0.1):
+                         weights=None, tol_mass=0.1):
         """Align each trajectory frame to the reference structure
 
         Parameters
@@ -822,15 +832,17 @@ class Path(object):
         filename : str (optional)
              file name for the RMS-fitted trajectory or pdb; defaults to the
              original trajectory filename (from :attr:`Path.u_original`) with
-             *prefix* prepended
+             `prefix` prepended
         prefix : str (optional)
              prefix for auto-generating the new output filename
         rmsdfile : str (optional)
              file name for writing the RMSD time series [``None``]
-        mass_weighted : bool (deprecated)
-            do a mass-weighted RMSD fit
-        weights : str/array_like (optional)
-            choose weights. If 'str' uses masses as weights
+        weights : {"mass", ``None``} or array_like (optional)
+             choose weights. With ``"mass"`` uses masses as weights; with
+             ``None`` weigh each atom equally. If a float array of the same
+             length as the selected AtomGroup is provided, use each element of
+             the `array_like` as a weight for the corresponding atom in the
+             AtomGroup.
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than `tol_mass` [0.1]
@@ -848,13 +860,10 @@ class Path(object):
         .. deprecated:: 0.16.1
            Instead of ``mass_weighted=True`` use new ``weights='mass'``;
            refactored to fit with AnalysisBase API
+
+        .. versionchanged:: 0.17.0
+           Deprecated keyword `mass_weighted` was removed.
         """
-        if mass_weighted is not None:
-            warnings.warn("mass weighted is deprecated argument. Please use "
-                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
-                          category=DeprecationWarning)
-            if mass_weighted:
-                weights = 'mass'
         head, tail = os.path.split(self.trj_name)
         oldname, ext = os.path.splitext(tail)
         filename = filename or oldname
@@ -926,7 +935,7 @@ class Path(object):
 
 
     def run(self, align=False, filename=None, postfix='_fit', rmsdfile=None,
-            targetdir=os.path.curdir, mass_weighted=None, weights=None, tol_mass=0.1,
+            targetdir=os.path.curdir, weights=None, tol_mass=0.1,
             flat=False):
         r"""Generate a path from a trajectory and reference structure.
 
@@ -960,10 +969,12 @@ class Path(object):
              prefix for auto-generating the new output filename
         rmsdfile : str (optional)
              file name for writing the RMSD time series [``None``]
-        mass_weighted : bool (deprecated)
-            do a mass-weighted RMSD fit
-        weights : str/array_like (optional)
-            choose weights. If 'str' uses masses as weights
+        weights : {"mass", ``None``} or array_like (optional)
+             choose weights. With ``"mass"`` uses masses as weights; with
+             ``None`` weigh each atom equally. If a float array of the same
+             length as the selected AtomGroup is provided, use each element of
+             the `array_like` as a weight for the corresponding atom in the
+             AtomGroup.
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than *tol_mass* [0.1]
@@ -981,13 +992,10 @@ class Path(object):
         .. deprecated:: 0.16.1
            Instead of ``mass_weighted=True`` use new ``weights='mass'``;
            refactored to fit with AnalysisBase API
+
+        .. versionchanged:: 0.17.0
+           Deprecated keyword `mass_weighted` was removed.
         """
-        if mass_weighted is not None:
-            warnings.warn("mass weighted is deprecated argument. Please use "
-                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
-                          category=DeprecationWarning)
-            if mass_weighted:
-                weights = 'mass'
         if align:
             self.u_fitted = self.fit_to_reference(
                                 filename=filename, postfix=postfix,
@@ -1145,9 +1153,8 @@ class PSAPair(object):
         the second, with the largest separation distance.
         """
         if self.nearest_neighbors['distances'] is None:
-            err_str = "Nearest neighbors have not been calculated yet;"         \
-                    + " run compute_nearest_neighbors() first."
-            raise NoDataError(err_str)
+            raise NoDataError("Nearest neighbors have not been calculated yet;"
+                              " run compute_nearest_neighbors() first.")
 
         nn_idx_P, nn_idx_Q = self.nearest_neighbors['frames']
         nn_dist_P, nn_dist_Q = self.nearest_neighbors['distances']
@@ -1193,9 +1200,8 @@ class PSAPair(object):
 
         """
         if self.nearest_neighbors['distances'] is None:
-            err_str = "Nearest neighbors have not been calculated yet;"         \
-                    + " run compute_nearest_neighbors() first."
-            raise NoDataError(err_str)
+            raise NoDataError("Nearest neighbors have not been calculated yet;"
+                              " run compute_nearest_neighbors() first.")
 
         if frames:
             if distances:
@@ -1205,11 +1211,9 @@ class PSAPair(object):
         elif distances:
             return self.nearest_neighbors['distances']
         else:
-            err_str = "Need to select Hausdorff pair \"frames\" or"             \
-                + " \"distances\" or both. \"frames\" and \"distances\" cannot" \
-                + " both be set to False."
-            raise NoDataError(err_str)
-
+            raise NoDataError('Need to select Hausdorff pair "frames" or'
+                              ' "distances" or both. "frames" and "distances"'
+                              ' cannot both be set to False.')
 
     def get_hausdorff_pair(self, frames=True, distance=True):
         """Returns the Hausdorff pair of frames indices, the Hausdorff distance,
@@ -1238,9 +1242,8 @@ class PSAPair(object):
              is ``True``, return the Hausdorff distance for this path pair.
         """
         if self.hausdorff_pair['distance'] is None:
-            err_str = "Hausdorff pair has not been calculated yet;"             \
-                    + " run find_hausdorff_pair() first."
-            raise NoDataError(err_str)
+            raise NoDataError("Hausdorff pair has not been calculated yet;"
+                              " run find_hausdorff_pair() first.")
 
         if frames:
             if distance:
@@ -1250,10 +1253,9 @@ class PSAPair(object):
         elif distance:
             return self.hausdorff_pair['distance']
         else:
-            err_str = "Need to select Hausdorff pair \"frames\" or"             \
-                + " \"distance\" or both. \"frames\" and \"distance\" cannot" \
-                + " both be set to False."
-            raise NoDataError(err_str)
+            raise NoDataError('Need to select Hausdorff pair "frames" or'
+                              ' "distance" or both. "frames" and "distance"'
+                              ' cannot both be set to False.')
 
 
 class PSAnalysis(object):
@@ -1384,7 +1386,7 @@ class PSAnalysis(object):
         self._psa_pairs = None # (distance vector order) list of all PSAPairs
 
 
-    def generate_paths(self, align=False, filename='fitted', infix='', mass_weighted=None, weights=None,
+    def generate_paths(self, align=False, filename='fitted', infix='', weights=None,
                        tol_mass=False, ref_frame=None, flat=False, save=True, store=True):
         """Generate paths, aligning each to reference structure if necessary.
 
@@ -1399,10 +1401,12 @@ class PSAnalysis(object):
         infix : str
              additional tag string that is inserted into the output filename of
              the fitted trajectory files ['']
-        mass_weighted : bool (deprecated)
-            do a mass-weighted RMSD fit
-        weights : str/array_like (optional)
-            choose weights. If 'str' uses masses as weights
+        weights : {"mass", ``None``} or array_like (optional)
+             choose weights. With ``"mass"`` uses masses as weights; with
+             ``None`` weigh each atom equally. If a float array of the same
+             length as the selected AtomGroup is provided, use each element of
+             the `array_like` as a weight for the corresponding atom in the
+             AtomGroup.
         tol_mass : float
              Reject match if the atomic masses for matched atoms differ by more
              than *tol_mass*
@@ -1434,13 +1438,10 @@ class PSAnalysis(object):
         .. deprecated:: 0.16.1
            Instead of ``mass_weighted=True`` use new ``weights='mass'``;
            refactored to fit with AnalysisBase API
+
+        .. versionchanged:: 0.17.0
+           Deprecated keyword `mass_weighted` was removed.
         """
-        if mass_weighted is not None:
-            warnings.warn("mass weighted is deprecated argument. Please use "
-                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
-                          category=DeprecationWarning)
-            if mass_weighted:
-                weights = 'mass'
         if ref_frame is None:
             ref_frame = self.ref_frame
 
@@ -1501,8 +1502,8 @@ class PSAnalysis(object):
         step = kwargs.pop('step', None)
         store = kwargs.pop('store', True)
 
-        if type(metric) is str:
-            metric_func = get_path_metric_func(metric)
+        if isinstance(metric, string_types):
+            metric_func = get_path_metric_func(str(metric))
         else:
             metric_func = metric
         numpaths = self.npaths
@@ -1516,9 +1517,10 @@ class PSAnalysis(object):
                 D[j,i] = D[i,j]
         self.D = D
         if store:
-            filename = kwargs.pop('filename', str(metric))
+            filename = kwargs.pop('filename', metric)
+            if not isinstance(metric, string_types):
+                filename = 'custom_metric'
             self.save_result(filename=filename)
-
 
     def run_pairs_analysis(self, **kwargs):
         """Perform PSA Hausdorff (nearest neighbor) pairs analysis on all unique
@@ -1533,6 +1535,8 @@ class PSAnalysis(object):
         Hausdorff pair in :attr:`HP`. :attr:`PP` stores the full information
         of Hausdorff pairs analysis that is available for each pair of path,
         including nearest neighbors lists and the Hausdorff pairs.
+
+        The pairwise distances are stored as the array :attr:`PSAnalysis.D`.
 
         Parameters
         ----------
@@ -1555,6 +1559,7 @@ class PSAnalysis(object):
         hausdorff_pairs = kwargs.pop('hausdorff_pairs', False)
 
         numpaths = self.npaths
+        D = np.zeros((numpaths,numpaths))
         self._NN = [] # list of nearest neighbors pairs
         self._HP = [] # list of Hausdorff pairs
         self._psa_pairs = [] # list of PSAPairs
@@ -1566,11 +1571,14 @@ class PSAnalysis(object):
                 Q = self.paths[j][start:stop:step]
                 pp.compute_nearest_neighbors(P, Q, self.natoms)
                 pp.find_hausdorff_pair()
+                D[i,j] = pp.hausdorff_pair['distance']
+                D[j,i] = D[i,j]
                 self._psa_pairs.append(pp)
                 if neighbors:
                     self._NN.append(pp.get_nearest_neighbors())
                 if hausdorff_pairs:
                     self._HP.append(pp.get_hausdorff_pair())
+        self.D = D
 
 
     def save_result(self, filename=None):
@@ -1692,8 +1700,8 @@ class PSAnalysis(object):
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
         if self.D is None:
-            err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No distance data; do 'PSAnalysis.run(store=True)' first.")
         npaths = len(self.D)
         dist_matrix = self.D
 
@@ -1704,8 +1712,7 @@ class PSAnalysis(object):
         ax_hmap = fig.add_axes(hmap_loc)
         ax_dgram = fig.add_axes(dgram_loc)
 
-        Z, dgram = self.cluster(dist_matrix,                                    \
-                                method=linkage,                                 \
+        Z, dgram = self.cluster(method=linkage,                                 \
                                 count_sort=count_sort,                          \
                                 distance_sort=distance_sort)
         rowidx = colidx = dgram['leaves'] # get row-wise ordering from clustering
@@ -1830,12 +1837,11 @@ class PSAnalysis(object):
             )
 
         if self.D is None:
-            err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No distance data; do 'PSAnalysis.run(store=True)' first.")
         dist_matrix = self.D
 
-        Z, dgram = self.cluster(dist_matrix,                                    \
-                                method=linkage,                                 \
+        Z, dgram = self.cluster(method=linkage,                                 \
                                 count_sort=count_sort,                          \
                                 distance_sort=distance_sort,                    \
                                 no_plot=True)
@@ -1942,9 +1948,8 @@ class PSAnalysis(object):
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 
         if self._NN is None:
-            err_str = ("No nearest neighbor data; run "
-                       "'PSAnalysis.run_nearest_neighbors()' first.")
-            raise ValueError(err_str)
+            raise ValueError("No nearest neighbor data; run "
+                             "'PSAnalysis.run_nearest_neighbors()' first.")
 
         sns.set_style('whitegrid')
 
@@ -1978,13 +1983,24 @@ class PSAnalysis(object):
         return ax
 
 
-    def cluster(self, distArray, method='ward', count_sort=False,               \
+    def cluster(self, dist_mat=None, method='ward', count_sort=False,           \
                 distance_sort=False, no_plot=False, no_labels=True,             \
                 color_threshold=4):
         """Cluster trajectories and optionally plot the dendrogram.
 
+        This method is used by :meth:`PSAnalysis.plot` to generate a heatmap-
+        dendrogram combination plot. By default, the distance matrix,
+        :attr:`PSAnalysis.D`, is assumed to exist, converted to
+        distance-vector form, and inputted to :func:`cluster.hierarchy.linkage`
+        to generate a clustering. For convenience in plotting arbitrary
+        distance matrices, one can also be specify `dist_mat`, which will be
+        checked for proper distance matrix form by
+        :func:`spatial.distance.squareform`
+
         Parameters
         ----------
+        dist_mat : numpy.ndarray
+            user-specified distance matrix to be clustered [``None``]
         method : str
             name of linkage criterion for clustering [``'ward'``]
         no_plot : bool
@@ -2016,7 +2032,13 @@ class PSAnalysis(object):
         orig_linewidth = matplotlib.rcParams['lines.linewidth']
         matplotlib.rcParams['lines.linewidth'] = 0.5
         try:
-            Z = cluster.hierarchy.linkage(distArray, method=method)
+            if dist_mat:
+                dist_vec = spatial.distance.squareform(dist_mat,
+                                                       force='tovector',
+                                                       checks=True)
+            else:
+                dist_vec = self.get_pairwise_distances(vectorform=True)
+            Z = cluster.hierarchy.linkage(dist_vec, method=method)
             dgram = cluster.hierarchy.dendrogram(
                 Z, no_labels=no_labels, orientation='left',
                 count_sort=count_sort, distance_sort=distance_sort,
@@ -2060,7 +2082,7 @@ class PSAnalysis(object):
         Returns
         -------
         int
-            the number of atoms
+            the number of atoms in any path
 
         Note
         ----
@@ -2068,17 +2090,17 @@ class PSAnalysis(object):
         method.
         """
         if self.natoms is None:
-            err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.natoms
 
 
     def get_num_paths(self):
         """Return the number of paths in :class:`PSA`.
 
-        .. note::
-           Must run :meth:`PSAnalysis.generate_paths` prior to calling this
-           method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.generate_paths` prior to calling this method.
 
         Returns
         -------
@@ -2086,17 +2108,18 @@ class PSAnalysis(object):
            the number of paths in :class:`PSA`
         """
         if self.npaths is None:
-            err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.npaths
 
 
     def get_paths(self):
         """Return the paths in :class:`PSA`.
 
-        .. note::
-           Must run :meth:`PSAnalysis.generate_paths` prior to calling this
-           method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.generate_paths` prior to calling this
+        method.
 
         Returns
         -------
@@ -2105,22 +2128,26 @@ class PSAnalysis(object):
             :class:`PSA`
         """
         if self.paths is None:
-            err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.paths
 
 
-    def get_pairwise_distances(self, vectorform=False):
+    def get_pairwise_distances(self, vectorform=False, checks=False):
         """Return the distance matrix (or vector) of pairwise path distances.
 
-        .. note::
-           Must run :meth:`PSAnalysis.run` with ``store=True`` prior to
-           calling this method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.run` with ``store=True`` prior to
+        calling this method.
 
         Parameters
         ----------
         vectorform : bool
              if ``True``, return the distance vector instead [``False``]
+        checks : bool
+             if ``True``, check that :attr:`PSAnalysis.D` is a proper distance
+             matrix [``False``]
 
         Returns
         -------
@@ -2129,10 +2156,11 @@ class PSAnalysis(object):
 
         """
         if self.D is None:
-            err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No distance data; do 'PSAnalysis.run(store=True)' first.")
         if vectorform:
-            return spatial.distance.squareform(self.D)
+            return spatial.distance.squareform(self.D, force='tovector',
+                                               checks=checks)
         else:
             return self.D
 
@@ -2155,15 +2183,15 @@ class PSAnalysis(object):
         using :attr:`PSAPair.hausdorff_pair` with the keys 'frames' and
         'distance'.
 
-        .. note::
-           Must run :meth:`PSAnalysis.run_pairs_analysis` prior to calling this
-           method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.run_pairs_analysis` prior to calling this
+        method.
 
         """
         if self._psa_pairs is None:
-            err_str = "No nearest neighbors data; do"                           \
-                    + " 'PSAnalysis.run_pairs_analysis()' first."
-            raise ValueError(err_str)
+            raise ValueError("No nearest neighbors data; do"
+                             " 'PSAnalysis.run_pairs_analysis()' first.")
         return self._psa_pairs
 
 
@@ -2178,16 +2206,16 @@ class PSAnalysis(object):
         :attr:`PSAPair.hausdorff_pair` for more information about accessing
         Hausdorff pair data.
 
-        .. note::
-           Must run :meth:`PSAnalysis.run_pairs_analysis` with
-           ``hausdorff_pairs=True`` prior to calling this method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.run_pairs_analysis` with
+        ``hausdorff_pairs=True`` prior to calling this method.
 
         """
         if self._HP is None:
-            err_str = "No Hausdorff pairs data; do "                            \
-                    + "'PSAnalysis.run_pairs_analysis(hausdorff_pairs=True)' "  \
-                    + "first."
-            raise ValueError(err_str)
+            raise ValueError("No Hausdorff pairs data; do "
+                             "'PSAnalysis.run_pairs_analysis(hausdorff_pairs=True)' "
+                             "first.")
         return self._HP
 
     @property
@@ -2200,13 +2228,14 @@ class PSAnalysis(object):
         :meth:`PSAnalysis.psa_pairs` and :attr:`PSAPair.nearest_neighbors` for
         more information about accessing nearest neighbor data.
 
-        .. note::
-           Must run :meth:`PSAnalysis.run_pairs_analysis` with
-           ``neighbors=True`` prior to calling this method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.run_pairs_analysis` with
+        ``neighbors=True`` prior to calling this method.
 
         """
         if self._NN is None:
-            err_str = "No nearest neighbors data; do"                           \
-                    + " 'PSAnalysis.run_pairs_analysis(neighbors=True)' first."
-            raise ValueError(err_str)
+            raise ValueError("No nearest neighbors data; do"
+                             " 'PSAnalysis.run_pairs_analysis(neighbors=True)'"
+                             " first.")
         return self._NN

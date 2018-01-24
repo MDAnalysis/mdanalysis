@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -61,7 +61,7 @@ For example::
    from MDAnalysisTests.datafiles import PSF, DCD
 
    u = mda.Universe(PSF, DCD)
-   u.s4AKE  # selects all segments with segid 4AKE
+   u.select_atoms('segid 4AKE')  # selects all segments with segid 4AKE
 
 If only a single segment has that segid then a Segment object will
 be returned, otherwise a SegmentGroup will be returned.
@@ -88,18 +88,20 @@ import numpy as np
 import logging
 import copy
 import uuid
+import warnings
 
 import MDAnalysis
 import sys
 
-from .. import _ANCHOR_UNIVERSES
+from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressMeter, _set_verbose
 from ..lib.util import cached, NamedStream, isstream
 from . import groups
 from ._get_readers import get_reader_for, get_parser_for
-from .groups import (GroupBase, Atom, Residue, Segment,
+from .groups import (ComponentBase, GroupBase,
+                     Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
@@ -166,6 +168,14 @@ class Universe(object):
         [``None``] Can also pass a subclass of
         :class:`MDAnalysis.coordinates.base.ProtoReader` to define a custom
         reader to be used on the trajectory file.
+    all_coordinates : bool
+        If set to ``True`` specifies that if more than one filename is passed
+        they are all to be used, if possible, as coordinate files (employing a
+        :class:`MDAnalysis.coordinates.chain.ChainReader`). [``False``] The
+        default behavior is to take the first file as a topology and the
+        remaining as coordinates. The first argument will always always be used
+        to infer a topology regardless of *all_coordinates*. This parameter is
+        ignored if only one argument is passed.
     guess_bonds : bool, optional
         Once Universe has been loaded, attempt to guess the connectivity
         between atoms.  This will populate the .bonds .angles and .dihedrals
@@ -205,6 +215,10 @@ class Universe(object):
     """
 
     def __init__(self, *args, **kwargs):
+        # Store the segments for the deprecated instant selector feature.
+        # This attribute has to be defined early to avoid recursion in
+        # __getattr__.
+        self._instant_selectors = {}
         # hold on to copy of kwargs; used by external libraries that
         # reinitialize universes
         self._kwargs = copy.deepcopy(kwargs)
@@ -213,7 +227,7 @@ class Universe(object):
         self._trajectory = None
         self._cache = {}
 
-        if len(args) == 0:
+        if not args:
             # create an empty universe
             self._topology = None
             self.atoms = None
@@ -232,7 +246,9 @@ class Universe(object):
                 self._topology = args[0]
                 self.filename = None
             else:
-                if isstream(args[0]):
+                if isinstance(args[0], NamedStream):
+                    self.filename = args[0]
+                elif isstream(args[0]):
                     filename = None
                     if hasattr(args[0], 'name'):
                         filename = args[0].name
@@ -242,44 +258,50 @@ class Universe(object):
                 parser = get_parser_for(self.filename, format=topology_format)
                 try:
                     with parser(self.filename) as p:
-                        self._topology = p.parse()
+                        self._topology = p.parse(**kwargs)
                 except (IOError, OSError) as err:
-                    # There are 2 kinds of errors that might be raised here - one because the file isn't present
+                    # There are 2 kinds of errors that might be raised here:
+                    # one because the file isn't present
                     # or the permissions are bad, second when the parser fails
-                    if err.errno is not None and errno.errorcode[err.errno] in ['ENOENT', 'EACCES']:
-                        # Runs if the error is propagated due to no permission/ file not found
+                    if (err.errno is not None and
+                        errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
+                        # Runs if the error is propagated due to no permission / file not found
                         six.reraise(*sys.exc_info())
-
                     else:
                         # Runs when the parser fails
-                        raise IOError("Failed to load from the topology file {0}"
-                                      " with parser {1}.\n"
-                                      "Error: {2}".format(self.filename, parser, err))
-                except ValueError as err:
-                    raise ValueError("Failed to construct topology from file {0}"
-                                     " with parser {1} \n"
-                                     "Error: {2}".format(self.filename, parser, err))
+                        raise IOError(
+                            "Failed to load from the topology file {0}"
+                            " with parser {1}.\n"
+                            "Error: {2}".format(self.filename, parser, err))
+                except (ValueError, NotImplementedError) as err:
+                    raise ValueError(
+                        "Failed to construct topology from file {0}"
+                        " with parser {1}.\n"
+                        "Error: {2}".format(self.filename, parser, err))
 
             # generate and populate Universe version of each class
             self._generate_from_topology()
 
             # Load coordinates
-            if len(args) == 1:
+            if len(args) == 1 or kwargs.get('all_coordinates', False):
                 if self.filename is None:
                     # If we got the topology as a Topology object, then we
                     # cannot read coordinates from it.
-                    coordinatefile = None
+                    coordinatefile = args[1:]
                 else:
                     # Can the topology file also act as coordinate file?
                     try:
                         _ = get_reader_for(self.filename,
                                            format=kwargs.get('format', None))
                     except ValueError:
-                        coordinatefile = None
+                        coordinatefile = args[1:]
                     else:
-                        coordinatefile = [self.filename]
+                        coordinatefile = (self.filename,) + args[1:]
             else:
                 coordinatefile = args[1:]
+
+            if not coordinatefile:
+                coordinatefile = None
             self.load_new(coordinatefile, **kwargs)
 
         # Check for guess_bonds
@@ -342,7 +364,90 @@ class Universe(object):
                 # if len 1 SegmentGroup, convert to Segment
                 if len(segment) == 1:
                     segment = segment[0]
-                self.__dict__[name] = segment
+                self._instant_selectors[name] = segment
+
+    @classmethod
+    def empty(cls, n_atoms, n_residues=None, n_segments=None,
+              atom_resindex=None, residue_segindex=None,
+              trajectory=False, velocities=False, forces=False):
+        """Create a blank Universe
+
+        Useful for building a Universe without requiring existing files,
+        for example for system building.
+
+        Parameters
+        ----------
+        n_atoms : int
+          number of Atoms in the Universe
+        n_residues : int, optional
+          number of Residues in the Universe, defaults to 1
+        n_segments : int, optional
+          number of Segments in the Universe, defaults to 1
+        atom_resindex : numpy.array, optional
+          mapping of atoms to residues
+        residue_segindex : numpy.array, optional
+          mapping of residues to segments
+        trajectory : bool, optional
+          if True, attaches a dummy reader to the Universe, therefore
+          allowing coordinates to be set and written.  Default is False
+        velocities : bool, optional
+          include velocities in the dummy Reader
+        forces : bool, optional
+          include forces in the dummy Reader
+
+        Returns
+        -------
+        MDAnalysis.Universe object
+
+        Examples
+        --------
+        For example to create a new Universe with 6 atoms in 2 residues, with
+        positions for the atoms and a mass attribute:
+
+        >>> u = mda.Universe.empty(6, 2,
+                                   atom_resindex=np.array([0, 0, 0, 1, 1, 1]),
+                                   trajectory=True,
+                )
+        >>> u.add_TopologyAttr('masses')
+
+        .. versionadded:: 0.17.0
+        """
+        if n_residues is None:
+            n_residues = 1
+        if n_segments is None:
+            n_segments = 1
+        top = Topology(n_atoms, n_residues, n_segments,
+                       atom_resindex=atom_resindex,
+                       residue_segindex=residue_segindex,
+        )
+
+        u = cls(top)
+
+        if trajectory:
+            u.trajectory = get_reader_for('', format='dummy')(
+                n_atoms=n_atoms,
+                velocities=velocities, forces=forces)
+
+        return u
+
+    def __getattr__(self, key):
+        # This implements the instant selector of segments from a Universe.
+        # It is implemented as __getattr__ so a deprecation warning can be
+        # issued when the feature is used. Instant selectors are deprecated
+        # since version 0.16.2 and are tareted to be deleted in version 1.0.
+        # self._instant_selectors is populated in self._process_attr and
+        # created at the beginning of __init__.
+        try:
+            segment = self._instant_selectors[key]
+        except KeyError:
+            raise AttributeError('No attribute "{}".'.format(key))
+        else:
+            warnings.warn("Instant selector Universe.<segid> "
+                          "is deprecated and will be removed in 1.0. "
+                          "Use SegmentGroup[SegmentGroup.segids == '<segid>'] "
+                          "instead.",
+                          DeprecationWarning)
+            return segment
 
     @property
     def universe(self):
@@ -387,8 +492,7 @@ class Universe(object):
 
         Returns
         -------
-        filename : str or list
-        trajectory_format : str
+        universe : Universe
 
         Raises
         ------
@@ -405,17 +509,13 @@ class Universe(object):
            features than the
            :class:`~MDAnalysis.coordinates.chain.ChainReader`.
 
+        .. versionchanged:: 0.17.0
+           Now returns a :class:`Universe` instead of the tuple of file/array
+           and detected file type.
         """
-        # the following was in the doc string:
-        # TODO
-        # ----
-        # - check what happens if filename is ``None``
-        # - look up raises doc formating
-        #
-        #
-        # TODO: is this really sensible? Why not require a filename arg?
+        # filename==None happens when only a topology is provided
         if filename is None:
-            return
+            return self
 
         if len(util.asiterable(filename)) == 1:
             # make sure a single filename is not handed to the ChainReader
@@ -446,7 +546,7 @@ class Universe(object):
         if in_memory:
             self.transfer_to_memory(step=kwargs.get("in_memory_step", 1))
 
-        return filename, self.trajectory.format
+        return self
 
     def transfer_to_memory(self, start=None, stop=None, step=None,
                            verbose=None, quiet=None):
@@ -481,7 +581,7 @@ class Universe(object):
             # trajectory file formats
             try:
                 coordinates = self.trajectory.timeseries(
-                    self.atoms, start=start, stop=stop, step=step, format='fac')
+                    self.atoms, start=start, stop=stop, step=step, order='fac')
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
@@ -650,8 +750,52 @@ class Universe(object):
         del self._trajectory  # guarantees that files are closed (?)
         self._trajectory = value
 
-    def add_TopologyAttr(self, topologyattr):
-        """Add a new topology attribute."""
+    def add_TopologyAttr(self, topologyattr, values=None):
+        """Add a new topology attribute to the Universe
+
+        Adding a TopologyAttribute to the Universe makes it available to
+        all AtomGroups etc throughout the Universe.
+
+        Parameters
+        ----------
+        topologyattr : TopologyAttr or string
+          Either a MDAnalysis TopologyAttr object or the name of a possible
+          topology attribute.
+        values : np.ndarray, optional
+          If initiating an attribute from a string, the initial values to
+          use.  If not supplied, the new TopologyAttribute will have empty
+          or zero values.
+
+        Example
+        -------
+        For example to add bfactors to a Universe:
+
+        >>> u.add_TopologyAttr('bfactors')
+        >>> u.atoms.bfactors
+        array([ 0.,  0.,  0., ...,  0.,  0.,  0.])
+
+        .. versionchanged:: 0.17.0
+           Can now also add TopologyAttrs with a string of the name of the
+           attribute to add (eg 'charges'), can also supply initial values
+           using values keyword.
+        """
+        if isinstance(topologyattr, six.string_types):
+            try:
+                tcls = _TOPOLOGY_ATTRS[topologyattr]
+            except KeyError:
+                raise ValueError(
+                    "Unrecognised topology attribute name: '{}'."
+                    "  Possible values: '{}'\n"
+                    "To raise an issue go to: http://issues.mdanalysis.org"
+                    "".format(
+                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))
+                )
+            else:
+                topologyattr = tcls.from_blank(
+                    n_atoms=self._topology.n_atoms,
+                    n_residues=self._topology.n_residues,
+                    n_segments=self._topology.n_segments,
+                    values=values)
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
 
@@ -676,28 +820,18 @@ class Universe(object):
                                  n=n_dict[attr.per_object],
                                  m=len(attr)))
 
-        self._class_bases[GroupBase]._add_prop(attr)
-
         for cls in attr.target_classes:
-            try:
-                self._class_bases[cls]._add_prop(attr)
-            except (KeyError, AttributeError):
-                pass
+            self._class_bases[cls]._add_prop(attr)
 
-        try:
-            transplants = attr.transplants
-        except AttributeError:
-            # not every Attribute will have a transplant dict
-            pass
-        else:
-            # Group transplants
-            for cls in (Atom, Residue, Segment, GroupBase,
-                        AtomGroup, ResidueGroup, SegmentGroup):
-                for funcname, meth in transplants[cls]:
-                    setattr(self._class_bases[cls], funcname, meth)
-            # Universe transplants
-            for funcname, meth in transplants['Universe']:
-                setattr(self.__class__, funcname, meth)
+        # TODO: Try and shove this into cls._add_prop
+        # Group transplants
+        for cls in (Atom, Residue, Segment, GroupBase,
+                    AtomGroup, ResidueGroup, SegmentGroup):
+            for funcname, meth in attr.transplants[cls]:
+                setattr(self._class_bases[cls], funcname, meth)
+        # Universe transplants
+        for funcname, meth in attr.transplants['Universe']:
+            setattr(self.__class__, funcname, meth)
 
     def add_Residue(self, segment=None, **attrs):
         """Add a new Residue to this Universe
