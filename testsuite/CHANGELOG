@@ -13,7 +13,7 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-mm/dd/yy sobuelow
+01/24/18 sobuelow
   * 0.17.0
     - Unit test for residue names in 'protein' atom selection (PR #1704)
 
@@ -27,14 +27,14 @@ mm/dd/yy
 06/03/17 xiki_tempula
 
   * 0.16.1
-    - Added two unit tests for PDB and GRO to not merge two residue if they 
+    - Added two unit tests for PDB and GRO to not merge two residue if they
       have the the same residue id
-    - Change core.util string.uppercase to string.ascii_uppercase for py3 
+    - Change core.util string.uppercase to string.ascii_uppercase for py3
       compatibility
 
 
 04/10/17 jbarnoud, orbeckst, fiona-naughton, manuel.nuno.melo, richardjgowers
-         tyler.je.reddy, utkbansal, vedantrathore, kash1102
+	 tyler.je.reddy, utkbansal, vedantrathore, kash1102
 
   * 0.16
     - Added two unit tests for MDAnalysis.coordinates.memory.MemoryReader
