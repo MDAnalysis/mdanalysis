@@ -488,3 +488,12 @@ class TestInstantSelectorDeprecation(object):
         """
         with no_deprecated_call():
             exec(instruction)  #pylint: disable=W0122
+
+
+def test_record_types_default():
+    u = make_Universe()
+
+    u.add_TopologyAttr('record_type')
+
+    assert u.atoms[0].record_type == 'ATOM'
+    assert_equal(u.atoms[:10].record_types, 'ATOM')
