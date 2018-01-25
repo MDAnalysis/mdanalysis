@@ -13,9 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/18
+mm/dd/18 richardjgowers
 
   * 0.17.1
+
+Enhancements
+  * Added reading of record types (ATOM/HETATM) for PDB, PDBQT and PQR formats
+    (Issue #1753)
 
 Fixes
 

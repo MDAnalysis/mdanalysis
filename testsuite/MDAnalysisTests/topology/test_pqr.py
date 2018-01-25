@@ -21,6 +21,8 @@
 #
 from __future__ import absolute_import
 
+from numpy.testing import assert_equal
+
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -33,7 +35,7 @@ from MDAnalysisTests.datafiles import (
 class TestPQRParser(ParserBase):
     parser = mda.topology.PQRParser.PQRParser
     ref_filename = PQR
-    expected_attrs = ['ids', 'names', 'charges', 'radii',
+    expected_attrs = ['ids', 'names', 'charges', 'radii', 'record_types',
                       'resids', 'resnames', 'icodes',
                       'segids']
     guessed_attrs = ['masses', 'types']
@@ -55,3 +57,13 @@ class TestPQRParser2(TestPQRParser):
     ref_filename = PQR_icodes
     expected_n_atoms = 5313
     expected_n_residues = 474
+
+
+def test_record_types():
+    u = mda.Universe(PQR_icodes)
+
+    assert u.atoms[4052].record_type == 'ATOM'
+    assert u.atoms[4053].record_type == 'HETATM'
+
+    assert_equal(u.atoms[:10].record_types, 'ATOM')
+    assert_equal(u.atoms[4060:4070].record_types, 'HETATM')

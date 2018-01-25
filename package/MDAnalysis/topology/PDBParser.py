@@ -1,4 +1,3 @@
-
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
@@ -74,6 +73,7 @@ from ..core.topologyattrs import (
     ICodes,
     Masses,
     Occupancies,
+    RecordTypes,
     Resids,
     Resnames,
     Resnums,
@@ -96,6 +96,7 @@ class PDBParser(TopologyReaderBase):
      - chainids
      - bfactors
      - occupancies
+     - record_types (ATOM/HETATM)
      - resids
      - resnames
      - segids
@@ -108,8 +109,10 @@ class PDBParser(TopologyReaderBase):
     :class:`MDAnalysis.coordinates.PDB.PDBReader`
 
     .. versionadded:: 0.8
+    .. versionchanged:: 0.17.1
+       Added parsing of Record types
     """
-    format = ['PDB','ENT']
+    format = ['PDB', 'ENT']
 
     def parse(self, **kwargs):
         """Parse atom information from PDB file
@@ -134,6 +137,7 @@ class PDBParser(TopologyReaderBase):
         """Create the initial Topology object"""
         resid_prev = 0  # resid looping hack
 
+        record_types = []
         serials = []
         names = []
         altlocs = []
@@ -160,6 +164,7 @@ class PDBParser(TopologyReaderBase):
                 if not line.startswith(('ATOM', 'HETATM')):
                     continue
 
+                record_types.append(line[:6].strip())
                 try:
                     serial = int(line[6:11])
                 except ValueError:
@@ -217,6 +222,7 @@ class PDBParser(TopologyReaderBase):
                 (names, Atomnames, object),
                 (altlocs, AltLocs, object),
                 (chainids, ChainIDs, object),
+                (record_types, RecordTypes, object),
                 (serials, Atomids, np.int32),
                 (tempfactors, Tempfactors, np.float32),
                 (occupancies, Occupancies, np.float32),
@@ -343,4 +349,3 @@ def _parse_conect(conect):
     bond_atoms = (int(conect[11 + i * 5: 16 + i * 5]) for i in
                   range(n_bond_atoms))
     return atom_id, bond_atoms
-

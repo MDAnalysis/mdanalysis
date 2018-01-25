@@ -651,6 +651,20 @@ class Radii(AtomAttr):
         return np.zeros(na)
 
 
+class RecordTypes(AtomAttr):
+    """For PDB-like formats, indicates if ATOM or HETATM
+
+    Defaults to 'ATOM'
+    """
+    attrname = 'record_types'
+    singular = 'record_type'
+    per_object = 'atom'
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['ATOM'] * na, dtype=object)
+
+
 class ChainIDs(AtomAttr):
     """ChainID per atom
 
