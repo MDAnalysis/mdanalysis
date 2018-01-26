@@ -1217,7 +1217,7 @@ class SurvivalProbability(object):
         self.timeseries = []
 
 
-    def run(self, **kwargs):
+    def run(self):
         """Analyze trajectory and produce timeseries"""
 
         # select all frames to an array
@@ -1261,16 +1261,17 @@ class SurvivalProbability(object):
         """
         Gives one point to calculate the mean and
         gets one point of the plot C_vect vs t.
-        - Ex: t0=1 and tau=1 so calculate
-        how many selected beads survive from the frame 1 to 2
-        - Ex: t0=5 and tau=3 so calculate
-        how many selected beads survive from the frame 5 to 8
+        - Ex: t=1 and tau=1 calculates
+        how many selected water molecules survive from the frame 1 to 2
+        - Ex: t=5 and tau=3 calculates
+        how many selected water molecules survive from the frame 5 to 8
         """
 
         Nt = len(selected[t])
         if Nt == 0:
             return 0
 
+        # fraction of water molecules that survived
         Ntau = self._NumPart_tau(selected, t, tau)
         return Ntau/Nt
 
