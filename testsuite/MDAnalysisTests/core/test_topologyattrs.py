@@ -490,10 +490,56 @@ class TestInstantSelectorDeprecation(object):
             exec(instruction)  #pylint: disable=W0122
 
 
-def test_record_types_default():
-    u = make_Universe()
+class TestRecordTypes(object):
+    def test_record_types_default(self):
+        u = make_Universe()
 
-    u.add_TopologyAttr('record_type')
+        u.add_TopologyAttr('record_type')
 
-    assert u.atoms[0].record_type == 'ATOM'
-    assert_equal(u.atoms[:10].record_types, 'ATOM')
+        assert u.atoms[0].record_type == 'ATOM'
+        assert_equal(u.atoms[:10].record_types, 'ATOM')
+
+    @pytest.fixture()
+    def rectype_uni(self):
+        # standard 125/25/5 universe
+        u = make_Universe()
+        u.add_TopologyAttr('record_type')
+        # first 25 atoms are ATOM (first 5 residues, first segment)
+        # 25 to 50th are HETATM (res 5:10, second segment)
+        # all after are ATOM
+        u.atoms[:25].record_types = 'ATOM'
+        u.atoms[25:50].record_types = 'HETATM'
+        u.atoms[50:].record_types = 'ATOM'
+
+        return u
+
+    def test_encoding(self, rectype_uni):
+        ag = rectype_uni.atoms[:10]
+
+        ag[0].record_type = 'ATOM'
+        ag[1:4].record_types = 'HETATM'
+
+        assert ag[0].record_type == 'ATOM'
+        assert ag[1].record_type == 'HETATM'
+
+    def test_residue_record_types(self, rectype_uni):
+        rt = rectype_uni.residues.record_types
+
+        assert isinstance(rt, list)
+        assert len(rt) == 25
+
+        # check return type explicitly
+        # some versions of numpy allow bool to str comparison
+        assert not rt[0].dtype == bool
+        assert (rt[0] == 'ATOM').all()
+        assert (rt[5] == 'HETATM').all()
+
+    def test_segment_record_types(self, rectype_uni):
+        rt = rectype_uni.segments.record_types
+
+        assert isinstance(rt, list)
+        assert len(rt) == 5
+
+        assert not rt[0].dtype == bool
+        assert (rt[0] == 'ATOM').all()
+        assert (rt[1] == 'HETATM').all()

@@ -676,6 +676,12 @@ class RecordTypes(AtomAttr):
     def set_atoms(self, atomgroup, values):
         self.values[atomgroup.ix] = np.where(values == 'ATOM', True, False)
 
+    def get_residues(self, rg):
+        return [self.get_atoms(r.atoms) for r in rg]
+
+    def get_segments(self, sg):
+        return [self.get_atoms(s.atoms) for s in sg]
+
 
 class ChainIDs(AtomAttr):
     """ChainID per atom
