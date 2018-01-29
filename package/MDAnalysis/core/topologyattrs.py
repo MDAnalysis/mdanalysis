@@ -656,13 +656,25 @@ class RecordTypes(AtomAttr):
 
     Defaults to 'ATOM'
     """
+    # internally encodes {True: 'ATOM', False: 'HETATM'}
     attrname = 'record_types'
     singular = 'record_type'
     per_object = 'atom'
 
+    def __init__(self, values, guessed=False):
+        self.values = np.where(values == 'ATOM', True, False)
+        self._guessed = guessed
+
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.array(['ATOM'] * na, dtype=object)
+
+    def get_atoms(self, atomgroup):
+        return np.where(self.values[atomgroup.ix], 'ATOM', 'HETATM')
+
+    @_check_length
+    def set_atoms(self, atomgroup, values):
+        self.values[atomgroup.ix] = np.where(values == 'ATOM', True, False)
 
 
 class ChainIDs(AtomAttr):
