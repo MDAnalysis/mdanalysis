@@ -28,6 +28,7 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PDB,
+    PDB_HOLE,
     PDB_small,
     PDB_conect,
     PDB_conect2TER,
@@ -44,7 +45,7 @@ class TestPDBParser(ParserBase):
     """This one has neither chainids or segids"""
     parser = mda.topology.PDBParser.PDBParser
     ref_filename = PDB
-    expected_attrs = ['ids', 'names', 'resids', 'resnames']
+    expected_attrs = ['ids', 'names', 'record_types', 'resids', 'resnames']
     guessed_attrs = ['types', 'masses']
     expected_n_atoms = 47681
     expected_n_residues = 11302
@@ -55,7 +56,8 @@ class TestPDBParserSegids(ParserBase):
     """Has segids"""
     parser = mda.topology.PDBParser.PDBParser
     ref_filename = PDB_small
-    expected_attrs = ['ids', 'names', 'resids', 'resnames', 'segids']
+    expected_attrs = ['ids', 'names', 'record_types', 'resids', 'resnames',
+                      'segids']
     guessed_attrs = ['types', 'masses']
     expected_n_atoms = 3341
     expected_n_residues = 214
@@ -148,3 +150,13 @@ def test_sameresid_diffresname():
     for i, (resid, resname) in enumerate(zip(resids, resnames)):
         assert top.resids.values[i] == resid
         assert top.resnames.values[i] == resname
+
+
+def test_PDB_record_types():
+    u = mda.Universe(PDB_HOLE)
+
+    assert u.atoms[0].record_type == 'ATOM'
+    assert u.atoms[132].record_type == 'HETATM'
+
+    assert_equal(u.atoms[10:20].record_types, 'ATOM')
+    assert_equal(u.atoms[271:].record_types, 'HETATM')

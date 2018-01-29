@@ -60,6 +60,7 @@ from ..core.topologyattrs import (
     ICodes,
     Masses,
     Radii,
+    RecordTypes,
     Resids,
     Resnums,
     Resnames,
@@ -77,6 +78,7 @@ class PQRParser(TopologyReaderBase):
      - Atomnames
      - Charges
      - Radii
+     - RecordTypes (ATOM/HETATM)
      - Resids
      - Resnames
      - Segids
@@ -90,6 +92,9 @@ class PQRParser(TopologyReaderBase):
        'SYSTEM' as the new segid).
     .. versionchanged:: 0.16.1
        Now reads insertion codes and splits into new residues around these
+    .. versionchanged:: 0.17.1
+       Added parsing of Record types
+
     """
     format = 'PQR'
 
@@ -100,6 +105,7 @@ class PQRParser(TopologyReaderBase):
         -------
         A MDAnalysis Topology object
         """
+        record_types = []
         serials = []
         names = []
         resnames = []
@@ -131,6 +137,7 @@ class PQRParser(TopologyReaderBase):
                     else:
                         icode = ''
 
+                    record_types.append(recordName)
                     serials.append(serial)
                     names.append(name)
                     resnames.append(resName)
@@ -151,6 +158,7 @@ class PQRParser(TopologyReaderBase):
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Atomtypes(atomtypes, guessed=True))
         attrs.append(Masses(masses, guessed=True))
+        attrs.append(RecordTypes(np.array(record_types, dtype=object)))
         attrs.append(Radii(np.array(radii, dtype=np.float32)))
 
         resids = np.array(resids, dtype=np.int32)
