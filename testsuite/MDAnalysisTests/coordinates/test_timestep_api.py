@@ -27,6 +27,7 @@ _TestTimestepInterface tests the Readers are correctly using Timesteps
 """
 from __future__ import absolute_import
 
+import numpy as np
 from numpy.testing import assert_equal
 
 import MDAnalysis as mda
@@ -108,3 +109,28 @@ class TestBaseTimestepInterface(object):
 
     def test_dt(self, universe):
         assert_equal(universe.trajectory.dt, universe.trajectory.ts.dt)
+
+
+@pytest.mark.parametrize('uni', [
+    [(PSF, DCD), {}],  # base Timestep
+    [(DLP_CONFIG,), {'format': 'CONFIG'}],  # DLPoly
+    [(DMS,), {}],  # DMS
+    [(GRO,), {}],  # GRO
+    [(np.zeros((1, 30, 3)),), {}],  # memory
+    [(PRM, TRJ), {}],  # TRJ
+    [(TRZ_psf, TRZ), {}],  # TRZ
+])
+def test_atomgroup_dims_access(uni):
+    uni_args, uni_kwargs = uni
+    # check that AtomGroup.dimensions always returns a copy
+    u = mda.Universe(*uni_args, **uni_kwargs)
+
+    ag = u.atoms[:10]
+
+    dims = ag.dimensions
+    ts = u.trajectory.ts
+
+    # dimensions from AtomGroup should be equal
+    assert_equal(dims, ts.dimensions)
+    # but not identical
+    assert dims is not ts.dimensions

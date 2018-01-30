@@ -590,7 +590,8 @@ class GroupBase(_MutableBase):
 
     @property
     def dimensions(self):
-        return self.universe.trajectory.ts.dimensions
+        """Obtain a copy of the dimensions of the currently loaded Timestep"""
+        return self.universe.trajectory.ts.dimensions.copy()
 
     @dimensions.setter
     def dimensions(self, dimensions):
@@ -1774,8 +1775,8 @@ class AtomGroup(GroupBase):
         implicitly combined with an or operator. For example
 
            >>> sel = universe.select_atoms('resname MET GLY')
-           
-        is equivalent to 
+
+        is equivalent to
 
            >>> sel = universe.select_atoms('resname MET or resname GLY')
 

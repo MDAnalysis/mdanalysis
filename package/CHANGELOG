@@ -22,6 +22,7 @@ Enhancements
     (Issue #1753)
 
 Fixes
+  * AtomGroup.dimensions now strictly returns a copy (Issue #1582)
 
 
 01/24/18 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
