@@ -261,7 +261,7 @@ class PDBReader(base.ReaderBase):
         self.compound = compound = []
         self.remarks = remarks = []
 
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts = base.Timestep(self.n_atoms, **self._ts_kwargs)
 
         # Record positions in file of CRYST and MODEL headers
         # then build frame offsets to start at the minimum of these

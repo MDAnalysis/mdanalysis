@@ -40,29 +40,6 @@ AMBER trajectories are assumed to be in the following units:
 * lengths in Angstrom (Å)
 * time in ps (but see below)
 
-AMBER trajectory coordinate frames are based on a custom :class:`Timestep`
-object.
-
-.. autoclass:: Timestep
-   :members:
-
-   .. attribute:: _pos
-
-      coordinates of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`
-
-   .. attribute:: _velocities
-
-      velocities of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`;
-      only available if the trajectory contains velocities or if the
-      *velocities* = ``True`` keyword has been supplied.
-
-   .. attribute:: _forces
-
-      forces of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`;
-      only available if the trajectory contains forces or if the
-      *forces* = ``True`` keyword has been supplied.
-
-
 .. _ascii-trajectories:
 
 ASCII TRAJ trajectories
@@ -153,18 +130,6 @@ except ImportError:
     netCDF4 = None
     logger.warning("netCDF4 is not available. Writing AMBER ncdf files will be slow.")
 
-class Timestep(base.Timestep):
-    """AMBER trajectory Timestep.
-
-    The Timestep can be initialized with `arg` being an integer
-    (the number of atoms) and an optional keyword argument `velocities` to
-    allocate space for both coordinates and velocities;
-
-    .. versionchanged:: 0.10.0
-       Added ability to contain Forces
-    """
-    order = 'C'
-
 
 class TRJReader(base.ReaderBase):
     """AMBER trajectory reader.
@@ -192,7 +157,6 @@ class TRJReader(base.ReaderBase):
     """
     format = ['TRJ', 'MDCRD', 'CRDBOX']
     units = {'time': 'ps', 'length': 'Angstrom'}
-    _Timestep = Timestep
 
     def __init__(self, filename, n_atoms=None, **kwargs):
         super(TRJReader, self).__init__(filename, **kwargs)
@@ -202,7 +166,7 @@ class TRJReader(base.ReaderBase):
         self._n_frames = None
 
         self.trjfile = None  # have _read_next_timestep() open it properly!
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts = base.Timestep(self.n_atoms, order='C', **self._ts_kwargs)
 
         # FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)
         self.default_line_parser = util.FORTRANReader("10F8.3")
@@ -289,7 +253,6 @@ class TRJReader(base.ReaderBase):
            there's no way to distinguish the coordinates from the box
            so for 1 atom we always assume no box
 
-        .. TODO:: needs a Timestep that knows about AMBER unitcells!
         """
         if self.n_atoms == 1:
             # for 1 atom we cannot detect the box with the current approach
@@ -435,7 +398,6 @@ class NCDFReader(base.ReaderBase):
              'length': 'Angstrom',
              'velocity': 'Angstrom/ps',
              'force': 'kcal/(mol*Angstrom)'}
-    _Timestep = Timestep
 
     def __init__(self, filename, n_atoms=None, **kwargs):
         self._mmap = kwargs.pop('mmap', False)
@@ -505,11 +467,12 @@ class NCDFReader(base.ReaderBase):
         self.periodic = 'cell_lengths' in self.trjfile.variables
         self._current_frame = 0
 
-        self.ts = self._Timestep(self.n_atoms,
-                                 velocities=self.has_velocities,
-                                 forces=self.has_forces,
-                                 reader=self,  # for dt
-                                 **self._ts_kwargs)
+        self.ts = base.Timestep(self.n_atoms,
+                                velocities=self.has_velocities,
+                                forces=self.has_forces,
+                                reader=self,  # for dt
+                                order='C',
+                                **self._ts_kwargs)
 
         # load first data frame
         self._read_frame(0)

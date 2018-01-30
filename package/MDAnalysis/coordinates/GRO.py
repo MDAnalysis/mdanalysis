@@ -31,9 +31,6 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 Classes
 -------
 
-.. autoclass:: Timestep
-   :members:
-
 .. autoclass:: GROReader
    :members:
 
@@ -97,47 +94,28 @@ from ..exceptions import NoDataError
 from ..lib import util
 
 
-class Timestep(base.Timestep):
-    _ts_order_x = [0, 3, 4]
-    _ts_order_y = [5, 1, 6]
-    _ts_order_z = [7, 8, 2]
+"""unitcell dimensions (A, B, C, alpha, beta, gamma)
 
-    def _init_unitcell(self):
-        return np.zeros(9, dtype=np.float32)
+GRO::
 
-    @property
-    def dimensions(self):
-        """unitcell dimensions (A, B, C, alpha, beta, gamma)
+  8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
 
-        GRO::
+PDB::
 
-          8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
+  CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
 
-        PDB::
+XTC: c.trajectory.ts._unitcell::
 
-          CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
-
-        XTC: c.trajectory.ts._unitcell::
-
-          array([[ 80.00515747,   0.        ,   0.        ],
-                 [  0.        ,  80.00515747,   0.        ],
-                 [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)
-        """
-        # unit cell line (from http://manual.gromacs.org/current/online/gro.html)
-        # v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)
-        # 0     1     2      3     4     5     6    7     8
-        # This information now stored as _ts_order_x/y/z to keep DRY
-        x = self._unitcell[self._ts_order_x]
-        y = self._unitcell[self._ts_order_y]
-        z = self._unitcell[self._ts_order_z]  # this ordering is correct! (checked it, OB)
-        return triclinic_box(x, y, z)
-
-    @dimensions.setter
-    def dimensions(self, box):
-        x, y, z = triclinic_vectors(box)
-        np.put(self._unitcell, self._ts_order_x, x)
-        np.put(self._unitcell, self._ts_order_y, y)
-        np.put(self._unitcell, self._ts_order_z, z)
+  array([[ 80.00515747,   0.        ,   0.        ],
+         [  0.        ,  80.00515747,   0.        ],
+         [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)
+"""
+# unit cell line (from http://manual.gromacs.org/current/online/gro.html)
+# v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)
+# 0     1     2      3     4     5     6    7     8
+_TS_ORDER_X = [0, 3, 4]
+_TS_ORDER_Y = [5, 1, 6]
+_TS_ORDER_Z = [7, 8, 2]
 
 
 class GROReader(base.SingleFrameReaderBase):
@@ -148,7 +126,6 @@ class GROReader(base.SingleFrameReaderBase):
     """
     format = 'GRO'
     units = {'time': None, 'length': 'nm', 'velocity': 'nm/ps'}
-    _Timestep = Timestep
 
     def _read_first_frame(self):
         with util.openany(self.filename, 'rt') as grofile:
@@ -163,23 +140,23 @@ class GROReader(base.SingleFrameReaderBase):
             # Always try, and maybe add them later
             velocities = np.zeros((n_atoms, 3), dtype=np.float32)
 
-            self.ts = ts = self._Timestep(n_atoms,
-                                          **self._ts_kwargs)
-
+            self.ts = ts = base.Timestep(n_atoms, **self._ts_kwargs)
             missed_vel = False
 
             grofile.seek(0)
             for pos, line in enumerate(grofile, start=-2):
                 # 2 header lines, 1 box line at end
                 if pos == n_atoms:
-                    unitcell = np.float32(line.split())
+                    unitcell = list(map(float, line.split()))
                     continue
                 if pos < 0:
                     continue
 
-                ts._pos[pos] = [line[20 + cs * i:20 + cs * (i + 1)] for i in range(3)]
+                ts._pos[pos] = [line[20 + cs * i:20 + cs * (i + 1)]
+                                for i in range(3)]
                 try:
-                    velocities[pos] = [line[20 + cs * i:20 + cs * (i + 1)] for i in range(3, 6)]
+                    velocities[pos] = [line[20 + cs * i:20 + cs * (i + 1)]
+                                       for i in range(3, 6)]
                 except ValueError:
                     # Remember that we got this error
                     missed_vel = True
@@ -190,23 +167,30 @@ class GROReader(base.SingleFrameReaderBase):
                 warnings.warn("Not all velocities were present.  "
                               "Unset velocities set to zero.")
 
-        self.ts.frame = 0  # 0-based frame number
+        ts.frame = 0  # 0-based frame number
 
+        # at this point unitcell is a list of varying size...
         if len(unitcell) == 3:
             # special case: a b c --> (a 0 0) (b 0 0) (c 0 0)
-            # see Timestep.dimensions() above for format (!)
-            self.ts._unitcell[:3] = unitcell
-        elif len(unitcell) == 9:
-            self.ts._unitcell[:] = unitcell  # fill all
-        else:  # or maybe raise an error for wrong format??
-            warnings.warn("GRO unitcell has neither 3 nor 9 entries --- might be wrong.")
-            self.ts._unitcell[:len(unitcell)] = unitcell  # fill linearly ... not sure about this
+            ts.dimensions =  unitcell + [90.] * 3
+        else:
+            if not len(unitcell) == 9:
+                warnings.warn("GRO unitcell has neither 3 nor 9 entries"
+                              " --- might be wrong.")
+            # force box into 9 length array
+            unitcell2 = np.zeros(9)
+            unitcell2[:len(unitcell)] = unitcell
+
+            ts.triclinic_dimensions = [unitcell2[_TS_ORDER_X],
+                                       unitcell2[_TS_ORDER_Y],
+                                       unitcell2[_TS_ORDER_Z]]
+
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell)  # in-place ! (all are lengths)
-            if self.ts.has_velocities:
+            self.convert_pos_from_native(ts._pos)  # in-place !
+            self.convert_pos_from_native(ts._unitcell[:3])  # in-place ! (all are lengths)
+            if ts.has_velocities:
                 # converts nm/ps to A/ps units
-                self.convert_velocities_from_native(self.ts._velocities)
+                self.convert_velocities_from_native(ts._velocities)
 
     def Writer(self, filename, n_atoms=None, **kwargs):
         """Returns a CRDWriter for *filename*.

@@ -132,8 +132,7 @@ class PQRReader(base.SingleFrameReaderBase):
                     coords.append(fields[-5:-2])
 
         self.n_atoms = len(coords)
-        self.ts = self._Timestep.from_coordinates(
-            coords, **self._ts_kwargs)
+        self.ts = base.Timestep.from_coordinates(coords, **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:

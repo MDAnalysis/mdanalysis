@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -35,22 +35,8 @@ from six.moves import range
 import numpy as np
 
 from . import base
-from . import core
 
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
-
-
-class Timestep(base.Timestep):
-    def _init_unitcell(self):
-        return np.zeros((3, 3), dtype=np.float32, order='F')
-
-    @property
-    def dimensions(self):
-        return core.triclinic_box(*self._unitcell)
-
-    @dimensions.setter
-    def dimensions(self, new):
-        self._unitcell[:] = core.triclinic_vectors(new)
 
 
 class ConfigReader(base.SingleFrameReaderBase):
@@ -60,7 +46,6 @@ class ConfigReader(base.SingleFrameReaderBase):
     """
     format = 'CONFIG'
     units = _DLPOLY_UNITS
-    _Timestep = Timestep
 
     def _read_first_frame(self):
         unitcell = np.zeros((3, 3), dtype=np.float32, order='F')
@@ -125,17 +110,17 @@ class ConfigReader(base.SingleFrameReaderBase):
             if has_forces:
                 forces = forces[order]
 
-        ts = self.ts = self._Timestep(self.n_atoms,
-                                      velocities=has_vels,
-                                      forces=has_forces,
-                                      **self._ts_kwargs)
+        ts = self.ts = base.Timestep(self.n_atoms,
+                                     velocities=has_vels,
+                                     forces=has_forces,
+                                     **self._ts_kwargs)
         ts._pos = coords
         if has_vels:
             ts._velocities = velocities
         if has_forces:
             ts._forces = forces
         if not imcon == 0:
-            ts._unitcell = unitcell
+            ts.triclinic_dimensions = unitcell
 
         ts.frame = 0
 
@@ -147,7 +132,6 @@ class HistoryReader(base.ReaderBase):
     """
     format = 'HISTORY'
     units = _DLPOLY_UNITS
-    _Timestep = Timestep
 
     def __init__(self, filename, **kwargs):
         super(HistoryReader, self).__init__(filename, **kwargs)
@@ -159,23 +143,24 @@ class HistoryReader(base.ReaderBase):
         self._has_vels = True if self._levcfg > 0 else False
         self._has_forces = True if self._levcfg == 2 else False
 
-        self.ts = self._Timestep(self.n_atoms,
-                                 velocities=self._has_vels,
-                                 forces=self._has_forces,
-                                 **self._ts_kwargs)
+        self.ts = base.Timestep(self.n_atoms,
+                                velocities=self._has_vels,
+                                forces=self._has_forces,
+                                **self._ts_kwargs)
         self._read_next_timestep()
 
     def _read_next_timestep(self, ts=None):
         if ts is None:
             ts = self.ts
-
+        unitcell = np.zeros((3, 3), dtype=np.float32, order='F')
         line = self._file.readline()  # timestep line
         if not line.startswith('timestep'):
             raise IOError
         if not self._imcon == 0:
-            ts._unitcell[0] = self._file.readline().split()
-            ts._unitcell[1] = self._file.readline().split()
-            ts._unitcell[2] = self._file.readline().split()
+            unitcell[0] = self._file.readline().split()
+            unitcell[1] = self._file.readline().split()
+            unitcell[2] = self._file.readline().split()
+            ts.triclinic_dimensions = unitcell
 
         # If ids are given, put them in here
         # and later sort by them

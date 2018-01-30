@@ -90,14 +90,12 @@ class GMSReader(base.ReaderBase):
         self._n_frames = None
         self._runtyp = None
 
-        self.ts = self._Timestep(0) # need for properties initial calculations
-
         # update runtyp property
         self.runtyp
         if not self.runtyp in ['optimize', 'surface']:
             raise AttributeError('Wrong RUNTYP= '+self.runtyp)
 
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts = base.Timestep(self.n_atoms, **self._ts_kwargs)
         # update n_frames property
         self.n_frames
 
@@ -264,5 +262,3 @@ class GMSReader(base.ReaderBase):
             return
         self.outfile.close()
         self.outfile = None
-
-

@@ -65,8 +65,7 @@ class MMTFReader(base.SingleFrameReaderBase):
             top = _parse_mmtf(self.filename)
         self.n_atoms = top.num_atoms
 
-        self.ts = ts = self._Timestep(self.n_atoms,
-                                      **self._ts_kwargs)
+        self.ts = ts = base.Timestep(self.n_atoms, **self._ts_kwargs)
         ts._pos[:, 0] = top.x_coord_list
         ts._pos[:, 1] = top.y_coord_list
         ts._pos[:, 2] = top.z_coord_list

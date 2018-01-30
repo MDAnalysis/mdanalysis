@@ -226,7 +226,6 @@ class MemoryReader(base.ProtoReader):
     """
 
     format = 'MEMORY'
-    _Timestep = Timestep
 
     def __init__(self, coordinate_array, order='fac',
                  dimensions=None, dt=1, filename=None, **kwargs):
@@ -279,7 +278,7 @@ class MemoryReader(base.ProtoReader):
                                  "array ({})"
                                  .format(provided_n_atoms, self.n_atoms))
 
-        self.ts = self._Timestep(self.n_atoms, **kwargs)
+        self.ts = Timestep(self.n_atoms, **kwargs)
         self.ts.dt = dt
         if dimensions is not None:
             self.ts.dimensions = dimensions

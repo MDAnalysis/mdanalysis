@@ -37,45 +37,6 @@ trajectories in *little-endian* byte order.
 Classes
 -------
 
-.. autoclass:: MDAnalysis.coordinates.TRZ.Timestep
-   :members:
-
-   .. attribute:: frame
-
-      Index of current frame number (0 based)
-
-   .. attribute:: time
-
-      Current system time in ps
-
-   .. attribute:: n_atoms
-
-      Number of atoms in the frame (will be constant throughout trajectory)
-
-   .. attribute:: pressure
-
-      System pressure in pascals
-
-   .. attribute:: pressure_tensor
-
-      Array containing pressure tensors in order: xx, xy, yy, xz, yz, zz
-
-   .. attribute:: total_energy
-
-      Hamiltonian for the system in kJ/mol
-
-   .. attribute:: potential_energy
-
-      Potential energy of the system in kJ/mol
-
-   .. attribute:: kinetic_energy
-
-      Kinetic energy of the system in kJ/mol
-
-   .. attribute:: temperature
-
-      Temperature of the system in Kelvin
-
 .. autoclass:: TRZReader
    :members:
 
@@ -97,32 +58,6 @@ from . import base
 from ..core import flags
 from ..lib import util
 from ..lib.util import cached
-from .core import triclinic_box, triclinic_vectors
-
-
-class Timestep(base.Timestep):
-    """ TRZ custom Timestep"""
-    def _init_unitcell(self):
-        return np.zeros(9)
-
-    @property
-    def dimensions(self):
-        """
-        Unit cell dimensions ``[A,B,C,alpha,beta,gamma]``.
-        """
-        x = self._unitcell[0:3]
-        y = self._unitcell[3:6]
-        z = self._unitcell[6:9]
-        return triclinic_box(x, y, z)
-
-    @dimensions.setter
-    def dimensions(self, box):
-        """Set the Timestep dimensions with MDAnalysis format cell
-        (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
-        .. versionadded:: 0.9.0
-        """
-        self._unitcell[:] = triclinic_vectors(box).reshape(9)
 
 
 class TRZReader(base.ReaderBase):
@@ -130,8 +65,8 @@ class TRZReader(base.ReaderBase):
 
     Attributes
     ----------
-    ts : TRZ.Timestep
-         :class:`~MDAnalysis.coordinates.TRZ.Timestep` object containing
+    ts : base.Timestep
+         :class:`~MDAnalysis.coordinates.base.Timestep` object containing
          coordinates of current frame
 
     Note
@@ -174,11 +109,11 @@ class TRZReader(base.ReaderBase):
         self._n_atoms = n_atoms
 
         self._read_trz_header()
-        self.ts = Timestep(self.n_atoms,
-                           velocities=True,
-                           forces=self.has_force,
-                           reader=self,
-                           **self._ts_kwargs)
+        self.ts = base.Timestep(self.n_atoms,
+                                velocities=True,
+                                forces=self.has_force,
+                                reader=self,
+                                **self._ts_kwargs)
 
         # structured dtype of a single trajectory frame
         readarg = str(n_atoms) + '<f4'
@@ -251,7 +186,7 @@ class TRZReader(base.ReaderBase):
             ts.frame = data['nframe'][0] - 1  # 0 based for MDA
             ts._frame = data['ntrj'][0]
             ts.time = data['treal'][0]
-            ts._unitcell[:] = data['box']
+            ts.triclinic_dimensions = data['box'].reshape(3, 3)
             ts.data['pressure'] = data['pressure']
             ts.data['pressure_tensor'] = data['ptensor']
             ts.data['total_energy'] = data['etot']
@@ -274,7 +209,7 @@ class TRZReader(base.ReaderBase):
             # Convert things read into MDAnalysis' native formats (nm -> angstroms)
             if self.convert_units:
                 self.convert_pos_from_native(self.ts._pos)
-                self.convert_pos_from_native(self.ts._unitcell)
+                self.convert_pos_from_native(self.ts._unitcell[:3])
                 self.convert_velocities_from_native(self.ts._velocities)
 
             return ts
@@ -568,7 +503,7 @@ class TRZWriter(base.WriterBase):
                           "".format(", ".join(faked_attrs)))
 
         # Convert other stuff into our format
-        unitcell = triclinic_vectors(ts.dimensions).reshape(9)
+        unitcell = ts.triclinic_dimensions.reshape(9)
         try:
             vels = ts._velocities
         except AttributeError:

@@ -55,7 +55,7 @@ class INPReader(base.SingleFrameReaderBase):
             line = inf.readline().split()
             self.n_atoms = int(line[0])
 
-            self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+            self.ts = base.Timestep(self.n_atoms, **self._ts_kwargs)
             try:
                 time = float(line[1])
             except IndexError:

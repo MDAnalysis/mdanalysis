@@ -146,7 +146,7 @@ class DCDReader(base.ReaderBase):
         self.skip_timestep = self._file.header['nsavc']
 
         self._ts_kwargs['dt'] = dt
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts = base.Timestep(self.n_atoms, **self._ts_kwargs)
         frame = self._file.read()
         # reset trajectory
         if self._file.n_frames > 1:

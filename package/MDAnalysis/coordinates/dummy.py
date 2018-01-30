@@ -38,10 +38,10 @@ from __future__ import absolute_import
 
 import numpy as np
 
-from .base import SingleFrameReaderBase
+from . import base
 
 
-class DummyReader(SingleFrameReaderBase):
+class DummyReader(base.SingleFrameReaderBase):
     """Basic Reader which does not read from any file
 
     .. versionadded:: 0.17.0
@@ -55,6 +55,6 @@ class DummyReader(SingleFrameReaderBase):
         self._read_first_frame(velocities, forces)
 
     def _read_first_frame(self, velocities=False, forces=False):
-        ts = self.ts = self._Timestep(self.n_atoms, positions=True,
-                                      velocities=velocities, forces=forces)
+        ts = self.ts = base.Timestep(self.n_atoms, positions=True,
+                                     velocities=velocities, forces=forces)
         return ts

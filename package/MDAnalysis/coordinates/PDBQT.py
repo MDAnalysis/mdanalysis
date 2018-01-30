@@ -163,9 +163,7 @@ class PDBQTReader(base.SingleFrameReaderBase):
                     # convert all entries at the end once for optimal speed
                     coords.append([line[30:38], line[38:46], line[46:54]])
         self.n_atoms = len(coords)
-        self.ts = self._Timestep.from_coordinates(
-            coords,
-            **self._ts_kwargs)
+        self.ts = base.Timestep.from_coordinates(coords, **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
