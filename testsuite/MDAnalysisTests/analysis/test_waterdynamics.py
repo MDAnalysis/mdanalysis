@@ -25,17 +25,24 @@ import MDAnalysis.analysis.waterdynamics
 import pytest
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
+from MDAnalysisTests.datafiles import PDB, XTC
 
 import numpy as np
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_almost_equal, assert_equal
 
 SELECTION1 = "byres name OH2"
 SELECTION2 = "byres name P1"
+SELECTION3 = "around 10 protein"
 
 
 @pytest.fixture(scope='module')
 def universe():
     return MDAnalysis.Universe(waterPSF, waterDCD)
+
+
+@pytest.fixture(scope='module')
+def universe_protein():
+    return MDAnalysis.Universe(PDB, XTC)
 
 
 def test_HydrogenBondLifetimes(universe):
@@ -91,13 +98,26 @@ def test_MeanSquareDisplacement_zeroMolecules(universe):
     assert_almost_equal(msd_zero.timeseries[1], 0.0)
 
 
-def test_SurvivalProbability(universe):
-    sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(universe,
-                                                               SELECTION1,
-                                                               0, 6, 3)
+def test_SurvivalProbability(universe_protein):
+    # The first timepoint has to be '1' since it is an autocorrelation function
+    sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(
+        universe_protein, SELECTION3, 0, 10, 4)
     sp.run()
-    assert_almost_equal(sp.timeseries[1], 1.0,
-                        decimal=5)
+    assert_equal(sp.timeseries[0], 1.0)
+
+
+def test_SurvivalProbability_t0Ignored(universe_protein):
+    # two different intervals
+    sp1 = MDAnalysis.analysis.waterdynamics.SurvivalProbability(
+        universe_protein, SELECTION3, 0, 10, 5)
+    sp2 = MDAnalysis.analysis.waterdynamics.SurvivalProbability(
+        universe_protein, SELECTION3, 3, 10, 5)
+    sp1.run()
+    sp2.run()
+    assert_equal(np.any(np.not_equal(sp1.timeseries[1], sp2.timeseries[1])),
+                 True, err_msg="Water should not behave the same way"
+                               "in two different time intervals")
+
 
 
 def test_SurvivalProbability_zeroMolecules(universe):
