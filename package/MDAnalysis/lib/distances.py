@@ -473,6 +473,7 @@ def transform_StoR(inputcoords, box, backend="serial"):
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
     """
+    _check_array(inputcoords, 'S')
     coords = inputcoords.copy('C')
 
     is_1d = False  # True if only one vector coordinate
