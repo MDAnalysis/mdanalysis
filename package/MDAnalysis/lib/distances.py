@@ -182,6 +182,11 @@ def _check_array(coords, desc):
     if (coords.ndim != 2 or coords.shape[1] != 3):
         raise ValueError("{0} must be a sequence of 3 dimensional coordinates"
                          "".format(desc))
+    _check_array_dtype(coords, desc)
+
+
+def _check_array_dtype(coords, desc):
+    """Check whether an array contains values of dtype: np.float32 or not"""
     if coords.dtype != np.float32:
         raise TypeError("{0} must be of type float32".format(desc))
 
@@ -473,7 +478,7 @@ def transform_StoR(inputcoords, box, backend="serial"):
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
     """
-    _check_array(inputcoords, 'S')
+    _check_array_dtype(inputcoords, 'S')
     coords = inputcoords.copy('C')
 
     is_1d = False  # True if only one vector coordinate
