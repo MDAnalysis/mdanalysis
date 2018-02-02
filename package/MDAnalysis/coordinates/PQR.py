@@ -123,7 +123,7 @@ class PQRReader(base.SingleFrameReaderBase):
 
     def _read_first_frame(self):
         coords = []
-        unitcell = np.zeros(6, dtype=np.float32)
+
         with util.openany(self.filename) as pqrfile:
             for line in pqrfile:
                 if line.startswith(('ATOM', 'HETATM')):
@@ -133,12 +133,10 @@ class PQRReader(base.SingleFrameReaderBase):
 
         self.n_atoms = len(coords)
         self.ts = base.Timestep.from_coordinates(coords, **self._ts_kwargs)
-        self.ts._unitcell[:] = unitcell
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
             # in-place !
             self.convert_pos_from_native(self.ts._pos)
-            self.convert_pos_from_native(self.ts._unitcell[:3])
 
     def Writer(self, filename, **kwargs):
         """Returns a PQRWriter for *filename*.
