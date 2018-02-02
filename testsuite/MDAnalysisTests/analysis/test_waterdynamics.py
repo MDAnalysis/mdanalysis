@@ -21,7 +21,7 @@
 #
 from __future__ import print_function, absolute_import
 import MDAnalysis
-import MDAnalysis.analysis.waterdynamics
+from MDAnalysis.analysis import waterdynamics
 import pytest
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
@@ -41,40 +41,34 @@ def universe():
 
 
 @pytest.fixture(scope='module')
-def universe_protein():
+def universe_prot():
     return MDAnalysis.Universe(PDB, XTC)
 
 
 def test_HydrogenBondLifetimes(universe):
-    hbl = MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes(universe,
-                                                                  SELECTION1,
-                                                                  SELECTION1,
-                                                                  0, 5, 3)
+    hbl = waterdynamics.HydrogenBondLifetimes(
+        universe, SELECTION1, SELECTION1, 0, 5, 3)
     hbl.run()
     assert_almost_equal(hbl.timeseries[2][1], 0.75, 5)
 
 
 def test_WaterOrientationalRelaxation(universe):
-    wor = MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation(
-        universe,
-        SELECTION1, 0, 5, 2)
+    wor = waterdynamics.WaterOrientationalRelaxation(
+        universe, SELECTION1, 0, 5, 2)
     wor.run()
     assert_almost_equal(wor.timeseries[1][2], 0.35887,
                         decimal=5)
 
 
 def test_WaterOrientationalRelaxation_zeroMolecules(universe):
-    wor_zero = MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation(
-        universe,
-        SELECTION2, 0, 5, 2)
+    wor_zero = waterdynamics.WaterOrientationalRelaxation(
+        universe, SELECTION2, 0, 5, 2)
     wor_zero.run()
     assert_almost_equal(wor_zero.timeseries[1], (0.0, 0.0, 0.0))
 
 
 def test_AngularDistribution(universe):
-    ad = MDAnalysis.analysis.waterdynamics.AngularDistribution(universe,
-                                                               SELECTION1,
-                                                               40)
+    ad = waterdynamics.AngularDistribution(universe, SELECTION1, 40)
     ad.run()
     # convert a string with two "floats" into a float array
     result = np.array(ad.graph[0][39].split(), dtype=np.float64)
@@ -82,41 +76,33 @@ def test_AngularDistribution(universe):
 
 
 def test_MeanSquareDisplacement(universe):
-    msd = MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement(universe,
-                                                                   SELECTION1,
-                                                                   0, 10, 2)
+    msd = waterdynamics.MeanSquareDisplacement(universe, SELECTION1, 0, 10, 2)
     msd.run()
     assert_almost_equal(msd.timeseries[1], 0.03984,
                         decimal=5)
 
 
 def test_MeanSquareDisplacement_zeroMolecules(universe):
-    msd_zero = MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement(
-        universe,
-        SELECTION2, 0, 10, 2)
+    msd_zero = waterdynamics.MeanSquareDisplacement(
+        universe, SELECTION2, 0, 10, 2)
     msd_zero.run()
     assert_almost_equal(msd_zero.timeseries[1], 0.0)
 
 
-def test_SurvivalProbability(universe_protein):
-    # The first timepoint has to be '1' since it is an autocorrelation function
-    sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(
-        universe_protein, SELECTION3, 0, 10, 4)
+def test_SurvivalProbability(universe_prot):
+    sp = waterdynamics.SurvivalProbability(universe_prot, SELECTION3, 0, 10, 4)
     sp.run()
-    assert_almost_equal(sp.timeseries, [1.0, 0.3543, 0.2677, 0.2426], decimal=4)
+    assert_almost_equal(sp.timeseries, [1.0, 0.354, 0.267, 0.242], decimal=3)
 
 
-def test_SurvivalProbability_t0Ignored(universe_protein):
-    sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(
-        universe_protein, SELECTION3, 3, 10, 4)
+def test_SurvivalProbability_t0Ignored(universe_prot):
+    sp = waterdynamics.SurvivalProbability(universe_prot, SELECTION3, 3, 10, 4)
     sp.run()
-    assert_almost_equal(sp.timeseries, [1.0, 0.3917, 0.2929, 0.2610], decimal=4)
+    assert_almost_equal(sp.timeseries, [1.0, 0.391, 0.292, 0.261], decimal=3)
 
 
 
 def test_SurvivalProbability_zeroMolecules(universe):
-    sp_zero = MDAnalysis.analysis.waterdynamics.SurvivalProbability(universe,
-                                                                    SELECTION2,
-                                                                    0, 6, 3)
+    sp_zero = waterdynamics.SurvivalProbability(universe, SELECTION2, 0, 6, 3)
     sp_zero.run()
     assert_almost_equal(sp_zero.timeseries[1], 0.0)
