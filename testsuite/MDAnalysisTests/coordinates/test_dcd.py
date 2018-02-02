@@ -284,6 +284,16 @@ def test_writer_trajectory_no_natoms(tmpdir, universe_dcd):
         universe_dcd.trajectory.Writer("foo.dcd")
 
 
+@pytest.mark.parametrize('istart', (0, 1, 2, 3))
+def test_write_istart(universe_dcd, tmpdir, istart):
+    u = universe_dcd
+    outfile = str(tmpdir.join('test.dcd'))
+    with mda.Writer(outfile, u.atoms.n_atoms, istart=istart) as w:
+        w.write(u.atoms)
+    u = mda.Universe(PSF, outfile)
+    assert u.trajectory._file.header['istart'] == istart
+
+
 class RefCHARMMtriclinicDCD(object):
     topology = PSF_TRICLINIC
     trajectory = DCD_TRICLINIC
