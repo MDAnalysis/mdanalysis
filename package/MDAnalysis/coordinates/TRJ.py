@@ -221,9 +221,8 @@ class TRJReader(base.ReaderBase):
         # Read box information
         if self.periodic:
             line = next(self.trjfile)
-            box = self.box_line_parser.read(line)
-            ts._unitcell[:3] = np.array(box, dtype=np.float32)
-            ts._unitcell[3:] = [90., 90., 90.]  # assumed
+            # assumes 90. angles
+            ts.dimensions = self.box_line_parser.read(line) + [90., 90., 90.]
 
         # probably slow ... could be optimized by storing the coordinates in
         # X,Y,Z lists or directly filling the array; the array/reshape is not
@@ -270,11 +269,11 @@ class TRJReader(base.ReaderBase):
         nentries = self.default_line_parser.number_of_matches(line)
         if nentries == 3:
             self.periodic = True
-            ts._unitcell[:3] = self.box_line_parser.read(line)
-            ts._unitcell[3:] = [90., 90., 90.]  # assumed
+            # assumed 90. angles
+            ts.dimensions = self.box_line_parser.read(line) + [90., 90., 90.]
         else:
             self.periodic = False
-            ts._unitcell = np.zeros(6, np.float32)
+
         self.close()
         return self.periodic
 
@@ -502,8 +501,8 @@ class NCDFReader(base.ReaderBase):
         if self.has_forces:
             ts._forces[:] = self.trjfile.variables['forces'][frame]
         if self.periodic:
-            ts._unitcell[:3] = self.trjfile.variables['cell_lengths'][frame]
-            ts._unitcell[3:] = self.trjfile.variables['cell_angles'][frame]
+            ts.dimensions = (self.trjfile.variables['cell_lengths'][frame] +
+                             self.trjfile.variables['cell_angles'][frame])
         if self.convert_units:
             self.convert_pos_from_native(ts._pos)  # in-place !
             self.convert_time_from_native(
