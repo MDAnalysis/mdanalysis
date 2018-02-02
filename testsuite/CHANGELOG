@@ -16,6 +16,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 01/24/18 sobuelow
   * 0.17.0
     - Unit test for residue names in 'protein' atom selection (PR #1704)
+    - Test for waterdynamics.SurvivalProbability starting time t0 (PR #1759)
 
 mm/dd/yy
 
