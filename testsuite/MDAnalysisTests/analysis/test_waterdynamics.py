@@ -28,11 +28,11 @@ from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysisTests.datafiles import PDB, XTC
 
 import numpy as np
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_almost_equal
 
 SELECTION1 = "byres name OH2"
 SELECTION2 = "byres name P1"
-SELECTION3 = "around 10 protein"
+SELECTION3 = "around 4 (resid 151 and name OE1)"
 
 
 @pytest.fixture(scope='module')
@@ -103,20 +103,14 @@ def test_SurvivalProbability(universe_protein):
     sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(
         universe_protein, SELECTION3, 0, 10, 4)
     sp.run()
-    assert_equal(sp.timeseries[0], 1.0)
+    assert_almost_equal(sp.timeseries, [1.0, 0.3543, 0.2677, 0.2426], decimal=4)
 
 
 def test_SurvivalProbability_t0Ignored(universe_protein):
-    # two different intervals
-    sp1 = MDAnalysis.analysis.waterdynamics.SurvivalProbability(
-        universe_protein, SELECTION3, 0, 10, 5)
-    sp2 = MDAnalysis.analysis.waterdynamics.SurvivalProbability(
-        universe_protein, SELECTION3, 3, 10, 5)
-    sp1.run()
-    sp2.run()
-    assert_equal(np.any(np.not_equal(sp1.timeseries[1], sp2.timeseries[1])),
-                 True, err_msg="Water should not behave the same way"
-                               "in two different time intervals")
+    sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(
+        universe_protein, SELECTION3, 3, 10, 4)
+    sp.run()
+    assert_almost_equal(sp.timeseries, [1.0, 0.3917, 0.2929, 0.2610], decimal=4)
 
 
 
