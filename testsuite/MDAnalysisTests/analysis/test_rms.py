@@ -165,21 +165,21 @@ class TestRMSD(object):
 
     @pytest.fixture()
     def correct_values(self):
-        return [[0, 0, 0], [49, 49, 4.68953]]
+        return [[0, 1000, 0], [49, 1049, 4.68953]]
 
     @pytest.fixture()
     def correct_values_mass(self):
-        return [[0, 0, 0], [49, 49, 4.74920]]
+        return [[0, 1000, 0], [49, 1049, 4.74920]]
 
     @pytest.fixture()
     def correct_values_group(self):
-        return [[0, 0, 0, 0, 0],
-                 [49, 49, 4.7857, 4.7048, 4.6924]]
+        return [[0, 1000, 0, 0, 0],
+                 [49, 1049, 4.7857, 4.7048, 4.6924]]
 
     @pytest.fixture()
     def correct_values_backbone_group(self):
-        return [[0, 0, 0, 0, 0],
-                [49,   49,   4.6997, 1.9154, 2.7139]]
+        return [[0, 1000, 0, 0, 0],
+                [49,   1049,   4.6997, 1.9154, 2.7139]]
 
 
     def test_progress_meter(self, capsys, universe):
@@ -217,7 +217,7 @@ class TestRMSD(object):
     def test_rmsd_single_frame(self, universe):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA',
                                             start=5, stop=6).run()
-        single_frame = [[5, 5, 0.91544906]]
+        single_frame = [[5, 1005, 0.91544906]]
         assert_almost_equal(RMSD.rmsd, single_frame, 4,
                                   err_msg="error: rmsd profile should match" +
                                   "test values")

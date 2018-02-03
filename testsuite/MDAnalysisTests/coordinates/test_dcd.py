@@ -80,6 +80,20 @@ class TestDCDReader(MultiframeReaderTest):
             np.arange(0, N),
             err_msg="with_statement: DCDReader does not read all frames")
 
+    def test_set_time(self):
+        u = mda.Universe(PSF, DCD)
+        assert_almost_equal(u.trajectory.time, 1000, decimal=4)
+
+
+@pytest.mark.parametrize('istart', (0, 1, 2, 3))
+def test_write_istart(universe_dcd, tmpdir, istart):
+    u = universe_dcd
+    outfile = str(tmpdir.join('test.dcd'))
+    with mda.Writer(outfile, u.atoms.n_atoms, istart=istart) as w:
+        w.write(u.atoms)
+    u = mda.Universe(PSF, outfile)
+    assert u.trajectory._file.header['istart'] == istart
+
 
 class TestDCDWriter(BaseWriterTest):
     @staticmethod
@@ -105,6 +119,7 @@ def test_write_random_unitcell(tmpdir):
         assert_array_almost_equal(u2.trajectory.dimensions,
                                   random_unitcells[index],
                                   decimal=5)
+
 
 
 ################
@@ -213,7 +228,7 @@ def test_reader_set_dt():
     dt = 100
     frame = 3
     u = mda.Universe(PSF, DCD, dt=dt)
-    assert_almost_equal(u.trajectory[frame].time, frame*dt,
+    assert_almost_equal(u.trajectory[frame].time, (frame + 1000)*dt,
                         err_msg="setting time step dt={0} failed: "
                         "actually used dt={1}".format(
                             dt, u.trajectory._ts_kwargs['dt']))
@@ -221,14 +236,14 @@ def test_reader_set_dt():
                         err_msg="trajectory.dt does not match set dt")
 
 
-@pytest.mark.parametrize("ext, decimal", (("dcd", 5),
+@pytest.mark.parametrize("ext, decimal", (("dcd", 4),
                                           ("xtc", 3)))
 def test_writer_dt(tmpdir, ext, decimal):
     dt = 5.0  # set time step to 5 ps
     universe_dcd = mda.Universe(PSF, DCD, dt=dt)
     t = universe_dcd.trajectory
     outfile = str(tmpdir.join("test.{}".format(ext)))
-    with mda.Writer(outfile, n_atoms=t.n_atoms, dt=dt) as W:
+    with mda.Writer(outfile, n_atoms=t.n_atoms, dt=dt, istart=t._file.header['istart']) as W:
         for ts in universe_dcd.trajectory:
             W.write(universe_dcd.atoms)
 
@@ -237,7 +252,7 @@ def test_writer_dt(tmpdir, ext, decimal):
                         (uw.trajectory.n_frames - 1) * dt, decimal)
     times = np.array([uw.trajectory.time for ts in uw.trajectory])
     frames = np.array([ts.frame for ts in uw.trajectory])
-    assert_array_almost_equal(times, frames * dt, decimal)
+    assert_array_almost_equal(times, (frames + 1000) * dt, decimal)
 
 
 @pytest.mark.parametrize("ext, decimal", (("dcd", 5),
@@ -282,16 +297,6 @@ def test_write_no_natoms():
 def test_writer_trajectory_no_natoms(tmpdir, universe_dcd):
     with tmpdir.as_cwd():
         universe_dcd.trajectory.Writer("foo.dcd")
-
-
-@pytest.mark.parametrize('istart', (0, 1, 2, 3))
-def test_write_istart(universe_dcd, tmpdir, istart):
-    u = universe_dcd
-    outfile = str(tmpdir.join('test.dcd'))
-    with mda.Writer(outfile, u.atoms.n_atoms, istart=istart) as w:
-        w.write(u.atoms)
-    u = mda.Universe(PSF, outfile)
-    assert u.trajectory._file.header['istart'] == istart
 
 
 class RefCHARMMtriclinicDCD(object):
