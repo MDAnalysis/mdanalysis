@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/18 richardjgowers, palnabarun
+mm/dd/18 richardjgowers, palnabarun, bieniekmateusz
 
   * 0.17.1
 
@@ -22,6 +22,8 @@ Enhancements
     (Issue #1753)
 
 Fixes
+  * Fixed waterdynamics SurvivalProbability ignoring the t0 start time
+    (Issue #1759)
   * AtomGroup.dimensions now strictly returns a copy (Issue #1582)
   * lib.distances.transform_StoR now checks input type (Issue #1699)
 
@@ -67,8 +69,6 @@ Deprecations
   * timeseries keyword format is replaced by order. The format keyword is marked for deprecation in 1.0
 
 Fixes
-  * Fixed waterdynamics SurvivalProbability ignoring the t0 start time
-    (Issue #1759)
   * Fixed analysis.psa.dist_mat_to_vec not returning int values (Issue #1507)
   * Fixed triclinic PBC transform for a- and b- axes (Issue #1697)
   * Fixed nuclinfo.tors() not converting delta (Issue #1572)
