@@ -215,7 +215,7 @@ class DCDReader(base.ReaderBase):
 
     def _frame_to_ts(self, frame, ts):
         """convert a dcd-frame to a :class:`TimeStep`"""
-        ts.frame = self._frame
+        ts.frame = self._frame + self._file.header['istart']
         ts.time = ts.frame * self.ts.dt
         ts.data['step'] = self._file.tell()
 
@@ -358,6 +358,7 @@ class DCDWriter(base.WriterBase):
                  dt=1,
                  remarks='',
                  nsavc=1,
+                 istart=0,
                  **kwargs):
         """Parameters
         ----------
@@ -380,6 +381,8 @@ class DCDWriter(base.WriterBase):
             how many MD steps is a frame saved to the DCD). By default, this
             number is just set to one and this should be sufficient for almost
             all cases but if required, nsavc can be changed.
+        istart : int (optional)
+            starting frame number. CHARMM defaults to 1.
         **kwargs : dict
             General writer arguments
 
@@ -400,7 +403,7 @@ class DCDWriter(base.WriterBase):
             nsavc=nsavc,
             delta=delta,
             is_periodic=1,
-            istart=0)
+            istart=istart)
 
     def write_next_timestep(self, ts):
         """Write timestep object into trajectory.

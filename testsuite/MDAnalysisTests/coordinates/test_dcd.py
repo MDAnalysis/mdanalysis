@@ -77,8 +77,18 @@ class TestDCDReader(MultiframeReaderTest):
             err_msg="with_statement: DCDReader reads wrong number of frames")
         assert_array_equal(
             frames,
-            np.arange(0, N),
+            np.arange(0, N) + 1000,
             err_msg="with_statement: DCDReader does not read all frames")
+
+
+@pytest.mark.parametrize('istart', (0, 1, 2, 3))
+def test_write_istart(universe_dcd, tmpdir, istart):
+    u = universe_dcd
+    outfile = str(tmpdir.join('test.dcd'))
+    with mda.Writer(outfile, u.atoms.n_atoms, istart=istart) as w:
+        w.write(u.atoms)
+    u = mda.Universe(PSF, outfile)
+    assert u.trajectory._file.header['istart'] == istart
 
 
 class TestDCDWriter(BaseWriterTest):
@@ -107,6 +117,7 @@ def test_write_random_unitcell(tmpdir):
                                   decimal=5)
 
 
+
 ################
 # Legacy tests #
 ################
@@ -118,39 +129,39 @@ def universe_dcd():
 
 def test_rewind(universe_dcd):
     universe_dcd.trajectory.rewind()
-    assert universe_dcd.trajectory.ts.frame == 0
+    assert universe_dcd.trajectory.ts.frame == 1000
 
 
 def test_next(universe_dcd):
     universe_dcd.trajectory.rewind()
     universe_dcd.trajectory.next()
-    assert universe_dcd.trajectory.ts.frame == 1
+    assert universe_dcd.trajectory.ts.frame == 1001
 
 
 def test_jump_last_frame(universe_dcd):
     universe_dcd.trajectory[-1]
-    assert universe_dcd.trajectory.ts.frame == 97
+    assert universe_dcd.trajectory.ts.frame == 1097
 
 
 @pytest.mark.parametrize("start, stop, step", ((5, 17, 3),
                                                (20, 5, -1)))
 def test_slice(universe_dcd, start, stop, step):
     frames = [ts.frame for ts in universe_dcd.trajectory[start:stop:step]]
-    assert_array_equal(frames, np.arange(start, stop, step))
+    assert_array_equal(frames, np.arange(start, stop, step) + 1000)
 
 
 @pytest.mark.parametrize("array_like", [list, np.array])
 def test_array_like(universe_dcd, array_like):
     ar = array_like([0, 3, 4, 5])
     frames = [ts.frame for ts in universe_dcd.trajectory[ar]]
-    assert_array_equal(frames, ar)
+    assert_array_equal(frames, np.array(ar) + 1000)
 
 
 @pytest.mark.parametrize("indices", ([0, 4, 2, 3, 0, 1],
                                      [0, 0, 1, 1, 2, 1, 1]))
 def test_list_indices(universe_dcd, indices):
     frames = [ts.frame for ts in universe_dcd.trajectory[indices]]
-    assert_array_equal(frames, indices)
+    assert_array_equal(frames, np.array(indices) + 1000)
 
 
 @pytest.mark.parametrize(
@@ -213,7 +224,7 @@ def test_reader_set_dt():
     dt = 100
     frame = 3
     u = mda.Universe(PSF, DCD, dt=dt)
-    assert_almost_equal(u.trajectory[frame].time, frame*dt,
+    assert_almost_equal(u.trajectory[frame].time, (frame + 1000)*dt,
                         err_msg="setting time step dt={0} failed: "
                         "actually used dt={1}".format(
                             dt, u.trajectory._ts_kwargs['dt']))
@@ -221,14 +232,14 @@ def test_reader_set_dt():
                         err_msg="trajectory.dt does not match set dt")
 
 
-@pytest.mark.parametrize("ext, decimal", (("dcd", 5),
+@pytest.mark.parametrize("ext, decimal", (("dcd", 3),
                                           ("xtc", 3)))
 def test_writer_dt(tmpdir, ext, decimal):
     dt = 5.0  # set time step to 5 ps
     universe_dcd = mda.Universe(PSF, DCD, dt=dt)
     t = universe_dcd.trajectory
     outfile = str(tmpdir.join("test.{}".format(ext)))
-    with mda.Writer(outfile, n_atoms=t.n_atoms, dt=dt) as W:
+    with mda.Writer(outfile, n_atoms=t.n_atoms, dt=dt, istart=t._file.header['istart']) as W:
         for ts in universe_dcd.trajectory:
             W.write(universe_dcd.atoms)
 

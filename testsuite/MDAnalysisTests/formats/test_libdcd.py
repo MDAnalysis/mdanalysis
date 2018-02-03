@@ -20,6 +20,7 @@ from six.moves import cPickle as pickle
 from collections import namedtuple
 import os
 import string
+import struct
 
 import hypothesis.strategies as strategies
 from hypothesis import example, given
@@ -241,6 +242,22 @@ def test_write_header(tmpdir):
         assert header['is_periodic'] == 1
         assert header['nsavc'] == 10
         assert np.allclose(header['delta'], .02)
+
+    # we also check the bytes written directly.
+    with open(testfile, 'rb') as fh:
+        header_bytes = fh.read()
+    # check for magic number
+    assert struct.unpack('i', header_bytes[:4])[0] == 84
+    # magic number should be written again before remark section
+    assert struct.unpack('i', header_bytes[88:92])[0] == 84
+    # length of remark section. We hard code this to 244 right now
+    assert struct.unpack('i', header_bytes[92:96])[0] == 244
+    # say we have 3 block of length 80
+    assert struct.unpack('i', header_bytes[96:100])[0] == 3
+    # after the remark section the length should be reported again
+    assert struct.unpack('i', header_bytes[340:344])[0] == 244
+    # this is a magic number as far as I see
+    assert struct.unpack('i', header_bytes[344:348])[0] == 4
 
 
 def test_write_no_header(tmpdir):
