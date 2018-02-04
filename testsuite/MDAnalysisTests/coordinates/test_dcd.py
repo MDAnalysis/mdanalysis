@@ -82,7 +82,7 @@ class TestDCDReader(MultiframeReaderTest):
 
     def test_set_time(self):
         u = mda.Universe(PSF, DCD)
-        assert_almost_equal(u.trajectory.time, 1000, decimal=4)
+        assert_almost_equal(u.trajectory.time, 1000, decimal=3)
 
 
 @pytest.mark.parametrize('istart', (0, 1, 2, 3))
