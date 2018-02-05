@@ -318,7 +318,7 @@ def write_dcd(in_name, out_name, remarks='testing', header=None):
 
 @given(remarks=strategies.text(
     alphabet=string.printable, min_size=0,
-    max_size=240))  # handle the printable ASCII strings
+    max_size=239))  # handle the printable ASCII strings
 @example(remarks='')
 def test_written_remarks_property(remarks, tmpdir, dcd):
     # property based testing for writing of a wide range of string
@@ -327,7 +327,7 @@ def test_written_remarks_property(remarks, tmpdir, dcd):
     header = dcd.header
     header['remarks'] = remarks
     write_dcd(DCD, testfile, header=header)
-    expected_remarks = remarks[:240]
+    expected_remarks = remarks
     with DCDFile(testfile) as f:
         assert f.header['remarks'] == expected_remarks
 
@@ -340,6 +340,8 @@ def written_dcd(tmpdir_factory):
     testfile = str(testfile)
     write_dcd(DCD, testfile)
     Result = namedtuple("Result", "testfile, header, orgfile")
+    # throw away last char we didn't save due to null termination
+    header['remarks'] = header['remarks'][:-1]
     return Result(testfile, header, DCD)
 
 

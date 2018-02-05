@@ -739,6 +739,9 @@ int write_dcdheader(fio_fd fd, const char *remarks, int N,
   fio_write_int32(fd, 3); /* the number of 80 character title strings */
 
   strncpy(title_string, remarks, 240);
+  // Enforce null-termination for long remark strings.
+  // Not a problem for MDAnalysis but maybe for other readers.
+  title_string[239] = '\0';
   WRITE(fd, title_string, 240);
 
   fio_write_int32(fd, 244);
