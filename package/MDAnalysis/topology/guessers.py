@@ -49,11 +49,6 @@ def guess_masses(atom_types):
     atom_masses : np.ndarray dtype float64
     """
     masses = np.array([get_atom_mass(atom_t) for atom_t in atom_types], dtype=np.float64)
-    if np.any(masses == 0.0):
-        # figure out where the misses were and report
-        misses = np.unique(np.asarray(atom_types)[np.where(masses == 0.0)])
-        warnings.warn("Failed to guess the mass for the following atom types: {}"
-                      "".format(', '.join(misses)))
     return masses
 
 
@@ -354,6 +349,7 @@ def get_atom_mass(element):
     try:
         return tables.masses[element]
     except KeyError:
+        warnings.warn("Failed to guess the mass for the following atom types: {}".format(element))
         return 0.000
 
 
