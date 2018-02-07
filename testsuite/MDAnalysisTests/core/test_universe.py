@@ -468,12 +468,11 @@ class TestInMemoryUniverse(object):
 
     def test_slicing_step_dt(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
-        times = [ts.time for ts in universe.trajectory]
+        dt = universe.trajectory.dt
         universe.transfer_to_memory(step=2)
-        times2 = [ts.time for ts in universe.trajectory]
-        assert_almost_equal(times[::2], times2,
-                err_msg="Unexpected in-memory timestep: "
-                        + "dt not updated with step information")
+        assert_almost_equal(dt * 2, universe.trajectory.dt,
+                            err_msg="Unexpected in-memory timestep: "
+                            + "dt not updated with step information")
 
     def test_slicing_negative_start(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)

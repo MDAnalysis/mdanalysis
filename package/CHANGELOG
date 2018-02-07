@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/18 richardjgowers, palnabarun, bieniekmateusz
+mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de
 
   * 0.17.1
 
@@ -26,6 +26,8 @@ Fixes
     (Issue #1759)
   * AtomGroup.dimensions now strictly returns a copy (Issue #1582)
   * lib.distances.transform_StoR now checks input type (Issue #1699)
+  * libdcd now writes correct length of remark section (Issue #1701)
+  * DCDReader now reports the correct time based on istart information (PR #1767)
 
 
 01/24/18 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
