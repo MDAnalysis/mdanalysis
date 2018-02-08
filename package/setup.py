@@ -509,6 +509,8 @@ if __name__ == '__main__':
               'numpy>=1.10.4',
           ],
           install_requires=[
+              'cclib>=1.5.0',
+              'periodictable>=1.5.0',
               'gsd>=1.4.0',
               'numpy>=1.10.4',
               'biopython>=1.59',
