@@ -208,6 +208,7 @@ For details see the report for `Issue 87`_.
                          'data/*xvg',
                          'data/*.mmtf', 'data/*.mmtf.gz', 'data/analysis/*',
                          'data/*.gsd',
+                         'data/cclib/*.out',
                         ],
           },
           classifiers=CLASSIFIERS,

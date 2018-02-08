@@ -18,6 +18,7 @@ mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de
   * 0.17.1
 
 Enhancements
+  * Added support for reading QChem format files (PR #1618)
   * Added reading of record types (ATOM/HETATM) for PDB, PDBQT and PQR formats
     (Issue #1753)
 

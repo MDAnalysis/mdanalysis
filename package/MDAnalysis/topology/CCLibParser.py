@@ -22,13 +22,16 @@
 from __future__ import absolute_import
 
 import cclib
+import periodictable
 import numpy as np
 
 from . import base
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     AtomAttr,
+    Atomnames,
     Atomids,
+    Masses,
     Resids,
     Segids,
 )
@@ -52,10 +55,16 @@ class CHELPGCharges(AtomAttr):
     per_object = 'atom'
 
 
+class CoreElectrons(AtomAttr):
+    attrname = 'core_electrons'
+    singular = 'core_electrons'
+    per_object = 'atom'
+
+
 class CCLibParser(base.TopologyReaderBase):
     format = ['ORCA', 'GAUSSIAN', 'QCHEM']
 
-    def parse(self):
+    def parse(self, **kwargs):
         # first, obtain a CCLib object
         if isinstance(self.filename, cclib.parser.data.ccData_optdone_bool):
             ccobj = self.filename
@@ -69,6 +78,7 @@ class CCLibParser(base.TopologyReaderBase):
             Resids(np.array([1])),
             Segids(np.array(['SYSTEM'], dtype=object)),
         ]
+
         if hasattr(ccobj, 'atomcharges'):
             if 'mulliken' in ccobj.atomcharges:
                 attrs.append(
@@ -79,5 +89,17 @@ class CCLibParser(base.TopologyReaderBase):
             if 'chelpg' in ccobj.atomcharges:
                 attrs.append(
                     CHELPGCharges(np.array(ccobj.atomcharges['chelpg'])))
+
+        if hasattr(ccobj, 'atomnos'):
+            # atomic numbers
+            numbers = ccobj.atomnos
+            attrs.append(Atomnames(np.array([periodictable.elements[i].symbol
+                                             for i in numbers], dtype=object)))
+
+        if hasattr(ccobj, 'atommasses'):
+            attrs.append(Masses(ccobj.atommasses))
+
+        if hasattr(ccobj, 'coreelectrons'):
+            attrs.append(CoreElectrons(ccobj.coreelectrons))
 
         return Topology(natoms, 1, 1, attrs=attrs)
