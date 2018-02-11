@@ -63,6 +63,28 @@ object.
       *forces* = ``True`` keyword has been supplied.
 
 
+.. _netcdf-trajectories:
+
+Binary NetCDF trajectories
+--------------------------
+
+The `AMBER netcdf`_ format make use of NetCDF_ (Network Common Data
+Form) format. Such binary trajectories are recognized in MDAnalysis by
+the '.ncdf' suffix and read by the :class:`NCDFReader`.
+
+Binary trajectories can also contain velocities and forces, and can record the
+exact time
+step. In principle, the trajectories can be in different units than the AMBER
+defaults of ångström and picoseconds but at the moment MDAnalysis only supports
+those and will raise a :exc:`NotImplementedError` if anything else is detected.
+
+.. autoclass:: NCDFReader
+   :members:
+
+.. autoclass:: NCDFWriter
+   :members:
+
+
 .. _ascii-trajectories:
 
 ASCII TRAJ trajectories
@@ -77,7 +99,7 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 
 .. Note::
 
-   In the Amber community, these trajectories are often saved with the
+   In the AMBER community, these trajectories are often saved with the
    suffix '.crd' but this extension conflicts with the CHARMM CRD
    format and MDAnalysis *will not correctly autodetect AMBER ".crd"
    trajectories*. Instead, explicitly provide the ``format="TRJ"``
@@ -85,7 +107,7 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 
      u = MDAnalysis.Universe("top.prmtop", "traj.crd", format="TRJ")
 
-   In this way, the Amber :class:`TRJReader` is used.
+   In this way, the AMBER :class:`TRJReader` is used.
 
 
 .. rubric:: Limitations
@@ -111,37 +133,22 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
    :members:
 
 
-.. _netcdf-trajectories:
-
-Binary NetCDF trajectories
---------------------------
-
-The `AMBER netcdf`_ format make use of NetCDF_ (Network Common Data
-Form) format. Such binary trajectories are recognized in MDAnalysis by
-the '.ncdf' suffix and read by the :class:`NCDFReader`.
-
-Binary trajectories can also contain velocities and forces, and can record the
-exact time
-step. In principle, the trajectories can be in different units than the AMBER
-defaults of ångström and picoseconds but at the moment MDAnalysis only supports
-those and will raise a :exc:`NotImplementedError` if anything else is detected.
-
-.. autoclass:: NCDFReader
-   :members:
-
-.. autoclass:: NCDFWriter
-   :members:
-
 
 .. Links
 
 .. _AMBER: http://ambermd.org
 .. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
+..    The formats page was archived as
+..    http://www.webcitation.org/query?url=http%3A%2F%2Fambermd.org%2Fformats.html&date=2018-02-11
+..    Use the archived version if the original disappears. [orbeckst]
 .. _AMBER netcdf format: http://ambermd.org/netcdf/nctraj.xhtml
+..    The formats page was archived as
+..    http://www.webcitation.org/query?url=http%3A%2F%2Fambermd.org%2Fnetcdf%2Fnctraj.xhtml&date=2018-02-11
+..    Use the archived version if the original disappears. [orbeckst]
 .. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.xhtml
 .. _NetCDF: http://www.unidata.ucar.edu/software/netcdf
 .. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues
-.. _MDAnalysis mailinglist: http://groups.google.com/group/mdnalysis-discussion
+.. _MDAnalysis mailinglist: https://groups.google.com/group/mdnalysis-discussion
 
 """
 from __future__ import (absolute_import, division, print_function,
@@ -664,7 +671,7 @@ class NCDFWriter(base.WriterBase):
 
     Note
     ----
-    MDAnalysis uses :mod:`scipy.io.netcdf` to access Amber files, which are in
+    MDAnalysis uses :mod:`scipy.io.netcdf` to access AMBER files, which are in
     netcdf 3 format. Although :mod:`scipy.io.netcdf` is very fast at reading
     these files, it is *very* slow when writing, and it becomes slower the
     longer the files are. On the other hand, the netCDF4_ package (which
@@ -672,9 +679,9 @@ class NCDFWriter(base.WriterBase):
     but slow at reading. Therefore, we try to use :mod:`netCDF4` for writing if
     available but otherwise fall back to the slower :mod:`scipy.io.netcdf`.
 
-    **Amber users** might have a hard time getting netCDF4 to work with a
+    **AMBER users** might have a hard time getting netCDF4 to work with a
     conda-based installation (as discussed in `Issue #506`_) because of the way
-    that Amber itself handles netcdf: When the Amber environment is loaded, the
+    that AMBER itself handles netcdf: When the AMBER environment is loaded, the
     following can happen when trying to import netCDF4::
 
       >>> import netCDF4
@@ -684,18 +691,18 @@ class NCDFWriter(base.WriterBase):
           from ._netCDF4 import *
       ImportError: /scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/_netCDF4.cpython-35m-x86_64-linux-gnu.so: undefined symbol: nc_inq_var_fletcher32
 
-    The reason for this (figured out via :program:`ldd`) is that Amber builds
+    The reason for this (figured out via :program:`ldd`) is that AMBER builds
     its own NetCDF library that it now inserts into :envvar:`LD_LIBRARY_PATH`
     *without the NetCDF4 API and HDF5 bindings*. Since the conda version of
     :mod:`netCDF4` was built against the full NetCDF package, the one
-    :program:`ld` tries to link to at runtime (because Amber requires
-    :envvar:`LD_LIBRARY_PATH`) is missing some symbols. Removing Amber from the
+    :program:`ld` tries to link to at runtime (because AMBER requires
+    :envvar:`LD_LIBRARY_PATH`) is missing some symbols. Removing AMBER from the
     environment fixes the import but is not really a convenient solution for
-    users of Amber.
+    users of AMBER.
 
     At the moment there is no obvious solution if one wants to use
-    :mod:`netCDF4` and Amber in the same shell session. If you need the fast
-    writing capabilities of :mod:`netCDF4` then you need to unload your Amber
+    :mod:`netCDF4` and AMBER in the same shell session. If you need the fast
+    writing capabilities of :mod:`netCDF4` then you need to unload your AMBER
     environment before importing MDAnalysis.
 
 
