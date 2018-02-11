@@ -123,8 +123,8 @@ those and will raise a :exc:`NotImplementedError` if anything else is detected.
 
 .. _AMBER: http://ambermd.org
 .. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
-.. _AMBER netcdf format: http://ambermd.org/netcdf/nctraj.html
-.. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.html
+.. _AMBER netcdf format: http://ambermd.org/netcdf/nctraj.xhtml
+.. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.xhtml
 .. _NetCDF: http://www.unidata.ucar.edu/software/netcdf
 .. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues
 .. _MDAnalysis mailinglist: http://groups.google.com/group/mdnalysis-discussion
@@ -411,7 +411,7 @@ class NCDFReader(base.ReaderBase):
     :class:`scipy.io.netcdf.netcdf_file` prevails, i.e. ``True`` when
     *filename* is a file name, ``False`` when *filename* is a file-like object.
 
-    .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.html
+    .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.xhtml
 
     See Also
     --------
@@ -448,7 +448,7 @@ class NCDFReader(base.ReaderBase):
         if not ('AMBER' in self.trjfile.Conventions.decode('utf-8').split(',') or
                 'AMBER' in self.trjfile.Conventions.decode('utf-8').split()):
             errmsg = ("NCDF trajectory {0} does not conform to AMBER "
-                      "specifications, http://ambermd.org/netcdf/nctraj.html "
+                      "specifications, http://ambermd.org/netcdf/nctraj.xhtml "
                       "('AMBER' must be one of the tokens in attribute "
                       "Conventions)".format(self.filename))
             logger.fatal(errmsg)
@@ -623,7 +623,7 @@ class NCDFWriter(base.WriterBase):
 
     Unit cell information is written if available.
 
-    .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.html
+    .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.xhtml
 
 
     Parameters
