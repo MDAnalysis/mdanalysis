@@ -75,6 +75,19 @@ read *bzip2* or *gzip* compressed files.
 AMBER ASCII trajectories are recognised by the suffix '.trj',
 '.mdcrd' or '.crdbox (possibly with an additional '.gz' or '.bz2').
 
+.. Note::
+
+   In the Amber community, these trajectories are often saved with the
+   suffix '.crd' but this extension conflicts with the CHARMM CRD
+   format and MDAnalysis *will not correctly autodetect AMBER ".crd"
+   trajectories*. Instead, explicitly provide the ``format="TRJ"``
+   argument to :class:`~MDAnalysis.core.universe.Universe`::
+
+     u = MDAnalysis.Universe("top.prmtop", "traj.crd", format="TRJ")
+
+   In this way, the Amber :class:`TRJReader` is used.
+
+
 .. rubric:: Limitations
 
 * Periodic boxes are only stored as box lengths A, B, C in an AMBER
@@ -84,14 +97,15 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 * The trajectory does not contain time information so we simply set
   the time step to 1 ps (or the user could provide it as kwarg *dt*)
 
-* No direct access of frames is implemented, only iteration through
-  the trajectory.
+* **No direct access of frames is implemented, only iteration through
+  the trajectory.**
 
 * Trajectories with fewer than 4 atoms probably fail to be read (BUG).
 
 * If the trajectory contains exactly *one* atom then it is always
   assumed to be non-periodic (for technical reasons).
 
+* Velocities are currently *not supported* as ASCII trajectories.
 
 .. autoclass:: TRJReader
    :members:
