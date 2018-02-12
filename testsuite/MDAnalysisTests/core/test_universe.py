@@ -287,6 +287,13 @@ def test_chainid_quick_select():
         assert len(u.D.atoms) == 7
 
 
+class TestGuessMasses(object):
+    """Tests the Mass Guesser in topology.guessers
+    """
+    def test_universe_loading_no_warning(self):
+        mda.Universe(GRO)
+
+
 class TestGuessBonds(object):
     """Test the AtomGroup methed guess_bonds
 
