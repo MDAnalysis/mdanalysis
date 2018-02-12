@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -159,6 +159,9 @@ QR           RB
 BC           C
 AC           C
 
+# dummy atom types
+MW           DUMMY
+
 # other types are guessed from the name; see
 # topology.core.guess_atom_elements()
 """
@@ -285,6 +288,7 @@ Yb    173.04
 Y     88.90585
 ZN    65.37000
 Zr    91.224
+DUMMY 0.0
 """
 
 #: Dictionary table with atomic masses in u, indexed by the element from
