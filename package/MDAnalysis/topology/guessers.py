@@ -48,8 +48,28 @@ def guess_masses(atom_types):
     -------
     atom_masses : np.ndarray dtype float64
     """
+    validate_atom_types(atom_types)
     masses = np.array([get_atom_mass(atom_t) for atom_t in atom_types], dtype=np.float64)
     return masses
+
+
+def validate_atom_types(atom_types):
+    """Vaildates the atom types based on whether they are available in our tables
+
+    Parameter
+    ---------
+    atom_types
+      Type of each atom
+
+    Returns
+    -------
+    None
+    """
+    for atom_type in np.unique(atom_types):
+        try:
+            get_atom_mass(atom_type)
+        except KeyError:
+            warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
 
 
 def guess_types(atom_names):
@@ -349,7 +369,6 @@ def get_atom_mass(element):
     try:
         return tables.masses[element]
     except KeyError:
-        warnings.warn("Failed to guess the mass for the following atom types: {}".format(element))
         return 0.000
 
 
