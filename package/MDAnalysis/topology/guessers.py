@@ -67,7 +67,7 @@ def validate_atom_types(atom_types):
     """
     for atom_type in np.unique(atom_types):
         try:
-            get_atom_mass(atom_type)
+            tables.masses[atom_type]
         except KeyError:
             warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
 
