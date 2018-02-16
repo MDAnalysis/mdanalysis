@@ -145,7 +145,6 @@ class PDBQTReader(base.SingleFrameReaderBase):
 
     def _read_first_frame(self):
         coords = []
-        unitcell = np.zeros(6, dtype=np.float32)
         with util.openany(self.filename) as pdbfile:
             for line in pdbfile:
                 # Should only break at the 'END' of a model definition
@@ -158,15 +157,12 @@ class PDBQTReader(base.SingleFrameReaderBase):
                     x, y, z = np.float32((line[6:15], line[15:24], line[24:33]))
                     # angles
                     A, B, G = np.float32((line[33:40], line[40:47], line[47:54]))
-                    unitcell[:] = x, y, z, A, B, G
                 if line.startswith(('ATOM', 'HETATM')):
                     # convert all entries at the end once for optimal speed
                     coords.append([line[30:38], line[38:46], line[46:54]])
         self.n_atoms = len(coords)
-        self.ts = self._Timestep.from_coordinates(
-            coords,
-            **self._ts_kwargs)
-        self.ts._unitcell[:] = unitcell
+        self.ts = base.Timestep.from_coordinates(coords, **self._ts_kwargs)
+        self.ts.dimensions = x, y, z, A, B, G
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
             # in-place !

@@ -152,7 +152,7 @@ class XDRBaseReader(base.ReaderBase):
         except StopIteration:
             dt = 0
 
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts = base.Timestep(self.n_atoms, **self._ts_kwargs)
         self._frame = 0
         self._frame_to_ts(frame, self.ts)
         # these should only be initialized once

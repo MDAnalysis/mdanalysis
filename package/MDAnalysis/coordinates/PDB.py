@@ -261,7 +261,7 @@ class PDBReader(base.ReaderBase):
         self.compound = compound = []
         self.remarks = remarks = []
 
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts = base.Timestep(self.n_atoms, **self._ts_kwargs)
 
         # Record positions in file of CRYST and MODEL headers
         # then build frame offsets to start at the minimum of these
@@ -379,9 +379,8 @@ class PDBReader(base.ReaderBase):
                 pos += 1
             elif line[:6] == 'CRYST1':
                 # does an implicit str -> float conversion
-                self.ts._unitcell[:] = [line[6:15], line[15:24],
-                                        line[24:33], line[33:40],
-                                        line[40:47], line[47:54]]
+                self.ts.dimensions = [line[6:15], line[15:24], line[24:33],
+                                      line[33:40], line[40:47], line[47:54]]
 
         # doing the conversion from list to array at the end is faster
         self.ts.positions = tmp_buf

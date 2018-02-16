@@ -41,7 +41,6 @@ MDAnalysis.
    .. automethod:: __init__
    .. automethod:: from_coordinates
    .. automethod:: from_timestep
-   .. automethod:: _init_unitcell
    .. autoattribute:: n_atoms
    .. attribute::`frame`
 
@@ -274,7 +273,9 @@ class Timestep(object):
         self.has_velocities = kwargs.get('velocities', False)
         self.has_forces = kwargs.get('forces', False)
 
-        self._unitcell = self._init_unitcell()
+        self.order = kwargs.get('order', 'F')
+
+        self._unitcell = np.zeros(6, dtype=np.float32)
 
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
@@ -358,11 +359,6 @@ class Timestep(object):
             ts.forces = forces
 
         return ts
-
-    def _init_unitcell(self):
-        """Create custom datastructure for :attr:`_unitcell`."""
-        # override for other Timesteps
-        return np.zeros((6), np.float32)
 
     def __eq__(self, other):
         """Compare with another Timestep
@@ -1161,11 +1157,6 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
-
-    #: The appropriate Timestep class, e.g.
-    #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
-    _Timestep = Timestep
-
     def __init__(self):
         # initialise list to store added auxiliary readers in
         # subclasses should now call super

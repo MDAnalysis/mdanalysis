@@ -294,7 +294,6 @@ class XYZReader(base.ReaderBase):
     format = "XYZ"
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
-    _Timestep = base.Timestep
 
     def __init__(self, filename, **kwargs):
         super(XYZReader, self).__init__(filename, **kwargs)
@@ -307,7 +306,7 @@ class XYZReader(base.ReaderBase):
         self.compression = ext[1:] if ext[1:] != "xyz" else None
         self._cache = dict()
 
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts = base.Timestep(self.n_atoms, **self._ts_kwargs)
         # Haven't quite figured out where to start with all the self._reopen()
         # etc.
         # (Also cannot just use seek() or reset() because that would break

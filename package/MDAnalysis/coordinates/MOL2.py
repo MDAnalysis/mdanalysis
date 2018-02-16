@@ -157,7 +157,7 @@ class MOL2Reader(base.ReaderBase):
         sections, coords = self.parse_block(blocks[0])
         self.n_atoms = len(coords)
 
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts = base.Timestep(self.n_atoms, **self._ts_kwargs)
 
         self.ts = self._read_frame(0)
 

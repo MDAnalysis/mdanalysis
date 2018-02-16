@@ -25,7 +25,7 @@ import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader, GROWriter
 from MDAnalysisTests import make_Universe, tempdir
 from MDAnalysisTests.coordinates.base import (
-    BaseReference, BaseReaderTest, BaseWriterTest, BaseTimestepTest,
+    BaseReference, BaseReaderTest, BaseWriterTest,
 )
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.datafiles import (
@@ -419,23 +419,17 @@ def test_growriter_resid_truncation():
     assert line.startswith('56789UNK')
 
 
-class TestGROTimestep(BaseTimestepTest):
-    Timestep = mda.coordinates.GRO.Timestep
-    name = "GRO"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12.,
-                         0., 0., 0.,
-                         0., 0., 0.])
-    uni_args = (GRO,)
+def test_unitcell_set2():
+    u = mda.Universe(GRO)
+    ts = u.trajectory.ts
 
-    def test_unitcell_set2(self, ts):
-        box = np.array([80.017, 80.017, 80.017, 60.00, 60.00, 90.00],
-                       dtype=np.float32)
+    box = np.array([80.017, 80.017, 80.017, 60.00, 60.00, 90.00],
+                   dtype=np.float32)
 
-        ref = np.array([80.00515747, 80.00515747, 56.57218552,  # v1x, v2y, v3z
-                        0., 0.,  # v1y v1z
-                        0., 0.,  # v2x v2y
-                        40.00257874, 40.00257874], dtype=np.float32)  # v3x, v3y
-        ts.dimensions = box
-        assert_almost_equal(ts._unitcell, ref, decimal=2)
+    ts.dimensions = box
+
+    assert_equal(ts.triclinic_dimensions,
+                 np.array([[80.00515747, 0.0, 0.0],
+                           [0.0, 80.00515747, 0.0],
+                           [40.00257874, 40.00257874, 56.57218552]],
+                           dtype=np.float32))
