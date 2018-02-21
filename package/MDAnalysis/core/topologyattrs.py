@@ -776,10 +776,11 @@ class Masses(AtomAttr):
         center : ndarray
             center of group given masses as weights
 
-        Notes
-        -----
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-            ``True`` allows the *pbc* flag to be used by default.
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
+
 
         .. versionchanged:: 0.8 Added `pbc` parameter
         """
@@ -808,11 +809,14 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        .. note::
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-            ``True`` allows the *pbc* flag to be used by default.
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
+
 
         .. versionchanged:: 0.8 Added *pbc* keyword
+
         """
         atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
@@ -862,11 +866,14 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        .. note::
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-            ``True`` allows the *pbc* flag to be used by default.
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
+
 
         .. versionchanged:: 0.8 Added *pbc* keyword
+
         """
         atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
@@ -889,7 +896,7 @@ class Masses(AtomAttr):
     def shape_parameter(group, **kwargs):
         """Shape parameter.
 
-        See [Dima2004]_ for background information.
+        See [Dima2004a]_ for background information.
 
         Parameters
         ----------
@@ -897,17 +904,24 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        .. note::
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-            ``True`` allows the *pbc* flag to be used by default.
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
 
-        .. [Dima2004] Dima, R. I., & Thirumalai, D. (2004). Asymmetry in the
-                  shapes of folded and denatured states of proteins. *J
-                  Phys Chem B*, 108(21),
-                  6564-6570. doi:`10.1021/jp037128y`_
+
+        References
+        ----------
+        .. [Dima2004a] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
+           in the shapes of folded and denatured states of
+           proteins. *J Phys Chem B*, 108(21),
+           6564-6570. doi:`10.1021/jp037128y
+           <https://doi.org/10.1021/jp037128y>`_
+
 
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
+
         """
         atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
@@ -935,7 +949,7 @@ class Masses(AtomAttr):
     def asphericity(group, pbc=None):
         """Asphericity.
 
-        See [Dima2004]_ for background information.
+        See [Dima2004b]_ for background information.
 
         Parameters
         ----------
@@ -944,17 +958,26 @@ class Masses(AtomAttr):
             calculation. If ``None`` use value defined in
             MDAnalysis.core.flags['use_pbc']
 
-        .. note::
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-            ``True`` allows the *pbc* flag to be used by default.
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
 
-        .. [Dima2004] Dima, R. I., & Thirumalai, D. (2004). Asymmetry in the
-                  shapes of folded and denatured states of proteins. *J
-                  Phys Chem B*, 108(21),
-                  6564-6570. doi:`10.1021/jp037128y`_
+
+        References
+        ----------
+
+        .. [Dima2004b] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
+           in the shapes of folded and denatured states of
+           proteins. *J Phys Chem B*, 108(21),
+           6564-6570. doi:`10.1021/jp037128y
+           <https://doi.org/10.1021/jp037128y>`_
+
+
 
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
+
         """
         atomgroup = group.atoms
         if pbc is None:
@@ -998,15 +1021,17 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. If ``None`` use value defined in setup flags.
 
-        .. note::
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-            ``True`` allows the *pbc* flag to be used by default.
-
         Returns
         -------
         axis_vectors : array
             3 x 3 array with ``v[0]`` as first, ``v[1]`` as second, and
             ``v[2]`` as third eigenvector.
+
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
+
 
         .. versionchanged:: 0.8 Added *pbc* keyword
 
