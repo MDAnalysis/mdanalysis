@@ -502,7 +502,7 @@ if __name__ == '__main__':
           cmdclass=cmdclass,
           requires=['numpy (>=1.10.4)', 'biopython', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
-                    'scipy', 'matplotlib (>=1.5.1)'],
+                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)'],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
@@ -517,7 +517,7 @@ if __name__ == '__main__':
               'six>=1.4.0',
               'mmtf-python>=1.0.0',
               'joblib',
-              'scipy',
+              'scipy>=1.0.0',
               'matplotlib>=1.5.1',
           ],
           # extras can be difficult to install through setuptools and/or
