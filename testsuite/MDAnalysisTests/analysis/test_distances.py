@@ -19,6 +19,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
+
 from __future__ import print_function, absolute_import
 
 import pytest
@@ -133,6 +135,12 @@ class TestDist(object):
         '''Ensure that pairwise distances between atoms are
         correctly calculated.'''
         actual = MDAnalysis.analysis.distances.dist(ag, ag2)[2]
+        assert_equal(actual, expected)
+
+    def test_pairwise_dist_pbc(self, ag, ag2, expected):
+        '''Ensure that pairwise distances between atoms are
+        correctly calculated.'''
+        actual = MDAnalysis.analysis.distances.dist(ag, ag2, 0, True)[2]
         assert_equal(actual, expected)
 
     def test_pairwise_dist_offset_effect(self, ag, ag2, expected):
