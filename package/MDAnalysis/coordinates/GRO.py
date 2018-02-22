@@ -344,6 +344,15 @@ class GROWriter(base.WriterBase):
         except (AttributeError, NoDataError):
             resids = itertools.cycle((1,))
             missing_topology.append('resids')
+        reindex = True
+        if reindex:
+            try:
+                atom_indexs = ag_or_ts.ids
+            except (AttributeError, NoDataError):
+                atom_indexs = range(1, ag_or_ts.n_atoms+1)
+                missing_topology.append('ids')
+        else:
+            atom_indexs = range(1, ag_or_ts.n_atoms + 1)
         if missing_topology:
             warnings.warn(
                 "Supplied AtomGroup was missing the following attributes: "
@@ -377,7 +386,7 @@ class GROWriter(base.WriterBase):
             # all attributes could be infinite cycles!
             for atom_index, resid, resname, name in zip(
                     range(ag_or_ts.n_atoms), resids, resnames, names):
-                truncated_atom_index = util.ltruncate_int(atom_index + 1, 5)
+                truncated_atom_index = util.ltruncate_int(atom_indexs[atom_index], 5)
                 truncated_resid = util.ltruncate_int(resid, 5)
                 if has_velocities:
                     output_gro.write(self.fmt['xyz_v'].format(
