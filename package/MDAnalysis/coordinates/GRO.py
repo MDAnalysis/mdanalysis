@@ -247,6 +247,20 @@ class GROWriter(base.WriterBase):
        Removed the `convert_dimensions_to_unitcell` method,
        use `Timestep.triclinic_dimensions` instead.
        Now now writes velocities where possible.
+    .. versionchanged:: 0.17.1
+       Now the user can choose to write gro file with specified atoms id.
+       The default option is to reindex all the atoms starting from 1.
+       However, this behaviour can be turned off by specifying `reindex=False`.
+       `u = mda.Universe()`
+
+       Usage 1:
+       `u.atoms.write('out.gro', reindex=False)`
+
+       Usage 2:
+       ```
+       with mda.Writer('out.gro', reindex=False) as w:
+           w.write(u.atoms)
+       ```
     """
 
     format = 'GRO'
@@ -348,12 +362,12 @@ class GROWriter(base.WriterBase):
 
         if not self.reindex:
             try:
-                atom_indexs = ag_or_ts.ids
+                atom_indices = ag_or_ts.ids
             except (AttributeError, NoDataError):
-                atom_indexs = range(1, ag_or_ts.n_atoms+1)
+                atom_indices = range(1, ag_or_ts.n_atoms+1)
                 missing_topology.append('ids')
         else:
-            atom_indexs = range(1, ag_or_ts.n_atoms + 1)
+            atom_indices = range(1, ag_or_ts.n_atoms + 1)
         if missing_topology:
             warnings.warn(
                 "Supplied AtomGroup was missing the following attributes: "
@@ -387,7 +401,7 @@ class GROWriter(base.WriterBase):
             # all attributes could be infinite cycles!
             for atom_index, resid, resname, name in zip(
                     range(ag_or_ts.n_atoms), resids, resnames, names):
-                truncated_atom_index = util.ltruncate_int(atom_indexs[atom_index], 5)
+                truncated_atom_index = util.ltruncate_int(atom_indices[atom_index], 5)
                 truncated_resid = util.ltruncate_int(resid, 5)
                 if has_velocities:
                     output_gro.write(self.fmt['xyz_v'].format(

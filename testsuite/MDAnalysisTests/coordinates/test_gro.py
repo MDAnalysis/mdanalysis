@@ -419,30 +419,57 @@ def test_growriter_resid_truncation():
     # larger digits should get truncated
     assert line.startswith('56789UNK')
 
-@tempdir.run_in_tempdir()
-def test_growriter_resid_truncation():
-    gro = '''test
+class TestGrowriterReindex():
+    def __init__(self):
+        gro = '''test
 1
     2CL      CL20850   0.000   0.000   0.000
 7.29748 7.66094 9.82962'''
-    u = mda.Universe(StringIO(gro), format='gro')
-    u.atoms[0].id = 3
-    u.atoms.write('temp.gro', reindex=True)
+        self.u = mda.Universe(StringIO(gro), format='gro')
+        self.u.atoms[0].id = 3
 
-    with open('temp.gro', 'r') as grofile:
-        grofile.readline()
-        grofile.readline()
-        line = grofile.readline()
-    # larger digits should get truncated
-    assert line.startswith('    2CL      CL    1')
+    @tempdir.run_in_tempdir()
+    def test_growriter_resid_true(self):
+        self.u.atoms.write('temp.gro', reindex=True)
 
-    u.atoms.write('temp.gro', reindex=False)
-    with open('temp.gro', 'r') as grofile:
-        grofile.readline()
-        grofile.readline()
-        line = grofile.readline()
-    # larger digits should get truncated
-    assert line.startswith('    2CL      CL    3')
+        with open('temp.gro', 'r') as grofile:
+            grofile.readline()
+            grofile.readline()
+            line = grofile.readline()
+        # larger digits should get truncated
+        assert line.startswith('    2CL      CL    1')
+
+    @tempdir.run_in_tempdir()
+    def test_growriter_resid_false(self):
+        self.u.atoms.write('temp.gro', reindex=False)
+        with open('temp.gro', 'r') as grofile:
+            grofile.readline()
+            grofile.readline()
+            line = grofile.readline()
+        # larger digits should get truncated
+        assert line.startswith('    2CL      CL    3')
+
+    @tempdir.run_in_tempdir()
+    def test_writer_resid_false(self):
+        with mda.Writer('temp.gro', reindex=False) as w:
+            w.write(self.u.atoms)
+        with open('temp.gro', 'r') as grofile:
+            grofile.readline()
+            grofile.readline()
+            line = grofile.readline()
+        # larger digits should get truncated
+        assert line.startswith('    2CL      CL    3')
+
+    @tempdir.run_in_tempdir()
+    def test_writer_resid_true(self):
+        with mda.Writer('temp.gro', reindex=True) as w:
+            w.write(self.u.atoms)
+        with open('temp.gro', 'r') as grofile:
+            grofile.readline()
+            grofile.readline()
+            line = grofile.readline()
+        # larger digits should get truncated
+        assert line.startswith('    2CL      CL    1')
 
 class TestGROTimestep(BaseTimestepTest):
     Timestep = mda.coordinates.GRO.Timestep

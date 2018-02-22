@@ -13,10 +13,11 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-01/24/18 sobuelow
+01/24/18 sobuelow, Zhiyi Wu
   * 0.17.0
     - Unit test for residue names in 'protein' atom selection (PR #1704)
     - Test for waterdynamics.SurvivalProbability starting time t0 (PR #1759)
+    - Add Tests for the reindex keyword of GROwriter (PR #1781)
 
 mm/dd/yy
 
