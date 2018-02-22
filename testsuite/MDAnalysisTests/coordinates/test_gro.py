@@ -40,6 +40,7 @@ from numpy.testing import (
     assert_equal,
 )
 import pytest
+from six import StringIO
 
 
 class TestGROReaderOld(RefAdK):
@@ -418,6 +419,30 @@ def test_growriter_resid_truncation():
     # larger digits should get truncated
     assert line.startswith('56789UNK')
 
+@tempdir.run_in_tempdir()
+def test_growriter_resid_truncation():
+    gro = '''test
+1
+    2CL      CL20850   0.000   0.000   0.000
+7.29748 7.66094 9.82962'''
+    u = mda.Universe(StringIO(gro), format='gro')
+    u.atoms[0].id = 3
+    u.atoms.write('temp.gro', reindex=True)
+
+    with open('temp.gro', 'r') as grofile:
+        grofile.readline()
+        grofile.readline()
+        line = grofile.readline()
+    # larger digits should get truncated
+    assert line.startswith('    2CL      CL    1')
+
+    u.atoms.write('temp.gro', reindex=False)
+    with open('temp.gro', 'r') as grofile:
+        grofile.readline()
+        grofile.readline()
+        line = grofile.readline()
+    # larger digits should get truncated
+    assert line.startswith('    2CL      CL    3')
 
 class TestGROTimestep(BaseTimestepTest):
     Timestep = mda.coordinates.GRO.Timestep

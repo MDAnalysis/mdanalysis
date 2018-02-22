@@ -282,6 +282,7 @@ class GROWriter(base.WriterBase):
         """
         self.filename = util.filename(filename, ext='gro')
         self.n_atoms = n_atoms
+        self.reindex = kwargs.pop('reindex', True)
 
         if convert_units is None:
             convert_units = flags['convert_lengths']
@@ -344,8 +345,8 @@ class GROWriter(base.WriterBase):
         except (AttributeError, NoDataError):
             resids = itertools.cycle((1,))
             missing_topology.append('resids')
-        reindex = True
-        if reindex:
+
+        if not self.reindex:
             try:
                 atom_indexs = ag_or_ts.ids
             except (AttributeError, NoDataError):
