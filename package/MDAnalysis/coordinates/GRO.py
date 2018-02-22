@@ -248,7 +248,7 @@ class GROWriter(base.WriterBase):
        use `Timestep.triclinic_dimensions` instead.
        Now now writes velocities where possible.
     .. versionchanged:: 0.17.1
-       Now the user can choose to write gro file with specified atoms id.
+       Now user can choose to write gro file with specified atom ids.
        The default option is to reindex all the atoms starting from 1.
        However, this behaviour can be turned off by specifying `reindex=False`.
        `u = mda.Universe()`
