@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de, orbeckst
+mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de, orbeckst,
+         Zhiyi Wu
 
   * 0.17.1
 
@@ -24,6 +25,8 @@ Enhancements
     (Issue #1029)
   * Added copy method to various core classes including Reader, TransTable,
     Topology, TopologyAttr (Issue #1029)
+  * Added `reindex` option to GROWriter to preserve original atom ids when set to
+    False (Issue #1777)
 
 Fixes
   * Fixed waterdynamics SurvivalProbability ignoring the t0 start time
