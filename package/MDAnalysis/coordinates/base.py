@@ -1171,10 +1171,6 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         # subclasses should now call super
         self._auxs = {}
 
-    def copy(self):
-        return self.__class__(self.filename,
-                              n_atoms=self.n_atoms)
-
     def __len__(self):
         return self.n_frames
 
@@ -1795,6 +1791,26 @@ class ReaderBase(ProtoReader):
 
         self._ts_kwargs = ts_kwargs
 
+    def copy(self):
+        """Return independent copy of this Reader.
+
+        New Reader will have its own file handle and can seek/iterate
+        independently of the original.
+
+        Will also copy the current state of the Timestep held in
+        the original Reader
+        """
+        new = self.__class__(self.filename,
+                             n_atoms=self.n_atoms)
+        # seek the new reader to the same frame we started with
+        new[self.ts.frame]
+        # then copy over the current Timestep in case it has
+        # been modified since initial load
+        new.ts = self.ts.copy()
+        for auxname, auxread in self._auxs.items():
+            new.add_auxiliary(auxname, auxread.copy())
+        return new
+
     def __del__(self):
         for aux in self.aux_list:
             self._auxs[aux].close()
@@ -1945,6 +1961,22 @@ class SingleFrameReaderBase(ProtoReader):
 
         self._ts_kwargs = ts_kwargs
         self._read_first_frame()
+
+    def copy(self):
+        """Return independent copy of this Reader.
+
+        New Reader will have its own file handle and can seek/iterate
+        independently of the original.
+
+        Will also copy the current state of the Timestep held in
+        the original Reader
+        """
+        new = self.__class__(self.filename,
+                             n_atoms=self.n_atoms)
+        new.ts = self.ts.copy()
+        for auxname, auxread in self._auxs.items():
+            new.add_auxiliary(auxname, auxread.copy())
+        return new
 
     def _read_first_frame(self):  # pragma: no cover
         # Override this in subclasses to create and fill a Timestep

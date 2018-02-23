@@ -20,6 +20,10 @@ mm/dd/18 richardjgowers, palnabarun, bieniekmateusz
 Enhancements
   * Added reading of record types (ATOM/HETATM) for PDB, PDBQT and PQR formats
     (Issue #1753)
+  * Added Universe.copy to allow creation of an independent copy of a Universe
+    (Issue #1029)
+  * Added copy method to various core classes including Reader, TransTable,
+    Topology, TopologyAttr (Issue #1029)
 
 Fixes
   * Fixed waterdynamics SurvivalProbability ignoring the t0 start time

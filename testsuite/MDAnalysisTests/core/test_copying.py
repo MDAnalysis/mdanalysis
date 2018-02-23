@@ -26,6 +26,10 @@ import numpy as np
 from numpy.testing import assert_equal
 import pytest
 
+from MDAnalysisTests.datafiles import (
+    PSF, DCD
+)
+
 import MDAnalysis as mda
 from MDAnalysis.core import topology
 from MDAnalysis.core import topologyattrs as ta
@@ -157,3 +161,46 @@ def test_topology_copy_n_attrs(refTop):
 def test_topology_copy_unique_attrs(refTop, attr):
     new = refTop.copy()
     assert getattr(refTop, attr) is not getattr(new, attr)
+
+
+
+@pytest.fixture(scope='module')
+def refUniverse():
+    return mda.Universe(PSF, DCD)
+
+class TestCopyUniverse(object):
+    def test_universe_copy(self, refUniverse):
+        new = refUniverse.copy()
+
+        assert new is not refUniverse
+        assert len(new.atoms) == len(refUniverse.atoms)
+
+    def test_positions(self, refUniverse):
+        new = refUniverse.copy()
+        
+        assert_equal(new.atoms.positions, refUniverse.atoms.positions)
+
+    def test_change_positions(self, refUniverse):
+        # check that coordinates act independently
+        new = refUniverse.copy()
+
+        previous = new.atoms[0].position.copy()
+        refUniverse.atoms[0].position = 1, 2, 3
+
+        assert_equal(new.atoms[0].position, previous)
+        assert_equal(refUniverse.atoms[0].position, [1, 2, 3])
+        
+    def test_topology(self, refUniverse):
+        new = refUniverse.copy()
+
+        assert_equal(new.atoms.names, refUniverse.atoms.names)
+
+    def test_change_topology(self, refUniverse):
+        new = refUniverse.copy()
+
+        previous = new.atoms[0].name
+        refUniverse.atoms[0].name = 'newname'
+
+        assert new.atoms[0].name == previous
+        assert refUniverse.atoms[0].name == 'newname'
+        
