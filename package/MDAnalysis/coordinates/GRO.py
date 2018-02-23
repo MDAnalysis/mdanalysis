@@ -293,27 +293,28 @@ class GROWriter(base.WriterBase):
         convert_units : str (optional)
             units are converted to the MDAnalysis base format; ``None`` selects
             the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
-        
+
         reindex : bool (optional)
             By default, all the atoms were reindexed to have a atom id starting
             from 1. [``True``] However, this behaviour can be turned off by
             specifying `reindex` ``=False``.
-            
+
         Note
         ----
-        To use the reindex keyword, user can follow the two examples given blow.::
-        
+        To use the reindex keyword, user can follow the two examples given
+        below.::
+
            u = mda.Universe()
-        
+
         Usage 1::
-        
+
            u.atoms.write('out.gro', reindex=False)
-        
+
         Usage 2::
-        
+
            with mda.Writer('out.gro', reindex=False) as w:
                w.write(u.atoms)
-               
+
         """
         self.filename = util.filename(filename, ext='gro')
         self.n_atoms = n_atoms
