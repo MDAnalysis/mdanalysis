@@ -33,6 +33,7 @@ Fixes
   * libdcd now writes correct length of remark section (Issue #1701)
   * DCDReader now reports the correct time based on istart information (PR #1767)
   * added requirement scipy >= 1.0.0 (absolutely needed: >= 0.19) (Issue #1775)
+  * Universe.empty now warns about empty Residues and Segmnets (Issue #1771)
 
 Changes
   * scipy >= 1.0.0 is now required (issue #1775 because of PR #1758)
