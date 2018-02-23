@@ -419,7 +419,7 @@ def test_growriter_resid_truncation():
     # larger digits should get truncated
     assert line.startswith('56789UNK')
 
-class TestGrowriterReindex(Object):
+class TestGrowriterReindex(object):
     @pytest.fixture
     def u():
         gro = '''test
