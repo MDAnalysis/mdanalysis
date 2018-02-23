@@ -36,7 +36,7 @@ following their installation instructions before you can use the corresponding
 MDAnalysis module.
 
 .. _scikit-learn: http://scikit-learn.org/
-.. _HOLE: http://www.smartsci.uk/hole/
+.. _HOLE: http://www.holeprogram.org/
 
 
 Building blocks for Analysis

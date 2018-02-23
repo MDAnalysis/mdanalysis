@@ -10,7 +10,7 @@
 #       NOT-FOR-PROFIT LICENSE.
 # 
 #
-# Install HOLE from http://www.smartsci.uk/hole/
+# Install HOLE from http://www.holeprogram.org/
 #
 # arguments
 #    OSNAME : linux | darwin
@@ -20,7 +20,7 @@
 # and HOLE unpacked under PREFIX (the tar file contains "hole2/...")
 #
 #
-# HOLE is used under the terms of the 'HOLE END USER LICENCE AGREEMENT
+# HOLE v2.2004 is used under the terms of the 'HOLE END USER LICENCE AGREEMENT
 # NOT-FOR-PROFIT VERSION' as provided in the installation tarball as file
 # 'doc/Licence-not-for-profit.asciidoc' and see copy at
 # https://github.com/MDAnalysis/mdanalysis/files/372246/Licence-not-for-profit.txt
@@ -32,9 +32,15 @@ set -o errexit -o nounset
 
 SCRIPT=$(basename $0)
 
+# We still use the 2.2004 versions (academic only) because
+# for the v2.2005 (Apache license) there are no pre-compiled binaries
+# available at http://www.holeprogram.org/ as of 2018-02-22
+
+# could switch to http://www.holeprogram.org/downloads/2.2.004/hole2-NotForProfit-2.2.004-Linux-i686.tar.gz
 DOWNLOAD_URL_LINUX='https://www.dropbox.com/s/jukpwlohhi20r17/hole2-NotForProfit-2.2.004-Linux-x86_64.tar.gz?dl=1'
 TARFILE_LINUX='hole2-NotForProfit-2.2.004-Linux-x86_64.tar.gz'
 
+# could switch to http://www.holeprogram.org/downloads/2.2.004/hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz
 DOWNLOAD_URL_DARWIN='https://www.dropbox.com/s/5mzrsyp48i32je4/hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz?dl=1'
 TARFILE_DARWIN=hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz
 
