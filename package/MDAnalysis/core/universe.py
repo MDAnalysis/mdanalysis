@@ -315,6 +315,12 @@ class Universe(object):
         # Universes are anchors by default
         self.is_anchor = kwargs.get('is_anchor', True)
 
+    def copy(self):
+        """Return an independent copy of this Universe"""
+        new = self.__class__(self._topology.copy())
+        new.trajectory = self.trajectory.copy()
+        return new
+
     def _generate_from_topology(self):
         # generate Universe version of each class
         # AG, RG, SG, A, R, S

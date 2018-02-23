@@ -311,13 +311,19 @@ class MemoryReader(base.ProtoReader):
 
     def copy(self):
         """Return a copy of this Memory Reader"""
-        return self.__class__(
+        new = self.__class__(
             self.coordinate_array.copy(),
             order=self.stored_order,
             dimensions=self.ts.dimensions,
             dt=self.ts.dt,
             filename=self.filename,
         )
+        new[self.ts.frame]
+        new.ts = self.ts.copy()
+        for auxname, auxread in self._auxs.items():
+            new.add_auxiliary(auxname, auxread.copy())
+
+        return new        
 
     def set_array(self, coordinate_array, order='fac'):
         """
