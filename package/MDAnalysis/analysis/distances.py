@@ -48,7 +48,7 @@ import scipy.sparse
 from MDAnalysis.lib.distances import distance_array, self_distance_array
 from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
-from MDAnalysis.core.groups import GroupBase
+from MDAnalysis.lib.distances import calc_bonds
 
 
 import warnings
@@ -113,7 +113,7 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
         return sparse_contacts
 
 
-def dist(A, B, offset=0, pbc=False, box=None):
+def dist(A, B, offset=0, box=None):
     """Return distance between atoms in two atom groups.
 
     The distance is calculated atom-wise. The residue ids are also
@@ -146,8 +146,6 @@ def dist(A, B, offset=0, pbc=False, box=None):
        distances between the atoms
     """
 
-
-
     if A.atoms.n_atoms != B.atoms.n_atoms:
         raise ValueError("AtomGroups A and B do not have the same number of atoms")
     try:
@@ -156,14 +154,8 @@ def dist(A, B, offset=0, pbc=False, box=None):
         off_A = off_B = int(offset)
     residues_A = np.array(A.resids) + off_A
     residues_B = np.array(B.resids) + off_B
-    if pbc:
-      x = A.pack_into_box(box, inplace=False)
-      y = B.pack_into_box(box, inplace=False)
-    else:
-      x = A.positions
-      y = B.positions
-    r = x - y
-    d = np.sqrt(np.sum(r * r, axis=1))
+    
+    d = calc_bonds(A.positions, B.positions, box)
     return np.array([residues_A, residues_B, d])
 
 
