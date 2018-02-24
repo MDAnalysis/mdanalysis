@@ -230,19 +230,18 @@ class DistanceSelection(Selection):
 
     Grabs the flags for this selection
      - 'use_KDTree_routines'
-     - 'use_periodic_selections'
 
     Populates the `apply` method with either
      - _apply_KDTree
      - _apply_distmat
     """
-    def __init__(self):
+    def __init__(self, periodic):
         if flags['use_KDTree_routines'] in (True, 'fast', 'always'):
             self.apply = self._apply_KDTree
         else:
             self.apply = self._apply_distmat
 
-        self.periodic = flags['use_periodic_selections']
+        self.periodic = periodic
         # KDTree doesn't support periodic
         if self.periodic:
             self.apply = self._apply_distmat
@@ -270,7 +269,7 @@ class AroundSelection(DistanceSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(AroundSelection, self).__init__()
+        super(AroundSelection, self).__init__(parser.periodic)
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
@@ -320,7 +319,7 @@ class SphericalLayerSelection(DistanceSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(SphericalLayerSelection, self).__init__()
+        super(SphericalLayerSelection, self).__init__(parser.periodic)
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
@@ -364,7 +363,7 @@ class SphericalZoneSelection(DistanceSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(SphericalZoneSelection, self).__init__()
+        super(SphericalZoneSelection, self).__init__(parser.periodic)
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
@@ -398,8 +397,8 @@ class SphericalZoneSelection(DistanceSelection):
 
 
 class CylindricalSelection(Selection):
-    def __init__(self):
-        self.periodic = flags['use_periodic_selections']
+    def __init__(self, periodic):
+        self.periodic = periodic
 
     def apply(self, group):
         sel = self.sel.apply(group)
@@ -463,7 +462,7 @@ class CylindricalZoneSelection(CylindricalSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(CylindricalZoneSelection, self).__init__()
+        super(CylindricalZoneSelection, self).__init__(parser.periodic)
         self.exRadius = float(tokens.popleft())
         self.zmax = float(tokens.popleft())
         self.zmin = float(tokens.popleft())
@@ -475,7 +474,7 @@ class CylindricalLayerSelection(CylindricalSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(CylindricalLayerSelection, self).__init__()
+        super(CylindricalLayerSelection, self).__init__(parser.periodic)
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
         self.zmax = float(tokens.popleft())
@@ -487,7 +486,7 @@ class PointSelection(DistanceSelection):
     token = 'point'
 
     def __init__(self, parser, tokens):
-        super(PointSelection, self).__init__()
+        super(PointSelection, self).__init__(parser.periodic)
         x = float(tokens.popleft())
         y = float(tokens.popleft())
         z = float(tokens.popleft())
@@ -1204,15 +1203,19 @@ class SelectionParser(object):
                 "Unexpected token: '{0}' Expected: '{1}'"
                 "".format(self.tokens[0], token))
 
-    def parse(self, selectstr, selgroups):
+    def parse(self, selectstr, selgroups, periodic):
         """Create a Selection object from a string.
 
         Parameters
         ----------
         selectstr : str
-            The string that describes the selection
-        selgroups : AtomGroups
-            AtomGroups to be used in `group` selections
+          The string that describes the selection
+        selgroups : dict
+          mapping of name to AtomGroup for atomgroups to be used in
+          `group` selections
+        periodic : bool
+          for distance based selections, whether to consider periodic
+          boundaries in calculations.
 
         Returns
         -------
@@ -1226,6 +1229,8 @@ class SelectionParser(object):
         """
         self.selectstr = selectstr
         self.selgroups = selgroups
+        self.periodic = periodic
+
         tokens = selectstr.replace('(', ' ( ').replace(')', ' ) ')
         self.tokens = collections.deque(tokens.split() + [None])
         parsetree = self.parse_expression(0)
