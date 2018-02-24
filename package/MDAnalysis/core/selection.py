@@ -228,15 +228,12 @@ class ByResSelection(UnarySelection):
 class DistanceSelection(Selection):
     """Base class for distance search based selections
 
-    Grabs the flags for this selection
-     - 'use_KDTree_routines'
-
     Populates the `apply` method with either
      - _apply_KDTree
      - _apply_distmat
     """
-    def __init__(self, periodic):
-        if flags['use_KDTree_routines'] in (True, 'fast', 'always'):
+    def __init__(self, periodic, kdtree):
+        if kdtree:
             self.apply = self._apply_KDTree
         else:
             self.apply = self._apply_distmat
@@ -269,7 +266,8 @@ class AroundSelection(DistanceSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(AroundSelection, self).__init__(parser.periodic)
+        super(AroundSelection, self).__init__(
+            periodic=parser.periodic, kdtree=parser.use_kdtree)
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
@@ -319,7 +317,8 @@ class SphericalLayerSelection(DistanceSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(SphericalLayerSelection, self).__init__(parser.periodic)
+        super(SphericalLayerSelection, self).__init__(
+            periodic=parser.periodic, kdtree=parser.use_kdtree)
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
@@ -363,7 +362,8 @@ class SphericalZoneSelection(DistanceSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(SphericalZoneSelection, self).__init__(parser.periodic)
+        super(SphericalZoneSelection, self).__init__(
+            periodic=parser.periodic, kdtree=parser.use_kdtree)
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
@@ -486,7 +486,8 @@ class PointSelection(DistanceSelection):
     token = 'point'
 
     def __init__(self, parser, tokens):
-        super(PointSelection, self).__init__(parser.periodic)
+        super(PointSelection, self).__init__(
+            periodic=parser.periodic, kdtree=parser.use_kdtree)
         x = float(tokens.popleft())
         y = float(tokens.popleft())
         z = float(tokens.popleft())
@@ -1203,7 +1204,8 @@ class SelectionParser(object):
                 "Unexpected token: '{0}' Expected: '{1}'"
                 "".format(self.tokens[0], token))
 
-    def parse(self, selectstr, selgroups, periodic):
+    def parse(self, selectstr, selgroups,
+              periodic=None, use_kdtree=None):
         """Create a Selection object from a string.
 
         Parameters
@@ -1216,6 +1218,9 @@ class SelectionParser(object):
         periodic : bool
           for distance based selections, whether to consider periodic
           boundaries in calculations.
+        use_kdtree : bool
+          for distance based selections, whether to use KDTree based
+          methods
 
         Returns
         -------
@@ -1229,7 +1234,16 @@ class SelectionParser(object):
         """
         self.selectstr = selectstr
         self.selgroups = selgroups
+
+        if periodic is None:
+            # TODO: Once flags are removed, change the default to live here
+            periodic = flags['use_periodic_selections']
         self.periodic = periodic
+
+        if use_kdtree is None:
+            # TODO: Once flags are removed, change the default to live here
+            use_kdtree = flags['use_KDTree_routines'] in (True, 'fast', 'always')
+        self.use_kdtree = use_kdtree
 
         tokens = selectstr.replace('(', ' ( ').replace(')', ' ) ')
         self.tokens = collections.deque(tokens.split() + [None])

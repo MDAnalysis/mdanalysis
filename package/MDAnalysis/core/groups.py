@@ -1994,12 +1994,13 @@ class AtomGroup(GroupBase):
 
         """
         updating = selgroups.pop('updating', False)
-        periodic = selgroups.pop('periodic', flags['use_periodic_selections'])
+        periodic = selgroups.pop('periodic', None)
+        use_kdtree = selgroups.pop('use_kdtree', None)
 
         sel_strs = (sel,) + othersel
-        selections = tuple((selection.Parser.parse(s,
+        selections = tuple((selection.Parser.parse(s, selgroups,
                                                    periodic=periodic,
-                                                   selgroups=selgroups)
+                                                   use_kdtree=use_kdtree)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
