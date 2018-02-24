@@ -26,13 +26,14 @@ from __future__ import print_function, absolute_import
 import pytest
 import scipy
 import scipy.spatial
+from math import *
 
 import MDAnalysis
 from MDAnalysisTests.datafiles import GRO
 
 import MDAnalysis.analysis.distances
 
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 
 
@@ -108,34 +109,68 @@ class TestContactMatrix(object):
         assert_equal(contacts.toarray(), res_pbc)
 
 
+
 class TestDist(object):
 
     @staticmethod
     @pytest.fixture()
     def ag():
         u = MDAnalysis.Universe(GRO)
-        return u.atoms[:20]
+        return u.atoms[1:10]
 
     # TODO: How are ag and ag2 different?!
     @staticmethod
     @pytest.fixture()
     def ag2():
         u2 = MDAnalysis.Universe(GRO)
-        return u2.atoms[:20]
+        return u2.atoms[11:20]
 
     @staticmethod
     @pytest.fixture()
+    def box():
+        return np.array([8, 8, 8, 90, 90, 90], dtype=np.float32)
+    
+    @staticmethod
+    @pytest.fixture()
     def expected(ag, ag2):
-        np.random.shuffle(ag2.positions)
+        
         return np.diag(scipy.spatial.distance.cdist(
             ag.positions, ag2.positions)
         )
+
+    @staticmethod
+    @pytest.fixture()
+    def expected_box(ag, ag2):
+
+        result= np.empty((0))
+        for i in range(len(ag)):
+            x= abs(ag.positions[i][0]-ag2.positions[i][0])
+            if x>4:
+                x=8-4
+            x=x*x
+            y= abs(ag.positions[i][1]-ag2.positions[i][1])
+            if y>4:
+                y=8-4
+            y=y*y
+            z= abs(ag.positions[i][2]-ag2.positions[i][2])
+            if z>4:
+                z=8-4
+            z=z*z
+            result=np.append(result,sqrt(x+y+z))
+
+        return result
 
     def test_pairwise_dist(self, ag, ag2, expected):
         '''Ensure that pairwise distances between atoms are
         correctly calculated.'''
         actual = MDAnalysis.analysis.distances.dist(ag, ag2)[2]
         assert_equal(actual, expected)
+
+    def test_pairwise_dist_box(self, ag, ag2, expected_box, box):
+        '''Ensure that pairwise distances between atoms are
+        correctly calculated.'''
+        actual = MDAnalysis.analysis.distances.dist(ag, ag2, 0, box)[2]
+        assert_allclose(actual, expected_box, rtol=1e-05, atol=10)
 
     def test_pairwise_dist_offset_effect(self, ag, ag2, expected):
         '''Test that feeding in offsets to dist() doesn't alter
@@ -155,7 +190,7 @@ class TestDist(object):
         '''A ValueError should be raised if the two atomgroups
         don't have the same number of atoms.'''
         with pytest.raises(ValueError):
-            MDAnalysis.analysis.distances.dist(ag[:19], ag2)
+            MDAnalysis.analysis.distances.dist(ag[:8], ag2)
 
 
 class TestBetween(object):
