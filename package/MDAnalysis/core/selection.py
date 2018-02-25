@@ -393,7 +393,7 @@ class SphericalZoneSelection(DistanceSelection):
         return group[idx].unique
 
 
-class CylindricalSelection(Selection):
+class CylindricalSelection(DistanceSelection):
     def __init__(self, periodic):
         self.periodic = periodic
 
