@@ -1212,10 +1212,10 @@ class SelectionParser(object):
         selgroups : dict
           mapping of name to AtomGroup for atomgroups to be used in
           `group` selections
-        periodic : bool
+        periodic : bool, optional
           for distance based selections, whether to consider periodic
           boundaries in calculations.
-        use_kdtree : bool
+        use_kdtree : bool, optional
           for distance based selections, whether to use KDTree based
           methods
 
