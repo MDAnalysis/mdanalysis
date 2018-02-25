@@ -239,9 +239,6 @@ class DistanceSelection(Selection):
             self.apply = self._apply_distmat
 
         self.periodic = periodic
-        # KDTree doesn't support periodic
-        if self.periodic:
-            self.apply = self._apply_distmat
 
     def validate_dimensions(self, dimensions):
         r"""Check if the system is periodic in all three-dimensions.
