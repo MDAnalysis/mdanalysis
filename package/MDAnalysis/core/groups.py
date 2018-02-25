@@ -1991,10 +1991,23 @@ class AtomGroup(GroupBase):
            Updating selections now possible by setting the ``updating`` argument.
         .. versionadded:: 0.17.0
            Added *moltype* and *molnum* selections.
-
+        .. versionchanged:: 0.17.1
+           Added ``periodic`` and ``use_kdtree`` keyword arguments
         """
         updating = selgroups.pop('updating', False)
-        periodic = selgroups.pop('periodic', None)
+        # TODO: When removing flags, change this to default
+        periodic = selgroups.pop('periodic', flags['use_periodic_selections'])
+        # check to see if system is actually periodic
+        if periodic:
+            # Universe without traj has no dimensions
+            if hasattr(self, 'dimensions') and any(self.dimensions == 0.0):
+                periodic = False
+                # remember that we forced periodic to False
+                # if we later do a distance selection, warn about this
+                missing_box = True
+            else:
+                missing_box = False
+
         use_kdtree = selgroups.pop('use_kdtree', None)
 
         sel_strs = (sel,) + othersel
@@ -2002,6 +2015,12 @@ class AtomGroup(GroupBase):
                                                    periodic=periodic,
                                                    use_kdtree=use_kdtree)
                             for s in sel_strs))
+
+        if missing_box and any(isinstance(s, selection.DistanceSelection)
+                               for s in selections):
+            warnings.warn('Periodic selection on non periodic system',
+                          UserWarning)
+
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
         else:
