@@ -141,24 +141,10 @@ class TestDist(object):
     @pytest.fixture()
     def expected_box(ag, ag2):
 
-        result= np.empty((0))
-        for i in range(len(ag)):
-            x= abs(ag.positions[i][0]-ag2.positions[i][0])
-            if x>4:
-                x=8-4
-            x=x*x
-            y= abs(ag.positions[i][1]-ag2.positions[i][1])
-            if y>4:
-                y=8-4
-            y=y*y
-            z= abs(ag.positions[i][2]-ag2.positions[i][2])
-            if z>4:
-                z=8-4
-            z=z*z
-            result=np.append(result,np.sqrt(x+y+z))
-
-        return result
-
+        rp = np.abs(ag.positions - ag2.positions)
+        rp = np.where(rp > 4, 8.0 - rp, rp)
+        return np.sqrt(np.square(rp).sum(axis=1))
+         
     def test_pairwise_dist(self, ag, ag2, expected):
         '''Ensure that pairwise distances between atoms are
         correctly calculated.'''
