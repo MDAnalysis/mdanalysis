@@ -329,6 +329,7 @@ from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, Selectio
 from MDAnalysis.lib.mdamath import norm, angle
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
+from MDAnalysis.lib.distances import calc_angles
 
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
@@ -1030,11 +1031,12 @@ class HydrogenBondAnalysis(object):
     @staticmethod
     def calc_angle(d, h, a):
         """Calculate the angle (in degrees) between two atoms with H at apex."""
-        v1 = h.position - d.position
-        v2 = h.position - a.position
-        if np.all(v1 == v2):
-            return 0.0
-        return np.rad2deg(angle(v1, v2))
+        v1= d.position.reshape(1,len(d.position))
+        v2= h.position.reshape(1,len(h.position))
+        v3= a.position.reshape(1,len(a.position))
+        angle= calc_angles(v1, v2, v3)
+    
+        return np.rad2deg(angle[0])
 
     @staticmethod
     def calc_eucl_distance(a1, a2):
