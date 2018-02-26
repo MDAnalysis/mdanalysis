@@ -347,6 +347,7 @@ class HydrogenBondAutoCorrel(object):
 
         a = calc_angles(self.d.positions[hidx], self.h.positions[hidx],
                         self.a.positions[aidx], box=box)
+        
         # from amongst those, who also satisfiess angle crit
         idx2 = np.where(a > self.a_crit)
         hidx = hidx[idx2]
