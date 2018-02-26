@@ -1037,3 +1037,24 @@ def test_kdtree_around_empty():
                        use_kdtree=True, periodic=True)
     assert mp.called
 
+
+def test_kdtree_around_single_atom():
+    # around selection where SYS is empty
+    u = make_Universe(('names',), trajectory=True)
+
+    ag = u.atoms[[0]]
+    ag.names = 'X'
+
+    ag2 = ag.select_atoms('around 2.0 name X',
+                          use_kdtree=True, periodic=True)
+
+    assert isinstance(ag2, mda.core.groups.AtomGroup)
+    assert len(ag2) == 0
+
+    # check that _apply_KDTree (target of test) was used
+    with mock.patch.object(
+            mda.core.selection.AroundSelection, '_apply_KDTree') as mp:
+        u.select_atoms('around 2.0 name X',
+                       use_kdtree=True, periodic=True)
+    assert mp.called
+

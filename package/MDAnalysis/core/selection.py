@@ -276,6 +276,10 @@ class AroundSelection(DistanceSelection):
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
 
+        # if sys is empty, return empty AtomGroup
+        if not sys:
+            return sys[[]]
+
         box = self.validate_dimensions(group.dimensions)
         if box is None:
             kdtree = KDTree(dim=3, bucket_size=10)
