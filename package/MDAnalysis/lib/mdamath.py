@@ -45,6 +45,7 @@ import numpy as np
 from ..exceptions import NoDataError
 
 
+
 # geometric functions
 def norm(v):
     r"""Calculate the norm of a vector v.
@@ -88,7 +89,7 @@ def normal(vec1, vec2):
     return normal / n  # ... could also use numpy.nan_to_num(normal/norm(normal))
 
 
-def angle(a, b):
+def angle(a, b, box):
     """Returns the angle between two vectors in radians
 
     .. versionchanged:: 0.11.0

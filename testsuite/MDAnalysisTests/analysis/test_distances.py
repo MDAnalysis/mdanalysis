@@ -26,7 +26,6 @@ from __future__ import print_function, absolute_import
 import pytest
 import scipy
 import scipy.spatial
-from math import *
 
 import MDAnalysis
 from MDAnalysisTests.datafiles import GRO
@@ -156,7 +155,7 @@ class TestDist(object):
             if z>4:
                 z=8-4
             z=z*z
-            result=np.append(result,sqrt(x+y+z))
+            result=np.append(result,np.sqrt(x+y+z))
 
         return result
 
