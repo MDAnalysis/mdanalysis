@@ -28,6 +28,7 @@ import numpy as np
 from numpy.testing import(
     assert_equal,
 )
+import mock
 
 import MDAnalysis
 import MDAnalysis as mda
@@ -1019,3 +1020,20 @@ class TestICodeSelection(object):
         u = make_Universe(('resids',))
         with pytest.raises(ValueError):
             u.select_atoms('resid 10A-12')
+
+
+def test_kdtree_around_empty():
+    u = make_Universe(('names',), trajectory=True)
+
+    ag = u.select_atoms('name X and around 2.0 name Y',
+                        use_kdtree=True, periodic=True)
+    assert isinstance(ag, mda.core.groups.AtomGroup)
+    assert len(ag) == 0
+
+    # check that _apply_KDTree (target of test) was used
+    with mock.patch.object(
+            mda.core.selection.AroundSelection, '_apply_KDTree') as mp:
+        u.select_atoms('name X and around 2.0 name Y',
+                       use_kdtree=True, periodic=True)
+    assert mp.called
+

@@ -284,8 +284,11 @@ class AroundSelection(DistanceSelection):
             for atom in sel.positions:
                 kdtree.search(atom, self.cutoff)
                 found_indices.append(kdtree.get_indices())
-            unique_idx = np.unique(np.concatenate(found_indices))
-
+            # avoid concatenating an empty list
+            if found_indices:
+                unique_idx = np.unique(np.concatenate(found_indices))
+            else:
+                unique_idx = np.array([])
         else:
             kdtree = PeriodicKDTree(box, bucket_size=10)
             kdtree.set_coords(sys.positions)
