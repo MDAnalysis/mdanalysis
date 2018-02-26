@@ -89,7 +89,7 @@ def normal(vec1, vec2):
     return normal / n  # ... could also use numpy.nan_to_num(normal/norm(normal))
 
 
-def angle(a, b, box):
+def angle(a, b):
     """Returns the angle between two vectors in radians
 
     .. versionchanged:: 0.11.0
