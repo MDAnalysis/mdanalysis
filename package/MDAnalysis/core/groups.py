@@ -2020,7 +2020,7 @@ class AtomGroup(GroupBase):
             warnings.warn(
                 'Periodic selection requested but no box information was '
                 'available.  Box information can be set via the dimensions '
-                'attribute.  Reverting to non periodic selection.'
+                'attribute.  Reverting to non periodic selection.',
                 UserWarning)
 
         if updating:
