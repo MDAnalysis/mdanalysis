@@ -401,10 +401,12 @@ class SphericalZoneSelection(DistanceSelection):
 
 
 class CylindricalSelection(DistanceSelection):
+    # If _apply_KDTree method added, pass this in super.__init__
     def __init__(self, periodic):
-        self.periodic = periodic
+        super(CylindricalSelection, self).__init__(
+            periodic=periodic, kdtree=False)
 
-    def apply(self, group):
+    def _apply_distmat(self, group):
         sel = self.sel.apply(group)
 
         # Calculate vectors between point of interest and our group
