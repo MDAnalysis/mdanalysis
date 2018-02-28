@@ -190,6 +190,35 @@ class DATAParser(TopologyReaderBase):
 
         return header, sects
 
+    @staticmethod
+    def _interpret_atom_style(atom_style):
+        """Transform a string description of atom style into a dict
+
+        eg: "id resid type charge x y z"
+        {'id': 0,
+         'resid': 1,
+         'type': 2,
+         'charge': 3,
+         'x': 4,
+         'y': 5,
+         'z': 6,
+        }
+        """
+        style_dict = {}
+
+        for attr in ['id', 'type', 'resid', 'charge', 'x', 'y', 'z']:
+            try:
+                location = atom_style.index(attr)
+            except ValueError:
+                pass
+            else:
+                style_dict[attr] = location
+
+        if not all(attr in style_dict for attr in ['x', 'y', 'z']):
+            raise ValueError("atom_style string missing position information")
+                
+        return style_dict
+    
     def parse(self, **kwargs):
         """Parses a LAMMPS_ DATA file.
 
@@ -198,7 +227,10 @@ class DATAParser(TopologyReaderBase):
         MDAnalysis Topology object.
         """
         # Can pass atom_style to help parsing
-        atom_style = kwargs.get('atom_style', None)
+        try:
+            self.style_dict = self._interpret_atom_style(kwargs['atom_style'])
+        except KeyError:
+            self.style_dict = None
 
         head, sects = self.grab_datafile()
 
@@ -230,7 +262,7 @@ class DATAParser(TopologyReaderBase):
 
         return top
 
-    def read_DATA_timestep(self, n_atoms, TS_class, TS_kwargs):
+    def read_DATA_timestep(self, n_atoms, TS_class, TS_kwargs, atom_style):
         """Read a DATA file and try and extract x, v, box.
 
         - positions
@@ -241,6 +273,11 @@ class DATAParser(TopologyReaderBase):
 
         .. versionadded:: 0.9.0
         """
+        if atom_style is None:
+            self.style_dict = None
+        else:
+            self.style_dict = self._interpret_atom_style(atom_style)
+        
         header, sects = self.grab_datafile()
 
         unitcell = self._parse_box(header)
@@ -270,15 +307,22 @@ class DATAParser(TopologyReaderBase):
         # but ugly because assumes lots of things, and Reader should be standalone
         ids = np.zeros(len(pos), dtype=np.int32)
 
+        if self.style_dict is None:
+            if len(datalines[0].split()) in (7, 10):
+                style_dict = {'id': 0, 'x': 4, 'y': 5, 'z': 6}
+            else:
+                style_dict = {'id': 0, 'x': 3, 'y': 4, 'z': 5}
+        else:
+            style_dict = self.style_dict
+    
         for i, line in enumerate(datalines):
             line = line.split()
-            n = len(line)
-            ids[i] = line[0]
 
-            if n in (7, 10):
-                pos[i] = line[4:7]
-            elif n in (6, 9):
-                pos[i] = line[3:6]
+            ids[i] = line[style_dict['id']]
+
+            pos[i, :] = [line[style_dict['x']],
+                         line[style_dict['y']],
+                         line[style_dict['z']]]
 
         order = np.argsort(ids)
         pos = pos[order]
@@ -363,9 +407,18 @@ class DATAParser(TopologyReaderBase):
 
         n_atoms = len(datalines)
 
-        # Fields per line
-        n = len(datalines[0].split())
-        has_charge = True if n in [7, 10] else False
+        if self.style_dict is None:
+            sd = {'id': 0,
+                  'resid': 1,
+                  'type': 2}
+            # Fields per line
+            n = len(datalines[0].split())
+            if n in (7, 10):
+                sd['charge'] = 3
+        else:
+            sd = self.style_dict
+
+        has_charge = 'charge' in sd
 
         # atom ids aren't necessarily sequential
         atom_ids = np.zeros(n_atoms, dtype=np.int32)
@@ -380,11 +433,11 @@ class DATAParser(TopologyReaderBase):
             # these numpy array are already typed correctly,
             # so just pass the raw strings
             # and let numpy handle the conversion
-            atom_ids[i] = line[0]
-            resids[i] = line[1]
-            types[i] = line[2]
+            atom_ids[i] = line[sd['id']]
+            resids[i] = line[sd['resid']]
+            types[i] = line[sd['type']]
             if has_charge:
-                charges[i] = line[3]
+                charges[i] = line[sd['charge']]
 
         # at this point, we've read the atoms section,
         # but it's still (potentially) unordered
