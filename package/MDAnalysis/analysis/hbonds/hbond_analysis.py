@@ -407,7 +407,7 @@ class HydrogenBondAnalysis(object):
                  distance=3.0, angle=120.0,
                  forcefield='CHARMM27', donors=None, acceptors=None,
                  start=None, stop=None, step=None,
-                 debug=None, detect_hydrogens='distance', verbose=None,pbc=True):
+                 debug=None, detect_hydrogens='distance', verbose=None, pbc=False):
         """Set up calculation of hydrogen bonds between two selections in a universe.
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
@@ -500,6 +500,8 @@ class HydrogenBondAnalysis(object):
         verbose : bool (optional)
             Toggle progress output. (Can also be given as keyword argument to
             :meth:`run`.)
+        pbc : bool (optional)
+            Whether to consider periodic boundaries in calculations [``False``]
 
         Raises
         ------
@@ -583,7 +585,7 @@ class HydrogenBondAnalysis(object):
         self.distance_type = distance_type  # note: everything except 'heavy' will give the default behavior
         self.angle = angle
         self.traj_slice = slice(start, stop, step)
-        self.pbc = pbc
+        self.pbc = pbc and all(self.u.dimensions[:3])
 
         # set up the donors/acceptors lists
         if donors is None:

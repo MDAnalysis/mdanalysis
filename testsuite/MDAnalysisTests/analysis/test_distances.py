@@ -32,7 +32,8 @@ from MDAnalysisTests.datafiles import GRO
 
 import MDAnalysis.analysis.distances
 
-from numpy.testing import assert_equal, assert_allclose
+from numpy.testing import (assert_equal, assert_array_equal, assert_almost_equal, 
+                           assert_array_almost_equal,assert_allclose)
 import numpy as np
 
 
@@ -142,9 +143,8 @@ class TestDist(object):
     def expected_box(ag, ag2, box):
 
         rp = np.abs(ag.positions - ag2.positions)
-        for i in range(len(rp)):
-            for j in range(len(rp[i])):
-                rp[i][j] = np.where(rp[i][j] > box[j]/2, box[j] - rp[i][j], rp[i][j])
+        box_2d = box[np.newaxis, 0:3]
+        rp = np.where(rp  > box_2d / 2, box_2d - rp, rp)
         return np.sqrt(np.square(rp).sum(axis=1))
 
     def test_pairwise_dist(self, ag, ag2, expected):
