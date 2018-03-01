@@ -603,3 +603,44 @@ class TestAllCoordinatesKwarg(object):
 
         assert_array_equal(u_GRO_TRR_allcoords.atoms.positions,
                            u_GRO_TRR.atoms.positions)
+
+
+class TestEmpty(object):
+    def test_empty(self):
+        u = mda.Universe.empty(10)
+
+        assert len(u.atoms) == 10
+        assert len(u.residues) == 1
+        assert len(u.segments) == 1
+
+    def test_empty_extra(self):
+        u = mda.Universe.empty(
+            n_atoms=12, n_residues=3, n_segments=2,
+            atom_resindex=np.array([0, 0, 0, 0, 0,
+                                    1, 1, 1, 1, 1,
+                                    2, 2]),
+            residue_segindex=np.array([0, 0, 1]),
+        )
+
+        assert len(u.atoms) == 12
+
+        assert len(u.residues) == 3
+        assert len(u.residues[0].atoms) == 5
+        assert len(u.residues[1].atoms) == 5
+        assert len(u.residues[2].atoms) == 2
+
+        assert len(u.segments) == 2
+        assert len(u.segments[0].atoms) == 10
+        assert len(u.segments[1].atoms) == 2
+
+    def test_no_resindex_warning(self):
+        with pytest.warns(UserWarning):
+            u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=1)
+
+    def test_no_segindex_warning(self):
+        res = np.array([0, 0, 0, 0, 0,
+                        1, 1, 1, 1, 1])
+
+        with pytest.warns(UserWarning):
+            u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=1,
+                                   atom_resindex=res)

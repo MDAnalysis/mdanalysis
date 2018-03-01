@@ -306,6 +306,9 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
             self.auxstep._dt = self.time - self.initial_time
             self.rewind()
 
+    def copy(self):
+        raise NotImplementedError("Copy not implemented for AuxReader")
+
     def __len__(self):
         """ Number of steps in auxiliary data. """
         return self.n_steps
