@@ -262,7 +262,6 @@ class MemoryReader(base.ProtoReader):
         """
 
         super(MemoryReader, self).__init__()
-
         self.filename = filename
         self.stored_order = order
         self.set_array(np.asarray(coordinate_array), order)
@@ -309,6 +308,22 @@ class MemoryReader(base.ProtoReader):
         """
         # assume filename is a numpy array
         return filename.shape[order.find('a')]
+
+    def copy(self):
+        """Return a copy of this Memory Reader"""
+        new = self.__class__(
+            self.coordinate_array.copy(),
+            order=self.stored_order,
+            dimensions=self.ts.dimensions,
+            dt=self.ts.dt,
+            filename=self.filename,
+        )
+        new[self.ts.frame]
+        new.ts = self.ts.copy()
+        for auxname, auxread in self._auxs.items():
+            new.add_auxiliary(auxname, auxread.copy())
+
+        return new        
 
     def set_array(self, coordinate_array, order='fac'):
         """

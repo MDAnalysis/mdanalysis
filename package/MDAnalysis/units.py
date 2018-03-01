@@ -177,6 +177,11 @@ from __future__ import unicode_literals, division
 #:    6.02214179e+23 mol**-1 by -5.00000000e+16 mol**-1.
 N_Avogadro = 6.02214129e+23  # mol**-1
 
+#
+# NOTE: Whenever a constant is added to the constants dict, you also
+#       MUST add an appropriate entry to
+#       test_units:TestConstants.constants_reference !
+
 #: Values of physical constants are taken from `CODATA 2010 at NIST`_. The
 #: thermochemical calorie is defined in the `ISO 80000-5:2007`_ standard
 #: and is also listed in the `NIST Guide to SI: Appendix B.8: Factors for Units`_.
@@ -189,10 +194,6 @@ N_Avogadro = 6.02214129e+23  # mol**-1
 #:    http://physics.nist.gov/Pubs/SP811/appenB8.html#C
 #:
 #: .. versionadded:: 0.9.0
-#
-# NOTE: Whenever a constant is added to the constants dict, you also
-#       MUST add an appropriate entry to
-#       test_units:TestConstants.constants_reference !
 constants = {
     'N_Avogadro': 6.02214129e+23,          # mol**-1
     'elementary_charge': 1.602176565e-19,  # As

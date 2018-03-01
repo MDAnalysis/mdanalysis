@@ -210,6 +210,9 @@ class ChainReader(base.ProtoReader):
     def convert_pos_to_native(self, x):
         return self.active_reader.convert_pos_to_native(x)
 
+    def copy(self):
+        raise NotImplementedError("Copy not implemented for ChainReader")
+
     # attributes that can change with the current reader
     @property
     def filename(self):

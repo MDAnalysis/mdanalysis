@@ -315,6 +315,12 @@ class Universe(object):
         # Universes are anchors by default
         self.is_anchor = kwargs.get('is_anchor', True)
 
+    def copy(self):
+        """Return an independent copy of this Universe"""
+        new = self.__class__(self._topology.copy())
+        new.trajectory = self.trajectory.copy()
+        return new
+
     def _generate_from_topology(self):
         # generate Universe version of each class
         # AG, RG, SG, A, R, S
@@ -414,8 +420,19 @@ class Universe(object):
         """
         if n_residues is None:
             n_residues = 1
+        elif atom_resindex is None:
+            warnings.warn(
+                'Multiple residues specified but no atom_resindex given.  '
+                'All atoms will be placed in first Residue.',
+                UserWarning)
         if n_segments is None:
             n_segments = 1
+        elif residue_segindex is None:
+            warnings.warn(
+                'Multiple segments specified but no segment_resindex given.  '
+                'All residues will be placed in first Segment',
+                UserWarning)
+
         top = Topology(n_atoms, n_residues, n_segments,
                        atom_resindex=atom_resindex,
                        residue_segindex=residue_segindex,
