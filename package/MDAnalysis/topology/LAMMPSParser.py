@@ -194,6 +194,9 @@ class DATAParser(TopologyReaderBase):
     def _interpret_atom_style(atom_style):
         """Transform a string description of atom style into a dict
 
+        Required fields: id, type, x, y, z
+        Optional fields: resid, charge
+
         eg: "id resid type charge x y z"
         {'id': 0,
          'resid': 1,
@@ -206,6 +209,8 @@ class DATAParser(TopologyReaderBase):
         """
         style_dict = {}
 
+        atom_style = atom_style.split()
+
         for attr in ['id', 'type', 'resid', 'charge', 'x', 'y', 'z']:
             try:
                 location = atom_style.index(attr)
@@ -214,8 +219,11 @@ class DATAParser(TopologyReaderBase):
             else:
                 style_dict[attr] = location
 
-        if not all(attr in style_dict for attr in ['x', 'y', 'z']):
-            raise ValueError("atom_style string missing position information")
+        reqd_attrs = ['id', 'type', 'x', 'y', 'z']
+        missing_attrs = [attr for attr in reqd_attrs if attr not in style_dict]
+        if missing_attrs:
+            raise ValueError("atom_style string missing required field(s): {}"
+                             "".format(', '.join(missing_attrs)))
                 
         return style_dict
     
@@ -239,10 +247,17 @@ class DATAParser(TopologyReaderBase):
         except KeyError:
             masses = None
 
+        if 'Atoms' not in sects:
+            raise ValueError("Data file was missing Atoms section")
+
         try:
             top = self._parse_atoms(sects['Atoms'], masses)
-        except KeyError:
-            raise ValueError("Data file was missing Atoms section")
+        except:
+            raise ValueError(
+                "Failed to parse atoms section.  You can supply a description "
+                "of the atom_style as a keyword argument, "
+                "eg mda.Universe(..., atom_style='id resid x y z')"
+            )
 
         # create mapping of id to index (ie atom id 10 might be the 0th atom)
         mapping = {atom_id: i for i, atom_id in enumerate(top.ids.values)}
@@ -284,8 +299,8 @@ class DATAParser(TopologyReaderBase):
 
         try:
             positions, ordering = self._parse_pos(sects['Atoms'])
-        except KeyError:
-            raise IOError("Position information not found")
+        except KeyError as k:
+            raise IOError("Position information not found: {}".format(k))
 
         if 'Velocities' in sects:
             velocities = self._parse_vel(sects['Velocities'], ordering)
@@ -419,11 +434,15 @@ class DATAParser(TopologyReaderBase):
             sd = self.style_dict
 
         has_charge = 'charge' in sd
+        has_resid = 'resid' in sd
 
         # atom ids aren't necessarily sequential
         atom_ids = np.zeros(n_atoms, dtype=np.int32)
         types = np.zeros(n_atoms, dtype=object)
-        resids = np.zeros(n_atoms, dtype=np.int32)
+        if has_resid:
+            resids = np.zeros(n_atoms, dtype=np.int32)
+        else:
+            resids = np.ones(n_atoms, dtype=np.int32)
         if has_charge:
             charges = np.zeros(n_atoms, dtype=np.float32)
 
@@ -434,7 +453,8 @@ class DATAParser(TopologyReaderBase):
             # so just pass the raw strings
             # and let numpy handle the conversion
             atom_ids[i] = line[sd['id']]
-            resids[i] = line[sd['resid']]
+            if has_resid:
+                resids[i] = line[sd['resid']]
             types[i] = line[sd['type']]
             if has_charge:
                 charges[i] = line[sd['charge']]
@@ -447,7 +467,8 @@ class DATAParser(TopologyReaderBase):
         order = np.argsort(atom_ids)
         atom_ids = atom_ids[order]
         types = types[order]
-        resids = resids[order]
+        if has_resid:
+            resids = resids[order]
         if has_charge:
             charges = charges[order]
 
