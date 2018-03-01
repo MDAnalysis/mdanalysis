@@ -33,7 +33,7 @@ set -o errexit -o nounset
 SCRIPT=$(basename $0)
 
 DOWNLOAD_URL_LINUX='http://www.holeprogram.org/downloads/2.2.004/hole2-NotForProfit-2.2.004-Linux-i686.tar.gz'
-TARFILE_LINUX='hole2-NotForProfit-2.2.004-Linux-x86_64.tar.gz'
+TARFILE_LINUX=hole2-NotForProfit-2.2.004-Linux-i686.tar.gz
 
 DOWNLOAD_URL_DARWIN='http://www.holeprogram.org/downloads/2.2.004/hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz'
 TARFILE_DARWIN=hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz
