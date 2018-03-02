@@ -32,12 +32,6 @@ set -o errexit -o nounset
 
 SCRIPT=$(basename $0)
 
-<<<<<<< HEAD
-DOWNLOAD_URL_LINUX='https://www.dropbox.com/s/jukpwlohhi20r17/hole2-NotForProfit-2.2.004-Linux-x86_64.tar.gz?dl=1'
-TARFILE_LINUX='hole2-NotForProfit-2.2.004-Linux-x86_64.tar.gz'
-
-=======
-
 # We still use the 2.2004 versions (academic only) because
 # for the v2.2005 (Apache license) there are no pre-compiled binaries
 # available at http://www.holeprogram.org/ as of 2018-02-22
@@ -47,12 +41,12 @@ DOWNLOAD_URL_LINUX='https://www.dropbox.com/s/jukpwlohhi20r17/hole2-NotForProfit
 TARFILE_LINUX='hole2-NotForProfit-2.2.004-Linux-x86_64.tar.gz'
 
 # could switch to http://www.holeprogram.org/downloads/2.2.004/hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz
->>>>>>> refs/remotes/origin/develop
 DOWNLOAD_URL_DARWIN='https://www.dropbox.com/s/5mzrsyp48i32je4/hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz?dl=1'
 TARFILE_DARWIN=hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz
 
 # path to dir with executables in the current HOLE distribution
 HOLE_EXE_DIR=hole2/exe
+
 
 function die () {
     local msg="$1" err=$2
