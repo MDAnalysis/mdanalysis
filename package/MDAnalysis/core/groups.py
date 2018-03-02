@@ -2007,6 +2007,8 @@ class AtomGroup(GroupBase):
            Updating selections now possible by setting the ``updating`` argument.
         .. versionadded:: 0.17.0
            Added *moltype* and *molnum* selections.
+        .. versionchanged:: 0.17.1
+           Added *cylayer* and *cyzone* selections.
 
         """
         updating = selgroups.pop('updating', False)
