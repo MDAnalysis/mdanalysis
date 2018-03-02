@@ -56,8 +56,8 @@ def guess_masses(atom_types):
 def validate_atom_types(atom_types):
     """Vaildates the atom types based on whether they are available in our tables
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     atom_types
       Type of each atom
 
