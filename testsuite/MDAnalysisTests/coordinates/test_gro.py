@@ -420,7 +420,7 @@ def test_growriter_resid_truncation():
     assert line.startswith('56789UNK')
 
 class TestGrowriterReindex(object):
-    @pytest.fixture
+    @pytest.fixture(scope='class')
     def u():
         gro = '''test
 1
