@@ -1924,10 +1924,6 @@ class AtomGroup(GroupBase):
                 cylinder of external radius 15 centered on the COG. In z, the
                 cylinder extends from 4 above the COG to 8 below. Positive
                 values for *zMin*, or negative ones for *zMax*, are allowed.
-                .. versionchanged:: 0.10.0
-                   keywords *cyzone* and *cylayer* now take *zMax* and *zMin*
-                   to be relative to the COG of *selection*, instead of
-                   absolute z-values in the box.
 
         **Connectivity**
 
