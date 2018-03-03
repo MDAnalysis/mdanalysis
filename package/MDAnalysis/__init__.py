@@ -200,3 +200,29 @@ from .coordinates.core import writer as Writer
 from .coordinates.MMTF import fetch_mmtf
 
 from .migration.ten2eleven import ten2eleven
+
+from .due import due, Doi, BibTeX
+
+due.cite(BibTeX((
+            "@inproceedings{gowers2016,"
+            "title={MDAnalysis: A Python package for the rapid analysis"
+            "of molecular dynamics simulations}," 
+            "author={R. J. Gowers and M. Linke and"
+            "J. Barnoud and T. J. E. Reddy and M. N. Melo"
+            "and S. L. Seyler and D. L. Dotson and J. Domanski and"
+            "S. Buchoux and I. M. Kenney and O. Beckstein},"
+            "journal={Proceedings of the 15th Python in Science Conference},"
+            "pages={102-109},"
+            "year={2016},"
+            "editor={In S. Benthall and S. Rostrup},"
+            "note={Austin, TX, SciPy.}"
+            "}"
+            )), 
+            description="Gowers 2016", path="MDAnalysis/", cite_module=True)
+due.cite(Doi("10.1002/jcc.21787"),
+         description="MDAnalysis : A Toolkit for the Analysis"
+         "of Molecular Dynamics Simulations,"
+         "J. Comput. Chem. 32 (2011), 2319-2327",
+         path="MDAnalysis/",cite_module=True)
+
+
