@@ -419,9 +419,10 @@ def test_growriter_resid_truncation():
     # larger digits should get truncated
     assert line.startswith('56789UNK')
 
+@tempdir.run_in_tempdir()
 class TestGrowriterReindex(object):
-    @pytest.fixture(scope='class')
-    def u():
+    @pytest.fixture()
+    def u(self):
         gro = '''test
 1
     2CL      CL20850   0.000   0.000   0.000
@@ -430,9 +431,8 @@ class TestGrowriterReindex(object):
         u.atoms[0].id = 3
         return u
 
-    @tempdir.run_in_tempdir()
-    def test_growriter_resid_true(self):
-        u().atoms.write('temp.gro', reindex=True)
+    def test_growriter_resid_true(self, u):
+        u.atoms.write('temp.gro', reindex=True)
 
         with open('temp.gro', 'r') as grofile:
             grofile.readline()
@@ -440,29 +440,26 @@ class TestGrowriterReindex(object):
             line = grofile.readline()
         assert line.startswith('    2CL      CL    1')
 
-    @tempdir.run_in_tempdir()
-    def test_growriter_resid_false(self):
-        u().atoms.write('temp.gro', reindex=False)
+    def test_growriter_resid_false(self, u):
+        u.atoms.write('temp.gro', reindex=False)
         with open('temp.gro', 'r') as grofile:
             grofile.readline()
             grofile.readline()
             line = grofile.readline()
         assert line.startswith('    2CL      CL    3')
 
-    @tempdir.run_in_tempdir()
-    def test_writer_resid_false(self):
+    def test_writer_resid_false(self, u):
         with mda.Writer('temp.gro', reindex=False) as w:
-            w.write(u().atoms)
+            w.write(u.atoms)
         with open('temp.gro', 'r') as grofile:
             grofile.readline()
             grofile.readline()
             line = grofile.readline()
         assert line.startswith('    2CL      CL    3')
 
-    @tempdir.run_in_tempdir()
-    def test_writer_resid_true(self):
+    def test_writer_resid_true(self, u):
         with mda.Writer('temp.gro', reindex=True) as w:
-            w.write(u().atoms)
+            w.write(u.atoms)
         with open('temp.gro', 'r') as grofile:
             grofile.readline()
             grofile.readline()
