@@ -13,6 +13,7 @@
     // benchmarked
     "repo": "..",
     "dvcs": "git",
+    "repo_subdir":"package",
     "branches": ["develop"],
 
     // The base URL to show information about a particular commit.
