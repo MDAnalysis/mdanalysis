@@ -92,18 +92,18 @@ import warnings
 import MDAnalysis
 import sys
 
-# When used in an MPI environment, importing MDAnalysis may trigger an MPI
-# warning because importing the uuid module triggers a call to os.fork().
-# This happens if MPI_Init() has been called prior to importing MDAnalysis.
-# The problem is actually caused by the uuid module and not by MDAnalysis
-# itself. Python 3.7 fixes the problem. However, for Python < 3.7, the uuid
-# module works perfectly fine with os.fork() disabled during import.
-# A clean solution is therefore simply to disable os.fork() prior to
-# importing the uuid module and to re-enable it afterwards.
-if sys.version_info[0] + 0.1 * sys.version_info[1] >= 3.7:
+# When used in an MPI environment with Infiniband, importing MDAnalysis may
+# trigger an MPI warning because importing the uuid module triggers a call to
+# os.fork(). This happens if MPI_Init() has been called prior to importing
+# MDAnalysis. The problem is actually caused by the uuid module and not by
+# MDAnalysis itself. Python 3.7 fixes the problem. However, for Python < 3.7,
+# the uuid module works perfectly fine with os.fork() disabled during import.
+# A clean solution is therefore simply to disable os.fork() prior to importing
+# the uuid module and to re-enable it afterwards.
+import os
+if sys.version_info >= (3, 7):
     import uuid
 else:
-    import os
     _os_dot_fork, os.fork = os.fork, None
     import uuid
     os.fork = _os_dot_fork
