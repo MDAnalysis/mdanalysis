@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de, orbeckst,
-         xiki-tempula, navyakhare
+         xiki-tempula, navyakhare, zemanj
 
   * 0.17.1
 
@@ -33,6 +33,8 @@ Enhancements
   * Added periodic boundary condition option to HydrogenBondAnalysis (Issue #1188)
 
 Fixes
+  * Fixed MPI fork() warning when importing MDAnalysis in an Infiniband-enabled
+    MPI environment (PR #1794)
   * Fixed waterdynamics SurvivalProbability ignoring the t0 start time
     (Issue #1759)
   * AtomGroup.dimensions now strictly returns a copy (Issue #1582)
