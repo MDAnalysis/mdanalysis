@@ -6,6 +6,7 @@ branches:
   only:
     - master
     - develop
+    - add-test-reporting
 
 os:
   linux
@@ -22,7 +23,7 @@ env:
     - PYTHON_VERSION=3.5
     - BUILD_DOCS=false
     - COVERALLS=false
-    - PYTEST_FLAGS="--disable-pytest-warnings --numprocesses 2 --durations=50"
+    - PYTEST_FLAGS="--disable-pytest-warnings --numprocesses 2 --durations=50  --junitxml=testresults.xml" 
     - PYTEST_LIST="testsuite/MDAnalysisTests"
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
@@ -44,7 +45,7 @@ env:
     - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
 matrix:
-  fast_finish: true
+  fast_finish: false
   include:
     - env: NAME="Doc"
            MAIN_CMD="cd package && python setup.py"
@@ -83,7 +84,15 @@ before_install:
         command curl -sSL https://rvm.io/mpapis.asc | gpg --import -;
         rvm get head || true
      fi
-
+  - mkdir -p $HOME/bin
+  - |
+    if [[ "${TRAVIS_OS_NAME}" = "osx" ]]; then
+      curl -fsSL https://testspace-client.s3.amazonaws.com/testspace-darwin.tgz | tar -zxvf- -C $HOME/bin;
+    else
+      curl -fsSL https://testspace-client.s3.amazonaws.com/testspace-linux.tgz | tar -zxvf- -C $HOME/bin;
+    fi
+  - testspace config url $TS_ORG.testspace.com
+  
 install:
   # download hole first to use system curl
   # additional external tools (Issue #898) -- HOLE
@@ -103,6 +112,15 @@ script:
   - echo $MAIN_CMD $SETUP_CMD
   - eval $MAIN_CMD $SETUP_CMD
 
+after_script:
+  - if [[ -z ${NAME} ]] && [[ ${NUMPY_VERSION} == 'stable' ]]; then
+      testspace [${TRAVIS_OS_NAME}/py${PYTHON_VERSION}]testresults.xml{testsuite/MDAnalysisTests};
+    elif  [[ ${NUMPY_VERSION} =~ [0-9] ]]; then
+      testspace [${TRAVIS_OS_NAME}/py${PYTHON_VERSION}-numpy${NUMPY_VERSION}]testresults.xml{testsuite/MDAnalysisTests};
+    elif  [[ ${NAME} == 'minimal' ]]; then
+      testspace [${TRAVIS_OS_NAME}/py${PYTHON_VERSION}-minimal]testresults.xml{testsuite/MDAnalysisTests};
+   fi
+     
 after_success:
   - |
     if [[ $COVERALLS == 'true' ]]; then \
