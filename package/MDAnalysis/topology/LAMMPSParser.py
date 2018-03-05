@@ -24,13 +24,13 @@
 LAMMPSParser
 ============
 
-Parses data files_ produced by LAMMPS_.
+Parses data_ files produced by LAMMPS_.
 
 .. _LAMMPS: http://lammps.sandia.gov/
-.. _files DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
+.. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
 
 
-.. _atom_style:
+.. _atom_style_kwarg:
 
 Atom styles
 -----------
@@ -178,7 +178,7 @@ class DATAParser(TopologyReaderBase):
 
     By default the parser expects either *atomic* or *full* `atom_style`
     however this can be by passing an `atom_style` keyword argument,
-    see :ref:`atom_style`.
+    see :ref:`atom_style_kwarg`.
 
     .. versionadded:: 0.9.0
     """

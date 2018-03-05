@@ -49,7 +49,7 @@ Data file formats
 -----------------
 
 By default either the `atomic` or `full` atom styles are expected,
-however this can be customised, see :ref:`atom_style`.
+however this can be customised, see :ref:`atom_style_kwarg`.
 
 
 Example: Loading a LAMMPS simulation
