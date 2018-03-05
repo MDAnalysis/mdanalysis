@@ -329,8 +329,8 @@ class DATAParser(TopologyReaderBase):
 
         try:
             positions, ordering = self._parse_pos(sects['Atoms'])
-        except KeyError as k:
-            raise IOError("Position information not found: {}".format(k))
+        except KeyError as err:
+            raise IOError("Position information not found: {}".format(err))
 
         if 'Velocities' in sects:
             velocities = self._parse_vel(sects['Velocities'], ordering)
