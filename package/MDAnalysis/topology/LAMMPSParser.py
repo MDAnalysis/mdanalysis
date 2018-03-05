@@ -304,7 +304,8 @@ class DATAParser(TopologyReaderBase):
 
         return top
 
-    def read_DATA_timestep(self, n_atoms, TS_class, TS_kwargs, atom_style):
+    def read_DATA_timestep(self, n_atoms, TS_class, TS_kwargs,
+                           atom_style=None):
         """Read a DATA file and try and extract x, v, box.
 
         - positions
@@ -314,6 +315,8 @@ class DATAParser(TopologyReaderBase):
         Fills this into the Timestep object and returns it
 
         .. versionadded:: 0.9.0
+        .. versionchanged:: 0.17.1
+           Added atom_style kwarg
         """
         if atom_style is None:
             self.style_dict = None
