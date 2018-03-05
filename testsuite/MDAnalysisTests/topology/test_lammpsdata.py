@@ -24,6 +24,7 @@ from __future__ import absolute_import
 import pytest
 from numpy.testing import assert_equal
 import numpy as np
+from six import StringIO
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
@@ -174,3 +175,65 @@ class TestLAMMPSDeletedAtoms(LammpsBase):
                                [12.9834518433, 51.1562423706, 18.9713554382],
                                [12.6588821411, 51.4160842896, 20.5548400879]],
                               dtype=np.float32))
+
+
+LAMMPS_NORESID = """\
+LAMMPS data file via write_data, version 11 Aug 2017, timestep = 0
+
+1 atoms
+1 atom types
+
+0.0000000000000000e+00 4.3008000000000003e+01 xlo xhi
+0.0000000000000000e+00 4.3008000000000003e+01 ylo yhi
+0.0000000000000000e+00 4.3008000000000003e+01 zlo zhi
+
+Masses
+
+1 28
+
+Pair Coeffs # lj/cut
+
+1 0.1892 3.75
+
+Atoms # atomic
+
+1 1 3.7151744275286681e+01 1.8684434743140471e+01 1.9285127961842125e+01 0 0 0
+"""
+
+def test_noresid():
+    u = mda.Universe(StringIO(LAMMPS_NORESID), format='data',
+                     atom_style='id type x y z')
+    assert len(u.atoms) == 1
+
+    assert_equal(u.atoms[0].mass, 28.0)
+    assert_equal(u.atoms.positions,
+                 np.array([[3.7151744275286681e+01,
+                            1.8684434743140471e+01,
+                            1.9285127961842125e+01]], dtype=np.float32))
+
+def test_noresid_failure():
+    with pytest.raises(
+            ValueError,
+            match='.+?You can supply a description of the atom_style.+?',
+    ):
+        u = mda.Universe(StringIO(LAMMPS_NORESID), format='data')
+
+
+def test_interpret_atom_style():
+    style = mda.topology.LAMMPSParser.DATAParser._interpret_atom_style(
+        'id charge type z y x')
+
+    assert isinstance(style, dict)
+    assert style['id'] == 0
+    assert style['type'] == 2
+    assert style['charge'] == 1
+    assert style['x'] == 5
+    assert style['y'] == 4
+    assert style['z'] == 3
+
+
+def test_interpret_atom_style_missing():
+    with pytest.raises(ValueError,
+                       match='atom_style string missing required.+?'):
+        style = mda.topology.LAMMPSParser.DATAParser._interpret_atom_style(
+            'id charge z y x')
