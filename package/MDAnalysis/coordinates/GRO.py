@@ -28,6 +28,26 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 `GRO format`_ which includes a conversion routine for the box.
 
 
+Writing GRO files
+-----------------
+
+By default any written GRO files will renumber the atom ids to move sequentially
+from 1.  This can be disabled, and instead the original atom ids kept, by
+using the `reindex=False` keyword argument.  This is useful when writing a
+subsection of a larger Universe while wanting to preserve the original
+identities of atoms.
+
+For example::
+
+   >>> u = mda.Universe()`
+
+   >>> u.atoms.write('out.gro', reindex=False)
+
+   # OR
+   >>> with mda.Writer('out.gro', reindex=False) as w:
+   ...     w.write(u.atoms)
+
+
 Classes
 -------
 
@@ -248,19 +268,8 @@ class GROWriter(base.WriterBase):
        use `Timestep.triclinic_dimensions` instead.
        Now now writes velocities where possible.
     .. versionchanged:: 0.17.1
-       Now user can choose to write gro file with specified atom ids.
-       The default option is to reindex all the atoms starting from 1.
-       However, this behaviour can be turned off by specifying `reindex=False`.
-       `u = mda.Universe()`
-
-       Usage 1:
-       `u.atoms.write('out.gro', reindex=False)`
-
-       Usage 2:
-       ```
-       with mda.Writer('out.gro', reindex=False) as w:
-           w.write(u.atoms)
-       ```
+       Added `reindex` keyword argument to allow original atom
+       ids to be kept.
     """
 
     format = 'GRO'
