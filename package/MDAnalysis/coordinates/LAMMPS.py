@@ -45,6 +45,13 @@ keywords *timeunit* and/or *lengthunit* to :class:`DCDWriter` and
 :class:`~MDAnalysis.core.universe.Universe` (which then calls
 :class:`DCDReader`).
 
+Data file formats
+-----------------
+
+By default either the `atomic` or `full` atom styles are expected,
+however this can be customised, see :ref:`atom_style`.
+
+
 Example: Loading a LAMMPS simulation
 ------------------------------------
 

@@ -24,9 +24,39 @@
 LAMMPSParser
 ============
 
-Parses data files for LAMMPS_.
+Parses data files_ produced by LAMMPS_.
 
 .. _LAMMPS: http://lammps.sandia.gov/
+.. _files DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
+
+
+.. _atom_style:
+
+Atom styles
+-----------
+
+By default parsers and readers for Lammps data files expect either an
+*atomic* or *full* `atom_style`_.  This can be customised by passing
+the `atom_style` keyword argument.  This should be a space separated
+string indicating the position of the `id`, `type`, `resid`, `charge`,
+`x`, `y` and `z` fields.  The `resid` and `charge` fields are optional
+and any other specified field will be ignored.
+
+For example to read a file with the following format, where there is no resid::
+
+  Atoms # atomic
+
+  1 1 3.7151744275286681e+01 1.8684434743140471e+01 1.9285127961842125e+01 0 0 0
+
+
+The following code could be used::
+
+  >>> import MDAnalysis as mda
+  >>>
+  >>> u = mda.Universe('myfile.data', atom_style='id type x y z')
+
+
+.. _`atom_style`: http://lammps.sandia.gov/doc/atom_style.html
 
 Classes
 -------
@@ -140,18 +170,15 @@ HEADERS = set([
 class DATAParser(TopologyReaderBase):
     """Parse a LAMMPS DATA file for topology and coordinates.
 
-    Note that LAMMPS_ DATA files can be used standalone.
+    Note that LAMMPS DATA files can be used standalone.
 
     Both topology and coordinate parsing functionality is kept in this
     class as the topology and coordinate reader share many common
     functions
 
-    The parser implements the `LAMMPS DATA file format`_ but only for
-    the LAMMPS `atom_style`_ *full* (numeric ids 7, 10) and
-    *molecular* (6, 9).
-
-    .. _LAMMPS DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
-    .. _`atom_style`: http://lammps.sandia.gov/doc/atom_style.html
+    By default the parser expects either *atomic* or *full* `atom_style`
+    however this can be by passing an `atom_style` keyword argument,
+    see :ref:`atom_style`.
 
     .. versionadded:: 0.9.0
     """
