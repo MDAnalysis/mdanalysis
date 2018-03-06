@@ -13,9 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de, orbeckst,     
-         navyakhare, Zhiyi Wu
-
+mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de, orbeckst,
+         xiki-tempula, navyakhare
 
   * 0.17.1
 
@@ -32,6 +31,7 @@ Enhancements
   * Can now pass 'atom_style' keyword argument when parsing Lammps Data files
     to specify what is on each line.  Eg atom_style = 'id type charge x y z'
     (Issue #1791)
+  * Added periodic boundary condition option to HydrogenBondAnalysis (Issue #1188)
 
 
 Fixes
