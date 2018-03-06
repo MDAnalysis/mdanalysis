@@ -301,7 +301,6 @@ def distance_array(reference, configuration, box=None, result=None, backend="ser
     return distances
 
 
-
 def self_distance_array(reference, box=None, result=None, backend="serial"):
     """Calculate all distances within a configuration *reference*.
 
@@ -594,7 +593,6 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     return distances
 
 
-
 def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="serial"):
     """
     Calculates the angle formed between three atoms, over a list of coordinates.
@@ -827,7 +825,6 @@ def apply_PBC(incoords, box, backend="serial"):
 
     coordnum = coords.shape[0]
 
-    
     # determine boxtype
     boxtype = _box_check(box)
     # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
