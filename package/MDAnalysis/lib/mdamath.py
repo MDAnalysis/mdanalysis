@@ -45,7 +45,6 @@ import numpy as np
 from ..exceptions import NoDataError
 
 
-
 # geometric functions
 def norm(v):
     r"""Calculate the norm of a vector v.
