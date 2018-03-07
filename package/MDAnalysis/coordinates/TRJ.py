@@ -459,7 +459,7 @@ class NCDFReader(base.ReaderBase):
     _Timestep = Timestep
 
     def __init__(self, filename, n_atoms=None, **kwargs):
-        self._mmap = kwargs.pop('mmap', False)
+        self._mmap = kwargs.pop('mmap', None)
 
         super(NCDFReader, self).__init__(filename, **kwargs)
 

@@ -84,9 +84,48 @@ class _NCDFReaderTest(_TRJReaderTest):
         with pytest.raises(IOError):
             universe.trajectory.__getitem__(2)
 
+    def test_mmap_kwarg(self, universe):
+        # default is None
+        assert universe.trajectory._mmap == None
+
+
+# Ugly way to create the tests for mmap
+
+class _NCDFReaderTest_mmap_None(_NCDFReaderTest):
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(self.topology, self.filename, mmap=None)
+
+class _NCDFReaderTest_mmap_True(_NCDFReaderTest):
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(self.topology, self.filename, mmap=True)
+
+    def test_mmap_kwarg(self, universe):
+        # default is None
+        assert universe.trajectory._mmap == True
+
+class _NCDFReaderTest_mmap_False(_NCDFReaderTest):
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(self.topology, self.filename, mmap=False)
+
+    def test_mmap_kwarg(self, universe):
+        assert universe.trajectory._mmap == False
+
 
 class TestNCDFReader(_NCDFReaderTest, RefVGV):
     pass
+
+class TestNCDFReader_mmap_None(_NCDFReaderTest_mmap_None, RefVGV):
+    pass
+
+class TestNCDFReader_mmap_True(_NCDFReaderTest_mmap_True, RefVGV):
+    pass
+
+class TestNCDFReader_mmap_False(_NCDFReaderTest_mmap_False, RefVGV):
+    pass
+
 
 
 class TestNCDFReaderTZ2(_NCDFReaderTest, RefTZ2):
