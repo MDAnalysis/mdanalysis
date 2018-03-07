@@ -46,7 +46,9 @@ Fixes
   * AMBER netcdf reader now defaults to mmap=None as described in the docs
     (meaning mmap=True for files and NOT in memory), thus avoiding
     memory problems on big trajectories (Issue #1807)
-  
+  * analysis.align: fixed output and catch more cases with
+    SelectionError when selections are incompatible (Issue #1809)
+
         
 Changes
   * scipy >= 1.0.0 is now required (issue #1775 because of PR #1758)

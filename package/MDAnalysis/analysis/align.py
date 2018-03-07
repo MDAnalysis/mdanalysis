@@ -1046,7 +1046,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 logger.error(msg)
                 raise SelectionError(msg)
 
-            # continue with trying to creating a valid selection
+            # continue with trying to create a valid selection
             msg += ("\nbut we attempt to create a valid selection " +
                     "(use strict=True to disable this heuristic).")
             logger.info(msg)
@@ -1117,6 +1117,8 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
             _ag1 = get_atoms_byres(ag1)
             _ag2 = get_atoms_byres(ag2)
 
+            assert _ag1.atoms.n_atoms == _ag2.atoms.n_atoms
+
             # diagnostics
             # (ugly workaround for missing boolean indexing of AtomGroup)
             # note: ag[arange(len(ag))[boolean]] is ~2x faster than
@@ -1141,7 +1143,19 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 logger.error(errmsg)
                 raise SelectionError(errmsg)
 
-    mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
+    # check again because the residue matching heuristic is not very
+    # good and can easily be misled (e.g., when one of the selections
+    # had fewer atoms but the residues in mobile and reference have
+    # each the same number)
+    try:
+        mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
+    except ValueError:
+        errmsg = ("Failed to find matching atoms: len(reference) = {}, len(mobile) = {} " +
+                  "Try to improve your selections for mobile and reference.").format(
+                      ag1.n_atoms, ag2.n_atoms)
+        logger.error(errmsg)
+        raise SelectionError(errmsg)
+
     if np.any(mass_mismatches):
         # Test 2 failed.
         # diagnostic output:
