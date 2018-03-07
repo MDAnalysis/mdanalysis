@@ -23,7 +23,6 @@ from __future__ import absolute_import, print_function
 import sys
 import os
 import subprocess
-
 """Test if importing MDAnalysis has unwanted side effects (PR #1794)."""
 
 class TestMDAImport(object):
