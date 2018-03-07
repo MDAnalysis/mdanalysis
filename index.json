@@ -1,0 +1,1993 @@
+{
+    "benchmarks": {
+        "GRO.GROReadBench.time_read_GRO_file": {
+            "code": "class GROReadBench:\n    def time_read_GRO_file(self):\n        \"\"\"Benchmark reading of standard test\n        suite GRO file.\n        \"\"\"\n        GROReader(GRO)",
+            "goal_time": 0.1,
+            "name": "GRO.GROReadBench.time_read_GRO_file",
+            "number": 0,
+            "param_names": [],
+            "params": [],
+            "pretty_name": "GRO.GROReadBench.time_read_GRO_file",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "2abb6fac26984d3cc4cee1b56b630a1e89a527336aa1795c49a9dadef130db3e",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_angle": {
+            "code": "class AtomGroupAttrsBench:\n    def time_angle(self, num_atoms):\n        \"\"\"Benchmark simple angle\n        calculation. Requires ag\n        with three atoms.\n        \"\"\"\n        self.ag[:3].angle\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_angle",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_angle",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "a83a2ce99c0673f57ac3eac16b49a9db026ae64b6fcaa4389bf47eed59124dbb",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_atomcount": {
+            "code": "class AtomGroupAttrsBench:\n    def time_atomcount(self, num_atoms):\n        \"\"\"Benchmark counting of atoms in\n        atomgroup.\n        \"\"\"\n        self.ag.n_atoms\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_atomcount",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_atomcount",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "d31f8341e31a7bc198133f258c72536b54ec904f97ac4f28a767f9970856818a",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_atoms": {
+            "code": "class AtomGroupAttrsBench:\n    def time_atoms(self, num_atoms):\n        \"\"\"Benchmark returning of identical\n        atomgroup.\n        \"\"\"\n        self.ag.atoms\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_atoms",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_atoms",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "6cd2f945901dc324d1dabcb388bc3fe0c3b5977d49056e5d7a7859c40e2c9af8",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_bond": {
+            "code": "class AtomGroupAttrsBench:\n    def time_bond(self, num_atoms):\n        \"\"\"Benchmark Bond object creation.\n        Requires ag of size 2.\n        \"\"\"\n        self.ag[:2].bond\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_bond",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_bond",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "3507b8355b5b01697e086a646c559412d09fde51fc7139f4524f7cb58aa7ae67",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_dihedral": {
+            "code": "class AtomGroupAttrsBench:\n    def time_dihedral(self, num_atoms):\n        \"\"\"Benchmark Dihedral object\n        creation time. Requires ag of\n        size 4.\n        \"\"\"\n        self.ag[:4].dihedral\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_dihedral",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_dihedral",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "5775f1a2f7666febcc47f94b77702bd75a2a7ccd7c9044265c965dbad779a351",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_forces": {
+            "code": "class AtomGroupAttrsBench:\n    def time_forces(self, num_atoms):\n        \"\"\"Benchmark atomgroup force\n        calculation.\n        \"\"\"\n        try:\n            self.ag.forces\n        except NoDataError:\n            pass\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_forces",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_forces",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "0186fc73e76b8e3f8cb39e7e11f7c6e9837d800b2379b14591432ee9e710d69e",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_improper": {
+            "code": "class AtomGroupAttrsBench:\n    def time_improper(self, num_atoms):\n        \"\"\"Benchmark improper dihedral\n        calculation. Requires ag of size\n        4.\n        \"\"\"\n        self.ag[:4].improper\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_improper",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_improper",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "d7ba217b21841225ff1df0b473d66794db6b2c92c56bbb3cb04c042fb43e967c",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_indices": {
+            "code": "class AtomGroupAttrsBench:\n    def time_indices(self, num_atoms):\n        \"\"\"Benchmark atom index calculation.\n        \"\"\"\n        self.ag.ix\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_indices",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_indices",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "8a27cd7f019ca3f35aa37d112e72f6b0311c37dee14a33adff3dffd8b6ee2602",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_positions": {
+            "code": "class AtomGroupAttrsBench:\n    def time_positions(self, num_atoms):\n        \"\"\"Benchmark returning the positions\n        of the atoms in the group.\n        \"\"\"\n        self.ag.positions\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_positions",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_positions",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "7f538e5ccf7c68b715cb9ba1f0a85764faa5e09216ba83be3b88804f26504dcd",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_residuecount": {
+            "code": "class AtomGroupAttrsBench:\n    def time_residuecount(self, num_atoms):\n        \"\"\"Benchmark counting of residues in\n        atomgroup.\n        \"\"\"\n        self.ag.n_residues\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_residuecount",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_residuecount",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "6ba8023af1d40da84022b2eba1e494b20eb80d1257fa5beabc2206f8d380b237",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_residues": {
+            "code": "class AtomGroupAttrsBench:\n    def time_residues(self, num_atoms):\n        \"\"\"Benchmark creation of the ResidueGroup\n        from the AtomGroup.\n        \"\"\"\n        self.ag.residues\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_residues",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_residues",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "72655f2bf91db254ada1b26646da826894a223384a4691f99b06b291107b938e",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_segmentcount": {
+            "code": "class AtomGroupAttrsBench:\n    def time_segmentcount(self, num_atoms):\n        \"\"\"Benchmark counting of segments in\n        atomgroup.\n        \"\"\"\n        self.ag.n_segments\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_segmentcount",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_segmentcount",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "ea9ccc59b78a3786c8ed142a014c476162b2d37437c8f93a4b05644dd851aede",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_segments": {
+            "code": "class AtomGroupAttrsBench:\n    def time_segments(self, num_atoms):\n        \"\"\"Benchmark determination of sorted\n        SegmentGroup from AtomGroup.\n        \"\"\"\n        self.ag.segments\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_segments",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_segments",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "ec21432839b2caac695337844d8b3feff546e74083cc61d846692523160bcf70",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_ts": {
+            "code": "class AtomGroupAttrsBench:\n    def time_ts(self, num_atoms):\n        \"\"\"Benchmark returning of a timestep\n        instance from atomgroup.\n        \"\"\"\n        self.ag.ts\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_ts",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_ts",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "0aadba3b29a020c1edbc55253049c8f9dc252759321e51f110ca895d99ce52a6",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_unique": {
+            "code": "class AtomGroupAttrsBench:\n    def time_unique(self, num_atoms):\n        \"\"\"Benchmark determination of unique\n        elements in atomgroup.\n        \"\"\"\n        self.ag.unique\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_unique",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_unique",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "1c2345530d78545ab7011e17420325ec0f2b12a472ade667a7253fd672a06f70",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupAttrsBench.time_velocity": {
+            "code": "class AtomGroupAttrsBench:\n    def time_velocity(self, num_atoms):\n        \"\"\"Benchmark atomgroup velocity\n        values return.\n        \"\"\"\n        try:\n            self.ag.velocities\n        except NoDataError:\n            pass\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupAttrsBench.time_velocity",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupAttrsBench.time_velocity",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "3841e8cfb0518bdc257c0479f3844b8bdf80ee1e2bf7b2245ba4ba95533e2ce8",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_bbox_no_pbc": {
+            "code": "class AtomGroupMethodsBench:\n    def time_bbox_no_pbc(self, num_atoms):\n        \"\"\"Benchmark bounding box calculation\n        with pbc inactive.\n        \"\"\"\n        self.ag.bbox(pbc=False)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_bbox_no_pbc",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_bbox_no_pbc",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "b13f09f921e8d1b3547c3ae8fd0cb3b4fba4746e2535728f647b28e2d39e8771",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_bbox_pbc": {
+            "code": "class AtomGroupMethodsBench:\n    def time_bbox_pbc(self, num_atoms):\n        \"\"\"Benchmark bounding box calculation\n        with pbc active.\n        \"\"\"\n        self.ag.bbox(pbc=True)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_bbox_pbc",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_bbox_pbc",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "a18324c53c11b7aa21428889531395b23a6ed680df364d8870cf805125985b04",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_bsphere_no_pbc": {
+            "code": "class AtomGroupMethodsBench:\n    def time_bsphere_no_pbc(self, num_atoms):\n        \"\"\"Benchmark bounding sphere calculation\n        with pbc inactive.\n        \"\"\"\n        self.ag.bsphere(pbc=False)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_bsphere_no_pbc",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_bsphere_no_pbc",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "462159b20c380fd2a72f198e059dd75a604e2ad5251253524c7ee78f59b8d4a1",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_bsphere_pbc": {
+            "code": "class AtomGroupMethodsBench:\n    def time_bsphere_pbc(self, num_atoms):\n        \"\"\"Benchmark bounding sphere calculation\n        with pbc active.\n        \"\"\"\n        self.ag.bsphere(pbc=True)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_bsphere_pbc",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_bsphere_pbc",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "ca1199ef4aafadf534247b69dee706f1a509faccffab75deb23a743f3bc5e39f",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_center_no_pbc": {
+            "code": "class AtomGroupMethodsBench:\n    def time_center_no_pbc(self, num_atoms):\n        \"\"\"Benchmark center calculation with\n        pbc inactive.\n        \"\"\"\n        self.ag.center(weights=self.weights,\n                       pbc=False)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_center_no_pbc",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_center_no_pbc",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "a33f50328490f6b54e8ad57796bd6da48ce81e2af1d6ff7b6dc9ddb55270d612",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_center_pbc": {
+            "code": "class AtomGroupMethodsBench:\n    def time_center_pbc(self, num_atoms):\n        \"\"\"Benchmark center calculation with\n        pbc active.\n        \"\"\"\n        self.ag.center(weights=self.weights,\n                       pbc=True)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_center_pbc",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_center_pbc",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "5445ea28992842878e2e020cb920daa4b87f10ea68ba6abbdc379e69ecd29a5a",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_centroid_no_pbc": {
+            "code": "class AtomGroupMethodsBench:\n    def time_centroid_no_pbc(self, num_atoms):\n        \"\"\"Benchmark centroid calculation with\n        pbc inactive.\n        \"\"\"\n        self.ag.centroid(pbc=False)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_centroid_no_pbc",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_centroid_no_pbc",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "f941f327f6692f250060de8e3de49f414db194f030fa2f2e86b50a96f3d6f580",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_centroid_pbc": {
+            "code": "class AtomGroupMethodsBench:\n    def time_centroid_pbc(self, num_atoms):\n        \"\"\"Benchmark centroid calculation with\n        pbc active.\n        \"\"\"\n        self.ag.centroid(pbc=True)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_centroid_pbc",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_centroid_pbc",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "94e61928db6101dcb12bef8d8f0c21cc8e8eb805ddf2abd0096fa60dd6fda1a5",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_concatenate": {
+            "code": "class AtomGroupMethodsBench:\n    def time_concatenate(self, num_atoms):\n        \"\"\"Benchmark atomgroup concatenation.\n        \"\"\"\n        self.ag.concatenate(self.ag)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_concatenate",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_concatenate",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "08fff968d2569e3c626ab3f36d271b3cf297135df1817dc29466a74e9c5d5965",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_difference": {
+            "code": "class AtomGroupMethodsBench:\n    def time_difference(self, num_atoms):\n        \"\"\"Benchmark atomgroup difference\n        operation.\n        \"\"\"\n        self.ag.difference(self.ag)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_difference",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_difference",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "8f0b13fd7cae0a5a7a8cc9e415a0c6d58230410e7b84d4e74eb3fa8cdd4adf18",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_groupby": {
+            "code": "class AtomGroupMethodsBench:\n    def time_groupby(self, num_atoms):\n        \"\"\"Benchmark atomgroup groupby\n        operation.\n        \"\"\"\n        self.ag.groupby('resnames')\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_groupby",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_groupby",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "109267e4cf4a02b7e4460ce5e1de2eebaeadc77610a858512167fb377d68d212",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_guess_bonds": {
+            "code": "class AtomGroupMethodsBench:\n    def time_guess_bonds(self, num_atoms):\n        \"\"\"Benchmark atomgroup bond guessing\n        with artificially-seeded vdw values.\n        \"\"\"\n        self.ag.guess_bonds(self.vdwradii)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_guess_bonds",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_guess_bonds",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "95b590f48cef5cb4b4cc65ecb884482e1df985417494daba2225ba8bd2bf8b88",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_intersection": {
+            "code": "class AtomGroupMethodsBench:\n    def time_intersection(self, num_atoms):\n        \"\"\"Benchmark ag intersection.\n        \"\"\"\n        self.ag.intersection(self.ag)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_intersection",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_intersection",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "3007281b5a990c40e16f4d638bc27d207c0121ee4ae2bd559535e139906a7116",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_is_strict_subset": {
+            "code": "class AtomGroupMethodsBench:\n    def time_is_strict_subset(self, num_atoms):\n        \"\"\"Benchmark ag strict subset operation.\n        \"\"\"\n        self.ag.is_strict_subset(self.ag)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_is_strict_subset",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_is_strict_subset",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "07a48244c719831d730836e0d632ea051837548e8dcebf489cf83a7434fd3c70",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_is_strict_superset": {
+            "code": "class AtomGroupMethodsBench:\n    def time_is_strict_superset(self, num_atoms):\n        \"\"\"Benchmark ag strict superset operation.\n        \"\"\"\n        self.ag.is_strict_superset(self.ag)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_is_strict_superset",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_is_strict_superset",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "4509e22682291b68212a7d28d543479cf0eb06e2bdf24f4b1e56fcd101de33c4",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_isdisjoint": {
+            "code": "class AtomGroupMethodsBench:\n    def time_isdisjoint(self, num_atoms):\n        \"\"\"Benchmark disjoint operation between\n        atomgroups.\n        \"\"\"\n        self.ag.isdisjoint(self.ag)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_isdisjoint",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_isdisjoint",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "e820b56a4be332d95e85ffda08a25081a5804ae36c99d49e47944fe7ef0681f0",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_issubset": {
+            "code": "class AtomGroupMethodsBench:\n    def time_issubset(self, num_atoms):\n        \"\"\"Benchmark subset operation between\n        atomgroups.\n        \"\"\"\n        self.ag.issubset(self.ag)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_issubset",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_issubset",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "d7d2fb1a556412daacc0591250615f8f4edd560ddce907bc37b152119592510a",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_issuperset": {
+            "code": "class AtomGroupMethodsBench:\n    def time_issuperset(self, num_atoms):\n        \"\"\"Benchmark superset operation between\n        atomgroups.\n        \"\"\"\n        self.ag.issuperset(self.ag)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_issuperset",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_issuperset",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "da1b751a6ac0b844aafb5acb4524b855af9ac6d19a85e3bfe3aa5c7c584e1073",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_pack_into_box": {
+            "code": "class AtomGroupMethodsBench:\n    def time_pack_into_box(self, num_atoms):\n        \"\"\"Benchmark shifting atoms of ag\n        into primary unit cell, using\n        default parameters.\n        \"\"\"\n        self.ag.pack_into_box()\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_pack_into_box",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_pack_into_box",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "20dcad012b1c84cac6934e6c4589008df0db8dc5bed3d9634f6420e378f4d4a5",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_rotate": {
+            "code": "class AtomGroupMethodsBench:\n    def time_rotate(self, num_atoms):\n        \"\"\"Benchmark simple rotation operation\n        on atomgroup.\n        \"\"\"\n        self.ag.rotate(self.rot_matrix)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_rotate",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_rotate",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "4fcd69bfa4ccdcf7ec26b4668d209c0f68fb3fa1cd5ca45bd420ba21ebec4f50",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_rotateby": {
+            "code": "class AtomGroupMethodsBench:\n    def time_rotateby(self, num_atoms):\n        \"\"\"Benchmark rotation by an angle\n        of the ag coordinates.\n        \"\"\"\n        self.ag.rotateby(angle=45,\n                         axis=[1,0,0])\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_rotateby",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_rotateby",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "148d833401af66968dc752ff9a891a57a372b0ba8491e3abbec882424c940a5c",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_split": {
+            "code": "class AtomGroupMethodsBench:\n    def time_split(self, num_atoms):\n        \"\"\"Benchmark ag splitting into\n        multiple ags based on a simple\n        criterion.\n        \"\"\"\n        self.ag.split('residue')\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_split",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_split",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "2d9fbbd08120214f9a6c21a4399c753bbf34baf01a5272e3e0bd5ce83ccab090",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_subtract": {
+            "code": "class AtomGroupMethodsBench:\n    def time_subtract(self, num_atoms):\n        \"\"\"Benchmark ag subtraction.\n        \"\"\"\n        self.ag.subtract(self.ag)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_subtract",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_subtract",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "78fb61b55cffa02e23f514737586a4d9dbac9c7a0e817f7c6b461187b2c7698d",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_symmetric_difference": {
+            "code": "class AtomGroupMethodsBench:\n    def time_symmetric_difference(self, num_atoms):\n        \"\"\"Benchmark ag symmetric difference\n        operation.\n        \"\"\"\n        self.ag.symmetric_difference(self.ag)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_symmetric_difference",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_symmetric_difference",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "4bd141ea906565a91d77df06f55db7973acab6c8489d4a325a0230dd53e008e1",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_transform": {
+            "code": "class AtomGroupMethodsBench:\n    def time_transform(self, num_atoms):\n        \"\"\"Benchmark application of transformation\n        matrix to atomgroup.\n        \"\"\"\n        self.ag.transform(self.trans)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_transform",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_transform",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "71a463da6e9b33d39b18282bdbc7a2923e6222ea434ddf4ef6c81338cc2cf179",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_translate": {
+            "code": "class AtomGroupMethodsBench:\n    def time_translate(self, num_atoms):\n        \"\"\"Benchmark the application of a\n        translation vector to the ag\n        coordinates.\n        \"\"\"\n        self.ag.translate([0,0.5,1])\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_translate",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_translate",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "701b2a4a83979b7aa99188328321c315dcacc0d96f8c782dd77eb30508672aad",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_union": {
+            "code": "class AtomGroupMethodsBench:\n    def time_union(self, num_atoms):\n        \"\"\"Benchmark union operation\n        on atomgroups.\n        \"\"\"\n        self.ag.union(self.ag)\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_union",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_union",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "bb3896f567a32ad58d0d73819b4d7dd7ad21cd6c2259afd9024b100091b85af0",
+            "warmup_time": -1
+        },
+        "ag_methods.AtomGroupMethodsBench.time_wrap": {
+            "code": "class AtomGroupMethodsBench:\n    def time_wrap(self, num_atoms):\n        \"\"\"Benchmark wrap() operation on\n        atomgroup with default params.\n        \"\"\"\n        self.ag.wrap()\n\n    def setup(self, num_atoms):\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag = self.u.atoms[:num_atoms]\n        self.weights = np.ones(num_atoms)\n        self.vdwradii = {'NA':1.0,\n                         'M':1.0}\n        self.rot_matrix = np.ones((3,3))\n        self.trans = np.ones((4,4))",
+            "goal_time": 0.1,
+            "name": "ag_methods.AtomGroupMethodsBench.time_wrap",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "ag_methods.AtomGroupMethodsBench.time_wrap",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "e7da7812425a7b20268e756fc12f62bd501c3a328ebdaebb8b373cc1fea3363c",
+            "warmup_time": -1
+        },
+        "analysis.distances.DistancesBench.time_between": {
+            "code": "class DistancesBench:\n    def time_between(self, num_atoms):\n        \"\"\"Benchmark determination of subgroup\n        of atomgroup that is within a specific\n        distance of two other atomgroups.\n        \"\"\"\n        distances.between(group=self.ag3,\n                          A=self.ag1,\n                          B=self.ag2,\n                          distance=15.0)\n\n    def setup(self, num_atoms):\n        np.random.seed(17809)\n        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        np.random.seed(9008716)\n        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        self.allocated_array_2D = np.empty((num_atoms, num_atoms),\n                                            dtype=np.float64)\n        self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)\n        self.allocated_array_1D = np.empty(self.array_shape_1D,\n                                           dtype=np.float64)\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag1 = self.u.atoms[:num_atoms]\n        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]\n        self.ag3 = self.u.atoms[-num_atoms:]",
+            "goal_time": 0.1,
+            "name": "analysis.distances.DistancesBench.time_between",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "analysis.distances.DistancesBench.time_between",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "eb885148f4da07fe9037d6f5c72f6730a0389638e247a928686fcbd8a19214da",
+            "warmup_time": -1
+        },
+        "analysis.distances.DistancesBench.time_contact_matrix": {
+            "code": "class DistancesBench:\n    def time_contact_matrix(self, num_atoms):\n        \"\"\"Benchmark calculation of contacts within\n        a single numpy array using the default arguments\n        to contact_matrix.\n        \"\"\"\n        distances.contact_matrix(coord=self.coords_1,\n                                 cutoff=15.0,\n                                 returntype='numpy',\n                                 box=None)\n\n    def setup(self, num_atoms):\n        np.random.seed(17809)\n        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        np.random.seed(9008716)\n        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        self.allocated_array_2D = np.empty((num_atoms, num_atoms),\n                                            dtype=np.float64)\n        self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)\n        self.allocated_array_1D = np.empty(self.array_shape_1D,\n                                           dtype=np.float64)\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag1 = self.u.atoms[:num_atoms]\n        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]\n        self.ag3 = self.u.atoms[-num_atoms:]",
+            "goal_time": 0.1,
+            "name": "analysis.distances.DistancesBench.time_contact_matrix",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "analysis.distances.DistancesBench.time_contact_matrix",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "6e4d4f50f6cb85908c188ebfd6de7c40fa3d3df6afef146e01518c709445ccd0",
+            "warmup_time": -1
+        },
+        "analysis.distances.DistancesBench.time_contact_matrix_sparse": {
+            "code": "class DistancesBench:\n    def time_contact_matrix_sparse(self, num_atoms):\n        \"\"\"Benchmark calculation of contacts within\n        a single numpy array using the slower reduced\n        memory implementation of contact_matrix intended\n        for larger systems.\n        \"\"\"\n        distances.contact_matrix(coord=self.coords_1,\n                                 cutoff=15.0,\n                                 returntype='sparse',\n                                 box=None)\n\n    def setup(self, num_atoms):\n        np.random.seed(17809)\n        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        np.random.seed(9008716)\n        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        self.allocated_array_2D = np.empty((num_atoms, num_atoms),\n                                            dtype=np.float64)\n        self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)\n        self.allocated_array_1D = np.empty(self.array_shape_1D,\n                                           dtype=np.float64)\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag1 = self.u.atoms[:num_atoms]\n        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]\n        self.ag3 = self.u.atoms[-num_atoms:]",
+            "goal_time": 0.1,
+            "name": "analysis.distances.DistancesBench.time_contact_matrix_sparse",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "analysis.distances.DistancesBench.time_contact_matrix_sparse",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "4e6d14cd551f572db95de56c5260a5490105139c9c439440473639dcac59bf56",
+            "warmup_time": -1
+        },
+        "analysis.distances.DistancesBench.time_dist": {
+            "code": "class DistancesBench:\n    def time_dist(self, num_atoms):\n        \"\"\"Benchmark calculation of distances between\n        atoms in two atomgroups with no offsets\n        to resids.\n        \"\"\"\n        distances.dist(A=self.ag1,\n                       B=self.ag2,\n                       offset=0)\n\n    def setup(self, num_atoms):\n        np.random.seed(17809)\n        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        np.random.seed(9008716)\n        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        self.allocated_array_2D = np.empty((num_atoms, num_atoms),\n                                            dtype=np.float64)\n        self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)\n        self.allocated_array_1D = np.empty(self.array_shape_1D,\n                                           dtype=np.float64)\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag1 = self.u.atoms[:num_atoms]\n        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]\n        self.ag3 = self.u.atoms[-num_atoms:]",
+            "goal_time": 0.1,
+            "name": "analysis.distances.DistancesBench.time_dist",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "analysis.distances.DistancesBench.time_dist",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "1e316d102d15001127985bbeadcda61a289f6b0c49edf8beb7c8ac292fc70883",
+            "warmup_time": -1
+        },
+        "analysis.distances.DistancesBench.time_dist_offsets": {
+            "code": "class DistancesBench:\n    def time_dist_offsets(self, num_atoms):\n        \"\"\"Benchmark calculation of distances between\n        atoms in two atomgroups with offsets\n        to resids.\n        \"\"\"\n        distances.dist(A=self.ag1,\n                       B=self.ag2,\n                       offset=20)\n\n    def setup(self, num_atoms):\n        np.random.seed(17809)\n        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        np.random.seed(9008716)\n        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        self.allocated_array_2D = np.empty((num_atoms, num_atoms),\n                                            dtype=np.float64)\n        self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)\n        self.allocated_array_1D = np.empty(self.array_shape_1D,\n                                           dtype=np.float64)\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag1 = self.u.atoms[:num_atoms]\n        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]\n        self.ag3 = self.u.atoms[-num_atoms:]",
+            "goal_time": 0.1,
+            "name": "analysis.distances.DistancesBench.time_dist_offsets",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "analysis.distances.DistancesBench.time_dist_offsets",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "0766fec1b0ea981f2f91bc7b592c2c7faa4c27e5821747d0e3f7f27ad30f22e6",
+            "warmup_time": -1
+        },
+        "analysis.distances.DistancesBench.time_distance_array": {
+            "code": "class DistancesBench:\n    def time_distance_array(self, num_atoms):\n        \"\"\"Benchmark calculation of all distances\n        between two numpy arrays of coordinates,\n        using default arguments to distance_array.\n        \"\"\"\n        distances.distance_array(reference=self.coords_1,\n                                 configuration=self.coords_2,\n                                 box=None,\n                                 result=None,\n                                 backend='serial')\n\n    def setup(self, num_atoms):\n        np.random.seed(17809)\n        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        np.random.seed(9008716)\n        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        self.allocated_array_2D = np.empty((num_atoms, num_atoms),\n                                            dtype=np.float64)\n        self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)\n        self.allocated_array_1D = np.empty(self.array_shape_1D,\n                                           dtype=np.float64)\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag1 = self.u.atoms[:num_atoms]\n        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]\n        self.ag3 = self.u.atoms[-num_atoms:]",
+            "goal_time": 0.1,
+            "name": "analysis.distances.DistancesBench.time_distance_array",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "analysis.distances.DistancesBench.time_distance_array",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "6b47aceaee90f91587947029fdaef396adac215eb2ef3057c85f9e410a3e5fa7",
+            "warmup_time": -1
+        },
+        "analysis.distances.DistancesBench.time_distance_array_pre_allocated": {
+            "code": "class DistancesBench:\n    def time_distance_array_pre_allocated(self, num_atoms):\n        \"\"\"Benchmark calculation of all distances\n        between two numpy arrays of coordinates,\n        using distance_array with a preallocated\n        result array.\n        \"\"\"\n        distances.distance_array(reference=self.coords_1,\n                                 configuration=self.coords_2,\n                                 box=None,\n                                 result=self.allocated_array_2D,\n                                 backend='serial')\n\n    def setup(self, num_atoms):\n        np.random.seed(17809)\n        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        np.random.seed(9008716)\n        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        self.allocated_array_2D = np.empty((num_atoms, num_atoms),\n                                            dtype=np.float64)\n        self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)\n        self.allocated_array_1D = np.empty(self.array_shape_1D,\n                                           dtype=np.float64)\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag1 = self.u.atoms[:num_atoms]\n        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]\n        self.ag3 = self.u.atoms[-num_atoms:]",
+            "goal_time": 0.1,
+            "name": "analysis.distances.DistancesBench.time_distance_array_pre_allocated",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "analysis.distances.DistancesBench.time_distance_array_pre_allocated",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "3988cf77ee5eccd5483b603b31c7c25b63f73aa81b757689f2c8bdd9f062ae82",
+            "warmup_time": -1
+        },
+        "analysis.distances.DistancesBench.time_self_distance_array": {
+            "code": "class DistancesBench:\n    def time_self_distance_array(self, num_atoms):\n        \"\"\"Benchmark calculation of all distances\n        within a single numpy array of coordinates\n        using default parameters to self_distance_array.\n        \"\"\"\n        distances.self_distance_array(reference=self.coords_1,\n                                      box=None,\n                                      result=None,\n                                      backend='serial')\n\n    def setup(self, num_atoms):\n        np.random.seed(17809)\n        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        np.random.seed(9008716)\n        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        self.allocated_array_2D = np.empty((num_atoms, num_atoms),\n                                            dtype=np.float64)\n        self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)\n        self.allocated_array_1D = np.empty(self.array_shape_1D,\n                                           dtype=np.float64)\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag1 = self.u.atoms[:num_atoms]\n        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]\n        self.ag3 = self.u.atoms[-num_atoms:]",
+            "goal_time": 0.1,
+            "name": "analysis.distances.DistancesBench.time_self_distance_array",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "analysis.distances.DistancesBench.time_self_distance_array",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "c6dbef3ff4b6c03b07405740d628a4dbd6c5e558b910137a157196ed94020286",
+            "warmup_time": -1
+        },
+        "analysis.distances.DistancesBench.time_self_distance_array_pre_allocated": {
+            "code": "class DistancesBench:\n    def time_self_distance_array_pre_allocated(self, num_atoms):\n        \"\"\"Benchmark calculation of all distances\n        within a single numpy array of coordinates\n        using self_distance_array with preallocated\n        result array.\n        \"\"\"\n        distances.self_distance_array(reference=self.coords_1,\n                                      box=None,\n                                      result=self.allocated_array_1D,\n                                      backend='serial')\n\n    def setup(self, num_atoms):\n        np.random.seed(17809)\n        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        np.random.seed(9008716)\n        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)\n        self.allocated_array_2D = np.empty((num_atoms, num_atoms),\n                                            dtype=np.float64)\n        self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)\n        self.allocated_array_1D = np.empty(self.array_shape_1D,\n                                           dtype=np.float64)\n        self.u = MDAnalysis.Universe(GRO)\n        self.ag1 = self.u.atoms[:num_atoms]\n        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]\n        self.ag3 = self.u.atoms[-num_atoms:]",
+            "goal_time": 0.1,
+            "name": "analysis.distances.DistancesBench.time_self_distance_array_pre_allocated",
+            "number": 0,
+            "param_names": [
+                "num_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000",
+                    "10000"
+                ]
+            ],
+            "pretty_name": "analysis.distances.DistancesBench.time_self_distance_array_pre_allocated",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "252de8a508db72096fb84cad267be871be5133ab5e2a35ea5b1dbf4d610c3f4e",
+            "warmup_time": -1
+        },
+        "analysis.leaflet.LeafletBench.time_leafletfinder": {
+            "code": "class LeafletBench:\n    def time_leafletfinder(self, cutoff, sparse, pbc):\n        \"\"\"Benchmark LeafletFinder for test lipid\n        membrane system.\n        \"\"\"\n        leaflet.LeafletFinder(universe=self.u,\n                              selectionstring=self.headgroup_sel,\n                              cutoff=cutoff,\n                              pbc=pbc,\n                              sparse=sparse)\n\n    def setup(self, cutoff, sparse, pbc):\n        self.u = MDAnalysis.Universe(Martini_membrane_gro)\n        self.headgroup_sel = 'name PO4'",
+            "goal_time": 0.1,
+            "name": "analysis.leaflet.LeafletBench.time_leafletfinder",
+            "number": 0,
+            "param_names": [
+                "cutoff",
+                "sparse",
+                "pbc"
+            ],
+            "params": [
+                [
+                    "7.0",
+                    "15.0",
+                    "23.0"
+                ],
+                [
+                    "None",
+                    "True",
+                    "False"
+                ],
+                [
+                    "True",
+                    "False"
+                ]
+            ],
+            "pretty_name": "analysis.leaflet.LeafletBench.time_leafletfinder",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "7cc51105a1891b5d2b1fef3302766e183867f8867aa8b79557daa1cc472a6f4e",
+            "warmup_time": -1
+        },
+        "analysis.leaflet.LeafletOptimizeBench.time_optimize_cutoff": {
+            "code": "class LeafletOptimizeBench:\n    def time_optimize_cutoff(self, sparse, pbc):\n        \"\"\"Benchmark optimize_cutoff for test lipid\n        membrane system using default network distance\n        range.\n        \"\"\"\n        leaflet.optimize_cutoff(universe=self.u,\n                                selection=self.headgroup_sel,\n                                pbc=pbc,\n                                sparse=sparse)\n\n    def setup(self, sparse, pbc):\n        self.u = MDAnalysis.Universe(Martini_membrane_gro)\n        self.headgroup_sel = 'name PO4'",
+            "goal_time": 0.1,
+            "name": "analysis.leaflet.LeafletOptimizeBench.time_optimize_cutoff",
+            "number": 0,
+            "param_names": [
+                "sparse",
+                "pbc"
+            ],
+            "params": [
+                [
+                    "None",
+                    "True",
+                    "False"
+                ],
+                [
+                    "True",
+                    "False"
+                ]
+            ],
+            "pretty_name": "analysis.leaflet.LeafletOptimizeBench.time_optimize_cutoff",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "c2594da2d6b564ca7b231a1e6c28e4d7b1c330259c6b64a9ede16bd1953450b7",
+            "warmup_time": -1
+        },
+        "analysis.psa.PSA_get_coord_axesBench.time_get_coord_axes": {
+            "code": "class PSA_get_coord_axesBench:\n    def time_get_coord_axes(self, time_steps, n_atoms):\n        \"\"\"Benchmark get_coord_axes in psa module\n        \"\"\"\n        psa.get_coord_axes(path=self.path)\n\n    def setup(self, time_steps, n_atoms):\n        np.random.seed(170089)\n        # only using condensed path input\n        # data structure for now\n        self.path = np.random.rand(time_steps,\n                                   n_atoms * 3)",
+            "goal_time": 0.1,
+            "name": "analysis.psa.PSA_get_coord_axesBench.time_get_coord_axes",
+            "number": 0,
+            "param_names": [
+                "time_steps",
+                "n_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000"
+                ],
+                [
+                    "5",
+                    "25",
+                    "50"
+                ]
+            ],
+            "pretty_name": "analysis.psa.PSA_get_coord_axesBench.time_get_coord_axes",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "86cb5086b8445a130e30b1506114ef9279166f177f3b89ad2641253d58117f93",
+            "warmup_time": -1
+        },
+        "analysis.psa.PSA_get_msd_matrixBench.time_get_msd_matrix": {
+            "code": "class PSA_get_msd_matrixBench:\n    def time_get_msd_matrix(self, time_steps, n_atoms):\n        \"\"\"Benchmark for get_msd_matrix in psa module\n        \"\"\"\n        # only default argument for axis is benchmarked\n        psa.get_msd_matrix(P=self.P,\n                           Q=self.Q,\n                           axis=None)\n\n    def setup(self, time_steps, n_atoms):\n        np.random.seed(170089)\n        self.P = np.random.rand(time_steps,\n                                n_atoms,\n                                3)\n        np.random.seed(971132)\n        self.Q = np.random.rand(time_steps,\n                                n_atoms,\n                                3)",
+            "goal_time": 0.1,
+            "name": "analysis.psa.PSA_get_msd_matrixBench.time_get_msd_matrix",
+            "number": 0,
+            "param_names": [
+                "time_steps",
+                "n_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "1000"
+                ],
+                [
+                    "5",
+                    "25",
+                    "50"
+                ]
+            ],
+            "pretty_name": "analysis.psa.PSA_get_msd_matrixBench.time_get_msd_matrix",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "9dcdda75f655ab20762a5a9c171d804a3f908f3b76043f3fb66e1c5e471aa2c0",
+            "warmup_time": -1
+        },
+        "analysis.psa.PSA_get_path_metric_funcBench.time_get_path_metric_func": {
+            "code": "class PSA_get_path_metric_funcBench:\n    def time_get_path_metric_func(self, path_metric):\n        \"\"\"Benchmark for get_path_metric_func in psa\n        module\n        \"\"\"\n        psa.get_path_metric_func(name=path_metric)",
+            "goal_time": 0.1,
+            "name": "analysis.psa.PSA_get_path_metric_funcBench.time_get_path_metric_func",
+            "number": 0,
+            "param_names": [
+                "path_metric"
+            ],
+            "params": [
+                [
+                    "'hausdorff'",
+                    "'weighted_average_hausdorff'",
+                    "'average_hausdorff'",
+                    "'hausdorff_neighbors'",
+                    "'discrete_frechet'"
+                ]
+            ],
+            "pretty_name": "analysis.psa.PSA_get_path_metric_funcBench.time_get_path_metric_func",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "fc71d48ec5e111b5f38e7d741ab5f63fc3c8615325be6916878225ada0d3e828",
+            "warmup_time": -1
+        },
+        "analysis.psa.PSA_metricBench.time_discrete_frechet": {
+            "code": "class PSA_metricBench:\n    def time_discrete_frechet(self, time_steps, n_atoms):\n        \"\"\"Benchmark for discrete_frechet() in psa module.\n        \"\"\"\n        psa.discrete_frechet(P=self.P,\n                             Q=self.Q)\n\n    def setup(self, time_steps, n_atoms):\n        np.random.seed(170089)\n        self.P = np.random.rand(time_steps,\n                                n_atoms,\n                                3)\n        np.random.seed(971132)\n        self.Q = np.random.rand(time_steps,\n                                n_atoms,\n                                3)",
+            "goal_time": 0.1,
+            "name": "analysis.psa.PSA_metricBench.time_discrete_frechet",
+            "number": 0,
+            "param_names": [
+                "time_steps",
+                "n_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "200"
+                ],
+                [
+                    "5",
+                    "25",
+                    "50"
+                ]
+            ],
+            "pretty_name": "analysis.psa.PSA_metricBench.time_discrete_frechet",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "3bb3d861752ef9ed6f77ac94cad9ed2e42c56d8df988a838892b313d1104b7cb",
+            "warmup_time": -1
+        },
+        "analysis.psa.PSA_metricBench.time_hausdorff": {
+            "code": "class PSA_metricBench:\n    def time_hausdorff(self, time_steps, n_atoms):\n        \"\"\"Benchmark for hausdorff() in psa module.\n        \"\"\"\n        psa.hausdorff(P=self.P,\n                      Q=self.Q)\n\n    def setup(self, time_steps, n_atoms):\n        np.random.seed(170089)\n        self.P = np.random.rand(time_steps,\n                                n_atoms,\n                                3)\n        np.random.seed(971132)\n        self.Q = np.random.rand(time_steps,\n                                n_atoms,\n                                3)",
+            "goal_time": 0.1,
+            "name": "analysis.psa.PSA_metricBench.time_hausdorff",
+            "number": 0,
+            "param_names": [
+                "time_steps",
+                "n_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "200"
+                ],
+                [
+                    "5",
+                    "25",
+                    "50"
+                ]
+            ],
+            "pretty_name": "analysis.psa.PSA_metricBench.time_hausdorff",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "e0c90539a3b87665619c0c5923a412b1457f5cf08564b891b2ea25345fc720fc",
+            "warmup_time": -1
+        },
+        "analysis.psa.PSA_metricBench.time_hausdorff_avg": {
+            "code": "class PSA_metricBench:\n    def time_hausdorff_avg(self, time_steps, n_atoms):\n        \"\"\"Benchmark for hausdorff_avg() in psa module.\n        \"\"\"\n        psa.hausdorff_avg(P=self.P,\n                          Q=self.Q)\n\n    def setup(self, time_steps, n_atoms):\n        np.random.seed(170089)\n        self.P = np.random.rand(time_steps,\n                                n_atoms,\n                                3)\n        np.random.seed(971132)\n        self.Q = np.random.rand(time_steps,\n                                n_atoms,\n                                3)",
+            "goal_time": 0.1,
+            "name": "analysis.psa.PSA_metricBench.time_hausdorff_avg",
+            "number": 0,
+            "param_names": [
+                "time_steps",
+                "n_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "200"
+                ],
+                [
+                    "5",
+                    "25",
+                    "50"
+                ]
+            ],
+            "pretty_name": "analysis.psa.PSA_metricBench.time_hausdorff_avg",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "bda335edfdd48be1e40d51ba67bd57127dc22570ed81c79b25c9c34e98073cad",
+            "warmup_time": -1
+        },
+        "analysis.psa.PSA_metricBench.time_hausdorff_neighbors": {
+            "code": "class PSA_metricBench:\n    def time_hausdorff_neighbors(self, time_steps, n_atoms):\n        \"\"\"Benchmark for hausdorff_neighbors() in psa module.\n        \"\"\"\n        psa.hausdorff_neighbors(P=self.P,\n                                Q=self.Q)\n\n    def setup(self, time_steps, n_atoms):\n        np.random.seed(170089)\n        self.P = np.random.rand(time_steps,\n                                n_atoms,\n                                3)\n        np.random.seed(971132)\n        self.Q = np.random.rand(time_steps,\n                                n_atoms,\n                                3)",
+            "goal_time": 0.1,
+            "name": "analysis.psa.PSA_metricBench.time_hausdorff_neighbors",
+            "number": 0,
+            "param_names": [
+                "time_steps",
+                "n_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "200"
+                ],
+                [
+                    "5",
+                    "25",
+                    "50"
+                ]
+            ],
+            "pretty_name": "analysis.psa.PSA_metricBench.time_hausdorff_neighbors",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "77321a9a92915cf788b65037e075327c72374c4f6dd8a105749c502756260a7a",
+            "warmup_time": -1
+        },
+        "analysis.psa.PSA_metricBench.time_hausdorff_wavg": {
+            "code": "class PSA_metricBench:\n    def time_hausdorff_wavg(self, time_steps, n_atoms):\n        \"\"\"Benchmark for hausdorff_wavg() in psa module.\n        \"\"\"\n        psa.hausdorff_wavg(P=self.P,\n                           Q=self.Q)\n\n    def setup(self, time_steps, n_atoms):\n        np.random.seed(170089)\n        self.P = np.random.rand(time_steps,\n                                n_atoms,\n                                3)\n        np.random.seed(971132)\n        self.Q = np.random.rand(time_steps,\n                                n_atoms,\n                                3)",
+            "goal_time": 0.1,
+            "name": "analysis.psa.PSA_metricBench.time_hausdorff_wavg",
+            "number": 0,
+            "param_names": [
+                "time_steps",
+                "n_atoms"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "200"
+                ],
+                [
+                    "5",
+                    "25",
+                    "50"
+                ]
+            ],
+            "pretty_name": "analysis.psa.PSA_metricBench.time_hausdorff_wavg",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "162c1711b4953d5045859022df8b1477ad41b166cf80dc31e0b961c87761ed81",
+            "warmup_time": -1
+        },
+        "analysis.psa.PSA_sqnormBench.time_sqnorm": {
+            "code": "class PSA_sqnormBench:\n    def time_sqnorm(self, num_cols, num_rows, axis):\n        \"\"\"Benchmark sqnorm in psa module\n        \"\"\"\n        psa.sqnorm(v=self.v, axis=axis)\n\n    def setup(self, num_cols, num_rows, axis):\n        np.random.seed(170089)\n        self.v = np.random.rand(num_rows, num_cols)",
+            "goal_time": 0.1,
+            "name": "analysis.psa.PSA_sqnormBench.time_sqnorm",
+            "number": 0,
+            "param_names": [
+                "num_cols",
+                "num_rows",
+                "axis"
+            ],
+            "params": [
+                [
+                    "2",
+                    "3",
+                    "4"
+                ],
+                [
+                    "100",
+                    "1000",
+                    "10000"
+                ],
+                [
+                    "None",
+                    "0",
+                    "1",
+                    "-1"
+                ]
+            ],
+            "pretty_name": "analysis.psa.PSA_sqnormBench.time_sqnorm",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "5360f9d9650b651e056f22f98fd02bda2307b2f2eabb3fbe7c1c4b0dffe5f70b",
+            "warmup_time": -1
+        },
+        "analysis.rms.RmsdTrajBench.time_RMSD": {
+            "code": "class RmsdTrajBench:\n    def time_RMSD(self, select, weights):\n        \"\"\"Benchmark RMSD.run() method, which parses\n        over the entire trajectory.\n        \"\"\"\n        self.RMSD_inst.run()\n\n    def setup(self, select, weights):\n        self.u = MDAnalysis.Universe(PSF, DCD)\n        self.RMSD_inst = rms.RMSD(atomgroup=self.u,\n                                  reference=None,\n                                  select=select,\n                                  weights=weights)",
+            "goal_time": 0.1,
+            "name": "analysis.rms.RmsdTrajBench.time_RMSD",
+            "number": 0,
+            "param_names": [
+                "select",
+                "weights"
+            ],
+            "params": [
+                [
+                    "'all'",
+                    "'backbone'"
+                ],
+                [
+                    "None",
+                    "'mass'"
+                ]
+            ],
+            "pretty_name": "analysis.rms.RmsdTrajBench.time_RMSD",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "64836ac01572a5047b1dd99fff0059e19db814e8d869fba0f667e8ce391dab94",
+            "warmup_time": -1
+        },
+        "analysis.rms.RmsfTrajBench.time_RMSF": {
+            "code": "class RmsfTrajBench:\n    def time_RMSF(self, n_atoms, step, weights):\n        \"\"\"Benchmark RMSF.run() method, which parses\n        over the entire trajectory.\n        \"\"\"\n        self.RMSF_inst.run()\n\n    def setup(self, n_atoms, step, weights):\n        self.u = MDAnalysis.Universe(PSF, DCD)\n        self.ag = self.u.atoms[:n_atoms]\n        self.RMSF_inst = rms.RMSF(atomgroup=self.ag,\n                                  start=None,\n                                  stop=None,\n                                  step=step,\n                                  weights=weights)",
+            "goal_time": 0.1,
+            "name": "analysis.rms.RmsfTrajBench.time_RMSF",
+            "number": 0,
+            "param_names": [
+                "n_atoms",
+                "step",
+                "weights"
+            ],
+            "params": [
+                [
+                    "100",
+                    "500",
+                    "2000"
+                ],
+                [
+                    "None",
+                    "3"
+                ],
+                [
+                    "None",
+                    "'mass'"
+                ]
+            ],
+            "pretty_name": "analysis.rms.RmsfTrajBench.time_RMSF",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "51fa8961bb7846d8b1a47b3169c16b28ce31a4a9888dcf935747cc9ae82eb9a4",
+            "warmup_time": -1
+        },
+        "analysis.rms.SimpleRmsBench.time_rmsd": {
+            "code": "class SimpleRmsBench:\n    def time_rmsd(self, num_atoms, weights, center, superposition):\n        \"\"\"Benchmark rmsd function using a setup similar to\n        its docstring example code along with several possible\n        permutations of parameters.\n        \"\"\"\n        rms.rmsd(a=self.A,\n                 b=self.B,\n                 weights=weights,\n                 center=center,\n                 superposition=superposition)\n\n    def setup(self, num_atoms, weights, center, superposition):\n        # mimic rmsd docstring example code\n        self.u = MDAnalysis.Universe(PSF, DCD)\n        # ag.positions is the new syntax\n        # but older commit hashes will need to use\n        # ag.coordinates()\n        try:\n            self.A = self.u.atoms.positions.copy()[:num_atoms]\n            self.u.trajectory[-1]\n            self.B = self.u.atoms.positions.copy()[:num_atoms]\n        except:\n            self.A = self.u.atoms.coordinates().copy()[:num_atoms]\n            self.u.trajectory[-1]\n            self.B = self.u.atoms.coordinates().copy()[:num_atoms]",
+            "goal_time": 0.1,
+            "name": "analysis.rms.SimpleRmsBench.time_rmsd",
+            "number": 0,
+            "param_names": [
+                "num_atoms",
+                "weights",
+                "center",
+                "superposition"
+            ],
+            "params": [
+                [
+                    "100",
+                    "500",
+                    "2000"
+                ],
+                [
+                    "None",
+                    "[1.0, 0.5]"
+                ],
+                [
+                    "False",
+                    "True"
+                ],
+                [
+                    "False",
+                    "True"
+                ]
+            ],
+            "pretty_name": "analysis.rms.SimpleRmsBench.time_rmsd",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "3730cce32247fa610cb1fcb58e054dc42bd0d1dd6ee55a5d19e01cff3ade58d1",
+            "warmup_time": -1
+        },
+        "selections.GeoSelectionBench.time_geometric_selections": {
+            "code": "class GeoSelectionBench:\n    def time_geometric_selections(self,\n                                  selection_string,\n                                  dynamic_selection,\n                                  periodic_selection):\n    \n        # set core flags for PBC accounting\n        MDAnalysis.core.flags['use_periodic_selections'] = periodic_selection[0]\n        MDAnalysis.core.flags['use_KDTree_routines'] = periodic_selection[1]\n    \n        if hasattr(MDAnalysis.Universe, 'select_atoms'):\n            self.u.select_atoms(selection_string, updating=dynamic_selection)\n        else:\n            self.u.selectAtoms(selection_string, updating=dynamic_selection)\n\n    def setup(self,\n              selection_string,\n              dynamic_selection,\n              periodic_selection):\n        self.u = MDAnalysis.Universe(GRO)",
+            "goal_time": 0.1,
+            "name": "selections.GeoSelectionBench.time_geometric_selections",
+            "number": 0,
+            "param_names": [
+                "selection_string",
+                "dynamic_selection",
+                "periodic_selection"
+            ],
+            "params": [
+                [
+                    "'around 5.0 resid 1'",
+                    "'sphlayer 2.4 6.0 (protein)'",
+                    "'sphzone 6.0 (protein)'",
+                    "'cylayer 5 10 10 -8 protein'",
+                    "'cyzone 15 4 -8 protein'",
+                    "'point 5.0 5.0 5.0 3.5'",
+                    "'prop z >= 5.0'",
+                    "'prop abs z <= 5.0'"
+                ],
+                [
+                    "True",
+                    "False"
+                ],
+                [
+                    "[False, True]",
+                    "[True, False]"
+                ]
+            ],
+            "pretty_name": "selections.GeoSelectionBench.time_geometric_selections",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "b1d29e5a574daee7de2e1c37536258165a3371b550cd29fc2f41c55e796001e1",
+            "warmup_time": -1
+        },
+        "selections.SimpleSelectionBench.time_simple_selections": {
+            "code": "class SimpleSelectionBench:\n    def time_simple_selections(self, selection_string):\n        \"\"\"Benchmark simple selections on the protein-based\n        standard test GRO file.\n        \"\"\"\n        if hasattr(MDAnalysis.Universe, 'select_atoms'):\n            self.u.select_atoms(selection_string)\n        else:\n            self.u.selectAtoms(selection_string)\n\n    def setup(self, selection_string):\n        self.u = MDAnalysis.Universe(GRO)",
+            "goal_time": 0.1,
+            "name": "selections.SimpleSelectionBench.time_simple_selections",
+            "number": 0,
+            "param_names": [
+                "selection_string"
+            ],
+            "params": [
+                [
+                    "'protein'",
+                    "'backbone'",
+                    "'nucleic'",
+                    "'nucleicbackbone'",
+                    "'resid 1:10'",
+                    "'resnum 1:10'",
+                    "'resname LYS'",
+                    "'name CA'",
+                    "'bynum 0:10'"
+                ]
+            ],
+            "pretty_name": "selections.SimpleSelectionBench.time_simple_selections",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "3d7336e8388a8daf7d76bc3faec4ee662f2ddce17529d2b322ec539be91758c3",
+            "warmup_time": -1
+        },
+        "traj_reader.TrajReaderCreation.time_reads": {
+            "code": "class TrajReaderCreation:\n    def time_reads(self, traj_format):\n        \"\"\"Simple benchmark for reading traj file formats\n        from our standard test files.\n        \"\"\"\n        self.traj_reader(self.traj_file)\n\n    def setup(self, traj_format):\n        self.traj_dict = traj_dict\n        self.traj_file, self.traj_reader = self.traj_dict[traj_format]",
+            "goal_time": 0.1,
+            "name": "traj_reader.TrajReaderCreation.time_reads",
+            "number": 0,
+            "param_names": [
+                "traj_format"
+            ],
+            "params": [
+                [
+                    "'XTC'",
+                    "'TRR'",
+                    "'DCD'",
+                    "'NCDF'"
+                ]
+            ],
+            "pretty_name": "traj_reader.TrajReaderCreation.time_reads",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "4b030c7c2af116b5eaaec4c77913ed39dda95d0f355f11be9ee99403dfa71f93",
+            "warmup_time": -1
+        },
+        "traj_reader.TrajReaderIteration.time_strides": {
+            "code": "class TrajReaderIteration:\n    def time_strides(self, traj_format):\n        \"\"\"Benchmark striding over full trajectory\n        test files for each format.\n        \"\"\"\n        for ts in self.reader_object:\n            pass\n\n    def setup(self, traj_format):\n        self.traj_dict = traj_dict\n        self.traj_file, self.traj_reader = self.traj_dict[traj_format]\n        self.reader_object = self.traj_reader(self.traj_file)",
+            "goal_time": 0.1,
+            "name": "traj_reader.TrajReaderIteration.time_strides",
+            "number": 0,
+            "param_names": [
+                "traj_format"
+            ],
+            "params": [
+                [
+                    "'XTC'",
+                    "'TRR'",
+                    "'DCD'",
+                    "'NCDF'"
+                ]
+            ],
+            "pretty_name": "traj_reader.TrajReaderIteration.time_strides",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds",
+            "version": "d2890f87c636b5336c33c4ede5c97f90f26b52ea890f4514459dee27de3b92fc",
+            "warmup_time": -1
+        }
+    },
+    "graph_param_list": [],
+    "hash_length": 8,
+    "machines": {},
+    "pages": [
+        [
+            "",
+            "Grid view",
+            "Display as a agrid"
+        ],
+        [
+            "summarylist",
+            "List view",
+            "Display as a list"
+        ],
+        [
+            "regressions",
+            "Show regressions",
+            "Display information about recent regressions"
+        ]
+    ],
+    "params": {
+        "branch": [
+            "develop"
+        ]
+    },
+    "project": "mdanalysis",
+    "project_url": "https://www.mdanalysis.org/",
+    "revision_to_date": {
+        "82": 1201780717000,
+        "104": 1219452708000,
+        "139": 1247569053000,
+        "152": 1268263654000,
+        "154": 1270166496000,
+        "170": 1272729077000,
+        "205": 1274971759000,
+        "256": 1278587092000,
+        "283": 1284632442000,
+        "289": 1284913073000,
+        "350": 1288443967000,
+        "381": 1289009538000,
+        "429": 1297167036000,
+        "483": 1301573309000,
+        "554": 1306020417000,
+        "604": 1315432549000,
+        "605": 1315433712000,
+        "609": 1315928538000,
+        "680": 1329008993000,
+        "698": 1329404137000,
+        "810": 1341429339000,
+        "964": 1368301504000,
+        "1046": 1382055233000,
+        "1096": 1388223959000,
+        "1105": 1388423982000,
+        "1122": 1388509446000,
+        "1133": 1389822644000,
+        "1142": 1390620955000,
+        "1163": 1392152849000,
+        "1188": 1396359721000,
+        "1337": 1426589646000,
+        "1357": 1427488168000,
+        "1386": 1429539975000,
+        "1477": 1433176801000,
+        "1815": 1441624556000,
+        "1981": 1444065166000,
+        "2022": 1444449568000,
+        "2557": 1453029329000,
+        "2971": 1456666141000,
+        "3279": 1463343595000,
+        "4370": 1491806560000,
+        "4511": 1496522184000,
+        "4617": 1498558564000
+    },
+    "revision_to_hash": {
+        "82": "f892b792eefe06cb1c1e60883174230f3fde1653",
+        "104": "9c1b6d1cb29988077ebc0cbce68ab09b65cebbfe",
+        "139": "4b3474bff9bbcd21d9cd5449c161c4359ecdc444",
+        "152": "e6c76e248dc30ccc02bca8906f75ceec02da2d09",
+        "154": "347c152e86aa9c53f73264a84064f927a9baafca",
+        "170": "222fcb10ac56fde93c253eb8b693c1bd582bba55",
+        "205": "9b8ffe9fc449bb0025c89a64d85cdcf4e01d8065",
+        "256": "f6b38a452d1084b1da070199c80840211ea47cca",
+        "283": "2329ec691b91b1fee0a8c6ce66492976f8a1bb78",
+        "289": "5b66e28da25ea637bd900ed925791546e42c9bf2",
+        "350": "189ba23e94225361427cdc2a725013b0403b9e1e",
+        "381": "aad2ad58e3521fc3907601413236b65dd6ad58a5",
+        "429": "69470856800716de88bd3cc6bcc1a46d11c8e768",
+        "483": "727c4697724513edcbdcaaec5a1011da145ea3ea",
+        "554": "f2a497bfbed5d236a6c00b3d654b39ee65108d77",
+        "604": "ab5e9e1bb2b615d8d11edeebf25e9a1a83bcba00",
+        "605": "c6bdc545a53b9a762668ef194cf6aa07244296c5",
+        "609": "1d65d5c162ed7edf5f5b4ee86b600efdeafa851f",
+        "680": "e52b313495af066f70c83c439b0d1d9da40747f2",
+        "698": "7387d8e5de9c6ec68becbbbacc3cad0442c126a2",
+        "810": "365d54cdcb9bf812a3b83c11ebc84274deec3619",
+        "964": "3c9ae52e59f647b9ea1908697dae0afcc5fba62c",
+        "1046": "91ed793b9774061fd0b9f64ceadc2a14a0c1f1ef",
+        "1096": "012da8137735bcef25449d5928b3d959b5d17e1a",
+        "1105": "5f12ae537be7cd6258cc5a45cf61665ed3111f20",
+        "1122": "6ed015c6491b0fb7e9acfacea49f6e5ce17c17b1",
+        "1133": "aa544f563ab68fbc20cf8934e0f9aadda491833b",
+        "1142": "e649a95825cc8091de86141c8da6ae94fc6daa3c",
+        "1163": "bd6ccf18e27a720a5179d02d0e007e20680ecb98",
+        "1188": "1e17fa62feff31559dc2c6817b8c94d51628cdf5",
+        "1337": "128a5c1e1d51d8b7b0532bd07abdfb12e7641318",
+        "1357": "1f1b48f3d9a4382483d8376542194e2e7f092e03",
+        "1386": "1f8e35fac6fd69a2f82d868b465096247c55b248",
+        "1477": "06c93bc0f6e664232e6ccbe401efc2ae02167e32",
+        "1815": "de97ccc10ecade5e6b255c644c83327f8eaf2d4c",
+        "1981": "2d2ae28ccb879554e4181415d38ef0f9c736f298",
+        "2022": "fb1e050f9393fdcee75c3a7b734fa86bfe5be3e4",
+        "2557": "9a80de068cd9057e7e3dc665345840c28ab247fd",
+        "2971": "13a97e481a49cedf6d5e45041f96db35cf563880",
+        "3279": "cc64b450601fd556b638e38c37db5d134d499cf9",
+        "4370": "6a274d7a42a16ceb30db3523a4c1a02ebd15729e",
+        "4511": "723cd8985052e359bc0cf1c47dc45e70c0f6951a",
+        "4617": "ea708b09d75ded215e541175c023276a9afc72f7"
+    },
+    "show_commit_url": "https://github.com/MDAnalysis/mdanalysis/commit/",
+    "tags": {
+        "RotamerConvolveMD-1.0": 1133,
+        "data-0-7-4": 605,
+        "pre-release-0-7-0-rc3": 350,
+        "pre-sub-trr": 964,
+        "prerelease-0-6-0-rc2": 152,
+        "prerelease-0-6-rc1": 139,
+        "prerelease-0.8.0-pre-1": 1046,
+        "rel-0-5-0": 82,
+        "release-0-5-1": 104,
+        "release-0-6-0": 154,
+        "release-0-6-1": 170,
+        "release-0-6-2": 205,
+        "release-0-6-3": 256,
+        "release-0-6-4": 283,
+        "release-0-6-4-1": 289,
+        "release-0-7-0": 381,
+        "release-0-7-1": 429,
+        "release-0-7-2": 483,
+        "release-0-7-3": 554,
+        "release-0-7-4": 604,
+        "release-0.10.0": 1477,
+        "release-0.11.0": 1815,
+        "release-0.12.0": 1981,
+        "release-0.12.1": 2022,
+        "release-0.13.0": 2557,
+        "release-0.14.0": 2971,
+        "release-0.15.0": 3279,
+        "release-0.16.0": 4370,
+        "release-0.16.1": 4511,
+        "release-0.16.2": 4617,
+        "release-0.7.5": 680,
+        "release-0.7.5.1": 698,
+        "release-0.7.6": 810,
+        "release-0.8.0": 1142,
+        "release-0.8.0rc2": 1096,
+        "release-0.8.0rc3": 1105,
+        "release-0.8.0rc4": 1122,
+        "release-0.8.1": 1188,
+        "release-0.8.1rc1": 1163,
+        "release-0.9.0": 1337,
+        "release-0.9.1": 1357,
+        "release-0.9.2": 1386,
+        "testdata-0-7-4": 609
+    }
+}
