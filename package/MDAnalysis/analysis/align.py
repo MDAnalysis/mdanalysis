@@ -1002,7 +1002,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
     (g1, g2) : tuple
         Tuple with :class:`~MDAnalysis.core.groups.AtomGroup`
         instances that match, atom by atom. The groups are either the
-        original groups if all matche or slices of the original
+        original groups if all matched or slices of the original
         groups.
 
     Raises
@@ -1028,34 +1028,29 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
 
     if ag1.n_atoms != ag2.n_atoms:
         if ag1.n_residues != ag2.n_residues:
-            errmsg = "Reference and trajectory atom selections do not contain "
-            "the same number of atoms: \n"
-            "atoms:    N_ref={0}, N_traj={1}\n"
-            "and also not the same number of residues:\n"
-            "residues: N_ref={2}, N_traj={3}\n"
-            "\n"
-            "(More details can be found in the log file "
-            "which can be enabled with 'MDAnalysis.start_logging()')".format(
-                ag1.n_atoms, ag2.n_atoms,
-                ag1.n_residues, ag2.n_residues)
-            dbgmsg = "mismatched residue numbers\n" + \
-                "\n".join(["{0} | {1}" for r1, r2 in
-                           zip_longest(ag1.resids, ag2.resids)])
+            errmsg = ("Reference and trajectory atom selections do not contain "
+                      "the same number of atoms: \n"
+                      "atoms:    N_ref={0}, N_traj={1}\n"
+                      "and also not the same number of residues:\n"
+                      "residues: N_ref={2}, N_traj={3}").format(
+                          ag1.n_atoms, ag2.n_atoms,
+                          ag1.n_residues, ag2.n_residues)
             logger.error(errmsg)
-            logger.debug(dbgmsg)
             raise SelectionError(errmsg)
         else:
             msg = ("Reference and trajectory atom selections do not contain "
                    "the same number of atoms: \n"
                    "atoms:    N_ref={0}, N_traj={1}").format(
-                ag1.n_atoms, ag2.n_atoms)
+                       ag1.n_atoms, ag2.n_atoms)
             if strict:
+                logger.error(msg)
                 raise SelectionError(msg)
 
             # continue with trying to creating a valid selection
-            warnings.warn(
-                msg + "\nbut we attempt to create a valid selection.",
-                category=SelectionWarning)
+            msg += ("\nbut we attempt to create a valid selection " +
+                    "(use strict=True to disable this heuristic).")
+            logger.info(msg)
+            warnings.warn(msg, category=SelectionWarning)
 
         # continue with trying to salvage the selection:
         # - number of atoms is different
@@ -1076,8 +1071,10 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         # one_alignment_only=True)
 
         # For now, just remove the residues that don't have matching numbers
-        rsize1 = np.array([r.n_atoms for r in ag1.residues])
-        rsize2 = np.array([r.n_atoms for r in ag2.residues])
+        # NOTE: This can create empty selections, e.g., when comparing a structure
+        #       with hydrogens to a PDB structure without hydrogens.
+        rsize1 = np.array([r.atoms.n_atoms for r in ag1.residues])
+        rsize2 = np.array([r.atoms.n_atoms for r in ag2.residues])
         rsize_mismatches = np.absolute(rsize1 - rsize2)
         mismatch_mask = (rsize_mismatches > 0)
         if np.any(mismatch_mask):
@@ -1102,20 +1099,21 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 log_mismatch(1, ag1, rsize1)
                 log_mismatch(2, ag2, rsize2)
 
-                raise SelectionError(
-                    "Different number of atoms in some residues. "
-                    "(Use strict=False to attempt using matching atoms only.)")
+                errmsg = ("Different number of atoms in some residues. "
+                          "(Use strict=False to attempt using matching atoms only.)")
+                logger.error(errmsg)
+                raise SelectionError(errmsg)
 
             def get_atoms_byres(g, match_mask=np.logical_not(mismatch_mask)):
                 # not pretty... but need to do things on a per-atom basis in
                 # order to preserve original selection
                 ag = g.atoms
-                good = ag.resids[match_mask]
-                resids = np.array([a.resid for a in ag])  # resid for each atom
+                good = ag.residues.resids[match_mask]  # resid for each residue
+                resids = ag.resids                     # resid for each atom
                 # boolean array for all matching atoms
                 ix_good = np.in1d(resids, good)
-                # workaround for missing boolean indexing
-                return ag[np.arange(len(ag))[ix_good]]
+                return ag[ix_good]
+
             _ag1 = get_atoms_byres(ag1)
             _ag2 = get_atoms_byres(ag2)
 
@@ -1127,25 +1125,28 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
             logger.warning("Removed {0} residues with non-matching numbers of atoms"
                            .format(mismatch_mask.sum()))
             logger.debug("Removed residue ids: group 1: {0}"
-                         .format(ag1.resids[mismatch_resindex]))
+                         .format(ag1.residues.resids[mismatch_resindex]))
             logger.debug("Removed residue ids: group 2: {0}"
-                         .format(ag2.resids[mismatch_resindex]))
+                         .format(ag2.residues.resids[mismatch_resindex]))
             # replace after logging (still need old ag1 and ag2 for
             # diagnostics)
             ag1 = _ag1
             ag2 = _ag2
             del _ag1, _ag2
 
+            # stop if we created empty selections (by removing ALL residues...)
+            if ag1.n_atoms == 0 or ag2.n_atoms == 0:
+                errmsg = ("Failed to automatically find matching atoms: created empty selections. " +
+                          "Try to improve your selections for mobile and reference.")
+                logger.error(errmsg)
+                raise SelectionError(errmsg)
+
     mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
     if np.any(mass_mismatches):
         # Test 2 failed.
         # diagnostic output:
-        # (ugly workaround because boolean indexing is not yet working for atomgroups)
-        assert ag1.n_atoms == ag2.n_atoms
-        mismatch_atomindex = np.arange(ag1.n_atoms)[mass_mismatches]
-
         logger.error("Atoms: reference | trajectory")
-        for ar, at in zip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):
+        for ar, at in zip(ag1[mass_mismatches], ag2[mass_mismatches]):
             logger.error(
                 "{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(
                     ar.segid,
@@ -1158,8 +1159,9 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                     at.resname,
                     at.name,
                     at.mass))
-        errmsg = ("Inconsistent selections, masses differ by more than {0}; " +
+        errmsg = ("Inconsistent selections, masses differ by more than {0}; "
                   "mis-matching atoms are shown above.").format(tol_mass)
         logger.error(errmsg)
         raise SelectionError(errmsg)
+
     return ag1, ag2
