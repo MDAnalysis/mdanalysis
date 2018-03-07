@@ -1,0 +1,626 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>11.2.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations &#8212; MDAnalysis 0.17.1-dev documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.17.1-dev documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="11.2.7. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" href="qcprot.html" />
+    <link rel="prev" title="11.2.5. Mathematical helper functions — MDAnalysis.lib.mdamath" href="mdamath.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.lib.transformations"></span><div class="section" id="homogeneous-transformation-matrices-and-quaternions-mdanalysis-lib-transformations">
+<h1>11.2.6. Homogeneous Transformation Matrices and Quaternions — <a class="reference internal" href="#module-MDAnalysis.lib.transformations" title="MDAnalysis.lib.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a><a class="headerlink" href="#homogeneous-transformation-matrices-and-quaternions-mdanalysis-lib-transformations" title="Permalink to this headline">¶</a></h1>
+<p>A library for calculating 4x4 matrices for translating, rotating, reflecting,
+scaling, shearing, projecting, orthogonalizing, and superimposing arrays of
+3D homogeneous coordinates as well as for converting between rotation matrices,
+Euler angles, and quaternions. Also includes an Arcball control object and
+functions to decompose transformation matrices.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Authors:</th><td class="field-body"><a class="reference external" href="http://www.lfd.uci.edu/~gohlke/">Christoph Gohlke</a>,
+Laboratory for Fluorescence Dynamics, University of California, Irvine</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Version:</th><td class="field-body">2010.05.10</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Licence:</th><td class="field-body">BSD 3-clause</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="requirements">
+<h2>11.2.6.1. Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="http://www.python.org">Python 2.6 or 3.1</a></li>
+<li><a class="reference external" href="http://numpy.scipy.org">Numpy 1.4</a></li>
+<li><a class="reference external" href="http://www.lfd.uci.edu/~gohlke/">transformations.c 2010.04.10</a>
+(optional implementation of some functions in C)</li>
+</ul>
+<p class="rubric">Notes</p>
+<p>The API is not stable yet and is expected to change between revisions.</p>
+<p>This Python code is not optimized for speed. Refer to the transformations.c
+module for a faster implementation of some functions.</p>
+<p>Documentation in HTML format can be generated with epydoc.</p>
+<p>Matrices (M) can be inverted using numpy.linalg.inv(M), concatenated using
+numpy.dot(M0, M1), or used to transform homogeneous coordinates (v) using
+numpy.dot(M, v) for shape (4, *) “point of arrays”, respectively
+numpy.dot(v, M.T) for shape (*, 4) “array of points”.</p>
+<p>Use the transpose of transformation matrices for OpenGL glMultMatrixd().</p>
+<p>Calculations are carried out with numpy.float64 precision.</p>
+<p>Vector, point, quaternion, and matrix function arguments are expected to be
+“array like”, i.e. tuple, list, or numpy arrays.</p>
+<p>Return types are numpy arrays unless specified otherwise.</p>
+<p>Angles are in radians unless specified otherwise.</p>
+<p>Quaternions w+ix+jy+kz are represented as [w, x, y, z].</p>
+<p>A triple of Euler angles can be applied/interpreted in 24 ways, which can
+be specified using a 4 character string or encoded 4-tuple:</p>
+<blockquote>
+<div><p><em>Axes 4-string</em>: e.g. ‘sxyz’ or ‘ryxy’</p>
+<ul class="simple">
+<li>first character : rotations are applied to ‘s’tatic or ‘r’otating frame</li>
+<li>remaining characters : successive rotation axis ‘x’, ‘y’, or ‘z’</li>
+</ul>
+<p><em>Axes 4-tuple</em>: e.g. (0, 0, 0, 0) or (1, 1, 1, 1)</p>
+<ul class="simple">
+<li>inner axis: code of axis (‘x’:0, ‘y’:1, ‘z’:2) of rightmost matrix.</li>
+<li>parity : even (0) if inner axis ‘x’ is followed by ‘y’, ‘y’ is followed
+by ‘z’, or ‘z’ is followed by ‘x’. Otherwise odd (1).</li>
+<li>repetition : first and last axis are same (1) or different (0).</li>
+<li>frame : rotations are applied to static (0) or rotating (1) frame.</li>
+</ul>
+</div></blockquote>
+<p class="rubric">References</p>
+<ol class="arabic simple">
+<li>Matrices and transformations. Ronald Goldman.
+In “Graphics Gems I”, pp 472-475. Morgan Kaufmann, 1990.</li>
+<li>More matrices and transformations: shear and pseudo-perspective.
+Ronald Goldman. In “Graphics Gems II”, pp 320-323. Morgan Kaufmann, 1991.</li>
+<li>Decomposing a matrix into simple transformations. Spencer Thomas.
+In “Graphics Gems II”, pp 320-323. Morgan Kaufmann, 1991.</li>
+<li>Recovering the data from the transformation matrix. Ronald Goldman.
+In “Graphics Gems II”, pp 324-331. Morgan Kaufmann, 1991.</li>
+<li>Euler angle conversion. Ken Shoemake.
+In “Graphics Gems IV”, pp 222-229. Morgan Kaufmann, 1994.</li>
+<li>Arcball rotation control. Ken Shoemake.
+In “Graphics Gems IV”, pp 175-192. Morgan Kaufmann, 1994.</li>
+<li>Representing attitude: Euler angles, unit quaternions, and rotation
+vectors. James Diebel. 2006.</li>
+<li>A discussion of the solution for the best rotation to relate two sets
+of vectors. W Kabsch. Acta Cryst. 1978. A34, 827-828.</li>
+<li>Closed-form solution of absolute orientation using unit quaternions.
+BKP Horn. J Opt Soc Am A. 1987. 4(4):629-642.</li>
+<li>Quaternions. Ken Shoemake.
+<a class="reference external" href="http://www.sfu.ca/~jwa3/cmpt461/files/quatut.pdf">http://www.sfu.ca/~jwa3/cmpt461/files/quatut.pdf</a></li>
+<li>From quaternion to matrix and back. JMP van Waveren. 2005.
+<a class="reference external" href="http://www.intel.com/cd/ids/developer/asmo-na/eng/293748.htm">http://www.intel.com/cd/ids/developer/asmo-na/eng/293748.htm</a></li>
+<li>Uniform random rotations. Ken Shoemake.
+In “Graphics Gems III”, pp 124-132. Morgan Kaufmann, 1992.</li>
+<li>Quaternion in molecular modeling. CFF Karney.
+J Mol Graph Mod, 25(5):595-604</li>
+<li>New method for extracting the quaternion from a rotation matrix.
+Itzhack Y Bar-Itzhack, J Guid Contr Dynam. 2000. 23(6): 1085-1087.</li>
+</ol>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.123</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.234</span><span class="p">,</span> <span class="mf">2.345</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">,</span> <span class="n">zaxis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">I</span> <span class="o">=</span> <span class="n">identity_matrix</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Rx</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ry</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Rz</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">zaxis</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">concatenate_matrices</span><span class="p">(</span><span class="n">Rx</span><span class="p">,</span> <span class="n">Ry</span><span class="p">,</span> <span class="n">Rz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">euler</span> <span class="o">=</span> <span class="n">euler_from_matrix</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="s1">&#39;rxyz&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">([</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">],</span> <span class="n">euler</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Re</span> <span class="o">=</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="s1">&#39;rxyz&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Re</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">al</span><span class="p">,</span> <span class="n">be</span><span class="p">,</span> <span class="n">ga</span> <span class="o">=</span> <span class="n">euler_from_matrix</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="s1">&#39;rxyz&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="n">al</span><span class="p">,</span> <span class="n">be</span><span class="p">,</span> <span class="n">ga</span><span class="p">,</span> <span class="s1">&#39;rxyz&#39;</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qx</span> <span class="o">=</span> <span class="n">quaternion_about_axis</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qy</span> <span class="o">=</span> <span class="n">quaternion_about_axis</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qz</span> <span class="o">=</span> <span class="n">quaternion_about_axis</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">zaxis</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">quaternion_multiply</span><span class="p">(</span><span class="n">qx</span><span class="p">,</span> <span class="n">qy</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">quaternion_multiply</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">qz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Rq</span> <span class="o">=</span> <span class="n">quaternion_matrix</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rq</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">scale_matrix</span><span class="p">(</span><span class="mf">1.23</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">translation_matrix</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span> <span class="o">=</span> <span class="n">shear_matrix</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">zaxis</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">random_rotation_matrix</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="n">concatenate_matrices</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">persp</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="mf">1.23</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">shear</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="s1">&#39;sxyz&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">M1</span> <span class="o">=</span> <span class="n">compose_matrix</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">persp</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">M1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="functions">
+<h2>11.2.6.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Transformations library moved from MDAnalysis.core.transformations to
+MDAnalysis.lib.transformations</p>
+</div>
+<dl class="class">
+<dt id="MDAnalysis.lib.transformations.Arcball">
+<em class="property">class </em><code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">Arcball</code><span class="sig-paren">(</span><em>initial=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball" title="Permalink to this definition">¶</a></dt>
+<dd><p>Virtual Trackball Control.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span> <span class="o">=</span> <span class="n">Arcball</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span> <span class="o">=</span> <span class="n">Arcball</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">place</span><span class="p">([</span><span class="mi">320</span><span class="p">,</span> <span class="mi">320</span><span class="p">],</span> <span class="mi">320</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">down</span><span class="p">([</span><span class="mi">500</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">drag</span><span class="p">([</span><span class="mi">475</span><span class="p">,</span> <span class="mi">275</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">ball</span><span class="o">.</span><span class="n">matrix</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">R</span><span class="p">),</span> <span class="mf">3.90583455</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span> <span class="o">=</span> <span class="n">Arcball</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">place</span><span class="p">([</span><span class="mi">320</span><span class="p">,</span> <span class="mi">320</span><span class="p">],</span> <span class="mi">320</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">setaxes</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">setconstrain</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">down</span><span class="p">([</span><span class="mi">400</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">drag</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">ball</span><span class="o">.</span><span class="n">matrix</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">R</span><span class="p">),</span> <span class="mf">0.2055924</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Initialize virtual trackball control.</p>
+<p>initial : quaternion or rotation matrix</p>
+<dl class="method">
+<dt id="MDAnalysis.lib.transformations.Arcball.down">
+<code class="descname">down</code><span class="sig-paren">(</span><em>point</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball.down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball.down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set initial cursor window coordinates and pick constrain-axis.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.transformations.Arcball.drag">
+<code class="descname">drag</code><span class="sig-paren">(</span><em>point</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball.drag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball.drag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update current cursor window coordinates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.transformations.Arcball.getconstrain">
+<code class="descname">getconstrain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball.getconstrain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball.getconstrain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return state of constrain to axis mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.transformations.Arcball.matrix">
+<code class="descname">matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball.matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball.matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return homogeneous rotation matrix.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.transformations.Arcball.next">
+<code class="descname">next</code><span class="sig-paren">(</span><em>acceleration=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Continue rotation in direction of last drag.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.transformations.Arcball.place">
+<code class="descname">place</code><span class="sig-paren">(</span><em>center</em>, <em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball.place"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball.place" title="Permalink to this definition">¶</a></dt>
+<dd><p>Place Arcball, e.g. when window size changes.</p>
+<dl class="docutils">
+<dt>center <span class="classifier-delimiter">:</span> <span class="classifier">sequence[2]</span></dt>
+<dd>Window coordinates of trackball center.</dd>
+<dt>radius <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Radius of trackball in window coordinates.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.transformations.Arcball.setaxes">
+<code class="descname">setaxes</code><span class="sig-paren">(</span><em>*axes</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball.setaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball.setaxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set axes to constrain rotations.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.transformations.Arcball.setconstrain">
+<code class="descname">setconstrain</code><span class="sig-paren">(</span><em>constrain</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball.setconstrain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball.setconstrain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state of constrain to axis mode.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.arcball_nearest_axis">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">arcball_nearest_axis</code><span class="sig-paren">(</span><em>point</em>, <em>axes</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#arcball_nearest_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.arcball_nearest_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return axis, which arc is nearest to point.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.compose_matrix">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">compose_matrix</code><span class="sig-paren">(</span><em>scale=None</em>, <em>shear=None</em>, <em>angles=None</em>, <em>translate=None</em>, <em>perspective=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#compose_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.compose_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return transformation matrix from sequence of transformations.</p>
+<p>This is the inverse of the decompose_matrix function.</p>
+<dl class="docutils">
+<dt>Sequence of transformations:</dt>
+<dd>scale : vector of 3 scaling factors
+shear : list of shear factors for x-y, x-z, y-z axes
+angles : list of Euler angles about static x, y, z axes
+translate : translation vector along x, y, z axes
+perspective : perspective partition of matrix</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shear</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">angles</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">persp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">M0</span> <span class="o">=</span> <span class="n">compose_matrix</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">persp</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="n">M0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">M1</span> <span class="o">=</span> <span class="n">compose_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">M0</span><span class="p">,</span> <span class="n">M1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.concatenate_matrices">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">concatenate_matrices</code><span class="sig-paren">(</span><em>*matrices</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#concatenate_matrices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.concatenate_matrices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return concatenation of series of transformation matrices.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">concatenate_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">concatenate_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.decompose_matrix">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">decompose_matrix</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#decompose_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.decompose_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return sequence of transformations from transformation matrix.</p>
+<dl class="docutils">
+<dt>matrix <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd>Non-degenerative homogeneous transformation matrix</dd>
+<dt>Return tuple of:</dt>
+<dd>scale : vector of 3 scaling factors
+shear : list of shear factors for x-y, x-z, y-z axes
+angles : list of Euler angles about static x, y, z axes
+translate : translation vector along x, y, z axes
+perspective : perspective partition of matrix</dd>
+</dl>
+<p>Raise ValueError if matrix is of wrong type or degenerative.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T0</span> <span class="o">=</span> <span class="n">translation_matrix</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">persp</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T1</span> <span class="o">=</span> <span class="n">translation_matrix</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">T0</span><span class="p">,</span> <span class="n">T1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">scale_matrix</span><span class="p">(</span><span class="mf">0.123</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">persp</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">0.123</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R0</span> <span class="o">=</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">persp</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="n">R0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R1</span> <span class="o">=</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">angles</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">R0</span><span class="p">,</span> <span class="n">R1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.euler_from_quaternion">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">euler_from_quaternion</code><span class="sig-paren">(</span><em>quaternion</em>, <em>axes='sxyz'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#euler_from_quaternion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.euler_from_quaternion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Euler angles from quaternion for specified axis sequence.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">angles</span> <span class="o">=</span> <span class="n">euler_from_quaternion</span><span class="p">([</span><span class="mf">0.99810947</span><span class="p">,</span> <span class="mf">0.06146124</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.123</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.projection_from_matrix">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">projection_from_matrix</code><span class="sig-paren">(</span><em>matrix</em>, <em>pseudo=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#projection_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.projection_from_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return projection plane and perspective point from projection matrix.</p>
+<p>Return values are same as arguments for projection_matrix function:
+point, normal, direction, perspective, and pseudo.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">direct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">persp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P0</span> <span class="o">=</span> <span class="n">projection_matrix</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">projection_from_matrix</span><span class="p">(</span><span class="n">P0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P1</span> <span class="o">=</span> <span class="n">projection_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">P0</span><span class="p">,</span> <span class="n">P1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P0</span> <span class="o">=</span> <span class="n">projection_matrix</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">direct</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">projection_from_matrix</span><span class="p">(</span><span class="n">P0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P1</span> <span class="o">=</span> <span class="n">projection_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">P0</span><span class="p">,</span> <span class="n">P1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P0</span> <span class="o">=</span> <span class="n">projection_matrix</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">perspective</span><span class="o">=</span><span class="n">persp</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">projection_from_matrix</span><span class="p">(</span><span class="n">P0</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P1</span> <span class="o">=</span> <span class="n">projection_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">P0</span><span class="p">,</span> <span class="n">P1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P0</span> <span class="o">=</span> <span class="n">projection_matrix</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">perspective</span><span class="o">=</span><span class="n">persp</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">projection_from_matrix</span><span class="p">(</span><span class="n">P0</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P1</span> <span class="o">=</span> <span class="n">projection_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">P0</span><span class="p">,</span> <span class="n">P1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.quaternion_imag">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">quaternion_imag</code><span class="sig-paren">(</span><em>quaternion</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#quaternion_imag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.quaternion_imag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return imaginary part of quaternion.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">quaternion_imag</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span>
+<span class="go">[0.0, 1.0, 2.0]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.quaternion_real">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">quaternion_real</code><span class="sig-paren">(</span><em>quaternion</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#quaternion_real"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.quaternion_real" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return real part of quaternion.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">quaternion_real</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span>
+<span class="go">3.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.reflection_from_matrix">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">reflection_from_matrix</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#reflection_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.reflection_from_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return mirror plane point and normal vector from reflection matrix.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">M0</span> <span class="o">=</span> <span class="n">reflection_matrix</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span> <span class="o">=</span> <span class="n">reflection_from_matrix</span><span class="p">(</span><span class="n">M0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">M1</span> <span class="o">=</span> <span class="n">reflection_matrix</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">M0</span><span class="p">,</span> <span class="n">M1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.rotation_from_matrix">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">rotation_from_matrix</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#rotation_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.rotation_from_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return rotation angle and axis from rotation matrix.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">direc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R0</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direc</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span><span class="p">,</span> <span class="n">direc</span><span class="p">,</span> <span class="n">point</span> <span class="o">=</span> <span class="n">rotation_from_matrix</span><span class="p">(</span><span class="n">R0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R1</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direc</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">R0</span><span class="p">,</span> <span class="n">R1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.rotaxis">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">rotaxis</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#rotaxis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.rotaxis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the rotation axis to rotate vector a into b.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>b</strong> (<em>a</em><em>,</em>) – two vectors</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>c</strong> – vector to rotate a into b</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If a == b this will always return [1, 0, 0]</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.scale_from_matrix">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">scale_from_matrix</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#scale_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.scale_from_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return scaling factor, origin and direction from scaling matrix.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">factor</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">-</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">direct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S0</span> <span class="o">=</span> <span class="n">scale_matrix</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="n">scale_from_matrix</span><span class="p">(</span><span class="n">S0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S1</span> <span class="o">=</span> <span class="n">scale_matrix</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">S0</span><span class="p">,</span> <span class="n">S1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S0</span> <span class="o">=</span> <span class="n">scale_matrix</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">direct</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="n">scale_from_matrix</span><span class="p">(</span><span class="n">S0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S1</span> <span class="o">=</span> <span class="n">scale_matrix</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">S0</span><span class="p">,</span> <span class="n">S1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.shear_from_matrix">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">shear_from_matrix</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#shear_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.shear_from_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return shear angle, direction and plane from shear matrix.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">direct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">direct</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S0</span> <span class="o">=</span> <span class="n">shear_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direct</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span><span class="p">,</span> <span class="n">direct</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span> <span class="o">=</span> <span class="n">shear_from_matrix</span><span class="p">(</span><span class="n">S0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S1</span> <span class="o">=</span> <span class="n">shear_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direct</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_same_transform</span><span class="p">(</span><span class="n">S0</span><span class="p">,</span> <span class="n">S1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.transformations.translation_from_matrix">
+<code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">translation_from_matrix</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#translation_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.translation_from_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return translation vector from translation matrix.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="n">translation_from_matrix</span><span class="p">(</span><span class="n">translation_matrix</span><span class="p">(</span><span class="n">v0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">7. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">8. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">9. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">11.1. Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">11.2. List of modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="distances.html">11.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">11.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">11.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">11.2.4. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">11.2.5. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">11.2.6. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#requirements">11.2.6.1. Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">11.2.6.2. Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">11.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">11.2.8. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">11.3. Low level file formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul>
+      <li>Previous: <a href="mdamath.html" title="previous chapter">11.2.5. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+      <li>Next: <a href="qcprot.html" title="next chapter">11.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/lib/transformations.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

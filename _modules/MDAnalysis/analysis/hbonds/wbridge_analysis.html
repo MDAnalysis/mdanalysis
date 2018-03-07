@@ -1,0 +1,1056 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>MDAnalysis.analysis.hbonds.wbridge_analysis &#8212; MDAnalysis 0.17.1-dev documentation</title>
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.17.1-dev documentation"
+          href="../../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for MDAnalysis.analysis.hbonds.wbridge_analysis</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="c1"># Water Bridge Analysis</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Water Bridge analysis --- :mod:`MDAnalysis.analysis.hbonds.WaterBridgeAnalysis`</span>
+<span class="sd">===============================================================================</span>
+
+<span class="sd">:Author: Zhiyi Wu</span>
+<span class="sd">:Year: 2017</span>
+<span class="sd">:Copyright: GNU Public License v3</span>
+<span class="sd">:Maintainer: Zhiyi Wu &lt;zhiyi.wu@gtc.ox.ac.uk&gt;,  `@xiki-tempula`_ on GitHub</span>
+
+
+<span class="sd">.. _`@xiki-tempula`: https://github.com/xiki-tempula</span>
+
+
+<span class="sd">Given a :class:`~MDAnalysis.core.universe.Universe` (simulation</span>
+<span class="sd">trajectory with 1 or more frames) measure all water bridges for each</span>
+<span class="sd">frame between selections 1 and 2.</span>
+<span class="sd">Water bridge is defined as a bridging water which simultaneously forms</span>
+<span class="sd">two hydrogen bonds with atoms from both selection 1 and selection 2.</span>
+
+<span class="sd">A water bridge can form between two hydrogen bond acceptors.</span>
+
+<span class="sd">e.g. -CO\ :sub:`2`\ :sup:`-`:···H−O−H···:\ :sup:`-`\ O\ :sub:`2`\ C-</span>
+
+<span class="sd">A water bridge can also form between two hydrogen bond donors.</span>
+
+<span class="sd">e.g. -NH···:O:···HN- (where O is the oxygen of a bridging water)</span>
+
+<span class="sd">A hydrogen bond acceptor and another hydrogen bond donor can be bridged by a</span>
+<span class="sd">water.</span>
+
+<span class="sd">e.g. -CO\ :sub:`2`\ :sup:`-`:···H−O:···HN- (where H−O is part of **H−O**\ −H)</span>
+
+<span class="sd">The :class:`WaterBridgeAnalysis` class is modeled after the  \</span>
+<span class="sd">:class:`~MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis`.</span>
+
+<span class="sd">The following keyword arguments are important to control the behavior of the</span>
+<span class="sd">water bridge analysis:</span>
+
+<span class="sd"> - *water_selection* (``resname SOL``): the selection string for the bridging</span>
+<span class="sd">   water</span>
+<span class="sd"> - donor-acceptor *distance* (Å): 3.0</span>
+<span class="sd"> - Angle *cutoff* (degrees): 120.0</span>
+<span class="sd"> - *forcefield* to switch between default values for different force fields</span>
+<span class="sd"> - *donors* and *acceptors* atom types (to add additional atom names)</span>
+
+<span class="sd">.. _wb_Analysis_Output:</span>
+
+<span class="sd">Output</span>
+<span class="sd">------</span>
+
+<span class="sd">The results are a list of hydrogen bonds between the selection 1 or selection 2</span>
+<span class="sd">and the bridging water.</span>
+
+<span class="sd">Each list is formated similar to the \ :attr:`HydrogenBondAnalysis.timeseries</span>
+<span class="sd">&lt;MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timeseries&gt;`</span>
+<span class="sd">and contains</span>
+
+<span class="sd">  - the **identities** of donor and acceptor heavy-atoms,</span>
+<span class="sd">  - the **distance** between the heavy atom acceptor atom and the hydrogen atom</span>
+<span class="sd">  - the **angle** donor-hydrogen-acceptor angle (180º is linear).</span>
+
+<span class="sd">Water bridge data are returned per frame, which is stored in \</span>
+<span class="sd">:attr:`WaterBridgeAnalysis.timeseries` (In the following description, ``#``</span>
+<span class="sd">indicates comments that are not part of the output.)::</span>
+
+<span class="sd">    results = [</span>
+<span class="sd">        [ # frame 1</span>
+<span class="sd">           # hbonds linking the selection 1 and selection 2 to the bridging</span>
+<span class="sd">           # water 1</span>
+<span class="sd">           [ # hbond 1 from selection 1 to the bridging water 1</span>
+<span class="sd">              &lt;donor index (0-based)&gt;,</span>
+<span class="sd">              &lt;acceptor index (0-based)&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;,</span>
+<span class="sd">              &lt;distance&gt;, &lt;angle&gt;</span>
+<span class="sd">           ],</span>
+<span class="sd">           [ # hbond 2 from selection 1 to the bridging water 1</span>
+<span class="sd">              &lt;donor index (0-based)&gt;,</span>
+<span class="sd">              &lt;acceptor index (0-based)&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;,</span>
+<span class="sd">              &lt;distance&gt;, &lt;angle&gt;</span>
+<span class="sd">           ],</span>
+<span class="sd">           [ # hbond 1 from selection 2 to the bridging water 1</span>
+<span class="sd">              &lt;donor index (0-based)&gt;,</span>
+<span class="sd">              &lt;acceptor index (0-based)&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;,</span>
+<span class="sd">              &lt;distance&gt;, &lt;angle&gt;</span>
+<span class="sd">           ],</span>
+<span class="sd">           [ # hbond 2 from selection 2 to the bridging water 1</span>
+<span class="sd">              &lt;donor index (0-based)&gt;,</span>
+<span class="sd">              &lt;acceptor index (0-based)&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;,</span>
+<span class="sd">              &lt;distance&gt;, &lt;angle&gt;</span>
+<span class="sd">           ],</span>
+
+<span class="sd">           # hbonds linking the selection 1 and selection 2 to the bridging</span>
+<span class="sd">           # water 2</span>
+<span class="sd">           [ # hbond 1 from selection 1 to the bridging water 2</span>
+<span class="sd">              &lt;donor index (0-based)&gt;,</span>
+<span class="sd">              &lt;acceptor index (0-based)&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;,</span>
+<span class="sd">              &lt;distance&gt;, &lt;angle&gt;</span>
+<span class="sd">           ],</span>
+<span class="sd">           [ # hbond 1 from selection 2 to the bridging water 2</span>
+<span class="sd">              &lt;donor index (0-based)&gt;,</span>
+<span class="sd">              &lt;acceptor index (0-based)&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;,</span>
+<span class="sd">              &lt;distance&gt;, &lt;angle&gt;</span>
+<span class="sd">           ],</span>
+<span class="sd">           ....</span>
+<span class="sd">        ],</span>
+<span class="sd">        [ # frame 2</span>
+<span class="sd">          [ ... ], [ ... ], ...</span>
+<span class="sd">        ],</span>
+<span class="sd">        ...</span>
+<span class="sd">    ]</span>
+
+<span class="sd">Using the :meth:`WaterBridgeAnalysis.generate_table` method one can reformat</span>
+<span class="sd">the results as a flat &quot;normalised&quot; table that is easier to import into a</span>
+<span class="sd">database or dataframe for further processing.</span>
+<span class="sd">:meth:`WaterBridgeAnalysis.save_table` saves the table to a pickled file. The</span>
+<span class="sd">table itself is a :class:`numpy.recarray`.</span>
+
+<span class="sd">Detection of water bridges</span>
+<span class="sd">---------------------------</span>
+<span class="sd">Water bridges are recorded if a bridging water simultaneously forms two</span>
+<span class="sd">hydrogen bonds with selection 1 and selection 2.</span>
+
+<span class="sd">Hydrogen bonds are detected as is described in \</span>
+<span class="sd">:class:`~MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis`, see \</span>
+<span class="sd">:ref:`Detection-of-hydrogen-bonds`.</span>
+
+<span class="sd">The lists of donor and acceptor names can be extended by providing lists of</span>
+<span class="sd">atom names in the `donors` and `acceptors` keywords to</span>
+<span class="sd">:class:`WaterBridgeAnalysis`. If the lists are entirely inappropriate</span>
+<span class="sd">(e.g. when analysing simulations done with a force field that uses very</span>
+<span class="sd">different atom names) then one should either use the value &quot;other&quot; for</span>
+<span class="sd">`forcefield` to set no default values, or derive a new class and set the</span>
+<span class="sd">default list oneself::</span>
+
+<span class="sd"> class WaterBridgeAnalysis_OtherFF(WaterBridgeAnalysis):</span>
+<span class="sd">       DEFAULT_DONORS = {&quot;OtherFF&quot;: tuple(set([...]))}</span>
+<span class="sd">       DEFAULT_ACCEPTORS = {&quot;OtherFF&quot;: tuple(set([...]))}</span>
+
+<span class="sd">Then simply use the new class instead of the parent class and call it with</span>
+<span class="sd">`forcefield` = &quot;OtherFF&quot;. Please also consider contributing the list of heavy</span>
+<span class="sd">atom names to MDAnalysis.</span>
+
+<span class="sd">How to perform WaterBridgeAnalysis</span>
+<span class="sd">-----------------------------------</span>
+
+<span class="sd">All water bridges between arginine and aspartic acid can be analysed with ::</span>
+
+<span class="sd">  import MDAnalysis</span>
+<span class="sd">  import MDAnalysis.analysis.hbonds</span>
+
+<span class="sd">  u = MDAnalysis.Universe(&#39;topology&#39;, &#39;trajectory&#39;)</span>
+<span class="sd">  w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, &#39;resname ARG&#39;, &#39;resname ASP&#39;)</span>
+<span class="sd">  w.run()</span>
+
+<span class="sd">The results are stored as the attribute</span>
+<span class="sd">:attr:`WaterBridgeAnalysis.timeseries`; see :ref:`wb_Analysis_Output` for the</span>
+<span class="sd">format.</span>
+
+<span class="sd">An example of using the :attr:`~WaterBridgeAnalysis.timeseries` would be</span>
+<span class="sd">detecting the percentage of time a certain water bridge exits.</span>
+
+<span class="sd">Trajectory :code:`u` has two frames, where the first frame contains a water</span>
+<span class="sd">bridge from the oxygen of the first arginine to the oxygen of the third</span>
+<span class="sd">aspartate. No water bridge is detected in the second frame. ::</span>
+
+<span class="sd">  print(w.timeseries)</span>
+
+<span class="sd">prints out (the comments are not part of the data structure but are added here</span>
+<span class="sd">for clarity): ::</span>
+
+<span class="sd">  [ # frame 1</span>
+<span class="sd">    # A water bridge SOL2 links O from ARG1 and ASP3</span>
+<span class="sd">   [[0,1,&#39;ARG1:O&#39;,  &#39;SOL2:HW1&#39;,3.0,180],</span>
+<span class="sd">    [2,3,&#39;SOL2:HW2&#39;,&#39;ASP3:O&#39;,  3.0,180],</span>
+<span class="sd">   ],</span>
+<span class="sd">    # frame 2</span>
+<span class="sd">    # No water bridge detected</span>
+<span class="sd">   []</span>
+<span class="sd">  ]</span>
+
+<span class="sd">To calculate the percentage, we can iterate through :code:`w.timeseries`. ::</span>
+
+<span class="sd">  water_bridge_presence = []</span>
+<span class="sd">  for frame in w.timeseries:</span>
+<span class="sd">      if frame:</span>
+<span class="sd">          water_bridge_presence.append(True)</span>
+<span class="sd">      else:</span>
+<span class="sd">          water_bridge_presence.append(False)</span>
+<span class="sd">  p_bridge = float(sum(water_bridge_presence))/len(water_bridge_presence)</span>
+<span class="sd">  print(&quot;Fraction of time with water bridge present: {}&quot;.format(p_bridge))</span>
+
+<span class="sd">In the example above, :code:`p_bridge` would become 0.5, i.e., for 50% of the</span>
+<span class="sd">trajectory a water bridge was detected between the selected residues.</span>
+
+<span class="sd">Alternatively, :meth:`~WaterBridgeAnalysis.count_by_type` can also be used to</span>
+<span class="sd">generate the frequence of all water bridges in the simulation. ::</span>
+
+<span class="sd">  w.count_by_type()</span>
+
+<span class="sd">Returns ::</span>
+
+<span class="sd">  [(0, 3, &#39;ARG&#39;, 1, &#39;O&#39;, &#39;ASP&#39;, 3, &#39;O&#39;, 0.5)]</span>
+
+<span class="sd">For further data analysis, it is convenient to process the</span>
+<span class="sd">:attr:`~WaterBridgeAnalysis.timeseries` data into a normalized table with the</span>
+<span class="sd">:meth:`~WaterBridgeAnalysis.generate_table` method, which creates a new data</span>
+<span class="sd">structure :attr:`WaterBridgeAnalysis.table` that contains one row for each</span>
+<span class="sd">observation of a hydrogen bond::</span>
+
+<span class="sd">  w.generate_table()</span>
+
+<span class="sd">This table can then be easily turned into, e.g., a `pandas.DataFrame`_, and</span>
+<span class="sd">further analyzed::</span>
+
+<span class="sd">  import pandas as pd</span>
+<span class="sd">  df = pd.DataFrame.from_records(w.table)</span>
+
+
+<span class="sd">.. _pandas.DataFrame: http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: WaterBridgeAnalysis</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">   .. attribute:: timesteps</span>
+
+<span class="sd">      List of the times of each timestep. This can be used together with</span>
+<span class="sd">      :attr:`~WaterBridgeAnalysis.timeseries` to find the specific time point</span>
+<span class="sd">      of a water bridge existence, or see :attr:`~WaterBridgeAnalysis.table`.</span>
+
+<span class="sd">   .. attribute:: table</span>
+
+<span class="sd">      A normalised table of the data in</span>
+<span class="sd">      :attr:`WaterBridgeAnalysis.timeseries`, generated by</span>
+<span class="sd">      :meth:`WaterBridgeAnalysis.generate_table`. It is a</span>
+<span class="sd">      :class:`numpy.recarray` with the following columns:</span>
+
+<span class="sd">          0. &quot;time&quot;</span>
+<span class="sd">          1. &quot;donor_index&quot;</span>
+<span class="sd">          2. &quot;acceptor_index&quot;</span>
+<span class="sd">          3. &quot;donor_resnm&quot;</span>
+<span class="sd">          4. &quot;donor_resid&quot;</span>
+<span class="sd">          5. &quot;donor_atom&quot;</span>
+<span class="sd">          6. &quot;acceptor_resnm&quot;</span>
+<span class="sd">          7. &quot;acceptor_resid&quot;</span>
+<span class="sd">          8. &quot;acceptor_atom&quot;</span>
+<span class="sd">          9. &quot;distance&quot;</span>
+<span class="sd">          10. &quot;angle&quot;</span>
+
+<span class="sd">      It takes up more space than :attr:`~WaterBridgeAnalysis.timeseries` but</span>
+<span class="sd">      it is easier to analyze and to import into databases or dataframes.</span>
+
+
+<span class="sd">      .. rubric:: Example</span>
+
+<span class="sd">      For example, to create a `pandas.DataFrame`_ from ``h.table``::</span>
+
+<span class="sd">         import pandas as pd</span>
+<span class="sd">         df = pd.DataFrame.from_records(w.table)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">six</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">.hbond_analysis</span> <span class="k">import</span> <span class="n">HydrogenBondAnalysis</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.NeighborSearch</span> <span class="k">import</span> <span class="n">AtomNeighborSearch</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span><span class="p">,</span> <span class="n">_set_verbose</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="n">SelectionWarning</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.wbridges&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WaterBridgeAnalysis"><a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis">[docs]</a><span class="k">class</span> <span class="nc">WaterBridgeAnalysis</span><span class="p">(</span><span class="n">HydrogenBondAnalysis</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform a water bridge analysis</span>
+
+<span class="sd">    The analysis of the trajectory is performed with the</span>
+<span class="sd">    :meth:`WaterBridgeAnalysis.run` method. The result is stored in</span>
+<span class="sd">    :attr:`WaterBridgeAnalysis.timeseries`. See</span>
+<span class="sd">    :meth:`~WaterBridgeAnalysis.run` for the format.</span>
+
+<span class="sd">    :class:`WaterBridgeAnalysis` uses the same default atom names as</span>
+<span class="sd">    :class:`~MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis`,</span>
+<span class="sd">    see :ref:`Default atom names for hydrogen bonding analysis`</span>
+
+
+<span class="sd">    .. versionadded:: 0.17.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="o">=</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span>
+                 <span class="n">selection2</span><span class="o">=</span><span class="s1">&#39;not resname SOL&#39;</span><span class="p">,</span> <span class="n">water_selection</span><span class="o">=</span><span class="s1">&#39;resname SOL&#39;</span><span class="p">,</span>
+                 <span class="n">selection1_type</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">update_selection1</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">update_selection2</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">update_water_selection</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">filter_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">distance_type</span><span class="o">=</span><span class="s1">&#39;hydrogen&#39;</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+                 <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">,</span> <span class="n">forcefield</span><span class="o">=</span><span class="s1">&#39;CHARMM27&#39;</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">acceptors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up the calculation of water bridges between two selections in a</span>
+<span class="sd">        universe.</span>
+
+<span class="sd">        The timeseries is accessible as the attribute</span>
+<span class="sd">        :attr:`WaterBridgeAnalysis.timeseries`.</span>
+
+<span class="sd">        If no hydrogen bonds are detected or if the initial check fails, look</span>
+<span class="sd">        at the log output (enable with :func:`MDAnalysis.start_logging` and set</span>
+<span class="sd">        `verbose` ``=True``). It is likely that the default names for donors</span>
+<span class="sd">        and acceptors are not suitable (especially for non-standard</span>
+<span class="sd">        ligands). In this case, either change the `forcefield` or use</span>
+<span class="sd">        customized `donors` and/or `acceptors`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        universe : Universe</span>
+<span class="sd">            Universe object</span>
+<span class="sd">        selection1 : str (optional)</span>
+<span class="sd">            Selection string for first selection [&#39;protein&#39;]</span>
+<span class="sd">        selection2 : str (optional)</span>
+<span class="sd">            Selection string for second selection [&#39;not resname SOL&#39;]</span>
+<span class="sd">            This string selects everything except water where water is assumed</span>
+<span class="sd">            to have a residue name as SOL.</span>
+<span class="sd">        water_selection : str (optional)</span>
+<span class="sd">            Selection string for bridging water selection [&#39;resname SOL&#39;]</span>
+<span class="sd">            The default selection assumes that the water molecules have residue</span>
+<span class="sd">            name &quot;SOL&quot;. Change it to the appropriate selection for your</span>
+<span class="sd">            specific force field.</span>
+
+<span class="sd">            However, in theory this selection can be anything which forms</span>
+<span class="sd">            hydrogen bond with selection 1 and selection 2.</span>
+<span class="sd">        selection1_type : {&quot;donor&quot;, &quot;acceptor&quot;, &quot;both&quot;} (optional)</span>
+<span class="sd">            Selection 1 can be &#39;donor&#39;, &#39;acceptor&#39; or &#39;both&#39;. Note that the</span>
+<span class="sd">            value for `selection1_type` automatically determines how</span>
+<span class="sd">            `selection2` handles donors and acceptors: If `selection1` contains</span>
+<span class="sd">            &#39;both&#39; then `selection2` will also contain &#39;both&#39;. If `selection1`</span>
+<span class="sd">            is set to &#39;donor&#39; then `selection2` is &#39;acceptor&#39; (and vice versa).</span>
+<span class="sd">            [&#39;both&#39;].</span>
+<span class="sd">        update_selection1 : bool (optional)</span>
+<span class="sd">            Update selection 1 at each frame. Setting to ``True`` if the</span>
+<span class="sd">            selection is not static. Selection 1 is filtered first to speed up</span>
+<span class="sd">            performance. Thus, setting to ``True`` is recommended if contact</span>
+<span class="sd">            surface between selection 1 and selection 2 is constantly</span>
+<span class="sd">            changing. [``False``]</span>
+<span class="sd">        update_selection2 : bool (optional)</span>
+<span class="sd">            Similiar to *update_selection1* but is acted upon selection 2.</span>
+<span class="sd">            [``False``]</span>
+<span class="sd">        update_water_selection : bool (optional)</span>
+<span class="sd">            Update selection of water at each frame. Setting to ``False`` is</span>
+<span class="sd">            **only** recommended when the total amount of water molecules in the</span>
+<span class="sd">            simulation are small and when water molecules remain static across</span>
+<span class="sd">            the simulation.</span>
+
+<span class="sd">            However, in normal simulations, only a tiny proportion of water is</span>
+<span class="sd">            engaged in the formation of water bridge. It is recommended to</span>
+<span class="sd">            update the water selection and set keyword `filter_first` to</span>
+<span class="sd">            ``True`` so as to filter out water not residing between the two</span>
+<span class="sd">            selections. [``True``]</span>
+<span class="sd">        filter_first : bool (optional)</span>
+<span class="sd">            Filter the water selection to only include water within 3 *</span>
+<span class="sd">            `distance` away from `both` selection 1 and selection 2.</span>
+<span class="sd">            Selection 1 and selection 2 are both filtered to only include atoms</span>
+<span class="sd">            3 * `distance` away from the other selection. [``True``]</span>
+<span class="sd">        distance : float (optional)</span>
+<span class="sd">            Distance cutoff for hydrogen bonds; only interactions with a H-A</span>
+<span class="sd">            distance &lt;= `distance` (and the appropriate D-H-A angle, see</span>
+<span class="sd">            `angle`) are recorded. (Note: `distance_type` can change this to</span>
+<span class="sd">            the D-A distance.) [3.0]</span>
+<span class="sd">        angle : float (optional)</span>
+<span class="sd">            Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of</span>
+<span class="sd">            180º.  A hydrogen bond is only recorded if the D-H-A angle is</span>
+<span class="sd">            &gt;=  `angle`. The default of 120º also finds fairly non-specific</span>
+<span class="sd">            hydrogen interactions and a possibly better value is 150º. [120.0]</span>
+<span class="sd">        forcefield : {&quot;CHARMM27&quot;, &quot;GLYCAM06&quot;, &quot;other&quot;} (optional)</span>
+<span class="sd">            Name of the forcefield used. Switches between different</span>
+<span class="sd">            :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS` and</span>
+<span class="sd">            :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS` values.</span>
+<span class="sd">            [&quot;CHARMM27&quot;]</span>
+<span class="sd">        donors : sequence (optional)</span>
+<span class="sd">            Extra H donor atom types (in addition to those in</span>
+<span class="sd">            :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS`), must be a sequence.</span>
+<span class="sd">        acceptors : sequence (optional)</span>
+<span class="sd">            Extra H acceptor atom types (in addition to those in</span>
+<span class="sd">            :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a</span>
+<span class="sd">            sequence.</span>
+<span class="sd">        start : int (optional)</span>
+<span class="sd">            starting frame-index for analysis, ``None`` is the first one, 0.</span>
+<span class="sd">            `start` and `stop` are 0-based frame indices and are used to slice</span>
+<span class="sd">            the trajectory (if supported) [``None``]</span>
+<span class="sd">        stop : int (optional)</span>
+<span class="sd">            last trajectory frame for analysis, ``None`` is the last one</span>
+<span class="sd">            [``None``]</span>
+<span class="sd">        step : int (optional)</span>
+<span class="sd">            read every `step` between `start` (included) and `stop` (excluded),</span>
+<span class="sd">            ``None`` selects 1. [``None``]</span>
+<span class="sd">        distance_type : {&quot;hydrogen&quot;, &quot;heavy&quot;} (optional)</span>
+<span class="sd">            Measure hydrogen bond lengths between donor and acceptor heavy</span>
+<span class="sd">            attoms (&quot;heavy&quot;) or between donor hydrogen and acceptor heavy</span>
+<span class="sd">            atom (&quot;hydrogen&quot;). If using &quot;heavy&quot; then one should set the</span>
+<span class="sd">            *distance* cutoff to a higher value such as 3.5 Å. [&quot;hydrogen&quot;]</span>
+<span class="sd">        debug : bool (optional)</span>
+<span class="sd">            If set to ``True`` enables per-frame debug logging. This is disabled</span>
+<span class="sd">            by default because it generates a very large amount of output in</span>
+<span class="sd">            the log file. (Note that a logger must have been started to see</span>
+<span class="sd">            the output, e.g. using :func:`MDAnalysis.start_logging`.)</span>
+<span class="sd">        verbose : bool (optional)</span>
+<span class="sd">            Toggle progress output. (Can also be given as keyword argument to</span>
+<span class="sd">            :meth:`run`.)</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        In order to speed up processing, atoms are filtered by a coarse</span>
+<span class="sd">        distance criterion before a detailed hydrogen bonding analysis is</span>
+<span class="sd">        performed (`filter_first` = ``True``).</span>
+
+<span class="sd">        If selection 1 and selection 2 are very mobile during the simulation</span>
+<span class="sd">        and the contact surface is constantly changing (i.e. residues are</span>
+<span class="sd">        moving farther than 3 x `distance`), you might consider setting the</span>
+<span class="sd">        `update_selection1` and `update_selection2` keywords to ``True`` to</span>
+<span class="sd">        ensure correctness.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">water_selection</span> <span class="o">=</span> <span class="n">water_selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_water_selection</span> <span class="o">=</span> <span class="n">update_water_selection</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WaterBridgeAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">universe</span><span class="o">=</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="o">=</span><span class="n">selection1</span><span class="p">,</span> <span class="n">selection2</span><span class="o">=</span><span class="n">selection2</span><span class="p">,</span>
+            <span class="n">selection1_type</span><span class="o">=</span><span class="n">selection1_type</span><span class="p">,</span>
+            <span class="n">update_selection1</span><span class="o">=</span><span class="n">update_selection1</span><span class="p">,</span>
+            <span class="n">update_selection2</span><span class="o">=</span><span class="n">update_selection2</span><span class="p">,</span> <span class="n">filter_first</span><span class="o">=</span><span class="n">filter_first</span><span class="p">,</span>
+            <span class="n">distance_type</span><span class="o">=</span><span class="n">distance_type</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">distance</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span>
+            <span class="n">forcefield</span><span class="o">=</span><span class="n">forcefield</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="n">donors</span><span class="p">,</span> <span class="n">acceptors</span><span class="o">=</span><span class="n">acceptors</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_water_selection</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_log_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log important parameters to the logfile.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: selection1 = </span><span class="si">%r</span><span class="s2"> (update: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_selection1</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: selection2 = </span><span class="si">%r</span><span class="s2"> (update: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_selection2</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: water selection = </span><span class="si">%r</span><span class="s2"> (update: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">water_selection</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_water_selection</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: criterion: donor </span><span class="si">%s</span><span class="s2"> atom and acceptor </span><span class="se">\</span>
+<span class="s2">        atom distance &lt;= </span><span class="si">%.3f</span><span class="s2"> A&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: criterion: angle D-H-A &gt;= </span><span class="si">%.3f</span><span class="s2"> degrees&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: force field </span><span class="si">%s</span><span class="s2"> to guess donor and </span><span class="se">\</span>
+<span class="s2">        acceptor names&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forcefield</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: bonded hydrogen detection algorithm: </span><span class="se">\</span>
+<span class="s2">        </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_hydrogens</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_selection_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_first</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s1">&#39;Size of selection 1 before filtering:&#39;</span>
+                              <span class="s1">&#39; </span><span class="si">{}</span><span class="s1"> atoms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">)))</span>
+            <span class="n">ns_selection_1</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span> <span class="o">=</span> <span class="n">ns_selection_1</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">,</span> <span class="mf">3.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Size of selection 1: </span><span class="si">{0}</span><span class="s2"> atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;donor&#39;</span><span class="p">,</span> <span class="s1">&#39;both&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+                <span class="s1">&#39;name </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span><span class="p">):</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bonded_hydrogens</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">tmp</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Selection 1 donors: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Selection 1 donor hydrogens: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;acceptor&#39;</span><span class="p">,</span> <span class="s1">&#39;both&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+                <span class="s1">&#39;name </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Selection 1 acceptors: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_sanity_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">htype</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;sanity check the selections 1 and 2</span>
+
+<span class="sd">        *selection* is 1 or 2, *htype* is &quot;donors&quot; or &quot;acceptors&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">selection</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">htype</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;donors&quot;</span><span class="p">,</span> <span class="s2">&quot;acceptors&quot;</span><span class="p">)</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_s</span><span class="si">{0}</span><span class="s2">_</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">htype</span><span class="p">))</span>
+        <span class="n">update</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;update_selection</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">selection</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;No </span><span class="si">{1}</span><span class="s2"> found in selection </span><span class="si">{0}</span><span class="s2">. &quot;</span> \
+                <span class="s2">&quot;You might have to specify a custom &#39;</span><span class="si">{1}</span><span class="s2">&#39; keyword.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">selection</span><span class="p">,</span> <span class="n">htype</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">errmsg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SelectionWarning</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_water_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_water</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">water_selection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s1">&#39;Size of water selection before filtering:&#39;</span>
+                          <span class="s1">&#39; </span><span class="si">{}</span><span class="s1"> atoms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_first</span><span class="p">:</span>
+            <span class="n">ns_water_selection</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_water</span> <span class="o">=</span> <span class="n">ns_water_selection</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">,</span>
+                                                    <span class="mf">3.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_water</span> <span class="o">=</span> <span class="n">ns_water_selection</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">,</span>
+                                                    <span class="mf">3.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Size of water selection: </span><span class="si">{0}</span><span class="s2"> atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors_h</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_water_acceptors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Water selection &#39;</span><span class="si">{0}</span><span class="s2">&#39; did not select any atoms.&quot;</span>
+                           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">water_selection</span><span class="p">)[:</span><span class="mi">80</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+                <span class="s1">&#39;name </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors_h</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_donors</span><span class="p">):</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bonded_hydrogens</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">tmp</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors_h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Water donors: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_donors</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Water donor hydrogens: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_donors_h</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_water_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+                <span class="s1">&#39;name </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Water acceptors: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_acceptors</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="WaterBridgeAnalysis.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries.</span>
+
+<span class="sd">        Stores the water bridge data per frame as</span>
+<span class="sd">        :attr:`WaterBridgeAnalysis.timeseries` (see there for output</span>
+<span class="sd">        format).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        verbose : bool (optional)</span>
+<span class="sd">             toggle progress meter output</span>
+<span class="sd">             :class:`~MDAnalysis.lib.log.ProgressMeter` [``True``]</span>
+<span class="sd">        debug : bool (optional)</span>
+<span class="sd">             enable detailed logging of debugging information; this can create</span>
+<span class="sd">             *very big* log files so it is disabled (``False``) by default;</span>
+<span class="sd">             setting `debug` toggles the debug status for</span>
+<span class="sd">             :class:`WaterBridgeAnalysis`, namely the value of</span>
+<span class="sd">             :attr:`WaterBridgeAnalysis.debug`.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :meth:`WaterBridgeAnalysis.generate_table` :</span>
+<span class="sd">               processing the data into a different format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: starting&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: donors    </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: acceptors </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: water bridge </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">water_selection</span><span class="p">)</span>
+
+        <span class="n">debug</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">debug</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">debug</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Toggling debug to </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: For full step-by-step debugging output use debug=True&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timeseries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_water_network</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;checking trajectory...&quot;</span><span class="p">)</span>  <span class="c1"># n_frames can take a while!</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Problem reading trajectory or trajectory slice incompatible.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span>
+            <span class="k">raise</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">_set_verbose</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                               <span class="n">quiet</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quiet&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                               <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span>
+                           <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;WBridge frame </span><span class="si">{current_step:5d}</span><span class="s2">: </span><span class="si">{step:5d}</span><span class="s2">/</span><span class="si">{numsteps}</span><span class="s2"> [</span><span class="si">{percentage:5.1f}</span><span class="s2">%]</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span>
+                           <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting analysis (frame index start=</span><span class="si">%d</span><span class="s2"> stop=</span><span class="si">%d</span><span class="s2">, step=</span><span class="si">%d</span><span class="s2">)&quot;</span><span class="p">,</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="o">.</span><span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">progress</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="p">]):</span>
+            <span class="c1"># all bonds for this timestep</span>
+
+            <span class="c1"># dict of tuples (atom.index, atom.index) for quick check if</span>
+            <span class="c1"># we already have the bond (to avoid duplicates)</span>
+
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+            <span class="n">timestep</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timestep</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">current_step</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Analyzing frame </span><span class="si">%(frame)d</span><span class="s2">, timestep </span><span class="si">%(timestep)f</span><span class="s2"> ps&quot;</span><span class="p">,</span> <span class="nb">vars</span><span class="p">())</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_selection1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_selection_1</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_selection2</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_selection_2</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_water_selection</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_water_selection</span><span class="p">()</span>
+
+            <span class="n">s1_frame_results_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;donor&#39;</span><span class="p">,</span> <span class="s1">&#39;both&#39;</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_water_acceptors</span><span class="p">):</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Selection 1 Donors &lt;-&gt; Water Acceptors&quot;</span><span class="p">)</span>
+                <span class="n">ns_acceptors</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_acceptors</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">donor_h_set</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">donor_h_set</span><span class="p">:</span>
+                        <span class="n">res</span> <span class="o">=</span> <span class="n">ns_acceptors</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+                            <span class="n">donor_atom</span> <span class="o">=</span> <span class="n">h</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">!=</span> <span class="s1">&#39;heavy&#39;</span> <span class="k">else</span> <span class="n">d</span>
+                            <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_eucl_distance</span><span class="p">(</span><span class="n">donor_atom</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">:</span>
+                                <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_angle</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">:</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
+                                        <span class="s2">&quot;S1-D: </span><span class="si">{0!s}</span><span class="s2"> &lt;-&gt; W-A: </span><span class="si">{1!s}</span><span class="s2"> </span><span class="si">{2:f}</span><span class="s2"> A, </span><span class="si">{3:f}</span><span class="s2"> DEG&quot;</span>\
+                                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+                                    <span class="n">s1_frame_results_dict</span><span class="p">[(</span><span class="n">a</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">resid</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                        <span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                                        <span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                                        <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                                        <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;acceptor&#39;</span><span class="p">,</span> <span class="s1">&#39;both&#39;</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">):</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Selection 1 Acceptors &lt;-&gt; Water Donors&quot;</span><span class="p">)</span>
+                <span class="n">ns_acceptors</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">donor_h_set</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors_h</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water_donors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">donor_h_set</span><span class="p">:</span>
+                        <span class="n">res</span> <span class="o">=</span> <span class="n">ns_acceptors</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+                            <span class="n">donor_atom</span> <span class="o">=</span> <span class="n">h</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">!=</span> <span class="s1">&#39;heavy&#39;</span> <span class="k">else</span> <span class="n">d</span>
+                            <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_eucl_distance</span><span class="p">(</span><span class="n">donor_atom</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">:</span>
+                                <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_angle</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">:</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
+                                        <span class="s2">&quot;S1-A: </span><span class="si">{0!s}</span><span class="s2"> &lt;-&gt; W-D: </span><span class="si">{1!s}</span><span class="s2"> </span><span class="si">{2:f}</span><span class="s2"> A, </span><span class="si">{3:f}</span><span class="s2"> DEG&quot;</span>\
+                                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+                                    <span class="n">s1_frame_results_dict</span><span class="p">[(</span><span class="n">h</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">resid</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                        <span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                                        <span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                                        <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                                        <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+
+            <span class="c1"># Narrow down the water selection</span>
+            <span class="n">selection_resn_id</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">s1_frame_results_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">selection_resn_id</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="k">continue</span>
+            <span class="n">selection_resn_id</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;(resname </span><span class="si">{}</span><span class="s1"> and resid </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">resname</span><span class="p">,</span> <span class="n">resid</span><span class="p">)</span> <span class="k">for</span> <span class="n">resname</span><span class="p">,</span> <span class="n">resid</span> <span class="ow">in</span> <span class="n">selection_resn_id</span><span class="p">]</span>
+            <span class="n">water_bridges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39; or &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">selection_resn_id</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Size of water bridge selection: </span><span class="si">{0}</span><span class="s2"> atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">water_bridges</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">water_bridges</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No water forming hydrogen bonding with selection 1.&quot;</span><span class="p">)</span>
+            <span class="n">water_bridges_donors</span> <span class="o">=</span> <span class="n">water_bridges</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+                <span class="s1">&#39;name </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)))</span>
+            <span class="n">water_bridges_donors_h</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">water_bridges_donors</span><span class="p">):</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bonded_hydrogens</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">tmp</span><span class="p">:</span>
+                    <span class="n">water_bridges_donors_h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;water bridge donors: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">water_bridges_donors</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;water bridge donor hydrogens: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">water_bridges_donors_h</span><span class="p">)))</span>
+            <span class="n">water_bridges_acceptors</span> <span class="o">=</span> <span class="n">water_bridges</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+                <span class="s1">&#39;name </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;water bridge: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">water_bridges_acceptors</span><span class="p">)))</span>
+
+            <span class="c1"># Finding the hydrogen bonds between water bridge and selection 2</span>
+            <span class="n">s2_frame_results_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Water bridge Donors &lt;-&gt; Selection 2 Acceptors&quot;</span><span class="p">)</span>
+                <span class="n">ns_acceptors</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">donor_h_set</span> <span class="ow">in</span> <span class="n">water_bridges_donors_h</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="n">water_bridges_donors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">donor_h_set</span><span class="p">:</span>
+                        <span class="n">res</span> <span class="o">=</span> <span class="n">ns_acceptors</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+                            <span class="n">donor_atom</span> <span class="o">=</span> <span class="n">h</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">!=</span> <span class="s1">&#39;heavy&#39;</span>  <span class="k">else</span> <span class="n">d</span>
+                            <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_eucl_distance</span><span class="p">(</span><span class="n">donor_atom</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">:</span>
+                                <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_angle</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">:</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
+                                        <span class="s2">&quot;WB-D: </span><span class="si">{0!s}</span><span class="s2"> &lt;-&gt; S2-A: </span><span class="si">{1!s}</span><span class="s2"> </span><span class="si">{2:f}</span><span class="s2"> A, </span><span class="si">{3:f}</span><span class="s2"> DEG&quot;</span>\
+                                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+                                    <span class="n">s2_frame_results_dict</span><span class="p">[(</span><span class="n">h</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">resid</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                        <span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                                        <span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                                        <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                                        <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">water_bridges_acceptors</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Selection 2 Donors &lt;-&gt; Selection 2 Acceptors&quot;</span><span class="p">)</span>
+                <span class="n">ns_acceptors</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="n">water_bridges_acceptors</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">donor_h_set</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors_h</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">donor_h_set</span><span class="p">:</span>
+                        <span class="n">res</span> <span class="o">=</span> <span class="n">ns_acceptors</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+                            <span class="n">donor_atom</span> <span class="o">=</span> <span class="n">h</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">!=</span> <span class="s1">&#39;heavy&#39;</span> <span class="k">else</span> <span class="n">d</span>
+                            <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_eucl_distance</span><span class="p">(</span><span class="n">donor_atom</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">:</span>
+                                <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_angle</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">:</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span>
+                                        <span class="s2">&quot;WB-A: </span><span class="si">{0!s}</span><span class="s2"> &lt;-&gt; S2-D: </span><span class="si">{1!s}</span><span class="s2"> </span><span class="si">{2:f}</span><span class="s2"> A, </span><span class="si">{3:f}</span><span class="s2"> DEG&quot;</span>\
+                                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+                                    <span class="n">s2_frame_results_dict</span><span class="p">[(</span><span class="n">a</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">resid</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                        <span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                                        <span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                                        <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                                        <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+
+            <span class="c1"># Generate the water network</span>
+            <span class="n">water_network</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">s2_frame_results_dict</span><span class="p">:</span>
+                <span class="n">s1_frame_results</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">s1_frame_results_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                <span class="n">s2_frame_results</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">s2_frame_results_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s1_frame_results</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">s2_frame_results</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># Thus if selection 1 and selection 2 are the same and both</span>
+                    <span class="c1"># only form a single hydrogen bond with a water, this entry</span>
+                    <span class="c1"># won&#39;t be included.</span>
+                    <span class="n">water_network</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">s1_frame_results</span><span class="p">,</span>
+                    <span class="n">s2_frame_results</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">s1_frame_results</span><span class="p">)]</span>
+            <span class="c1"># Generate frame_results</span>
+            <span class="n">frame_results</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">s1_frame_results</span><span class="p">,</span> <span class="n">s2_frame_results</span> <span class="ow">in</span> <span class="n">water_network</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">frame_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">s1_frame_results</span><span class="p">))</span>
+                <span class="n">frame_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">s2_frame_results</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame_results</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_water_network</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">water_network</span><span class="p">)</span>
+
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: complete; timeseries  </span><span class="si">%s</span><span class="s2">.timeseries&quot;</span><span class="p">,</span></div>
+                    <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_reformat_hb</span><span class="p">(</span><span class="n">hb</span><span class="p">,</span> <span class="n">atomformat</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{0[0]!s}{0[1]!s}</span><span class="s2">:</span><span class="si">{0[2]!s}</span><span class="s2">&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. deprecated:: 1.0</span>
+<span class="sd">            This is a compatibility layer so the water bridge</span>
+<span class="sd">            _timeseries to timeserie conversion can perform as it does in the</span>
+<span class="sd">            hydrogen bond analysis.</span>
+
+<span class="sd">            For more information about the function of _reformat_hb in hydrogen</span>
+<span class="sd">            bond analysis, please refer to the _reformat_hb in the hydrogen</span>
+<span class="sd">            bond analysis module.</span>
+
+<span class="sd">            As the _timeseries to timeserie conversion will be deprecated in 1.0</span>
+<span class="sd">            this function will automatically lose its value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">hb</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+                <span class="o">+</span> <span class="p">[</span><span class="n">atomformat</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hb</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">atomformat</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hb</span><span class="p">[</span><span class="mi">3</span><span class="p">])]</span>
+                <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">hb</span><span class="p">[</span><span class="mi">4</span><span class="p">:]))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Time series of water bridges.</span>
+
+<span class="sd">        Due to the intrinsic complexity of water bridge problem, where several</span>
+<span class="sd">        atoms :math:`n` can be linked by the same water. A simple ``atom 1 -</span>
+<span class="sd">        water bridge - atom 2`` mapping will create a very large list</span>
+<span class="sd">        :math:`n!/(2(n-2)!)` due to the rule of combination.</span>
+
+<span class="sd">        Thus, the output is arranged based on each individual bridging water</span>
+<span class="sd">        allowing the later reconstruction of the water network. The hydrogen</span>
+<span class="sd">        bonds from selection 1 to the **first** bridging water is followed by</span>
+<span class="sd">        the hydrogen bonds from selection 2 to the **same** bridging water.</span>
+<span class="sd">        After that, hydrogen bonds from selection 1 to the **second** bridging</span>
+<span class="sd">        water is succeeded by hydrogen bonds from selection 2 to the **same</span>
+<span class="sd">        second** bridging water. An example of the output is given in</span>
+<span class="sd">        :ref:`wb_Analysis_Output`.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        To find an acceptor atom in :attr:`Universe.atoms` by</span>
+<span class="sd">        *index* one would use ``u.atoms[acceptor_index]``.</span>
+
+<span class="sd">        The :attr:`timeseries` is a managed attribute and it is generated</span>
+<span class="sd">        from the underlying data in :attr:`_timeseries` every time the</span>
+<span class="sd">        attribute is accessed. It is therefore costly to call and if</span>
+<span class="sd">        :attr:`timeseries` is needed repeatedly it is recommended that you</span>
+<span class="sd">        assign to a variable::</span>
+
+<span class="sd">           w = WaterBridgeAnalysis(u)</span>
+<span class="sd">           w.run()</span>
+<span class="sd">           timeseries = w.timeseries</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :attr:`table` : structured array of the data</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">WaterBridgeAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">timeseries</span>
+
+<div class="viewcode-block" id="WaterBridgeAnalysis.generate_table"><a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.generate_table">[docs]</a>    <span class="k">def</span> <span class="nf">generate_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate a normalised table of the results.</span>
+
+<span class="sd">        The table is stored as a :class:`numpy.recarray` in the</span>
+<span class="sd">        attribute :attr:`~WaterBridgeAnalysis.table`.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        WaterBridgeAnalysis.table</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WaterBridgeAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">generate_table</span><span class="p">()</span>
+
+<div class="viewcode-block" id="WaterBridgeAnalysis.save_table"><a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.save_table">[docs]</a>    <span class="k">def</span> <span class="nf">save_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;wbridge_table.pickle&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Saves :attr:`~WaterBridgeAnalysis.table` to a pickled file.</span>
+
+<span class="sd">        If :attr:`~WaterBridgeAnalysis.table` does not exist yet,</span>
+<span class="sd">        :meth:`generate_table` is called first.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str (optional)</span>
+<span class="sd">             path to the filename</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        Load with ::</span>
+
+<span class="sd">           import cPickle</span>
+<span class="sd">           table = cPickle.load(open(filename))</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WaterBridgeAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save_table</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WaterBridgeAnalysis.count_by_type"><a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type">[docs]</a>    <span class="k">def</span> <span class="nf">count_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Counts the frequency of water bridge of a specific type.</span>
+
+<span class="sd">        If one atom *A* from *selection 1* is linked to atom *B* from</span>
+<span class="sd">        *selection 2* through a bridging water, an entity will be created and</span>
+<span class="sd">        the proportion of time that this linkage exists in the whole simulation</span>
+<span class="sd">        will be calculated.</span>
+
+<span class="sd">        Returns a :class:`numpy.recarray` containing atom indices for *A* and</span>
+<span class="sd">        *B*, residue names, residue numbers, atom names (for both A and B) and</span>
+<span class="sd">        the fraction of the total time during which the water bridge was</span>
+<span class="sd">        detected. This method returns None if method</span>
+<span class="sd">        :meth:`WaterBridgeAnalysis.run` was not executed first.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        counts : numpy.recarray</span>
+<span class="sd">             Each row of the array contains data to define a unique water</span>
+<span class="sd">             bridge together with the frequency (fraction of the total time)</span>
+<span class="sd">             that it has been observed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_timeseries</span><span class="p">():</span>
+            <span class="k">return</span>
+
+        <span class="n">wbridges</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">wframe</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_water_network</span><span class="p">:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([])</span>
+            <span class="k">for</span> <span class="n">water</span><span class="p">,</span> <span class="p">(</span><span class="n">selection1</span><span class="p">,</span> <span class="n">selection2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">wframe</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">donor_index</span><span class="p">,</span> <span class="n">acceptor_index</span><span class="p">,</span> <span class="n">donor</span><span class="p">,</span> <span class="n">acceptor</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span>
+                     <span class="n">angle</span><span class="p">)</span> <span class="ow">in</span> <span class="n">selection1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">donor</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">water</span><span class="p">:</span>
+                        <span class="n">sele1</span> <span class="o">=</span> <span class="n">acceptor</span>
+                        <span class="n">sele1_index</span> <span class="o">=</span> <span class="n">acceptor_index</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">sele1</span> <span class="o">=</span> <span class="n">donor</span>
+                        <span class="n">sele1_index</span> <span class="o">=</span> <span class="n">donor_index</span>
+                    <span class="n">sele1_resnm</span><span class="p">,</span> <span class="n">sele1_resid</span><span class="p">,</span> <span class="n">sele1_atom</span> <span class="o">=</span> <span class="n">sele1</span>
+
+                    <span class="k">for</span> <span class="p">(</span><span class="n">donor_index</span><span class="p">,</span> <span class="n">acceptor_index</span><span class="p">,</span> <span class="n">donor</span><span class="p">,</span> <span class="n">acceptor</span><span class="p">,</span>
+                         <span class="n">distance</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span> <span class="ow">in</span> <span class="n">selection2</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">donor</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">water</span><span class="p">:</span>
+                            <span class="n">sele2</span> <span class="o">=</span> <span class="n">acceptor</span>
+                            <span class="n">sele2_index</span> <span class="o">=</span> <span class="n">acceptor_index</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">sele2</span> <span class="o">=</span> <span class="n">donor</span>
+                            <span class="n">sele2_index</span> <span class="o">=</span> <span class="n">donor_index</span>
+                        <span class="n">sele2_resnm</span><span class="p">,</span> <span class="n">sele2_resid</span><span class="p">,</span> <span class="n">sele2_atom</span> <span class="o">=</span> <span class="n">sele2</span>
+
+                        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">sele1_index</span><span class="p">,</span> <span class="n">sele2_index</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">pairs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                            <span class="n">wb_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">sele1_index</span><span class="p">,</span> <span class="n">sele2_index</span><span class="p">,</span> <span class="n">sele1_resnm</span><span class="p">,</span>
+                            <span class="n">sele1_resid</span><span class="p">,</span> <span class="n">sele1_atom</span><span class="p">,</span> <span class="n">sele2_resnm</span><span class="p">,</span> <span class="n">sele2_resid</span><span class="p">,</span>
+                            <span class="n">sele2_atom</span><span class="p">)</span>
+                            <span class="n">wbridges</span><span class="p">[</span><span class="n">wb_key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># build empty output table</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;sele1_index&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;sele2_index&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;sele1_resnm&#39;</span><span class="p">,</span> <span class="s1">&#39;U4&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;sele1_resid&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;sele1_atom&#39;</span><span class="p">,</span> <span class="s1">&#39;U4&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;sele2_resnm&#39;</span><span class="p">,</span> <span class="s1">&#39;U4&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;sele2_resid&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;sele2_atom&#39;</span><span class="p">,</span> <span class="s1">&#39;U4&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">wbridges</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="n">tsteps</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">cursor</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">wbridges</span><span class="p">)):</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">cursor</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span> <span class="o">+</span> <span class="p">(</span><span class="n">count</span> <span class="o">/</span> <span class="n">tsteps</span><span class="p">,)</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">r</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../../index.html">
+    <img class="logo" src="../../../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections_modules.html">7. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/core_modules.html">9. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/references.html">15. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,182 +1,233 @@
-<!doctype html>
-<html>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>airspeed velocity</title>
-    <script type="text/javascript">
-      function js_load_failure() {
-        window.location = "error.html";
-      }
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="//code.jquery.com/jquery-1.11.0.min.js"
-            onerror="js_load_failure()">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js"
-            onerror="js_load_failure()">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.time.min.js"
-            onerror="js_load_failure()">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.selection.min.js"
-            onerror="js_load_failure()">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.categories.min.js"
-            onerror="js_load_failure()">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="flot/jquery.flot.axislabels.js">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="flot/jquery.flot.orderBars.js">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="stupidtable.js">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="jquery.md5.js">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"
-            onerror="js_load_failure()">
-    </script>
-    <link rel="stylesheet"
-          href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css"
-          type="text/css"/>
-    <script language="javascript" type="text/javascript"
-            src="asv.js">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="asv_ui.js">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="summarygrid.js">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="summarylist.js">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="graphdisplay.js">
-    </script>
-    <script language="javascript" type="text/javascript"
-            src="regressions.js">
-    </script>
-    <link href="asv.css" rel="stylesheet" type="text/css"/>
-    <link href="regressions.css" rel="stylesheet" type="text/css"/>
-    <link href="summarylist.css" rel="stylesheet" type="text/css"/>
-    <link rel="shortcut icon" href="swallow.ico"/>
-    <link rel="alternate" type="application/atom+xml" title="Regressions" href="regressions.xml"/>
-  </head>
-  <body>
-    <nav id="nav" class="navbar navbar-left navbar-default navbar-fixed-top" role="navigation">
-      <ul class="nav navbar-nav navbar-left">
-        <li>
-          <p class="navbar-text">
-            <a href="http://github.com/spacetelescope/asv/" class="navbar-link" target="_blank"><img src="swallow.png" width="22" height="22" alt="swallow"></img>airspeed velocity</a>
-            of an unladen
-            <a id="project-name" href="#" class="navbar-link" target="_blank">project</a>
-          </p>
-        </li>
-	<li id="nav-li-" class="active"><a href="#/">Benchmark grid</a></li>
-	<li id="nav-li-summarylist"><a href="#/summarylist">Benchmark list</a></li>
-	<li id="nav-li-regressions"><a href="#/regressions">Regressions</a></li>
-        <li id="nav-li-graphdisplay">
-          <span class="navbar-brand" id="title">
-            benchmark
-          </span>
-        </li>
-      </ul>
-    </nav>
-    <div id="summarygrid-display" style="position: absolute; left: 0; top: 55px; width: 100%; height: 100%">
-    </div>
-    <div id="summarylist-display" style="width: 100%; height: 100%">
-      <div id="summarylist-navigation" class="asv-navigation" style="position: absolute; left: 0; top: 55px; bottom: 0; width: 200px; overflow-y: scroll">
-      </div>
-      <div id="summarylist-body" style="position: absolute; left: 200px; top: 55px; bottom: 0px; right: 0px; overflow-y: scroll;">
-      </div>
-    </div>
-    <div id="graph-display" style="width: 100%; height: 100%;">
-      <div id="graphdisplay-navigation" class="asv-navigation" style="position: absolute; left: 0; top: 55px; bottom: 0; width: 200px; overflow-y: scroll">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            commits
-          </div>
-          <div class="panel-body">
-            <input id="range" type="text" class="form-control" size="24" readonly/>
-          </div>
-        </div>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>MDAnalysis documentation &#8212; MDAnalysis 0.17.1-dev documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.17.1-dev documentation"
+          href="_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="1. Overview over MDAnalysis" href="documentation_pages/overview.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            plot settings
-          </div>
-          <div class="panel-body">
-            <div class="btn-group-vertical" style="width: 100%" data-toggle="buttons">
-              <a id="log-scale" class="btn btn-default btn-xs" role="button"
-                 data-toggle="tooltip" data-placement="right"
-                 title="Use a logarithmic scale on the y-axis">
-                log scale
-              </a>
-              <a id="zoom-y-axis" class="btn btn-default btn-xs" role="button"
-                 data-toggle="tooltip" data-placement="right"
-                 title="Zoom y axis to the range of the data, rather than down to zero.">
-                zoom <i>y</i> axis
-              </a>
-              <a id="reference" class="btn btn-default btn-xs" role="button"
-                 data-toggle="tooltip" data-placement="right"
-                 title="Select a reference point">
-                reference
-              </a>
-              <a id="even-spacing" class="btn btn-default btn-xs" role="button"
-                 data-toggle="tooltip" data-placement="right"
-                 title="Space commits evenly, rather than by revision, along the x-axis">
-                even commit spacing
-              </a>
-              <a id="date-scale" class="btn btn-default btn-xs" role="button"
-                 data-toggle="tooltip" data-placement="right"
-                 title="Space commits by commit date along the x-axis">
-                date scale
-              </a>
-            </div>
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mdanalysis-documentation">
+<h1>MDAnalysis documentation<a class="headerlink" href="#mdanalysis-documentation" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Release:</th><td class="field-body">0.17.1-dev</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body">Feb 21, 2018</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MDAnalysis</strong> (<a class="reference external" href="https://www.mdanalysis.org">www.mdanalysis.org</a>) is an object-oriented python
+toolkit to analyze molecular dynamics trajectories generated by
+<a class="reference external" href="http://www.charmm.org/">CHARMM</a>, <a class="reference external" href="http://www.gromacs.org/">Gromacs</a>, <a class="reference external" href="http://ambermd.org/">Amber</a>, <a class="reference external" href="http://www.ks.uiuc.edu/Research/namd/">NAMD</a>, <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a>, <a class="reference external" href="http://www.scd.stfc.ac.uk//44516.aspx">DL_POLY</a> and other
+packages; it also reads other formats (e.g., <a class="reference external" href="http://www.rcsb.org/pdb/static.do?p=file_formats/pdb/index.html">PDB</a> files and <a class="reference external" href="http://openbabel.org/wiki/XYZ_%28format%29">XYZ
+format</a> trajectories; see <a class="reference internal" href="documentation_pages/coordinates/init.html#id2"><span class="std std-ref">Table of supported coordinate formats</span></a> and
+<a class="reference internal" href="documentation_pages/topology/init.html#supported-topology-formats"><span class="std std-ref">Table of Supported Topology Formats</span></a> for the full lists). It can write
+most of these formats, too, together with atom selections for use in
+<a class="reference external" href="http://www.gromacs.org/">Gromacs</a>, <a class="reference external" href="http://www.charmm.org/">CHARMM</a>, <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> and <a class="reference external" href="http://www.pymol.org/">PyMol</a> (see <a class="reference internal" href="documentation_pages/selections_modules.html#selection-exporters"><span class="std std-ref">Selection exporters</span></a>).</p>
+<p>It allows one to read molecular dynamics trajectories and access the
+atomic coordinates through <a class="reference external" href="http://numpy.scipy.org">NumPy</a> arrays. This provides a flexible and
+relatively fast framework for complex analysis tasks. Fairly complete
+atom <a class="reference internal" href="documentation_pages/selections.html#selection-commands-label"><span class="std std-ref">Selection commands</span></a> are implemented. Trajectories can
+also be manipulated (for instance, fit to a reference structure) and
+written out in a range of formats.</p>
+<div class="section" id="getting-involved">
+<h2>Getting involved<a class="headerlink" href="#getting-involved" title="Permalink to this headline">¶</a></h2>
+<p>Please report <strong>bugs</strong> or <strong>enhancement requests</strong> through the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues">Issue
+Tracker</a>. Questions can also be asked on the <a class="reference external" href="http://groups.google.com/group/mdnalysis-discussion">mdnalysis-discussion mailing
+list</a>.</p>
+<p>The MDAnalysis community subscribes to a <a class="reference external" href="https://www.mdanalysis.org/pages/conduct/">Code of Conduct</a> that all community
+members agree and adhere to — please read it.</p>
+</div>
+<div class="section" id="installing-mdanalysis">
+<span id="installation-instructions"></span><h2>Installing MDAnalysis<a class="headerlink" href="#installing-mdanalysis" title="Permalink to this headline">¶</a></h2>
+<p>The easiest approach to <a class="reference external" href="https://www.mdanalysis.org/pages/installation_quick_start/">install the latest release</a> is to use a package that
+can be installed either with <a class="reference external" href="http://www.pip-installer.org/en/latest/index.html">pip</a> or <a class="reference external" href="http://conda.pydata.org/docs/">conda</a>.</p>
+<div class="section" id="pip">
+<h3>pip<a class="headerlink" href="#pip" title="Permalink to this headline">¶</a></h3>
+<p>Installation with <a class="reference external" href="http://www.pip-installer.org/en/latest/index.html">pip</a> and a <em>minimal set of dependencies</em>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis
+</pre></div>
+</div>
+<p>To install with a <em>full set of dependencies</em> (which includes everything needed
+for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code>), add the <code class="docutils literal notranslate"><span class="pre">[analysis]</span></code> tag:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis<span class="o">[</span>analysis<span class="o">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="conda">
+<h3>conda<a class="headerlink" href="#conda" title="Permalink to this headline">¶</a></h3>
+<p>First installation with <a class="reference external" href="http://conda.pydata.org/docs/">conda</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda config --add channels conda-forge
+conda install mdanalysis
+</pre></div>
+</div>
+<p>which will automatically install a <em>full set of dependencies</em>.</p>
+<p>To upgrade later:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda update mdanalysis
+</pre></div>
+</div>
+</div>
+<div class="section" id="tests">
+<h3>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h3>
+<p>If you want to <a class="reference external" href="http://wiki.mdanalysis.org/UnitTests">run the tests</a> or use example files to follow some of the
+examples in the documentation or the <a class="reference external" href="https://www.mdanalysis.org/pages/learning_MDAnalysis/">tutorials</a>, also install the
+<code class="docutils literal notranslate"><span class="pre">MDAnalysisTests</span></code> package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysisTests    <span class="c1"># with pip</span>
+conda install mdanalysistests            <span class="c1"># with conda</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="source-code">
+<h2>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
+<p><strong>Source code</strong> is available from
+<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/">https://github.com/MDAnalysis/mdanalysis/</a> under the <a class="reference external" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU Public
+Licence, version 2</a>. Obtain the sources with <a class="reference external" href="https://git-scm.com/">git</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/MDAnalysis/mdanalysis.git
+</pre></div>
+</div>
+</div>
+<div class="section" id="citation">
+<h2>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h2>
+<p>When using MDAnalysis in published work, please cite
+<a class="reference internal" href="documentation_pages/references.html#michaud-agrawal2011" id="id3">[Michaud-Agrawal2011]</a> and <a class="reference internal" href="documentation_pages/references.html#gowers2016" id="id4">[Gowers2016]</a>.</p>
+<p>MDAnalysis also contains specific algorithms and whole analysis
+modules whose algorithms have also been published in the scientific
+literature. Please make sure to also reference any
+<a class="reference internal" href="documentation_pages/references.html#references-components"><span class="std std-ref">Citations for included algorithms and modules</span></a> in published work.</p>
+<p>Thank you!</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+</div>
+
+
           </div>
         </div>
       </div>
-      <div style="position: absolute; left: 220px; top: 60px; bottom: 10px; right: 20px;">
-        <div id="graph">
-          <div style="position: absolute; top: 48px; left: 0; right: 0; bottom: 100px;">
-            <div id="main-graph" style="width: 100%; height: 100%"></div>
-          </div>
-          <div style="position: absolute; height: 100px; left: 0; right: 0; bottom: 0; padding-top: 24px">
-            <div id="overview" style="width: 100%; height: 100%"></div>
-          </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="#">
+    <img class="logo" src="_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/selections_modules.html">7. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/core_modules.html">9. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/references.html">15. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="documentation_pages/overview.html" title="next chapter">1. Overview over MDAnalysis</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
-    <div id="regressions-display" style="position: absolute; left: 0; top: 55px; width: 100%; height: 100%">
-      <div id="regressions-body">
-      </div>
-    </div>
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
 
-    <!-- A modal dialog box for displaying error messages -->
-    <div class="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title alert alert-danger" id="myModalLabel">Error</h4>
-          </div>
-          <div class="modal-body" id="error-message">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    
   </body>
 </html>
