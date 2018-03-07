@@ -815,6 +815,9 @@ class TestPBCFlag(object):
         # Test default setting of flag
         assert mda.core.flags['use_pbc'] is False
 
+    def test_periodic_sel(self):
+        assert mda.core.flags['use_periodic_selections'] is False
+
     def test_default(self, ag, ref_noPBC):
         # Test regular behaviour
         assert_almost_equal(ag.center_of_geometry(), ref_noPBC['COG'], self.prec)
