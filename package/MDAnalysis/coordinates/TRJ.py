@@ -426,9 +426,9 @@ class NCDFReader(base.ReaderBase):
     The NCDF reader uses :mod:`scipy.io.netcdf` and therefore :mod:`scipy` must
     be installed. It supports the *mmap* keyword argument (when reading):
     ``mmap=True`` is memory efficient and directly maps the trajectory on disk
-    to memory; ``mmap=False`` may consume large amounts of memory because it
-    loads the whole trajectory into memory but it might be faster. The default
-    is ``mmap=None`` and then default behavior of
+    to memory (using the :class:`~mmap.mmap`); ``mmap=False`` may consume large
+    amounts of memory because it loads the whole trajectory into memory but it
+    might be faster. The default is ``mmap=None`` and then default behavior of
     :class:`scipy.io.netcdf.netcdf_file` prevails, i.e. ``True`` when
     *filename* is a file name, ``False`` when *filename* is a file-like object.
 
@@ -447,6 +447,7 @@ class NCDFReader(base.ReaderBase):
        kwarg `delta` renamed to `dt`, for uniformity with other Readers.
     .. versionchanged:: 0.17.0
        Uses :mod:`scipy.io.netcdf` and supports the *mmap* kwarg.
+
     """
 
     format = ['NCDF', 'NC']
@@ -458,8 +459,8 @@ class NCDFReader(base.ReaderBase):
              'force': 'kcal/(mol*Angstrom)'}
     _Timestep = Timestep
 
-    def __init__(self, filename, n_atoms=None, **kwargs):
-        self._mmap = kwargs.pop('mmap', None)
+    def __init__(self, filename, n_atoms=None, mmap=None, **kwargs):
+        self._mmap = mmap
 
         super(NCDFReader, self).__init__(filename, **kwargs)
 
@@ -537,7 +538,7 @@ class NCDFReader(base.ReaderBase):
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
-        with scipy.io.netcdf.netcdf_file(filename, mmap=True) as f:
+        with scipy.io.netcdf.netcdf_file(filename, mmap=None) as f:
             n_atoms = f.dimensions['atom']
         return n_atoms
 
@@ -597,9 +598,11 @@ class NCDFReader(base.ReaderBase):
     def close(self):
         """Close trajectory; any further access will raise an :exc:`IOError`.
 
-        .. Note:: The underlying :mod:`scipy.io.netcdf` module open netcdf
-                  files with `mmap()`. Hence *any* reference to an array
-                  *must* be removed before the file can be closed.
+        .. Note:: The underlying :mod:`scipy.io.netcdf` module may open netcdf
+                  files with :class:`~mmap.mmap` if ``mmap=True`` was
+                  set. Hence *any* reference to an array *must* be removed
+                  before the file can be closed.
+
         """
         if self.trjfile is not None:
             self.trjfile.close()
@@ -769,7 +772,7 @@ class NCDFWriter(base.WriterBase):
         """Initialize netcdf AMBER 1.0 trajectory.
 
         The trajectory is opened when the first frame is written
-        because that this is the earliest time that we can detect if the
+        because that is the earliest time that we can detect if the
         output should contain periodicity information (i.e. the unit
         cell dimensions).
 
@@ -793,8 +796,7 @@ class NCDFWriter(base.WriterBase):
             ncfile = netCDF4.Dataset(self.filename, 'w', format='NETCDF3_64BIT')
         else:
             ncfile = scipy.io.netcdf.netcdf_file(self.filename,
-                                                 mode='w', version=2,
-                                                 mmap=False)
+                                                 mode='w', version=2)
             wmsg = "Could not find netCDF4 module. Falling back to MUCH slower "\
                    "scipy.io.netcdf implementation for writing."
             logger.warning(wmsg)
