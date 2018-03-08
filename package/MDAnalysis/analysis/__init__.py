@@ -124,6 +124,7 @@ __all__ = [
     'polymer',
     'psa',
     'rdf',
+    'rdf_s',
     'rms',
     'waterdynamics',
 ]
