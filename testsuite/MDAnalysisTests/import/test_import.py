@@ -26,6 +26,12 @@ import subprocess
 
 """Test if importing MDAnalysis has unwanted side effects (PR #1794)."""
 
+# Python 2/3 compatibility:
+try:
+    reload = importlib.reload
+except AttributeError:
+    pass
+
 class TestMDAImport(object):
     # Tests concerning importing MDAnalysis.
     def test_os_dot_fork_not_called(self):
