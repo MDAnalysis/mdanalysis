@@ -28,19 +28,38 @@ import subprocess
 
 class TestMDAImport(object):
     # Tests concerning importing MDAnalysis.
-    def test_os_dot_fork_not_called_and_not_none(self):
+    def test_os_dot_fork_not_called(self):
         # This test has to run in a separate Python instance and is therefore
-        # offloaded to the script "mda_import.py"
+        # offloaded to the script "fork_called.py".
         loc = __file__
         if loc.endswith('.pyc') and os.path.exists(loc[:-1]):
             loc = loc[:-1]
         loc = os.path.dirname(os.path.realpath(loc))
-        mda_import_py = os.path.join(loc, 'mda_import.py')
+        script = os.path.join(loc, 'fork_called.py')
         encoding = sys.stdout.encoding
         if encoding is None:
             encoding = "utf-8"
         try:
-            out = subprocess.check_output([sys.executable, mda_import_py],
+            out = subprocess.check_output([sys.executable, script],
+                                          stderr=subprocess.STDOUT)\
+                                         .decode(encoding)
+        except subprocess.CalledProcessError as err:
+            print(err.output)
+            raise(err)
+
+    def test_os_dot_fork_not_none(self):
+        # This test has to run in a separate Python instance and is therefore
+        # offloaded to the script "fork_restored.py".
+        loc = __file__
+        if loc.endswith('.pyc') and os.path.exists(loc[:-1]):
+            loc = loc[:-1]
+        loc = os.path.dirname(os.path.realpath(loc))
+        script = os.path.join(loc, 'fork_restored.py')
+        encoding = sys.stdout.encoding
+        if encoding is None:
+            encoding = "utf-8"
+        try:
+            out = subprocess.check_output([sys.executable, script],
                                           stderr=subprocess.STDOUT)\
                                          .decode(encoding)
         except subprocess.CalledProcessError as err:
