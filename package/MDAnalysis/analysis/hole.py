@@ -273,7 +273,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
-from MDAnalysis import Universe
+import MDAnalysis
 from MDAnalysis.exceptions import ApplicationError
 from MDAnalysis.lib.util import which, realpath, asiterable
 from MDAnalysis.lib.util import FORTRANReader
@@ -1098,7 +1098,7 @@ class HOLE(BaseHOLE):
                 raise ValueError("Glob pattern {0!r} did not find any files.".format(self.filename))
             logger.info("Found %d input files based on glob pattern %s", length, self.filename)
         if self.dcd:
-            u = Universe(self.filename, self.dcd)
+            u = MDAnalysis.Universe(self.filename, self.dcd)
             length = int((u.trajectory.n_frames - self.dcd_iniskip) / (self.dcd_step + 1))
             logger.info("Found %d input frames in DCD trajectory %r", length, self.dcd)
 
@@ -1209,7 +1209,7 @@ class HOLEtraj(BaseHOLE):
              :meth:`~MDAnalysis.core.universe.Universe.select_atoms` to select
              the group of atoms that is to be analysed by HOLE. The default is
              "protein" to include all protein residues.
-        cpoint : bool or array_like, optional
+        cpoint : bool or array_like or AtomGroup, optional
              Point inside the pore to start the HOLE search procedure. The
              default is ``None`` to select HOLE's internal search procedure.
 
@@ -1217,12 +1217,19 @@ class HOLEtraj(BaseHOLE):
              :meth:`~MDAnalysis.core.groups.AtomGroup.center_of_geometry` of
              the `selection` from the first frame of the trajectory.
 
+             If it is a :class:`~MDAnalysis.core.groups.AtomGroup`
+             then the cpoint is calculated for each step as the center
+             of geometry of the selection.
+
              If `cpoint` is not set or set to ``None`` then HOLE guesses it
              with its own algorithm (for each individual frame).
         kwargs : `**kwargs`
              All other keywords are passed on to :class:`HOLE` (see there for
              description).
 
+
+        .. versionchanged:: 0.17.1
+           `cpoint` can also be an ``AtomGroup``
         """
 
         self.universe = universe
@@ -1234,10 +1241,17 @@ class HOLEtraj(BaseHOLE):
         self.step = kwargs.pop('step', None)
 
         self.cpoint = kwargs.pop('cpoint', None)
-        if self.cpoint is True:
-            self.cpoint = self.guess_cpoint(selection=self.selection)
-            logger.info("Guessed CPOINT = %r from selection %r", self.cpoint, self.selection)
-        kwargs['cpoint'] = self.cpoint
+        self._dynamic_cpoint = False
+        if isinstance(self.cpoint, MDAnalysis.core.groups.AtomGroup):
+            self.cpoint = self.cpoint.atoms  # make sure we look at the atoms
+            self._dynamic_cpoint = True
+            logger.info("Calculating CPOINT every frame from AtomGroup with size %d",
+                        self.cpoint.n_atoms)
+        else:
+            if self.cpoint is True:
+                self.cpoint = self.guess_cpoint(selection=self.selection)
+                logger.info("Guessed CPOINT = %r from selection %r", self.cpoint, self.selection)
+            kwargs['cpoint'] = self.cpoint
 
         self.hole_kwargs = kwargs
 
@@ -1306,6 +1320,10 @@ class HOLEtraj(BaseHOLE):
         protein = self.universe.select_atoms(self.selection)
         for q, ts in zip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
             logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
+            if self._dynamic_cpoint:
+                hole_kw['cpoint'] = self.cpoint.center_of_geometry()
+                logger.info("New dynamic CPOINT %r for frame %r", hole_kw['cpoint'], ts.frame)
+
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)  # only need an empty file that can be overwritten, close right away (Issue 129)
             try:

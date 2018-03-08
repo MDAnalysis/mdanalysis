@@ -31,6 +31,8 @@ Enhancements
   * Added boolean property *Group.isunique (PR #1922)
   * Added *Group.copy() methods returning an identical copy of the respective
     group (PR #1922)
+  * HOLEtraj kwarg cpoint can now be an AtomGroup in order to
+    dynamically set CPOINT for each frame (PR #1814)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)

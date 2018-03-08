@@ -29,6 +29,7 @@ import MDAnalysis.analysis.hole
 from MDAnalysis.analysis.hole import HOLEtraj, HOLE
 
 from numpy.testing import (
+    assert_equal,
     assert_almost_equal,
     assert_array_equal,
     assert_array_almost_equal
@@ -74,18 +75,21 @@ class TestHOLE(object):
 
         p = profiles_values[0]
 
-        assert len(p) == 425, "wrong number of points in HOLE profile"
+        assert_equal(len(p), 425, err_msg="wrong number of points in HOLE profile")
         assert_almost_equal(p.rxncoord.mean(), -1.41225, err_msg="wrong mean HOLE rxncoord")
         assert_almost_equal(p.radius.min(), 1.19707, err_msg="wrong min HOLE radius")
 
     def test_vmd_surface(self, tmpdir, H):
         with tmpdir.as_cwd():
             filename = H.create_vmd_surface(filename="hole.vmd")
-            assert len(open(filename).readlines()) == 6504, "HOLE VMD surface file is incomplete"
+            with open(filename) as f:
+                nlines = len(f.readlines())
+            assert_equal(nlines, 6504,
+                         err_msg="HOLE VMD surface file is incomplete")
 
 
-@pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
-class TestHOLEtraj(object):
+
+class _TestHOLEtraj(object):
     filename = MULTIPDB_HOLE
     start = 5
     stop = 7
@@ -108,23 +112,34 @@ class TestHOLEtraj(object):
     def frames(self, universe):
         return [ts.frame for ts in universe.trajectory[self.start:self.stop]]
 
+    @pytest.fixture()
+    def reference(self):
+        return {
+            "profile length": [401, 399],
+            "mean HOLE rxncoord": [1.98767,  0.0878],
+            "minimum radius": [1.19819, 1.29628],
+            "min_radius": np.array([[5., 1.19819], [6., 1.29628]]),
+        }
+
+
     # This is VERY slow on 11 frames so we just take 2
-    def test_HOLEtraj(self, H, frames):
+    def test_HOLEtraj(self, H, frames, reference):
         assert_array_equal(sorted(H.profiles.keys()), frames,
                            err_msg="H.profiles.keys() should contain the frame numbers")
 
         data = np.transpose([(len(p), p.rxncoord.mean(), p.radius.min())
                              for p in H.profiles.values()])
 
-        assert_array_equal(data[0], [401, 399], err_msg="incorrect profile lengths")
-        assert_array_almost_equal(data[1], [1.98767,  0.0878], err_msg="wrong mean HOLE rxncoord")
-        assert_array_almost_equal(data[2], [1.19819, 1.29628], err_msg="wrong minimum radius")
+        assert_array_equal(data[0], reference["profile length"],
+                           err_msg="incorrect profile lengths")
+        assert_array_almost_equal(data[1], reference["mean HOLE rxncoord"],
+                                  err_msg="wrong mean HOLE rxncoord")
+        assert_array_almost_equal(data[2], reference["minimum radius"],
+                                  err_msg="wrong minimum radius")
 
-    def test_min_radius(self, H):
+    def test_min_radius(self, H, reference):
         assert_array_almost_equal(
-            H.min_radius(),
-            np.array([[5., 1.19819],
-                      [6., 1.29628]]),
+            H.min_radius(), reference['min_radius'],
             err_msg="min_radius() array not correct"
         )
 
@@ -139,6 +154,33 @@ class TestHOLEtraj(object):
     def test_plot3D_rmax(self, H):
         ax = H.plot3D(rmax=2.5)
         assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), "H.plot3D(rmax=float) did not produce an Axes3D instance"
+
+
+@pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
+class TestHOLEtraj_default(_TestHOLEtraj):
+    pass
+
+@pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
+class TestHOLEtraj_dynamic_cpoint(_TestHOLEtraj):
+
+    @pytest.fixture()
+    def reference(self):
+        return {
+            "profile length": [401, 399],
+            "mean HOLE rxncoord": [ 1.98767, -0.1122 ],
+            "minimum radius": [1.19819, 1.29357],
+            "min_radius": np.array([[5., 1.19819], [6., 1.29357]]),
+        }
+
+
+    @pytest.fixture()
+    def H(self, universe, tmpdir):
+        calphas = universe.select_atoms("name CA")
+        with tmpdir.as_cwd():
+            H = HOLEtraj(universe, cpoint=calphas, start=self.start, stop=self.stop, raseed=31415)
+            H.run()
+        return H
+
 
 
 @pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
