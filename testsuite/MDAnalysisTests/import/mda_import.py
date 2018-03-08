@@ -20,29 +20,15 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import, print_function
-import sys
 import os
 import subprocess
+import mock
 
-"""Test if importing MDAnalysis has unwanted side effects (PR #1794)."""
+"""Tests whether os.fork() is called as a side effect when importing
+MDAnalysis. Also checks if os.fork() is restored after workarounds.
+See PR #1794 for details."""
 
-class TestMDAImport(object):
-    # Tests concerning importing MDAnalysis.
-    def test_os_dot_fork_not_called_and_not_none(self):
-        # This test has to run in a separate Python instance and is therefore
-        # offloaded to the script "mda_import.py"
-        loc = __file__
-        if loc.endswith('.pyc') and os.path.exists(loc[:-1]):
-            loc = loc[:-1]
-        loc = os.path.dirname(os.path.realpath(loc))
-        mda_import_py = os.path.join(loc, 'mda_import.py')
-        encoding = sys.stdout.encoding
-        if encoding is None:
-            encoding = "utf-8"
-        try:
-            out = subprocess.check_output([sys.executable, mda_import_py],
-                                          stderr=subprocess.STDOUT)\
-                                         .decode(encoding)
-        except subprocess.CalledProcessError as err:
-            print(err.output)
-            raise(err)
+with mock.patch('os.fork') as os_dot_fork:
+    import MDAnalysis
+    assert not os_dot_fork.called
+assert os.fork is not None
