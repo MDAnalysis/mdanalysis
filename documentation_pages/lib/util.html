@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>11.2.8. Helper functions — MDAnalysis.lib.util &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -28,7 +36,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -37,7 +46,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.lib.util"></span><div class="section" id="helper-functions-mdanalysis-lib-util">
-<h1>11.2.8. Helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Permalink to this headline">¶</a></h1>
+<h1>11.2.8. Helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Permalink to this headline">¶</a></h1>
 <p>Small helper functions that don’t fit anywhere else.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Moved mathematical functions into lib.mdamath</p>
@@ -53,13 +62,13 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><em>NamedStream</em></a>) – filename; extension is replaced unless <code class="docutils literal notranslate"><span class="pre">keep=True</span></code>;
-<cite>name</cite> can also be a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> (and its
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">NamedStream.name</span></code> will be changed accordingly)</li>
-<li><strong>ext</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – extension to use in the new filename</li>
+<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><em>NamedStream</em></a>) – filename; extension is replaced unless <code class="docutils literal"><span class="pre">keep=True</span></code>;
+<cite>name</cite> can also be a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a> (and its
+<code class="xref py py-attr docutils literal"><span class="pre">NamedStream.name</span></code> will be changed accordingly)</li>
+<li><strong>ext</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – extension to use in the new filename</li>
 <li><strong>keep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – <ul>
-<li><code class="docutils literal notranslate"><span class="pre">False</span></code>: replace existing extension with <cite>ext</cite>;</li>
-<li><code class="docutils literal notranslate"><span class="pre">True</span></code>: keep old extension if one existed</li>
+<li><code class="docutils literal"><span class="pre">False</span></code>: replace existing extension with <cite>ext</cite>;</li>
+<li><code class="docutils literal"><span class="pre">True</span></code>: keep old extension if one existed</li>
 </ul>
 </li>
 </ul>
@@ -68,19 +77,19 @@
 </tbody>
 </table>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Also permits <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> to pass through.</p>
+<p><span class="versionmodified">Changed in version 0.9.0: </span>Also permits <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a> to pass through.</p>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.lib.util.openany">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">openany</code><span class="sig-paren">(</span><em>datasource</em>, <em>mode='rt'</em>, <em>reset=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#openany"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.openany" title="Permalink to this definition">¶</a></dt>
-<dd><p>Context manager for <a class="reference internal" href="#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal notranslate"><span class="pre">anyopen()</span></code></a>.</p>
-<p>Open the <cite>datasource</cite> and close it when the context of the <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.6)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a>
+<dd><p>Context manager for <a class="reference internal" href="#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal"><span class="pre">anyopen()</span></code></a>.</p>
+<p>Open the <cite>datasource</cite> and close it when the context of the <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.6)"><code class="xref std std-keyword docutils literal"><span class="pre">with</span></code></a>
 statement exits.</p>
-<p><cite>datasource</cite> can be a filename or a stream (see <a class="reference internal" href="#MDAnalysis.lib.util.isstream" title="MDAnalysis.lib.util.isstream"><code class="xref py py-func docutils literal notranslate"><span class="pre">isstream()</span></code></a>). A stream
-is reset to its start if possible (via <a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase.seek" title="(in Python v3.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a> or
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code>).</p>
+<p><cite>datasource</cite> can be a filename or a stream (see <a class="reference internal" href="#MDAnalysis.lib.util.isstream" title="MDAnalysis.lib.util.isstream"><code class="xref py py-func docutils literal"><span class="pre">isstream()</span></code></a>). A stream
+is reset to its start if possible (via <a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase.seek" title="(in Python v3.6)"><code class="xref py py-meth docutils literal"><span class="pre">seek()</span></code></a> or
+<code class="xref py py-meth docutils literal"><span class="pre">reset()</span></code>).</p>
 <p>The advantage of this function is that very different input sources
 (“streams”) can be used for a “file”, ranging from files on disk (including
 compressed files) to open file objects to sockets and strings—as long as
@@ -92,7 +101,7 @@ they have a file-like interface.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>datasource</strong> (<em>a file</em><em> or </em><em>a stream</em>) – </li>
 <li><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'w'}</em><em> (</em><em>optional</em><em>)</em>) – open in r(ead) or w(rite) mode</li>
-<li><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – try to read (<cite>mode</cite> ‘r’) the stream from the start [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – try to read (<cite>mode</cite> ‘r’) the stream from the start [<code class="docutils literal"><span class="pre">True</span></code>]</li>
 </ul>
 </td>
 </tr>
@@ -100,21 +109,21 @@ they have a file-like interface.</p>
 </table>
 <p class="rubric">Examples</p>
 <p>Open a gzipped file and process it line by line:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="s2">&quot;input.pdb.gz&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pdb</span><span class="p">:</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="s2">&quot;input.pdb.gz&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pdb</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">pdb</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ATOM&#39;</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Open a URL and read it:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">urllib2</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">urllib2</span>
 <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;https://www.mdanalysis.org/&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">html</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">html</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal notranslate"><span class="pre">anyopen()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal"><span class="pre">anyopen()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -122,18 +131,18 @@ they have a file-like interface.</p>
 <dt id="MDAnalysis.lib.util.anyopen">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">anyopen</code><span class="sig-paren">(</span><em>datasource</em>, <em>mode='rt'</em>, <em>reset=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#anyopen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.anyopen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open datasource (gzipped, bzipped, uncompressed) and return a stream.</p>
-<p><cite>datasource</cite> can be a filename or a stream (see <a class="reference internal" href="#MDAnalysis.lib.util.isstream" title="MDAnalysis.lib.util.isstream"><code class="xref py py-func docutils literal notranslate"><span class="pre">isstream()</span></code></a>). By
+<p><cite>datasource</cite> can be a filename or a stream (see <a class="reference internal" href="#MDAnalysis.lib.util.isstream" title="MDAnalysis.lib.util.isstream"><code class="xref py py-func docutils literal"><span class="pre">isstream()</span></code></a>). By
 default, a stream is reset to its start if possible (via
-<a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase.seek" title="(in Python v3.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a> or <code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code>).</p>
-<p>If possible, the attribute <code class="docutils literal notranslate"><span class="pre">stream.name</span></code> is set to the filename or
+<a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase.seek" title="(in Python v3.6)"><code class="xref py py-meth docutils literal"><span class="pre">seek()</span></code></a> or <code class="xref py py-meth docutils literal"><span class="pre">reset()</span></code>).</p>
+<p>If possible, the attribute <code class="docutils literal"><span class="pre">stream.name</span></code> is set to the filename or
 “&lt;stream&gt;” if no filename could be associated with the <em>datasource</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>datasource</strong> – a file (from <code class="xref py py-class docutils literal notranslate"><span class="pre">file</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a>) or a stream (e.g. from
-<code class="xref py py-func docutils literal notranslate"><span class="pre">urllib2.urlopen()</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">cStringIO.StringIO</span></code>)</li>
+<li><strong>datasource</strong> – a file (from <code class="xref py py-class docutils literal"><span class="pre">file</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.6)"><code class="xref py py-func docutils literal"><span class="pre">open()</span></code></a>) or a stream (e.g. from
+<code class="xref py py-func docutils literal"><span class="pre">urllib2.urlopen()</span></code> or <code class="xref py py-class docutils literal"><span class="pre">cStringIO.StringIO</span></code>)</li>
 <li><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'w'</em><em>, </em><em>'a'}</em><em> (</em><em>optional</em><em>)</em>) – Open in r(ead), w(rite) or a(ppen) mode. More complicated
 modes (‘r+’, ‘w+’, …) are not supported; only the first letter of
 <cite>mode</cite> is used and thus any additional modifiers are silently ignored.</li>
@@ -152,13 +161,13 @@ modes (‘r+’, ‘w+’, …) are not supported; only the first letter of
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal notranslate"><span class="pre">openany()</span></code></a></dt>
-<dd>to be used with the <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.6)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> statement.</dd>
+<dt><a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal"><span class="pre">openany()</span></code></a></dt>
+<dd>to be used with the <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.6)"><code class="xref std std-keyword docutils literal"><span class="pre">with</span></code></a> statement.</dd>
 </dl>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Only returns the <code class="docutils literal notranslate"><span class="pre">stream</span></code> and tries to set <code class="docutils literal notranslate"><span class="pre">stream.name</span> <span class="pre">=</span> <span class="pre">filename</span></code> instead of the previous
-behavior to return a tuple <code class="docutils literal notranslate"><span class="pre">(stream,</span> <span class="pre">filename)</span></code>.</p>
+<p><span class="versionmodified">Changed in version 0.9.0: </span>Only returns the <code class="docutils literal"><span class="pre">stream</span></code> and tries to set <code class="docutils literal"><span class="pre">stream.name</span> <span class="pre">=</span> <span class="pre">filename</span></code> instead of the previous
+behavior to return a tuple <code class="docutils literal"><span class="pre">(stream,</span> <span class="pre">filename)</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -167,15 +176,15 @@ behavior to return a tuple <code class="docutils literal notranslate"><span clas
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">greedy_splitext</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#greedy_splitext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.greedy_splitext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split extension in path <em>p</em> at the left-most separator.</p>
 <p>Extensions are taken to be separated from the filename with the
-separator <a class="reference external" href="https://docs.python.org/3/library/os.html#os.extsep" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">os.extsep</span></code></a> (as used by <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.splitext" title="(in Python v3.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.splitext()</span></code></a>).</p>
+separator <a class="reference external" href="https://docs.python.org/3/library/os.html#os.extsep" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">os.extsep</span></code></a> (as used by <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.splitext" title="(in Python v3.6)"><code class="xref py py-func docutils literal"><span class="pre">os.path.splitext()</span></code></a>).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – path</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>(root, extension)</strong> – where <code class="docutils literal notranslate"><span class="pre">root</span></code> is the full path and filename with all
-extensions removed whereas <code class="docutils literal notranslate"><span class="pre">extension</span></code> is the string of
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>(root, extension)</strong> – where <code class="docutils literal"><span class="pre">root</span></code> is the full path and filename with all
+extensions removed whereas <code class="docutils literal"><span class="pre">extension</span></code> is the string of
 all extensions.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a></td>
@@ -183,7 +192,7 @@ all extensions.</td>
 </tbody>
 </table>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">greedy_splitext</span><span class="p">(</span><span class="s2">&quot;/home/joe/protein.pdb.bz2&quot;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">greedy_splitext</span><span class="p">(</span><span class="s2">&quot;/home/joe/protein.pdb.bz2&quot;</span><span class="p">)</span>
 <span class="go">(&#39;/home/joe/protein&#39;, &#39;.pdb.bz2&#39;)</span>
 </pre></div>
 </div>
@@ -192,7 +201,7 @@ all extensions.</td>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.which">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">which</code><span class="sig-paren">(</span><em>program</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#which"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.which" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine full path of executable <cite>program</cite> on <span class="target" id="index-0"></span><a class="reference external" href="https://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v2.2.0)"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
+<dd><p>Determine full path of executable <cite>program</cite> on <span class="target" id="index-0"></span><a class="reference external" href="https://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v2.2.0)"><code class="xref std std-envvar docutils literal"><span class="pre">PATH</span></code></a>.</p>
 <p>(Jay at <a class="reference external" href="http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python">http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python</a>)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -200,9 +209,9 @@ all extensions.</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>programe</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – name of the executable</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>path</strong> – absolute path to the executable if it can be found, else <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>path</strong> – absolute path to the executable if it can be found, else <code class="docutils literal"><span class="pre">None</span></code></td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)">str</a> or None</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)">str</a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)">None</a></td>
 </tr>
 </tbody>
 </table>
@@ -211,9 +220,9 @@ all extensions.</td>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.realpath">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">realpath</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#realpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.realpath" title="Permalink to this definition">¶</a></dt>
-<dd><p>Join all args and return the real path, rooted at <code class="docutils literal notranslate"><span class="pre">/</span></code>.</p>
-<p>Expands ‘~’, ‘~user’, and environment variables such as <span class="target" id="index-1"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">$HOME</span></code>.</p>
-<p>Returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if any of the args is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dd><p>Join all args and return the real path, rooted at <code class="docutils literal"><span class="pre">/</span></code>.</p>
+<p>Expands ‘~’, ‘~user’, and environment variables such as <span class="target" id="index-1"></span><code class="xref std std-envvar docutils literal"><span class="pre">$HOME</span></code>.</p>
+<p>Returns <code class="docutils literal"><span class="pre">None</span></code> if any of the args is <code class="docutils literal"><span class="pre">None</span></code>.</p>
 </dd></dl>
 
 <dl class="function">
@@ -226,14 +235,14 @@ around compressed format extensions.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><em>stream</em>) – path to the file or a stream, in which case <code class="docutils literal notranslate"><span class="pre">filename.name</span></code> is looked
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><em>stream</em>) – path to the file or a stream, in which case <code class="docutils literal"><span class="pre">filename.name</span></code> is looked
 at for a hint to the format</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>format</strong> – format specifier (upper case)</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)">str</a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if the heuristics are insufficient to guess a supported format</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – if the heuristics are insufficient to guess a supported format</td>
 </tr>
 </tbody>
 </table>
@@ -247,15 +256,15 @@ at for a hint to the format</td>
 <h2>11.2.8.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h2>
 <p>Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
-internal use of <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal notranslate"><span class="pre">openany()</span></code></a>). It is also possible to provide more
-general streams as inputs, such as a <code class="xref py py-func docutils literal notranslate"><span class="pre">cStringIO.StringIO()</span></code>
+internal use of <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal"><span class="pre">openany()</span></code></a>). It is also possible to provide more
+general streams as inputs, such as a <code class="xref py py-func docutils literal"><span class="pre">cStringIO.StringIO()</span></code>
 instances (essentially, a memory buffer) by wrapping these instances
-into a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a>. This <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> can then be
+into a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a>. This <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a> can then be
 used in place of an ordinary file name (typically, with a
 class:<cite>~MDAnalysis.core.universe.Universe</cite> but it is also possible to
-<em>write</em> to such a stream using <code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.Writer()</span></code>).</p>
-<p>In the following example, we use a PDB stored as a string <code class="docutils literal notranslate"><span class="pre">pdb_s</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<em>write</em> to such a stream using <code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></code>).</p>
+<p>In the following example, we use a PDB stored as a string <code class="docutils literal"><span class="pre">pdb_s</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">NamedStream</span>
 <span class="kn">import</span> <span class="nn">cStringIO</span>
 
@@ -268,17 +277,17 @@ class:<cite>~MDAnalysis.core.universe.Universe</cite> but it is also possible to
 </pre></div>
 </div>
 <p>It is important to provide a proper pseudo file name with the correct extension
-(“.pdb”) to <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> because the file type recognition uses the
+(“.pdb”) to <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a> because the file type recognition uses the
 extension of the file name to determine the file format or alternatively
-provide the <code class="docutils literal notranslate"><span class="pre">format=&quot;pdb&quot;</span></code> keyword argument to the
-<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>.</p>
+provide the <code class="docutils literal"><span class="pre">format=&quot;pdb&quot;</span></code> keyword argument to the
+<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a>.</p>
 <p>The use of streams becomes more interesting when MDAnalysis is used as glue
 between different analysis packages and when one can arrange things so that
 intermediate frames (typically in the PDB format) are not written to disk but
-remain in memory via e.g. <code class="xref py py-mod docutils literal notranslate"><span class="pre">cStringIO</span></code> buffers.</p>
+remain in memory via e.g. <code class="xref py py-mod docutils literal"><span class="pre">cStringIO</span></code> buffers.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">A remote connection created by <code class="xref py py-func docutils literal notranslate"><span class="pre">urllib2.urlopen()</span></code> is not seekable
+<p class="last">A remote connection created by <code class="xref py py-func docutils literal"><span class="pre">urllib2.urlopen()</span></code> is not seekable
 and therefore will often not work as an input. But try it…</p>
 </div>
 <dl class="class">
@@ -287,32 +296,32 @@ and therefore will often not work as an input. But try it…</p>
 <dd><p>Stream that also provides a (fake) name.</p>
 <p>By wrapping a stream <cite>stream</cite> in this class, it can be passed to
 code that uses inspection of the filename to make decisions. For
-instance. <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.split" title="(in Python v3.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.split()</span></code></a> will work correctly on a
-<a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a>.</p>
+instance. <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.split" title="(in Python v3.6)"><code class="xref py py-func docutils literal"><span class="pre">os.path.split()</span></code></a> will work correctly on a
+<a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a>.</p>
 <p>The class can be used as a context manager.</p>
-<p><a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> is derived from <a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.IOBase</span></code></a> (to indicate that
+<p><a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a> is derived from <a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">io.IOBase</span></code></a> (to indicate that
 it is a stream). Many operations that normally expect a string will also
-work with a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a>; for instance, most of the functions in
-<a class="reference external" href="https://docs.python.org/3/library/os.path.html#module-os.path" title="(in Python v3.6)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">os.path</span></code></a> will work with the exception of <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.expandvars" title="(in Python v3.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.expandvars()</span></code></a>
-and <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.expanduser" title="(in Python v3.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.expanduser()</span></code></a>, which will return the <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a>
+work with a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a>; for instance, most of the functions in
+<a class="reference external" href="https://docs.python.org/3/library/os.path.html#module-os.path" title="(in Python v3.6)"><code class="xref py py-mod docutils literal"><span class="pre">os.path</span></code></a> will work with the exception of <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.expandvars" title="(in Python v3.6)"><code class="xref py py-func docutils literal"><span class="pre">os.path.expandvars()</span></code></a>
+and <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.expanduser" title="(in Python v3.6)"><code class="xref py py-func docutils literal"><span class="pre">os.path.expanduser()</span></code></a>, which will return the <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a>
 itself instead of a string if no substitutions were made.</p>
 <p class="rubric">Example</p>
-<p>Wrap a <code class="xref py py-func docutils literal notranslate"><span class="pre">cStringIO.StringIO()</span></code> instance to write to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cStringIO</span>
+<p>Wrap a <code class="xref py py-func docutils literal"><span class="pre">cStringIO.StringIO()</span></code> instance to write to:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cStringIO</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="n">stream</span> <span class="o">=</span> <span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
 <span class="n">f</span> <span class="o">=</span> <span class="n">NamedStream</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="s2">&quot;output.pdb&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Wrap a <code class="xref py py-class docutils literal notranslate"><span class="pre">file</span></code> instance to read from:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stream</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;input.pdb&quot;</span><span class="p">)</span>
+<p>Wrap a <code class="xref py py-class docutils literal"><span class="pre">file</span></code> instance to read from:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">stream</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;input.pdb&quot;</span><span class="p">)</span>
 <span class="n">f</span> <span class="o">=</span> <span class="n">NamedStream</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">stream</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Use as a context manager (closes stream automatically when the
-<a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.6)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> block is left):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">NamedStream</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;input.pdb&quot;</span><span class="p">),</span> <span class="s2">&quot;input.pdb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.6)"><code class="xref std std-keyword docutils literal"><span class="pre">with</span></code></a> block is left):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">NamedStream</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;input.pdb&quot;</span><span class="p">),</span> <span class="s2">&quot;input.pdb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
    <span class="c1"># use f</span>
    <span class="nb">print</span> <span class="n">f</span><span class="o">.</span><span class="n">closed</span>  <span class="c1"># --&gt; False</span>
    <span class="c1"># ...</span>
@@ -321,32 +330,32 @@ itself instead of a string if no substitutions were made.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This class uses its own <code class="xref py py-meth docutils literal notranslate"><span class="pre">__getitem__()</span></code> method so if <cite>stream</cite>
-implements <code class="xref py py-meth docutils literal notranslate"><span class="pre">stream.__getitem__()</span></code> then that will be masked and
+<p class="last">This class uses its own <code class="xref py py-meth docutils literal"><span class="pre">__getitem__()</span></code> method so if <cite>stream</cite>
+implements <code class="xref py py-meth docutils literal"><span class="pre">stream.__getitem__()</span></code> then that will be masked and
 this class should not be used.</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">By default, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">NamedStream.close()</span></code></a> will <strong>not close the
-stream</strong> but instead <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> it to the
-beginning. <a class="footnote-reference" href="#namedstreamclose" id="id1">[1]</a> Provide the <code class="docutils literal notranslate"><span class="pre">force=True</span></code> keyword
-to <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">NamedStream.close()</span></code></a> to always close the stream.</p>
+<p class="last">By default, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></code></a> will <strong>not close the
+stream</strong> but instead <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><code class="xref py py-meth docutils literal"><span class="pre">reset()</span></code></a> it to the
+beginning. <a class="footnote-reference" href="#namedstreamclose" id="id1">[1]</a> Provide the <code class="docutils literal"><span class="pre">force=True</span></code> keyword
+to <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></code></a> to always close the stream.</p>
 </div>
-<p>Initialize the <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> from a <cite>stream</cite> and give it a <cite>name</cite>.</p>
+<p>Initialize the <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a> from a <cite>stream</cite> and give it a <cite>name</cite>.</p>
 <p>The constructor attempts to rewind the stream to the beginning unless
-the keyword <cite>reset</cite> is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>. If rewinding fails, a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.StreamWarning</span></code> is issued.</p>
+the keyword <cite>reset</cite> is set to <code class="docutils literal"><span class="pre">False</span></code>. If rewinding fails, a
+<code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.StreamWarning</span></code> is issued.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stream</strong> (<em>stream</em>) – an open stream (e.g. <code class="xref py py-class docutils literal notranslate"><span class="pre">file</span></code> or <code class="xref py py-func docutils literal notranslate"><span class="pre">cStringIO.StringIO()</span></code>)</li>
+<li><strong>stream</strong> (<em>stream</em>) – an open stream (e.g. <code class="xref py py-class docutils literal"><span class="pre">file</span></code> or <code class="xref py py-func docutils literal"><span class="pre">cStringIO.StringIO()</span></code>)</li>
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – the filename that should be associated with the stream</li>
-<li><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – start the stream from the beginning (either <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> or <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.seek" title="MDAnalysis.lib.util.NamedStream.seek"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a>)
+<li><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – start the stream from the beginning (either <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><code class="xref py py-meth docutils literal"><span class="pre">reset()</span></code></a> or <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.seek" title="MDAnalysis.lib.util.NamedStream.seek"><code class="xref py py-meth docutils literal"><span class="pre">seek()</span></code></a>)
 when the class instance is constructed</li>
-<li><strong>close</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – close the stream when a <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.6)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> block exits or when
-<a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> is called; note that the default is <strong>not to close
+<li><strong>close</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – close the stream when a <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.6)"><code class="xref std std-keyword docutils literal"><span class="pre">with</span></code></a> block exits or when
+<a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal"><span class="pre">close()</span></code></a> is called; note that the default is <strong>not to close
 the stream</strong></li>
 </ul>
 </td>
@@ -354,9 +363,9 @@ the stream</strong></li>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>By default, this stream will <em>not</em> be closed by <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.6)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> and
-<a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> (see there) unless the <cite>close</cite> keyword is set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>By default, this stream will <em>not</em> be closed by <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.6)"><code class="xref std std-keyword docutils literal"><span class="pre">with</span></code></a> and
+<a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal"><span class="pre">close()</span></code></a> (see there) unless the <cite>close</cite> keyword is set to
+<code class="docutils literal"><span class="pre">True</span></code>.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.0.</span></p>
 </div>
@@ -364,13 +373,13 @@ the stream</strong></li>
 <dt id="MDAnalysis.lib.util.NamedStream.close">
 <code class="descname">close</code><span class="sig-paren">(</span><em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset or close the stream.</p>
-<p>If <code class="xref py py-attr docutils literal notranslate"><span class="pre">NamedStream.close_stream</span></code> is set to <code class="docutils literal notranslate"><span class="pre">False</span></code> (the default)
-then this method will <em>not close the stream</em> and only <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> it.</p>
-<p>If the <em>force</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword is provided, the stream will be
+<p>If <code class="xref py py-attr docutils literal"><span class="pre">NamedStream.close_stream</span></code> is set to <code class="docutils literal"><span class="pre">False</span></code> (the default)
+then this method will <em>not close the stream</em> and only <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><code class="xref py py-meth docutils literal"><span class="pre">reset()</span></code></a> it.</p>
+<p>If the <em>force</em> = <code class="docutils literal"><span class="pre">True</span></code> keyword is provided, the stream will be
 closed.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This <code class="docutils literal notranslate"><span class="pre">close()</span></code> method is non-standard. <code class="docutils literal notranslate"><span class="pre">del</span> <span class="pre">NamedStream</span></code>
+<p class="last">This <code class="docutils literal"><span class="pre">close()</span></code> method is non-standard. <code class="docutils literal"><span class="pre">del</span> <span class="pre">NamedStream</span></code>
 always closes the underlying stream.</p>
 </div>
 </dd></dl>
@@ -378,14 +387,14 @@ always closes the underlying stream.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.lib.util.NamedStream.closed">
 <code class="descname">closed</code><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.closed" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if stream is closed.</p>
+<dd><p><code class="docutils literal"><span class="pre">True</span></code> if stream is closed.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.lib.util.NamedStream.fileno">
 <code class="descname">fileno</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.fileno"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.fileno" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the underlying file descriptor (an integer) of the stream if it exists.</p>
-<p>An <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a> is raised if the IO object does not use a file descriptor.</p>
+<p>An <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code></a> is raised if the IO object does not use a file descriptor.</p>
 </dd></dl>
 
 <dl class="method">
@@ -393,25 +402,15 @@ always closes the underlying stream.</p>
 <code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.flush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flush the write buffers of the stream if applicable.</p>
 <p>This does nothing for read-only and non-blocking streams. For file
-objects one also needs to call <a class="reference external" href="https://docs.python.org/3/library/os.html#os.fsync" title="(in Python v3.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.fsync()</span></code></a> to write contents to
+objects one also needs to call <a class="reference external" href="https://docs.python.org/3/library/os.html#os.fsync" title="(in Python v3.6)"><code class="xref py py-func docutils literal"><span class="pre">os.fsync()</span></code></a> to write contents to
 disk.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.lib.util.NamedStream.readable">
 <code class="descname">readable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.readable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.readable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the stream can be read from.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.lib.util.NamedStream.readline">
-<code class="descname">readline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.readline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.readline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read and return a line from the stream.</p>
-<p>If size is specified, at most size bytes will be read.</p>
-<p>The line terminator is always b’n’ for binary files; for text
-files, the newlines argument to open can be used to select the line
-terminator(s) recognized.</p>
+<dd><p>Return <code class="docutils literal"><span class="pre">True</span></code> if the stream can be read from.</p>
+<p>If <code class="docutils literal"><span class="pre">False</span></code>, <code class="xref py py-meth docutils literal"><span class="pre">read()</span></code> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -434,11 +433,11 @@ indicated by <cite>whence</cite>.</li>
 <li><strong>whence</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em><em> (</em><em>optional</em><em>)</em>) – <p>Values for <cite>whence</cite> are:</p>
 <blockquote>
 <div><ul>
-<li><code class="xref py py-data docutils literal notranslate"><span class="pre">io.SEEK_SET</span></code> or 0 – start of the stream (the default); <cite>offset</cite>
+<li><code class="xref py py-data docutils literal"><span class="pre">io.SEEK_SET</span></code> or 0 – start of the stream (the default); <cite>offset</cite>
 should be zero or positive</li>
-<li><code class="xref py py-data docutils literal notranslate"><span class="pre">io.SEEK_CUR</span></code> or 1 – current stream position; <cite>offset</cite> may be
+<li><code class="xref py py-data docutils literal"><span class="pre">io.SEEK_CUR</span></code> or 1 – current stream position; <cite>offset</cite> may be
 negative</li>
-<li><code class="xref py py-data docutils literal notranslate"><span class="pre">io.SEEK_END</span></code> or 2 – end of the stream; <cite>offset</cite> is usually
+<li><code class="xref py py-data docutils literal"><span class="pre">io.SEEK_END</span></code> or 2 – end of the stream; <cite>offset</cite> is usually
 negative</li>
 </ul>
 </div></blockquote>
@@ -459,9 +458,9 @@ negative</li>
 <dl class="method">
 <dt id="MDAnalysis.lib.util.NamedStream.seekable">
 <code class="descname">seekable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.seekable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.seekable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the stream supports random access.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.seek" title="MDAnalysis.lib.util.NamedStream.seek"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.tell" title="MDAnalysis.lib.util.NamedStream.tell"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tell()</span></code></a> and <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.truncate" title="MDAnalysis.lib.util.NamedStream.truncate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">truncate()</span></code></a> will
-raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
+<dd><p>Return <code class="docutils literal"><span class="pre">True</span></code> if the stream supports random access.</p>
+<p>If <code class="docutils literal"><span class="pre">False</span></code>, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.seek" title="MDAnalysis.lib.util.NamedStream.seek"><code class="xref py py-meth docutils literal"><span class="pre">seek()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.tell" title="MDAnalysis.lib.util.NamedStream.tell"><code class="xref py py-meth docutils literal"><span class="pre">tell()</span></code></a> and <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.truncate" title="MDAnalysis.lib.util.NamedStream.truncate"><code class="xref py py-meth docutils literal"><span class="pre">truncate()</span></code></a> will
+raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -488,8 +487,8 @@ is supplied). The current file position is not changed.</td>
 <dl class="method">
 <dt id="MDAnalysis.lib.util.NamedStream.writable">
 <code class="descname">writable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.writable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the stream can be written to.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">write()</span></code> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
+<dd><p>Return <code class="docutils literal"><span class="pre">True</span></code> if the stream can be written to.</p>
+<p>If <code class="docutils literal"><span class="pre">False</span></code>, <code class="xref py py-meth docutils literal"><span class="pre">write()</span></code> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -500,12 +499,12 @@ is supplied). The current file position is not changed.</td>
 <dd><p>Detect if <cite>obj</cite> is a stream.</p>
 <p>We consider anything a stream that has the methods</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">close()</span></code></li>
+<li><code class="docutils literal"><span class="pre">close()</span></code></li>
 </ul>
 <p>and either set of the following</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">read()</span></code>, <code class="docutils literal notranslate"><span class="pre">readline()</span></code>, <code class="docutils literal notranslate"><span class="pre">readlines()</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">write()</span></code>, <code class="docutils literal notranslate"><span class="pre">writeline()</span></code>, <code class="docutils literal notranslate"><span class="pre">writelines()</span></code></li>
+<li><code class="docutils literal"><span class="pre">read()</span></code>, <code class="docutils literal"><span class="pre">readline()</span></code>, <code class="docutils literal"><span class="pre">readlines()</span></code></li>
+<li><code class="docutils literal"><span class="pre">write()</span></code>, <code class="docutils literal"><span class="pre">writeline()</span></code>, <code class="docutils literal"><span class="pre">writelines()</span></code></li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -513,7 +512,7 @@ is supplied). The current file position is not changed.</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<em>stream</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">True</span></code> if <cite>obj</cite> is a stream, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if <cite>obj</cite> is a stream, <code class="docutils literal"><span class="pre">False</span></code> otherwise</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
 </tr>
@@ -521,7 +520,7 @@ is supplied). The current file position is not changed.</td>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference external" href="https://docs.python.org/3/library/io.html#module-io" title="(in Python v3.6)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">io</span></code></a></p>
+<p class="last"><a class="reference external" href="https://docs.python.org/3/library/io.html#module-io" title="(in Python v3.6)"><code class="xref py py-mod docutils literal"><span class="pre">io</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.0.</span></p>
@@ -534,26 +533,26 @@ is supplied). The current file position is not changed.</td>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.iterable">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">iterable</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.iterable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <cite>obj</cite> can be iterated over and is <em>not</em> a  string
-nor a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a></p>
+<dd><p>Returns <code class="docutils literal"><span class="pre">True</span></code> if <cite>obj</cite> can be iterated over and is <em>not</em> a  string
+nor a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.lib.util.asiterable">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">asiterable</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#asiterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.asiterable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns <cite>obj</cite> so that it can be iterated over.</p>
-<p>A string is <em>not</em> detected as and iterable and is wrapped into a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>
+<p>A string is <em>not</em> detected as and iterable and is wrapped into a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">list</span></code></a>
 with a single element.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.util.iterable" title="MDAnalysis.lib.util.iterable"><code class="xref py py-func docutils literal notranslate"><span class="pre">iterable()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.util.iterable" title="MDAnalysis.lib.util.iterable"><code class="xref py py-func docutils literal"><span class="pre">iterable()</span></code></a></p>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.lib.util.hasmethod">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">hasmethod</code><span class="sig-paren">(</span><em>obj</em>, <em>m</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#hasmethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.hasmethod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if object <em>obj</em> contains the method <em>m</em>.</p>
+<dd><p>Return <code class="docutils literal"><span class="pre">True</span></code> if object <em>obj</em> contains the method <em>m</em>.</p>
 </dd></dl>
 
 <dl class="class">
@@ -572,7 +571,7 @@ with a single element.</p>
 <p>The contents of lines in a file can be parsed according to FORTRAN format
 edit descriptors (see <a class="reference external" href="http://www.webcitation.org/5xbaWMV2x">Fortran Formats</a> for the syntax).</p>
 <p>Only simple one-character specifiers supported here: <em>I F E A X</em> (see
-<a class="reference internal" href="#MDAnalysis.lib.util.FORTRAN_format_regex" title="MDAnalysis.lib.util.FORTRAN_format_regex"><code class="xref py py-data docutils literal notranslate"><span class="pre">FORTRAN_format_regex</span></code></a>).</p>
+<a class="reference internal" href="#MDAnalysis.lib.util.FORTRAN_format_regex" title="MDAnalysis.lib.util.FORTRAN_format_regex"><code class="xref py py-data docutils literal"><span class="pre">FORTRAN_format_regex</span></code></a>).</p>
 <p>Strings are stripped of leading and trailing white space.</p>
 <p>Set up the reader with the FORTRAN format string.</p>
 <p>The string <cite>fmt</cite> should look like ‘2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10’.</p>
@@ -587,7 +586,7 @@ Formats</a></td>
 </table>
 <p class="rubric">Example</p>
 <p>Parsing of a standard CRD file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">atomformat</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span><span class="s1">&#39;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">atomformat</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span><span class="s1">&#39;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;coordinates.crd&#39;</span><span class="p">):</span>
     <span class="n">serial</span><span class="p">,</span><span class="n">TotRes</span><span class="p">,</span><span class="n">resName</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">chainID</span><span class="p">,</span><span class="n">resSeq</span><span class="p">,</span><span class="n">tempFactor</span> <span class="o">=</span> <span class="n">atomformat</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 </pre></div>
@@ -612,7 +611,7 @@ Formats</a></td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – The <cite>edit_descriptor</cite> is not recognized and cannot be parsed</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – The <cite>edit_descriptor</cite> is not recognized and cannot be parsed</td>
 </tr>
 </tbody>
 </table>
@@ -638,13 +637,13 @@ and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)">list</a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – Any of the conversions cannot be made (e.g. space for an int)</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – Any of the conversions cannot be made (e.g. space for an int)</td>
 </tr>
 </tbody>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.util.FORTRANReader.number_of_matches" title="MDAnalysis.lib.util.FORTRANReader.number_of_matches"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FORTRANReader.number_of_matches()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.util.FORTRANReader.number_of_matches" title="MDAnalysis.lib.util.FORTRANReader.number_of_matches"><code class="xref py py-meth docutils literal"><span class="pre">FORTRANReader.number_of_matches()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -653,8 +652,8 @@ and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 <dl class="data">
 <dt id="MDAnalysis.lib.util.FORTRAN_format_regex">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">FORTRAN_format_regex</code><em class="property"> = '(?P&lt;repeat&gt;\\d+?)(?P&lt;format&gt;[IFEAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\\d+)(\\.(?P&lt;decimals&gt;\\d+))?)?'</em><a class="headerlink" href="#MDAnalysis.lib.util.FORTRAN_format_regex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Regular expresssion (see <a class="reference external" href="https://docs.python.org/3/library/re.html#module-re" title="(in Python v3.6)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">re</span></code></a>) to parse a simple <a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">FORTRAN edit descriptor</a>.
-<code class="docutils literal notranslate"><span class="pre">(?P&lt;repeat&gt;\d?)(?P&lt;format&gt;[IFELAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?</span></code></p>
+<dd><p>Regular expresssion (see <a class="reference external" href="https://docs.python.org/3/library/re.html#module-re" title="(in Python v3.6)"><code class="xref py py-mod docutils literal"><span class="pre">re</span></code></a>) to parse a simple <a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">FORTRAN edit descriptor</a>.
+<code class="docutils literal"><span class="pre">(?P&lt;repeat&gt;\d?)(?P&lt;format&gt;[IFELAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?</span></code></p>
 </dd></dl>
 
 </div>
@@ -691,8 +690,8 @@ floats or arrays, depending on the input.</p>
 </tbody>
 </table>
 <p class="rubric">Example</p>
-<p>Use with <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html#numpy.histogram" title="(in NumPy v1.14)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogram()</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="n">fixedwidth_bins</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
+<p>Use with <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html#numpy.histogram" title="(in NumPy v1.14)"><code class="xref py py-func docutils literal"><span class="pre">numpy.histogram()</span></code></a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="n">fixedwidth_bins</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
 <span class="n">h</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">B</span><span class="p">[</span><span class="s1">&#39;Nbins&#39;</span><span class="p">],</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">],</span> <span class="n">B</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]))</span>
 </pre></div>
 </div>
@@ -708,28 +707,28 @@ floats or arrays, depending on the input.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>atoms</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><em>array_like</em>) – The atoms that the <cite>weights</cite> should be applied to. Typically this
-is a <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> but because only the length is compared,
-any sequence for which <code class="docutils literal notranslate"><span class="pre">len(atoms)</span></code> is defined is acceptable.</li>
+is a <code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code> but because only the length is compared,
+any sequence for which <code class="docutils literal"><span class="pre">len(atoms)</span></code> is defined is acceptable.</li>
 <li><strong>weights</strong> (<em>{&quot;mass&quot;</em><em>, </em><em>None}</em><em> or </em><em>array_like</em>) – All MDAnalysis functions or classes understand “mass” and will then
-use <code class="docutils literal notranslate"><span class="pre">atoms.masses</span></code>. <code class="docutils literal notranslate"><span class="pre">None</span></code> indicates equal weights for all atoms.
-Using an <code class="docutils literal notranslate"><span class="pre">array_like</span></code> assigns a custom weight to each element of
+use <code class="docutils literal"><span class="pre">atoms.masses</span></code>. <code class="docutils literal"><span class="pre">None</span></code> indicates equal weights for all atoms.
+Using an <code class="docutils literal"><span class="pre">array_like</span></code> assigns a custom weight to each element of
 <cite>atoms</cite>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>weights</strong> – If “mass” was selected, <code class="docutils literal notranslate"><span class="pre">atoms.masses</span></code> is returned, otherwise the
-value of <cite>weights</cite> (which can be <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>weights</strong> – If “mass” was selected, <code class="docutils literal"><span class="pre">atoms.masses</span></code> is returned, otherwise the
+value of <cite>weights</cite> (which can be <code class="docutils literal"><span class="pre">None</span></code>).</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">array_like or None</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">array_like or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)">None</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – If <cite>weights</cite> is not one of the allowed values or if “mass” is
-selected but <code class="docutils literal notranslate"><span class="pre">atoms.masses</span></code> is not available.</li>
-<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>weights</cite> is not a 1D array with the same length as
-<cite>atoms</cite>, then the exception is raised.  <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> is
-also raised if <code class="docutils literal notranslate"><span class="pre">atoms.masses</span></code> is not defined.</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> – If <cite>weights</cite> is not one of the allowed values or if “mass” is
+selected but <code class="docutils literal"><span class="pre">atoms.masses</span></code> is not available.</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If <cite>weights</cite> is not a 1D array with the same length as
+<cite>atoms</cite>, then the exception is raised.  <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> is
+also raised if <code class="docutils literal"><span class="pre">atoms.masses</span></code> is not defined.</li>
 </ul>
 </td>
 </tr>
@@ -754,13 +753,13 @@ also raised if <code class="docutils literal notranslate"><span class="pre">atom
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)">str</a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – No conversion can be made; the amino acid code is not defined.</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – No conversion can be made; the amino acid code is not defined.</td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Data are defined in <code class="xref py py-data docutils literal notranslate"><span class="pre">amino_acid_codes</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">inverse_aa_codes</span></code>.</p>
+<p class="last">Data are defined in <code class="xref py py-data docutils literal"><span class="pre">amino_acid_codes</span></code> and <code class="xref py py-data docutils literal"><span class="pre">inverse_aa_codes</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -799,7 +798,7 @@ aa codes are converted to 3-letter codes</td>
 <dt id="MDAnalysis.lib.util.conv_float">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">conv_float</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#conv_float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.conv_float" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert an object <cite>s</cite> to float if possible.</p>
-<p>Function to be passed into <a class="reference external" href="https://docs.python.org/3/library/functions.html#map" title="(in Python v3.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">map()</span></code></a> or a list comprehension. If
+<p>Function to be passed into <a class="reference external" href="https://docs.python.org/3/library/functions.html#map" title="(in Python v3.6)"><code class="xref py py-func docutils literal"><span class="pre">map()</span></code></a> or a list comprehension. If
 the argument can be interpreted as a float it is converted,
 otherwise the original object is passed back.</p>
 </dd></dl>
@@ -811,11 +810,11 @@ otherwise the original object is passed back.</p>
 <dt id="MDAnalysis.lib.util.cached">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">cached</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cache a property within a class.</p>
-<p>Requires the Class to have a cache dict called <code class="docutils literal notranslate"><span class="pre">_cache</span></code>.</p>
+<p>Requires the Class to have a cache dict called <code class="docutils literal"><span class="pre">_cache</span></code>.</p>
 <p class="rubric">Example</p>
 <p>How to add a cache for a variable to a class by using the <cite>&#64;cached</cite>
 decorator:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">def__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
@@ -837,15 +836,15 @@ decorator:</p>
 <table class="docutils footnote" frame="void" id="namedstreamclose" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>The reason why <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">NamedStream.close()</span></code></a> does
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>The reason why <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></code></a> does
 not close a stream by default (but just rewinds it to the
-beginning) is so that one can use the class <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> as
+beginning) is so that one can use the class <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a> as
 a drop-in replacement for file names, which are often re-opened
 (e.g. when the same file is used as a topology and coordinate file
 or when repeatedly iterating through a trajectory in some
-implementations). The <code class="docutils literal notranslate"><span class="pre">close=True</span></code> keyword can be supplied in
-order to make <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">NamedStream.close()</span></code></a> actually close the
-underlying stream and <code class="docutils literal notranslate"><span class="pre">NamedStream.close(force=True)</span></code> will also
+implementations). The <code class="docutils literal"><span class="pre">close=True</span></code> keyword can be supplied in
+order to make <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></code></a> actually close the
+underlying stream and <code class="docutils literal"><span class="pre">NamedStream.close(force=True)</span></code> will also
 close it.</td></tr>
 </tbody>
 </table>
@@ -891,17 +890,17 @@ close it.</td></tr>
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">11.1. Overview</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">11.2. List of modules</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="distances.html">11.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">11.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">11.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="log.html">11.2.4. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mdamath.html">11.2.5. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations.html">11.2.6. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="qcprot.html">11.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">11.2.8. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="distances.html">11.2.1. Fast distance array computation — <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">11.2.2. Low-level modules for <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">11.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">11.2.4. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">11.2.5. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">11.2.6. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">11.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">11.2.8. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#files-and-directories">11.2.8.1. Files and directories</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#streams">11.2.8.2. Streams</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#containers-and-lists">11.2.8.3. Containers and lists</a></li>
@@ -916,9 +915,9 @@ close it.</td></tr>
 <li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">11.3. Low level file formats</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
 </ul>
 
@@ -926,23 +925,21 @@ close it.</td></tr>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul>
-      <li>Previous: <a href="qcprot.html" title="previous chapter">11.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-      <li>Next: <a href="formats/libmdaxdr.html" title="next chapter">11.3.1. Low-level Gromacs XDR trajectory reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
+  <li><a href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a><ul>
+      <li>Previous: <a href="qcprot.html" title="previous chapter">11.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+      <li>Next: <a href="formats/libmdaxdr.html" title="next chapter">11.3.1. Low-level Gromacs XDR trajectory reading — <code class="docutils literal"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -953,7 +950,7 @@ close it.</td></tr>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |

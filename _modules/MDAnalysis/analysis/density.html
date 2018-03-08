@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MDAnalysis.analysis.density &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -26,7 +34,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -398,8 +407,8 @@
             <span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dedges</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">/=</span> <span class="n">dedges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="c1"># see units.densityUnit_factor for units</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;^{-3}&quot;</span>
+        <span class="c1"># see units.densityUnit_factor for units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;^{-3}&quot;</span></div>
 
 <div class="viewcode-block" id="Density.convert_length"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.convert_length">[docs]</a>    <span class="k">def</span> <span class="nf">convert_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Angstrom&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert Grid object to the new `unit`.</span>
@@ -422,8 +431,8 @@
             <span class="k">return</span>
         <span class="n">cvnfact</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">cvnfact</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>  <span class="c1"># needed to recalculate midpoints and origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>  <span class="c1"># needed to recalculate midpoints and origin</span></div>
 
 <div class="viewcode-block" id="Density.convert_density"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.convert_density">[docs]</a>    <span class="k">def</span> <span class="nf">convert_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Angstrom&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert the density to the physical units given by `unit`.</span>
@@ -474,15 +483,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">*=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s1">&#39;density&#39;</span><span class="p">,</span>
                                                      <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The name of the unit (</span><span class="si">{0!r}</span><span class="s2"> supplied) must be one of:</span><span class="se">\n</span><span class="si">{1!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The name of the unit (</span><span class="si">{0!r}</span><span class="s2"> supplied) must be one of:</span><span class="se">\n</span><span class="si">{1!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span></div>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]:</span>
             <span class="n">grid_type</span> <span class="o">=</span> <span class="s1">&#39;density&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">grid_type</span> <span class="o">=</span> <span class="s1">&#39;histogram&#39;</span></div>
-        <span class="k">return</span> <span class="s1">&#39;&lt;Density &#39;</span> <span class="o">+</span> <span class="n">grid_type</span> <span class="o">+</span> <span class="s1">&#39; with &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; bins&gt;&#39;</span>
+            <span class="n">grid_type</span> <span class="o">=</span> <span class="s1">&#39;histogram&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;Density &#39;</span> <span class="o">+</span> <span class="n">grid_type</span> <span class="o">+</span> <span class="s1">&#39; with &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; bins&gt;&#39;</span></div>
 
 <div class="viewcode-block" id="density_from_Universe"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.density_from_Universe">[docs]</a><span class="k">def</span> <span class="nf">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">atomselection</span><span class="o">=</span><span class="s1">&#39;name OH2&#39;</span><span class="p">,</span>
                           <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -685,8 +694,8 @@
                 <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
     <span class="n">g</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Density completed (initial density in Angstrom**-3)&quot;</span><span class="p">)</span>
-</div>
-    <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">return</span> <span class="n">g</span></div>
 
 
 <div class="viewcode-block" id="notwithin_coordinates_factory"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.notwithin_coordinates_factory">[docs]</a><span class="k">def</span> <span class="nf">notwithin_coordinates_factory</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">sel1</span><span class="p">,</span> <span class="n">sel2</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span>
@@ -794,8 +803,8 @@
             <span class="n">p_coor</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">positions</span>
             <span class="c1"># Does water i satisfy d[i,j] &gt; r for ALL j?</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">distance_array</span><span class="p">(</span><span class="n">s_coor</span><span class="p">,</span> <span class="n">p_coor</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">dist</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">s_coor</span><span class="p">[</span><span class="n">aggregatefunc</span><span class="p">(</span><span class="n">compare</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span></div>
-    <span class="k">return</span> <span class="n">notwithin_coordinates</span>
+            <span class="k">return</span> <span class="n">s_coor</span><span class="p">[</span><span class="n">aggregatefunc</span><span class="p">(</span><span class="n">compare</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">notwithin_coordinates</span></div>
 
 
 <div class="viewcode-block" id="Bfactor2RMSF"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Bfactor2RMSF">[docs]</a><span class="k">def</span> <span class="nf">Bfactor2RMSF</span><span class="p">(</span><span class="n">B</span><span class="p">):</span>
@@ -816,8 +825,8 @@
 <span class="sd">    .. rubric:: References</span>
 
 <span class="sd">    .. [Willis1975]  BTM Willis and AW Pryor. *Thermal vibrations in crystallography*. Cambridge Univ. Press, 1975</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.</span> <span class="o">*</span> <span class="n">B</span> <span class="o">/</span> <span class="mf">8.</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.</span> <span class="o">*</span> <span class="n">B</span> <span class="o">/</span> <span class="mf">8.</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
 
 
 <div class="viewcode-block" id="density_from_PDB"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.density_from_PDB">[docs]</a><span class="k">def</span> <span class="nf">density_from_PDB</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -865,8 +874,8 @@
 <span class="sd">    --------</span>
 <span class="sd">    :func:`Bfactor2RMSF` and :class:`BfactorDensityCreator`</span>
 
-<span class="sd">    &quot;&quot;&quot;</span></div>
-    <span class="k">return</span> <span class="n">BfactorDensityCreator</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">Density</span><span class="p">()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">BfactorDensityCreator</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">Density</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="BfactorDensityCreator"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.BfactorDensityCreator">[docs]</a><span class="k">class</span> <span class="nc">BfactorDensityCreator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -985,8 +994,8 @@
         <span class="n">d</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="s1">&#39;Angstrom&#39;</span><span class="p">),</span>
                     <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">isDensity</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
         <span class="n">d</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
-        <span class="n">d</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;water&#39;</span><span class="p">)</span></div>
-        <span class="k">return</span> <span class="n">d</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;water&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">d</span></div>
 
     <span class="k">def</span> <span class="nf">_smear_sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
         <span class="c1"># smear out points</span>
@@ -1027,8 +1036,8 @@
         <span class="c1"># c is center of gaussian in cartesian coord (A), sigma its width (in A)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># in Angstrom</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">j</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
-        <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">))</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">))</span></div>
 </pre></div>
 
           </div>
@@ -1069,10 +1078,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">15. References</a></li>
 </ul>
 
@@ -1087,14 +1096,12 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1105,7 +1112,7 @@
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

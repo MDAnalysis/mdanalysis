@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>11.2.5. Mathematical helper functions — MDAnalysis.lib.mdamath &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -28,7 +36,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -37,15 +46,15 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.lib.mdamath"></span><div class="section" id="mathematical-helper-functions-mdanalysis-lib-mdamath">
-<h1>11.2.5. Mathematical helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.mdamath" title="MDAnalysis.lib.mdamath"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a><a class="headerlink" href="#mathematical-helper-functions-mdanalysis-lib-mdamath" title="Permalink to this headline">¶</a></h1>
+<h1>11.2.5. Mathematical helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.mdamath" title="MDAnalysis.lib.mdamath"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a><a class="headerlink" href="#mathematical-helper-functions-mdanalysis-lib-mdamath" title="Permalink to this headline">¶</a></h1>
 <p>Helper functions for common mathematical operations</p>
 <dl class="function">
 <dt id="MDAnalysis.lib.mdamath.normal">
 <code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">normal</code><span class="sig-paren">(</span><em>vec1</em>, <em>vec2</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#normal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.normal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the unit vector normal to two vectors.</p>
-<div class="math notranslate">
+<div class="math">
 \[\hat{\mathbf{n}} = \frac{\mathbf{v}_1 \times \mathbf{v}_2}{|\mathbf{v}_1 \times \mathbf{v}_2|}\]</div>
-<p>If the two vectors are collinear, the vector <span class="math notranslate">\(\mathbf{0}\)</span> is returned.</p>
+<p>If the two vectors are collinear, the vector <span class="math">\(\mathbf{0}\)</span> is returned.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
 </div>
@@ -55,7 +64,7 @@
 <dt id="MDAnalysis.lib.mdamath.norm">
 <code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">norm</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the norm of a vector v.</p>
-<div class="math notranslate">
+<div class="math">
 \[v = \sqrt{\mathbf{v}\cdot\mathbf{v}}\]</div>
 <p>This version is faster then numpy.linalg.norm because it only works for a
 single vector and therefore can skip a lot of the additional fuss
@@ -88,7 +97,7 @@ linalg.norm does.</p>
 <code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">dihedral</code><span class="sig-paren">(</span><em>ab</em>, <em>bc</em>, <em>cd</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.dihedral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the dihedral angle in radians between vectors connecting A,B,C,D.</p>
 <p>The dihedral measures the rotation around bc:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">ab</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span>  <span class="n">ab</span>
 <span class="n">A</span><span class="o">----&gt;</span><span class="n">B</span>
        \ <span class="n">bc</span>
        <span class="n">_</span>\<span class="s1">&#39;</span>
@@ -111,7 +120,7 @@ linalg.norm does.</p>
 <dd><p>Takes the scalar triple product of three vectors.</p>
 <p>Returns the volume <em>V</em> of the parallel epiped spanned by the three
 vectors</p>
-<div class="math notranslate">
+<div class="math">
 \[V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)\]</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
@@ -146,12 +155,12 @@ vectors</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dimensions</strong> (<em>[</em><em>A</em><em>, </em><em>B</em><em>, </em><em>C</em><em>, </em><em>alpha</em><em>, </em><em>beta</em><em>, </em><em>gamma</em><em>]</em>) – list of box lengths and angles (in degrees) such as
-<code class="docutils literal notranslate"><span class="pre">[A,B,C,alpha,beta,gamma]</span></code></td>
+<code class="docutils literal"><span class="pre">[A,B,C,alpha,beta,gamma]</span></code></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy 3x3 array B, with <code class="docutils literal notranslate"><span class="pre">B[0]</span></code> as first box vector,
-<code class="docutils literal notranslate"><span class="pre">B[1]``as</span> <span class="pre">second</span> <span class="pre">vector,</span> <span class="pre">``B[2]</span></code> as third box vector.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy 3x3 array B, with <code class="docutils literal"><span class="pre">B[0]</span></code> as first box vector,
+<code class="docutils literal"><span class="pre">B[1]``as</span> <span class="pre">second</span> <span class="pre">vector,</span> <span class="pre">``B[2]</span></code> as third box vector.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.array</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)">numpy.array</a></td>
 </tr>
 </tbody>
 </table>
@@ -168,7 +177,7 @@ i.e., parallel to (1, 0, 0).</p>
 <code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">box_volume</code><span class="sig-paren">(</span><em>dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#box_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.box_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the volume of the unitcell described by <em>dimensions</em>.</p>
 <p>The volume is computed as <cite>det(x1,x2,x2)</cite> where the xi are the
-triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">triclinic_vectors()</span></code></a>.</p>
+triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal"><span class="pre">triclinic_vectors()</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -193,7 +202,7 @@ triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.m
 unit cell, causing breaks mid molecule, with the molecule then appearing
 on either side of the unit cell. This is problematic for operations
 such as calculating the center of mass of the molecule.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+-----------+     +-----------+
+<div class="highlight-default"><div class="highlight"><pre><span></span>+-----------+     +-----------+
 |           |     |           |
 | 6       3 |     |         3 | 6
 | !       ! |     |         ! | !
@@ -209,18 +218,18 @@ such as calculating the center of mass of the molecule.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> to work with.
+<li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> to work with.
 The positions of this are modified in place.  All these atoms
 must belong in the same molecule or fragment.</li>
-<li><strong>reference_atom</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>) – The atom around which all other atoms will be moved.
+<li><strong>reference_atom</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>) – The atom around which all other atoms will be moved.
 Defaults to atom 0 in the atomgroup.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code> – There are no bonds present.
-(See <code class="xref py py-func docutils literal notranslate"><span class="pre">guess_bonds()</span></code>)</li>
-<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – The algorithm fails to work.  This is usually
+<li><code class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></code> – There are no bonds present.
+(See <code class="xref py py-func docutils literal"><span class="pre">guess_bonds()</span></code>)</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – The algorithm fails to work.  This is usually
 caused by the atomgroup not being a single fragment.
 (ie the molecule can’t be traversed by following bonds)</li>
 </ul>
@@ -234,7 +243,7 @@ caused by the atomgroup not being a single fragment.
 </div>
 <p class="rubric">Example</p>
 <p>Make fragments whole:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.util.mdamath</span> <span class="k">import</span> <span class="n">make_whole</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.util.mdamath</span> <span class="k">import</span> <span class="n">make_whole</span>
 
 <span class="c1"># This algorithm requires bonds, these can be guessed!</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="o">......</span><span class="p">,</span> <span class="n">guess_bonds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -248,7 +257,7 @@ caused by the atomgroup not being a single fragment.
 </pre></div>
 </div>
 <p>Alternatively, to keep a single atom in place as the anchor:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># This will mean that atomgroup[10] will NOT get moved,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># This will mean that atomgroup[10] will NOT get moved,</span>
 <span class="c1"># and all other atoms will move (if necessary).</span>
 <span class="n">make_whole</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">reference_atom</span><span class="o">=</span><span class="n">atomgroup</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
 </pre></div>
@@ -275,7 +284,7 @@ caused by the atomgroup not being a single fragment.
 <code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">box_volume</code><span class="sig-paren">(</span><em>dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#box_volume"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Return the volume of the unitcell described by <em>dimensions</em>.</p>
 <p>The volume is computed as <cite>det(x1,x2,x2)</cite> where the xi are the
-triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">triclinic_vectors()</span></code></a>.</p>
+triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal"><span class="pre">triclinic_vectors()</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -296,7 +305,7 @@ triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.m
 <code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">dihedral</code><span class="sig-paren">(</span><em>ab</em>, <em>bc</em>, <em>cd</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#dihedral"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Returns the dihedral angle in radians between vectors connecting A,B,C,D.</p>
 <p>The dihedral measures the rotation around bc:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">ab</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span>  <span class="n">ab</span>
 <span class="n">A</span><span class="o">----&gt;</span><span class="n">B</span>
        \ <span class="n">bc</span>
        <span class="n">_</span>\<span class="s1">&#39;</span>
@@ -322,7 +331,7 @@ triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.m
 unit cell, causing breaks mid molecule, with the molecule then appearing
 on either side of the unit cell. This is problematic for operations
 such as calculating the center of mass of the molecule.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+-----------+     +-----------+
+<div class="highlight-default"><div class="highlight"><pre><span></span>+-----------+     +-----------+
 |           |     |           |
 | 6       3 |     |         3 | 6
 | !       ! |     |         ! | !
@@ -338,18 +347,18 @@ such as calculating the center of mass of the molecule.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> to work with.
+<li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> to work with.
 The positions of this are modified in place.  All these atoms
 must belong in the same molecule or fragment.</li>
-<li><strong>reference_atom</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>) – The atom around which all other atoms will be moved.
+<li><strong>reference_atom</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>) – The atom around which all other atoms will be moved.
 Defaults to atom 0 in the atomgroup.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code> – There are no bonds present.
-(See <code class="xref py py-func docutils literal notranslate"><span class="pre">guess_bonds()</span></code>)</li>
-<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – The algorithm fails to work.  This is usually
+<li><code class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></code> – There are no bonds present.
+(See <code class="xref py py-func docutils literal"><span class="pre">guess_bonds()</span></code>)</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – The algorithm fails to work.  This is usually
 caused by the atomgroup not being a single fragment.
 (ie the molecule can’t be traversed by following bonds)</li>
 </ul>
@@ -363,7 +372,7 @@ caused by the atomgroup not being a single fragment.
 </div>
 <p class="rubric">Example</p>
 <p>Make fragments whole:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.util.mdamath</span> <span class="k">import</span> <span class="n">make_whole</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.util.mdamath</span> <span class="k">import</span> <span class="n">make_whole</span>
 
 <span class="c1"># This algorithm requires bonds, these can be guessed!</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="o">......</span><span class="p">,</span> <span class="n">guess_bonds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -377,7 +386,7 @@ caused by the atomgroup not being a single fragment.
 </pre></div>
 </div>
 <p>Alternatively, to keep a single atom in place as the anchor:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># This will mean that atomgroup[10] will NOT get moved,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># This will mean that atomgroup[10] will NOT get moved,</span>
 <span class="c1"># and all other atoms will move (if necessary).</span>
 <span class="n">make_whole</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">reference_atom</span><span class="o">=</span><span class="n">atomgroup</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
 </pre></div>
@@ -391,7 +400,7 @@ caused by the atomgroup not being a single fragment.
 <dt>
 <code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">norm</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#norm"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Calculate the norm of a vector v.</p>
-<div class="math notranslate">
+<div class="math">
 \[v = \sqrt{\mathbf{v}\cdot\mathbf{v}}\]</div>
 <p>This version is faster then numpy.linalg.norm because it only works for a
 single vector and therefore can skip a lot of the additional fuss
@@ -414,9 +423,9 @@ linalg.norm does.</p>
 <dt>
 <code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">normal</code><span class="sig-paren">(</span><em>vec1</em>, <em>vec2</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#normal"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Returns the unit vector normal to two vectors.</p>
-<div class="math notranslate">
+<div class="math">
 \[\hat{\mathbf{n}} = \frac{\mathbf{v}_1 \times \mathbf{v}_2}{|\mathbf{v}_1 \times \mathbf{v}_2|}\]</div>
-<p>If the two vectors are collinear, the vector <span class="math notranslate">\(\mathbf{0}\)</span> is returned.</p>
+<p>If the two vectors are collinear, the vector <span class="math">\(\mathbf{0}\)</span> is returned.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
 </div>
@@ -447,7 +456,7 @@ linalg.norm does.</p>
 </tbody>
 </table>
 <p class="rubric">Example</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Residx - the resid of each Atom</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Residx - the resid of each Atom</span>
 <span class="n">ordered</span><span class="p">,</span> <span class="n">ptrs</span> <span class="o">=</span> <span class="n">one_to_many_pointers</span><span class="p">(</span><span class="n">Natoms</span><span class="p">,</span> <span class="n">Nres</span><span class="p">,</span> <span class="n">Residx</span><span class="p">)</span>
 
 <span class="c1"># Returns an array of the atom indices that are in resid 7</span>
@@ -462,7 +471,7 @@ linalg.norm does.</p>
 <dd><p>Takes the scalar triple product of three vectors.</p>
 <p>Returns the volume <em>V</em> of the parallel epiped spanned by the three
 vectors</p>
-<div class="math notranslate">
+<div class="math">
 \[V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)\]</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
@@ -497,12 +506,12 @@ vectors</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dimensions</strong> (<em>[</em><em>A</em><em>, </em><em>B</em><em>, </em><em>C</em><em>, </em><em>alpha</em><em>, </em><em>beta</em><em>, </em><em>gamma</em><em>]</em>) – list of box lengths and angles (in degrees) such as
-<code class="docutils literal notranslate"><span class="pre">[A,B,C,alpha,beta,gamma]</span></code></td>
+<code class="docutils literal"><span class="pre">[A,B,C,alpha,beta,gamma]</span></code></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy 3x3 array B, with <code class="docutils literal notranslate"><span class="pre">B[0]</span></code> as first box vector,
-<code class="docutils literal notranslate"><span class="pre">B[1]``as</span> <span class="pre">second</span> <span class="pre">vector,</span> <span class="pre">``B[2]</span></code> as third box vector.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy 3x3 array B, with <code class="docutils literal"><span class="pre">B[0]</span></code> as first box vector,
+<code class="docutils literal"><span class="pre">B[1]``as</span> <span class="pre">second</span> <span class="pre">vector,</span> <span class="pre">``B[2]</span></code> as third box vector.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.array</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)">numpy.array</a></td>
 </tr>
 </tbody>
 </table>
@@ -555,25 +564,25 @@ i.e., parallel to (1, 0, 0).</p>
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">11.1. Overview</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">11.2. List of modules</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="distances.html">11.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">11.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">11.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="log.html">11.2.4. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">11.2.5. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations.html">11.2.6. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="qcprot.html">11.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="util.html">11.2.8. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html">11.2.1. Fast distance array computation — <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">11.2.2. Low-level modules for <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">11.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">11.2.4. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">11.2.5. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">11.2.6. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">11.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">11.2.8. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">11.3. Low level file formats</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
 </ul>
 
@@ -581,23 +590,21 @@ i.e., parallel to (1, 0, 0).</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul>
-      <li>Previous: <a href="log.html" title="previous chapter">11.2.4. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-      <li>Next: <a href="transformations.html" title="next chapter">11.2.6. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+  <li><a href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a><ul>
+      <li>Previous: <a href="log.html" title="previous chapter">11.2.4. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+      <li>Next: <a href="transformations.html" title="next chapter">11.2.6. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -608,7 +615,7 @@ i.e., parallel to (1, 0, 0).</p>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |

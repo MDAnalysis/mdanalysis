@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>5.23. Guessing unknown Topology information — MDAnalysis.topology.guessers &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -28,7 +36,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -37,14 +46,14 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.topology.guessers"></span><div class="section" id="guessing-unknown-topology-information-mdanalysis-topology-guessers">
-<h1>5.23. Guessing unknown Topology information — <a class="reference internal" href="#module-MDAnalysis.topology.guessers" title="MDAnalysis.topology.guessers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a><a class="headerlink" href="#guessing-unknown-topology-information-mdanalysis-topology-guessers" title="Permalink to this headline">¶</a></h1>
+<h1>5.23. Guessing unknown Topology information — <a class="reference internal" href="#module-MDAnalysis.topology.guessers" title="MDAnalysis.topology.guessers"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.guessers</span></code></a><a class="headerlink" href="#guessing-unknown-topology-information-mdanalysis-topology-guessers" title="Permalink to this headline">¶</a></h1>
 <p>In general <cite>guess_atom_X</cite> returns the guessed value for a single value,
 while <cite>guess_Xs</cite> will work on an array of many atoms.</p>
 <dl class="function">
 <dt id="MDAnalysis.topology.guessers.get_atom_mass">
 <code class="descclassname">MDAnalysis.topology.guessers.</code><code class="descname">get_atom_mass</code><span class="sig-paren">(</span><em>element</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#get_atom_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.get_atom_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the atomic mass in u for <em>element</em>.</p>
-<p>Masses are looked up in <a class="reference internal" href="tables.html#MDAnalysis.topology.tables.masses" title="MDAnalysis.topology.tables.masses"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.topology.tables.masses</span></code></a>.</p>
+<p>Masses are looked up in <a class="reference internal" href="tables.html#MDAnalysis.topology.tables.masses" title="MDAnalysis.topology.tables.masses"><code class="xref py py-data docutils literal"><span class="pre">MDAnalysis.topology.tables.masses</span></code></a>.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">Unknown masses are set to 0.00</p>
@@ -70,7 +79,7 @@ Suitable for use in u._topology</td>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.topology.guessers.guess_bonds" title="MDAnalysis.topology.guessers.guess_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_bonds()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.topology.guessers.guess_bonds" title="MDAnalysis.topology.guessers.guess_bonds"><code class="xref py py-meth docutils literal"><span class="pre">guess_bonds()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -94,7 +103,7 @@ types, where the first character is not sufficient to determine the atom
 type. Some GROMOS ions have also been added.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_type" title="MDAnalysis.topology.guessers.guess_atom_type"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_type()</span></code></a>, <a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tables</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_type" title="MDAnalysis.topology.guessers.guess_atom_type"><code class="xref py py-func docutils literal"><span class="pre">guess_atom_type()</span></code></a>, <a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -102,7 +111,7 @@ type. Some GROMOS ions have also been added.</p>
 <dt id="MDAnalysis.topology.guessers.guess_atom_mass">
 <code class="descclassname">MDAnalysis.topology.guessers.</code><code class="descname">guess_atom_mass</code><span class="sig-paren">(</span><em>atomname</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_atom_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_atom_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess a mass based on the atom name.</p>
-<p><a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_element" title="MDAnalysis.topology.guessers.guess_atom_element"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_element()</span></code></a> is used to determine the kind of atom.</p>
+<p><a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_element" title="MDAnalysis.topology.guessers.guess_atom_element"><code class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></code></a> is used to determine the kind of atom.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">Anything not recognized is simply set to 0; if you rely on the
@@ -115,10 +124,10 @@ masses you might want to double check.</p>
 <code class="descclassname">MDAnalysis.topology.guessers.</code><code class="descname">guess_atom_type</code><span class="sig-paren">(</span><em>atomname</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_atom_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_atom_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess atom type from the name.</p>
 <p>At the moment, this function simply returns the element, as
-guessed by <a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_element" title="MDAnalysis.topology.guessers.guess_atom_element"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_element()</span></code></a>.</p>
+guessed by <a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_element" title="MDAnalysis.topology.guessers.guess_atom_element"><code class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></code></a>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_element" title="MDAnalysis.topology.guessers.guess_atom_element"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_element()</span></code></a>, <a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tables</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_element" title="MDAnalysis.topology.guessers.guess_atom_element"><code class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></code></a>, <a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -127,10 +136,10 @@ guessed by <a class="reference internal" href="#MDAnalysis.topology.guessers.gue
 <code class="descclassname">MDAnalysis.topology.guessers.</code><code class="descname">guess_bonds</code><span class="sig-paren">(</span><em>atoms</em>, <em>coords</em>, <em>box=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_bonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess if bonds exist between two atoms based on their distance.</p>
 <p>Bond between two atoms is created, if the two atoms are within</p>
-<div class="math notranslate">
+<div class="math">
 \[d &lt; f \cdot (R_1 + R_2)\]</div>
-<p>of each other, where <span class="math notranslate">\(R_1\)</span> and <span class="math notranslate">\(R_2\)</span> are the VdW radii
-of the atoms and <span class="math notranslate">\(f\)</span> is an ad-hoc <em>fudge_factor</em>. This is
+<p>of each other, where <span class="math">\(R_1\)</span> and <span class="math">\(R_2\)</span> are the VdW radii
+of the atoms and <span class="math">\(f\)</span> is an ad-hoc <em>fudge_factor</em>. This is
 the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html">same algorithm that VMD uses</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -138,21 +147,21 @@ the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>atoms</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atoms for which bonds should be guessed</li>
-<li><strong>coords</strong> (<em>array</em>) – coordinates of the atoms (i.e., <cite>AtomGroup.positions)</cite>)</li>
+<li><strong>coords</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – coordinates of the atoms (i.e., <cite>AtomGroup.positions)</cite>)</li>
 <li><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><em>optional</em>) – The factor by which atoms must overlap eachother to be considered a
 bond.  Larger values will increase the number of bonds found. [0.72]</li>
 <li><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a><em>, </em><em>optional</em>) – To supply custom vdwradii for atoms in the algorithm. Must be a dict
 of format {type:radii}. The default table of van der Waals radii is
-hard-coded as <code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.topology.tables.vdwradii</span></code>.  Any user
+hard-coded as <code class="xref py py-data docutils literal"><span class="pre">MDAnalysis.topology.tables.vdwradii</span></code>.  Any user
 defined vdwradii passed as an argument will supercede the table
-values. [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+values. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
 <li><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><em>optional</em>) – The minimum bond length. All bonds found shorter than this length will
 be ignored. This is useful for parsing PDB with altloc records where
 atoms with altloc A and B maybe very close together and there should be
 no chemical bond between them. [0.1]</li>
 <li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Bonds are found using a distance search, if unit cell information is
 given, periodic boundary conditions will be considered in the distance
-search. [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+search. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
 </ul>
 </td>
 </tr>
@@ -173,7 +182,7 @@ structure is correct. This is wrong and will burn somebody.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if inputs are malformed or <cite>vdwradii</cite> data is missing.</td>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> if inputs are malformed or <cite>vdwradii</cite> data is missing.</td>
 </tr>
 </tbody>
 </table>
@@ -181,9 +190,9 @@ structure is correct. This is wrong and will burn somebody.</p>
 <p><span class="versionmodified">New in version 0.7.7.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Updated method internally to use more <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/index.html#module-numpy" title="(in NumPy v1.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a>, should work
+<p><span class="versionmodified">Changed in version 0.9.0: </span>Updated method internally to use more <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/index.html#module-numpy" title="(in NumPy v1.14)"><code class="xref py py-mod docutils literal"><span class="pre">numpy</span></code></a>, should work
 faster.  Should also use less memory, previously scaled as
-<span class="math notranslate">\(O(n^2)\)</span>.  <em>vdwradii</em> argument now augments table list
+<span class="math">\(O(n^2)\)</span>.  <em>vdwradii</em> argument now augments table list
 rather than replacing entirely.</p>
 </div>
 </dd></dl>
@@ -280,7 +289,7 @@ ie the improper dihedral is the angle between the planes formed by
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)">None</a></td>
 </tr>
 </tbody>
 </table>
@@ -322,9 +331,9 @@ ie the improper dihedral is the angle between the planes formed by
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="init.html">5.1. Topology readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="init.html">5.1. Topology readers — <code class="docutils literal"><span class="pre">MDAnalysis.topology</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="CRDParser.html">5.2. CRD topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DLPolyParser.html">5.3. DL Poly format Topology Readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPolyParser.html">5.3. DL Poly format Topology Readers — <code class="docutils literal"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="DMSParser.html">5.4. DESRES Molecular Structure file format topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="GMSParser.html">5.5. GAMESS Topology Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="GROParser.html">5.6. GRO topology parser</a></li>
@@ -332,7 +341,7 @@ ie the improper dihedral is the angle between the planes formed by
 <li class="toctree-l2"><a class="reference internal" href="LAMMPSParser.html">5.8. LAMMPSParser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.9. Minimal topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.10. MMTF Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.11. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.11. MOL2 file format — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.12. PDB Topology Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.13. Extended PDB topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.14. PDBQT topology parser</a></li>
@@ -342,9 +351,9 @@ ie the improper dihedral is the angle between the planes formed by
 <li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.18. Gromacs portable run input TPR format parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.19. TXYZ topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.20. XYZ Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">5.21. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">5.22. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">5.23. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.21. Base topology reader classes — <code class="docutils literal"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.22. Common functions for topology building — <code class="docutils literal"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.23. Guessing unknown Topology information — <code class="docutils literal"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="tables.html">5.24. MDAnalysis topology tables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.25. Utility functions for the TPR topology parser</a></li>
 </ul>
@@ -354,10 +363,10 @@ ie the improper dihedral is the angle between the planes formed by
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
 </ul>
 
@@ -366,7 +375,7 @@ ie the improper dihedral is the angle between the planes formed by
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../topology_modules.html">5. Topology modules</a><ul>
-      <li>Previous: <a href="core.html" title="previous chapter">5.22. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+      <li>Previous: <a href="core.html" title="previous chapter">5.22. Common functions for topology building — <code class="docutils literal"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
       <li>Next: <a href="tables.html" title="next chapter">5.24. MDAnalysis topology tables</a></li>
   </ul></li>
   </ul></li>
@@ -374,14 +383,12 @@ ie the improper dihedral is the angle between the planes formed by
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -392,7 +399,7 @@ ie the improper dihedral is the angle between the planes formed by
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |

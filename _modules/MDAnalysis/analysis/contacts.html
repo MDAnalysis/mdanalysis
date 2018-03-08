@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MDAnalysis.analysis.contacts &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -26,7 +34,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -300,8 +309,8 @@
     <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="n">r0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta</span><span class="o">*</span><span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">lambda_constant</span> <span class="o">*</span> <span class="n">r0</span><span class="p">)))</span>
-</div>
-    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="hard_cut_q"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.hard_cut_q">[docs]</a><span class="k">def</span> <span class="nf">hard_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
@@ -326,8 +335,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="n">cutoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">r</span> <span class="o">&lt;=</span> <span class="n">cutoff</span></div>
-    <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">r</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">r</span> <span class="o">&lt;=</span> <span class="n">cutoff</span>
+    <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">r</span><span class="o">.</span><span class="n">size</span></div>
 
 
 <div class="viewcode-block" id="radius_cut_q"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.radius_cut_q">[docs]</a><span class="k">def</span> <span class="nf">radius_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
@@ -355,8 +364,8 @@
 <span class="sd">       landscape.  Nucleic Acids Research, 35(SUPPL.2), 477–482.</span>
 <span class="sd">       doi: `10.1093/nar/gkm342 &lt;http://doi.org/10.1093/nar/gkm342&gt;`_</span>
 
-<span class="sd">    &quot;&quot;&quot;</span></div>
-    <span class="k">return</span> <span class="n">hard_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">hard_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="contact_matrix"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.contact_matrix">[docs]</a><span class="k">def</span> <span class="nf">contact_matrix</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -381,8 +390,8 @@
     <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">out</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">d</span> <span class="o">&lt;=</span> <span class="n">radius</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">d</span> <span class="o">&lt;=</span> <span class="n">radius</span></div>
-    <span class="k">return</span> <span class="n">out</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">d</span> <span class="o">&lt;=</span> <span class="n">radius</span>
+    <span class="k">return</span> <span class="n">out</span></div>
 
 
 <div class="viewcode-block" id="Contacts"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.Contacts">[docs]</a><span class="k">class</span> <span class="nc">Contacts</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
@@ -498,8 +507,8 @@
 <span class="sd">            file to save contacts</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">,</span></div></div>
-                   <span class="n">header</span><span class="o">=</span><span class="s2">&quot;# q1 analysis</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">,</span>
+                   <span class="n">header</span><span class="o">=</span><span class="s2">&quot;# q1 analysis</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div></div>
 
 
 <span class="k">def</span> <span class="nf">_new_selections</span><span class="p">(</span><span class="n">u_orig</span><span class="p">,</span> <span class="n">selections</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
@@ -543,8 +552,8 @@
     <span class="k">return</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span>
                     <span class="p">(</span><span class="n">first_frame_refs</span><span class="p">,</span> <span class="n">last_frame_refs</span><span class="p">),</span>
                     <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">radius_cut_q</span><span class="p">,</span>
-                    <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span></div>
-                    <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="n">radius</span><span class="p">})</span>
+                    <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span>
+                    <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="n">radius</span><span class="p">})</span></div>
 
 </pre></div>
 
@@ -586,10 +595,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">15. References</a></li>
 </ul>
 
@@ -604,14 +613,12 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -622,7 +629,7 @@
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

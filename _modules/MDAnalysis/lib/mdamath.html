@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MDAnalysis.lib.mdamath &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -26,7 +34,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -102,8 +111,8 @@
 <span class="sd">    float</span>
 <span class="sd">        norm of the vector</span>
 
-<span class="sd">    &quot;&quot;&quot;</span></div>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="normal"><a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.normal">[docs]</a><span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">):</span>
@@ -121,8 +130,8 @@
     <span class="n">normal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">)</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">normal</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">normal</span>  <span class="c1"># returns [0,0,0] instead of [nan,nan,nan]</span></div>
-    <span class="k">return</span> <span class="n">normal</span> <span class="o">/</span> <span class="n">n</span>  <span class="c1"># ... could also use numpy.nan_to_num(normal/norm(normal))</span>
+        <span class="k">return</span> <span class="n">normal</span>  <span class="c1"># returns [0,0,0] instead of [nan,nan,nan]</span>
+    <span class="k">return</span> <span class="n">normal</span> <span class="o">/</span> <span class="n">n</span>  <span class="c1"># ... could also use numpy.nan_to_num(normal/norm(normal))</span></div>
 
 
 <div class="viewcode-block" id="angle"><a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.angle">[docs]</a><span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
@@ -136,8 +145,8 @@
     <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
         <span class="k">return</span> <span class="mf">0.0</span>
     <span class="k">elif</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="stp"><a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.stp">[docs]</a><span class="k">def</span> <span class="nf">stp</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">,</span> <span class="n">vec3</span><span class="p">):</span>
@@ -152,8 +161,8 @@
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Moved into lib.mdamath</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="dihedral"><a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.dihedral">[docs]</a><span class="k">def</span> <span class="nf">dihedral</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">):</span>
@@ -174,8 +183,8 @@
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Moved into lib.mdamath</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">normal</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">),</span> <span class="n">normal</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">))</span></div>
-    <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="k">if</span> <span class="n">stp</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="o">-</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">normal</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">),</span> <span class="n">normal</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="k">if</span> <span class="n">stp</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="o">-</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_angle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
@@ -208,8 +217,8 @@
     <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="p">[</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)]</span>
     <span class="n">alpha</span> <span class="o">=</span> <span class="n">_angle</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
     <span class="n">beta</span> <span class="o">=</span> <span class="n">_angle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-    <span class="n">gamma</span> <span class="o">=</span> <span class="n">_angle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">gamma</span> <span class="o">=</span> <span class="n">_angle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="triclinic_vectors"><a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.triclinic_vectors">[docs]</a><span class="k">def</span> <span class="nf">triclinic_vectors</span><span class="p">(</span><span class="n">dimensions</span><span class="p">):</span>
@@ -263,8 +272,8 @@
         <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
         <span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
         <span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-        <span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">z</span> <span class="o">-</span> <span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">B</span>
+        <span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">z</span> <span class="o">-</span> <span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">B</span></div>
 
 
 <div class="viewcode-block" id="box_volume"><a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.box_volume">[docs]</a><span class="k">def</span> <span class="nf">box_volume</span><span class="p">(</span><span class="n">dimensions</span><span class="p">):</span>
@@ -282,8 +291,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    volume : float</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">dimensions</span><span class="p">))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">dimensions</span><span class="p">))</span></div>
 
 
 <span class="k">def</span> <span class="nf">_is_contiguous</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
@@ -462,8 +471,8 @@
                     <span class="n">other</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="n">vec</span>
                 <span class="c1"># This atom can now be used as a reference point</span>
                 <span class="n">ref_points</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-</div>
-            <span class="n">processed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+
+            <span class="n">processed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="one_to_many_pointers"><a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.one_to_many_pointers">[docs]</a><span class="k">def</span> <span class="nf">one_to_many_pointers</span><span class="p">(</span><span class="n">Ni</span><span class="p">,</span> <span class="n">Nj</span><span class="p">,</span> <span class="n">i2j</span><span class="p">):</span>
@@ -506,8 +515,8 @@
     <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">borders</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">borders</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
         <span class="n">i</span> <span class="o">=</span> <span class="n">sorted_idx</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
         <span class="n">ptrs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
-</div>
-    <span class="k">return</span> <span class="n">ordered</span><span class="p">,</span> <span class="n">ptrs</span>
+
+    <span class="k">return</span> <span class="n">ordered</span><span class="p">,</span> <span class="n">ptrs</span></div>
 </pre></div>
 
           </div>
@@ -548,10 +557,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">15. References</a></li>
 </ul>
 
@@ -566,14 +575,12 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -584,7 +591,7 @@
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

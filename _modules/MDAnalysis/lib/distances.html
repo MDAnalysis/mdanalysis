@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MDAnalysis.lib.distances &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -26,7 +34,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -334,8 +343,8 @@
         <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_distance_array&quot;</span><span class="p">,</span>
                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="n">distances</span><span class="p">),</span>
                <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-</div>
-    <span class="k">return</span> <span class="n">distances</span>
+
+    <span class="k">return</span> <span class="n">distances</span></div>
 
 
 <div class="viewcode-block" id="self_distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_distance_array">[docs]</a><span class="k">def</span> <span class="nf">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
@@ -423,8 +432,8 @@
         <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_self_distance_array&quot;</span><span class="p">,</span>
                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">distances</span><span class="p">),</span>
                <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-</div>
-    <span class="k">return</span> <span class="n">distances</span>
+
+    <span class="k">return</span> <span class="n">distances</span></div>
 
 
 <div class="viewcode-block" id="transform_RtoS"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_RtoS">[docs]</a><span class="k">def</span> <span class="nf">transform_RtoS</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
@@ -482,8 +491,8 @@
            <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">is_1d</span><span class="p">:</span>
-        <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">)</span></div>
-    <span class="k">return</span> <span class="n">coords</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">coords</span></div>
 
 
 <div class="viewcode-block" id="transform_StoR"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_StoR">[docs]</a><span class="k">def</span> <span class="nf">transform_StoR</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
@@ -537,8 +546,8 @@
            <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">is_1d</span><span class="p">:</span>
-        <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]),)</span></div>
-    <span class="k">return</span> <span class="n">coords</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]),)</span>
+    <span class="k">return</span> <span class="n">coords</span></div>
 
 
 <div class="viewcode-block" id="calc_bonds"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_bonds">[docs]</a><span class="k">def</span> <span class="nf">calc_bonds</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
@@ -626,8 +635,8 @@
         <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance&quot;</span><span class="p">,</span>
                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">,</span> <span class="n">distances</span><span class="p">),</span>
                <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-</div>
-    <span class="k">return</span> <span class="n">distances</span>
+
+    <span class="k">return</span> <span class="n">distances</span></div>
 
 
 <div class="viewcode-block" id="calc_angles"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_angles">[docs]</a><span class="k">def</span> <span class="nf">calc_angles</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
@@ -716,8 +725,8 @@
         <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_angle&quot;</span><span class="p">,</span>
                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">,</span> <span class="n">atom3</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span>
                <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-</div>
-    <span class="k">return</span> <span class="n">angles</span>
+
+    <span class="k">return</span> <span class="n">angles</span></div>
 
 
 <div class="viewcode-block" id="calc_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_dihedrals">[docs]</a><span class="k">def</span> <span class="nf">calc_dihedrals</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -822,8 +831,8 @@
         <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_dihedral&quot;</span><span class="p">,</span>
                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">,</span> <span class="n">atom3</span><span class="p">,</span> <span class="n">atom4</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span>
                <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-</div>
-    <span class="k">return</span> <span class="n">angles</span>
+
+    <span class="k">return</span> <span class="n">angles</span></div>
 
 
 <div class="viewcode-block" id="apply_PBC"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.apply_PBC">[docs]</a><span class="k">def</span> <span class="nf">apply_PBC</span><span class="p">(</span><span class="n">incoords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
@@ -885,8 +894,8 @@
         <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;triclinic_pbc&quot;</span><span class="p">,</span>
                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">box_inv</span><span class="p">),</span>
                <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-</div>
-    <span class="k">return</span> <span class="n">coords</span>
+
+    <span class="k">return</span> <span class="n">coords</span></div>
 </pre></div>
 
           </div>
@@ -927,10 +936,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">15. References</a></li>
 </ul>
 
@@ -945,14 +954,12 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -963,7 +970,7 @@
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

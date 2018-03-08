@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>4.3.2. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -28,7 +36,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -37,7 +46,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.analysis.hbonds.hbond_autocorrel"></span><div class="section" id="hydrogen-bond-autocorrelation-mdanalysis-analysis-hbonds-hbond-autocorrel">
-<h1>4.3.2. Hydrogen bond autocorrelation — <a class="reference internal" href="#module-MDAnalysis.analysis.hbonds.hbond_autocorrel" title="MDAnalysis.analysis.hbonds.hbond_autocorrel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a><a class="headerlink" href="#hydrogen-bond-autocorrelation-mdanalysis-analysis-hbonds-hbond-autocorrel" title="Permalink to this headline">¶</a></h1>
+<h1>4.3.2. Hydrogen bond autocorrelation — <a class="reference internal" href="#module-MDAnalysis.analysis.hbonds.hbond_autocorrel" title="MDAnalysis.analysis.hbonds.hbond_autocorrel"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a><a class="headerlink" href="#hydrogen-bond-autocorrelation-mdanalysis-analysis-hbonds-hbond-autocorrel" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -55,31 +64,31 @@
 </div>
 <div class="section" id="description">
 <h2>4.3.2.1. Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
-<p>Calculates the time autocorrelation function, <span class="math notranslate">\(C_x(t)\)</span>, for the hydrogen
+<p>Calculates the time autocorrelation function, <span class="math">\(C_x(t)\)</span>, for the hydrogen
 bonds in the selections passed to it.  The population of hydrogen bonds at a
-given startpoint, <span class="math notranslate">\(t_0\)</span>, is evaluated based on geometric criteria and
+given startpoint, <span class="math">\(t_0\)</span>, is evaluated based on geometric criteria and
 then the lifetime of these bonds is monitored over time.  Multiple passes
 through the trajectory are used to build an average of the behaviour.</p>
-<div class="math notranslate">
+<div class="math">
 \[C_x(t) = \left \langle \frac{h_{ij}(t_0) h_{ij}(t_0 + t)}{h_{ij}(t_0)^2} \right\rangle\]</div>
-<p>The subscript <span class="math notranslate">\(x\)</span> refers to the definition of lifetime being used, either
+<p>The subscript <span class="math">\(x\)</span> refers to the definition of lifetime being used, either
 continuous or intermittent.  The continuous definition measures the time that
 a particular hydrogen bond remains continuously attached, whilst the
 intermittent definition allows a bond to break and then subsequently reform and
-be counted again.  The relevent lifetime, <span class="math notranslate">\(\tau_x\)</span>, can then be found
+be counted again.  The relevent lifetime, <span class="math">\(\tau_x\)</span>, can then be found
 via integration of this function</p>
-<div class="math notranslate">
+<div class="math">
 \[\tau_x = \int_0^\infty C_x(t) dt`\]</div>
 <p>For this, the observed behaviour is fitted to a multi exponential function,
 using 2 exponents for the continuous lifetime and 3 for the intermittent
 lifetime.</p>
 <blockquote>
-<div><span class="math notranslate">\(C_x(t) = A_1 \exp( - t / \tau_1)
+<div><span class="math">\(C_x(t) = A_1 \exp( - t / \tau_1)
 + A_2 \exp( - t / \tau_2)
 [+ A_3 \exp( - t / \tau_3)]\)</span></div></blockquote>
-<p>Where the final pre expoential factor <span class="math notranslate">\(A_n\)</span> is subject to the condition:</p>
+<p>Where the final pre expoential factor <span class="math">\(A_n\)</span> is subject to the condition:</p>
 <blockquote>
-<div><span class="math notranslate">\(A_n = 1 - \sum\limits_{i=1}^{n-1} A_i\)</span></div></blockquote>
+<div><span class="math">\(A_n = 1 - \sum\limits_{i=1}^{n-1} A_i\)</span></div></blockquote>
 <p>For further details see <a class="reference internal" href="#gowers2015" id="id1">[Gowers2015]</a>.</p>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="gowers2015" rules="none">
@@ -129,11 +138,11 @@ This is a dictionary with the following keys</p>
 <li><em>tau</em>      Calculated time constant from the fit.</li>
 <li><em>estimate</em> Estimated values generated by the calculated fit.</li>
 </ul>
-<p>The <em>results</em> and <em>time</em> values are only filled after the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method,
-<em>fit</em>, <em>tau</em> and <em>estimate</em> are filled after the <code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> method has been
+<p>The <em>results</em> and <em>time</em> values are only filled after the <code class="xref py py-meth docutils literal"><span class="pre">run()</span></code> method,
+<em>fit</em>, <em>tau</em> and <em>estimate</em> are filled after the <code class="xref py py-meth docutils literal"><span class="pre">solve()</span></code> method has been
 used.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">hbonds</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">hbonds</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name Hn&#39;</span><span class="p">)</span>
 <span class="n">O</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
@@ -182,7 +191,7 @@ bonds for [100]</li>
 <li><strong>nruns</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – The number of different start points within the trajectory
 to use [1]</li>
 <li><strong>nsamples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – Within each run, the number of frames to analyse [50]</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to consider periodic boundaries in calculations [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to consider periodic boundaries in calculations [<code class="docutils literal"><span class="pre">True</span></code>]</li>
 </ul>
 </td>
 </tr>
@@ -217,7 +226,7 @@ expected coefficients</td>
 </tbody>
 </table>
 <p>Continuous defition results are fitted to a double exponential with
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.optimize.leastsq()</span></code></a>, intermittent definition are fit to a
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.optimize.leastsq()</span></code></a>, intermittent definition are fit to a
 triple exponential.</p>
 <p>The results of this fitting procedure are saved into the <em>fit</em>,
 <em>tau</em> and <em>estimate</em> keywords in the solution dict.</p>
@@ -231,7 +240,7 @@ bonding</li>
 autocorrelation function</li>
 </ul>
 </div></blockquote>
-<p>In addition, the output of the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">leastsq()</span></code></a> function
+<p>In addition, the output of the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">leastsq()</span></code></a> function
 is saved into the solution dict</p>
 <blockquote>
 <div><ul class="simple">
@@ -298,14 +307,14 @@ is saved into the solution dict</p>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="hbond_analysis.html">4.3.1. Hydrogen Bond analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.3.2. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hbond_analysis.html">4.3.1. Hydrogen Bond analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.3.2. Hydrogen bond autocorrelation — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#description">4.3.2.1. Description</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#input">4.3.2.2. Input</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#output">4.3.2.3. Output</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html">4.3.3. Water Bridge analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html">4.3.3. Water Bridge analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
@@ -323,10 +332,10 @@ is saved into the solution dict</p>
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
 </ul>
 
@@ -335,22 +344,20 @@ is saved into the solution dict</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../analysis_modules.html">4. Analysis modules</a><ul>
-      <li>Previous: <a href="hbond_analysis.html" title="previous chapter">4.3.1. Hydrogen Bond analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></code></a></li>
-      <li>Next: <a href="wbridge_analysis.html" title="next chapter">4.3.3. Water Bridge analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a></li>
+      <li>Previous: <a href="hbond_analysis.html" title="previous chapter">4.3.1. Hydrogen Bond analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></code></a></li>
+      <li>Next: <a href="wbridge_analysis.html" title="next chapter">4.3.3. Water Bridge analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -361,7 +368,7 @@ is saved into the solution dict</p>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |

@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>10.1.2. Streamplots (3D) — MDAnalysis.visualization.streamlines_3D &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -28,7 +36,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -37,7 +46,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.visualization.streamlines_3D"></span><div class="section" id="streamplots-3d-mdanalysis-visualization-streamlines-3d">
-<h1>10.1.2. Streamplots (3D) — <a class="reference internal" href="#module-MDAnalysis.visualization.streamlines_3D" title="MDAnalysis.visualization.streamlines_3D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines_3D</span></code></a><a class="headerlink" href="#streamplots-3d-mdanalysis-visualization-streamlines-3d" title="Permalink to this headline">¶</a></h1>
+<h1>10.1.2. Streamplots (3D) — <a class="reference internal" href="#module-MDAnalysis.visualization.streamlines_3D" title="MDAnalysis.visualization.streamlines_3D"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.visualization.streamlines_3D</span></code></a><a class="headerlink" href="#streamplots-3d-mdanalysis-visualization-streamlines-3d" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -52,14 +61,14 @@
 </tr>
 </tbody>
 </table>
-<p>The <a class="reference internal" href="#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d" title="MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_streamlines_3d()</span></code></a> function can generate a 3D flow field from
+<p>The <a class="reference internal" href="#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d" title="MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d"><code class="xref py py-func docutils literal"><span class="pre">generate_streamlines_3d()</span></code></a> function can generate a 3D flow field from
 a MD trajectory, for instance, lipid molecules in a virus capsid. It can make
 use of multiple cores to perform the analyis in parallel (using
-<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.6)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a>).</p>
+<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.6)"><code class="xref py py-mod docutils literal"><span class="pre">multiprocessing</span></code></a>).</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="streamlines.html#module-MDAnalysis.visualization.streamlines" title="MDAnalysis.visualization.streamlines"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a></dt>
+<dt><a class="reference internal" href="streamlines.html#module-MDAnalysis.visualization.streamlines" title="MDAnalysis.visualization.streamlines"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a></dt>
 <dd>streamplots in 2D</dd>
 </dl>
 </div>
@@ -105,7 +114,7 @@ cores)</li>
 </table>
 <p class="rubric">Examples</p>
 <p>Generate 3D streamlines and visualize in <a class="reference external" href="http://docs.enthought.com/mayavi/mayavi/">mayavi</a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">np</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">np</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.visualization.streamlines_3D</span>
@@ -151,7 +160,7 @@ cores)</li>
 <img alt="../../_images/test_streamplot_3D.png" src="../../_images/test_streamplot_3D.png" />
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="streamlines.html#MDAnalysis.visualization.streamlines.generate_streamlines" title="MDAnalysis.visualization.streamlines.generate_streamlines"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines.generate_streamlines()</span></code></a></p>
+<p class="last"><a class="reference internal" href="streamlines.html#MDAnalysis.visualization.streamlines.generate_streamlines" title="MDAnalysis.visualization.streamlines.generate_streamlines"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.visualization.streamlines.generate_streamlines()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -197,16 +206,16 @@ cores)</li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../visualization_modules.html#visualization-of-lipid-flow">10.1. Visualization of Lipid Flow</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="streamlines.html">10.1.1. Streamplots (2D)  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">10.1.2. Streamplots (3D) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines_3D</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamlines.html">10.1.1. Streamplots (2D)  — <code class="docutils literal"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">10.1.2. Streamplots (3D) — <code class="docutils literal"><span class="pre">MDAnalysis.visualization.streamlines_3D</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
 </ul>
 
@@ -215,22 +224,20 @@ cores)</li>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../visualization_modules.html">10. Visualization modules</a><ul>
-      <li>Previous: <a href="streamlines.html" title="previous chapter">10.1.1. Streamplots (2D)  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a></li>
-      <li>Next: <a href="../lib_modules.html" title="next chapter">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+      <li>Previous: <a href="streamlines.html" title="previous chapter">10.1.1. Streamplots (2D)  — <code class="docutils literal"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a></li>
+      <li>Next: <a href="../lib_modules.html" title="next chapter">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -241,7 +248,7 @@ cores)</li>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |

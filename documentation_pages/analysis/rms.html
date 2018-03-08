@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>4.2.4. Calculating root mean square quantities — MDAnalysis.analysis.rms &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -28,7 +36,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -37,7 +46,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.analysis.rms"></span><div class="section" id="calculating-root-mean-square-quantities-mdanalysis-analysis-rms">
-<h1>4.2.4. Calculating root mean square quantities — <a class="reference internal" href="#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a><a class="headerlink" href="#calculating-root-mean-square-quantities-mdanalysis-analysis-rms" title="Permalink to this headline">¶</a></h1>
+<h1>4.2.4. Calculating root mean square quantities — <a class="reference internal" href="#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></code></a><a class="headerlink" href="#calculating-root-mean-square-quantities-mdanalysis-analysis-rms" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -54,25 +63,25 @@
 <p><span class="versionmodified">New in version 0.7.7.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.11.0: </span>Added <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF" title="MDAnalysis.analysis.rms.RMSF"><code class="xref py py-class docutils literal notranslate"><span class="pre">RMSF</span></code></a> analysis.</p>
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Added <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF" title="MDAnalysis.analysis.rms.RMSF"><code class="xref py py-class docutils literal"><span class="pre">RMSF</span></code></a> analysis.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.16.0: </span>Refactored RMSD to fit AnalysisBase API</p>
 </div>
 <p>The module contains code to analyze root mean square quantities such
-as the coordinat root mean square distance (<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD" title="MDAnalysis.analysis.rms.RMSD"><code class="xref py py-class docutils literal notranslate"><span class="pre">RMSD</span></code></a>) or the
-per-residue root mean square fluctuations (<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF" title="MDAnalysis.analysis.rms.RMSF"><code class="xref py py-class docutils literal notranslate"><span class="pre">RMSF</span></code></a>).</p>
+as the coordinat root mean square distance (<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD" title="MDAnalysis.analysis.rms.RMSD"><code class="xref py py-class docutils literal"><span class="pre">RMSD</span></code></a>) or the
+per-residue root mean square fluctuations (<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF" title="MDAnalysis.analysis.rms.RMSF"><code class="xref py py-class docutils literal"><span class="pre">RMSF</span></code></a>).</p>
 <p>This module uses the fast QCP algorithm <a class="reference internal" href="../lib/qcprot.html#theobald2005" id="id1">[Theobald2005]</a> to calculate
 the root mean square distance (RMSD) between two coordinate sets (as
 implemented in
-<a class="reference internal" href="../lib/qcprot.html#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix()</span></code></a>).</p>
+<a class="reference internal" href="../lib/qcprot.html#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix()</span></code></a>).</p>
 <p>When using this module in published work please cite <a class="reference internal" href="../lib/qcprot.html#theobald2005" id="id2">[Theobald2005]</a>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="align.html#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></dt>
+<dt><a class="reference internal" href="align.html#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.align</span></code></a></dt>
 <dd>aligning structures based on RMSD</dd>
-<dt><a class="reference internal" href="../lib/qcprot.html#module-MDAnalysis.lib.qcprot" title="MDAnalysis.lib.qcprot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></dt>
+<dt><a class="reference internal" href="../lib/qcprot.html#module-MDAnalysis.lib.qcprot" title="MDAnalysis.lib.qcprot"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></dt>
 <dd>implements the fast RMSD algorithm.</dd>
 </dl>
 </div>
@@ -92,8 +101,8 @@ using backbone atoms</li>
 <li>calculate the backbone RMSD and RMSD for CORE, LID, NMP (backbone atoms)</li>
 </ul>
 <p>The trajectory is included with the test data files. The data in
-<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.rmsd</span></code></a> is plotted with <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v2.2.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></code></a> is plotted with <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v2.2.0)"><code class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></code></a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">,</span><span class="n">CRD</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="n">ref</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>     <span class="c1"># reference closed AdK (1AKE) (with the default ref_frame=0)</span>
@@ -134,8 +143,8 @@ using backbone atoms</li>
 <code class="descclassname">MDAnalysis.analysis.rms.</code><code class="descname">rmsd</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>weights=None</em>, <em>center=False</em>, <em>superposition=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#rmsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.rmsd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns RMSD between two coordinate sets <cite>a</cite> and <cite>b</cite>.</p>
 <p><cite>a</cite> and <cite>b</cite> are arrays of the coordinates of N atoms of shape
-<span class="math notranslate">\(N times 3\)</span> as generated by, e.g.,
-<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.positions()</span></code></a>.</p>
+<span class="math">\(N times 3\)</span> as generated by, e.g.,
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup.positions()</span></code></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If you use trajectory data from simulations performed under <strong>periodic
@@ -155,7 +164,7 @@ reference structure are properly superimposed.</p>
 compute weighted average as center.</li>
 <li><strong>superposition</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – perform a rotational and translational superposition with the fast QCP
 algorithm <a class="reference internal" href="../lib/qcprot.html#theobald2005" id="id3">[Theobald2005]</a> before calculating the RMSD; implies
-<code class="docutils literal notranslate"><span class="pre">center=True</span></code>.</li>
+<code class="docutils literal"><span class="pre">center=True</span></code>.</li>
 </ul>
 </td>
 </tr>
@@ -168,16 +177,16 @@ algorithm <a class="reference internal" href="../lib/qcprot.html#theobald2005" i
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>The RMSD <span class="math notranslate">\(\rho(t)\)</span> as a function of time is calculated as</p>
-<div class="math notranslate">
+<p>The RMSD <span class="math">\(\rho(t)\)</span> as a function of time is calculated as</p>
+<div class="math">
 \[\rho(t) = \sqrt{\frac{1}{N} \sum_{i=1}^N w_i \left(\mathbf{x}_i(t)
                          - \mathbf{x}_i^{\text{ref}}\right)^2}\]</div>
 <p>It is the Euclidean distance in configuration space of the current
 configuration (possibly after optimal translation and rotation) from a
-reference configuration divided by <span class="math notranslate">\(1/\sqrt{N}\)</span> where <span class="math notranslate">\(N\)</span> is
+reference configuration divided by <span class="math">\(1/\sqrt{N}\)</span> where <span class="math">\(N\)</span> is
 the number of coordinates.</p>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bb</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># coordinates of first frame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>         <span class="c1"># forward to last frame</span>
@@ -206,8 +215,8 @@ boundary conditions</strong> then you <em>must make your molecules whole</em> be
 performing RMSD calculations so that the centers of mass of the selected
 and reference structure are properly superimposed.</p>
 </div>
-<p>Run the analysis with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.run" title="MDAnalysis.analysis.rms.RMSD.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RMSD.run()</span></code></a>, which stores the results
-in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.rmsd</span></code></a>.</p>
+<p>Run the analysis with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.run" title="MDAnalysis.analysis.rms.RMSD.run"><code class="xref py py-meth docutils literal"><span class="pre">RMSD.run()</span></code></a>, which stores the results
+in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -216,31 +225,31 @@ in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.r
 <li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Group of atoms for which the RMSD is calculated. If a trajectory is
 associated with the atoms then the computation iterates over the
 trajectory.</li>
-<li><strong>reference</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> (</em><em>optional</em><em>)</em>) – Group of reference atoms; if <code class="docutils literal notranslate"><span class="pre">None</span></code> then the current frame of
+<li><strong>reference</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> (</em><em>optional</em><em>)</em>) – Group of reference atoms; if <code class="docutils literal"><span class="pre">None</span></code> then the current frame of
 <cite>atomgroup</cite> is used.</li>
 <li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)"><em>tuple</em></a><em> (</em><em>optional</em><em>)</em>) – <p>The selection to operate on; can be one of:</p>
 <ol class="arabic">
 <li>any valid selection string for
-<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> that
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></code></a> that
 produces identical selections in <cite>atomgroup</cite> and <cite>reference</cite>; or</li>
-<li>a dictionary <code class="docutils literal notranslate"><span class="pre">{'mobile':</span> <span class="pre">sel1,</span> <span class="pre">'reference':</span> <span class="pre">sel2}</span></code> where <em>sel1</em>
+<li>a dictionary <code class="docutils literal"><span class="pre">{'mobile':</span> <span class="pre">sel1,</span> <span class="pre">'reference':</span> <span class="pre">sel2}</span></code> where <em>sel1</em>
 and <em>sel2</em> are valid selection strings that are applied to
 <cite>atomgroup</cite> and <cite>reference</cite> respectively (the
-<a class="reference internal" href="align.html#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align.fasta2select()</span></code></a> function returns such
+<a class="reference internal" href="align.html#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.analysis.align.fasta2select()</span></code></a> function returns such
 a dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment); or</li>
-<li>a tuple <code class="docutils literal notranslate"><span class="pre">(sel1,</span> <span class="pre">sel2)</span></code></li>
+<li>a tuple <code class="docutils literal"><span class="pre">(sel1,</span> <span class="pre">sel2)</span></code></li>
 </ol>
 <p>When using 2. or 3. with <em>sel1</em> and <em>sel2</em> then these selection strings
 are applied to <cite>atomgroup</cite> and <cite>reference</cite> respectively and should
 generate <em>groups of equivalent atoms</em>.  <em>sel1</em> and <em>sel2</em> can each also
 be a <em>list of selection strings</em> to generate a
-<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> with defined atom order as
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> with defined atom order as
 described under <a class="reference internal" href="../selections.html#ordered-selections-label"><span class="std std-ref">Ordered selections</span></a>).</p>
 </li>
 <li><strong>groupselections</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em> (</em><em>optional</em><em>)</em>) – <p>A list of selections as described for <cite>select</cite>, with the difference
 that these selections are <em>always applied to the full universes</em>,
-i.e., <code class="docutils literal notranslate"><span class="pre">atomgroup.universe.select_atoms(sel1)</span></code> and
-<code class="docutils literal notranslate"><span class="pre">reference.universe.select_atoms(sel2)</span></code>. Each selection describes
+i.e., <code class="docutils literal"><span class="pre">atomgroup.universe.select_atoms(sel1)</span></code> and
+<code class="docutils literal"><span class="pre">reference.universe.select_atoms(sel2)</span></code>. Each selection describes
 additional RMSDs to be computed <em>after the structures have been
 superimposed</em> according to <cite>select</cite>. No additional fitting is
 performed.The output contains one additional column for each
@@ -255,9 +264,9 @@ implemented.</p>
 <li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Frame index to stop analysis. Default: None becomes
 n_frames. Iteration stops <em>before</em> this frame number,
 which means that the trajectory would be read until the end.</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – step between frames, default <code class="docutils literal notranslate"><span class="pre">None</span></code> becomes 1.</li>
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – write RMSD into file with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.save" title="MDAnalysis.analysis.rms.RMSD.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RMSD.save()</span></code></a></li>
-<li><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like (optional)) – choose weights. With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – step between frames, default <code class="docutils literal"><span class="pre">None</span></code> becomes 1.</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – write RMSD into file with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.save" title="MDAnalysis.analysis.rms.RMSD.save"><code class="xref py py-meth docutils literal"><span class="pre">RMSD.save()</span></code></a></li>
+<li><strong>weights</strong> ({“mass”, <code class="docutils literal"><span class="pre">None</span></code>} or array_like (optional)) – choose weights. With <code class="docutils literal"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal"><span class="pre">None</span></code>
 weigh each atom equally. If a float array of the same length as
 <cite>atomgroup</cite> is provided, use each element of the <cite>array_like</cite> as a
 weight for the corresponding atom in <cite>atomgroup</cite>.</li>
@@ -268,16 +277,16 @@ than <cite>tol_mass</cite>.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last">
-<li><p class="first"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SelectionError</span></code> – If the selections from <cite>atomgroup</cite> and <cite>reference</cite> do not match.</p>
+<li><p class="first"><code class="xref py py-exc docutils literal"><span class="pre">SelectionError</span></code> – If the selections from <cite>atomgroup</cite> and <cite>reference</cite> do not match.</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – If <cite>weights</cite> is not of the appropriate type; see also
-<a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.get_weights" title="MDAnalysis.lib.util.get_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.get_weights()</span></code></a></p>
+<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> – If <cite>weights</cite> is not of the appropriate type; see also
+<a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.get_weights" title="MDAnalysis.lib.util.get_weights"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.util.get_weights()</span></code></a></p>
 </li>
-<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>weights</cite> are not compatible with <cite>atomgroup</cite> (not the same
+<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If <cite>weights</cite> are not compatible with <cite>atomgroup</cite> (not the same
 length) or if it is not a 1D array (see
-<a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.get_weights" title="MDAnalysis.lib.util.get_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.get_weights()</span></code></a>).</p>
+<a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.get_weights" title="MDAnalysis.lib.util.get_weights"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.util.get_weights()</span></code></a>).</p>
 <p>If <cite>weights</cite> are not compatible with <cite>groupselections</cite>: only equal
-weights (<code class="docutils literal notranslate"><span class="pre">weights=None</span></code>) or mass-weighted (<code class="docutils literal notranslate"><span class="pre">weights=&quot;mass&quot;</span></code>)
+weights (<code class="docutils literal"><span class="pre">weights=None</span></code>) or mass-weighted (<code class="docutils literal"><span class="pre">weights=&quot;mass&quot;</span></code>)
 are supported for additional <cite>groupselections</cite>.</p>
 </li>
 </ul>
@@ -286,16 +295,16 @@ are supported for additional <cite>groupselections</cite>.</p>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>The root mean square deviation of a group of <span class="math notranslate">\(N\)</span> atoms relative to a
+<p>The root mean square deviation of a group of <span class="math">\(N\)</span> atoms relative to a
 reference structure as a function of time is calculated as</p>
-<div class="math notranslate">
+<div class="math">
 \[\rho(t) = \sqrt{\frac{1}{N} \sum_{i=1}^N w_i \left(\mathbf{x}_i(t)
                          - \mathbf{x}_i^{\text{ref}}\right)^2}\]</div>
 <p>The selected coordinates from <cite>atomgroup</cite> are optimally superimposed
 (translation and rotation) on the <cite>reference</cite> coordinates at each time step
 as to minimize the RMSD. Douglas Theobald’s fast QCP algorithm
 <a class="reference internal" href="../lib/qcprot.html#theobald2005" id="id4">[Theobald2005]</a> is used for the rotational superposition and to calculate
-the RMSD (see <a class="reference internal" href="../lib/qcprot.html#module-MDAnalysis.lib.qcprot" title="MDAnalysis.lib.qcprot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a> for implementation details).</p>
+the RMSD (see <a class="reference internal" href="../lib/qcprot.html#module-MDAnalysis.lib.qcprot" title="MDAnalysis.lib.qcprot"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a> for implementation details).</p>
 <p>The class runs various checks on the input to ensure that the two atom
 groups can be compared. This includes a comparison of atom masses (i.e.,
 only the positions of atoms of the same mass will be considered to be
@@ -311,8 +320,8 @@ correct for comparison). If masses should not be checked, just set
 <p><span class="versionmodified">Changed in version 0.16.0: </span>Flexible weighting scheme with new <cite>weights</cite> keyword.</p>
 </div>
 <div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.16.0: </span>Instead of <code class="docutils literal notranslate"><span class="pre">mass_weighted=True</span></code> (removal in 0.17.0) use new
-<code class="docutils literal notranslate"><span class="pre">weights='mass'</span></code>; refactored to fit with AnalysisBase API</p>
+<p><span class="versionmodified">Deprecated since version 0.16.0: </span>Instead of <code class="docutils literal"><span class="pre">mass_weighted=True</span></code> (removal in 0.17.0) use new
+<code class="docutils literal"><span class="pre">weights='mass'</span></code>; refactored to fit with AnalysisBase API</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.17.0: </span>removed deprecated <cite>mass_weighted</cite> keyword; <cite>groupselections</cite>
@@ -321,8 +330,8 @@ are <em>not</em> rotationally superimposed any more.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rms.RMSD.rmsd">
 <code class="descname">rmsd</code><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Contains the time series of the RMSD as an N×3 <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
-array with content <code class="docutils literal notranslate"><span class="pre">[[frame,</span> <span class="pre">time</span> <span class="pre">(ps),</span> <span class="pre">RMSD</span> <span class="pre">(A)],</span> <span class="pre">[...],</span> <span class="pre">...]</span></code>.</p>
+<dd><p>Contains the time series of the RMSD as an N×3 <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>
+array with content <code class="docutils literal"><span class="pre">[[frame,</span> <span class="pre">time</span> <span class="pre">(ps),</span> <span class="pre">RMSD</span> <span class="pre">(A)],</span> <span class="pre">[...],</span> <span class="pre">...]</span></code>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -334,7 +343,7 @@ array with content <code class="docutils literal notranslate"><span class="pre">
 <dl class="method">
 <dt id="MDAnalysis.analysis.rms.RMSD.save">
 <code class="descname">save</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save RMSD from <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.rmsd</span></code></a> to text file <em>filename</em>.</p>
+<dd><p>Save RMSD from <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></code></a> to text file <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -360,8 +369,8 @@ aligned to a reference structure (see the Examples section below). The
 protein also has be whole because periodic boundaries are not taken into
 account.</p>
 </div>
-<p>Run the analysis with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.run" title="MDAnalysis.analysis.rms.RMSF.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RMSF.run()</span></code></a>, which stores the results
-in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.rmsf" title="MDAnalysis.analysis.rms.RMSF.rmsf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSF.rmsf</span></code></a>.</p>
+<p>Run the analysis with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.run" title="MDAnalysis.analysis.rms.RMSF.run"><code class="xref py py-meth docutils literal"><span class="pre">RMSF.run()</span></code></a>, which stores the results
+in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.rmsf" title="MDAnalysis.analysis.rms.RMSF.rmsf"><code class="xref py py-attr docutils literal"><span class="pre">RMSF.rmsf</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -373,32 +382,32 @@ in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.r
 n_frames. Iteration stops <em>before</em> this frame number,
 which means that the trajectory would be read until the end.</li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – step between frames, default None becomes 1.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – if <code class="docutils literal notranslate"><span class="pre">False</span></code>, suppress all output</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – if <code class="docutils literal"><span class="pre">False</span></code>, suppress all output</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>The root mean square fluctuation of an atom <span class="math notranslate">\(i\)</span> is computed as the
+<p>The root mean square fluctuation of an atom <span class="math">\(i\)</span> is computed as the
 time average</p>
-<div class="math notranslate">
+<div class="math">
 \[\rho_i = \sqrt{\left\langle (\mathbf{x}_i - \langle\mathbf{x}_i\rangle)^2 \right\rangle}\]</div>
 <p>No mass weighting is performed.</p>
 <p>This method implements an algorithm for computing sums of squares while
 avoiding overflows and underflows <a class="reference internal" href="#welford1962" id="id5">[Welford1962]</a>.</p>
 <p class="rubric">Examples</p>
 <p>In this example we calculate the residue RMSF fluctuations by analyzing
-the <span class="math notranslate">\(\text{C}_\alpha\)</span> atoms. First we need to fit the trajectory
+the <span class="math">\(\text{C}_\alpha\)</span> atoms. First we need to fit the trajectory
 to the average structure as a reference. That requires calculating the
 average structure first. Because we need to analyze and manipulate the
 same trajectory multiple times, we are going to load it into memory
-using the <code class="xref py py-mod docutils literal notranslate"><span class="pre">MemoryReader</span></code>. (If your
+using the <code class="xref py py-mod docutils literal"><span class="pre">MemoryReader</span></code>. (If your
 trajectory does not fit into memory, you will need to <a class="reference internal" href="../coordinates/init.html#writing-trajectories"><span class="std std-ref">write out
 intermediate trajectories</span></a> to disk or
 <a class="reference internal" href="../coordinates/memory.html#creating-in-memory-trajectory-label"><span class="std std-ref">generate an in-memory universe</span></a> that only contains, say, the
 protein):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
 
@@ -415,24 +424,24 @@ protein):</p>
             <span class="n">reference_coordinates</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;afc&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We created a new universe <code class="docutils literal notranslate"><span class="pre">reference</span></code> that contains a single frame
+<p>We created a new universe <code class="docutils literal"><span class="pre">reference</span></code> that contains a single frame
 with the averaged coordinates of the protein.  Now we need to fit the
 whole trajectory to the reference by minimizing the RMSD. We use
-<a class="reference internal" href="align.html#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align.AlignTraj</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.align</span> <span class="k">import</span> <span class="n">AlignTraj</span>
+<a class="reference internal" href="align.html#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.analysis.align.AlignTraj</span></code></a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.align</span> <span class="k">import</span> <span class="n">AlignTraj</span>
 <span class="n">aligner</span> <span class="o">=</span> <span class="n">AlignTraj</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;protein and name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The trajectory is now fitted to the reference (the RMSD is stored as
 <cite>aligner.rmsd</cite> for further inspection). Now we can calculate the RMSF:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="k">import</span> <span class="n">RMSF</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="k">import</span> <span class="n">RMSF</span>
 
 <span class="n">calphas</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name CA&quot;</span><span class="p">)</span>
 <span class="n">rmsfer</span> <span class="o">=</span> <span class="n">RMSF</span><span class="p">(</span><span class="n">calphas</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>and plot:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">calphas</span><span class="o">.</span><span class="n">resnums</span><span class="p">,</span> <span class="n">rmsfer</span><span class="o">.</span><span class="n">rmsf</span><span class="p">)</span>
 </pre></div>
@@ -461,7 +470,7 @@ Calculating Corrected Sums of Squares and Products.” Technometrics
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rms.RMSF.rmsf">
 <code class="descname">rmsf</code><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.rmsf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Results are stored in this N-length <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> array,
+<dd><p>Results are stored in this N-length <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> array,
 giving RMSFs for each of the given atoms.</p>
 </dd></dl>
 
@@ -511,17 +520,17 @@ giving RMSFs for each of the given atoms.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="align.html">4.2.1. Coordinate fitting and alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="contacts.html">4.2.2. Native contacts analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="distances.html">4.2.3. Distance analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.2.4. Calculating root mean square quantities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="align.html">4.2.1. Coordinate fitting and alignment — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="contacts.html">4.2.2. Native contacts analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html">4.2.3. Distance analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.2.4. Calculating root mean square quantities — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#example-applications">4.2.4.1. Example applications</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#functions">4.2.4.2. Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#analysis-classes">4.2.4.3. Analysis classes</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="psa.html">4.2.5. Calculating path similarity — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="psa.html">4.2.5. Calculating path similarity — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
@@ -540,10 +549,10 @@ giving RMSFs for each of the given atoms.</p>
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
 </ul>
 
@@ -552,22 +561,20 @@ giving RMSFs for each of the given atoms.</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../analysis_modules.html">4. Analysis modules</a><ul>
-      <li>Previous: <a href="distances.html" title="previous chapter">4.2.3. Distance analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-      <li>Next: <a href="psa.html" title="next chapter">4.2.5. Calculating path similarity — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+      <li>Previous: <a href="distances.html" title="previous chapter">4.2.3. Distance analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+      <li>Next: <a href="psa.html" title="next chapter">4.2.5. Calculating path similarity — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -578,7 +585,7 @@ giving RMSFs for each of the given atoms.</p>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |

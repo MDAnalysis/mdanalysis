@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MDAnalysis.auxiliary.base &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -26,7 +34,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -266,8 +275,8 @@
 
 <span class="sd">        Default behaviour here works when ``data`` is a ndarray of floats. May</span>
 <span class="sd">        need to overwrite in individual format&#39;s AuxSteps.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AuxReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader">[docs]</a><span class="k">class</span> <span class="nc">AuxReader</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_AuxReaderMeta</span><span class="p">)):</span>
@@ -351,8 +360,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span>
 
 <div class="viewcode-block" id="AuxReader.next"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Move to next step of auxiliary data. &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot; Move to next step of auxiliary data. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Move to next step of auxiliary data. &quot;&quot;&quot;</span>
@@ -372,8 +381,8 @@
         <span class="sd">&quot;&quot;&quot; Return to and read first step. &quot;&quot;&quot;</span>
         <span class="c1"># Overwrite as appropriate</span>
         <span class="c1">#  could also use _go_to_step(0)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_read_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Move to next step and update auxstep.</span>
@@ -418,8 +427,8 @@
                              <span class="s2">&quot;value in timestep. Name auxiliary or use read_ts &quot;</span>
                              <span class="s2">&quot;instead&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">read_ts</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_rep</span><span class="p">)</span></div>
-        <span class="k">return</span> <span class="n">ts</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_rep</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ts</span></div>
 
 <div class="viewcode-block" id="AuxReader.read_ts"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.read_ts">[docs]</a>    <span class="k">def</span> <span class="nf">read_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Read auxiliary steps corresponding to the trajectory timestep *ts*.</span>
@@ -463,8 +472,8 @@
         <span class="c1"># read through all the steps &#39;assigned&#39; to ts.frame + add to frame_data</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_add_step_to_frame_data</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">frame_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_representative</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_step_to_frame_data</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_representative</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="AuxReader.step_to_frame"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.step_to_frame">[docs]</a>    <span class="k">def</span> <span class="nf">step_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">return_time_diff</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -514,8 +523,8 @@
             <span class="k">return</span> <span class="n">frame_index</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">time_frame</span> <span class="o">=</span> <span class="n">time_frame_0</span> <span class="o">+</span> <span class="n">frame_index</span><span class="o">*</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
-            <span class="n">time_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">time_frame_0</span> <span class="o">-</span> <span class="n">time_step</span><span class="p">)</span></div>
-            <span class="k">return</span> <span class="n">frame_index</span><span class="p">,</span> <span class="n">time_diff</span>
+            <span class="n">time_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">time_frame_0</span> <span class="o">-</span> <span class="n">time_step</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">frame_index</span><span class="p">,</span> <span class="n">time_diff</span></div>
 
 <div class="viewcode-block" id="AuxReader.move_to_ts"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.move_to_ts">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Position auxiliary reader just before trajectory timestep *ts*.</span>
@@ -546,8 +555,8 @@
             <span class="n">step</span> <span class="o">=</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span>
         <span class="k">if</span> <span class="n">step</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_go_to_step</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_go_to_step</span><span class="p">(</span><span class="n">step</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AuxReader.next_nonempty_frame"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.next_nonempty_frame">[docs]</a>    <span class="k">def</span> <span class="nf">next_nonempty_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Find the next trajectory frame for which a representative auxiliary</span>
@@ -583,8 +592,8 @@
                 <span class="n">step</span> <span class="o">=</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">next_frame</span>
-        <span class="c1"># we ran out of auxiliary steps...</span></div>
-        <span class="k">return</span> <span class="kc">None</span>
+        <span class="c1"># we ran out of auxiliary steps...</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
 
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return the AuxStep corresponding to the *i*-th auxiliary step(s)</span>
@@ -714,8 +723,8 @@
                 <span class="n">value</span> <span class="o">=</span> <span class="n">cutoff_data</span><span class="p">[</span><span class="n">min_diff</span><span class="p">]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent_ts_as</span> <span class="o">==</span> <span class="s1">&#39;average&#39;</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">val</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cutoff_data</span><span class="o">.</span><span class="n">values</span><span class="p">()]),</span>
-                            <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
-        <span class="k">return</span> <span class="n">value</span>
+                            <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div>
 
     <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
@@ -768,8 +777,8 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_all_times</span><span class="p">()</span></div>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_all_times</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">represent_ts_as</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -813,8 +822,8 @@
 <span class="sd">            AuxReader.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">description</span> <span class="o">=</span> <span class="p">{</span><span class="n">attr</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-                       <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">required_attrs</span><span class="p">}</span></div>
-        <span class="k">return</span> <span class="n">description</span>
+                       <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">required_attrs</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">description</span></div>
 
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">required_attrs</span><span class="p">:</span>
@@ -896,8 +905,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_constant_dt</span>
 
     <span class="nd">@constant_dt</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">constant_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_constant_dt</span> <span class="o">=</span> <span class="n">new</span>
+    <span class="k">def</span> <span class="nf">constant_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_constant_dt</span> <span class="o">=</span> <span class="n">new</span></div>
 
 
 <div class="viewcode-block" id="AuxFileReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxFileReader">[docs]</a><span class="k">class</span> <span class="nc">AuxFileReader</span><span class="p">(</span><span class="n">AuxReader</span><span class="p">):</span>
@@ -934,8 +943,8 @@
         <span class="sd">&quot;&quot;&quot; Close *auxfile*. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="o">=</span> <span class="kc">None</span></div>
 
     <span class="k">def</span> <span class="nf">_restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Reposition to just before first step. &quot;&quot;&quot;</span>
@@ -973,8 +982,8 @@
                              <span class="s2">&quot;(num. steps </span><span class="si">{1}</span><span class="s2">!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">))</span>
         <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span></div>
-        <span class="k">return</span> <span class="n">value</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">value</span></div>
 </pre></div>
 
           </div>
@@ -1015,10 +1024,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">15. References</a></li>
 </ul>
 
@@ -1033,14 +1042,12 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1051,7 +1058,7 @@
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

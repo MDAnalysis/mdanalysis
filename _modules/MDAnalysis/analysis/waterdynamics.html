@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MDAnalysis.analysis.waterdynamics &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -26,7 +34,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -706,8 +715,8 @@
                                                                      <span class="n">distance</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
                                                                      <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">)</span>
             <span class="n">h_list</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getGraphics</span><span class="p">(</span></div></div>
-                <span class="n">h_list</span><span class="o">.</span><span class="n">timeseries</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getGraphics</span><span class="p">(</span>
+                <span class="n">h_list</span><span class="o">.</span><span class="n">timeseries</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="WaterOrientationalRelaxation"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation">[docs]</a><span class="k">class</span> <span class="nc">WaterOrientationalRelaxation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -882,8 +891,8 @@
 
 <div class="viewcode-block" id="WaterOrientationalRelaxation.lg2"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.lg2">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">lg2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Second Legendre polynomial&quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        <span class="sd">&quot;&quot;&quot;Second Legendre polynomial&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span></div>
 
 <div class="viewcode-block" id="WaterOrientationalRelaxation.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries&quot;&quot;&quot;</span>
@@ -902,8 +911,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
             <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMeanOnePoint</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">)</span></div></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="AngularDistribution"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.AngularDistribution">[docs]</a><span class="k">class</span> <span class="nc">AngularDistribution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -1040,8 +1049,8 @@
         <span class="n">listdip</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">])]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist2column</span><span class="p">(</span><span class="n">listOH</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist2column</span><span class="p">(</span><span class="n">listHH</span><span class="p">))</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist2column</span><span class="p">(</span><span class="n">listdip</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist2column</span><span class="p">(</span><span class="n">listHH</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist2column</span><span class="p">(</span><span class="n">listdip</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="nf">_selection_serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection_str</span><span class="p">):</span>
         <span class="n">selection</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1049,8 +1058,8 @@
                            <span class="n">interval</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
             <span class="n">selection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection_str</span><span class="p">))</span>
-            <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span></div>
-        <span class="k">return</span> <span class="n">selection</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">selection</span></div>
 
 
 <div class="viewcode-block" id="MeanSquareDisplacement"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement">[docs]</a><span class="k">class</span> <span class="nc">MeanSquareDisplacement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -1207,8 +1216,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
             <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMeanOnePoint</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">)</span></div></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="SurvivalProbability"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability">[docs]</a><span class="k">class</span> <span class="nc">SurvivalProbability</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -1265,8 +1274,8 @@
             <span class="k">return</span>
 
         <span class="k">for</span> <span class="n">window_size</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMeanOnePoint</span><span class="p">(</span><span class="n">selected</span><span class="p">,</span> <span class="n">window_size</span><span class="p">)</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMeanOnePoint</span><span class="p">(</span><span class="n">selected</span><span class="p">,</span> <span class="n">window_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">_selection_serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection_str</span><span class="p">):</span>
@@ -1325,8 +1334,8 @@
         <span class="k">while</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="ow">and</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected</span><span class="p">):</span>
             <span class="nb">next</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">selected</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span><span class="p">])</span>
             <span class="n">survivors</span> <span class="o">=</span> <span class="n">survivors</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">next</span><span class="p">)</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span></div>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">survivors</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">survivors</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -1367,10 +1376,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">15. References</a></li>
 </ul>
 
@@ -1385,14 +1394,12 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1403,7 +1410,7 @@
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

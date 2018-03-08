@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>4.7.3. Radial Distribution Functions — MDAnalysis.analysis.rdf &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -28,7 +36,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -37,7 +46,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.analysis.rdf"></span><div class="section" id="radial-distribution-functions-mdanalysis-analysis-rdf">
-<h1>4.7.3. Radial Distribution Functions — <a class="reference internal" href="#module-MDAnalysis.analysis.rdf" title="MDAnalysis.analysis.rdf"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a><a class="headerlink" href="#radial-distribution-functions-mdanalysis-analysis-rdf" title="Permalink to this headline">¶</a></h1>
+<h1>4.7.3. Radial Distribution Functions — <a class="reference internal" href="#module-MDAnalysis.analysis.rdf" title="MDAnalysis.analysis.rdf"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.rdf</span></code></a><a class="headerlink" href="#radial-distribution-functions-mdanalysis-analysis-rdf" title="Permalink to this headline">¶</a></h1>
 <p>Tools for calculating pair distribution functions (“radial
 distribution functions” or “RDF”).</p>
 <dl class="class">
@@ -66,15 +75,15 @@ every frame)</li>
 </tbody>
 </table>
 <p class="rubric">Example</p>
-<p>First create the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF" title="MDAnalysis.analysis.rdf.InterRDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF</span></code></a> object, by supplying two
-AtomGroups then use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rdf</span> <span class="o">=</span> <span class="n">InterRDF</span><span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">)</span>
+<p>First create the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF" title="MDAnalysis.analysis.rdf.InterRDF"><code class="xref py py-class docutils literal"><span class="pre">InterRDF</span></code></a> object, by supplying two
+AtomGroups then use the <code class="xref py py-meth docutils literal"><span class="pre">run()</span></code> method</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">rdf</span> <span class="o">=</span> <span class="n">InterRDF</span><span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">)</span>
 <span class="n">rdf</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Results are available through the <code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code>
+<p>Results are available through the <code class="xref py py-attr docutils literal"><span class="pre">bins</span></code> and <code class="xref py py-attr docutils literal"><span class="pre">rdf</span></code>
 attributes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">rdf</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">rdf</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The <cite>exclusion_block</cite> keyword allows the masking of pairs from
@@ -127,9 +136,9 @@ atom in each molecule, the exclusion mask <cite>(7, 7)</cite> can be used.</p>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="gnm.html">4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gnm.html">4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="helanal.html">4.7.2. HELANAL — analysis of protein helices</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.7.3. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.7.3. Radial Distribution Functions — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
@@ -143,10 +152,10 @@ atom in each molecule, the exclusion mask <cite>(7, 7)</cite> can be used.</p>
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
 </ul>
 
@@ -156,21 +165,19 @@ atom in each molecule, the exclusion mask <cite>(7, 7)</cite> can be used.</p>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../analysis_modules.html">4. Analysis modules</a><ul>
       <li>Previous: <a href="helanal.html" title="previous chapter">4.7.2. HELANAL — analysis of protein helices</a></li>
-      <li>Next: <a href="density.html" title="next chapter">4.8.1. Generating densities from trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
+      <li>Next: <a href="density.html" title="next chapter">4.8.1. Generating densities from trajectories — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -181,7 +188,7 @@ atom in each molecule, the exclusion mask <cite>(7, 7)</cite> can be used.</p>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |

@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MDAnalysis.analysis.leaflet &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -26,7 +34,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -227,12 +236,12 @@
 <div class="viewcode-block" id="LeafletFinder.update"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update components, possibly with a different *cutoff*&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">cutoff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">cutoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init_graph</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
+            <span class="n">cutoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_graph</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LeafletFinder.sizes"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.sizes">[docs]</a>    <span class="k">def</span> <span class="nf">sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dict of component index with size of component.&quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(((</span><span class="n">idx</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">component</span><span class="p">))</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">)))</span>
+        <span class="sd">&quot;&quot;&quot;Dict of component index with size of component.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(((</span><span class="n">idx</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">component</span><span class="p">))</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">)))</span></div>
 
 <div class="viewcode-block" id="LeafletFinder.groups"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.groups">[docs]</a>    <span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a :class:`MDAnalysis.core.groups.AtomGroup` for *component_index*.</span>
@@ -246,19 +255,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">component_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups_iter</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span></div>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">component_index</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">component_index</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LeafletFinder.group"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.group">[docs]</a>    <span class="k">def</span> <span class="nf">group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a :class:`MDAnalysis.core.groups.AtomGroup` for *component_index*.&quot;&quot;&quot;</span>
         <span class="c1"># maybe cache this?</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">component_index</span><span class="p">]]</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">component_index</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="LeafletFinder.groups_iter"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter">[docs]</a>    <span class="k">def</span> <span class="nf">groups_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterator over all leaflet :meth:`groups`&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">component_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">)):</span></div>
-            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">component_index</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">component_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">)):</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">component_index</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LeafletFinder.write_selection"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.write_selection">[docs]</a>    <span class="k">def</span> <span class="nf">write_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write selections for the leaflets to *filename*.</span>
@@ -275,13 +284,13 @@
                     <span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups_iter</span><span class="p">()):</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;leaflet_</span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span></div>
-                <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;leaflet_</span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;LeafletFinder(</span><span class="si">{0!r}</span><span class="s2">, cutoff=</span><span class="si">{1:.1f}</span><span class="s2"> A) with </span><span class="si">{2:d}</span><span class="s2"> atoms in </span><span class="si">{3:d}</span><span class="s2"> groups&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">selectionstring</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span></div>
-            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selectionstring</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="optimize_cutoff"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.optimize_cutoff">[docs]</a><span class="k">def</span> <span class="nf">optimize_cutoff</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">dmin</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">dmax</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
@@ -346,8 +355,8 @@
         <span class="n">_sizes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cutoff</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">LF</span><span class="o">.</span><span class="n">sizes</span><span class="p">())))</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">fromrecords</span><span class="p">(</span><span class="n">_sizes</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s2">&quot;cutoff,N&quot;</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">_sizes</span>
-    <span class="n">results</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;cutoff&quot;</span><span class="p">])</span>  <span class="c1"># sort ascending by N, then cutoff</span></div>
-    <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># (cutoff,N) with N&gt;1 and shortest cutoff</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;cutoff&quot;</span><span class="p">])</span>  <span class="c1"># sort ascending by N, then cutoff</span>
+    <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># (cutoff,N) with N&gt;1 and shortest cutoff</span></div>
 </pre></div>
 
           </div>
@@ -388,10 +397,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">15. References</a></li>
 </ul>
 
@@ -406,14 +415,12 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -424,7 +431,7 @@
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

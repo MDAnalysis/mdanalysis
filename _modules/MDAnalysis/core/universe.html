@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MDAnalysis.core.universe &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -26,7 +34,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -371,8 +380,8 @@
 <div class="viewcode-block" id="Universe.copy"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an independent copy of this Universe&quot;&quot;&quot;</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
-        <span class="n">new</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
-        <span class="k">return</span> <span class="n">new</span>
+        <span class="n">new</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">new</span></div>
 
     <span class="k">def</span> <span class="nf">_generate_from_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># generate Universe version of each class</span>
@@ -497,8 +506,8 @@
             <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;dummy&#39;</span><span class="p">)(</span>
                 <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span>
                 <span class="n">velocities</span><span class="o">=</span><span class="n">velocities</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">)</span>
-</div>
-        <span class="k">return</span> <span class="n">u</span>
+
+        <span class="k">return</span> <span class="n">u</span></div>
 
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="c1"># This implements the instant selector of segments from a Universe.</span>
@@ -615,8 +624,8 @@
 
         <span class="k">if</span> <span class="n">in_memory</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;in_memory_step&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-</div>
-        <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="Universe.transfer_to_memory"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.transfer_to_memory">[docs]</a>    <span class="k">def</span> <span class="nf">transfer_to_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -675,8 +684,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">MemoryReader</span><span class="p">(</span>
                 <span class="n">coordinates</span><span class="p">,</span>
                 <span class="n">dimensions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
-                <span class="n">dt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="n">step</span><span class="p">,</span></div>
-                <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+                <span class="n">dt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="n">step</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span></div>
 
     <span class="c1"># python 2 doesn&#39;t allow an efficient splitting of kwargs in function</span>
     <span class="c1"># argument signatures.</span>
@@ -688,8 +697,8 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :meth:`MDAnalysis.core.groups.AtomGroup.select_atoms`</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -747,8 +756,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">remove_anchor</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Universe.remove_anchor"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.remove_anchor">[docs]</a>    <span class="k">def</span> <span class="nf">remove_anchor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Remove this Universe from the possible anchor list for unpickling&quot;&quot;&quot;</span></div>
-        <span class="n">_ANCHOR_UNIVERSES</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gen_anchor_hash</span><span class="p">(),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Remove this Universe from the possible anchor list for unpickling&quot;&quot;&quot;</span>
+        <span class="n">_ANCHOR_UNIVERSES</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gen_anchor_hash</span><span class="p">(),</span> <span class="kc">None</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">make_anchor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">_ANCHOR_UNIVERSES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_gen_anchor_hash</span><span class="p">()]</span> <span class="o">=</span> <span class="bp">self</span>
@@ -866,8 +875,8 @@
                     <span class="n">n_residues</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span>
                     <span class="n">n_segments</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
                     <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_process_attr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_attr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_process_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Squeeze a topologyattr for its information</span>
@@ -950,8 +959,8 @@
         <span class="c1"># resize my residues</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">residues</span> <span class="o">=</span> <span class="n">ResidueGroup</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
 
-        <span class="c1"># return the new residue</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">residx</span><span class="p">]</span>
+        <span class="c1"># return the new residue</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">residx</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Universe.add_Segment"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Segment">[docs]</a>    <span class="k">def</span> <span class="nf">add_Segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a new Segment to this Universe</span>
@@ -976,8 +985,8 @@
         <span class="n">segidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_Segment</span><span class="p">(</span><span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
         <span class="c1"># resize my segments</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">SegmentGroup</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="c1"># return the new segment</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">segidx</span><span class="p">]</span>
+        <span class="c1"># return the new segment</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">segidx</span><span class="p">]</span></div>
 
     <span class="c1"># TODO: Maybe put this as a Bond attribute transplant</span>
     <span class="c1"># Problems: Can we transplant onto Universe?</span>
@@ -1053,8 +1062,8 @@
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frags</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">fragdict</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span>
-</div>
-        <span class="k">return</span> <span class="n">fragdict</span>
+
+        <span class="k">return</span> <span class="n">fragdict</span></div>
 
 
 <span class="c1"># TODO: what is the point of this function???</span>
@@ -1265,8 +1274,8 @@
     <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">positions</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">coords</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span>
                  <span class="nb">format</span><span class="o">=</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">MemoryReader</span><span class="p">)</span>
-</div>
-    <span class="k">return</span> <span class="n">u</span>
+
+    <span class="k">return</span> <span class="n">u</span></div>
 </pre></div>
 
           </div>
@@ -1307,10 +1316,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">15. References</a></li>
 </ul>
 
@@ -1325,14 +1334,12 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1343,7 +1350,7 @@
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

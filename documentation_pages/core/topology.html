@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>9.2.1. Core Topology object — MDAnalysis.core.topology &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -28,7 +36,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -37,11 +46,11 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.core.topology"></span><div class="section" id="core-topology-object-mdanalysis-core-topology">
-<h1>9.2.1. Core Topology object — <a class="reference internal" href="#module-MDAnalysis.core.topology" title="MDAnalysis.core.topology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a><a class="headerlink" href="#core-topology-object-mdanalysis-core-topology" title="Permalink to this headline">¶</a></h1>
+<h1>9.2.1. Core Topology object — <a class="reference internal" href="#module-MDAnalysis.core.topology" title="MDAnalysis.core.topology"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.topology</span></code></a><a class="headerlink" href="#core-topology-object-mdanalysis-core-topology" title="Permalink to this headline">¶</a></h1>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.16.0.</span></p>
 </div>
-<p><a class="reference internal" href="#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></a> is the core object that holds all topology information.</p>
+<p><a class="reference internal" href="#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal"><span class="pre">Topology</span></code></a> is the core object that holds all topology information.</p>
 <p>TODO: Add in-depth discussion.</p>
 <p class="rubric">Notes</p>
 <p>For developers: In MDAnalysis 0.16.0 this new topology system was
@@ -69,8 +78,8 @@ by this object.</p>
 <li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – number of residues in topology. Must be larger then 1 at each level</li>
 <li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – number of segments in topology. Must be larger then 1 at each level</li>
 <li><strong>attrs</strong> (<em>TopologyAttr objects</em>) – components of the topology to be included</li>
-<li><strong>atom_resindex</strong> (<em>array</em>) – 1-D array giving the resindex of each atom in the system</li>
-<li><strong>residue_segindex</strong> (<em>array</em>) – 1-D array giving the segindex of each residue in the system</li>
+<li><strong>atom_resindex</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – 1-D array giving the resindex of each atom in the system</li>
+<li><strong>residue_segindex</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – 1-D array giving the segindex of each residue in the system</li>
 </ul>
 </td>
 </tr>
@@ -87,7 +96,7 @@ by this object.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">residx of the new Residue</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code> – If not all data was provided.  This error is raised before any</td>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></code> – If not all data was provided.  This error is raised before any</td>
 </tr>
 </tbody>
 </table>
@@ -242,11 +251,11 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>aix</strong> (<em>array</em>) – atom indices</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>aix</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – atom indices</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>rix</strong> – residue index for each atom</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></td>
 </tr>
 </tbody>
 </table>
@@ -260,11 +269,11 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>aix</strong> (<em>array</em>) – atom indices</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>aix</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – atom indices</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>rix</strong> – segment index for each atom</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></td>
 </tr>
 </tbody>
 </table>
@@ -296,11 +305,11 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rix</strong> (<em>array</em>) – residue indices</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rix</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – residue indices</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>aix</strong> – indices of atoms present in residues, collectively</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></td>
 </tr>
 </tbody>
 </table>
@@ -314,7 +323,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rix</strong> (<em>array</em>) – residue indices</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rix</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – residue indices</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>raix</strong> – each element corresponds to a residue index, in order given in
 <cite>rix</cite>, with each element being an array of the atom indices present
@@ -334,11 +343,11 @@ in that residue</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rix</strong> (<em>array</em>) – residue indices</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rix</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – residue indices</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>six</strong> – segment index for each residue</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></td>
 </tr>
 </tbody>
 </table>
@@ -352,11 +361,11 @@ in that residue</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>six</strong> (<em>array</em>) – segment indices</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>six</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – segment indices</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>aix</strong> – sorted indices of atoms present in segments, collectively</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></td>
 </tr>
 </tbody>
 </table>
@@ -370,7 +379,7 @@ in that residue</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>six</strong> (<em>array</em>) – residue indices</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>six</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – residue indices</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>saix</strong> – each element corresponds to a segment index, in order given in
 <cite>six</cite>, with each element being an array of the atom indices present
@@ -390,11 +399,11 @@ in that segment</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>six</strong> (<em>array</em>) – segment indices</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>six</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – segment indices</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>rix</strong> – sorted indices of residues present in segments, collectively</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></td>
 </tr>
 </tbody>
 </table>
@@ -408,7 +417,7 @@ in that segment</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>six</strong> (<em>array</em>) – residue indices</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>six</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – residue indices</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>srix</strong> – each element corresponds to a segment index, in order given in
 <cite>six</cite>, with each element being an array of the residue indices
@@ -458,15 +467,15 @@ of each parent.  Length <cite>nparents</cite> + 1</p>
 </table>
 <p class="rubric">Examples</p>
 <p>To find the residue to atom mappings for a given atom to residue mapping:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">atom2res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">atom2res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">make_downshift_arrays</span><span class="p">(</span><span class="n">atom2res</span><span class="p">)</span>
 <span class="go">array([array([0, 2, 5]), array([1]), array([3, 4, 6]), None], dtype=object)</span>
 </pre></div>
 </div>
 <p>Entry 0 corresponds to residue 0 and says that this contains atoms 0, 2 &amp; 5</p>
 <p class="rubric">Notes</p>
-<p>The final entry in the return array will be <code class="docutils literal notranslate"><span class="pre">None</span></code> to ensure that the
-dtype of the array is <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>.</p>
+<p>The final entry in the return array will be <code class="docutils literal"><span class="pre">None</span></code> to ensure that the
+dtype of the array is <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a>.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">This means negative indexing should <strong>never</strong>
@@ -517,13 +526,13 @@ be used with these arrays.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">9. Core modules</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../core_modules.html#important-objects-for-users">9.1. Important objects for users</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#topology-system">9.2. Topology system</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">9.2.1. Core Topology object — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">9.2.1. Core Topology object — <code class="docutils literal"><span class="pre">MDAnalysis.core.topology</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#classes">9.2.1.1. Classes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#helper-functions">9.2.1.2. Helper functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="topologyobjects.html">9.2.2. Core Topology Objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html">9.2.3. Topology attribute objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyobjects.html">9.2.2. Core Topology Objects — <code class="docutils literal"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html">9.2.3. Topology attribute objects — <code class="docutils literal"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">9.3. Selection system</a></li>
@@ -531,10 +540,10 @@ be used with these arrays.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
 </ul>
 
@@ -543,22 +552,20 @@ be used with these arrays.</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../core_modules.html">9. Core modules</a><ul>
-      <li>Previous: <a href="groups.html" title="previous chapter">9.1.2. Core objects: Containers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
-      <li>Next: <a href="topologyobjects.html" title="next chapter">9.2.2. Core Topology Objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
+      <li>Previous: <a href="groups.html" title="previous chapter">9.1.2. Core objects: Containers — <code class="docutils literal"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
+      <li>Next: <a href="topologyobjects.html" title="next chapter">9.2.2. Core Topology Objects — <code class="docutils literal"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -569,7 +576,7 @@ be used with these arrays.</p>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |

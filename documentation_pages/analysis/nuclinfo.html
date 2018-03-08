@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>4.5.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -28,7 +36,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -37,7 +46,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.analysis.nuclinfo"></span><div class="section" id="nucleic-acid-analysis-mdanalysis-analysis-nuclinfo">
-<h1>4.5.1. Nucleic acid analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.nuclinfo" title="MDAnalysis.analysis.nuclinfo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a><a class="headerlink" href="#nucleic-acid-analysis-mdanalysis-analysis-nuclinfo" title="Permalink to this headline">¶</a></h1>
+<h1>4.5.1. Nucleic acid analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.nuclinfo" title="MDAnalysis.analysis.nuclinfo"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a><a class="headerlink" href="#nucleic-acid-analysis-mdanalysis-analysis-nuclinfo" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -59,7 +68,7 @@ particular</p>
 <li>Watson-Crick N1-N3 distances, C2-O2 distances, N6-O4 distances, O6-N4 distances.</li>
 </ul>
 <p>For applications of this kind of analysis see <a class="reference internal" href="#denning2011" id="id1">[Denning2011]</a> and <a class="reference internal" href="#denning2012" id="id2">[Denning2012]</a>.</p>
-<p>All functions take a <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> as an
+<p>All functions take a <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> as an
 argument together with further parameters that specify the base or bases in
 question. Angles are in degrees. The functions use standard CHARMM names for
 nucleic acids and atom names.</p>
@@ -94,7 +103,7 @@ computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 <li><strong>bp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the second base</li>
 <li><strong>seg1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – segment id for first base [“SYSTEM”]</li>
@@ -128,7 +137,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 <li><strong>bp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the second base</li>
 <li><strong>seg1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – segment id for first base [“SYSTEM”]</li>
@@ -162,7 +171,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 <li><strong>bp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the second base</li>
 <li><strong>seg1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – segment id for first base [“SYSTEM”]</li>
@@ -198,7 +207,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – segment id for base</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 </ul>
@@ -227,7 +236,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – segment id for base</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 </ul>
@@ -260,7 +269,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – segment id for base</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 </ul>
@@ -291,7 +300,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – segment id for base</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 </ul>
@@ -320,7 +329,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – segment id for base</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 </ul>
@@ -349,7 +358,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – segment id for base</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 </ul>
@@ -378,7 +387,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – segment id for base</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 </ul>
@@ -407,7 +416,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – segment id for base</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 </ul>
@@ -436,7 +445,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – segment id for base</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 </ul>
@@ -466,7 +475,7 @@ bond is computed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – segment id for base</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 </ul>
@@ -502,7 +511,7 @@ namely “C1’, C2’, O2’, H2’”.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the trajectory</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</li>
 <li><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – segment id for base</li>
 <li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid of the first base</li>
 </ul>
@@ -536,7 +545,7 @@ documented by charmm force field parameters.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> containing the
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the
 trajectory</li>
 <li><strong>bp1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid that base pairs with <cite>bp2</cite></li>
 <li><strong>bp2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – resid below the base that flips</li>
@@ -601,7 +610,7 @@ trajectory</li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.5.1. Nucleic acid analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.5.1. Nucleic acid analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#distances">4.5.1.1. Distances</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#phases">4.5.1.2. Phases</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dihedral-angles">4.5.1.3. Dihedral angles</a></li>
@@ -622,10 +631,10 @@ trajectory</li>
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
 </ul>
 
@@ -634,22 +643,20 @@ trajectory</li>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../analysis_modules.html">4. Analysis modules</a><ul>
-      <li>Previous: <a href="leaflet.html" title="previous chapter">4.4.2. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
-      <li>Next: <a href="polymer.html" title="next chapter">4.6.1. Polymer analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.polymer</span></code></a></li>
+      <li>Previous: <a href="leaflet.html" title="previous chapter">4.4.2. Leaflet identification — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
+      <li>Next: <a href="polymer.html" title="next chapter">4.6.1. Polymer analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.polymer</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -660,7 +667,7 @@ trajectory</li>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |

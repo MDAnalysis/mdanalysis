@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MDAnalysis.coordinates.PDB &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -26,7 +34,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -365,8 +374,8 @@
 <span class="sd">        :class:`PDBWriter`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;multiframe&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span></div>
-        <span class="k">return</span> <span class="n">PDBWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;multiframe&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PDBWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Pretend the current TS is -1 (in 0 based) so &quot;next&quot; is the</span>
@@ -437,8 +446,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;occupancy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">occupancy</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
-<div class="viewcode-block" id="PDBReader.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pdbfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pdbfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="PDBWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter">[docs]</a><span class="k">class</span> <span class="nc">PDBWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
@@ -617,8 +626,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;END record has already been written&quot;</span>
                                <span class="s2">&quot; before the final closing of the file&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span> <span class="o">=</span> <span class="kc">None</span></div>
 
     <span class="k">def</span> <span class="nf">_write_pdb_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multiframe</span><span class="p">:</span>
@@ -686,8 +695,8 @@
                     <span class="k">pass</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;PDB files must have coordinate values between &quot;</span>
                          <span class="s2">&quot;</span><span class="si">{0:.3f}</span><span class="s2"> and </span><span class="si">{1:.3f}</span><span class="s2"> Angstroem: file writing was &quot;</span>
-                         <span class="s2">&quot;aborted.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdb_coor_limits</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">],</span></div>
-                                           <span class="bp">self</span><span class="o">.</span><span class="n">pdb_coor_limits</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]))</span>
+                         <span class="s2">&quot;aborted.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdb_coor_limits</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">],</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">pdb_coor_limits</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]))</span></div>
 
 <div class="viewcode-block" id="PDBWriter._write_pdb_bonds"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter._write_pdb_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">_write_pdb_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Writes out all the bond records&quot;&quot;&quot;</span>
@@ -722,8 +731,8 @@
                   <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">con</span><span class="p">)</span>
         <span class="n">connect</span> <span class="o">=</span> <span class="p">([</span><span class="n">mapping</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">conect</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">conect</span><span class="p">:</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">CONECT</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">conect</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CONECT</span><span class="p">(</span><span class="n">c</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PDBWriter._update_frame"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter._update_frame">[docs]</a>    <span class="k">def</span> <span class="nf">_update_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Method to initialize important attributes in writer from a AtomGroup or Universe *obj*.</span>
@@ -751,8 +760,8 @@
 
         <span class="c1"># remember obj for some of other methods --- NOTE: this is an evil/lazy</span>
         <span class="c1"># hack...</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span></div>
 
 <div class="viewcode-block" id="PDBWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write object *obj* at current trajectory frame to file.</span>
@@ -777,8 +786,8 @@
         <span class="c1"># Issue 105: with write() ONLY write a single frame; use</span>
         <span class="c1"># write_all_timesteps() to dump everything in one go, or do the</span>
         <span class="c1"># traditional loop over frames</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_multiframe</span><span class="p">)</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_pdb_bonds</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_multiframe</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_pdb_bonds</span><span class="p">()</span></div>
         <span class="c1"># END record is written when file is being close()d</span>
 
 <div class="viewcode-block" id="PDBWriter.write_all_timesteps"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.write_all_timesteps">[docs]</a>    <span class="k">def</span> <span class="nf">write_all_timesteps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
@@ -825,8 +834,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_pdb_bonds</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-        <span class="c1"># Set the trajectory to the starting position</span></div>
-        <span class="n">traj</span><span class="p">[</span><span class="n">start</span><span class="p">]</span>
+        <span class="c1"># Set the trajectory to the starting position</span>
+        <span class="n">traj</span><span class="p">[</span><span class="n">start</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="PDBWriter.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;write a new timestep to the PDB file</span>
@@ -851,8 +860,8 @@
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;PBDWriter: no coordinate data to write to &quot;</span>
                                   <span class="s2">&quot;trajectory file&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_pdb_coordinates</span><span class="p">()</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_pdb_coordinates</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_deduce_PDB_atom_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomname</span><span class="p">,</span> <span class="n">resname</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Deduce how the atom name should be aligned.</span>
@@ -955,8 +964,8 @@
             <span class="c1"># .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;ATOM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">vals</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">multiframe</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ENDMDL</span><span class="p">()</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ENDMDL</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="PDBWriter.HEADER"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.HEADER">[docs]</a>    <span class="k">def</span> <span class="nf">HEADER</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write HEADER_ record.</span>
@@ -966,8 +975,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">):</span>
             <span class="k">return</span>
-        <span class="n">header</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">header</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;HEADER&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">))</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">header</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;HEADER&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="PDBWriter.TITLE"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.TITLE">[docs]</a>    <span class="k">def</span> <span class="nf">TITLE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">title</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write TITLE_ record.</span>
@@ -975,8 +984,8 @@
 <span class="sd">        .. _TITLE: http://www.wwpdb.org/documentation/format32/sect2.html</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>  <span class="c1"># TODO: should do continuation automatically</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;TITLE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>  <span class="c1"># TODO: should do continuation automatically</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;TITLE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="PDBWriter.REMARK"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.REMARK">[docs]</a>    <span class="k">def</span> <span class="nf">REMARK</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">remarks</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write generic REMARK_ record (without number).</span>
@@ -990,8 +999,8 @@
 <span class="sd">        .. _REMARK (update): http://www.wwpdb.org/documentation/format32/remarks2.html</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">remark</span> <span class="ow">in</span> <span class="n">remarks</span><span class="p">:</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;REMARK&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">remark</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">remark</span> <span class="ow">in</span> <span class="n">remarks</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;REMARK&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">remark</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="nf">COMPND</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="s1">&#39;compound&#39;</span><span class="p">):</span>
@@ -1009,16 +1018,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;CRYST1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">box</span><span class="o">=</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span>
             <span class="n">ang</span><span class="o">=</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:],</span>
-            <span class="n">spacegroup</span><span class="o">=</span><span class="n">spacegroup</span><span class="p">,</span></div>
-            <span class="n">zvalue</span><span class="o">=</span><span class="n">zvalue</span><span class="p">))</span>
+            <span class="n">spacegroup</span><span class="o">=</span><span class="n">spacegroup</span><span class="p">,</span>
+            <span class="n">zvalue</span><span class="o">=</span><span class="n">zvalue</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="PDBWriter.MODEL"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.MODEL">[docs]</a>    <span class="k">def</span> <span class="nf">MODEL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modelnumber</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the MODEL_ record.</span>
 
 <span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL</span>
 
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;MODEL&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelnumber</span><span class="p">))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;MODEL&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelnumber</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="PDBWriter.END"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.END">[docs]</a>    <span class="k">def</span> <span class="nf">END</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write END_ record.</span>
@@ -1033,16 +1042,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_END</span><span class="p">:</span>
             <span class="c1"># only write a single END record</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;END&#39;</span><span class="p">])</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_END</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;END&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_END</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="PDBWriter.ENDMDL"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.ENDMDL">[docs]</a>    <span class="k">def</span> <span class="nf">ENDMDL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the ENDMDL_ record.</span>
 
 <span class="sd">        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL</span>
 
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;ENDMDL&#39;</span><span class="p">])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;ENDMDL&#39;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="PDBWriter.CONECT"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.CONECT">[docs]</a>    <span class="k">def</span> <span class="nf">CONECT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conect</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write CONECT_ record.</span>
@@ -1051,8 +1060,8 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">conect</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{0:5d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entry</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">conect</span><span class="p">]</span>
-        <span class="n">conect</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">conect</span><span class="p">)</span></div></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;CONECT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conect</span><span class="p">))</span>
+        <span class="n">conect</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">conect</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;CONECT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conect</span><span class="p">))</span></div></div>
 
 
 <div class="viewcode-block" id="ExtendedPDBReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.ExtendedPDBReader">[docs]</a><span class="k">class</span> <span class="nc">ExtendedPDBReader</span><span class="p">(</span><span class="n">PDBReader</span><span class="p">):</span>
@@ -1072,8 +1081,8 @@
 <span class="sd">    .. _VMD: http://www.ks.uiuc.edu/Research/vmd/</span>
 
 <span class="sd">    .. versionadded:: 0.8</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;XPDB&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;XPDB&quot;</span></div>
 
 
 <div class="viewcode-block" id="MultiPDBWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.MultiPDBWriter">[docs]</a><span class="k">class</span> <span class="nc">MultiPDBWriter</span><span class="p">(</span><span class="n">PDBWriter</span><span class="p">):</span>
@@ -1103,8 +1112,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PDB&#39;</span><span class="p">,</span> <span class="s1">&#39;ENT&#39;</span><span class="p">]</span>
-    <span class="n">multiframe</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># For Writer registration</span></div>
-    <span class="n">singleframe</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">multiframe</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># For Writer registration</span>
+    <span class="n">singleframe</span> <span class="o">=</span> <span class="kc">False</span></div>
 </pre></div>
 
           </div>
@@ -1145,10 +1154,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">15. References</a></li>
 </ul>
 
@@ -1163,14 +1172,12 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1181,7 +1188,7 @@
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

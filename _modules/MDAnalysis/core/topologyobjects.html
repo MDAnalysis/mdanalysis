@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MDAnalysis.core.topologyobjects &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -26,7 +34,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -186,8 +195,8 @@
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Bond"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond">[docs]</a><span class="k">class</span> <span class="nc">Bond</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
@@ -224,8 +233,8 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">atom</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span></div>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised Atom&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised Atom&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Bond.length"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond.length">[docs]</a>    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Length of the bond.</span>
@@ -238,10 +247,10 @@
             <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">self_distance_array</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">]),</span>
                 <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span></div>
-            <span class="k">return</span> <span class="n">mdamath</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
-</div>
-    <span class="n">value</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mdamath</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">)</span></div>
+
+    <span class="n">value</span> <span class="o">=</span> <span class="n">length</span></div>
 
 
 <div class="viewcode-block" id="Angle"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Angle">[docs]</a><span class="k">class</span> <span class="nc">Angle</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
@@ -276,10 +285,10 @@
 <span class="sd">           Fixed angles close to 180 giving NaN</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span></div>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
-</div>
-    <span class="n">value</span> <span class="o">=</span> <span class="n">angle</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span></div>
+
+    <span class="n">value</span> <span class="o">=</span> <span class="n">angle</span></div>
 
 
 <div class="viewcode-block" id="Dihedral"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Dihedral">[docs]</a><span class="k">class</span> <span class="nc">Dihedral</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
@@ -324,10 +333,10 @@
         <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
         <span class="n">ab</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">B</span><span class="o">.</span><span class="n">position</span>
         <span class="n">bc</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span>
-        <span class="n">cd</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">position</span></div>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">dihedral</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">))</span>
-</div>
-    <span class="n">value</span> <span class="o">=</span> <span class="n">dihedral</span>
+        <span class="n">cd</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">position</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">dihedral</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">))</span></div>
+
+    <span class="n">value</span> <span class="o">=</span> <span class="n">dihedral</span></div>
 
 
 <span class="c1"># subclass Dihedral to inherit dihedral method</span>
@@ -357,8 +366,8 @@
 <span class="sd">        ----</span>
 <span class="sd">        The numerical precision is typically not better than</span>
 <span class="sd">        4 decimals (and is only tested to 3 decimals).</span>
-<span class="sd">        &quot;&quot;&quot;</span></div></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dihedral</span><span class="p">()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dihedral</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="TopologyDict"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyDict">[docs]</a><span class="k">class</span> <span class="nc">TopologyDict</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -463,8 +472,8 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
 <div class="viewcode-block" id="TopologyDict.keys"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyDict.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns a list of the different types of available bonds&quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot;Returns a list of the different types of available bonds&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterator over keys in this dictionary&quot;&quot;&quot;</span>
@@ -495,8 +504,8 @@
 <span class="sd">        Returns boolean on whether a given type exists within this dictionary</span>
 
 <span class="sd">        For topology groups the key (1,2,3) is considered the same as (3,2,1)</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span> <span class="ow">or</span> <span class="n">other</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span> <span class="ow">or</span> <span class="n">other</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span></div>
 
 
 <div class="viewcode-block" id="TopologyGroup"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup">[docs]</a><span class="k">class</span> <span class="nc">TopologyGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -618,8 +627,8 @@
 <span class="sd">        .. seeAlso :meth:`types`</span>
 
 <span class="sd">        .. versionadded 0.9.0</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">topDict</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">topDict</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span></div>
 
     <span class="n">selectBonds</span> <span class="o">=</span> <span class="n">select_bonds</span>
 
@@ -627,8 +636,8 @@
         <span class="sd">&quot;&quot;&quot;Return a list of the bond types in this TopologyGroup</span>
 
 <span class="sd">        .. versionadded 0.9.0</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topDict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topDict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;dict&#39;</span><span class="p">)</span>
@@ -677,8 +686,8 @@
 
         <span class="c1"># Create final boolean mask by summing across rows</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">seen</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</div>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -709,8 +718,8 @@
 <span class="sd">        .. versionchanged:: 0.10.0</span>
 <span class="sd">           Renamed from &quot;dump_contents&quot; to &quot;to_indices&quot;</span>
 
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span></div>
 
     <span class="n">dump_contents</span> <span class="o">=</span> <span class="n">to_indices</span>
 
@@ -881,8 +890,8 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">btype</span> <span class="o">==</span> <span class="s1">&#39;dihedral&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dihedrals</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">btype</span> <span class="o">==</span> <span class="s1">&#39;improper&#39;</span><span class="p">:</span></div>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dihedrals</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">btype</span> <span class="o">==</span> <span class="s1">&#39;improper&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dihedrals</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_bondsSlow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
         <span class="sd">&quot;&quot;&quot;Slow version of bond (numpy implementation)&quot;&quot;&quot;</span>
@@ -924,8 +933,8 @@
                                         <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span></div>
-                                        <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                        <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_anglesSlow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
         <span class="sd">&quot;&quot;&quot;Slow version of angle (numpy implementation)&quot;&quot;&quot;</span>
@@ -973,8 +982,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_angles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                                          <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                         <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span></div>
-                                         <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                         <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_dihedralsSlow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
         <span class="sd">&quot;&quot;&quot;Slow version of dihedral (numpy implementation)&quot;&quot;&quot;</span>
@@ -1029,8 +1038,8 @@
             <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                                             <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                                             <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                            <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span></div></div>
-                                            <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                            <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
@@ -1071,10 +1080,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">15. References</a></li>
 </ul>
 
@@ -1089,14 +1098,12 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1107,7 +1114,7 @@
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

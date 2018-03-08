@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>4.4.2. Leaflet identification — MDAnalysis.analysis.leaflet &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.17.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -28,7 +36,8 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head><body>
+  </head>
+  <body>
   
 
     <div class="document">
@@ -37,7 +46,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.analysis.leaflet"></span><div class="section" id="leaflet-identification-mdanalysis-analysis-leaflet">
-<h1>4.4.2. Leaflet identification — <a class="reference internal" href="#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><a class="headerlink" href="#leaflet-identification-mdanalysis-analysis-leaflet" title="Permalink to this headline">¶</a></h1>
+<h1>4.4.2. Leaflet identification — <a class="reference internal" href="#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><a class="headerlink" href="#leaflet-identification-mdanalysis-analysis-leaflet" title="Permalink to this headline">¶</a></h1>
 <p>This module implements the <em>LeafletFinder</em> algorithm, described in
 <a class="reference internal" href="../references.html#michaud-agrawal2011" id="id1">[Michaud-Agrawal2011]</a>. It can identify the lipids in a bilayer of
 arbitrary shape and topology, including planar and undulating bilayers
@@ -45,14 +54,14 @@ under periodic boundary conditions or vesicles.</p>
 <p>One can use this information to identify</p>
 <ul class="simple">
 <li>the upper and lower leaflet of a <em>planar membrane</em> by comparing the
-the <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="MDAnalysis.core.groups.AtomGroup.center_of_geometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">center_of_geometry()</span></code></a> of
+the <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="MDAnalysis.core.groups.AtomGroup.center_of_geometry"><code class="xref py py-meth docutils literal"><span class="pre">center_of_geometry()</span></code></a> of
 the leaflet groups, or</li>
 <li>the outer and inner leaflet of a <em>vesicle</em> by comparing histograms
 of distances from the centre of geometry (or possibly simply the
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">radius_of_gyration()</span></code>).</li>
+<code class="xref py py-meth docutils literal"><span class="pre">radius_of_gyration()</span></code>).</li>
 </ul>
 <p>See example scripts in the <a class="reference external" href="https://github.com/MDAnalysis/MDAnalysisCookbook/tree/master/examples">MDAnalysisCookbook</a> on how to use
-<a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">LeafletFinder</span></code></a>. The function <a class="reference internal" href="#MDAnalysis.analysis.leaflet.optimize_cutoff" title="MDAnalysis.analysis.leaflet.optimize_cutoff"><code class="xref py py-func docutils literal notranslate"><span class="pre">optimize_cutoff()</span></code></a> implements a
+<a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal"><span class="pre">LeafletFinder</span></code></a>. The function <a class="reference internal" href="#MDAnalysis.analysis.leaflet.optimize_cutoff" title="MDAnalysis.analysis.leaflet.optimize_cutoff"><code class="xref py py-func docutils literal"><span class="pre">optimize_cutoff()</span></code></a> implements a
 (slow) heuristic method to find the best cut off for the LeafletFinder
 algorithm.</p>
 <div class="section" id="algorithm">
@@ -76,19 +85,19 @@ algorithm.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> or a file name (e.g., in PDB or
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> or a file name (e.g., in PDB or
 GRO format)</li>
 <li><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – A AtomGroup instance or a
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">Universe.select_atoms()</span></code> selection string
+<code class="xref py py-meth docutils literal"><span class="pre">Universe.select_atoms()</span></code> selection string
 for atoms that define the lipid head groups, e.g.
 universe.atoms.PO4 or “name PO4” or “name P*”</li>
 <li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – head group-defining atoms within a distance of <cite>cutoff</cite>
 Angstroms are deemed to be in the same leaflet [15.0]</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – take periodic boundary conditions into account [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
-<li><strong>sparse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">None</span></code>: use fastest possible routine; <code class="docutils literal notranslate"><span class="pre">True</span></code>: use slow
-sparse matrix implementation (for large systems); <code class="docutils literal notranslate"><span class="pre">False</span></code>:
-use fast <a class="reference internal" href="../lib/distances.html#MDAnalysis.lib.distances.distance_array" title="MDAnalysis.lib.distances.distance_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">distance_array()</span></code></a>
-implementation [<code class="docutils literal notranslate"><span class="pre">None</span></code>].</li>
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – take periodic boundary conditions into account [<code class="docutils literal"><span class="pre">False</span></code>]</li>
+<li><strong>sparse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal"><span class="pre">None</span></code>: use fastest possible routine; <code class="docutils literal"><span class="pre">True</span></code>: use slow
+sparse matrix implementation (for large systems); <code class="docutils literal"><span class="pre">False</span></code>:
+use fast <a class="reference internal" href="../lib/distances.html#MDAnalysis.lib.distances.distance_array" title="MDAnalysis.lib.distances.distance_array"><code class="xref py py-func docutils literal"><span class="pre">distance_array()</span></code></a>
+implementation [<code class="docutils literal"><span class="pre">None</span></code>].</li>
 </ul>
 </td>
 </tr>
@@ -96,44 +105,44 @@ implementation [<code class="docutils literal notranslate"><span class="pre">Non
 </table>
 <p class="rubric">Example</p>
 <p>The components of the graph are stored in the list
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">LeafletFinder.components</span></code>; the atoms in each component are numbered
+<code class="xref py py-attr docutils literal"><span class="pre">LeafletFinder.components</span></code>; the atoms in each component are numbered
 consecutively, starting at 0. To obtain the atoms in the input structure
-use <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LeafletFinder.groups()</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">LeafletFinder</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="s1">&#39;name P*&#39;</span><span class="p">)</span>
+use <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups"><code class="xref py py-meth docutils literal"><span class="pre">LeafletFinder.groups()</span></code></a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">LeafletFinder</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="s1">&#39;name P*&#39;</span><span class="p">)</span>
 <span class="n">leaflet0</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">leaflet1</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The residues can be accessed through the standard MDAnalysis mechanism:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leaflet0</span><span class="o">.</span><span class="n">residues</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">leaflet0</span><span class="o">.</span><span class="n">residues</span>
 </pre></div>
 </div>
-<p>provides a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a>
+<p>provides a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal"><span class="pre">ResidueGroup</span></code></a>
 instance. Similarly, all atoms in the first leaflet are then</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leaflet0</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">leaflet0</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span>
 </pre></div>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.group">
 <code class="descname">group</code><span class="sig-paren">(</span><em>component_index</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> for <em>component_index</em>.</p>
+<dd><p>Return a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> for <em>component_index</em>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.groups">
 <code class="descname">groups</code><span class="sig-paren">(</span><em>component_index=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> for <em>component_index</em>.</p>
+<dd><p>Return a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> for <em>component_index</em>.</p>
 <p>If no argument is supplied, then a list of all leaflet groups is returned.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.group" title="MDAnalysis.analysis.leaflet.LeafletFinder.group"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LeafletFinder.group()</span></code></a>, <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LeafletFinder.groups_iter()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.group" title="MDAnalysis.analysis.leaflet.LeafletFinder.group"><code class="xref py py-meth docutils literal"><span class="pre">LeafletFinder.group()</span></code></a>, <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter"><code class="xref py py-meth docutils literal"><span class="pre">LeafletFinder.groups_iter()</span></code></a></p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter">
 <code class="descname">groups_iter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.groups_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterator over all leaflet <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups"><code class="xref py py-meth docutils literal notranslate"><span class="pre">groups()</span></code></a></p>
+<dd><p>Iterator over all leaflet <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups"><code class="xref py py-meth docutils literal"><span class="pre">groups()</span></code></a></p>
 </dd></dl>
 
 <dl class="method">
@@ -154,7 +163,7 @@ instance. Similarly, all atoms in the first leaflet are then</p>
 <dd><p>Write selections for the leaflets to <em>filename</em>.</p>
 <p>The format is typically determined by the extension of <em>filename</em>
 (e.g. “vmd”, “pml”, or “ndx” for VMD, PyMol, or Gromacs).</p>
-<p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.selections.base.SelectionWriter</span></code> for all
+<p>See <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.selections.base.SelectionWriter</span></code> for all
 options.</p>
 </dd></dl>
 
@@ -169,10 +178,10 @@ options.</p>
 <li><p class="first">at least two groups (assumes that there are at least 2 leaflets)</p>
 </li>
 <li><p class="first">reject any solutions for which:</p>
-<div class="math notranslate">
+<div class="math">
 \[\frac{|N_0 - N_1|}{|N_0 + N_1|} &gt; \mathrm{max_imbalance}\]</div>
-<p>with <span class="math notranslate">\(N_i\)</span> being the number of lipids in group
-<span class="math notranslate">\(i\)</span>. This heuristic picks groups with balanced numbers of
+<p>with <span class="math">\(N_i\)</span> being the number of lipids in group
+<span class="math">\(i\)</span>. This heuristic picks groups with balanced numbers of
 lipids.</p>
 </li>
 </ol>
@@ -181,13 +190,13 @@ lipids.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> instance</li>
-<li><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – AtomGroup or selection string as used for <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">LeafletFinder</span></code></a></li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> instance</li>
+<li><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – AtomGroup or selection string as used for <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal"><span class="pre">LeafletFinder</span></code></a></li>
 <li><strong>dmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
 <li><strong>dmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – scan cutoffs from <cite>dmin</cite> to <cite>dmax</cite> at stepsize <cite>step</cite> (in Angstroms)</li>
 <li><strong>max_imbalance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – tuning parameter for the balancing heuristic [0.2]</li>
-<li><strong>kwargs</strong> (<em>other keyword arguments</em>) – other arguments for  <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">LeafletFinder</span></code></a></li>
+<li><strong>kwargs</strong> (<em>other keyword arguments</em>) – other arguments for  <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal"><span class="pre">LeafletFinder</span></code></a></li>
 </ul>
 </td>
 </tr>
@@ -247,8 +256,8 @@ made more robust.</p>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="hole.html">4.4.1. Generation and Analysis of HOLE pore profiles — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.4.2. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hole.html">4.4.1. Generation and Analysis of HOLE pore profiles — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.hole</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.4.2. Leaflet identification — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#algorithm">4.4.2.1. Algorithm</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#classes-and-functions">4.4.2.2. Classes and Functions</a></li>
 </ul>
@@ -269,10 +278,10 @@ made more robust.</p>
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">8. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">9. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
 </ul>
 
@@ -281,22 +290,20 @@ made more robust.</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../analysis_modules.html">4. Analysis modules</a><ul>
-      <li>Previous: <a href="hole.html" title="previous chapter">4.4.1. Generation and Analysis of HOLE pore profiles — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code></a></li>
-      <li>Next: <a href="nuclinfo.html" title="next chapter">4.5.1. Nucleic acid analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a></li>
+      <li>Previous: <a href="hole.html" title="previous chapter">4.4.1. Generation and Analysis of HOLE pore profiles — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.hole</span></code></a></li>
+      <li>Next: <a href="nuclinfo.html" title="next chapter">4.5.1. Nucleic acid analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -307,7 +314,7 @@ made more robust.</p>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
