@@ -21,14 +21,9 @@
 #
 from __future__ import absolute_import, print_function
 import os
-import subprocess
-import mock
 
-"""Tests whether os.fork() is called as a side effect when importing
-MDAnalysis. Also checks if os.fork() is restored after workarounds.
+"""Checks if os.fork() is restored after workarounds suppressing its calling.
 See PR #1794 for details."""
 
-with mock.patch('os.fork') as os_dot_fork:
-    import MDAnalysis
-    assert not os_dot_fork.called
+import MDAnalysis
 assert os.fork is not None
