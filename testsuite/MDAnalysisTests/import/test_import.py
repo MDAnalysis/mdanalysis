@@ -30,6 +30,12 @@ import mock
 
 """Test if importing MDAnalysis has unwanted side effects (PR #1794)."""
 
+# Python 2/3 compatibility:
+try:
+    reload = importlib.reload
+except AttributeError:
+    pass
+
 class TestMDAImport(object):
     # Tests concerning importing MDAnalysis.
     def test_os_dot_fork_restored(self):
@@ -48,19 +54,37 @@ class TestMDAImport(object):
         # Modules triggering calls to os.fork() when imported for which
         # there are corresponding workarounds in MDAnalysis:
         modules_with_workarounds = ['uuid']
+        # "unload" modules known to trigger a call to os.fork() on import:
+        unloaded = {}
+        for module in modules_with_workarounds:
+            unloaded[module] = sys.modules[module]
+            del sys.modules[module]
+        # assert that os.fork() isn't called when importing MDAnalysis:
+        with mock.patch('os.fork') as os_dot_fork:
+            import MDAnalysis
+            reload(MDAnalysis)
+            assert not os_dot_fork.called
+        # restore unloaded modules with originals (prevents breaking other
+        # tests):
+        for module in modules_with_workarounds:
+            sys.modules[module] = unloaded[module]
+        del unloaded
         # Get a list of all modules which are imported by MDAnalysis:
         mda_modules_command = \
-        "from __future__ import absolute_import, print_function\n"
-        "import sys\n"
-        "modules = set(sys.modules.keys())\n"
-        "import MDAnalysis\n"
-        "modules = sorted(list(set(sys.modules.keys()) - modules))\n"
-        "for module in modules:\n"
+        "from __future__ import absolute_import, print_function\n" \
+        "import sys\n" \
+        "modules = set(sys.modules.keys())\n" \
+        "import MDAnalysis\n" \
+        "modules = sorted(list(set(sys.modules.keys()) - modules))\n" \
+        "for module in modules:\n" \
         "    print(module)"
         echo = subprocess.Popen(["echo", mda_modules_command],
                                 stdout=subprocess.PIPE)
-        mda_modules = subprocess.check_output(["python"], stdin=echo.stdout)
-        mda_modules = filter(bool, mda_modules.split("\n"))
+        mda_modules = subprocess.check_output([sys.executable],
+                                              stdin=echo.stdout)\
+                                              .decode(sys.stdout.encoding)
+        echo.stdout.close()
+        mda_modules = list(filter(bool, mda_modules.split("\n")))
         # Remove MDAnalysis itself and the modules known to trigger a call to
         # os.fork() from the list of modules imported by MDAnalysis:
         mda_modules = [module for module in mda_modules \
@@ -76,24 +100,9 @@ class TestMDAImport(object):
                         try:
                             m = importlib.import_module(module)
                             reload(m)
-                        except (ImportError, TypeError, RuntimeError):
+                        except Exception:
                             pass
                         assert not os_dot_fork.called
                 except AssertionError as err:
                     print(module)
                     raise err
-            # "unload" modules known to trigger a call to os.fork() on import:
-            unloaded = {}
-            for module in modules_with_workarounds:
-                unloaded[module] = sys.modules[module]
-                del sys.modules[module]
-            # assert that os.fork() isn't called when importing MDAnalysis:
-            with mock.patch('os.fork') as os_dot_fork:
-                import MDAnalysis
-                reload(MDAnalysis)
-                assert not os_dot_fork.called
-            # restore unloaded modules with originals (prevents breaking other
-            # tests):
-            for module in modules_with_workarounds:
-                sys.modules[module] = unloaded[module]
-            del unloaded
