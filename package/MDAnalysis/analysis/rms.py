@@ -89,7 +89,6 @@ The trajectory is included with the test data files. The data in
                                "backbone and resid 30-59"],                                    # NMP
               filename="rmsd_all_CORE_LID_NMP.dat")
    R.run()
-   R.save()
 
    import matplotlib.pyplot as plt
    rmsd = R.rmsd.T   # transpose makes it easier for plotting
@@ -201,6 +200,14 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
     configuration (possibly after optimal translation and rotation) from a
     reference configuration divided by :math:`1/\sqrt{N}` where :math:`N` is
     the number of coordinates.
+
+    The weights :math:`w_i` are calculated from the input weights
+    `weights` :math:`w'_i` as relative to the mean:
+
+    .. math::
+
+       w_i = \frac{w'_i}{\langle w' \rangle}
+
 
     Example
     -------
@@ -382,6 +389,9 @@ class RMSD(AnalysisBase):
              than `tol_mass`.
         ref_frame : int (optional)
              frame index to select frame from `reference`
+        verbose : bool (optional)
+             Show detailed progress of the calculation if set to ``True``; the
+             default is ``False``.
 
         Raises
         ------
@@ -395,19 +405,28 @@ class RMSD(AnalysisBase):
              length) or if it is not a 1D array (see
              :func:`MDAnalysis.lib.util.get_weights`).
 
-             If `weights` are not compatible with `groupselections`: only equal
-             weights (``weights=None``) or mass-weighted (``weights="mass"``)
-             are supported for additional `groupselections`.
+             A :exc:`ValueError` is also raised if `weights` are not compatible
+             with `groupselections`: only equal weights (``weights=None``) or
+             mass-weighted (``weights="mass"``) are supported for additional
+             `groupselections`.
 
         Notes
         -----
-        The root mean square deviation of a group of :math:`N` atoms relative to a
-        reference structure as a function of time is calculated as
+        The root mean square deviation :math:`\rho(t)` of a group of :math:`N`
+        atoms relative to a reference structure as a function of time is
+        calculated as
 
         .. math::
 
            \rho(t) = \sqrt{\frac{1}{N} \sum_{i=1}^N w_i \left(\mathbf{x}_i(t)
                                     - \mathbf{x}_i^{\text{ref}}\right)^2}
+
+        The weights :math:`w_i` are calculated from the input weights `weights`
+        :math:`w'_i` as relative to the mean of the input weights:
+
+        .. math::
+
+           w_i = \frac{w'_i}{\langle w' \rangle}
 
         The selected coordinates from `atomgroup` are optimally superimposed
         (translation and rotation) on the `reference` coordinates at each time step
@@ -423,6 +442,11 @@ class RMSD(AnalysisBase):
 
         .. _ClustalW: http://www.clustal.org/
         .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
+
+
+        See Also
+        --------
+        rmsd
 
 
         .. versionadded:: 0.7.7
@@ -669,7 +693,14 @@ class RMSF(AnalysisBase):
         step : int (optional)
             step between frames, default None becomes 1.
         verbose : bool (optional)
-            if ``False``, suppress all output
+             Show detailed progress of the calculation if set to ``True``; the
+             default is ``False``.
+
+        Raises
+        ------
+        ValueError
+             raised if negative values are calculated, which indicates that a
+             numerical overflow or underflow occured
 
 
         Notes
@@ -703,16 +734,23 @@ class RMSF(AnalysisBase):
         protein)::
 
            import MDAnalysis as mda
+           from MDAnalysis.analysis import align
 
            from MDAnalysis.tests.datafiles import TPR, XTC
 
            u = mda.Universe(TPR, XTC, in_memory=True)
            protein = u.select_atoms("protein")
 
-           # TODO: need a step to center and make whole: this trajectory
-           # contains the protein being split across periodic boundaries
+           # 1) need a step to center and make whole: this trajectory
+           #    contains the protein being split across periodic boundaries
+           #
+           # TODO
 
-           # reference = average structure
+           # 2) fit to the initial frame to get a better average structure
+           #    (the trajectory is changed in memory)
+           prealigner = align.AlignTraj(u, select="protein and name CA", in_memory=True).run()
+
+           # 3) reference = average structure
            reference_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)
            # make a reference structure (need to reshape into a 1-frame "trajectory")
            reference = mda.Merge(protein).load_new(
@@ -723,8 +761,7 @@ class RMSF(AnalysisBase):
         whole trajectory to the reference by minimizing the RMSD. We use
         :class:`MDAnalysis.analysis.align.AlignTraj`::
 
-           from MDAnalysis.analysis.align import AlignTraj
-           aligner = AlignTraj(u, reference, select="protein and name CA", in_memory=True).run()
+           aligner = align.AlignTraj(u, reference, select="protein and name CA", in_memory=True).run()
 
         The trajectory is now fitted to the reference (the RMSD is stored as
         `aligner.rmsd` for further inspection). Now we can calculate the RMSF::
@@ -761,11 +798,10 @@ class RMSF(AnalysisBase):
         super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
 
-    def run(self, start=None, stop=None, step=None, progout=None,
-            verbose=None, quiet=None):
+    def run(self, start=None, stop=None, step=None, verbose=None, quiet=None):
         """Perform the analysis."""
 
-        if any([el is not None for el in (start, stop, step, progout, quiet)]):
+        if any([el is not None for el in (start, stop, step, quiet)]):
             warnings.warn("run arguments are deprecated. Please pass them at "
                           "class construction. These options will be removed in 0.17.0",
                           category=DeprecationWarning)
