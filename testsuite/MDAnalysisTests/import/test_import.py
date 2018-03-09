@@ -29,6 +29,7 @@ import subprocess
 class TestMDAImport(object):
     # Tests concerning importing MDAnalysis.
     def test_os_dot_fork_not_called(self):
+        # Importing MDAnalysis shall not trigger calls to os.fork (see PR #1794)
         # This test has to run in a separate Python instance and is therefore
         # offloaded to the script "fork_called.py".
         loc = os.path.dirname(os.path.realpath(__file__))
@@ -45,5 +46,8 @@ class TestMDAImport(object):
             raise(err)
 
     def test_os_dot_fork_not_none(self):
+        # In MDAnalysis.core.universe, os.fork is set to None prior to importing
+        # the uuid module and restored afterwards (see PR #1794 for details).
+        # This tests asserts that os.fork has been restored.
         import MDAnalysis
         assert os.fork is not None
