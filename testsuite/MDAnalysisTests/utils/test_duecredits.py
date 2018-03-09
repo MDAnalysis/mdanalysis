@@ -33,14 +33,21 @@ except ImportError:
     logger.info('Could not find due.py,all tests will be skipped')
     pass
 
+try:
+    import duecredit
+except ImportError:
+    logger.info('Couldnot import duecredit')
+    os.environ['DUECREDIT_ENABLE']='no'
 
 class TestDuecredits():
-        
+    @pytest.mark.skipif(os.environ['DUECREDIT_ENABLE']=='no',
+                        reason="Duecredit is not installed, Skipping")    
     def test_duecredit_active(self):
         import MDAnalysis as mda
         assert mda.due.active == True
 
-    
+    @pytest.mark.skipif(os.environ['DUECREDIT_ENABLE']=='no',
+                        reason="Duecredit is not installed,Skipping")
     def test_duecredit_collector_citations(self):
         import MDAnalysis as mda
         assert mda.due.citations[('MDAnalysis/',
