@@ -30,13 +30,19 @@ class TestMDAImport(object):
     # Tests concerning importing MDAnalysis.
     def test_os_dot_fork_not_called(self):
         # Importing MDAnalysis shall not trigger calls to os.fork (see PR #1794)
-        # This test has to run in a separate Python instance and is therefore
+        # This test has to run in a separate Python instance to ensure that
+        # no previously imported modules interfere with it. It is therefore
         # offloaded to the script "fork_called.py".
         loc = os.path.dirname(os.path.realpath(__file__))
         script = os.path.join(loc, 'fork_called.py')
         encoding = sys.stdout.encoding
         if encoding is None:
             encoding = "utf-8"
+        # If the script we are about to call fails, we want its stderr to show
+        # up in the pytest log. This is accomplished by redirecting the stderr
+        # of the subprocess to its stdout and catching the raised
+        # CalledProcessError. That error's output member then contains the
+        # failed script's stderr and we can print it:
         try:
             out = subprocess.check_output([sys.executable, script],
                                           stderr=subprocess.STDOUT)\
