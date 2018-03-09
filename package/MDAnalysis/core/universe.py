@@ -106,7 +106,6 @@ from .groups import (ComponentBase, GroupBase,
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 
-
 logger = logging.getLogger("MDAnalysis.core.universe")
 
 
