@@ -31,10 +31,7 @@ class TestMDAImport(object):
     def test_os_dot_fork_not_called(self):
         # This test has to run in a separate Python instance and is therefore
         # offloaded to the script "fork_called.py".
-        loc = __file__
-        if loc.endswith('.pyc') and os.path.exists(loc[:-1]):
-            loc = loc[:-1]
-        loc = os.path.dirname(os.path.realpath(loc))
+        loc = os.path.dirname(os.path.realpath(__file__))
         script = os.path.join(loc, 'fork_called.py')
         encoding = sys.stdout.encoding
         if encoding is None:
