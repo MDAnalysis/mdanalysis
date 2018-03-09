@@ -31,7 +31,7 @@ try:
     import MDAnalysis.due
 except ImportError:
     logger.info('Could not find due.py,all tests will be skipped')
-    pass
+    
 
 try:
     import duecredit

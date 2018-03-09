@@ -49,14 +49,13 @@ def _donothing_func(*args, **kwargs):
     """Perform no good and no bad"""
     pass
 
+import os
 
 try:
     from duecredit import due, BibTeX, Doi, Url
     if 'due' in locals() and not hasattr(due, 'cite'):
         raise RuntimeError(
             "Imported due lacks .cite. DueCredit is now disabled")
-except ImportError:
-    pass
 except Exception as e:
     if type(e).__name__ != 'ImportError':
         import logging
