@@ -57,9 +57,7 @@ try:
             "Imported due lacks .cite. DueCredit is now disabled")
 except Exception as e:
     if type(e).__name__ != 'ImportError':
-        import logging
-        logging.getLogger("duecredit").error(
-            "Failed to import duecredit due to %s",str(e))
+        pass
     # Initiate due stub
     due = InactiveDueCreditCollector()
     BibTeX = Doi = Url = _donothing_func
