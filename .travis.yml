@@ -97,7 +97,7 @@ install:
   - git clone git://github.com/astropy/ci-helpers.git
   - source ci-helpers/travis/setup_conda.sh
   - pip install --upgrade pip
-  - pip install -v duecredit
+  - pip install duecredit
   - eval $BUILD_CMD
 
 script:
