@@ -33,7 +33,6 @@ env:
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
-    - DUECREDIT_ENABLE=yes
 
   matrix:
     # Run a coverage test
