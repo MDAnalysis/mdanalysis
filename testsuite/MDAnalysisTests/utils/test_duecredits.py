@@ -22,39 +22,23 @@
 from __future__ import absolute_import
 import logging
 import pytest
-import os,sys
-os.environ['DUECREDIT_ENABLE']='yes'
+import os
+import MDAnalysis as mda
 
-logger = logging.getLogger("MDAnalysisTests.utils")
-#Testing the import#
-try:
-    import MDAnalysis.due
-except ImportError:
-    logger.info('Could not find due.py,all tests will be skipped')
-    
 
-try:
-    import duecredit
-except ImportError:
-    logger.info('Couldnot import duecredit')
-    os.environ['DUECREDIT_ENABLE']='no'
-
+@pytest.mark.skipif((os.environ.get('DUECREDIT_ENABLE', 'yes').lower()
+                     in ('no', '0', 'false')),
+                    reason=
+                    "duecredit is explicitly disabled with DUECREDIT_ENABLE=no")
 class TestDuecredits():
-    @pytest.mark.skipif(os.environ['DUECREDIT_ENABLE']=='no',
-                        reason="Duecredit is not installed, Skipping")    
+       
     def test_duecredit_active(self):
-        import MDAnalysis as mda
         assert mda.due.active == True
 
-    @pytest.mark.skipif(os.environ['DUECREDIT_ENABLE']=='no',
-                        reason="Duecredit is not installed,Skipping")
+    
     def test_duecredit_collector_citations(self):
-        import MDAnalysis as mda
+        
         assert mda.due.citations[('MDAnalysis/',
                                   'gowers2016')].cites_module == True        
         assert mda.due.citations[('MDAnalysis/',
                                   '10.1002/jcc.21787')].cites_module == True
-        
-    
-
-
