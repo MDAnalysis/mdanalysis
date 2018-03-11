@@ -24,6 +24,8 @@ Enhancements
     (Issue #1029)
   * Added copy method to various core classes including Reader, TransTable,
     Topology, TopologyAttr (Issue #1029)
+  * Added duecredit to prepare a summary of the citations, when a user
+    uses MDAnalysis (Issue #412)
 
 Fixes
   * Fixed waterdynamics SurvivalProbability ignoring the t0 start time
