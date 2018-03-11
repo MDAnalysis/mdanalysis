@@ -117,23 +117,30 @@ Citations using Duecredit
 Citations can be automatically generated using Duecredit, depending on the
 packages used. Duecredit is easy to install via pip. Simply type:
 
-pip install duecredit
+.. code-block:: bash
+
+   pip install duecredit
 
 duecredit will remain an optional dependency, i.e. your software will work
 correctly even without duecredit installed. List of citations for 
 yourscript.py can be obtained using simple commands.
 
-cd /path/to/yourmodule
+.. code-block:: bash
 
-python -m duecredit yourscript.py
+   cd /path/to/yourmodule
+   python -m duecredit yourscript.py
 
 **Or**
 
-DUECREDIT-ENABLE=yes python yourscript.py
+.. code-block:: bash
+
+   DUECREDIT-ENABLE=yes python yourscript.py
 
 You can also display them in BibTeX format, using:
 
-duecredit summary --format=bibtex 
+.. code-block:: bash
+ 
+   duecredit summary --format=bibtex 
 
 Thanks!
 

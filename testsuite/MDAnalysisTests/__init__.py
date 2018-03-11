@@ -101,7 +101,10 @@ except ImportError:
 
 import os
 import sys
+
+# To test duecredit in utils/test_duecredits.py
 os.environ['DUECREDIT_ENABLE']='yes'
+
 # Any tests that plot with matplotlib need to run with the simple agg backend because
 # on Travis there is no DISPLAY set
 try:

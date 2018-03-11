@@ -23,6 +23,7 @@ from __future__ import absolute_import
 import os
 import pytest
 
+#DUECREDIT_ENABLE is set to yes in MDAnalysisTests/__init__.py
 import MDAnalysis as mda
 
 
