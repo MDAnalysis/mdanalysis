@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de, orbeckst
+mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de, orbeckst,
+         xiki-tempula, navyakhare, zemanj
 
   * 0.17.1
 
@@ -24,10 +25,18 @@ Enhancements
     (Issue #1029)
   * Added copy method to various core classes including Reader, TransTable,
     Topology, TopologyAttr (Issue #1029)
+  * Added `reindex` option to GROWriter to preserve original atom ids when set to
+    False (Issue #1777)
+  * Can now pass 'atom_style' keyword argument when parsing Lammps Data files
+    to specify what is on each line.  Eg atom_style = 'id type charge x y z'
+    (Issue #1791)
+  * Added periodic boundary condition option to HydrogenBondAnalysis (Issue #1188)
   * Added duecredit to prepare a summary of the citations, when a user
     uses MDAnalysis (Issue #412)
 
 Fixes
+  * Fixed MPI fork() warning when importing MDAnalysis in an Infiniband-enabled
+    MPI environment (PR #1794)
   * Fixed waterdynamics SurvivalProbability ignoring the t0 start time
     (Issue #1759)
   * AtomGroup.dimensions now strictly returns a copy (Issue #1582)
@@ -36,7 +45,11 @@ Fixes
   * DCDReader now reports the correct time based on istart information (PR #1767)
   * added requirement scipy >= 1.0.0 (absolutely needed: >= 0.19) (Issue #1775)
   * Universe.empty now warns about empty Residues and Segmnets (Issue #1771)
-
+  * AMBER netcdf reader now defaults to mmap=None as described in the docs
+    (meaning mmap=True for files and NOT in memory), thus avoiding
+    memory problems on big trajectories (Issue #1807)
+  
+        
 Changes
   * scipy >= 1.0.0 is now required (issue #1775 because of PR #1758)
 

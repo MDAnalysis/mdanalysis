@@ -12,20 +12,9 @@ benchmark the performance of MDAnalysis at different
 time points in its history (for different git commit
 hashes).
 
-At the time of writing, Airspeed Velocity expects the
-project ``setup.py`` to be in the root directory of
-the git repository. MDAnalysis has had ``setup.py``
-for the main package in a subdirectory for quite some
-time now, so for the time being we are using a modified
-branch (``flexible_build``) of Airspeed Velocity in our `fork of their
-package`_, which enables Airspeed Velocity to build
-MDAnalysis despite the location of ``setup.py``. A WIP
-PR is open to enable more flexible Airspeed Velocity
-build mechanics, but for now we will use our fork.
-
-To build / install our fork of Airspeed Velocity it should
-suffice to clone the git repo, checkout the ``flexible_build``
-branch, and run::
+To build / install Airspeed Velocity it should
+suffice to clone the `git repo`_, building the master
+branch with::
 
     python setup.py install --user
 
@@ -51,7 +40,9 @@ It is also possible to specify ``ALL`` to space the performance
 tests over the entire lifetime of the project, but exercise
 caution as very early commits may represent a state of the
 project where many features are not available and / or
-files are not in the expected locations.
+files are not in the expected locations. Using ``--merges`` is also
+frequently advisable as merge commits are more likely to build
+and run successfully.
 
 The ``asv run`` command will store detailed benchmark data locally
 as ``JSON`` files, which can be converted into interactive website
@@ -60,7 +51,7 @@ data and hosted locally with::
     asv publish
     asv preview
 
-.. _fork of their package: https://github.com/MDAnalysis/asv
+.. _git repo: https://github.com/airspeed-velocity/asv
 .. _Airspeed Velocity commands: http://asv.readthedocs.io/en/latest/commands.html
 
 Writing benchmarks

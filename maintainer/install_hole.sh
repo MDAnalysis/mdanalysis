@@ -37,11 +37,11 @@ SCRIPT=$(basename $0)
 # available at http://www.holeprogram.org/ as of 2018-02-22
 
 # could switch to http://www.holeprogram.org/downloads/2.2.004/hole2-NotForProfit-2.2.004-Linux-i686.tar.gz
-DOWNLOAD_URL_LINUX='https://www.dropbox.com/s/jukpwlohhi20r17/hole2-NotForProfit-2.2.004-Linux-x86_64.tar.gz?dl=1'
+DOWNLOAD_URL_LINUX='https://www.holeprogram.org/downloads/2.2.004/hole2-NotForProfit-2.2.004-Linux-x86_64.tar.gz'
 TARFILE_LINUX='hole2-NotForProfit-2.2.004-Linux-x86_64.tar.gz'
 
 # could switch to http://www.holeprogram.org/downloads/2.2.004/hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz
-DOWNLOAD_URL_DARWIN='https://www.dropbox.com/s/5mzrsyp48i32je4/hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz?dl=1'
+DOWNLOAD_URL_DARWIN='https://www.holeprogram.org/downloads/2.2.004/hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz'
 TARFILE_DARWIN=hole2-NotForProfit-2.2.004-Darwin-i386.tar.gz
 
 # path to dir with executables in the current HOLE distribution

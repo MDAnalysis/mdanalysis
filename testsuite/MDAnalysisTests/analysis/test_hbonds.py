@@ -28,8 +28,9 @@ import itertools
 import pytest
 from MDAnalysis import SelectionError
 
-from numpy.testing import assert_equal, assert_array_equal, assert_almost_equal, assert_array_almost_equal
+from numpy.testing import assert_equal, assert_array_equal, assert_almost_equal, assert_array_almost_equal,assert_allclose
 import numpy as np
+
 
 from six import StringIO
 
@@ -336,9 +337,9 @@ class TestHydrogenBondAnalysisTIP3P(object):
             idx = self.columns[observable]
             for quantity, reference in self.reference[observable].items():
                 func = self._functions[quantity]
-                assert_almost_equal(
+                assert_allclose(
                     func([item[idx] for item in normalized_timeseries]), reference,
-                    decimal=5,
+                    rtol=1e-5, atol=0,
                     err_msg="{quantity}({observable}) does not match reference".format(**vars())
                 )
 

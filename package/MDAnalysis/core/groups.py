@@ -1908,6 +1908,22 @@ class AtomGroup(GroupBase):
             sphlayer *inner radius* *outer radius* *selection*
                 Similar to sphzone, but also excludes atoms that are within
                 *inner radius* of the selection COG
+            cyzone *externalRadius* *zMax* *zMin* *selection*
+                selects all atoms within a cylindric zone centered in the
+                center of geometry (COG) of a given selection,
+                e.g. ``cyzone 15 4 -8 protein and resid 42`` selects the
+                center of geometry of protein and resid 42, and creates a
+                cylinder of external radius 15 centered on the COG. In z, the
+                cylinder extends from 4 above the COG to 8 below. Positive
+                values for *zMin*, or negative ones for *zMax*, are allowed.
+            cylayer *innerRadius* *externalRadius* *zMax* *zMin* *selection*
+                selects all atoms within a cylindric layer centered in the
+                center of geometry (COG) of a given selection,
+                e.g. ``cylayer 5 10 10 -8 protein`` selects the center of
+                geometry of protein, and creates a cylindrical layer of inner
+                radius 5, external radius 10 centered on the COG. In z, the
+                cylinder extends from 10 above the COG to 8 below. Positive
+                values for *zMin*, or negative ones for *zMax*, are allowed.
 
         **Connectivity**
 

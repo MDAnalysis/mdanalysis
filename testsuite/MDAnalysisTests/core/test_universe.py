@@ -55,6 +55,7 @@ from MDAnalysisTests.datafiles import (
 import MDAnalysis as mda
 import MDAnalysis.coordinates
 from MDAnalysis.topology.base import TopologyReaderBase
+from MDAnalysisTests import assert_nowarns
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -285,6 +286,13 @@ def test_chainid_quick_select():
         assert len(u.B.atoms) == 10
         assert len(u.C.atoms) == 5
         assert len(u.D.atoms) == 7
+
+
+class TestGuessMasses(object):
+    """Tests the Mass Guesser in topology.guessers
+    """
+    def test_universe_loading_no_warning(self):
+        assert_nowarns(UserWarning, lambda x: mda.Universe(x), GRO)
 
 
 class TestGuessBonds(object):
