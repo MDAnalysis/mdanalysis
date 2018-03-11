@@ -47,6 +47,7 @@ import warnings
 import os.path
 import itertools
 import bisect
+import copy
 
 import numpy as np
 
@@ -211,7 +212,19 @@ class ChainReader(base.ProtoReader):
         return self.active_reader.convert_pos_to_native(x)
 
     def copy(self):
-        raise NotImplementedError("Copy not implemented for ChainReader")
+        #raise NotImplementedError("Copy not implemented for ChainReader")
+        new = self.__class__(self.filenames)
+        new.readers=[reader.copy() for reader in self.readers]
+        new.n_atoms = self._get_same('n_atoms').copy()
+        n_frames = self._get('n_frames').copy()
+        new.__start_frames = np.cumsum([0] + n_frames)
+        new.n_frames = np.sum(n_frames)
+        new.dts = np.array(self._get('dt').copy())
+        new.total_times = new.dts * n_frames
+        new.rewind()
+        return new
+
+
 
     # attributes that can change with the current reader
     @property
