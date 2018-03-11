@@ -111,6 +111,36 @@ If you use the streamline visualization in
 
 .. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
 
+Citations using Duecredit
+=========================
+
+Citations can be automatically generated using Duecredit, depending on the
+packages used. Duecredit is easy to install via pip. Simply type:
+
+.. code-block:: bash
+
+   pip install duecredit
+
+duecredit will remain an optional dependency, i.e. your software will work
+correctly even without duecredit installed. List of citations for 
+yourscript.py can be obtained using simple commands.
+
+.. code-block:: bash
+
+   cd /path/to/yourmodule
+   python -m duecredit yourscript.py
+
+**Or**
+
+.. code-block:: bash
+
+   DUECREDIT-ENABLE=yes python yourscript.py
+
+You can also display them in BibTeX format, using:
+
+.. code-block:: bash
+ 
+   duecredit summary --format=bibtex 
 
 Thanks!
 

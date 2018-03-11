@@ -31,6 +31,8 @@ Enhancements
     to specify what is on each line.  Eg atom_style = 'id type charge x y z'
     (Issue #1791)
   * Added periodic boundary condition option to HydrogenBondAnalysis (Issue #1188)
+  * Added duecredit to prepare a summary of the citations, when a user
+    uses MDAnalysis (Issue #412)
 
 Fixes
   * Fixed MPI fork() warning when importing MDAnalysis in an Infiniband-enabled
