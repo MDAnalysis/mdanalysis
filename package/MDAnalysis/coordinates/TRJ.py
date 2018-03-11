@@ -68,16 +68,6 @@ object.
 Binary NetCDF trajectories
 --------------------------
 
-The `AMBER netcdf`_ format make use of NetCDF_ (Network Common Data
-Form) format. Such binary trajectories are recognized in MDAnalysis by
-the '.ncdf' suffix and read by the :class:`NCDFReader`.
-
-Binary trajectories can also contain velocities and forces, and can record the
-exact time
-step. In principle, the trajectories can be in different units than the AMBER
-defaults of ångström and picoseconds but at the moment MDAnalysis only supports
-those and will raise a :exc:`NotImplementedError` if anything else is detected.
-
 .. autoclass:: NCDFReader
    :members:
 
@@ -89,45 +79,6 @@ those and will raise a :exc:`NotImplementedError` if anything else is detected.
 
 ASCII TRAJ trajectories
 -----------------------
-
-ASCII AMBER_ TRJ coordinate files (as defined in `AMBER TRJ format`_)
-are handled by the :class:`TRJReader`. It is also possible to directly
-read *bzip2* or *gzip* compressed files.
-
-AMBER ASCII trajectories are recognised by the suffix '.trj',
-'.mdcrd' or '.crdbox (possibly with an additional '.gz' or '.bz2').
-
-.. Note::
-
-   In the AMBER community, these trajectories are often saved with the
-   suffix '.crd' but this extension conflicts with the CHARMM CRD
-   format and MDAnalysis *will not correctly autodetect AMBER ".crd"
-   trajectories*. Instead, explicitly provide the ``format="TRJ"``
-   argument to :class:`~MDAnalysis.core.universe.Universe`::
-
-     u = MDAnalysis.Universe("top.prmtop", "traj.crd", format="TRJ")
-
-   In this way, the AMBER :class:`TRJReader` is used.
-
-
-.. rubric:: Limitations
-
-* Periodic boxes are only stored as box lengths A, B, C in an AMBER
-  trajectory; the reader always assumes that these are orthorhombic
-  boxes.
-
-* The trajectory does not contain time information so we simply set
-  the time step to 1 ps (or the user could provide it as kwarg *dt*)
-
-* **No direct access of frames is implemented, only iteration through
-  the trajectory.**
-
-* Trajectories with fewer than 4 atoms probably fail to be read (BUG).
-
-* If the trajectory contains exactly *one* atom then it is always
-  assumed to be non-periodic (for technical reasons).
-
-* Velocities are currently *not supported* as ASCII trajectories.
 
 .. autoclass:: TRJReader
    :members:
@@ -145,8 +96,7 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 ..    The formats page was archived as
 ..    http://www.webcitation.org/query?url=http%3A%2F%2Fambermd.org%2Fnetcdf%2Fnctraj.xhtml&date=2018-02-11
 ..    Use the archived version if the original disappears. [orbeckst]
-.. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.xhtml
-.. _NetCDF: http://www.unidata.ucar.edu/software/netcdf
+
 .. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues
 .. _MDAnalysis mailinglist: https://groups.google.com/group/mdnalysis-discussion
 

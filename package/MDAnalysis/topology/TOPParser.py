@@ -24,42 +24,6 @@
 AMBER PRMTOP topology parser
 ============================
 
-Reads an AMBER top file to build the system.
-
-Amber keywords are turned into the following attributes:
-
-+-----------------+----------------------+
-| AMBER flag      | MDAnalysis attribute |
-+-----------------+----------------------+
-| ATOM_NAME       | names                |
-+-----------------+----------------------+
-| CHARGE          | charges              |
-+-----------------+----------------------+
-| ATOMIC_NUMBER   | elements             |
-+-----------------+----------------------+
-| MASS            | masses               |
-+-----------------+----------------------+
-| ATOM_TYPE_INDEX | type_indices         |
-+-----------------+----------------------+
-| AMBER_ATOM_TYPE | types                |
-+-----------------+----------------------+
-| RESIDUE_LABEL   | resnames             |
-+-----------------+----------------------+
-| RESIDUE_POINTER | residues             |
-+-----------------+----------------------+
-
-TODO:
-  Add reading of bonds etc
-
-.. Note::
-
-   The Amber charge is converted to electron charges as used in
-   MDAnalysis and other packages. To get back Amber charges, multiply
-   by 18.2223.
-
-.. _`PARM parameter/topology file specification`:
-   http://ambermd.org/formats.html#topology
-
 Classes
 -------
 

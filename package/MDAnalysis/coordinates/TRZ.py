@@ -24,16 +24,6 @@
 """TRZ trajectory I/O  --- :mod:`MDAnalysis.coordinates.TRZ`
 ============================================================
 
-Classes to read `IBIsCO`_ / `YASP`_ TRZ binary trajectories, including
-coordinates, velocities and more (see attributes of the :class:`Timestep`).
-
-Data are read and written in binary representation but because this depends on
-the machine hardware architecture, MDAnalysis *always* reads and writes TRZ
-trajectories in *little-endian* byte order.
-
-.. _IBIsCO: http://www.theo.chemie.tu-darmstadt.de/ibisco/IBISCO.html
-.. _YASP: http://www.theo.chemie.tu-darmstadt.de/group/services/yaspdoc/yaspdoc.html
-
 Classes
 -------
 

@@ -40,7 +40,6 @@ Classes
 
 .. autoclass:: GROParser
    :members:
-   :inherited-members:
 
 """
 from __future__ import absolute_import

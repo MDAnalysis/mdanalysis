@@ -28,39 +28,6 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 `GRO format`_ which includes a conversion routine for the box.
 
 
-Writing GRO files
------------------
-
-By default any written GRO files will renumber the atom ids to move sequentially
-from 1.  This can be disabled, and instead the original atom ids kept, by
-using the `reindex=False` keyword argument.  This is useful when writing a
-subsection of a larger Universe while wanting to preserve the original
-identities of atoms.
-
-For example::
-
-   >>> u = mda.Universe()`
-
-   >>> u.atoms.write('out.gro', reindex=False)
-
-   # OR
-   >>> with mda.Writer('out.gro', reindex=False) as w:
-   ...     w.write(u.atoms)
-
-
-Classes
--------
-
-.. autoclass:: Timestep
-   :members:
-
-.. autoclass:: GROReader
-   :members:
-
-.. autoclass:: GROWriter
-   :members:
-
-
 Developer notes: ``GROWriter`` format strings
 ---------------------------------------------
 
@@ -96,6 +63,17 @@ strings for writing lines in ``.gro`` files.  These are as follows:
   vector representation of the unit cell.  The rearrangement into the odd
   gromacs order is done automatically.
 
+Classes
+-------
+
+.. autoclass:: Timestep
+   :members:
+
+.. autoclass:: GROReader
+   :members:
+
+.. autoclass:: GROWriter
+   :members:
 
 .. _Gromacs: http://www.gromacs.org
 .. _GRO: http://manual.gromacs.org/current/online/gro.html

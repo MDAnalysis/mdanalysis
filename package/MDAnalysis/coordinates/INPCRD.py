@@ -24,10 +24,6 @@
 """INPCRD structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.INPCRD`
 ================================================================================
 
-Read coordinates in Amber_ coordinate/restart file (suffix "inpcrd").
-
-.. _Amber: http://ambermd.org/formats.html#restart
-
 
 Classes
 -------

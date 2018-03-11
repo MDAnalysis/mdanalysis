@@ -91,7 +91,7 @@ Classes
 
 .. autoclass:: TPRParser
    :members:
-   :inherited-members:
+
 
 See Also
 --------
