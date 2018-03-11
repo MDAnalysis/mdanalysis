@@ -33,7 +33,6 @@ env:
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
-    - DUECREDIT_ENABLE=yes
 
   matrix:
     # Run a coverage test
@@ -97,7 +96,7 @@ install:
   - git clone git://github.com/astropy/ci-helpers.git
   - source ci-helpers/travis/setup_conda.sh
   - pip install --upgrade pip
-  - pip install -v duecredit
+  - pip install duecredit
   - eval $BUILD_CMD
 
 script:
