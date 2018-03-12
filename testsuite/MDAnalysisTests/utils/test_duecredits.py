@@ -23,7 +23,9 @@ from __future__ import absolute_import
 import os
 import pytest
 
-#DUECREDIT_ENABLE is set to yes in MDAnalysisTests/__init__.py
+# environment variable DUECREDIT_ENABLE is set to yes in MDAnalysisTests/__init__.py
+# (if set to 'no', the tests will be SKIPPED; has to be yes, true, or 1 for duecredit
+# to work; duecredit must also be installed)
 import MDAnalysis as mda
 
 
@@ -31,15 +33,15 @@ import MDAnalysis as mda
                      in ('no', '0', 'false')),
                     reason=
                     "duecredit is explicitly disabled with DUECREDIT_ENABLE=no")
-class TestDuecredits():
-       
+class TestDuecredits(object):
+
     def test_duecredit_active(self):
         assert mda.due.active == True
 
-    
+
     def test_duecredit_collector_citations(self):
-        
+
         assert mda.due.citations[('MDAnalysis/',
-                                  'gowers2016')].cites_module == True        
+                                  'gowers2016')].cites_module == True
         assert mda.due.citations[('MDAnalysis/',
                                   '10.1002/jcc.21787')].cites_module == True

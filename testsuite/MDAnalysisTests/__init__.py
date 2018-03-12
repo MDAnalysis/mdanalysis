@@ -102,8 +102,14 @@ except ImportError:
 import os
 import sys
 
-# To test duecredit in utils/test_duecredits.py
-os.environ['DUECREDIT_ENABLE']='yes'
+# To test duecredit in utils/test_duecredits.py.
+#
+# Note that the test environment on travis should have duecredit installed
+# (put it in PIP_DEPENDENCIES). Setting DUECREDIT_ENABLE to yes triggers
+# collection of citations on the first `import MDAnalysis` so the environment
+# variable *must* come before MDAnalysis is imported the first time. See
+# issue #412 https://github.com/MDAnalysis/mdanalysis/issues/412 and PR #1822.
+os.environ['DUECREDIT_ENABLE'] = 'yes'
 
 # Any tests that plot with matplotlib need to run with the simple agg backend because
 # on Travis there is no DISPLAY set

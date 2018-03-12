@@ -206,10 +206,10 @@ from .due import due, Doi, BibTeX
 due.cite(BibTeX((
             "@inproceedings{gowers2016, "
             "title={MDAnalysis: A Python package for the rapid analysis "
-            "of molecular dynamics simulations}, " 
+            "of molecular dynamics simulations}, "
             "author={R. J. Gowers and M. Linke and "
             "J. Barnoud and T. J. E. Reddy and M. N. Melo "
-            "and S. L. Seyler and D. L. Dotson and J. Domanski and "
+            "and S. L. Seyler and D. L. Dotson and J. Domański, and "
             "S. Buchoux and I. M. Kenney and O. Beckstein},"
             "journal={Proceedings of the 15th Python in Science Conference}, "
             "pages={102-109}, "
@@ -217,20 +217,19 @@ due.cite(BibTeX((
             "editor={S. Benthall and S. Rostrup}, "
             "note={Austin, TX, SciPy.} "
             "}"
-            )), 
-            description=
+            )),
+         description=
          "Description of recent updates and new functionality "
          "in MDAnalysis since release 0.7.2 (March 2011) up to "
          "release 0.16.0 (April 2017). Please cite together with "
-         "Michaud-Agrawal et al 2011 ",
+         "Michaud-Agrawal et al 2011. ",
          path="MDAnalysis/", cite_module=True)
 due.cite(Doi("10.1002/jcc.21787"),
          description=
          "Description of MDAnalysis up to release 0.7.2 (March 2011), "
          "including the basic philosophy of the library and the "
          "LeafletFinder algorithm. Please cite together with "
-         "Gowers et al 2016, "
-         "J. Comput. Chem. 32 (2011), 2319-2327 ",
-         path="MDAnalysis/",cite_module=True)
+         "Gowers et al 2016. ",
+         path="MDAnalysis/", cite_module=True)
 
 del Doi, BibTeX
