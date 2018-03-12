@@ -32,7 +32,7 @@ from MDAnalysis.tests.datafiles import (
     TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407,
     TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double,
     TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded,
-    TPR2016, TPR2016_bonded,
+    TPR2016, TPR2018, TPR2016_bonded,
 )
 from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
@@ -82,7 +82,8 @@ class TestTPRGromacsVersions(TPRAttrs):
 
     @pytest.fixture(params=[TPR400, TPR402, TPR403, TPR404, TPR405, TPR406,
                             TPR407, TPR450, TPR451, TPR452, TPR453, TPR454,
-                            TPR455, TPR502, TPR504, TPR505, TPR510, TPR2016])
+                            TPR455, TPR502, TPR504, TPR505, TPR510, TPR2016,
+                            TPR2018,])
     def filename(self, request):
         return request.param
 
