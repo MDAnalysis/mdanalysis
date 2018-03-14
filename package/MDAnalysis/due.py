@@ -1,9 +1,7 @@
 # emacs: at the end of the file
 # ex: set sts=4 ts=4 sw=4 et:
 # ## ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-"""
-
-Stub file for a guaranteed safe import of duecredit constructs:  if duecredit
+"""Stub file for a guaranteed safe import of duecredit constructs:  if duecredit
 is not available.
 
 To use it, place it into your project codebase to be imported, e.g. copy as
@@ -22,6 +20,10 @@ See  https://github.com/duecredit/duecredit/blob/master/README.md for examples.
 Origin:     Originally a part of the duecredit
 Copyright:  2015-2016  DueCredit developers
 License:    BSD-2
+
+Modified for MDAnalysis to avoid calls to fork which raises cryptic
+warning under MPI(see PR #1794 for rationale)
+
 """
 
 __version__ = '0.0.5'
@@ -51,6 +53,23 @@ def _donothing_func(*args, **kwargs):
 
 
 try:
+    # Avoid call of fork inside duecredit; see
+    # https://github.com/MDAnalysis/mdanalysis/pull/1822#issuecomment-373009050
+    import sys
+    import os
+    if sys.version_info >= (3, 7):
+        import duecredit
+    else:
+        from mock import patch
+        if sys.version_info <= (2, ):
+            from contextlib import nested
+            with nested(patch('os.fork'), patch('os.popen')) \
+                 as (os_dot_fork, os_dot_popen):
+                import duecredit
+        else:
+            with patch('os.fork') as os_dot_fork, patch('os.popen') as os_dot_popen:
+                import duecredit
+
     from duecredit import due, BibTeX, Doi, Url
     if 'due' in locals() and not hasattr(due, 'cite'):
         raise RuntimeError(
@@ -58,8 +77,15 @@ try:
 except Exception as err:
     if not isinstance(err, ImportError):
         import logging
+        import warnings
+        errmsg = "Failed to import duecredit due to {}".format(str(err))
+        warnings.warn(errmsg)
         logging.getLogger("duecredit").error(
             "Failed to import duecredit due to {}".format(str(err)))
+    else:
+        # for debugging
+        import warnings
+        warnings.warn(str(err))
     # Initiate due stub
     due = InactiveDueCreditCollector()
     BibTeX = Doi = Url = _donothing_func
