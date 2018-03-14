@@ -209,7 +209,7 @@ due.cite(BibTeX((
             "of molecular dynamics simulations}, "
             "author={R. J. Gowers and M. Linke and "
             "J. Barnoud and T. J. E. Reddy and M. N. Melo "
-            "and S. L. Seyler and D. L. Dotson and J. Domański, and "
+            "and S. L. Seyler and D. L. Dotson and J. Domanski, and "
             "S. Buchoux and I. M. Kenney and O. Beckstein},"
             "journal={Proceedings of the 15th Python in Science Conference}, "
             "pages={102-109}, "
