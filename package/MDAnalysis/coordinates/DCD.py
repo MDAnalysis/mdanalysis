@@ -216,7 +216,7 @@ class DCDReader(base.ReaderBase):
     def _frame_to_ts(self, frame, ts):
         """convert a dcd-frame to a :class:`TimeStep`"""
         ts.frame = self._frame
-        ts.time = (ts.frame + self._file.header['istart']) * self.ts.dt
+        ts.time = (ts.frame + self._file.header['istart']/self._file.header['nsavc']) * self.ts.dt
         ts.data['step'] = self._file.tell()
 
         # The original unitcell is read as ``[A, gamma, B, beta, alpha, C]``
