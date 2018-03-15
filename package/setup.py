@@ -81,14 +81,14 @@ RELEASE = "0.17.1-dev"
 is_release = 'dev' not in RELEASE
 
 if cython_found:
-    # cython has to be >=0.16 to support cython.parallel
+    # cython has to be >=0.16 <0.28 to support cython.parallel
     import Cython
     from Cython.Build import cythonize
     from distutils.version import LooseVersion
 
     required_version = "0.16"
 
-    if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
+    if not LooseVersion(required_version) < LooseVersion(Cython.__version__) < LooseVersion('0.28'):
         # We don't necessarily die here. Maybe we already have
         #  the cythonized '.c' files.
         print("Cython version {0} was found but won't be used: version {1} "
