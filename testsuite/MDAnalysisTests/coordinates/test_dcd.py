@@ -33,7 +33,8 @@ from numpy.testing import (assert_equal, assert_array_equal,
 from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, PRMncdf, NCDF,
                                        COORDINATES_TOPOLOGY, COORDINATES_DCD,
                                        PSF_TRICLINIC, DCD_TRICLINIC,
-                                       PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC)
+                                       PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC,
+                                       PSF_NAMD_GBIS, DCD_NAMD_GBIS)
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
                                               BaseReference,
                                               BaseWriterTest)
@@ -381,3 +382,18 @@ def test_ncdf2dcd_coords(ncdf2dcd):
         assert_almost_equal(ts_ncdf.positions,
                             ts_dcd.positions,
                             3)
+
+@pytest.fixture(params=[(PSF, DCD), 
+                        (PSF_TRICLINIC, DCD_TRICLINIC),
+                        (PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC),
+                        (PSF_NAMD_GBIS, DCD_NAMD_GBIS)])
+def universe(request):
+    psf, dcd = request.param
+    yield mda.Universe(psf, dcd)
+
+def test_totaltime_istart(universe): 
+    u = universe
+    header = u.trajectory._file.header
+    ref_times = [(ts.frame + header['istart']/header['nsavc'])*ts.dt for ts in u.trajectory]
+    times = [ts.time for ts in u.trajectory]
+    assert_almost_equal(times, ref_times, decimal=6)
