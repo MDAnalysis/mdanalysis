@@ -31,8 +31,10 @@ import logging
 import numpy
 cimport numpy
 
-cimport cstochasticproxembed
 cimport cython
+
+cdef extern from "spe.h":
+    double CStochasticProximityEmbedding(double*, double*, double, int, int, double, double, int, int, int)
 
 
 @cython.embedsignature(True)
@@ -84,9 +86,9 @@ def StochasticProximityEmbedding(s, double rco, int dim, double maxlam, double m
     logging.info("Starting Stochastic Proximity Embedding")
 
     cdef numpy.ndarray[numpy.float64_t,  ndim=1] matndarray = numpy.ascontiguousarray(s._elements, dtype=numpy.float64)
-    cdef numpy.ndarray[numpy.float64_t,   ndim=1] d_coords   = numpy.zeros((nelem*dim),dtype=numpy.float64)
+    cdef numpy.ndarray[numpy.float64_t,  ndim=1] d_coords   = numpy.zeros((nelem*dim),dtype=numpy.float64)
 
-    finalstress = cstochasticproxembed.CStochasticProximityEmbedding( <double*>matndarray.data, <double*>d_coords.data, rco, nelem, dim, maxlam, minlam, ncycle, nstep, stressfreq)
+    finalstress = CStochasticProximityEmbedding(<double*>matndarray.data, <double*>d_coords.data, rco, nelem, dim, maxlam, minlam, ncycle, nstep, stressfreq)
 
     logging.info("Stochastic Proximity Embedding finished. Residual stress: %.3f" % finalstress)
 
