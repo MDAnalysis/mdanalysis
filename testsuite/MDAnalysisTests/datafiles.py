@@ -44,6 +44,7 @@ __all__ = [
     "PSF_TRICLINIC", "DCD_TRICLINIC",  # CHARMM c36 new unitcell, NPT 125 TIP3P (box vectors, see Issue 187 for details)
     "PSF_NAMD", "PDB_NAMD",  # NAMD
     "PSF_NAMD_TRICLINIC", "DCD_NAMD_TRICLINIC", # NAMD, triclinic unitcell (Issue 187)
+    "PSF_NAMD_GBIS", "DCD_NAMD_GBIS",  # NAMD, implicit solvent, 100 steps, #1819  
     "PSF_nosegid",  # psf without a segid, Issue 121
     "PDB_small",  # PDB
     "PDB_closed",
@@ -194,6 +195,8 @@ PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
 PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
 PSF_NAMD_TRICLINIC = resource_filename(__name__, 'data/SiN_tric_namd.psf')
 DCD_NAMD_TRICLINIC = resource_filename(__name__, 'data/SiN_tric_namd.dcd')
+PSF_NAMD_GBIS = resource_filename(__name__, 'data/adk_closed_NAMD.psf')
+DCD_NAMD_GBIS = resource_filename(__name__, 'data/adk_gbis_tmd-fast1_NAMD.dcd')
 
 PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
 
