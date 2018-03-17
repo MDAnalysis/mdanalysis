@@ -61,34 +61,25 @@ if sys.version_info[:2] < (2, 7):
 
 if sys.version_info[0] < 3:
     import ConfigParser as configparser
-    open_kwargs = {}
 else:
     import configparser
-    open_kwargs = {'encoding': 'utf-8'}
 
-# Handle cython modules
-try:
-    from Cython.Distutils import build_ext
-    cython_found = True
-    cmdclass = {'build_ext': build_ext}
-except ImportError:
-    cython_found = False
-    cmdclass = {}
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
 RELEASE = "0.17.1-dev"
 
 is_release = 'dev' not in RELEASE
 
-if cython_found:
+# Handle cython modules
+try:
     # cython has to be >=0.16 <0.28 to support cython.parallel
     import Cython
     from Cython.Build import cythonize
+    cython_found = True
     from distutils.version import LooseVersion
 
     required_version = "0.16"
-
-    if not LooseVersion(required_version) < LooseVersion(Cython.__version__) < LooseVersion('0.28'):
+    if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
         # We don't necessarily die here. Maybe we already have
         #  the cythonized '.c' files.
         print("Cython version {0} was found but won't be used: version {1} "
@@ -96,9 +87,8 @@ if cython_found:
               "parallelization module".format(
                Cython.__version__, required_version))
         cython_found = False
-    del Cython
-    del LooseVersion
-else:
+except ImportError:
+    cython_found = False
     if not is_release:
         print("*** package: Cython not found ***")
         print("MDAnalysis requires cython for development builds")
@@ -182,9 +172,9 @@ def get_numpy_include():
         # Here we import the python 2 or the python 3 version of the module
         # with the python 3 name. This could be done with ``six`` but that
         # module may not be installed at that point.
-        import __builtin__ as builtins
-    except ImportError:
         import builtins
+    except ImportError:
+        import __builtin__ as builtins
     builtins.__NUMPY_SETUP__ = False
     try:
         import numpy as np
@@ -497,7 +487,6 @@ if __name__ == '__main__':
           packages=find_packages(),
           ext_modules=exts,
           classifiers=CLASSIFIERS,
-          cmdclass=cmdclass,
           requires=['numpy (>=1.10.4)', 'biopython', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
                     'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)'],
