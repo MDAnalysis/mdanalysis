@@ -380,9 +380,13 @@ class DCDWriter(base.WriterBase):
             correspond to the interval between two frames as nsavc (i.e., every
             how many MD steps is a frame saved to the DCD). By default, this
             number is just set to one and this should be sufficient for almost
-            all cases but if required, nsavc can be changed.
+            all cases but if required, `nsavc` can be changed.
         istart : int (optional)
-            starting frame number. CHARMM defaults to 1.
+            starting frame number in integrator timesteps. CHARMM defaults to
+            `nsavc`, i.e., start at frame number 1 = `istart` / `nsavc`. The value
+            ``None`` will set `istart` to `nsavc` (the CHARMM default).
+            The MDAnalysis default is 0 so that the frame number and time of the first
+            frame is 0.
         **kwargs : dict
             General writer arguments
 
@@ -397,6 +401,7 @@ class DCDWriter(base.WriterBase):
         self.dt = dt
         dt = mdaunits.convert(dt, 'ps', self.units['time'])
         delta = float(dt) / nsavc
+        istart = istart if istart is not None else nsavc
         self._file.write_header(
             remarks=remarks,
             natoms=self.n_atoms,

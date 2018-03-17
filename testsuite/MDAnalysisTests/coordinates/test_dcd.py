@@ -83,17 +83,28 @@ class TestDCDReader(MultiframeReaderTest):
 
     def test_set_time(self):
         u = mda.Universe(PSF, DCD)
-        assert_almost_equal(u.trajectory.time, 1000, decimal=3)
+        assert_almost_equal(u.trajectory.time, 1.0)
 
 
-@pytest.mark.parametrize('istart', (0, 1, 2, 3))
-def test_write_istart(universe_dcd, tmpdir, istart):
-    u = universe_dcd
+@pytest.mark.parametrize('fstart', (0, 1, 2, 37, None))
+def test_write_istart(universe_dcd, tmpdir, fstart):
     outfile = str(tmpdir.join('test.dcd'))
-    with mda.Writer(outfile, u.atoms.n_atoms, istart=istart) as w:
-        w.write(u.atoms)
+    nsavc = universe_dcd.trajectory._file.header['nsavc']
+    istart = fstart * nsavc if fstart is not None else None
+    with mda.Writer(outfile, universe_dcd.atoms.n_atoms,
+                    nsavc=nsavc, istart=istart) as w:
+        for ts in universe_dcd.trajectory:
+            w.write(universe_dcd.atoms)
     u = mda.Universe(PSF, outfile)
-    assert u.trajectory._file.header['istart'] == istart
+    assert_almost_equal(u.trajectory._file.header['istart'],
+                        istart if istart is not None else u.trajectory._file.header['nsavc'])
+    # issue #1819
+    times = [ts.time for ts in u.trajectory]
+
+    fstart = fstart if fstart is not None else 1
+    ref_times = (np.arange(universe_dcd.trajectory.n_frames) + fstart) * universe_dcd.trajectory.dt
+    assert_almost_equal(times, ref_times, decimal=5,
+                        err_msg="Times not identical after setting istart={}".format(istart))
 
 
 class TestDCDWriter(BaseWriterTest):
@@ -229,7 +240,8 @@ def test_reader_set_dt():
     dt = 100
     frame = 3
     u = mda.Universe(PSF, DCD, dt=dt)
-    assert_almost_equal(u.trajectory[frame].time, (frame + 1000)*dt,
+    fstart = u.trajectory._file.header['istart'] / u.trajectory._file.header['nsavc']
+    assert_almost_equal(u.trajectory[frame].time, (frame + fstart)*dt,
                         err_msg="setting time step dt={0} failed: "
                         "actually used dt={1}".format(
                             dt, u.trajectory._ts_kwargs['dt']))
@@ -244,17 +256,30 @@ def test_writer_dt(tmpdir, ext, decimal):
     universe_dcd = mda.Universe(PSF, DCD, dt=dt)
     t = universe_dcd.trajectory
     outfile = str(tmpdir.join("test.{}".format(ext)))
-    with mda.Writer(outfile, n_atoms=t.n_atoms, dt=dt, istart=t._file.header['istart']) as W:
+    # use istart=None explicitly so that both dcd and xtc start with time 1*dt
+    # (XTC ignores istart, DCD will set istart = nsavc)
+    with mda.Writer(outfile, n_atoms=t.n_atoms, dt=dt, istart=None) as W:
         for ts in universe_dcd.trajectory:
             W.write(universe_dcd.atoms)
 
     uw = mda.Universe(PSF, outfile)
     assert_almost_equal(uw.trajectory.totaltime,
-                        (uw.trajectory.n_frames - 1) * dt, decimal)
+                        (uw.trajectory.n_frames - 1) * dt, decimal=decimal,
+                        err_msg="Total time  mismatch for ext={}".format(ext))
     times = np.array([uw.trajectory.time for ts in uw.trajectory])
-    frames = np.array([ts.frame for ts in uw.trajectory])
-    assert_array_almost_equal(times, (frames + 1000) * dt, decimal)
+    frames = np.arange(1, uw.trajectory.n_frames + 1)  # traj starts at 1*dt
+    assert_array_almost_equal(times, frames * dt, decimal=decimal,
+                              err_msg="Times mismatch for ext={}".format(ext))
 
+@pytest.mark.parametrize("variable, default", (("istart", 0), ("nsavc", 1)))
+def test_DCDWriter_default(tmpdir, variable, default):
+    outfile = str(tmpdir.join("test.dcd"))
+    with mda.Writer(outfile, n_atoms=10) as W:
+        pass  # just write empty trajectory with header
+    # need to read because header might only be complete after close
+    with mda.lib.formats.libdcd.DCDFile(outfile) as DCD:
+        header = DCD.header
+    assert header[variable] == default
 
 @pytest.mark.parametrize("ext, decimal", (("dcd", 5),
                                           ("xtc", 2)))
@@ -383,7 +408,7 @@ def test_ncdf2dcd_coords(ncdf2dcd):
                             ts_dcd.positions,
                             3)
 
-@pytest.fixture(params=[(PSF, DCD), 
+@pytest.fixture(params=[(PSF, DCD),
                         (PSF_TRICLINIC, DCD_TRICLINIC),
                         (PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC),
                         (PSF_NAMD_GBIS, DCD_NAMD_GBIS)])
@@ -391,7 +416,8 @@ def universe(request):
     psf, dcd = request.param
     yield mda.Universe(psf, dcd)
 
-def test_totaltime_istart(universe): 
+def test_ts_time(universe):
+    # issue #1819
     u = universe
     header = u.trajectory._file.header
     ref_times = [(ts.frame + header['istart']/header['nsavc'])*ts.dt for ts in u.trajectory]
