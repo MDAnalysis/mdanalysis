@@ -495,8 +495,6 @@ if __name__ == '__main__':
           provides=['MDAnalysis'],
           license='GPL 2',
           packages=find_packages(),
-          package_dir={'MDAnalysis': 'MDAnalysis'},
-          ext_package='MDAnalysis',
           ext_modules=exts,
           classifiers=CLASSIFIERS,
           cmdclass=cmdclass,
