@@ -519,6 +519,7 @@ if __name__ == '__main__':
               'joblib',
               'scipy>=1.0.0',
               'matplotlib>=1.5.1',
+              'mock',
           ],
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
