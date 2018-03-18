@@ -158,7 +158,35 @@ diffusion in MD simulations of large membrane systems.  <em>Faraday
 Discussions</em> <strong>169</strong> (2014), 455–475. doi: <a class="reference external" href="https://doi.org/10.1039/c3fd00145h">10.1039/c3fd00145h</a></td></tr>
 </tbody>
 </table>
-<p>Thanks!</p>
+</div>
+<div class="section" id="citations-using-duecredit">
+<h2>15.3. Citations using Duecredit<a class="headerlink" href="#citations-using-duecredit" title="Permalink to this headline">¶</a></h2>
+<p>Citations can be automatically generated using <a class="reference external" href="https://github.com/duecredit/duecredit">duecredit</a>, depending on the
+packages used. Duecredit is easy to install via <code class="docutils literal"><span class="pre">pip</span></code>. Simply type:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install duecredit
+</pre></div>
+</div>
+<p><a class="reference external" href="https://github.com/duecredit/duecredit">duecredit</a> will remain an optional dependency, i.e. any code using
+MDAnalysis will work correctly even without duecredit installed.</p>
+<p>A list of citations for <code class="docutils literal"><span class="pre">yourscript.py</span></code> can be obtained using simple
+commands.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> /path/to/yourmodule
+python -m duecredit yourscript.py
+</pre></div>
+</div>
+<p>or set the environment variable <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal"><span class="pre">DUECREDIT_ENABLE</span></code></p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>DUECREDIT-ENABLE<span class="o">=</span>yes python yourscript.py
+</pre></div>
+</div>
+<p>Once the citations have been extracted (to a hidden file in the
+current directory), you can use the <strong class="program">duecredit</strong> program to
+export them to different formats. For example, one can display them in
+BibTeX format, using:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>duecredit summary --format<span class="o">=</span>bibtex
+</pre></div>
+</div>
+<p><strong>Please cite your use of MDAnalysis and the packages and algorithms
+that it uses. Thanks!</strong></p>
 </div>
 </div>
 
@@ -208,6 +236,7 @@ Discussions</em> <strong>169</strong> (2014), 455–475. doi: <a class="referenc
 <li class="toctree-l1 current"><a class="current reference internal" href="#">15. References</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#citations-for-the-whole-mdanalysis-library">15.1. Citations for the whole MDAnalysis library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#citations-for-included-algorithms-and-modules">15.2. Citations for included algorithms and modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#citations-using-duecredit">15.3. Citations using Duecredit</a></li>
 </ul>
 </li>
 </ul>
@@ -235,7 +264,7 @@ Discussions</em> <strong>169</strong> (2014), 455–475. doi: <a class="referenc
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
