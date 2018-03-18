@@ -113,7 +113,7 @@ class PQRReader(base.SingleFrameReaderBase):
     """Read a PQR_ file into MDAnalysis.
 
     .. _PQR:
-        http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr
+        https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
