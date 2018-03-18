@@ -83,7 +83,8 @@ class TestDCDReader(MultiframeReaderTest):
 
     def test_set_time(self):
         u = mda.Universe(PSF, DCD)
-        assert_almost_equal(u.trajectory.time, 1.0)
+        assert_almost_equal(u.trajectory.time, 1.0,
+                            decimal=5)
 
 
 @pytest.mark.parametrize('fstart', (0, 1, 2, 37, None))
@@ -240,7 +241,8 @@ def test_reader_set_dt():
     dt = 100
     frame = 3
     u = mda.Universe(PSF, DCD, dt=dt)
-    fstart = u.trajectory._file.header['istart'] / u.trajectory._file.header['nsavc']
+    dcdheader = u.trajectory._file.header
+    fstart = dcdheader['istart'] / dcdheader['nsavc']
     assert_almost_equal(u.trajectory[frame].time, (frame + fstart)*dt,
                         err_msg="setting time step dt={0} failed: "
                         "actually used dt={1}".format(
@@ -420,6 +422,7 @@ def test_ts_time(universe):
     # issue #1819
     u = universe
     header = u.trajectory._file.header
-    ref_times = [(ts.frame + header['istart']/header['nsavc'])*ts.dt for ts in u.trajectory]
+    ref_times = [(ts.frame + header['istart']/header['nsavc'])*ts.dt
+                 for ts in u.trajectory]
     times = [ts.time for ts in u.trajectory]
-    assert_almost_equal(times, ref_times, decimal=6)
+    assert_almost_equal(times, ref_times, decimal=5)
