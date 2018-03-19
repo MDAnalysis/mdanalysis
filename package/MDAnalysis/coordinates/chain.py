@@ -213,6 +213,11 @@ class ChainReader(base.ProtoReader):
 
     def copy(self):
         new = self.__class__(copy.copy(self.filenames))
+        # seek the new reader to the same frame we started with
+        new[self.ts.frame]
+        # then copy over the current Timestep in case it has
+        # been modified since initial load
+        new.ts = self.ts.copy()
         return new
 
 

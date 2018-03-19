@@ -82,6 +82,7 @@ from MDAnalysis.coordinates.core import get_reader_for
     ('XYZ', XYZ_mini, dict()),
     ('NCDF', NCDF, dict()),
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
+    ('CHAIN', [GRO, GRO, GRO], dict()),
 ])
 def ref_reader(request):
     fmt_name, filename, extras = request.param
