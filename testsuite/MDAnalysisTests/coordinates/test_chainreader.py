@@ -114,57 +114,7 @@ class TestChainReader(object):
                 ts_new._pos,
                 self.prec,
                 err_msg="Coordinates disagree at frame {0:d}".format(
-                    ts_orig.frame))
-
-    def test_copy_basic(self, universe):
-        """test basic copy"""
-
-        traj2 = universe.trajectory.copy()
-
-        # eq method checks:
-        # - frame
-        # - n_atoms
-        # - positions, vels and forces
-        assert universe.trajectory.ts == traj2.ts
-
-        assert_array_almost_equal(universe.trajectory.ts.dimensions, traj2.ts.dimensions,
-                                  decimal=4)
-
-        # Check things not covered by eq
-        for d in universe.trajectory.ts.data:
-            assert d in traj2.ts.data
-            if isinstance(universe.trajectory.ts.data[d], np.ndarray):
-                assert_array_almost_equal(
-                    universe.trajectory.ts.data[d], traj2.ts.data[d])
-            else:
-                assert universe.trajectory.ts.data[d] == traj2.ts.data[d]
-
-    def test_frame_numbering_copy(self, universe):
-        copy=universe.trajectory.copy()
-        copy[98]  # index is 0-based and frames are 0-based
-        assert_equal(copy.frame, 98, "wrong frame number")
-
-    def test_iteration_copy(self, universe):
-        traj2=universe.trajectory.copy()
-        for ts in traj2:
-            pass  # just forward to last frame
-        assert_equal(
-            traj2.n_frames - 1, ts.frame,
-            "iteration yielded wrong number of frames ({0:d}), "
-            "should be {1:d}".format(ts.frame, traj2.n_frames))
-
-    def test_slice_trajectory_copy(self, universe):
-        traj2=universe.trajectory.copy()
-        frames = [ts.frame for ts in traj2[5:17:3]]
-        assert_equal(frames, [5, 8, 11, 14], "slicing dcd [5:17:3]")
-
-    def test_full_slice_copy(self, universe):
-        traj2 = universe.trajectory.copy()
-        trj_iter=traj2[:]
-        frames = [ts.frame for ts in trj_iter]
-        assert_equal(frames, np.arange(traj2.n_frames))
-
-        
+                    ts_orig.frame))       
 
 class TestChainReaderCommonDt(object):
     common_dt = 100.0
