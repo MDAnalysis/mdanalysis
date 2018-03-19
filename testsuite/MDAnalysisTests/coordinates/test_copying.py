@@ -188,11 +188,6 @@ def test_positions_share_memory(original_and_copy):
     with pytest.raises(AssertionError):
         assert_equal(original.ts.positions, copy.ts.positions)
 
-def test_chainreader():
-    u = mda.Universe(XYZ_mini, [XYZ_mini, XYZ_mini])
-    u_copy= u.trajectory.copy()
-    assert_equal(u.trajectory.n_atoms, u_copy.n_atoms)
-
 
 def test_auxiliary_NIE():
     # Aux's not implemented, check for sane error message
