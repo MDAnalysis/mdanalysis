@@ -264,6 +264,14 @@ class MemoryReader(base.ProtoReader):
         super(MemoryReader, self).__init__()
         self.filename = filename
         self.stored_order = order
+
+        try:
+            if len(coordinate_array.shape) == 2 and coordinate_array.shape[1] == 3:
+                    coordinate_array = coordinate_array[np.newaxis, :, :]
+        except AttributeError as e:
+            raise ValueError("Input to the MemoryReader is of improper format."
+                )
+
         self.set_array(np.asarray(coordinate_array), order)
         self.n_frames = \
             self.coordinate_array.shape[self.stored_order.find('f')]
