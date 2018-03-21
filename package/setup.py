@@ -88,7 +88,7 @@ if cython_found:
 
     required_version = "0.16"
 
-    if not LooseVersion(required_version) < LooseVersion(Cython.__version__) < LooseVersion('0.28'):
+    if LooseVersion(Cython.__version__) < LooseVersion(required_version):
         # We don't necessarily die here. Maybe we already have
         #  the cythonized '.c' files.
         print("Cython version {0} was found but won't be used: version {1} "
