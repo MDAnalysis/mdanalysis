@@ -3,7 +3,7 @@ from __future__ import division, absolute_import, print_function
 import MDAnalysis
 
 try:
-    from MDAnalysisTests.datafiles import PSF, DCD
+    from MDAnalysisTests.datafiles import TPR, XTC
 except:
     pass
 
@@ -24,30 +24,20 @@ class SimpleRdfBench(object):
 
     def setup(self, nbins, range_val):
         
-        # use explicit OR in selections
-        # for increased backward compatibility
-        self.g1_sel_str = ('(resname ALA) or '
-                           '(resname ARG) or '
-                           '(resname ASN)')
+        self.sel_str = 'name OW'
 
-        self.g2_sel_str = ('(resname THR) or '
-                           '(resname TYR) or '
-                           '(resname VAL)')
-
-        self.u = MDAnalysis.Universe(PSF, DCD)
+        self.u = MDAnalysis.Universe(TPR, XTC)
 
         try:
-            self.sel1 = self.u.select_atoms(self.g1_sel_str)
-            self.sel2 = self.u.select_atoms(self.g2_sel_str)
+            self.sel = self.u.select_atoms(self.sel_str)[:200]
         except AttributeError:
-            self.sel1 = self.u.selectAtoms(self.g1_sel_str)
-            self.sel2 = self.u.selectAtoms(self.g2_sel_str)
+            self.sel = self.u.selectAtoms(self.sel_str)[:200]
 
         # do not include initialization of the
         # InterRDF object in the benchmark itself
 
-        self.rdf = InterRDF(g1=self.sel1,
-                            g2=self.sel2,
+        self.rdf = InterRDF(g1=self.sel,
+                            g2=self.sel,
                             nbins=nbins,
                             range=range_val)
 
