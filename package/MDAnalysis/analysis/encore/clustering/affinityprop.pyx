@@ -29,8 +29,10 @@ from ..utils import TriangularMatrix
 import logging
 import numpy
 cimport numpy
-cimport caffinityprop
 cimport cython
+
+cdef extern from "ap.h":
+    int CAffinityPropagation(float*, int, float, int, int, bint, long*)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -97,7 +99,7 @@ def AffinityPropagation(s, preference, float lam, int max_iterations, int conver
     cdef numpy.ndarray[long,   ndim=1] clusters   = numpy.zeros((s.size),dtype=long)
 
     # run C module Affinity Propagation
-    iterations = caffinityprop.CAffinityPropagation( <float*>matndarray.data, cn, lam, max_iterations, convergence, noise, <long*>clusters.data)
+    iterations = CAffinityPropagation(<float*>matndarray.data, cn, lam, max_iterations, convergence, noise, <long*>clusters.data)
 
     # Provide warning in case of lack of convergence
     if iterations == 0:
