@@ -90,7 +90,73 @@ raise a <a class="reference external" href="https://docs.python.org/3/library/ex
 <dl class="class">
 <dt id="MDAnalysis.core.__init__.flagsDocs">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.__init__.</code><code class="descname">flagsDocs</code><a class="reference internal" href="../../_modules/MDAnalysis/core/__init__.html#flagsDocs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.__init__.flagsDocs" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>use_pbc</strong> = <em>False</em></p>
+<dd><p><strong>use_periodic_selections</strong> = <em>True</em></p>
+<blockquote>
+<div><p>Determines if distance selections (AROUND, POINT) respect periodicity.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_periodic_selections&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Values of flag:</dt>
+<dd><ul class="first last simple">
+<li>True     - periodicity is taken into account if supported</li>
+<li>False    - periodicity is ignored</li>
+</ul>
+</dd>
+</dl>
+<p>The MDAnalysis preset of this flag is True.</p>
+<p>Note that KD-tree based distance selections always ignore this flag. (For
+details see the docs for the ‘use_KDTree_routines’ flag.)</p>
+</div></blockquote>
+<p><strong>force_unit</strong> = <em>‘kJ/(mol*Angstrom)’</em></p>
+<blockquote>
+<div><p>Base unit for forces (in particular forces in trajectories)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;force_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>convert_lengths</strong> = <em>True</em></p>
+<blockquote>
+<div><p>Determine if trajectory reader and writer converts length units between native and MDAnalysis default.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;convert_lengths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>Some trajectories are in other length units than the MDAnalysis
+default (see the flag <em>length_unit</em>); e.g. Gromacs XTC and TRR
+trajectories are in nm. If <code class="docutils literal"><span class="pre">True</span></code> then coordinates are
+automatically converted, with <code class="docutils literal"><span class="pre">False</span></code> the coordinate values are
+presented as read from the trajectories.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The conversion of lengths also affects conversion of velocities.</p>
+</div>
+</div></blockquote>
+<p><strong>length_unit</strong> = <em>‘Angstrom’</em></p>
+<blockquote>
+<div><p>Base unit for lengths (in particular coordinates in trajectories)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;length_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Do not change, only Angstrom fully supported.</p>
+</div>
+</div></blockquote>
+<p><strong>charge_unit</strong> = <em>‘e’</em></p>
+<blockquote>
+<div><p>Base unit for charge</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;charge_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>speed_unit</strong> = <em>‘Angstrom/ps’</em></p>
+<blockquote>
+<div><p>Base unit for speed (in particular velocities in trajectories)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;speed_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>use_pbc</strong> = <em>False</em></p>
 <blockquote>
 <div><p>Choose whether to consider periodic boundary conditions when
 performing many <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> methods.
@@ -111,10 +177,10 @@ such as <code class="xref py py-meth docutils literal"><span class="pre">MDAnaly
 and <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="MDAnalysis.core.groups.AtomGroup.center_of_geometry"><code class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup.center_of_geometry()</span></code></a>!</p>
 </div>
 </div></blockquote>
-<p><strong>charge_unit</strong> = <em>‘e’</em></p>
+<p><strong>time_unit</strong> = <em>‘ps’</em></p>
 <blockquote>
-<div><p>Base unit for charge</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;charge_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+<div><p>Base unit for times (in particular time steps in trajectories)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;time_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -139,72 +205,6 @@ periodicity; if periodicity is crucial, disable KDTree routines with</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_KDTree_routines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
 </div>
-</div></blockquote>
-<p><strong>convert_lengths</strong> = <em>True</em></p>
-<blockquote>
-<div><p>Determine if trajectory reader and writer converts length units between native and MDAnalysis default.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;convert_lengths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-<p>Some trajectories are in other length units than the MDAnalysis
-default (see the flag <em>length_unit</em>); e.g. Gromacs XTC and TRR
-trajectories are in nm. If <code class="docutils literal"><span class="pre">True</span></code> then coordinates are
-automatically converted, with <code class="docutils literal"><span class="pre">False</span></code> the coordinate values are
-presented as read from the trajectories.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The conversion of lengths also affects conversion of velocities.</p>
-</div>
-</div></blockquote>
-<p><strong>speed_unit</strong> = <em>‘Angstrom/ps’</em></p>
-<blockquote>
-<div><p>Base unit for speed (in particular velocities in trajectories)</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;speed_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-</div></blockquote>
-<p><strong>time_unit</strong> = <em>‘ps’</em></p>
-<blockquote>
-<div><p>Base unit for times (in particular time steps in trajectories)</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;time_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-</div></blockquote>
-<p><strong>length_unit</strong> = <em>‘Angstrom’</em></p>
-<blockquote>
-<div><p>Base unit for lengths (in particular coordinates in trajectories)</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;length_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Do not change, only Angstrom fully supported.</p>
-</div>
-</div></blockquote>
-<p><strong>force_unit</strong> = <em>‘kJ/(mol*Angstrom)’</em></p>
-<blockquote>
-<div><p>Base unit for forces (in particular forces in trajectories)</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;force_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-</div></blockquote>
-<p><strong>use_periodic_selections</strong> = <em>True</em></p>
-<blockquote>
-<div><p>Determines if distance selections (AROUND, POINT) respect periodicity.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_periodic_selections&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>Values of flag:</dt>
-<dd><ul class="first last simple">
-<li>True     - periodicity is taken into account if supported</li>
-<li>False    - periodicity is ignored</li>
-</ul>
-</dd>
-</dl>
-<p>The MDAnalysis preset of this flag is True.</p>
-<p>Note that KD-tree based distance selections always ignore this flag. (For
-details see the docs for the ‘use_KDTree_routines’ flag.)</p>
 </div></blockquote>
 </dd></dl>
 
