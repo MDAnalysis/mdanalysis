@@ -50,13 +50,14 @@ Fixes
     memory problems on big trajectories (Issue #1807)
   * analysis.align: fixed output and catch more cases with
     SelectionError when selections are incompatible (Issue #1809)
+  * fix cython 0.28 compiler error
   * DCD istart was used wrong, which lead to wrong times when reading and
     writing (Issue #1819)
-        
+
 Changes
   * scipy >= 1.0.0 is now required (issue #1775 because of PR #1758)
 
-        
+
 01/24/18 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
          jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow, sseyler, rcortini,
          xiki-tempula, manuel.nuno.melo

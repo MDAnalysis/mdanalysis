@@ -82,6 +82,7 @@ from MDAnalysis.coordinates.core import get_reader_for
     ('XYZ', XYZ_mini, dict()),
     ('NCDF', NCDF, dict()),
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
+    ('CHAIN', [GRO, GRO, GRO], dict()),
 ])
 def ref_reader(request):
     fmt_name, filename, extras = request.param
@@ -187,13 +188,6 @@ def test_positions_share_memory(original_and_copy):
     with pytest.raises(AssertionError):
         assert_equal(original.ts.positions, copy.ts.positions)
 
-def test_chainreader_NIE():
-    # ChainReader not implemented, check error message is sane
-    u = mda.Universe(XYZ_mini, [XYZ_mini, XYZ_mini])
-
-    with pytest.raises(NotImplementedError) as e:
-        u.trajectory.copy()
-    assert 'Copy not implemented for ChainReader' in str(e.value)
 
 def test_auxiliary_NIE():
     # Aux's not implemented, check for sane error message

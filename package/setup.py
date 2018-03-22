@@ -61,34 +61,25 @@ if sys.version_info[:2] < (2, 7):
 
 if sys.version_info[0] < 3:
     import ConfigParser as configparser
-    open_kwargs = {}
 else:
     import configparser
-    open_kwargs = {'encoding': 'utf-8'}
 
-# Handle cython modules
-try:
-    from Cython.Distutils import build_ext
-    cython_found = True
-    cmdclass = {'build_ext': build_ext}
-except ImportError:
-    cython_found = False
-    cmdclass = {}
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
 RELEASE = "0.17.1-dev"
 
 is_release = 'dev' not in RELEASE
 
-if cython_found:
+# Handle cython modules
+try:
     # cython has to be >=0.16 <0.28 to support cython.parallel
     import Cython
     from Cython.Build import cythonize
+    cython_found = True
     from distutils.version import LooseVersion
 
     required_version = "0.16"
-
-    if not LooseVersion(required_version) < LooseVersion(Cython.__version__) < LooseVersion('0.28'):
+    if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
         # We don't necessarily die here. Maybe we already have
         #  the cythonized '.c' files.
         print("Cython version {0} was found but won't be used: version {1} "
@@ -96,9 +87,8 @@ if cython_found:
               "parallelization module".format(
                Cython.__version__, required_version))
         cython_found = False
-    del Cython
-    del LooseVersion
-else:
+except ImportError:
+    cython_found = False
     if not is_release:
         print("*** package: Cython not found ***")
         print("MDAnalysis requires cython for development builds")
@@ -182,9 +172,9 @@ def get_numpy_include():
         # Here we import the python 2 or the python 3 version of the module
         # with the python 3 name. This could be done with ``six`` but that
         # module may not be installed at that point.
-        import __builtin__ as builtins
-    except ImportError:
         import builtins
+    except ImportError:
+        import __builtin__ as builtins
     builtins.__NUMPY_SETUP__ = False
     try:
         import numpy as np
@@ -297,36 +287,36 @@ def extensions(config):
 
     include_dirs = [get_numpy_include]
 
-    libdcd = MDAExtension('lib.formats.libdcd',
+    libdcd = MDAExtension('MDAnalysis.lib.formats.libdcd',
                           ['MDAnalysis/lib/formats/libdcd' + source_suffix],
                           include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
                           define_macros=define_macros,
                           extra_compile_args=extra_compile_args)
-    distances = MDAExtension('lib.c_distances',
+    distances = MDAExtension('MDAnalysis.lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                              libraries=['m'],
                              define_macros=define_macros,
                              extra_compile_args=extra_compile_args)
-    distances_omp = MDAExtension('lib.c_distances_openmp',
+    distances_omp = MDAExtension('MDAnalysis.lib.c_distances_openmp',
                                  ['MDAnalysis/lib/c_distances_openmp' + source_suffix],
                                  include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                                  libraries=['m'] + parallel_libraries,
                                  define_macros=define_macros + parallel_macros,
                                  extra_compile_args=parallel_args + extra_compile_args,
                                  extra_link_args=parallel_args)
-    qcprot = MDAExtension('lib.qcprot',
+    qcprot = MDAExtension('MDAnalysis.lib.qcprot',
                           ['MDAnalysis/lib/qcprot' + source_suffix],
                           include_dirs=include_dirs,
                           define_macros=define_macros,
                           extra_compile_args=extra_compile_args)
-    transformation = MDAExtension('lib._transformations',
+    transformation = MDAExtension('MDAnalysis.lib._transformations',
                                   ['MDAnalysis/lib/src/transformations/transformations.c'],
                                   libraries=['m'],
                                   define_macros=define_macros,
                                   include_dirs=include_dirs,
                                   extra_compile_args=extra_compile_args)
-    libmdaxdr = MDAExtension('lib.formats.libmdaxdr',
+    libmdaxdr = MDAExtension('MDAnalysis.lib.formats.libmdaxdr',
                              sources=['MDAnalysis/lib/formats/libmdaxdr' + source_suffix,
                                       'MDAnalysis/lib/formats/src/xdrfile.c',
                                       'MDAnalysis/lib/formats/src/xdrfile_xtc.c',
@@ -338,25 +328,25 @@ def extensions(config):
                                                           'MDAnalysis/lib/formats'],
                              define_macros=largefile_macros + define_macros,
                              extra_compile_args=extra_compile_args)
-    util = MDAExtension('lib.formats.cython_util',
+    util = MDAExtension('MDAnalysis.lib.formats.cython_util',
                         sources=['MDAnalysis/lib/formats/cython_util' + source_suffix],
                         include_dirs=include_dirs,
                         define_macros=define_macros,
                         extra_compile_args=extra_compile_args)
 
-    encore_utils = MDAExtension('analysis.encore.cutils',
+    encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
                                 sources=['MDAnalysis/analysis/encore/cutils' + source_suffix],
                                 include_dirs=include_dirs,
                                 define_macros=define_macros,
                                 extra_compile_args=extra_compile_args)
-    ap_clustering = MDAExtension('analysis.encore.clustering.affinityprop',
+    ap_clustering = MDAExtension('MDAnalysis.analysis.encore.clustering.affinityprop',
                                  sources=['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix,
                                           'MDAnalysis/analysis/encore/clustering/src/ap.c'],
                                  include_dirs=include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
                                  libraries=["m"],
                                  define_macros=define_macros,
                                  extra_compile_args=extra_compile_args)
-    spe_dimred = MDAExtension('analysis.encore.dimensionality_reduction.stochasticproxembed',
+    spe_dimred = MDAExtension('MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed',
                               sources=['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix,
                                        'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
                               include_dirs=include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
@@ -495,11 +485,8 @@ if __name__ == '__main__':
           provides=['MDAnalysis'],
           license='GPL 2',
           packages=find_packages(),
-          package_dir={'MDAnalysis': 'MDAnalysis'},
-          ext_package='MDAnalysis',
           ext_modules=exts,
           classifiers=CLASSIFIERS,
-          cmdclass=cmdclass,
           requires=['numpy (>=1.10.4)', 'biopython', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
                     'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)'],
