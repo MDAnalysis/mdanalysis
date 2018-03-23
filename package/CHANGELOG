@@ -51,8 +51,11 @@ Fixes
   * analysis.align: fixed output and catch more cases with
     SelectionError when selections are incompatible (Issue #1809)
   * fix cython 0.28 compiler error
-  * DCD istart was used wrong, which lead to wrong times when reading and
-    writing (Issue #1819)
+  * DCD istart was wrongly interpreted as frames (only in 0.17.0) instead of
+    integrator timesteps, which lead to large time-offsets when reading and
+    writing DCD files; now istart is correctly interpreted when reading and
+    when writing, istart=None will set it to the CHARMM default nsavc but the
+    default is istart=0, which will make the DCD start at frame 0 (Issue #1819)
 
 Changes
   * scipy >= 1.0.0 is now required (issue #1775 because of PR #1758)
