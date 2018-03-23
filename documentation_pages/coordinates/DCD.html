@@ -768,8 +768,12 @@ and writes positions in Å and time in AKMA time units.</p>
 correspond to the interval between two frames as nsavc (i.e., every
 how many MD steps is a frame saved to the DCD). By default, this
 number is just set to one and this should be sufficient for almost
-all cases but if required, nsavc can be changed.</li>
-<li><strong>istart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame number. CHARMM defaults to 1.</li>
+all cases but if required, <cite>nsavc</cite> can be changed.</li>
+<li><strong>istart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame number in integrator timesteps. CHARMM defaults to
+<cite>nsavc</cite>, i.e., start at frame number 1 = <cite>istart</cite> / <cite>nsavc</cite>. The value
+<code class="docutils literal"><span class="pre">None</span></code> will set <cite>istart</cite> to <cite>nsavc</cite> (the CHARMM default).
+The MDAnalysis default is 0 so that the frame number and time of the first
+frame is 0.</li>
 <li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – General writer arguments</li>
 </ul>
 </td>

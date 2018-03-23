@@ -262,7 +262,7 @@
     <span class="k">def</span> <span class="nf">_frame_to_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;convert a dcd-frame to a :class:`TimeStep`&quot;&quot;&quot;</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;istart&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;istart&#39;</span><span class="p">]</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;nsavc&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
 
         <span class="c1"># The original unitcell is read as ``[A, gamma, B, beta, alpha, C]``</span>
@@ -426,9 +426,13 @@
 <span class="sd">            correspond to the interval between two frames as nsavc (i.e., every</span>
 <span class="sd">            how many MD steps is a frame saved to the DCD). By default, this</span>
 <span class="sd">            number is just set to one and this should be sufficient for almost</span>
-<span class="sd">            all cases but if required, nsavc can be changed.</span>
+<span class="sd">            all cases but if required, `nsavc` can be changed.</span>
 <span class="sd">        istart : int (optional)</span>
-<span class="sd">            starting frame number. CHARMM defaults to 1.</span>
+<span class="sd">            starting frame number in integrator timesteps. CHARMM defaults to</span>
+<span class="sd">            `nsavc`, i.e., start at frame number 1 = `istart` / `nsavc`. The value</span>
+<span class="sd">            ``None`` will set `istart` to `nsavc` (the CHARMM default).</span>
+<span class="sd">            The MDAnalysis default is 0 so that the frame number and time of the first</span>
+<span class="sd">            frame is 0.</span>
 <span class="sd">        **kwargs : dict</span>
 <span class="sd">            General writer arguments</span>
 
@@ -443,6 +447,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="n">mdaunits</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="o">/</span> <span class="n">nsavc</span>
+        <span class="n">istart</span> <span class="o">=</span> <span class="n">istart</span> <span class="k">if</span> <span class="n">istart</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">nsavc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span>
             <span class="n">remarks</span><span class="o">=</span><span class="n">remarks</span><span class="p">,</span>
             <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
