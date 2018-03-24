@@ -24,6 +24,7 @@ provide the format in the keyword argument *format* to
    coordinates/DLPoly
    coordinates/DMS
    coordinates/GMS
+   coordinates/GSD
    coordinates/GRO
    coordinates/INPCRD
    coordinates/LAMMPS

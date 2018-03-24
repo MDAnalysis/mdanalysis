@@ -141,7 +141,7 @@ the attributes they provide.
                                bonds, angles,    angles, and dihedrals.
                                dihedrals         :mod:`MDAnalysis.topology.HoomdXMLParser`
 
-   GSD               gsd       types, charges,   GSD topology file.  Reads atom types,
+   GSD [#a]_         gsd       types, charges,   GSD topology file.  Reads atom types,
                                radii, masses     masses, and charges if possible. Also reads bonds,
                                bonds, angles,    angles, and dihedrals.
                                dihedrals         :mod:`MDAnalysis.topology.GSDParser`
