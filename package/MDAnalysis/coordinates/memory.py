@@ -234,7 +234,8 @@ class MemoryReader(base.ProtoReader):
         Parameters
         ----------
         coordinate_array : numpy.ndarray
-            The underlying array of coordinates
+            The underlying array of coordinates. The MemoryReader now
+            necessarily requires a np.ndarray
         order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
@@ -252,6 +253,10 @@ class MemoryReader(base.ProtoReader):
             The name of the file from which this instance is created. Set to ``None``
             when created from an array
 
+        Raises
+        ------
+        TypeError if the coordinate array passed is not a np.ndarray
+
         Note
         ----
         At the moment, only a fixed `dimension` is supported, i.e., the same
@@ -259,20 +264,24 @@ class MemoryReader(base.ProtoReader):
 
         .. _`#1041`: https://github.com/MDAnalysis/mdanalysis/issues/1041
 
+        .. versionchanged:: 0.17.1
+            The input to the MemoryReader now must be a np.ndarray
+
         """
 
         super(MemoryReader, self).__init__()
         self.filename = filename
         self.stored_order = order
 
+        # See Issue #1685. The block below checks if the coordinate array passed is of shape (N, 3) and if it is, the coordiante array is reshaped to (1, N, 3)
         try:
             if len(coordinate_array.shape) == 2 and coordinate_array.shape[1] == 3:
                     coordinate_array = coordinate_array[np.newaxis, :, :]
         except AttributeError as e:
-            raise ValueError("Input to the MemoryReader is of improper format."
+            raise TypeError("The input has to be a numpy.ndarray that corresponds to the layout specified by the 'order' keyword."
                 )
 
-        self.set_array(np.asarray(coordinate_array), order)
+        self.set_array(coordinate_array, order)
         self.n_frames = \
             self.coordinate_array.shape[self.stored_order.find('f')]
         self.n_atoms = \
