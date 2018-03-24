@@ -183,6 +183,22 @@ class TestUniverseCreation(object):
         with pytest.raises(TypeError):
             u.load_new('thisfile', format = 'soup')
 
+    def test_load_new_memory_reader_success(self):
+        u = mda.Universe(GRO)
+        prot = u.select_atoms('protein')
+        u2 = mda.Merge(prot)
+        assert u2.load_new( [ prot.positions ], format=mda.coordinates.memory.MemoryReader) is u2
+
+    def test_load_new_memory_reader_fails(self):
+        def load():
+            u = mda.Universe(GRO)
+            prot = u.select_atoms('protein')
+            u2 = mda.Merge(prot)
+            u2.load_new( [[ prot.positions ]], format=mda.coordinates.memory.MemoryReader)
+
+        with pytest.raises(TypeError):
+            load()
+
     def test_universe_kwargs(self):
         u = mda.Universe(PSF, PDB_small, fake_kwarg=True)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
