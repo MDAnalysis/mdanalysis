@@ -264,7 +264,7 @@ class MemoryReader(base.ProtoReader):
 
         .. _`#1041`: https://github.com/MDAnalysis/mdanalysis/issues/1041
 
-        .. versionchanged:: 0.17.1
+        .. versionchanged:: 0.18.1
             The input to the MemoryReader now must be a np.ndarray
 
         """
@@ -340,7 +340,7 @@ class MemoryReader(base.ProtoReader):
         for auxname, auxread in self._auxs.items():
             new.add_auxiliary(auxname, auxread.copy())
 
-        return new        
+        return new
 
     def set_array(self, coordinate_array, order='fac'):
         """
