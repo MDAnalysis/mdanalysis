@@ -397,7 +397,9 @@ class Contacts(AnalysisBase):
             which means that the trajectory would be read until the end.
         step : int, optional
             Step between frames to analyse, Default: None becomes 1.
-
+        verbose : bool (optional)
+             Show detailed progress of the calculation if set to ``True``; the
+             default is ``False``.
         """
         self.u = u
         super(Contacts, self).__init__(self.u.trajectory, **basekwargs)

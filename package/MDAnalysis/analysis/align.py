@@ -558,8 +558,6 @@ class AlignTraj(AnalysisBase):
             exact methods
         force : bool (optional)
             Force overwrite of filename for rmsd-fitting
-        verbose : bool (optional)
-            Set logger to show more information
         start : int (optional)
             First frame of trajectory to analyse, Default: 0
         stop : int (optional)
@@ -572,6 +570,10 @@ class AlignTraj(AnalysisBase):
             performance substantially in some cases. In this case, no file
             is written out (`filename` and `prefix` are ignored) and only
             the coordinates of `mobile` are *changed in memory*.
+        verbose : bool (optional)
+             Set logger to show more information and show detailed progress of
+             the calculation if set to ``True``; the default is ``False``.
+
 
         Attributes
         ----------

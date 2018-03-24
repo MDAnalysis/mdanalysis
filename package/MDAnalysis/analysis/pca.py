@@ -190,6 +190,9 @@ class PCA(AnalysisBase):
         step : int, optional
             Step between frames of trajectory to use for generation
             of covariance matrix, Default: None
+        verbose : bool (optional)
+             Show detailed progress of the calculation if set to ``True``; the
+             default is ``False``.
         """
         super(PCA, self).__init__(universe.trajectory,
                                   **kwargs)
