@@ -201,7 +201,8 @@ class DistanceMatrix(AnalysisBase):
         Save the `dist_matrix` to a given filename
     """
     def __init__(self, u, select='all', metric=rmsd, cutoff=1E0-5,
-                 weights=None, start=None, stop=None, step=None):
+                 weights=None, start=None, stop=None, step=None,
+                 **kwargs):
         """
         Parameters
         ----------
@@ -236,16 +237,22 @@ class DistanceMatrix(AnalysisBase):
             which means that the trajectory would be read until the end.
         step : int, optional
             Step between frames to analyse, Default: None becomes 1.
+        verbose : bool (optional)
+             Show detailed progress of the calculation if set to ``True``; the
+             default is ``False``.
         """
         self._u = u
         traj = self._u.trajectory
+
+        # remember that this must be called before referencing self.n_frames
+        super(DistanceMatrix, self).__init__(self._u.trajectory,
+                                           start=start, stop=stop, step=step, **kwargs)
+
         self.atoms = self._u.select_atoms(select)
         self._metric = metric
         self._cutoff = cutoff
         self._weights = weights
         self._calculated = False
-        # remember that this must be called before referencing self.n_frames
-        self._setup_frames(traj, start, stop, step)
 
     def _prepare(self):
         self.dist_matrix = np.zeros((self.n_frames, self.n_frames))
