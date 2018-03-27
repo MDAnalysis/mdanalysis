@@ -1044,8 +1044,10 @@ class GroupBase(_MutableBase):
 
         Parameters
         ----------
-        topattr: str
+        topattrs: str or list
            One or more topology attribute to group components by.
+           Single arguments are passed as a string. Multiple arguments
+           are passed as a list.
 
         Returns
         -------
