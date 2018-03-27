@@ -1039,7 +1039,7 @@ class GroupBase(_MutableBase):
             if not all(s == 0.0):
                 o.atoms.translate(s)
 
-    def groupby(self, *topattrs):
+    def groupby(self, topattrs):
         """Group together items in this group according to values of *topattr*
 
         Parameters
@@ -1066,7 +1066,7 @@ class GroupBase(_MutableBase):
 
         To group atoms with the same residue name and mass together::
 
-          >>> ag.groupby('resnames', 'masses')
+          >>> ag.groupby(['resnames', 'masses'])
           {'ALA': {1.008: <AtomGroup with 95 atoms>,
             12.011: <AtomGroup with 57 atoms>,
             14.007: <AtomGroup with 19 atoms>,
@@ -1074,7 +1074,7 @@ class GroupBase(_MutableBase):
            'ARG': {1.008: <AtomGroup with 169 atoms>,
            ...}
           
-          >>> ag.groupby('resnames', 'masses')['ALA'][15.999]
+          >>> ag.groupby(['resnames', 'masses'])['ALA'][15.999]
            <AtomGroup with 19 atoms>
         
         .. versionadded:: 0.16.0
@@ -1082,14 +1082,17 @@ class GroupBase(_MutableBase):
         """
         
         res = {}
-        attr = topattrs[0]
-        ta = getattr(self, attr)
-        for i in set(ta):
-            if len(topattrs) == 1:
-                res[i] = self[ta == i]
-            else:
-                res[i] = self[ta == i].groupby(*topattrs[1:])
-        return res
+        if type(topattrs) == str:
+            ta = getattr(self, topattrs)
+            return {i: self[ta == i] for i in set(ta)}
+        else:
+            ta=getattr(self,topattrs[0])
+            for i in set(ta):
+                if len(topattrs) == 1:
+                    res[i] = self[ta == i]
+                else:
+                    res[i] = self[ta == i].groupby(topattrs[1:])
+            return res
 
 
     @_only_same_level

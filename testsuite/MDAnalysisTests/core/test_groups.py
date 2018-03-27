@@ -606,7 +606,7 @@ class TestGroupBy(object):
     # tests for multiple attributes as arguments
 
     def test_groupby_float_string(self, u):
-        gb = u.atoms.groupby('charges', 'segids')
+        gb = u.atoms.groupby(['charges', 'segids'])
 
         for ref in [-1.5, -0.5, 0.0, 0.5, 1.5]:
             assert ref in gb
@@ -619,7 +619,7 @@ class TestGroupBy(object):
                 assert all(a.segids  == subref)
 
     def test_groupby_int_float(self, u):
-        gb = u.atoms.groupby('resids', 'charges')
+        gb = u.atoms.groupby(['resids', 'charges'])
 
         for ref in range(1,len(gb)+1):
             assert len(gb[ref]) == 5 
@@ -629,7 +629,7 @@ class TestGroupBy(object):
                 assert all(a.charges == subref)
 
     def test_groupby_string_int(self, u):
-        gb = u.atoms.groupby('segids', 'resids')
+        gb = u.atoms.groupby(['segids', 'resids'])
     
         assert len(gb) == 5
         res = 1
