@@ -1055,6 +1055,15 @@ class GroupBase(_MutableBase):
 
         Example
         -------
+       
+        
+        To group atoms with the same mass together::     
+                
+        >>> ag.groupby('masses')
+        {12.010999999999999: <AtomGroup with 462 atoms>,
+         14.007: <AtomGroup with 116 atoms>,
+         15.999000000000001: <AtomGroup with 134 atoms>}        
+
         To group atoms with the same residue name and mass together::
 
           >>> ag.groupby('resnames', 'masses')

@@ -19,6 +19,9 @@ mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de, orbeckst,
   * 0.17.1
 
 Enhancements
+  * Can now pass multiple attributes to groupby function.
+    Eg ag.groupby("masses","charges")
+    (Issue #1839)
   * Added reading of record types (ATOM/HETATM) for PDB, PDBQT and PQR formats
     (Issue #1753)
   * Added Universe.copy to allow creation of an independent copy of a Universe
