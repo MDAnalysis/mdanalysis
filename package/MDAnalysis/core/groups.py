@@ -1068,7 +1068,7 @@ class GroupBase(_MutableBase):
           >>> ag.groupby('resnames', 'masses')['ALA'][15.999]
            <AtomGroup with 19 atoms>
         
-        .. versionadded:: 
+        .. versionadded:: 0.18.0
         """
         
         res = {}
