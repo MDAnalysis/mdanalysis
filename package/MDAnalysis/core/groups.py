@@ -1078,7 +1078,7 @@ class GroupBase(_MutableBase):
            <AtomGroup with 19 atoms>
         
         .. versionadded:: 0.16.0
-        .. versionchanged:: 0.18.0
+        .. versionchanged:: 0.18.0 The function accepts multiple attributes
         """
         
         res = {}
