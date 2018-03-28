@@ -1060,3 +1060,21 @@ class TestTruncateInteger(object):
     ])
     def test_ltruncate_int(self, a, b):
         assert util.ltruncate_int(*a) == b
+
+class TestFlattenDict(object):
+    def test_flatten_dict(self):
+        d = {
+            'A' : { 1 : ('a', 'b', 'c')},
+            'B' : { 2 : ('c', 'd', 'e')},
+            'C' : { 3 : ('f', 'g', 'h')}
+        }
+        result = util.flatten_dict(d)
+
+        for k in result:
+            assert type(k) == tuple
+            assert len(k) == 2
+            assert k[0] in d
+            assert k[1] in d[k[0]]
+            assert result[k] in d[k[0]].values()
+            
+            
