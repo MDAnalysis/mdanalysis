@@ -1057,14 +1057,14 @@ class GroupBase(_MutableBase):
 
         Example
         -------      
-        To group atoms with the same mass together::     
+        To group atoms with the same mass together:     
                 
         >>> ag.groupby('masses')
         {12.010999999999999: <AtomGroup with 462 atoms>,
          14.007: <AtomGroup with 116 atoms>,
          15.999000000000001: <AtomGroup with 134 atoms>}        
 
-        To group atoms with the same residue name and mass together::
+        To group atoms with the same residue name and mass together:
 
           >>> ag.groupby(['resnames', 'masses'])
           {('ALA', 1.008): <AtomGroup with 95 atoms>,
@@ -1082,11 +1082,22 @@ class GroupBase(_MutableBase):
         """
         
         res = {}
+        
         if isinstance(topattrs, string_types):
             ta = getattr(self, topattrs)
             return {i: self[ta == i] for i in set(ta)}
+        elif isinstance(topattrs, bytes):
+            attr = topattrs.decode('ascii')
+            ta = getattr(self, attr)
+            return {i: self[ta == i] for i in set(ta)}
         else:
-            ta=getattr(self,topattrs[0])
+            if isinstance(topattrs[0], bytes):
+                attr=topattrs[0].decode('utf-8')
+                print(type(attr))
+            else:
+                attr=topattrs[0]
+                
+            ta=getattr(self,attr)
             for i in set(ta):
                 if len(topattrs) == 1:
                     res[i] = self[ta == i]
