@@ -1069,14 +1069,14 @@ class GroupBase(_MutableBase):
         To group atoms with the same residue name and mass together::
 
           >>> ag.groupby(['resnames', 'masses'])
-          {'ALA': {1.008: <AtomGroup with 95 atoms>,
-            12.011: <AtomGroup with 57 atoms>,
-            14.007: <AtomGroup with 19 atoms>,
-            15.999: <AtomGroup with 19 atoms>},
-           'ARG': {1.008: <AtomGroup with 169 atoms>,
+          {('ALA', 1.008): <AtomGroup with 95 atoms>,
+           ('ALA', 12.011): <AtomGroup with 57 atoms>,
+           ('ALA', 14.007): <AtomGroup with 19 atoms>,
+           ('ALA', 15.999): <AtomGroup with 19 atoms>},
+           ('ARG', 1.008): <AtomGroup with 169 atoms>,
            ...}
           
-          >>> ag.groupby(['resnames', 'masses'])['ALA'][15.999]
+          >>> ag.groupby(['resnames', 'masses'])('ALA', 15.999)
            <AtomGroup with 19 atoms>
         
         .. versionadded:: 0.16.0
@@ -1094,7 +1094,7 @@ class GroupBase(_MutableBase):
                     res[i] = self[ta == i]
                 else:
                     res[i] = self[ta == i].groupby(topattrs[1:])
-            return res
+            return util.flatten_dict(res)
 
 
     @_only_same_level

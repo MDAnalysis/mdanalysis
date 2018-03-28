@@ -169,6 +169,7 @@ import gzip
 import re
 import io
 import warnings
+import collections
 from functools import wraps
 import mmtf
 import numpy as np
@@ -1677,3 +1678,34 @@ def ltruncate_int(value, ndigits):
     1234
     """
     return int(str(value)[-ndigits:])
+
+
+def flatten_dict(d, parent_key=tuple()):
+    """Flatten a nested dict `d` into a shallow dict with tuples as keys.
+
+    Parameters
+    ----------
+    d : dict
+
+    Returns
+    -------
+    dict
+
+    Note
+    -----
+    Based on https://stackoverflow.com/a/6027615/ by user https://stackoverflow.com/users/1897/imran
+    
+    .. versionadded:: 0.18.0
+    """
+
+    items = []
+    for k, v in d.items():
+        if type(k) != tuple:
+            new_key = parent_key + (k, )
+        else:
+            new_key = parent_key + k
+        if isinstance(v, collections.MutableMapping):
+            items.extend(flatten_dict(v, new_key).items())
+        else:
+            items.append((new_key, v))
+    return dict(items)
