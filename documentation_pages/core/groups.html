@@ -550,15 +550,18 @@ will give all particles zero velocity).</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.groupby">
-<code class="descname">groupby</code><span class="sig-paren">(</span><em>topattr</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.groupby" title="Permalink to this definition">¶</a></dt>
+<code class="descname">groupby</code><span class="sig-paren">(</span><em>topattrs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.groupby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group together items in this group according to values of <em>topattr</em></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Topology attribute to group components by.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – One or more topology attribute to group components by.
+Single arguments are passed as a string. Multiple arguments
+are passed as a list.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique values of the topology attribute as keys, Groups as values.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique values of the multiple combinations of topology attributes
+as keys, Groups as values.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></td>
 </tr>
@@ -568,12 +571,29 @@ will give all particles zero velocity).</p>
 <p>To group atoms with the same mass together:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">)</span>
 <span class="go">{12.010999999999999: &lt;AtomGroup with 462 atoms&gt;,</span>
-<span class="go">14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
-<span class="go">15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
+<span class="go"> 14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
+<span class="go"> 15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
+</pre></div>
+</div>
+<p>To group atoms with the same residue name and mass together:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])</span>
+<span class="go">{(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
+<span class="go"> (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
+<span class="go"> (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="go"> (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;},</span>
+<span class="go"> (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
+<span class="go"> ...}</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])(</span><span class="s1">&#39;ALA&#39;</span><span class="p">,</span> <span class="mf">15.999</span><span class="p">)</span>
+<span class="go"> &lt;AtomGroup with 19 atoms&gt;</span>
 </pre></div>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.16.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.0: </span>The function accepts multiple attributes</p>
 </div>
 </dd></dl>
 
@@ -1777,15 +1797,18 @@ duplicate elements</td>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.groupby">
-<code class="descname">groupby</code><span class="sig-paren">(</span><em>topattr</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.groupby" title="Permalink to this definition">¶</a></dt>
+<code class="descname">groupby</code><span class="sig-paren">(</span><em>topattrs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.groupby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group together items in this group according to values of <em>topattr</em></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Topology attribute to group components by.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – One or more topology attribute to group components by.
+Single arguments are passed as a string. Multiple arguments
+are passed as a list.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique values of the topology attribute as keys, Groups as values.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique values of the multiple combinations of topology attributes
+as keys, Groups as values.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></td>
 </tr>
@@ -1795,12 +1818,29 @@ duplicate elements</td>
 <p>To group atoms with the same mass together:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">)</span>
 <span class="go">{12.010999999999999: &lt;AtomGroup with 462 atoms&gt;,</span>
-<span class="go">14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
-<span class="go">15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
+<span class="go"> 14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
+<span class="go"> 15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
+</pre></div>
+</div>
+<p>To group atoms with the same residue name and mass together:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])</span>
+<span class="go">{(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
+<span class="go"> (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
+<span class="go"> (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="go"> (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;},</span>
+<span class="go"> (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
+<span class="go"> ...}</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])(</span><span class="s1">&#39;ALA&#39;</span><span class="p">,</span> <span class="mf">15.999</span><span class="p">)</span>
+<span class="go"> &lt;AtomGroup with 19 atoms&gt;</span>
 </pre></div>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.16.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.0: </span>The function accepts multiple attributes</p>
 </div>
 </dd></dl>
 
@@ -2604,15 +2644,18 @@ duplicate elements</td>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.groupby">
-<code class="descname">groupby</code><span class="sig-paren">(</span><em>topattr</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.groupby" title="Permalink to this definition">¶</a></dt>
+<code class="descname">groupby</code><span class="sig-paren">(</span><em>topattrs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.groupby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group together items in this group according to values of <em>topattr</em></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Topology attribute to group components by.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – One or more topology attribute to group components by.
+Single arguments are passed as a string. Multiple arguments
+are passed as a list.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique values of the topology attribute as keys, Groups as values.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique values of the multiple combinations of topology attributes
+as keys, Groups as values.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></td>
 </tr>
@@ -2622,12 +2665,29 @@ duplicate elements</td>
 <p>To group atoms with the same mass together:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">)</span>
 <span class="go">{12.010999999999999: &lt;AtomGroup with 462 atoms&gt;,</span>
-<span class="go">14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
-<span class="go">15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
+<span class="go"> 14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
+<span class="go"> 15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
+</pre></div>
+</div>
+<p>To group atoms with the same residue name and mass together:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])</span>
+<span class="go">{(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
+<span class="go"> (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
+<span class="go"> (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="go"> (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;},</span>
+<span class="go"> (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
+<span class="go"> ...}</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])(</span><span class="s1">&#39;ALA&#39;</span><span class="p">,</span> <span class="mf">15.999</span><span class="p">)</span>
+<span class="go"> &lt;AtomGroup with 19 atoms&gt;</span>
 </pre></div>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.16.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.0: </span>The function accepts multiple attributes</p>
 </div>
 </dd></dl>
 
@@ -3487,7 +3547,7 @@ class:</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>

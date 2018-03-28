@@ -1085,32 +1085,69 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">):</span>
                 <span class="n">o</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">groupby</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topattr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">groupby</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topattrs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Group together items in this group according to values of *topattr*</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        topattr: str</span>
-<span class="sd">           Topology attribute to group components by.</span>
+<span class="sd">        topattrs: str or list</span>
+<span class="sd">           One or more topology attribute to group components by.</span>
+<span class="sd">           Single arguments are passed as a string. Multiple arguments</span>
+<span class="sd">           are passed as a list.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
-<span class="sd">            Unique values of the topology attribute as keys, Groups as values.</span>
+<span class="sd">            Unique values of the multiple combinations of topology attributes </span>
+<span class="sd">            as keys, Groups as values.</span>
 
 <span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        To group atoms with the same mass together::</span>
+<span class="sd">        -------      </span>
+<span class="sd">        To group atoms with the same mass together:     </span>
+<span class="sd">                </span>
+<span class="sd">        &gt;&gt;&gt; ag.groupby(&#39;masses&#39;)</span>
+<span class="sd">        {12.010999999999999: &lt;AtomGroup with 462 atoms&gt;,</span>
+<span class="sd">         14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
+<span class="sd">         15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}        </span>
 
-<span class="sd">          &gt;&gt;&gt; ag.groupby(&#39;masses&#39;)</span>
-<span class="sd">          {12.010999999999999: &lt;AtomGroup with 462 atoms&gt;,</span>
-<span class="sd">          14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
-<span class="sd">          15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
+<span class="sd">        To group atoms with the same residue name and mass together:</span>
 
+<span class="sd">          &gt;&gt;&gt; ag.groupby([&#39;resnames&#39;, &#39;masses&#39;])</span>
+<span class="sd">          {(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
+<span class="sd">           (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
+<span class="sd">           (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="sd">           (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;},</span>
+<span class="sd">           (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
+<span class="sd">           ...}</span>
+<span class="sd">          </span>
+<span class="sd">          &gt;&gt;&gt; ag.groupby([&#39;resnames&#39;, &#39;masses&#39;])(&#39;ALA&#39;, 15.999)</span>
+<span class="sd">           &lt;AtomGroup with 19 atoms&gt;</span>
+<span class="sd">        </span>
 <span class="sd">        .. versionadded:: 0.16.0</span>
+<span class="sd">        .. versionchanged:: 0.18.0 The function accepts multiple attributes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ta</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topattr</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="n">ta</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">ta</span><span class="p">)}</span>
+        
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topattrs</span><span class="p">,</span> <span class="p">(</span><span class="n">string_types</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
+            <span class="n">attr</span><span class="o">=</span><span class="n">topattrs</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topattrs</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="n">topattrs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="n">ta</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="n">ta</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">ta</span><span class="p">)}</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="n">topattrs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ta</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">ta</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">topattrs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">ta</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">ta</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">topattrs</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                    
+            <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
 
     <span class="nd">@_only_same_level</span>
     <span class="k">def</span> <span class="nf">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -3096,7 +3133,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
