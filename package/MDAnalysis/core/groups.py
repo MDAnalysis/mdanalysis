@@ -1084,21 +1084,23 @@ class GroupBase(_MutableBase):
         res = dict()
         
         if isinstance(topattrs, (string_types, bytes)):
-            topattrs = (topattrs,)
-    
-        if isinstance(topattrs[0], bytes):
-            attr = topattrs[0].decode('utf-8')
+            attr=topattrs
+            if isinstance(topattrs, bytes):
+                attr = topattrs.decode('utf-8')
+            ta = getattr(self, attr)
+            
+            return {i: self[ta == i] for i in set(ta)}
+        
         else:
             attr = topattrs[0]
-            
-        ta = getattr(self,attr)
-        for i in set(ta):
-            if len(topattrs) == 1:
-                res[i] = self[ta == i]
-            else:
-                res[i] = self[ta == i].groupby(topattrs[1:])
-
-        return util.flatten_dict(res)
+            ta = getattr(self, attr)
+            for i in set(ta):
+                if len(topattrs) == 1:
+                    res[i] = self[ta == i]
+                else:
+                    res[i] = self[ta == i].groupby(topattrs[1:])
+                    
+            return util.flatten_dict(res)
 
 
     @_only_same_level
