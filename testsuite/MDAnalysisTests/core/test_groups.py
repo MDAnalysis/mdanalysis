@@ -576,7 +576,8 @@ class TestGroupBy(object):
     # tests for the method 'groupby'
     @pytest.fixture()
     def u(self):
-        return make_Universe(('types', 'charges', 'resids'))
+        return make_Universe(('segids', 'charges', 'resids'))
+   
 
     def test_groupby_float(self, u):
         gb = u.atoms.groupby('charges')
@@ -587,14 +588,15 @@ class TestGroupBy(object):
             assert all(g.charges == ref)
             assert len(g) == 25
 
-    def test_groupby_string(self, u):
-        gb = u.atoms.groupby('types')
+    @pytest.mark.parametrize('string', ['segids', b'segids', u'segids'])        
+    def test_groupby_string(self, u, string):
+        gb = u.atoms.groupby(string)
 
         assert len(gb) == 5
-        for ref in ['TypeA', 'TypeB', 'TypeC', 'TypeD', 'TypeE']:
+        for ref in ['SegA', 'SegB', 'SegC', 'SegD', 'SegE']:
             assert ref in gb
             g = gb[ref]
-            assert all(g.types == ref)
+            assert all(g.segids == ref)
             assert len(g) == 25
 
     def test_groupby_int(self, u):
@@ -603,6 +605,44 @@ class TestGroupBy(object):
         for g in gb.values():
             assert len(g) == 5
 
+    # tests for multiple attributes as arguments
+
+    def test_groupby_float_string(self, u):
+        gb = u.atoms.groupby(['charges', 'segids'])
+
+        for ref in [-1.5, -0.5, 0.0, 0.5, 1.5]:
+            for subref in ['SegA','SegB','SegC','SegD','SegE']:
+                assert (ref, subref) in gb.keys()
+                a = gb[(ref, subref)]
+                assert len(a) == 5
+                assert all(a.charges == ref)
+                assert all(a.segids  == subref)
+
+    def test_groupby_int_float(self, u):
+        gb = u.atoms.groupby(['resids', 'charges'])
+
+        uplim=int(len(gb)/5+1)
+        for ref in range(1, uplim):
+            for subref in [-1.5, -0.5, 0.0, 0.5, 1.5]:
+                assert (ref, subref) in gb.keys()
+                a = gb[(ref, subref)]
+                assert len(a) == 1 
+                assert all(a.resids == ref)
+                assert all(a.charges == subref)
+
+    def test_groupby_string_int(self, u):
+        gb = u.atoms.groupby(['segids', 'resids'])
+    
+        assert len(gb) == 25
+        res = 1
+        for ref in ['SegA','SegB','SegC','SegD','SegE']:
+            for subref in range(0, 5):
+                assert (ref, res) in gb.keys()
+                a = gb[(ref, res)]
+                assert all(a.segids == ref)
+                assert all(a.resids == res)
+                res += 1
+                
 
 class TestReprs(object):
     @pytest.fixture()

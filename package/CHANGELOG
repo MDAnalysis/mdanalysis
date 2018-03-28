@@ -14,11 +14,16 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de, orbeckst,
-         xiki-tempula, navyakhare, zemanj, ayushsuhane
+         xiki-tempula, navyakhare, zemanj, ayushsuhane, davidercruz
 
   * 0.17.1
 
 Enhancements
+  * Added flatten_dict function that flattens nested dicts into shallow
+    dicts with tuples as keys.
+  * Can now pass multiple attributes as a list to groupby function.
+    Eg ag.groupby(["masses","charges"])
+    (Issue #1839)
   * Added reading of record types (ATOM/HETATM) for PDB, PDBQT and PQR formats
     (Issue #1753)
   * Added Universe.copy to allow creation of an independent copy of a Universe

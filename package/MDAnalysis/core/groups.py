@@ -1039,32 +1039,69 @@ class GroupBase(_MutableBase):
             if not all(s == 0.0):
                 o.atoms.translate(s)
 
-    def groupby(self, topattr):
+    def groupby(self, topattrs):
         """Group together items in this group according to values of *topattr*
 
         Parameters
         ----------
-        topattr: str
-           Topology attribute to group components by.
+        topattrs: str or list
+           One or more topology attribute to group components by.
+           Single arguments are passed as a string. Multiple arguments
+           are passed as a list.
 
         Returns
         -------
         dict
-            Unique values of the topology attribute as keys, Groups as values.
+            Unique values of the multiple combinations of topology attributes 
+            as keys, Groups as values.
 
         Example
-        -------
-        To group atoms with the same mass together::
+        -------      
+        To group atoms with the same mass together:     
+                
+        >>> ag.groupby('masses')
+        {12.010999999999999: <AtomGroup with 462 atoms>,
+         14.007: <AtomGroup with 116 atoms>,
+         15.999000000000001: <AtomGroup with 134 atoms>}        
 
-          >>> ag.groupby('masses')
-          {12.010999999999999: <AtomGroup with 462 atoms>,
-          14.007: <AtomGroup with 116 atoms>,
-          15.999000000000001: <AtomGroup with 134 atoms>}
+        To group atoms with the same residue name and mass together:
 
+          >>> ag.groupby(['resnames', 'masses'])
+          {('ALA', 1.008): <AtomGroup with 95 atoms>,
+           ('ALA', 12.011): <AtomGroup with 57 atoms>,
+           ('ALA', 14.007): <AtomGroup with 19 atoms>,
+           ('ALA', 15.999): <AtomGroup with 19 atoms>},
+           ('ARG', 1.008): <AtomGroup with 169 atoms>,
+           ...}
+          
+          >>> ag.groupby(['resnames', 'masses'])('ALA', 15.999)
+           <AtomGroup with 19 atoms>
+        
         .. versionadded:: 0.16.0
+        .. versionchanged:: 0.18.0 The function accepts multiple attributes
         """
-        ta = getattr(self, topattr)
-        return {i: self[ta == i] for i in set(ta)}
+        
+        res = dict()
+        
+        if isinstance(topattrs, (string_types, bytes)):
+            attr=topattrs
+            if isinstance(topattrs, bytes):
+                attr = topattrs.decode('utf-8')
+            ta = getattr(self, attr)
+            
+            return {i: self[ta == i] for i in set(ta)}
+        
+        else:
+            attr = topattrs[0]
+            ta = getattr(self, attr)
+            for i in set(ta):
+                if len(topattrs) == 1:
+                    res[i] = self[ta == i]
+                else:
+                    res[i] = self[ta == i].groupby(topattrs[1:])
+                    
+            return util.flatten_dict(res)
+
 
     @_only_same_level
     def concatenate(self, other):
