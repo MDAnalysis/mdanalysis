@@ -1087,7 +1087,7 @@ class GroupBase(_MutableBase):
             ta = getattr(self, topattrs)
             return {i: self[ta == i] for i in set(ta)}
         elif isinstance(topattrs, bytes):
-            attr = topattrs.decode('ascii')
+            attr = topattrs.decode('utf-8')
             ta = getattr(self, attr)
             return {i: self[ta == i] for i in set(ta)}
         else:
