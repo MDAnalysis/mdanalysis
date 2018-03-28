@@ -1056,9 +1056,7 @@ class GroupBase(_MutableBase):
             as keys, Groups as values.
 
         Example
-        -------
-       
-        
+        -------      
         To group atoms with the same mass together::     
                 
         >>> ag.groupby('masses')
