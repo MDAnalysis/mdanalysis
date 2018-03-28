@@ -577,6 +577,7 @@ class TestGroupBy(object):
     @pytest.fixture()
     def u(self):
         return make_Universe(('segids', 'charges', 'resids'))
+   
 
     def test_groupby_float(self, u):
         gb = u.atoms.groupby('charges')
@@ -587,8 +588,9 @@ class TestGroupBy(object):
             assert all(g.charges == ref)
             assert len(g) == 25
 
-    def test_groupby_string(self, u):
-        gb = u.atoms.groupby('segids')
+    @pytest.mark.parametrize('string', ['segids', b'segids', u'segids'])        
+    def test_groupby_string(self, u, string):
+        gb = u.atoms.groupby(string)
 
         assert len(gb) == 5
         for ref in ['SegA', 'SegB', 'SegC', 'SegD', 'SegE']:
