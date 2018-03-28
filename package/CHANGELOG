@@ -19,6 +19,8 @@ mm/dd/18 richardjgowers, palnabarun, bieniekmateusz, kain88-de, orbeckst,
   * 0.17.1
 
 Enhancements
+  * Added flatten_dict function that flattens nested dicts into shallow
+    dicts with tuples as keys.
   * Can now pass multiple attributes as a list to groupby function.
     Eg ag.groupby(["masses","charges"])
     (Issue #1839)
