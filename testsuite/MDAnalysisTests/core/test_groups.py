@@ -619,7 +619,7 @@ class TestGroupBy(object):
     def test_groupby_int_float(self, u):
         gb = u.atoms.groupby(['resids', 'charges'])
 
-        uplim=len(gb)/5+1
+        uplim=int(len(gb)/5+1)
         for ref in range(1, uplim):
             for subref in [-1.5, -0.5, 0.0, 0.5, 1.5]:
                 assert (ref, subref) in gb.keys()

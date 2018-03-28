@@ -1084,7 +1084,7 @@ class GroupBase(_MutableBase):
         """
         
         res = {}
-        if type(topattrs) == str:
+        if isinstance(topattrs, string_types):
             ta = getattr(self, topattrs)
             return {i: self[ta == i] for i in set(ta)}
         else:
