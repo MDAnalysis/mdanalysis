@@ -135,7 +135,6 @@
 <span class="sd">                               &quot;backbone and resid 30-59&quot;],                                    # NMP</span>
 <span class="sd">              filename=&quot;rmsd_all_CORE_LID_NMP.dat&quot;)</span>
 <span class="sd">   R.run()</span>
-<span class="sd">   R.save()</span>
 
 <span class="sd">   import matplotlib.pyplot as plt</span>
 <span class="sd">   rmsd = R.rmsd.T   # transpose makes it easier for plotting</span>
@@ -247,6 +246,14 @@
 <span class="sd">    configuration (possibly after optimal translation and rotation) from a</span>
 <span class="sd">    reference configuration divided by :math:`1/\sqrt{N}` where :math:`N` is</span>
 <span class="sd">    the number of coordinates.</span>
+
+<span class="sd">    The weights :math:`w_i` are calculated from the input weights</span>
+<span class="sd">    `weights` :math:`w&#39;_i` as relative to the mean:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       w_i = \frac{w&#39;_i}{\langle w&#39; \rangle}</span>
+
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -428,6 +435,9 @@
 <span class="sd">             than `tol_mass`.</span>
 <span class="sd">        ref_frame : int (optional)</span>
 <span class="sd">             frame index to select frame from `reference`</span>
+<span class="sd">        verbose : bool (optional)</span>
+<span class="sd">             Show detailed progress of the calculation if set to ``True``; the</span>
+<span class="sd">             default is ``False``.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -441,19 +451,28 @@
 <span class="sd">             length) or if it is not a 1D array (see</span>
 <span class="sd">             :func:`MDAnalysis.lib.util.get_weights`).</span>
 
-<span class="sd">             If `weights` are not compatible with `groupselections`: only equal</span>
-<span class="sd">             weights (``weights=None``) or mass-weighted (``weights=&quot;mass&quot;``)</span>
-<span class="sd">             are supported for additional `groupselections`.</span>
+<span class="sd">             A :exc:`ValueError` is also raised if `weights` are not compatible</span>
+<span class="sd">             with `groupselections`: only equal weights (``weights=None``) or</span>
+<span class="sd">             mass-weighted (``weights=&quot;mass&quot;``) are supported for additional</span>
+<span class="sd">             `groupselections`.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        The root mean square deviation of a group of :math:`N` atoms relative to a</span>
-<span class="sd">        reference structure as a function of time is calculated as</span>
+<span class="sd">        The root mean square deviation :math:`\rho(t)` of a group of :math:`N`</span>
+<span class="sd">        atoms relative to a reference structure as a function of time is</span>
+<span class="sd">        calculated as</span>
 
 <span class="sd">        .. math::</span>
 
 <span class="sd">           \rho(t) = \sqrt{\frac{1}{N} \sum_{i=1}^N w_i \left(\mathbf{x}_i(t)</span>
 <span class="sd">                                    - \mathbf{x}_i^{\text{ref}}\right)^2}</span>
+
+<span class="sd">        The weights :math:`w_i` are calculated from the input weights `weights`</span>
+<span class="sd">        :math:`w&#39;_i` as relative to the mean of the input weights:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           w_i = \frac{w&#39;_i}{\langle w&#39; \rangle}</span>
 
 <span class="sd">        The selected coordinates from `atomgroup` are optimally superimposed</span>
 <span class="sd">        (translation and rotation) on the `reference` coordinates at each time step</span>
@@ -469,6 +488,11 @@
 
 <span class="sd">        .. _ClustalW: http://www.clustal.org/</span>
 <span class="sd">        .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/</span>
+
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        rmsd</span>
 
 
 <span class="sd">        .. versionadded:: 0.7.7</span>
@@ -715,7 +739,14 @@
 <span class="sd">        step : int (optional)</span>
 <span class="sd">            step between frames, default None becomes 1.</span>
 <span class="sd">        verbose : bool (optional)</span>
-<span class="sd">            if ``False``, suppress all output</span>
+<span class="sd">             Show detailed progress of the calculation if set to ``True``; the</span>
+<span class="sd">             default is ``False``.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">             raised if negative values are calculated, which indicates that a</span>
+<span class="sd">             numerical overflow or underflow occured</span>
 
 
 <span class="sd">        Notes</span>
@@ -749,16 +780,23 @@
 <span class="sd">        protein)::</span>
 
 <span class="sd">           import MDAnalysis as mda</span>
+<span class="sd">           from MDAnalysis.analysis import align</span>
 
 <span class="sd">           from MDAnalysis.tests.datafiles import TPR, XTC</span>
 
 <span class="sd">           u = mda.Universe(TPR, XTC, in_memory=True)</span>
 <span class="sd">           protein = u.select_atoms(&quot;protein&quot;)</span>
 
-<span class="sd">           # TODO: need a step to center and make whole: this trajectory</span>
-<span class="sd">           # contains the protein being split across periodic boundaries</span>
+<span class="sd">           # 1) need a step to center and make whole: this trajectory</span>
+<span class="sd">           #    contains the protein being split across periodic boundaries</span>
+<span class="sd">           #</span>
+<span class="sd">           # TODO</span>
 
-<span class="sd">           # reference = average structure</span>
+<span class="sd">           # 2) fit to the initial frame to get a better average structure</span>
+<span class="sd">           #    (the trajectory is changed in memory)</span>
+<span class="sd">           prealigner = align.AlignTraj(u, select=&quot;protein and name CA&quot;, in_memory=True).run()</span>
+
+<span class="sd">           # 3) reference = average structure</span>
 <span class="sd">           reference_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)</span>
 <span class="sd">           # make a reference structure (need to reshape into a 1-frame &quot;trajectory&quot;)</span>
 <span class="sd">           reference = mda.Merge(protein).load_new(</span>
@@ -769,8 +807,7 @@
 <span class="sd">        whole trajectory to the reference by minimizing the RMSD. We use</span>
 <span class="sd">        :class:`MDAnalysis.analysis.align.AlignTraj`::</span>
 
-<span class="sd">           from MDAnalysis.analysis.align import AlignTraj</span>
-<span class="sd">           aligner = AlignTraj(u, reference, select=&quot;protein and name CA&quot;, in_memory=True).run()</span>
+<span class="sd">           aligner = align.AlignTraj(u, reference, select=&quot;protein and name CA&quot;, in_memory=True).run()</span>
 
 <span class="sd">        The trajectory is now fitted to the reference (the RMSD is stored as</span>
 <span class="sd">        `aligner.rmsd` for further inspection). Now we can calculate the RMSF::</span>
@@ -807,11 +844,10 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">RMSF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
 
-<div class="viewcode-block" id="RMSF.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSF.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RMSF.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSF.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Perform the analysis.&quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">progout</span><span class="p">,</span> <span class="n">quiet</span><span class="p">)]):</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">quiet</span><span class="p">)]):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;run arguments are deprecated. Please pass them at &quot;</span>
                           <span class="s2">&quot;class construction. These options will be removed in 0.17.0&quot;</span><span class="p">,</span>
                           <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>

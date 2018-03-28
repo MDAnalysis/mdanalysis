@@ -341,7 +341,6 @@ selection.</li>
 <li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force <cite>get_matching_atoms</cite> to fail if atoms can’t be found using
 exact methods</li>
 <li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force overwrite of filename for rmsd-fitting</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Set logger to show more information</li>
 <li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – First frame of trajectory to analyse, Default: 0</li>
 <li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Last frame of trajectory to analyse, Default: -1</li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Step between frames to analyse, Default: 1</li>
@@ -350,6 +349,8 @@ so that alignment can be done in-place, which can improve
 performance substantially in some cases. In this case, no file
 is written out (<cite>filename</cite> and <cite>prefix</cite> are ignored) and only
 the coordinates of <cite>mobile</cite> are <em>changed in memory</em>.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Set logger to show more information and show detailed progress of
+the calculation if set to <code class="docutils literal"><span class="pre">True</span></code>; the default is <code class="docutils literal"><span class="pre">False</span></code>.</li>
 </ul>
 </td>
 </tr>

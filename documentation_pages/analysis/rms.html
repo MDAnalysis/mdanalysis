@@ -117,7 +117,6 @@ using backbone atoms</li>
                             <span class="s2">&quot;backbone and resid 30-59&quot;</span><span class="p">],</span>                                    <span class="c1"># NMP</span>
            <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;rmsd_all_CORE_LID_NMP.dat&quot;</span><span class="p">)</span>
 <span class="n">R</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">R</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="n">rmsd</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">rmsd</span><span class="o">.</span><span class="n">T</span>   <span class="c1"># transpose makes it easier for plotting</span>
@@ -185,6 +184,10 @@ algorithm <a class="reference internal" href="../lib/qcprot.html#theobald2005" i
 configuration (possibly after optimal translation and rotation) from a
 reference configuration divided by <span class="math">\(1/\sqrt{N}\)</span> where <span class="math">\(N\)</span> is
 the number of coordinates.</p>
+<p>The weights <span class="math">\(w_i\)</span> are calculated from the input weights
+<cite>weights</cite> <span class="math">\(w'_i\)</span> as relative to the mean:</p>
+<div class="math">
+\[w_i = \frac{w'_i}{\langle w' \rangle}\]</div>
 <p class="rubric">Example</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bb</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span>
@@ -273,6 +276,8 @@ weight for the corresponding atom in <cite>atomgroup</cite>.</li>
 <li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Reject match if the atomic masses for matched atoms differ by more
 than <cite>tol_mass</cite>.</li>
 <li><strong>ref_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – frame index to select frame from <cite>reference</cite></li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal"><span class="pre">True</span></code>; the
+default is <code class="docutils literal"><span class="pre">False</span></code>.</li>
 </ul>
 </td>
 </tr>
@@ -285,9 +290,10 @@ than <cite>tol_mass</cite>.</li>
 <li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If <cite>weights</cite> are not compatible with <cite>atomgroup</cite> (not the same
 length) or if it is not a 1D array (see
 <a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.get_weights" title="MDAnalysis.lib.util.get_weights"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.util.get_weights()</span></code></a>).</p>
-<p>If <cite>weights</cite> are not compatible with <cite>groupselections</cite>: only equal
-weights (<code class="docutils literal"><span class="pre">weights=None</span></code>) or mass-weighted (<code class="docutils literal"><span class="pre">weights=&quot;mass&quot;</span></code>)
-are supported for additional <cite>groupselections</cite>.</p>
+<p>A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> is also raised if <cite>weights</cite> are not compatible
+with <cite>groupselections</cite>: only equal weights (<code class="docutils literal"><span class="pre">weights=None</span></code>) or
+mass-weighted (<code class="docutils literal"><span class="pre">weights=&quot;mass&quot;</span></code>) are supported for additional
+<cite>groupselections</cite>.</p>
 </li>
 </ul>
 </td>
@@ -295,11 +301,16 @@ are supported for additional <cite>groupselections</cite>.</p>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>The root mean square deviation of a group of <span class="math">\(N\)</span> atoms relative to a
-reference structure as a function of time is calculated as</p>
+<p>The root mean square deviation <span class="math">\(\rho(t)\)</span> of a group of <span class="math">\(N\)</span>
+atoms relative to a reference structure as a function of time is
+calculated as</p>
 <div class="math">
 \[\rho(t) = \sqrt{\frac{1}{N} \sum_{i=1}^N w_i \left(\mathbf{x}_i(t)
                          - \mathbf{x}_i^{\text{ref}}\right)^2}\]</div>
+<p>The weights <span class="math">\(w_i\)</span> are calculated from the input weights <cite>weights</cite>
+<span class="math">\(w'_i\)</span> as relative to the mean of the input weights:</p>
+<div class="math">
+\[w_i = \frac{w'_i}{\langle w' \rangle}\]</div>
 <p>The selected coordinates from <cite>atomgroup</cite> are optimally superimposed
 (translation and rotation) on the <cite>reference</cite> coordinates at each time step
 as to minimize the RMSD. Douglas Theobald’s fast QCP algorithm
@@ -310,6 +321,10 @@ groups can be compared. This includes a comparison of atom masses (i.e.,
 only the positions of atoms of the same mass will be considered to be
 correct for comparison). If masses should not be checked, just set
 <cite>tol_mass</cite> to a large value such as 1000.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.rms.rmsd" title="MDAnalysis.analysis.rms.rmsd"><code class="xref py py-class docutils literal"><span class="pre">rmsd</span></code></a></p>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.7.</span></p>
 </div>
@@ -375,15 +390,20 @@ in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.r
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – Atoms for which RMSF is calculated</li>
 <li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame, default None becomes 0.</li>
 <li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Frame index to stop analysis. Default: None becomes
 n_frames. Iteration stops <em>before</em> this frame number,
 which means that the trajectory would be read until the end.</li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – step between frames, default None becomes 1.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – if <code class="docutils literal"><span class="pre">False</span></code>, suppress all output</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal"><span class="pre">True</span></code>; the
+default is <code class="docutils literal"><span class="pre">False</span></code>.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – raised if negative values are calculated, which indicates that a
+numerical overflow or underflow occured</p>
 </td>
 </tr>
 </tbody>
@@ -408,16 +428,23 @@ intermediate trajectories</span></a> to disk or
 <a class="reference internal" href="../coordinates/memory.html#creating-in-memory-trajectory-label"><span class="std std-ref">generate an in-memory universe</span></a> that only contains, say, the
 protein):</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">align</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
 
-<span class="c1"># TODO: need a step to center and make whole: this trajectory</span>
-<span class="c1"># contains the protein being split across periodic boundaries</span>
+<span class="c1"># 1) need a step to center and make whole: this trajectory</span>
+<span class="c1">#    contains the protein being split across periodic boundaries</span>
+<span class="c1">#</span>
+<span class="c1"># TODO</span>
 
-<span class="c1"># reference = average structure</span>
+<span class="c1"># 2) fit to the initial frame to get a better average structure</span>
+<span class="c1">#    (the trajectory is changed in memory)</span>
+<span class="n">prealigner</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;protein and name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="c1"># 3) reference = average structure</span>
 <span class="n">reference_coordinates</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">asel</span><span class="o">=</span><span class="n">protein</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="c1"># make a reference structure (need to reshape into a 1-frame &quot;trajectory&quot;)</span>
 <span class="n">reference</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span>
@@ -428,8 +455,7 @@ protein):</p>
 with the averaged coordinates of the protein.  Now we need to fit the
 whole trajectory to the reference by minimizing the RMSD. We use
 <a class="reference internal" href="align.html#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.analysis.align.AlignTraj</span></code></a>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.align</span> <span class="k">import</span> <span class="n">AlignTraj</span>
-<span class="n">aligner</span> <span class="o">=</span> <span class="n">AlignTraj</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;protein and name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">aligner</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;protein and name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The trajectory is now fitted to the reference (the RMSD is stored as
@@ -476,7 +502,7 @@ giving RMSFs for each of the given atoms.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.rms.RMSF.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>progout=None</em>, <em>verbose=None</em>, <em>quiet=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSF.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>verbose=None</em>, <em>quiet=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSF.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform the analysis.</p>
 </dd></dl>
 

@@ -443,7 +443,9 @@
 <span class="sd">            which means that the trajectory would be read until the end.</span>
 <span class="sd">        step : int, optional</span>
 <span class="sd">            Step between frames to analyse, Default: None becomes 1.</span>
-
+<span class="sd">        verbose : bool (optional)</span>
+<span class="sd">             Show detailed progress of the calculation if set to ``True``; the</span>
+<span class="sd">             default is ``False``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">u</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Contacts</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">basekwargs</span><span class="p">)</span>

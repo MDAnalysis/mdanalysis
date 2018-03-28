@@ -111,6 +111,10 @@
 <span class="sd">    step : int (optional)</span>
 <span class="sd">          The step size through the trajectory in frames (default is</span>
 <span class="sd">          every frame)</span>
+<span class="sd">    verbose : bool (optional)</span>
+<span class="sd">          Show detailed progress of the calculation if set to ``True``; the</span>
+<span class="sd">          default is ``False``.</span>
+
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -128,6 +132,7 @@
 <span class="sd">    The `exclusion_block` keyword allows the masking of pairs from</span>
 <span class="sd">    within the same molecule.  For example, if there are 7 of each</span>
 <span class="sd">    atom in each molecule, the exclusion mask `(7, 7)` can be used.</span>
+
 
 <span class="sd">    .. versionadded:: 0.13.0</span>
 

@@ -168,16 +168,15 @@ is chosen [<code class="docutils literal"><span class="pre">None</span></code>]<
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><code class="xref py py-exc docutils literal"><span class="pre">FinishTimeException</span></code> – If the specified finish time precedes the specified start time or
-current time stamp of trajectory object.</li>
-<li><em>.. Note::</em> – Only a single helix is analyzed. Use the selection to specify the
-helix, e.g. with “name CA and resid 1:20” or use start=1, stop=20.</li>
-</ul>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">FinishTimeException</span></code> – If the specified finish time precedes the specified start time or
+current time stamp of trajectory object.</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>Only a single helix is analyzed. Use the selection to specify the helix,
+e.g. with “name CA and resid 1:20” or use start=1, stop=20.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.13.0: </span>New <cite>quiet</cite> keyword to silence frame progress output and most of the
 output that used to be printed to stdout is now logged to the logger
@@ -201,11 +200,6 @@ are directly obtained from the selection.</p>
 <p>Computed data are returned as a dict and also logged at level INFO to the
 logger <em>MDAnalysis.analysis.helanal</em>. A simple way to enable a logger is to
 use <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.start_logging" title="MDAnalysis.lib.log.start_logging"><code class="xref py py-func docutils literal"><span class="pre">start_logging()</span></code></a>.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Only a single helix is analyzed. Use the selection to specify
-the helix, e.g. with “name CA and resid 1:20”.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -240,6 +234,9 @@ is chosen [<code class="docutils literal"><span class="pre">None</span></code>]<
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>Only a single helix is analyzed. Use the selection to specify the
+helix, e.g. with “name CA and resid 1:20”.</p>
 <p class="rubric">Example</p>
 <p>Analyze helix 8 in AdK (PDB 4AKE); the standard logger is started and
 writes output to the file <code class="docutils literal"><span class="pre">MDAnalysis.log</span></code>:</p>

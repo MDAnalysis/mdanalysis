@@ -261,10 +261,10 @@
 <span class="sd">          If the specified finish time precedes the specified start time or</span>
 <span class="sd">          current time stamp of trajectory object.</span>
 
-<span class="sd">    .. Note::</span>
-
-<span class="sd">       Only a single helix is analyzed. Use the selection to specify the</span>
-<span class="sd">       helix, e.g. with &quot;name CA and resid 1:20&quot; or use start=1, stop=20.</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Only a single helix is analyzed. Use the selection to specify the helix,</span>
+<span class="sd">    e.g. with &quot;name CA and resid 1:20&quot; or use start=1, stop=20.</span>
 
 
 <span class="sd">    .. versionchanged:: 0.13.0</span>
@@ -533,9 +533,6 @@
 <span class="sd">    logger *MDAnalysis.analysis.helanal*. A simple way to enable a logger is to</span>
 <span class="sd">    use :func:`~MDAnalysis.lib.log.start_logging`.</span>
 
-<span class="sd">    .. Note:: Only a single helix is analyzed. Use the selection to specify</span>
-<span class="sd">              the helix, e.g. with &quot;name CA and resid 1:20&quot;.</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pdbfile : str</span>
@@ -558,6 +555,13 @@
 <span class="sd">        * Best fit tilt</span>
 <span class="sd">        * Rotation angles: local screw angles (per residue)</span>
 
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Only a single helix is analyzed. Use the selection to specify the</span>
+<span class="sd">    helix, e.g. with &quot;name CA and resid 1:20&quot;.</span>
+
+
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 <span class="sd">    Analyze helix 8 in AdK (PDB 4AKE); the standard logger is started and</span>
@@ -574,6 +578,7 @@
 <span class="sd">    .. versionchanged:: 0.16.0</span>
 <span class="sd">       Removed the `start` and `end` keywords for selecting residues because this can</span>
 <span class="sd">       be accomplished more transparently with `selection`.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">universe</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">)</span>

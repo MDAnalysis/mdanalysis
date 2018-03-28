@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>6.28. XDR based trajectory files — MDAnalysis.coordinates.XDR &#8212; MDAnalysis 0.17.1-dev documentation</title>
+    <title>6.7. GSD trajectory reader — MDAnalysis.coordinates.GSD &#8212; MDAnalysis 0.17.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -28,8 +28,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="7. Selection exporters" href="../selections_modules.html" />
-    <link rel="prev" title="6.27. ChainReader — MDAnalysis.coordinates.chain" href="chain.html" />
+    <link rel="next" title="6.8. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" />
+    <link rel="prev" title="6.6. GAMESS trajectory reader — MDAnalysis.coordinates.GMS" href="GMS.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -45,62 +45,43 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="module-MDAnalysis.coordinates.XDR"></span><div class="section" id="xdr-based-trajectory-files-mdanalysis-coordinates-xdr">
-<h1>6.28. XDR based trajectory files — <a class="reference internal" href="#module-MDAnalysis.coordinates.XDR" title="MDAnalysis.coordinates.XDR"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a><a class="headerlink" href="#xdr-based-trajectory-files-mdanalysis-coordinates-xdr" title="Permalink to this headline">¶</a></h1>
-<p>This module contains helper function and classes to read the XTC and TRR file
-formats.</p>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="XTC.html#module-MDAnalysis.coordinates.XTC" title="MDAnalysis.coordinates.XTC"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></dt>
-<dd>Read and write GROMACS XTC trajectory files.</dd>
-<dt><a class="reference internal" href="TRR.html#module-MDAnalysis.coordinates.TRR" title="MDAnalysis.coordinates.TRR"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></dt>
-<dd>Read and write GROMACS TRR trajectory files.</dd>
-<dt><a class="reference internal" href="../lib/formats/libmdaxdr.html#module-MDAnalysis.lib.formats.libmdaxdr" title="MDAnalysis.lib.formats.libmdaxdr"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></dt>
-<dd>Low level xdr format reader</dd>
-</dl>
-</div>
+  <span class="target" id="module-MDAnalysis.coordinates.GSD"></span><div class="section" id="gsd-trajectory-reader-mdanalysis-coordinates-gsd">
+<h1>6.7. GSD trajectory reader  — <a class="reference internal" href="#module-MDAnalysis.coordinates.GSD" title="MDAnalysis.coordinates.GSD"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a><a class="headerlink" href="#gsd-trajectory-reader-mdanalysis-coordinates-gsd" title="Permalink to this headline">¶</a></h1>
+<p>Class to read the GSD trajectory, output of <a class="reference external" href="http://codeblue.umich.edu/hoomd-blue/index.html">HOOMD-blue</a>. The GSD format
+specifies both the topology and the trajectory of the particles in the
+simulation. The topology is read by the
+<code class="xref py py-class docutils literal"><span class="pre">GSDParser</span></code> class.</p>
+<p>The GSD format was developed having in mind the possibility of changing number
+of particles, particle types, particle identities and changing topology.
+Currently this class has limited functionality, due to the fact that the number
+of particles and the topology are kept fixed in most MD simulations. The user
+will get an error only if at any time step the number of particles is detected
+to be different to the one that was set at the first time step. No check on
+changes in particle identity or topology is currently implemented.</p>
+<div class="section" id="classes">
+<h2>6.7.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.XDR.</code><code class="descname">XDRBaseReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=True</em>, <em>sub=None</em>, <em>refresh_offsets=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for libmdaxdr file formats xtc and trr</p>
-<p>This class handles integration of XDR based formats into MDAnalysis. The
-XTC and TRR classes only implement <cite>write_next_timestep</cite> and
-<cite>_frame_to_ts</cite>.</p>
-<p class="rubric" id="offsets-label">Notes</p>
-<p>XDR based readers store persistent offsets on disk. The offsets are used to
-enable access to random frames efficiently. These offsets will be generated
-automatically the  first time the  trajectory is opened.  Generally offsets
-are stored  in hidden  <cite>*_offsets.npz</cite> files.  Afterwards opening  the same
-file again is fast. It sometimes can happen that the stored offsets get out
-off sync with the trajectory they refer to. For this the offsets also store
-the number of atoms, size of the file and last modification time. If any of
-them change  the offsets are recalculated.  Writing of the offset  file can
-fail when the  directory where the trajectory file resides  is not writable
-or if the  disk is full. In this  case a warning message will  be shown but
-the offsets will nevertheless be used during the lifetime of the trajectory
-Reader. However, the  next time the trajectory is opened,  the offsets will
-have to be rebuilt again.</p>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.GSD.</code><code class="descname">GSDReader</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GSD.html#GSDReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reader for the GSD format.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – trajectory filename</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert units to MDAnalysis units</li>
-<li><strong>sub</strong> (<em>array_like</em><em> (</em><em>optional</em><em>)</em>) – <cite>sub</cite> is an array of indices to pick out the corresponding
-coordinates and load only them; this requires that the topology
-itself is that of the sub system.</li>
-<li><strong>refresh_offsets</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – force refresh of offsets</li>
 <li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – General reader arguments.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.17.0.</span></p>
+</div>
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.OtherWriter">
-<code class="descname">OtherWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.OtherWriter">
+<code class="descname">OtherWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a writer appropriate for <em>filename</em>.</p>
 <p>Sets the default keywords <em>start</em>, <em>step</em> and <em>dt</em> (if
 available). <em>n_atoms</em> is always set from <code class="xref py py-attr docutils literal"><span class="pre">Reader.n_atoms</span></code>.</p>
@@ -111,14 +92,14 @@ available). <em>n_atoms</em> is always set from <code class="xref py py-attr doc
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.Writer">
-<code class="descname">Writer</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.Writer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return writer for trajectory format</p>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.Writer">
+<code class="descname">Writer</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trajectory writer with the same properties as this trajectory.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.add_auxiliary">
-<code class="descname">add_auxiliary</code><span class="sig-paren">(</span><em>auxname</em>, <em>auxdata</em>, <em>format=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.add_auxiliary" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.add_auxiliary">
+<code class="descname">add_auxiliary</code><span class="sig-paren">(</span><em>auxname</em>, <em>auxdata</em>, <em>format=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.add_auxiliary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add auxiliary data to be read alongside trajectory.</p>
 <p>Auxiliary data may be any data timeseries from the trajectory additional
 to that read in by the trajectory reader. <em>auxdata</em> can be an
@@ -129,7 +110,7 @@ data/file format. An appropriate <cite>format</cite> may also be directly provid
 as a key word argument.</p>
 <p>On adding, the AuxReader is initially matched to the current timestep
 of the trajectory, and will be updated when the trajectory timestep
-changes (through a call to <a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.next" title="MDAnalysis.coordinates.XDR.XDRBaseReader.next"><code class="xref py py-meth docutils literal"><span class="pre">next()</span></code></a> or jumping timesteps with
+changes (through a call to <a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.next" title="MDAnalysis.coordinates.GSD.GSDReader.next"><code class="xref py py-meth docutils literal"><span class="pre">next()</span></code></a> or jumping timesteps with
 <code class="docutils literal"><span class="pre">trajectory[i]</span></code>).</p>
 <p>The representative value(s) of the auxiliary data for each timestep (as
 calculated by the <a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal"><span class="pre">AuxReader</span></code></a>) are
@@ -143,7 +124,7 @@ e.g. to add additional pull force data stored in pull-force.xvg:</p>
 as <code class="docutils literal"><span class="pre">u.trajectory.ts.aux.pull</span></code> or <code class="docutils literal"><span class="pre">u.trajectory.ts.aux['pull']</span></code>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.remove_auxiliary" title="MDAnalysis.coordinates.XDR.XDRBaseReader.remove_auxiliary"><code class="xref py py-meth docutils literal"><span class="pre">remove_auxiliary()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.remove_auxiliary" title="MDAnalysis.coordinates.GSD.GSDReader.remove_auxiliary"><code class="xref py py-meth docutils literal"><span class="pre">remove_auxiliary()</span></code></a></p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -153,14 +134,14 @@ the <a class="reference internal" href="../auxiliary/init.html#auxiliary-api"><s
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.aux_list">
-<code class="descname">aux_list</code><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.aux_list" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.aux_list">
+<code class="descname">aux_list</code><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.aux_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lists the names of added auxiliary data.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.check_slice_indices">
-<code class="descname">check_slice_indices</code><span class="sig-paren">(</span><em>start</em>, <em>stop</em>, <em>step</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.check_slice_indices" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.check_slice_indices">
+<code class="descname">check_slice_indices</code><span class="sig-paren">(</span><em>start</em>, <em>stop</em>, <em>step</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.check_slice_indices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check frame indices are valid and clip to fit trajectory.</p>
 <p>The usage follows standard Python conventions for <code class="xref py py-func docutils literal"><span class="pre">range()</span></code> but see
 the warning below.</p>
@@ -193,13 +174,13 @@ when passed in <code class="xref py py-func docutils literal"><span class="pre">
 in a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">slice</span></code></a> when <code class="docutils literal"><span class="pre">stop=None</span></code> and <code class="docutils literal"><span class="pre">step=-1</span></code></p>
 <p>This can be a problem for downstream processing of the output from this
 method. For example, slicing of trajectories is implemented by passing
-the values returned by <a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.check_slice_indices" title="MDAnalysis.coordinates.XDR.XDRBaseReader.check_slice_indices"><code class="xref py py-meth docutils literal"><span class="pre">check_slice_indices()</span></code></a> to <code class="xref py py-func docutils literal"><span class="pre">range()</span></code></p>
+the values returned by <a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.check_slice_indices" title="MDAnalysis.coordinates.GSD.GSDReader.check_slice_indices"><code class="xref py py-meth docutils literal"><span class="pre">check_slice_indices()</span></code></a> to <code class="xref py py-func docutils literal"><span class="pre">range()</span></code></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>and using them as the indices to randomly seek to. On the other hand,
 in <a class="reference internal" href="../analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.analysis.base.AnalysisBase</span></code></a> the values returned
-by <a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.check_slice_indices" title="MDAnalysis.coordinates.XDR.XDRBaseReader.check_slice_indices"><code class="xref py py-meth docutils literal"><span class="pre">check_slice_indices()</span></code></a> are used to splice the trajectory by
+by <a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.check_slice_indices" title="MDAnalysis.coordinates.GSD.GSDReader.check_slice_indices"><code class="xref py py-meth docutils literal"><span class="pre">check_slice_indices()</span></code></a> are used to splice the trajectory by
 creating a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">slice</span></code></a> instance</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 </pre></div>
@@ -213,14 +194,14 @@ creating a <a class="reference external" href="https://docs.python.org/3/library
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.close" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GSD.html#GSDReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>close reader</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.convert_forces_from_native">
-<code class="descname">convert_forces_from_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.convert_forces_from_native">
+<code class="descname">convert_forces_from_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of forces array <em>force</em> from native to base units</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -246,8 +227,8 @@ is avoided.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.convert_forces_to_native">
-<code class="descname">convert_forces_to_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.convert_forces_to_native">
+<code class="descname">convert_forces_to_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of force array <em>force</em> from base to native units.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -273,8 +254,8 @@ is avoided.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.convert_pos_from_native">
-<code class="descname">convert_pos_from_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.convert_pos_from_native">
+<code class="descname">convert_pos_from_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array x from native units to base units.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -303,8 +284,8 @@ returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.convert_pos_to_native">
-<code class="descname">convert_pos_to_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.convert_pos_to_native">
+<code class="descname">convert_pos_to_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -333,8 +314,8 @@ returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.convert_time_from_native">
-<code class="descname">convert_time_from_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.convert_time_from_native">
+<code class="descname">convert_time_from_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -365,8 +346,8 @@ returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.convert_time_to_native">
-<code class="descname">convert_time_to_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.convert_time_to_native">
+<code class="descname">convert_time_to_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -396,8 +377,8 @@ returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.convert_velocities_from_native">
-<code class="descname">convert_velocities_from_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.convert_velocities_from_native">
+<code class="descname">convert_velocities_from_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -423,8 +404,8 @@ is avoided.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.convert_velocities_to_native">
-<code class="descname">convert_velocities_to_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.convert_velocities_to_native">
+<code class="descname">convert_velocities_to_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -450,8 +431,8 @@ is avoided.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.copy" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return independent copy of this Reader.</p>
 <p>New Reader will have its own file handle and can seek/iterate
 independently of the original.</p>
@@ -460,21 +441,21 @@ the original Reader</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.dt">
-<code class="descname">dt</code><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.dt" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.dt">
+<code class="descname">dt</code><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.dt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time between two trajectory frames in picoseconds.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.frame">
-<code class="descname">frame</code><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.frame" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.frame">
+<code class="descname">frame</code><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Frame number of the current time step.</p>
 <p>This is a simple short cut to <code class="xref py py-attr docutils literal"><span class="pre">Timestep.frame</span></code>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.get_aux_attribute">
-<code class="descname">get_aux_attribute</code><span class="sig-paren">(</span><em>auxname</em>, <em>attrname</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.get_aux_attribute" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.get_aux_attribute">
+<code class="descname">get_aux_attribute</code><span class="sig-paren">(</span><em>auxname</em>, <em>attrname</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.get_aux_attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value of <em>attrname</em> from the auxiliary <em>auxname</em></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -490,13 +471,13 @@ the original Reader</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.set_aux_attribute" title="MDAnalysis.coordinates.XDR.XDRBaseReader.set_aux_attribute"><code class="xref py py-meth docutils literal"><span class="pre">set_aux_attribute()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.set_aux_attribute" title="MDAnalysis.coordinates.GSD.GSDReader.set_aux_attribute"><code class="xref py py-meth docutils literal"><span class="pre">set_aux_attribute()</span></code></a></p>
 </div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.get_aux_descriptions">
-<code class="descname">get_aux_descriptions</code><span class="sig-paren">(</span><em>auxnames=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.get_aux_descriptions" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.get_aux_descriptions">
+<code class="descname">get_aux_descriptions</code><span class="sig-paren">(</span><em>auxnames=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.get_aux_descriptions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get descriptions to allow reloading the specified auxiliaries.</p>
 <p>If no auxnames are provided, defaults to the full list of added
 auxiliaries.</p>
@@ -525,19 +506,19 @@ second trajectory:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.iter_as_aux">
-<code class="descname">iter_as_aux</code><span class="sig-paren">(</span><em>auxname</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.iter_as_aux" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.iter_as_aux">
+<code class="descname">iter_as_aux</code><span class="sig-paren">(</span><em>auxname</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.iter_as_aux" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate through timesteps for which there is at least one assigned
 step from the auxiliary <em>auxname</em> within the cutoff specified in <em>auxname</em>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.next_as_aux" title="MDAnalysis.coordinates.XDR.XDRBaseReader.next_as_aux"><code class="xref py py-meth docutils literal"><span class="pre">next_as_aux()</span></code></a>, <a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.iter_auxiliary" title="MDAnalysis.coordinates.XDR.XDRBaseReader.iter_auxiliary"><code class="xref py py-meth docutils literal"><span class="pre">iter_auxiliary()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.next_as_aux" title="MDAnalysis.coordinates.GSD.GSDReader.next_as_aux"><code class="xref py py-meth docutils literal"><span class="pre">next_as_aux()</span></code></a>, <a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.iter_auxiliary" title="MDAnalysis.coordinates.GSD.GSDReader.iter_auxiliary"><code class="xref py py-meth docutils literal"><span class="pre">iter_auxiliary()</span></code></a></p>
 </div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.iter_auxiliary">
-<code class="descname">iter_auxiliary</code><span class="sig-paren">(</span><em>auxname</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>selected=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.iter_auxiliary" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.iter_auxiliary">
+<code class="descname">iter_auxiliary</code><span class="sig-paren">(</span><em>auxname</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>selected=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.iter_auxiliary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate through the auxiliary <em>auxname</em> independently of the trajectory.</p>
 <p>Will iterate over the specified steps of the auxiliary (defaults to all
 steps). Allows to access all values in an auxiliary, including those out
@@ -562,25 +543,25 @@ through the trajectory.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.iter_as_aux" title="MDAnalysis.coordinates.XDR.XDRBaseReader.iter_as_aux"><code class="xref py py-meth docutils literal"><span class="pre">iter_as_aux()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.iter_as_aux" title="MDAnalysis.coordinates.GSD.GSDReader.iter_as_aux"><code class="xref py py-meth docutils literal"><span class="pre">iter_as_aux()</span></code></a></p>
 </div>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.n_frames">
-<code class="descname">n_frames</code><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.n_frames" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.n_frames">
+<code class="descname">n_frames</code><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.n_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>number of frames in trajectory</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.next">
-<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.next" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.next" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forward one step to next frame.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.next_as_aux">
-<code class="descname">next_as_aux</code><span class="sig-paren">(</span><em>auxname</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.next_as_aux" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.next_as_aux">
+<code class="descname">next_as_aux</code><span class="sig-paren">(</span><em>auxname</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.next_as_aux" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move to the next timestep for which there is at least one step from
 the auxiliary <em>auxname</em> within the cutoff specified in <em>auxname</em>.</p>
 <p>This allows progression through the trajectory without encountering
@@ -590,28 +571,52 @@ auxiliary data).</p>
 (<code class="docutils literal"><span class="pre">auxiliary.dt</span> <span class="pre">&gt;</span> <span class="pre">trajectory.dt</span></code>), this allows progression at the
 auxiliary pace (rounded to nearest timestep); while if the auxiliary
 steps are more frequent, this will work the same as calling
-<a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.next" title="MDAnalysis.coordinates.XDR.XDRBaseReader.next"><code class="xref py py-meth docutils literal"><span class="pre">next()</span></code></a>.</p>
+<a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.next" title="MDAnalysis.coordinates.GSD.GSDReader.next"><code class="xref py py-meth docutils literal"><span class="pre">next()</span></code></a>.</p>
 <p>See the <a class="reference internal" href="../auxiliary/init.html#auxiliary-api"><span class="std std-ref">Auxiliary API</span></a>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.iter_as_aux" title="MDAnalysis.coordinates.XDR.XDRBaseReader.iter_as_aux"><code class="xref py py-meth docutils literal"><span class="pre">iter_as_aux()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.iter_as_aux" title="MDAnalysis.coordinates.GSD.GSDReader.iter_as_aux"><code class="xref py py-meth docutils literal"><span class="pre">iter_as_aux()</span></code></a></p>
 </div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.remove_auxiliary">
-<code class="descname">remove_auxiliary</code><span class="sig-paren">(</span><em>auxname</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.remove_auxiliary" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.open_trajectory">
+<code class="descname">open_trajectory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GSD.html#GSDReader.open_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.open_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>opens the trajectory file using gsd.hoomd module</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.parse_n_atoms">
+<code class="descname">parse_n_atoms</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.parse_n_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the coordinate file and deduce the number of atoms</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>n_atoms</strong> – the number of atoms in the coordinate file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)">int</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></code></a> – when the number of atoms can’t be deduced</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.remove_auxiliary">
+<code class="descname">remove_auxiliary</code><span class="sig-paren">(</span><em>auxname</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.remove_auxiliary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear data and close the <a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal"><span class="pre">AuxReader</span></code></a>
 for the auxiliary <em>auxname</em>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.add_auxiliary" title="MDAnalysis.coordinates.XDR.XDRBaseReader.add_auxiliary"><code class="xref py py-meth docutils literal"><span class="pre">add_auxiliary()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.add_auxiliary" title="MDAnalysis.coordinates.GSD.GSDReader.add_auxiliary"><code class="xref py py-meth docutils literal"><span class="pre">add_auxiliary()</span></code></a></p>
 </div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.rename_aux">
-<code class="descname">rename_aux</code><span class="sig-paren">(</span><em>auxname</em>, <em>new</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.rename_aux" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.rename_aux">
+<code class="descname">rename_aux</code><span class="sig-paren">(</span><em>auxname</em>, <em>new</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.rename_aux" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the name of the auxiliary <em>auxname</em> to <em>new</em>.</p>
 <p>Provided there is not already an auxiliary named <em>new</em>, the auxiliary
 name will be changed in ts.aux namespace, the trajectory’s
@@ -634,14 +639,14 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.rewind">
-<code class="descname">rewind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.rewind" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.rewind">
+<code class="descname">rewind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.rewind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Position at beginning of trajectory</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.set_aux_attribute">
-<code class="descname">set_aux_attribute</code><span class="sig-paren">(</span><em>auxname</em>, <em>attrname</em>, <em>new</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.set_aux_attribute" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.set_aux_attribute">
+<code class="descname">set_aux_attribute</code><span class="sig-paren">(</span><em>auxname</em>, <em>attrname</em>, <em>new</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.set_aux_attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value of <em>attrname</em> in the auxiliary <em>auxname</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -658,21 +663,21 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.get_aux_attribute" title="MDAnalysis.coordinates.XDR.XDRBaseReader.get_aux_attribute"><code class="xref py py-meth docutils literal"><span class="pre">get_aux_attribute()</span></code></a>, <a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.rename_aux" title="MDAnalysis.coordinates.XDR.XDRBaseReader.rename_aux"><code class="xref py py-meth docutils literal"><span class="pre">rename_aux()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.get_aux_attribute" title="MDAnalysis.coordinates.GSD.GSDReader.get_aux_attribute"><code class="xref py py-meth docutils literal"><span class="pre">get_aux_attribute()</span></code></a>, <a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDReader.rename_aux" title="MDAnalysis.coordinates.GSD.GSDReader.rename_aux"><code class="xref py py-meth docutils literal"><span class="pre">rename_aux()</span></code></a></p>
 </div>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.time">
-<code class="descname">time</code><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.time" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.time">
+<code class="descname">time</code><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time of the current frame in MDAnalysis time units (typically ps).</p>
 <p>This is either read straight from the Timestep, or calculated as
 time = <code class="xref py py-attr docutils literal"><span class="pre">Timestep.frame</span></code> * <code class="xref py py-attr docutils literal"><span class="pre">Timestep.dt</span></code></p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseReader.totaltime">
-<code class="descname">totaltime</code><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.totaltime" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.GSD.GSDReader.totaltime">
+<code class="descname">totaltime</code><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.totaltime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Total length of the trajectory</p>
 <p>The time is calculated as <code class="docutils literal"><span class="pre">(n_frames</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">dt</span></code>, i.e., we assume that
 the first frame no time as elapsed. Thus, a trajectory with two frames will
@@ -682,361 +687,7 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.XDR.</code><code class="descname">XDRBaseWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms</em>, <em>convert_units=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for libmdaxdr file formats xtc and trr</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – filename of trajectory</li>
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – number of atoms to be written</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert from MDAnalysis units to format specific units</li>
-<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – General writer arguments</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>close trajectory</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_dimensions_to_unitcell">
-<code class="descname">convert_dimensions_to_unitcell</code><span class="sig-paren">(</span><em>ts</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read dimensions from timestep <em>ts</em> and return appropriate unitcell.</p>
-<p>The default is to return <code class="docutils literal"><span class="pre">[A,B,C,alpha,beta,gamma]</span></code>; if this
-is not appropriate then this method has to be overriden.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_forces_from_native">
-<code class="descname">convert_forces_from_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conversion of forces array <em>force</em> from native to base units</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>force</strong> (<em>array_like</em>) – Forces to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p>By default, the input <em>force</em> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-<div class="last versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
 </div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_forces_to_native">
-<code class="descname">convert_forces_to_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conversion of force array <em>force</em> from base to native units.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>force</strong> (<em>array_like</em>) – Forces to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <cite>force</cite> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_pos_from_native">
-<code class="descname">convert_pos_from_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conversion of coordinate array x from native units to base units.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x</strong> (<em>array_like</em>) – Positions to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <cite>x</cite> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
-modified copy is returned <em>unless</em> no conversion takes
-place, in which case the reference to the unmodified <cite>x</cite> is
-returned.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_pos_to_native">
-<code class="descname">convert_pos_to_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x</strong> (<em>array_like</em>) – Positions to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <cite>x</cite> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
-modified copy is returned <em>unless</em> no conversion takes
-place, in which case the reference to the unmodified <cite>x</cite> is
-returned.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_time_from_native">
-<code class="descname">convert_time_from_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert time <em>t</em> from native units to base units.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>t</strong> (<em>array_like</em>) – Time values to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <cite>t</cite> is modified in place and also returned
-(although note that scalar values <cite>t</cite> are passed by value in Python and
-hence an in-place modification has no effect on the caller.)  In-place
-operations improve performance because allocating new arrays is
-avoided.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
-modified copy is returned <em>unless</em> no conversion takes
-place, in which case the reference to the unmodified <cite>x</cite> is
-returned.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_time_to_native">
-<code class="descname">convert_time_to_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert time <em>t</em> from base units to native units.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>t</strong> (<em>array_like</em>) – Time values to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p>By default, the input <em>t</em> is modified in place and also
-returned. (Also note that scalar values <em>t</em> are passed by
-value in Python and hence an in-place modification has no
-effect on the caller.)</p>
-<div class="last versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
-modified copy is returned <em>unless</em> no conversion takes
-place, in which case the reference to the unmodified <em>x</em> is
-returned.</p>
-</div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_velocities_from_native">
-<code class="descname">convert_velocities_from_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>v</strong> (<em>array_like</em>) – Velocities to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <em>v</em> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_velocities_to_native">
-<code class="descname">convert_velocities_to_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>v</strong> (<em>array_like</em>) – Velocities to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <cite>v</cite> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.has_valid_coordinates">
-<code class="descname">has_valid_coordinates</code><span class="sig-paren">(</span><em>criteria</em>, <em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.has_valid_coordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns <code class="docutils literal"><span class="pre">True</span></code> if all values are within limit values of their formats.</p>
-<p>Due to rounding, the test is asymmetric (and <em>min</em> is supposed to be negative):</p>
-<blockquote>
-<div>min &lt; x &lt;= max</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>criteria</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – dictionary containing the <em>max</em> and <em>min</em> values in native units</li>
-<li><strong>x</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> coordinates of atoms selected to be written out</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write current timestep, using the supplied <cite>obj</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> or a <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code>) – write coordinate information associate with <cite>obj</cite></td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The size of the <cite>obj</cite> must be the same as the number of atoms provided
-when setting up the trajectory.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.coordinates.XDR.offsets_filename">
-<code class="descclassname">MDAnalysis.coordinates.XDR.</code><code class="descname">offsets_filename</code><span class="sig-paren">(</span><em>filename</em>, <em>ending='npz'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#offsets_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.offsets_filename" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return offset filename for XDR files. For this the filename is appended
-with <cite>_offsets.{ending}</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – filename of trajectory</li>
-<li><strong>ending</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – fileending of offsets file</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>offset_filename</strong></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)">str</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.coordinates.XDR.read_numpy_offsets">
-<code class="descclassname">MDAnalysis.coordinates.XDR.</code><code class="descname">read_numpy_offsets</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#read_numpy_offsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.read_numpy_offsets" title="Permalink to this definition">¶</a></dt>
-<dd><p>read offsets into dictionary.</p>
-<p>This assume offsets have been saved using numpy</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – filename of offsets</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>offsets</strong> – dictionary of offsets information</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </div>
 
 
@@ -1080,7 +731,10 @@ with <cite>_offsets.{ending}</cite>.</p>
 <li class="toctree-l2"><a class="reference internal" href="DLPoly.html">6.4. DL_Poly format reader <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="DMS.html">6.5. DESRES file format — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="GMS.html">6.6. GAMESS trajectory reader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="GSD.html">6.7. GSD trajectory reader  — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.7. GSD trajectory reader  — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#classes">6.7.1. Classes</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="GRO.html">6.8. GRO file format — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.9. INPCRD structure files in MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">6.10. LAMMPS DCD trajectory and DATA I/O  — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
@@ -1101,7 +755,7 @@ with <cite>_offsets.{ending}</cite>.</p>
 <li class="toctree-l2"><a class="reference internal" href="base.html">6.25. Base classes — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">6.26. Common functions for coordinate reading — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="chain.html">6.27. ChainReader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.28. XDR based trajectory files — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.28. XDR based trajectory files — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">7. Selection exporters</a></li>
@@ -1120,8 +774,8 @@ with <cite>_offsets.{ending}</cite>.</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../coordinates_modules.html">6. Coordinates modules</a><ul>
-      <li>Previous: <a href="chain.html" title="previous chapter">6.27. ChainReader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-      <li>Next: <a href="../selections_modules.html" title="next chapter">7. Selection exporters</a></li>
+      <li>Previous: <a href="GMS.html" title="previous chapter">6.6. GAMESS trajectory reader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
+      <li>Next: <a href="GRO.html" title="next chapter">6.8. GRO file format — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -1148,7 +802,7 @@ with <cite>_offsets.{ending}</cite>.</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="../../_sources/documentation_pages/coordinates/XDR.rst.txt"
+      <a href="../../_sources/documentation_pages/coordinates/GSD.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

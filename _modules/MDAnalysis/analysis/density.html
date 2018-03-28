@@ -83,16 +83,30 @@
 <span class="sd">Generating a density from a MD trajectory</span>
 <span class="sd">-----------------------------------------</span>
 
+<span class="sd">A common use case is to analyze the solvent density around a protein of</span>
+<span class="sd">interest. The density is calculated with :func:`density_from_Universe` in the</span>
+<span class="sd">fixed coordinate system of the simulation unit cell. It is therefore necessary</span>
+<span class="sd">to orient and fix the protein with respect to the box coordinate system. In</span>
+<span class="sd">practice this means centering and superimposing the protein, frame by frame, on</span>
+<span class="sd">a reference structure and translating and rotating all other components of the</span>
+<span class="sd">simulation with the protein. In this way, the solvent will appear in the</span>
+<span class="sd">reference frame of the protein.</span>
+
 <span class="sd">An input trajectory must</span>
 
 <span class="sd">1. have been centered on the protein of interest;</span>
 <span class="sd">2. have all molecules made whole that have been broken across periodic</span>
-<span class="sd">   boundaries;</span>
+<span class="sd">   boundaries [#pbc]_;</span>
 <span class="sd">3. have the solvent molecules remapped so that they are closest to the</span>
-<span class="sd">   solute (this is important when using funky unit cells such as</span>
-<span class="sd">   a dodecahedron or a truncated octahedron).</span>
+<span class="sd">   solute (this is important when using triclinic unit cells such as</span>
+<span class="sd">   a dodecahedron or a truncated octahedron) [#pbc]_.</span>
+<span class="sd">4. have a fixed frame of reference; for instance, by superimposing a protein</span>
+<span class="sd">   on a reference structure so that one can study the solvent density around</span>
+<span class="sd">   it [#fit]_.</span>
 
-<span class="sd">To generate the density of water molecules around a protein::</span>
+<span class="sd">To generate the density of water molecules around a protein (assuming that the</span>
+<span class="sd">trajectory is already appropriately treated for periodic boundary artifacts and</span>
+<span class="sd">is suitably superimposed to provide a fixed reference frame) [#testraj]_ ::</span>
 
 <span class="sd">  from MDAnalysis.analysis.density import density_from_Universe</span>
 <span class="sd">  u = Universe(TPR, XTC)</span>
@@ -144,6 +158,40 @@
 <span class="sd">.. autofunction:: notwithin_coordinates_factory</span>
 
 
+<span class="sd">.. rubric:: Footnotes</span>
+
+<span class="sd">.. [#pbc] Making molecules whole can be accomplished with the</span>
+<span class="sd">          :meth:`MDAnalysis.core.groups.AtomGroup.wrap` of</span>
+<span class="sd">          :attr:`Universe.atoms` (use ``compound=&quot;fragments&quot;``).</span>
+
+<span class="sd">          When using, for instance, the Gromacs_ command `gmx trjconv`_</span>
+
+<span class="sd">          .. code-block:: bash</span>
+
+<span class="sd">             gmx trjconv -pbc mol -center -ur compact</span>
+
+<span class="sd">          one can make the molecules whole ``-pbc whole``, center it on a group</span>
+<span class="sd">          (``-center``), and also pack all molecules in a compact unitcell</span>
+<span class="sd">          representation, which can be useful for density generation.</span>
+
+<span class="sd">.. [#fit] Superposition can be performed with</span>
+<span class="sd">          :class:`MDAnalysis.analysis.align.AlignTraj`.</span>
+
+<span class="sd">          The Gromacs_ command `gmx trjconv`_</span>
+
+<span class="sd">          .. code-block:: bash</span>
+
+<span class="sd">             gmx trjconv -fit rot+trans</span>
+
+<span class="sd">          will also accomplish such a superposition. Note that the fitting has</span>
+<span class="sd">          to be done in a *separate* step from the treatment of the periodic</span>
+<span class="sd">          boundaries [#pbc]_.</span>
+
+<span class="sd">.. [#testraj] Note that the trajectory in the example (`XTC`) is *not* properly</span>
+<span class="sd">          made whole and fitted to a reference structure; these steps were</span>
+<span class="sd">          omitted to clearly show the steps necessary for the actual density</span>
+<span class="sd">          calculation.</span>
+
 <span class="sd">.. Links</span>
 <span class="sd">.. -----</span>
 
@@ -151,6 +199,8 @@
 <span class="sd">.. _VMD:   http://www.ks.uiuc.edu/Research/vmd/</span>
 <span class="sd">.. _Chimera: https://www.cgl.ucsf.edu/chimera/</span>
 <span class="sd">.. _PyMOL: http://www.pymol.org/</span>
+<span class="sd">.. _Gromacs: http://www.gromacs.org</span>
+<span class="sd">.. _`gmx trjconv`: http://manual.gromacs.org/programs/gmx-trjconv.html</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
