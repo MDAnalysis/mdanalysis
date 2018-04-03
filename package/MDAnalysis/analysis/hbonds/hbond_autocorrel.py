@@ -484,7 +484,7 @@ class HydrogenBondAutoCorrel(object):
             if within_bounds(p):
                 return y - self._my_solve(x, *p)
             else:
-                return 100000
+                return np.full_like(y, 100000)
 
         def double(x, A1, tau1, tau2):
             """ Sum of two exponential functions """
