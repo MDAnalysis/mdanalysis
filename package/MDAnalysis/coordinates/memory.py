@@ -244,20 +244,15 @@ class MemoryReader(base.ProtoReader):
         dimensions: [A, B, C, alpha, beta, gamma] (optional)
             unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
             lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
-            angles are in degrees.
+            angles are in degrees. If the unit cell dimensions vary with time,
+            then they can be provided as a 2D array whith each row
+            corresponding to one frame.
         dt: float (optional)
             The time difference between frames (ps).  If :attr:`time`
             is set, then `dt` will be ignored.
         filename: string (optional)
             The name of the file from which this instance is created. Set to ``None``
             when created from an array
-
-        Note
-        ----
-        At the moment, only a fixed `dimension` is supported, i.e., the same
-        unit cell for all frames in `coordinate_array`. See issue `#1041`_.
-
-        .. _`#1041`: https://github.com/MDAnalysis/mdanalysis/issues/1041
 
         """
 
@@ -278,10 +273,27 @@ class MemoryReader(base.ProtoReader):
                                  "array ({})"
                                  .format(provided_n_atoms, self.n_atoms))
 
+        self._dimensions_array = np.asanyarray(dimensions)
+        if self._dimensions_array is not None:
+            if (self._dimensions_array.ndim == 1
+                    and self._dimensions_array.shape[0] != 6):
+                raise ValueError('The *dimensions* array must be formated as '
+                                 '[A B C alpha beta gamma] but your dimensions '
+                                 'have {} elements.'
+                                 .format(self._dimensions_array.size))
+            if self._dimensions_array.ndim > 1:
+                if self._dimensions_array.shape[0] != self.n_frames:
+                    raise ValueError('The *dimensions* array does not have '
+                                     'the same number of frames as the '
+                                     'positions: {} dimensions frame but '
+                                     '{} positions frame.'
+                                     .format(self._dimensions_array.shape[0],
+                                             self.n_frames))
+                if self._dimensions_array.shape[1] != 6:
+                    raise ValueError('The dimensions for each frame must be '
+                                     'of the form [A B C alpha beta gamma].')
         self.ts = self._Timestep(self.n_atoms, **kwargs)
         self.ts.dt = dt
-        if dimensions is not None:
-            self.ts.dimensions = dimensions
         self.ts.frame = -1
         self.ts.time = -1
         self._read_next_timestep()
@@ -355,7 +367,7 @@ class MemoryReader(base.ProtoReader):
         self.ts.frame = -1
         self.ts.time = -1
 
-    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc', format=None):
+    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc', format=None, dimensions=False):
         """Return a subset of coordinate data for an AtomGroup in desired
         column order/format. If no selection is given, it will return a view of
         the underlying array, while a copy is returned otherwise.
@@ -426,11 +438,19 @@ class MemoryReader(base.ProtoReader):
         #   1) asel is None
         #   2) asel corresponds to the selection of all atoms.
         array = array[basic_slice]
-        if (asel is None or asel is asel.universe.atoms):
-            return array
-        else:
+        if not (asel is None or asel is asel.universe.atoms):
             # If selection is specified, return a copy
-            return array.take(asel.indices, a_index)
+            array = array.take(asel.indices, a_index)
+
+        if dimensions:
+            if self.dim_array.ndim != 1:
+                dim = self._dimensions_array[basic_slice]
+            else:
+                dim = np.ones((len(array), 6)) * self._dimensions_array
+
+            return array, dim
+        else:
+            return array
 
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""
@@ -445,6 +465,11 @@ class MemoryReader(base.ProtoReader):
                        [self.ts.frame] +
                        [slice(None)]*(2-f_index))
         ts.positions = self.coordinate_array[basic_slice]
+        if self._dimensions_array is not None:
+            if len(self._dimensions_array) == 1:
+                ts.dimensions = self._dimensions_array
+            else:
+                ts.dimensions = self._dimensions_array[self.ts.frame]
 
         ts.time = self.ts.frame*self.dt
         return ts
