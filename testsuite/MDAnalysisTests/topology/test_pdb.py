@@ -21,6 +21,8 @@
 #
 from __future__ import absolute_import
 
+from six.moves import StringIO
+
 import pytest
 from numpy.testing import assert_equal
 import MDAnalysis as mda
@@ -160,3 +162,24 @@ def test_PDB_record_types():
 
     assert_equal(u.atoms[10:20].record_types, 'ATOM')
     assert_equal(u.atoms[271:].record_types, 'HETATM')
+
+
+PDB_noresid = """\
+REMARK For testing reading of CRYST
+REMARK This has MODELs then CRYST entries
+CRYST1   80.000   80.017   80.017  90.00  90.00  90.00 P 1           1
+MODEL        1
+ATOM      1  H2  TIP3           10.000  44.891  14.267  1.00  0.00      TIP3
+ATOM      2  OH2 TIP3           67.275  48.893  23.568  1.00  0.00      TIP3
+ATOM      3  H1  TIP3           66.641  48.181  23.485  1.00  0.00      TIP3
+ATOM      4  H2  TIP3           66.986  49.547  22.931  1.00  0.00      TIP3
+ENDMDL
+"""
+
+def test_PDB_no_resid():
+    u = mda.Universe(StringIO(PDB_noresid), format='PDB')
+
+    assert len(u.atoms) == 4
+    assert len(u.residues) == 1
+    # should have default resid of 1
+    assert u.residues[0].resid == 1
