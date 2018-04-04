@@ -61,6 +61,7 @@ Fixes
     writing DCD files; now istart is correctly interpreted when reading and
     when writing, istart=None will set it to the CHARMM default nsavc but the
     default is istart=0, which will make the DCD start at frame 0 (Issue #1819)
+ *  Can now parse PDB files without resids (Issue #1854)
 
 Changes
   * scipy >= 1.0.0 is now required (issue #1775 because of PR #1758)

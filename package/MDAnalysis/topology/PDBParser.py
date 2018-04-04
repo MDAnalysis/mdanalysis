@@ -187,7 +187,6 @@ class PDBParser(TopologyReaderBase):
                         resid = int(line[22:27])
                     else:
                         resid = int(line[22:26])
-                        icodes.append(line[26:27].strip())
                         # Wrapping
                         while resid - resid_prev < -5000:
                             resid += 10000
@@ -196,8 +195,10 @@ class PDBParser(TopologyReaderBase):
                     warnings.warn("PDB file is missing resid information.  "
                                   "Defaulted to '1'")
                     resid = 1
+                    icode = ''
                 finally:
                     resids.append(resid)
+                    icodes.append(line[26:27].strip())
 
                 occupancies.append(float_or_default(line[54:60], 0.0))
                 tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
