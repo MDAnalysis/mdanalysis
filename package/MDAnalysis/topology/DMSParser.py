@@ -24,13 +24,6 @@
 DESRES Molecular Structure file format topology parser
 ======================================================
 
-Classes to read a topology from a DESRES_ Molecular Structure file
-format (DMS_) coordinate files (as used by the Desmond_ MD package).
-
-.. _DESRES: http://www.deshawresearch.com
-.. _Desmond: http://www.deshawresearch.com/resources_desmond.html
-.. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
-
 Classes
 -------
 
