@@ -25,16 +25,6 @@
 PDBQT structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.PDBQT`
 ===========================================================================
 
-MDAnalysis reads coordinates from PDBQT_ files and additional optional
-data such as B-factors, partial charge and AutoDock_ atom types.  It
-is also possible to substitute a PDBQT file for a PSF file in order to
-define the list of atoms (but no connectivity information will be
-available in this case).
-
-.. _PDBQT:
-   http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
-.. _AutoDock:
-   http://autodock.scripps.edu/
 """
 
 from __future__ import absolute_import

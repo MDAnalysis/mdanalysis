@@ -24,19 +24,6 @@
 PDBQT topology parser
 =====================
 
-Use a PDBQT_ file to build a minimum internal structure representation (list of
-atoms), including AutoDock_ atom types (stored as :attr:`Atom.type`) and
-partial charges (:attr:`Atom.charge`).
-
-* Reads a PDBQT file line by line and does not require sequential atom numbering.
-* Multi-model PDBQT files are not supported.
-
-Notes
------
-Only reads atoms and their names; connectivity is not
-deduced. Masses are guessed and set to 0 if unknown.
-
-
 See Also
 --------
 `MDAnalysis.coordinates.PDBQT`
