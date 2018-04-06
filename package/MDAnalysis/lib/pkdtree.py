@@ -34,6 +34,14 @@ import itertools
 import numpy as np
 from Bio.KDTree import _CKDTree
 
+# Bio 1.71 API different from previous :(
+from distutils import version
+import Bio
+_NEW_BIO_KDTREE = version.LooseVersion(Bio.__version__) >= version.LooseVersion('1.7.1')
+del Bio
+del version
+
+
 from MDAnalysis.lib.distances import _box_check, _check_array, apply_PBC
 from MDAnalysis.lib.mdamath import norm, triclinic_vectors, triclinic_box
 
@@ -215,7 +223,15 @@ class PeriodicKDTree(object):
         for c in itertools.chain(wrapped_centers,
                                  self.find_images(wrapped_centers, radius)):
             self.kdt.search_center_radius(c, radius)
-            new_indices = self.kdt.get_indices()  # returns None or np.array
+            if _NEW_BIO_KDTREE:
+                n = self.kdt.get_count()
+                if not n:
+                    new_indices = None
+                else:
+                    new_indices = np.empty(n, int)
+                    self.kdt.get_indices(new_indices)
+            else:
+                new_indices = self.kdt.get_indices()  # returns None or np.array
             if new_indices is not None:
                 self._indices.update(new_indices)
         self._indices = sorted(list(self._indices))
