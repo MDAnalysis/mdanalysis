@@ -84,7 +84,7 @@ class PQRParser(TopologyReaderBase):
      - Segids
 
     Guesses the following:
-     - atomtypes
+     - atomtypes (if not present, Gromacs generated PQR files have these)
      - masses
 
     .. versionchanged:: 0.9.0
@@ -94,7 +94,9 @@ class PQRParser(TopologyReaderBase):
        Now reads insertion codes and splits into new residues around these
     .. versionchanged:: 0.17.1
        Added parsing of Record types
-
+    .. versionchanged:: 0.17.1
+       Can now read PQR files from Gromacs, these provide atom type as last column
+       but don't have segids
     """
     format = 'PQR'
 
