@@ -487,7 +487,7 @@ if __name__ == '__main__':
           packages=find_packages(),
           ext_modules=exts,
           classifiers=CLASSIFIERS,
-          requires=['numpy (>=1.10.4)', 'biopython', 'mmtf (>=1.0.0)',
+          requires=['numpy (>=1.10.4)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
                     'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)'],
           # all standard requirements are available through PyPi and
@@ -498,7 +498,7 @@ if __name__ == '__main__':
           install_requires=[
               'gsd>=1.4.0',
               'numpy>=1.10.4',
-              'biopython>=1.59',
+              'biopython>=1.71',
               'networkx>=1.0',
               'GridDataFormats>=0.4.0',
               'six>=1.4.0',
