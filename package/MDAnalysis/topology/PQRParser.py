@@ -99,6 +99,34 @@ class PQRParser(TopologyReaderBase):
     """
     format = 'PQR'
 
+    @staticmethod
+    def guess_flavour(line):
+        """Guess which variant of PQR format this line is
+
+        Parameters
+        ----------
+        line : str
+          entire line of PQR file starting with ATOM/HETATM
+
+        Returns
+        -------
+        flavour : str
+          ORIGINAL / GROMACS / NO_CHAINID
+
+        .. versionadded:: 0.17.1
+        """
+        fields = line.split()
+        if len(fields) == 11:
+            try:
+                float(fields[-1])
+            except ValueError:
+                flavour = 'GROMACS'
+            else:
+                flavour = 'ORIGINAL'
+        else:
+            flavour = 'NO_CHAINID'
+        return flavour
+
     def parse(self, **kwargs):
         """Parse atom information from PQR file *filename*.
 
@@ -126,15 +154,7 @@ class PQRParser(TopologyReaderBase):
                 fields = line.split()
 
                 if flavour is None:
-                    if len(fields) == 11:
-                        try:
-                            float(fields[-1])
-                        except ValueError:
-                            flavour = 'GROMACS'
-                        else:
-                            flavour = 'ORIGINAL'
-                    else:
-                        flavour = 'NO_CHAINID'
+                    flavour = self.guess_flavour(line)
                 if flavour == 'ORIGINAL':
                     (recordName, serial, name, resName,
                      chainID, resSeq, x, y, z, charge,

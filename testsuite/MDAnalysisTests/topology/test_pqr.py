@@ -22,7 +22,7 @@
 from __future__ import absolute_import
 
 from six.moves import StringIO
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_almost_equal
 import pytest
 import MDAnalysis as mda
 
@@ -93,4 +93,4 @@ def test_gromacs_flavour():
     assert u.atoms[0].radius == pytest.approx(1.48)
     assert u.atoms[0].charge == pytest.approx(-0.67)
     # coordinatey things
-    assert_equal(u.atoms[0].position, [15.710, 17.670, 23.340])
+    assert_almost_equal(u.atoms[0].position, [15.710, 17.670, 23.340], decimal=4)

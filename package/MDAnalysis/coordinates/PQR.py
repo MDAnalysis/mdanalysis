@@ -121,15 +121,29 @@ class PQRReader(base.SingleFrameReaderBase):
     format = 'PQR'
     units = {'time': None, 'length': 'Angstrom'}
 
+    # how to slice fields[x:y] to grab coordinates
+    _SLICE_INDICES = {
+        'ORIGINAL': (-5, -2),
+        'NO_CHAINID': (-5, -2),
+        'GROMACS': (-6, -3),
+    }
+
     def _read_first_frame(self):
+        from ..topology.PQRParser import PQRParser
+        flavour = None
+
         coords = []
         unitcell = np.zeros(6, dtype=np.float32)
         with util.openany(self.filename) as pqrfile:
             for line in pqrfile:
                 if line.startswith(('ATOM', 'HETATM')):
+                    if flavour is None:
+                        flavour = PQRParser.guess_flavour(line)
+                        x, y = self._SLICE_INDICES[flavour]
+
                     fields = line.split()
                     # convert all entries at the end once for optimal speed
-                    coords.append(fields[-5:-2])
+                    coords.append(fields[x:y])
 
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(
