@@ -23,7 +23,7 @@ from __future__ import absolute_import
 
 from six.moves import StringIO
 from numpy.testing import assert_equal
-
+import pytest
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -86,7 +86,11 @@ def test_gromacs_flavour():
     u = mda.Universe(StringIO(GROMACS_PQR), format='PQR')
 
     assert len(u.atoms) == 1
-
+    # topology things
     assert u.atoms[0].type == 'O'
     assert u.atoms[0].segid == 'SYSTEM'
     assert not u._topology.types.is_guessed
+    assert u.atoms[0].radius == pytest.approx(1.48)
+    assert u.atoms[0].charge == pytest.approx(-0.67)
+    # coordinatey things
+    assert_equal(u.atoms[0].position, [15.710, 17.670, 23.340])
