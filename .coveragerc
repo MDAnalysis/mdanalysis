@@ -3,7 +3,6 @@ branch = True
 source = MDAnalysis
 omit =
     */migration/*
-    */visualization/*
     */MDAnalysis/tests/*
     */legacy/*
     */due.py

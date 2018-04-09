@@ -13,9 +13,10 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-mm/dd/yy zemanj
+mm/dd/yy tylerjereddy, zemanj
   * 0.17.1
     - Unit tests for unwanted side effects when importing MDAnalysis
+    - MDAnalysis.visualization is now tested
 
 01/24/18 sobuelow, Zhiyi Wu
   * 0.17.0

@@ -73,8 +73,7 @@ to find uncovered code.
 .. Footnotes
 
 .. [*] **build**: Unit testing is for the whole package; **coverage** is
-       shown for the core library modules and the analysis modules (which
-       excludes `MDAnalysis.visualization`_ at the moment).
+       shown for the core library modules and the analysis modules.
 
 .. _trajectory formats: https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1
 .. _topology formats: https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats
@@ -83,7 +82,6 @@ to find uncovered code.
 .. _LICENSE: https://github.com/MDAnalysis/mdanalysis/blob/master/LICENSE
 .. _`#286`: https://github.com/MDAnalysis/mdanalysis/issues/286
 .. _`MDAnalysis.analysis`: https://docs.mdanalysis.org/documentation_pages/analysis_modules.html
-.. _`MDAnalysis.visualization`: https://docs.mdanalysis.org/documentation_pages/visualization_modules.html
 .. _`tutorials`: https://www.mdanalysis.org/pages/learning_MDAnalysis/
 .. _`guide`: https://github.com/MDAnalysis/mdanalysis/wiki/Guide-for-Developers
 
