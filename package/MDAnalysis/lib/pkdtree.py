@@ -34,14 +34,6 @@ import itertools
 import numpy as np
 from Bio.KDTree import _CKDTree
 
-# Bio 1.71 API different from previous :(
-from distutils import version
-import Bio
-_NEW_BIO_KDTREE = version.LooseVersion(Bio.__version__) >= version.LooseVersion('1.7.1')
-del Bio
-del version
-
-
 from MDAnalysis.lib.distances import _box_check, _check_array, apply_PBC
 from MDAnalysis.lib.mdamath import norm, triclinic_vectors, triclinic_box
 
