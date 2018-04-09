@@ -40,7 +40,7 @@ from __future__ import absolute_import
 from six.moves import range
 
 #: Gromacs TPR file format versions that can be read by the TPRParser.
-SUPPORTED_VERSIONS = (58, 73, 83, 100, 103, 110)
+SUPPORTED_VERSIONS = (58, 73, 83, 100, 103, 110, 112)
 
 # Some constants
 STRLEN = 4096
