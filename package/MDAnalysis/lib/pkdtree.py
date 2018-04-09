@@ -223,16 +223,10 @@ class PeriodicKDTree(object):
         for c in itertools.chain(wrapped_centers,
                                  self.find_images(wrapped_centers, radius)):
             self.kdt.search_center_radius(c, radius)
-            if _NEW_BIO_KDTREE:
-                n = self.kdt.get_count()
-                if not n:
-                    new_indices = None
-                else:
-                    new_indices = np.empty(n, int)
-                    self.kdt.get_indices(new_indices)
-            else:
-                new_indices = self.kdt.get_indices()  # returns None or np.array
-            if new_indices is not None:
+            n = self.kdt.get_count()
+            if n:
+                new_indices = np.empty(n, int)
+                self.kdt.get_indices(new_indices)
                 self._indices.update(new_indices)
         self._indices = sorted(list(self._indices))
 
