@@ -79,7 +79,7 @@ __all__ = [
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
     "TPR2018",
-    "TPR510_bonded", "TPR2016_bonded",
+    "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -279,6 +279,7 @@ TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
 # all bonded interactions
 TPR510_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_5.1.tpr')
 TPR2016_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2016.tpr')
+TPR2018_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2018.tpr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
