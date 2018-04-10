@@ -14,7 +14,8 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
-         orbeckst, xiki-tempula, navyakhare, zemanj, ayushsuhane, davidercruz
+         orbeckst, xiki-tempula, navyakhare, zemanj, ayushsuhane, davidercruz,
+         jbarnoud
 
   * 0.17.1
 
@@ -64,7 +65,8 @@ Fixes
  *  Can now parse PDB files without resids (Issue #1854)
  *  Fixed periodic KDTree, now requires Biopython version 1.71 onwards (Issue #1857)
  * fixed a bug in visualization.streamlines (Issue #1617)
-
+  * Updated TPR parser for GROMACS 2018 (Issue #1796)
+  
 Changes
   * scipy >= 1.0.0 is now required (issue #1775 because of PR #1758)
 
