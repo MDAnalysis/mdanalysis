@@ -130,7 +130,7 @@
 <span class="sd">     - Segids</span>
 
 <span class="sd">    Guesses the following:</span>
-<span class="sd">     - atomtypes</span>
+<span class="sd">     - atomtypes (if not present, Gromacs generated PQR files have these)</span>
 <span class="sd">     - masses</span>
 
 <span class="sd">    .. versionchanged:: 0.9.0</span>
@@ -140,9 +140,38 @@
 <span class="sd">       Now reads insertion codes and splits into new residues around these</span>
 <span class="sd">    .. versionchanged:: 0.17.1</span>
 <span class="sd">       Added parsing of Record types</span>
-
+<span class="sd">       Can now read PQR files from Gromacs, these provide atom type as last column</span>
+<span class="sd">       but don&#39;t have segids</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;PQR&#39;</span>
+
+<div class="viewcode-block" id="PQRParser.guess_flavour"><a class="viewcode-back" href="../../../documentation_pages/topology/PQRParser.html#MDAnalysis.topology.PQRParser.PQRParser.guess_flavour">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">guess_flavour</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Guess which variant of PQR format this line is</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        line : str</span>
+<span class="sd">          entire line of PQR file starting with ATOM/HETATM</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        flavour : str</span>
+<span class="sd">          ORIGINAL / GROMACS / NO_CHAINID</span>
+
+<span class="sd">        .. versionadded:: 0.17.1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">11</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">flavour</span> <span class="o">=</span> <span class="s1">&#39;GROMACS&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flavour</span> <span class="o">=</span> <span class="s1">&#39;ORIGINAL&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flavour</span> <span class="o">=</span> <span class="s1">&#39;NO_CHAINID&#39;</span>
+        <span class="k">return</span> <span class="n">flavour</span></div>
 
 <div class="viewcode-block" id="PQRParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/PQRParser.html#MDAnalysis.topology.PQRParser.PQRParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse atom information from PQR file *filename*.</span>
@@ -160,49 +189,68 @@
         <span class="n">icodes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">charges</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">radii</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">flavour</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;ATOM&quot;</span><span class="p">,</span> <span class="s2">&quot;HETATM&quot;</span><span class="p">)):</span>
-                    <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="p">(</span><span class="n">recordName</span><span class="p">,</span> <span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span>
-                         <span class="n">chainID</span><span class="p">,</span> <span class="n">resSeq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span>
-                         <span class="n">radius</span><span class="p">)</span> <span class="o">=</span> <span class="n">fields</span>
-                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                        <span class="c1"># files without the chainID</span>
-                        <span class="p">(</span><span class="n">recordName</span><span class="p">,</span> <span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span>
-                         <span class="n">resSeq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span> <span class="o">=</span> <span class="n">fields</span>
-                        <span class="n">chainID</span> <span class="o">=</span> <span class="s2">&quot;SYSTEM&quot;</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">resid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resSeq</span><span class="p">)</span>
-                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                        <span class="c1"># has icode present</span>
-                        <span class="n">resid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resSeq</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                        <span class="n">icode</span> <span class="o">=</span> <span class="n">resSeq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">icode</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;ATOM&quot;</span><span class="p">,</span> <span class="s2">&quot;HETATM&quot;</span><span class="p">)):</span>
+                    <span class="k">continue</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
-                    <span class="n">record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recordName</span><span class="p">)</span>
-                    <span class="n">serials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">serial</span><span class="p">)</span>
-                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-                    <span class="n">resnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resName</span><span class="p">)</span>
-                    <span class="n">resids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resid</span><span class="p">)</span>
-                    <span class="n">icodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">icode</span><span class="p">)</span>
-                    <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span>
-                    <span class="n">radii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
-                    <span class="n">chainIDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chainID</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">flavour</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">flavour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_flavour</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s1">&#39;ORIGINAL&#39;</span><span class="p">:</span>
+                    <span class="p">(</span><span class="n">recordName</span><span class="p">,</span> <span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span>
+                     <span class="n">chainID</span><span class="p">,</span> <span class="n">resSeq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span>
+                     <span class="n">radius</span><span class="p">)</span> <span class="o">=</span> <span class="n">fields</span>
+                <span class="k">elif</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s1">&#39;GROMACS&#39;</span><span class="p">:</span>
+                    <span class="p">(</span><span class="n">recordName</span><span class="p">,</span> <span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span>
+                     <span class="n">resSeq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span>
+                     <span class="n">radius</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span> <span class="o">=</span> <span class="n">fields</span>
+                    <span class="n">chainID</span> <span class="o">=</span> <span class="s2">&quot;SYSTEM&quot;</span>
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s1">&#39;NO_CHAINID&#39;</span><span class="p">:</span>
+                    <span class="c1"># files without the chainID</span>
+                    <span class="p">(</span><span class="n">recordName</span><span class="p">,</span> <span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span>
+                     <span class="n">resSeq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span> <span class="o">=</span> <span class="n">fields</span>
+                    <span class="n">chainID</span> <span class="o">=</span> <span class="s2">&quot;SYSTEM&quot;</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">resid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resSeq</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="c1"># has icode present</span>
+                    <span class="n">resid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resSeq</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">icode</span> <span class="o">=</span> <span class="n">resSeq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">icode</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+                <span class="n">record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recordName</span><span class="p">)</span>
+                <span class="n">serials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">serial</span><span class="p">)</span>
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">resnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resName</span><span class="p">)</span>
+                <span class="n">resids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resid</span><span class="p">)</span>
+                <span class="n">icodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">icode</span><span class="p">)</span>
+                <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span>
+                <span class="n">radii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
+                <span class="n">chainIDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chainID</span><span class="p">)</span>
 
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">serials</span><span class="p">)</span>
 
-        <span class="n">atomtypes</span> <span class="o">=</span> <span class="n">guessers</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">elements</span><span class="p">:</span>
+            <span class="n">atomtypes</span> <span class="o">=</span> <span class="n">guessers</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+            <span class="n">guessed_types</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">atomtypes</span> <span class="o">=</span> <span class="n">elements</span>
+            <span class="n">guessed_types</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="n">guessers</span><span class="o">.</span><span class="n">guess_masses</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)</span>
 
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">serials</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomnames</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Charges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">charges</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)))</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomtypes</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomtypes</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="n">guessed_types</span><span class="p">))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Masses</span><span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">RecordTypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">record_types</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Radii</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">radii</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)))</span>
