@@ -347,9 +347,9 @@
             <span class="n">u</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># deprecated AtomGroup init method..</span>
+                <span class="c1"># older AtomGroup init method..</span>
                 <span class="n">u</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
-            <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
                 <span class="c1"># Let&#39;s be generic and get the first argument that&#39;s either a</span>
                 <span class="c1"># Universe, a Group, or a Component, and go from there.</span>
                 <span class="c1"># This is where the UpdatingAtomGroup args get matched.</span>
@@ -477,17 +477,21 @@
 <span class="sd">    +-------------------------------+------------+----------------------------+</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Using deprecated init method for Group. &quot;</span>
-                          <span class="s2">&quot;In the future use `Group(indices, universe)`. &quot;</span>
-                          <span class="s2">&quot;This init method will be removed in version 1.0.&quot;</span><span class="p">,</span>
-                          <span class="ne">DeprecationWarning</span><span class="p">)</span>
-            <span class="c1"># list of atoms/res/segs, old init method</span>
-            <span class="n">ix</span> <span class="o">=</span> <span class="p">[</span><span class="n">at</span><span class="o">.</span><span class="n">ix</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-            <span class="n">u</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># current/new init method</span>
-            <span class="n">ix</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># list of atoms/res/segs, old init method</span>
+                <span class="n">ix</span> <span class="o">=</span> <span class="p">[</span><span class="n">at</span><span class="o">.</span><span class="n">ix</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># current/new init method</span>
+                <span class="n">ix</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span>  <span class="c1"># couldn&#39;t find ix/universe</span>
+                <span class="ne">TypeError</span><span class="p">):</span>  <span class="c1"># couldn&#39;t iterate the object we got</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Can only initialise a Group from an iterable of Atom/Residue/&quot;</span>
+                <span class="s2">&quot;Segment objects eg: AtomGroup([Atom1, Atom2, Atom3]) &quot;</span>
+                <span class="s2">&quot;or an iterable of indices and a Universe reference &quot;</span>
+                <span class="s2">&quot;eg: AtomGroup([0, 5, 7, 8], u).&quot;</span><span class="p">)</span>
 
         <span class="c1"># indices for the objects I hold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
@@ -1461,11 +1465,19 @@
 
 
 <div class="viewcode-block" id="AtomGroup"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup">[docs]</a><span class="k">class</span> <span class="nc">AtomGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A group of atoms.</span>
+    <span class="sd">&quot;&quot;&quot;An ordered array of atoms.</span>
 
-<span class="sd">    An :class:`AtomGroup` is an ordered collection of atoms. Typically, an</span>
-<span class="sd">    :class:`AtomGroup` is generated from a selection, or by indexing/slicing</span>
-<span class="sd">    the :class:`AtomGroup` of all atoms in the :class:`Universe` at</span>
+<span class="sd">    Can be initiated from an iterable of Atoms::</span>
+
+<span class="sd">        ag = AtomGroup([Atom1, Atom2, Atom3])</span>
+
+<span class="sd">    Or from providing a list of indices and the Universe which is should belong</span>
+<span class="sd">    to::</span>
+
+<span class="sd">        ag = AtomGroup([72, 14, 25], u)</span>
+
+<span class="sd">    Alternatively an :class:`AtomGroup` is generated by indexing/slicing another</span>
+<span class="sd">    AtomGroup, such as the Group of all atoms in the :class:`Universe` at</span>
 <span class="sd">    :attr:`MDAnalysis.core.universe.Universe.atoms`.</span>
 
 <span class="sd">    An AtomGroup can be indexed and sliced like a list::</span>
@@ -1488,6 +1500,9 @@
 
 <span class="sd">    will return a new AtomGroup of atoms with those indices in the old</span>
 <span class="sd">    AtomGroup.</span>
+
+<span class="sd">    Finally, AtomGroups can be created from a selection.  See</span>
+<span class="sd">    :meth:`select_atoms`.</span>
 
 <span class="sd">    .. note::</span>
 
