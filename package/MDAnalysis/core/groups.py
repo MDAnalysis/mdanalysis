@@ -301,9 +301,9 @@ class _MutableBase(object):
             u = args[-1].universe
         except (IndexError, AttributeError):
             try:
-                # deprecated AtomGroup init method..
+                # older AtomGroup init method..
                 u = args[0][0].universe
-            except (IndexError, AttributeError):
+            except (TypeError, IndexError, AttributeError):
                 # Let's be generic and get the first argument that's either a
                 # Universe, a Group, or a Component, and go from there.
                 # This is where the UpdatingAtomGroup args get matched.
@@ -431,17 +431,21 @@ class GroupBase(_MutableBase):
     +-------------------------------+------------+----------------------------+
     """
     def __init__(self, *args):
-        if len(args) == 1:
-            warnings.warn("Using deprecated init method for Group. "
-                          "In the future use `Group(indices, universe)`. "
-                          "This init method will be removed in version 1.0.",
-                          DeprecationWarning)
-            # list of atoms/res/segs, old init method
-            ix = [at.ix for at in args[0]]
-            u = args[0][0].universe
-        else:
-            # current/new init method
-            ix, u = args
+        try:
+            if len(args) == 1:
+                # list of atoms/res/segs, old init method
+                ix = [at.ix for at in args[0]]
+                u = args[0][0].universe
+            else:
+                # current/new init method
+                ix, u = args
+        except (AttributeError,  # couldn't find ix/universe
+                TypeError):  # couldn't iterate the object we got
+            raise TypeError(
+                "Can only initialise a Group from an iterable of Atom/Residue/"
+                "Segment objects eg: AtomGroup([Atom1, Atom2, Atom3]) "
+                "or an iterable of indices and a Universe reference "
+                "eg: AtomGroup([0, 5, 7, 8], u).")
 
         # indices for the objects I hold
         self._ix = np.asarray(ix, dtype=np.intp)
