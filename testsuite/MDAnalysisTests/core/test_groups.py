@@ -1130,3 +1130,52 @@ class TestAttributeSetting(object):
         comp = group[0]
         with pytest.raises(AttributeError):
             setattr(comp, attr, 24)
+
+
+
+class TestInitGroup(object):
+    @staticmethod
+    @pytest.fixture(
+        params=['atoms', 'residues', 'segments']
+    )
+    def components(request):
+        # return list of Component and container class for all three levels
+        u = make_Universe()
+
+        group = getattr(u, request.param)
+
+        cls = {
+            'atoms': mda.AtomGroup,
+            'residues': mda.ResidueGroup,
+            'segments': mda.SegmentGroup,
+        }[request.param]
+
+        yield (u, [group[0], group[2], group[4]], cls)
+
+    def test_object_init(self, components):
+        u, objects, cls = components
+
+        group = cls(objects)
+
+        assert len(group) == len(objects)
+        for obj in objects:
+            assert obj in group
+
+    def test_number_init(self, components):
+        u, objects, cls = components
+
+        group = cls([0, 2, 4], u)
+        for obj in objects:
+            assert obj in group
+
+    def test_VE_no_uni(self, components):
+        u, objects, cls = components
+
+        with pytest.raises(TypeError):
+            cls([0, 2, 4])  # missing Universe
+
+    def test_VE_no_uni_2(self, components):
+        u, objects, cls = components
+
+        with pytest.raises(TypeError):
+            cls(0, 2, 4)  # missing Universe
