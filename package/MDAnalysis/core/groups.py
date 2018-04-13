@@ -1451,6 +1451,9 @@ class AtomGroup(GroupBase):
     will return a new AtomGroup of atoms with those indices in the old
     AtomGroup.
 
+    Finally, AtomGroups can be created from a selection.  See
+    :meth:`select_atoms`.
+
     .. note::
 
         AtomGroups originating from a selection are sorted and
