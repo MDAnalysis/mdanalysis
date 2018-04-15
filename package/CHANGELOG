@@ -13,11 +13,11 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
+04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
          orbeckst, xiki-tempula, navyakhare, zemanj, ayushsuhane, davidercruz,
          jbarnoud
 
-  * 0.17.1
+  * 0.18.0
 
 Enhancements
   * Added flatten_dict function that flattens nested dicts into shallow

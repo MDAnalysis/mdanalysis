@@ -109,7 +109,7 @@ class PDBParser(TopologyReaderBase):
     :class:`MDAnalysis.coordinates.PDB.PDBReader`
 
     .. versionadded:: 0.8
-    .. versionchanged:: 0.17.1
+    .. versionchanged:: 0.18.0
        Added parsing of Record types
     """
     format = ['PDB', 'ENT']

@@ -92,7 +92,7 @@ class PQRParser(TopologyReaderBase):
        'SYSTEM' as the new segid).
     .. versionchanged:: 0.16.1
        Now reads insertion codes and splits into new residues around these
-    .. versionchanged:: 0.17.1
+    .. versionchanged:: 0.18.0
        Added parsing of Record types
        Can now read PQR files from Gromacs, these provide atom type as last column
        but don't have segids
@@ -113,7 +113,7 @@ class PQRParser(TopologyReaderBase):
         flavour : str
           ORIGINAL / GROMACS / NO_CHAINID
 
-        .. versionadded:: 0.17.1
+        .. versionadded:: 0.18.0
         """
         fields = line.split()
         if len(fields) == 11:
