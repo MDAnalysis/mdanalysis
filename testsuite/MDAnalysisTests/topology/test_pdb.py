@@ -21,6 +21,8 @@
 #
 from __future__ import absolute_import
 
+from six.moves import StringIO
+
 import pytest
 from numpy.testing import assert_equal
 import MDAnalysis as mda
@@ -28,6 +30,7 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PDB,
+    PDB_HOLE,
     PDB_small,
     PDB_conect,
     PDB_conect2TER,
@@ -44,7 +47,7 @@ class TestPDBParser(ParserBase):
     """This one has neither chainids or segids"""
     parser = mda.topology.PDBParser.PDBParser
     ref_filename = PDB
-    expected_attrs = ['ids', 'names', 'resids', 'resnames']
+    expected_attrs = ['ids', 'names', 'record_types', 'resids', 'resnames']
     guessed_attrs = ['types', 'masses']
     expected_n_atoms = 47681
     expected_n_residues = 11302
@@ -55,7 +58,8 @@ class TestPDBParserSegids(ParserBase):
     """Has segids"""
     parser = mda.topology.PDBParser.PDBParser
     ref_filename = PDB_small
-    expected_attrs = ['ids', 'names', 'resids', 'resnames', 'segids']
+    expected_attrs = ['ids', 'names', 'record_types', 'resids', 'resnames',
+                      'segids']
     guessed_attrs = ['types', 'masses']
     expected_n_atoms = 3341
     expected_n_residues = 214
@@ -148,3 +152,34 @@ def test_sameresid_diffresname():
     for i, (resid, resname) in enumerate(zip(resids, resnames)):
         assert top.resids.values[i] == resid
         assert top.resnames.values[i] == resname
+
+
+def test_PDB_record_types():
+    u = mda.Universe(PDB_HOLE)
+
+    assert u.atoms[0].record_type == 'ATOM'
+    assert u.atoms[132].record_type == 'HETATM'
+
+    assert_equal(u.atoms[10:20].record_types, 'ATOM')
+    assert_equal(u.atoms[271:].record_types, 'HETATM')
+
+
+PDB_noresid = """\
+REMARK For testing reading of CRYST
+REMARK This has MODELs then CRYST entries
+CRYST1   80.000   80.017   80.017  90.00  90.00  90.00 P 1           1
+MODEL        1
+ATOM      1  H2  TIP3           10.000  44.891  14.267  1.00  0.00      TIP3
+ATOM      2  OH2 TIP3           67.275  48.893  23.568  1.00  0.00      TIP3
+ATOM      3  H1  TIP3           66.641  48.181  23.485  1.00  0.00      TIP3
+ATOM      4  H2  TIP3           66.986  49.547  22.931  1.00  0.00      TIP3
+ENDMDL
+"""
+
+def test_PDB_no_resid():
+    u = mda.Universe(StringIO(PDB_noresid), format='PDB')
+
+    assert len(u.atoms) == 4
+    assert len(u.residues) == 1
+    # should have default resid of 1
+    assert u.residues[0].resid == 1

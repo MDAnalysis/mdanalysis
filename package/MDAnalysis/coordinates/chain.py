@@ -47,6 +47,7 @@ import warnings
 import os.path
 import itertools
 import bisect
+import copy
 
 import numpy as np
 
@@ -209,6 +210,17 @@ class ChainReader(base.ProtoReader):
 
     def convert_pos_to_native(self, x):
         return self.active_reader.convert_pos_to_native(x)
+
+    def copy(self):
+        new = self.__class__(copy.copy(self.filenames))
+        # seek the new reader to the same frame we started with
+        new[self.ts.frame]
+        # then copy over the current Timestep in case it has
+        # been modified since initial load
+        new.ts = self.ts.copy()
+        return new
+
+
 
     # attributes that can change with the current reader
     @property

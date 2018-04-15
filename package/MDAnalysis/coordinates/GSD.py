@@ -22,9 +22,10 @@
 """GSD trajectory reader  --- :mod:`MDAnalysis.coordinates.GSD`
 ============================================================
 
-Class to read the GSD trajectory, output of HOOMD-blue. The GSD format specifies
-both the topology and the trajectory of the particles in the simulation. The
-topology is read by the GSDTopology class.
+Class to read the GSD trajectory, output of `HOOMD-blue`_. The GSD format
+specifies both the topology and the trajectory of the particles in the
+simulation. The topology is read by the
+:class:`~MDAnalysis.topology.GSDParser.GSDParser` class.
 
 The GSD format was developed having in mind the possibility of changing number
 of particles, particle types, particle identities and changing topology.
@@ -33,6 +34,8 @@ of particles and the topology are kept fixed in most MD simulations. The user
 will get an error only if at any time step the number of particles is detected
 to be different to the one that was set at the first time step. No check on
 changes in particle identity or topology is currently implemented.
+
+.. _`HOOMD-blue`: http://codeblue.umich.edu/hoomd-blue/index.html
 
 Classes
 -------

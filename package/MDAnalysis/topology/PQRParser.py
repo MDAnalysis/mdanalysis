@@ -40,10 +40,10 @@ Classes
    :inherited-members:
 
 
-.. _PQR:     http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr
-.. _APBS:    http://www.poissonboltzmann.org/apbs
-.. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr
-.. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
+.. _PQR:     https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html
+.. _APBS:    https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/index.html
+.. _PDB2PQR: https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html
+.. _PDB:     http://www.wwpdb.org/documentation/file-format
 
 """
 from __future__ import absolute_import
@@ -60,6 +60,7 @@ from ..core.topologyattrs import (
     ICodes,
     Masses,
     Radii,
+    RecordTypes,
     Resids,
     Resnums,
     Resnames,
@@ -77,12 +78,13 @@ class PQRParser(TopologyReaderBase):
      - Atomnames
      - Charges
      - Radii
+     - RecordTypes (ATOM/HETATM)
      - Resids
      - Resnames
      - Segids
 
     Guesses the following:
-     - atomtypes
+     - atomtypes (if not present, Gromacs generated PQR files have these)
      - masses
 
     .. versionchanged:: 0.9.0
@@ -90,8 +92,40 @@ class PQRParser(TopologyReaderBase):
        'SYSTEM' as the new segid).
     .. versionchanged:: 0.16.1
        Now reads insertion codes and splits into new residues around these
+    .. versionchanged:: 0.18.0
+       Added parsing of Record types
+       Can now read PQR files from Gromacs, these provide atom type as last column
+       but don't have segids
     """
     format = 'PQR'
+
+    @staticmethod
+    def guess_flavour(line):
+        """Guess which variant of PQR format this line is
+
+        Parameters
+        ----------
+        line : str
+          entire line of PQR file starting with ATOM/HETATM
+
+        Returns
+        -------
+        flavour : str
+          ORIGINAL / GROMACS / NO_CHAINID
+
+        .. versionadded:: 0.18.0
+        """
+        fields = line.split()
+        if len(fields) == 11:
+            try:
+                float(fields[-1])
+            except ValueError:
+                flavour = 'GROMACS'
+            else:
+                flavour = 'ORIGINAL'
+        else:
+            flavour = 'NO_CHAINID'
+        return flavour
 
     def parse(self, **kwargs):
         """Parse atom information from PQR file *filename*.
@@ -100,6 +134,7 @@ class PQRParser(TopologyReaderBase):
         -------
         A MDAnalysis Topology object
         """
+        record_types = []
         serials = []
         names = []
         resnames = []
@@ -108,49 +143,70 @@ class PQRParser(TopologyReaderBase):
         icodes = []
         charges = []
         radii = []
+        elements = []
+
+        flavour = None
 
         with openany(self.filename) as f:
             for line in f:
-                if line.startswith(("ATOM", "HETATM")):
-                    fields = line.split()
-                    try:
-                        (recordName, serial, name, resName,
-                         chainID, resSeq, x, y, z, charge,
-                         radius) = fields
-                    except ValueError:
-                        # files without the chainID
-                        (recordName, serial, name, resName,
-                         resSeq, x, y, z, charge, radius) = fields
-                        chainID = "SYSTEM"
-                    try:
-                        resid = int(resSeq)
-                    except ValueError:
-                        # has icode present
-                        resid = int(resSeq[:-1])
-                        icode = resSeq[-1]
-                    else:
-                        icode = ''
+                if not line.startswith(("ATOM", "HETATM")):
+                    continue
+                fields = line.split()
 
-                    serials.append(serial)
-                    names.append(name)
-                    resnames.append(resName)
-                    resids.append(resid)
-                    icodes.append(icode)
-                    charges.append(charge)
-                    radii.append(radius)
-                    chainIDs.append(chainID)
+                if flavour is None:
+                    flavour = self.guess_flavour(line)
+                if flavour == 'ORIGINAL':
+                    (recordName, serial, name, resName,
+                     chainID, resSeq, x, y, z, charge,
+                     radius) = fields
+                elif flavour == 'GROMACS':
+                    (recordName, serial, name, resName,
+                     resSeq, x, y, z, charge,
+                     radius, element) = fields
+                    chainID = "SYSTEM"
+                    elements.append(element)
+                elif flavour == 'NO_CHAINID':
+                    # files without the chainID
+                    (recordName, serial, name, resName,
+                     resSeq, x, y, z, charge, radius) = fields
+                    chainID = "SYSTEM"
+
+                try:
+                    resid = int(resSeq)
+                except ValueError:
+                    # has icode present
+                    resid = int(resSeq[:-1])
+                    icode = resSeq[-1]
+                else:
+                    icode = ''
+
+                record_types.append(recordName)
+                serials.append(serial)
+                names.append(name)
+                resnames.append(resName)
+                resids.append(resid)
+                icodes.append(icode)
+                charges.append(charge)
+                radii.append(radius)
+                chainIDs.append(chainID)
 
         n_atoms = len(serials)
 
-        atomtypes = guessers.guess_types(names)
+        if not elements:
+            atomtypes = guessers.guess_types(names)
+            guessed_types = True
+        else:
+            atomtypes = elements
+            guessed_types = False
         masses = guessers.guess_masses(atomtypes)
 
         attrs = []
         attrs.append(Atomids(np.array(serials, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
-        attrs.append(Atomtypes(atomtypes, guessed=True))
+        attrs.append(Atomtypes(atomtypes, guessed=guessed_types))
         attrs.append(Masses(masses, guessed=True))
+        attrs.append(RecordTypes(np.array(record_types, dtype=object)))
         attrs.append(Radii(np.array(radii, dtype=np.float32)))
 
         resids = np.array(resids, dtype=np.int32)

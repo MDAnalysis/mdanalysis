@@ -44,6 +44,7 @@ __all__ = [
     "PSF_TRICLINIC", "DCD_TRICLINIC",  # CHARMM c36 new unitcell, NPT 125 TIP3P (box vectors, see Issue 187 for details)
     "PSF_NAMD", "PDB_NAMD",  # NAMD
     "PSF_NAMD_TRICLINIC", "DCD_NAMD_TRICLINIC", # NAMD, triclinic unitcell (Issue 187)
+    "PSF_NAMD_GBIS", "DCD_NAMD_GBIS",  # NAMD, implicit solvent, 100 steps, #1819  
     "PSF_nosegid",  # psf without a segid, Issue 121
     "PDB_small",  # PDB
     "PDB_closed",
@@ -77,7 +78,8 @@ __all__ = [
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
-    "TPR510_bonded", "TPR2016_bonded",
+    "TPR2018",
+    "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -194,6 +196,8 @@ PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
 PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
 PSF_NAMD_TRICLINIC = resource_filename(__name__, 'data/SiN_tric_namd.psf')
 DCD_NAMD_TRICLINIC = resource_filename(__name__, 'data/SiN_tric_namd.dcd')
+PSF_NAMD_GBIS = resource_filename(__name__, 'data/adk_closed_NAMD.psf')
+DCD_NAMD_GBIS = resource_filename(__name__, 'data/adk_gbis_tmd-fast1_NAMD.dcd')
 
 PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
 
@@ -267,6 +271,7 @@ TPR504 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.4.tpr')
 TPR505 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.5.tpr')
 TPR510 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.1.tpr')
 TPR2016 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2016.tpr')
+TPR2018 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2018.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
@@ -274,6 +279,7 @@ TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
 # all bonded interactions
 TPR510_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_5.1.tpr')
 TPR2016_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2016.tpr')
+TPR2018_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2018.tpr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')

@@ -63,40 +63,6 @@ object.
       *forces* = ``True`` keyword has been supplied.
 
 
-.. _ascii-trajectories:
-
-ASCII TRAJ trajectories
------------------------
-
-ASCII AMBER_ TRJ coordinate files (as defined in `AMBER TRJ format`_)
-are handled by the :class:`TRJReader`. It is also possible to directly
-read *bzip2* or *gzip* compressed files.
-
-AMBER ASCII trajectories are recognised by the suffix '.trj',
-'.mdcrd' or '.crdbox (possibly with an additional '.gz' or '.bz2').
-
-.. rubric:: Limitations
-
-* Periodic boxes are only stored as box lengths A, B, C in an AMBER
-  trajectory; the reader always assumes that these are orthorhombic
-  boxes.
-
-* The trajectory does not contain time information so we simply set
-  the time step to 1 ps (or the user could provide it as kwarg *dt*)
-
-* No direct access of frames is implemented, only iteration through
-  the trajectory.
-
-* Trajectories with fewer than 4 atoms probably fail to be read (BUG).
-
-* If the trajectory contains exactly *one* atom then it is always
-  assumed to be non-periodic (for technical reasons).
-
-
-.. autoclass:: TRJReader
-   :members:
-
-
 .. _netcdf-trajectories:
 
 Binary NetCDF trajectories
@@ -119,15 +85,70 @@ those and will raise a :exc:`NotImplementedError` if anything else is detected.
    :members:
 
 
+.. _ascii-trajectories:
+
+ASCII TRAJ trajectories
+-----------------------
+
+ASCII AMBER_ TRJ coordinate files (as defined in `AMBER TRJ format`_)
+are handled by the :class:`TRJReader`. It is also possible to directly
+read *bzip2* or *gzip* compressed files.
+
+AMBER ASCII trajectories are recognised by the suffix '.trj',
+'.mdcrd' or '.crdbox (possibly with an additional '.gz' or '.bz2').
+
+.. Note::
+
+   In the AMBER community, these trajectories are often saved with the
+   suffix '.crd' but this extension conflicts with the CHARMM CRD
+   format and MDAnalysis *will not correctly autodetect AMBER ".crd"
+   trajectories*. Instead, explicitly provide the ``format="TRJ"``
+   argument to :class:`~MDAnalysis.core.universe.Universe`::
+
+     u = MDAnalysis.Universe("top.prmtop", "traj.crd", format="TRJ")
+
+   In this way, the AMBER :class:`TRJReader` is used.
+
+
+.. rubric:: Limitations
+
+* Periodic boxes are only stored as box lengths A, B, C in an AMBER
+  trajectory; the reader always assumes that these are orthorhombic
+  boxes.
+
+* The trajectory does not contain time information so we simply set
+  the time step to 1 ps (or the user could provide it as kwarg *dt*)
+
+* **No direct access of frames is implemented, only iteration through
+  the trajectory.**
+
+* Trajectories with fewer than 4 atoms probably fail to be read (BUG).
+
+* If the trajectory contains exactly *one* atom then it is always
+  assumed to be non-periodic (for technical reasons).
+
+* Velocities are currently *not supported* as ASCII trajectories.
+
+.. autoclass:: TRJReader
+   :members:
+
+
+
 .. Links
 
 .. _AMBER: http://ambermd.org
 .. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
-.. _AMBER netcdf format: http://ambermd.org/netcdf/nctraj.html
-.. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.html
+..    The formats page was archived as
+..    http://www.webcitation.org/query?url=http%3A%2F%2Fambermd.org%2Fformats.html&date=2018-02-11
+..    Use the archived version if the original disappears. [orbeckst]
+.. _AMBER netcdf format: http://ambermd.org/netcdf/nctraj.xhtml
+..    The formats page was archived as
+..    http://www.webcitation.org/query?url=http%3A%2F%2Fambermd.org%2Fnetcdf%2Fnctraj.xhtml&date=2018-02-11
+..    Use the archived version if the original disappears. [orbeckst]
+.. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.xhtml
 .. _NetCDF: http://www.unidata.ucar.edu/software/netcdf
 .. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues
-.. _MDAnalysis mailinglist: http://groups.google.com/group/mdnalysis-discussion
+.. _MDAnalysis mailinglist: https://groups.google.com/group/mdnalysis-discussion
 
 """
 from __future__ import (absolute_import, division, print_function,
@@ -405,13 +426,13 @@ class NCDFReader(base.ReaderBase):
     The NCDF reader uses :mod:`scipy.io.netcdf` and therefore :mod:`scipy` must
     be installed. It supports the *mmap* keyword argument (when reading):
     ``mmap=True`` is memory efficient and directly maps the trajectory on disk
-    to memory; ``mmap=False`` may consume large amounts of memory because it
-    loads the whole trajectory into memory but it might be faster. The default
-    is ``mmap=None`` and then default behavior of
+    to memory (using the :class:`~mmap.mmap`); ``mmap=False`` may consume large
+    amounts of memory because it loads the whole trajectory into memory but it
+    might be faster. The default is ``mmap=None`` and then default behavior of
     :class:`scipy.io.netcdf.netcdf_file` prevails, i.e. ``True`` when
     *filename* is a file name, ``False`` when *filename* is a file-like object.
 
-    .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.html
+    .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.xhtml
 
     See Also
     --------
@@ -426,6 +447,7 @@ class NCDFReader(base.ReaderBase):
        kwarg `delta` renamed to `dt`, for uniformity with other Readers.
     .. versionchanged:: 0.17.0
        Uses :mod:`scipy.io.netcdf` and supports the *mmap* kwarg.
+
     """
 
     format = ['NCDF', 'NC']
@@ -437,8 +459,8 @@ class NCDFReader(base.ReaderBase):
              'force': 'kcal/(mol*Angstrom)'}
     _Timestep = Timestep
 
-    def __init__(self, filename, n_atoms=None, **kwargs):
-        self._mmap = kwargs.pop('mmap', False)
+    def __init__(self, filename, n_atoms=None, mmap=None, **kwargs):
+        self._mmap = mmap
 
         super(NCDFReader, self).__init__(filename, **kwargs)
 
@@ -448,7 +470,7 @@ class NCDFReader(base.ReaderBase):
         if not ('AMBER' in self.trjfile.Conventions.decode('utf-8').split(',') or
                 'AMBER' in self.trjfile.Conventions.decode('utf-8').split()):
             errmsg = ("NCDF trajectory {0} does not conform to AMBER "
-                      "specifications, http://ambermd.org/netcdf/nctraj.html "
+                      "specifications, http://ambermd.org/netcdf/nctraj.xhtml "
                       "('AMBER' must be one of the tokens in attribute "
                       "Conventions)".format(self.filename))
             logger.fatal(errmsg)
@@ -516,7 +538,7 @@ class NCDFReader(base.ReaderBase):
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
-        with scipy.io.netcdf.netcdf_file(filename, mmap=True) as f:
+        with scipy.io.netcdf.netcdf_file(filename, mmap=None) as f:
             n_atoms = f.dimensions['atom']
         return n_atoms
 
@@ -576,9 +598,11 @@ class NCDFReader(base.ReaderBase):
     def close(self):
         """Close trajectory; any further access will raise an :exc:`IOError`.
 
-        .. Note:: The underlying :mod:`scipy.io.netcdf` module open netcdf
-                  files with `mmap()`. Hence *any* reference to an array
-                  *must* be removed before the file can be closed.
+        .. Note:: The underlying :mod:`scipy.io.netcdf` module may open netcdf
+                  files with :class:`~mmap.mmap` if ``mmap=True`` was
+                  set. Hence *any* reference to an array *must* be removed
+                  before the file can be closed.
+
         """
         if self.trjfile is not None:
             self.trjfile.close()
@@ -623,7 +647,7 @@ class NCDFWriter(base.WriterBase):
 
     Unit cell information is written if available.
 
-    .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.html
+    .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.xhtml
 
 
     Parameters
@@ -650,7 +674,7 @@ class NCDFWriter(base.WriterBase):
 
     Note
     ----
-    MDAnalysis uses :mod:`scipy.io.netcdf` to access Amber files, which are in
+    MDAnalysis uses :mod:`scipy.io.netcdf` to access AMBER files, which are in
     netcdf 3 format. Although :mod:`scipy.io.netcdf` is very fast at reading
     these files, it is *very* slow when writing, and it becomes slower the
     longer the files are. On the other hand, the netCDF4_ package (which
@@ -658,9 +682,9 @@ class NCDFWriter(base.WriterBase):
     but slow at reading. Therefore, we try to use :mod:`netCDF4` for writing if
     available but otherwise fall back to the slower :mod:`scipy.io.netcdf`.
 
-    **Amber users** might have a hard time getting netCDF4 to work with a
+    **AMBER users** might have a hard time getting netCDF4 to work with a
     conda-based installation (as discussed in `Issue #506`_) because of the way
-    that Amber itself handles netcdf: When the Amber environment is loaded, the
+    that AMBER itself handles netcdf: When the AMBER environment is loaded, the
     following can happen when trying to import netCDF4::
 
       >>> import netCDF4
@@ -670,18 +694,18 @@ class NCDFWriter(base.WriterBase):
           from ._netCDF4 import *
       ImportError: /scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/_netCDF4.cpython-35m-x86_64-linux-gnu.so: undefined symbol: nc_inq_var_fletcher32
 
-    The reason for this (figured out via :program:`ldd`) is that Amber builds
+    The reason for this (figured out via :program:`ldd`) is that AMBER builds
     its own NetCDF library that it now inserts into :envvar:`LD_LIBRARY_PATH`
     *without the NetCDF4 API and HDF5 bindings*. Since the conda version of
     :mod:`netCDF4` was built against the full NetCDF package, the one
-    :program:`ld` tries to link to at runtime (because Amber requires
-    :envvar:`LD_LIBRARY_PATH`) is missing some symbols. Removing Amber from the
+    :program:`ld` tries to link to at runtime (because AMBER requires
+    :envvar:`LD_LIBRARY_PATH`) is missing some symbols. Removing AMBER from the
     environment fixes the import but is not really a convenient solution for
-    users of Amber.
+    users of AMBER.
 
     At the moment there is no obvious solution if one wants to use
-    :mod:`netCDF4` and Amber in the same shell session. If you need the fast
-    writing capabilities of :mod:`netCDF4` then you need to unload your Amber
+    :mod:`netCDF4` and AMBER in the same shell session. If you need the fast
+    writing capabilities of :mod:`netCDF4` then you need to unload your AMBER
     environment before importing MDAnalysis.
 
 
@@ -748,7 +772,7 @@ class NCDFWriter(base.WriterBase):
         """Initialize netcdf AMBER 1.0 trajectory.
 
         The trajectory is opened when the first frame is written
-        because that this is the earliest time that we can detect if the
+        because that is the earliest time that we can detect if the
         output should contain periodicity information (i.e. the unit
         cell dimensions).
 
@@ -772,8 +796,7 @@ class NCDFWriter(base.WriterBase):
             ncfile = netCDF4.Dataset(self.filename, 'w', format='NETCDF3_64BIT')
         else:
             ncfile = scipy.io.netcdf.netcdf_file(self.filename,
-                                                 mode='w', version=2,
-                                                 mmap=False)
+                                                 mode='w', version=2)
             wmsg = "Could not find netCDF4 module. Falling back to MUCH slower "\
                    "scipy.io.netcdf implementation for writing."
             logger.warning(wmsg)

@@ -112,6 +112,46 @@ If you use the streamline visualization in
 .. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
 
 
-Thanks!
+Citations using Duecredit
+=========================
 
+Citations can be automatically generated using duecredit_, depending on the
+packages used. Duecredit is easy to install via ``pip``. Simply type:
+
+.. code-block:: bash
+
+   pip install duecredit
+
+duecredit_ will remain an optional dependency, i.e. any code using
+MDAnalysis will work correctly even without duecredit installed.
+
+A list of citations for ``yourscript.py`` can be obtained using simple
+commands.
+
+.. code-block:: bash
+
+   cd /path/to/yourmodule
+   python -m duecredit yourscript.py
+
+or set the environment variable :envvar:`DUECREDIT_ENABLE`
+
+.. code-block:: bash
+
+   DUECREDIT-ENABLE=yes python yourscript.py
+
+Once the citations have been extracted (to a hidden file in the
+current directory), you can use the :program:`duecredit` program to
+export them to different formats. For example, one can display them in
+BibTeX format, using:
+
+.. code-block:: bash
+ 
+   duecredit summary --format=bibtex 
+
+
+**Please cite your use of MDAnalysis and the packages and algorithms
+that it uses. Thanks!**
+
+
+.. _duecredit: https://github.com/duecredit/duecredit
 

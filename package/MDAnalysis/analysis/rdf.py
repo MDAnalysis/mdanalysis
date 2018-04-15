@@ -65,6 +65,10 @@ class InterRDF(AnalysisBase):
     step : int (optional)
           The step size through the trajectory in frames (default is
           every frame)
+    verbose : bool (optional)
+          Show detailed progress of the calculation if set to ``True``; the
+          default is ``False``.
+
 
     Example
     -------
@@ -82,6 +86,7 @@ class InterRDF(AnalysisBase):
     The `exclusion_block` keyword allows the masking of pairs from
     within the same molecule.  For example, if there are 7 of each
     atom in each molecule, the exclusion mask `(7, 7)` can be used.
+
 
     .. versionadded:: 0.13.0
 

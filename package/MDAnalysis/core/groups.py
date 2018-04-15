@@ -301,9 +301,9 @@ class _MutableBase(object):
             u = args[-1].universe
         except (IndexError, AttributeError):
             try:
-                # deprecated AtomGroup init method..
+                # older AtomGroup init method..
                 u = args[0][0].universe
-            except (IndexError, AttributeError):
+            except (TypeError, IndexError, AttributeError):
                 # Let's be generic and get the first argument that's either a
                 # Universe, a Group, or a Component, and go from there.
                 # This is where the UpdatingAtomGroup args get matched.
@@ -431,17 +431,21 @@ class GroupBase(_MutableBase):
     +-------------------------------+------------+----------------------------+
     """
     def __init__(self, *args):
-        if len(args) == 1:
-            warnings.warn("Using deprecated init method for Group. "
-                          "In the future use `Group(indices, universe)`. "
-                          "This init method will be removed in version 1.0.",
-                          DeprecationWarning)
-            # list of atoms/res/segs, old init method
-            ix = [at.ix for at in args[0]]
-            u = args[0][0].universe
-        else:
-            # current/new init method
-            ix, u = args
+        try:
+            if len(args) == 1:
+                # list of atoms/res/segs, old init method
+                ix = [at.ix for at in args[0]]
+                u = args[0][0].universe
+            else:
+                # current/new init method
+                ix, u = args
+        except (AttributeError,  # couldn't find ix/universe
+                TypeError):  # couldn't iterate the object we got
+            raise TypeError(
+                "Can only initialise a Group from an iterable of Atom/Residue/"
+                "Segment objects eg: AtomGroup([Atom1, Atom2, Atom3]) "
+                "or an iterable of indices and a Universe reference "
+                "eg: AtomGroup([0, 5, 7, 8], u).")
 
         # indices for the objects I hold
         self._ix = np.asarray(ix, dtype=np.intp)
@@ -590,7 +594,8 @@ class GroupBase(_MutableBase):
 
     @property
     def dimensions(self):
-        return self.universe.trajectory.ts.dimensions
+        """Obtain a copy of the dimensions of the currently loaded Timestep"""
+        return self.universe.trajectory.ts.dimensions.copy()
 
     @dimensions.setter
     def dimensions(self, dimensions):
@@ -1038,32 +1043,69 @@ class GroupBase(_MutableBase):
             if not all(s == 0.0):
                 o.atoms.translate(s)
 
-    def groupby(self, topattr):
+    def groupby(self, topattrs):
         """Group together items in this group according to values of *topattr*
 
         Parameters
         ----------
-        topattr: str
-           Topology attribute to group components by.
+        topattrs: str or list
+           One or more topology attribute to group components by.
+           Single arguments are passed as a string. Multiple arguments
+           are passed as a list.
 
         Returns
         -------
         dict
-            Unique values of the topology attribute as keys, Groups as values.
+            Unique values of the multiple combinations of topology attributes 
+            as keys, Groups as values.
 
         Example
-        -------
-        To group atoms with the same mass together::
+        -------      
+        To group atoms with the same mass together:     
+                
+        >>> ag.groupby('masses')
+        {12.010999999999999: <AtomGroup with 462 atoms>,
+         14.007: <AtomGroup with 116 atoms>,
+         15.999000000000001: <AtomGroup with 134 atoms>}        
 
-          >>> ag.groupby('masses')
-          {12.010999999999999: <AtomGroup with 462 atoms>,
-          14.007: <AtomGroup with 116 atoms>,
-          15.999000000000001: <AtomGroup with 134 atoms>}
+        To group atoms with the same residue name and mass together:
 
+          >>> ag.groupby(['resnames', 'masses'])
+          {('ALA', 1.008): <AtomGroup with 95 atoms>,
+           ('ALA', 12.011): <AtomGroup with 57 atoms>,
+           ('ALA', 14.007): <AtomGroup with 19 atoms>,
+           ('ALA', 15.999): <AtomGroup with 19 atoms>},
+           ('ARG', 1.008): <AtomGroup with 169 atoms>,
+           ...}
+          
+          >>> ag.groupby(['resnames', 'masses'])('ALA', 15.999)
+           <AtomGroup with 19 atoms>
+        
         .. versionadded:: 0.16.0
+        .. versionchanged:: 0.18.0 The function accepts multiple attributes
         """
-        ta = getattr(self, topattr)
-        return {i: self[ta == i] for i in set(ta)}
+        
+        res = dict()
+        
+        if isinstance(topattrs, (string_types, bytes)):
+            attr=topattrs
+            if isinstance(topattrs, bytes):
+                attr = topattrs.decode('utf-8')
+            ta = getattr(self, attr)
+            
+            return {i: self[ta == i] for i in set(ta)}
+        
+        else:
+            attr = topattrs[0]
+            ta = getattr(self, attr)
+            for i in set(ta):
+                if len(topattrs) == 1:
+                    res[i] = self[ta == i]
+                else:
+                    res[i] = self[ta == i].groupby(topattrs[1:])
+                    
+            return util.flatten_dict(res)
+
 
     @_only_same_level
     def concatenate(self, other):
@@ -1377,11 +1419,19 @@ class GroupBase(_MutableBase):
 
 
 class AtomGroup(GroupBase):
-    """A group of atoms.
+    """An ordered array of atoms.
 
-    An :class:`AtomGroup` is an ordered collection of atoms. Typically, an
-    :class:`AtomGroup` is generated from a selection, or by indexing/slicing
-    the :class:`AtomGroup` of all atoms in the :class:`Universe` at
+    Can be initiated from an iterable of Atoms::
+
+        ag = AtomGroup([Atom1, Atom2, Atom3])
+
+    Or from providing a list of indices and the Universe which is should belong
+    to::
+
+        ag = AtomGroup([72, 14, 25], u)
+
+    Alternatively an :class:`AtomGroup` is generated by indexing/slicing another
+    AtomGroup, such as the Group of all atoms in the :class:`Universe` at
     :attr:`MDAnalysis.core.universe.Universe.atoms`.
 
     An AtomGroup can be indexed and sliced like a list::
@@ -1404,6 +1454,9 @@ class AtomGroup(GroupBase):
 
     will return a new AtomGroup of atoms with those indices in the old
     AtomGroup.
+
+    Finally, AtomGroups can be created from a selection.  See
+    :meth:`select_atoms`.
 
     .. note::
 
@@ -1774,8 +1827,8 @@ class AtomGroup(GroupBase):
         implicitly combined with an or operator. For example
 
            >>> sel = universe.select_atoms('resname MET GLY')
-           
-        is equivalent to 
+
+        is equivalent to
 
            >>> sel = universe.select_atoms('resname MET or resname GLY')
 
@@ -1907,6 +1960,22 @@ class AtomGroup(GroupBase):
             sphlayer *inner radius* *outer radius* *selection*
                 Similar to sphzone, but also excludes atoms that are within
                 *inner radius* of the selection COG
+            cyzone *externalRadius* *zMax* *zMin* *selection*
+                selects all atoms within a cylindric zone centered in the
+                center of geometry (COG) of a given selection,
+                e.g. ``cyzone 15 4 -8 protein and resid 42`` selects the
+                center of geometry of protein and resid 42, and creates a
+                cylinder of external radius 15 centered on the COG. In z, the
+                cylinder extends from 4 above the COG to 8 below. Positive
+                values for *zMin*, or negative ones for *zMax*, are allowed.
+            cylayer *innerRadius* *externalRadius* *zMax* *zMin* *selection*
+                selects all atoms within a cylindric layer centered in the
+                center of geometry (COG) of a given selection,
+                e.g. ``cylayer 5 10 10 -8 protein`` selects the center of
+                geometry of protein, and creates a cylindrical layer of inner
+                radius 5, external radius 10 centered on the COG. In z, the
+                cylinder extends from 10 above the COG to 8 below. Positive
+                values for *zMin*, or negative ones for *zMax*, are allowed.
 
         **Connectivity**
 

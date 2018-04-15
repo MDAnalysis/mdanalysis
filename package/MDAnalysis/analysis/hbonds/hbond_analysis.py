@@ -329,6 +329,7 @@ from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, Selectio
 from MDAnalysis.lib.mdamath import norm, angle
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
+from MDAnalysis.lib.distances import calc_angles
 
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
@@ -406,7 +407,7 @@ class HydrogenBondAnalysis(object):
                  distance=3.0, angle=120.0,
                  forcefield='CHARMM27', donors=None, acceptors=None,
                  start=None, stop=None, step=None,
-                 debug=None, detect_hydrogens='distance', verbose=None):
+                 debug=None, detect_hydrogens='distance', verbose=None, pbc=False):
         """Set up calculation of hydrogen bonds between two selections in a universe.
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
@@ -499,6 +500,8 @@ class HydrogenBondAnalysis(object):
         verbose : bool (optional)
             Toggle progress output. (Can also be given as keyword argument to
             :meth:`run`.)
+        pbc : bool (optional)
+            Whether to consider periodic boundaries in calculations [``False``]
 
         Raises
         ------
@@ -582,6 +585,7 @@ class HydrogenBondAnalysis(object):
         self.distance_type = distance_type  # note: everything except 'heavy' will give the default behavior
         self.angle = angle
         self.traj_slice = slice(start, stop, step)
+        self.pbc = pbc and all(self.u.dimensions[:3])
 
         # set up the donors/acceptors lists
         if donors is None:
@@ -985,7 +989,8 @@ class HydrogenBondAnalysis(object):
                     for h in donor_h_set:
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
-                            angle = self.calc_angle(d, h, a)
+                            box = self.u.dimensions if self.pbc else None
+                            angle = self.calc_angle(d, h, a, box=box)
                             donor_atom = h if self.distance_type != 'heavy' else d
                             dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
@@ -1010,7 +1015,8 @@ class HydrogenBondAnalysis(object):
                                     (h.index, a.index) in already_found or
                                     (a.index, h.index) in already_found):
                                 continue
-                            angle = self.calc_angle(d, h, a)
+                            box = self.u.dimensions if self.pbc else None
+                            angle = self.calc_angle(d, h, a, box=box)
                             donor_atom = h if self.distance_type != 'heavy' else d
                             dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
@@ -1028,13 +1034,14 @@ class HydrogenBondAnalysis(object):
                     self.__class__.__name__)
 
     @staticmethod
-    def calc_angle(d, h, a):
+    def calc_angle(d, h, a, box=None):
         """Calculate the angle (in degrees) between two atoms with H at apex."""
-        v1 = h.position - d.position
-        v2 = h.position - a.position
-        if np.all(v1 == v2):
-            return 0.0
-        return np.rad2deg(angle(v1, v2))
+        v1= d.position
+        v2= h.position
+        v3= a.position
+        angle= calc_angles(v1[None, :], v2[None, :], v3[None, :], box=box)
+    
+        return np.rad2deg(angle[0])
 
     @staticmethod
     def calc_eucl_distance(a1, a2):

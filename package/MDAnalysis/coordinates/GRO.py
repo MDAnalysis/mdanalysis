@@ -28,6 +28,26 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 `GRO format`_ which includes a conversion routine for the box.
 
 
+Writing GRO files
+-----------------
+
+By default any written GRO files will renumber the atom ids to move sequentially
+from 1.  This can be disabled, and instead the original atom ids kept, by
+using the `reindex=False` keyword argument.  This is useful when writing a
+subsection of a larger Universe while wanting to preserve the original
+identities of atoms.
+
+For example::
+
+   >>> u = mda.Universe()`
+
+   >>> u.atoms.write('out.gro', reindex=False)
+
+   # OR
+   >>> with mda.Writer('out.gro', reindex=False) as w:
+   ...     w.write(u.atoms)
+
+
 Classes
 -------
 
@@ -247,6 +267,9 @@ class GROWriter(base.WriterBase):
        Removed the `convert_dimensions_to_unitcell` method,
        use `Timestep.triclinic_dimensions` instead.
        Now now writes velocities where possible.
+    .. versionchanged:: 0.18.0
+       Added `reindex` keyword argument to allow original atom
+       ids to be kept.
     """
 
     format = 'GRO'
@@ -279,9 +302,32 @@ class GROWriter(base.WriterBase):
         convert_units : str (optional)
             units are converted to the MDAnalysis base format; ``None`` selects
             the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
+
+        reindex : bool (optional)
+            By default, all the atoms were reindexed to have a atom id starting
+            from 1. [``True``] However, this behaviour can be turned off by
+            specifying `reindex` ``=False``.
+
+        Note
+        ----
+        To use the reindex keyword, user can follow the two examples given
+        below.::
+
+           u = mda.Universe()
+
+        Usage 1::
+
+           u.atoms.write('out.gro', reindex=False)
+
+        Usage 2::
+
+           with mda.Writer('out.gro', reindex=False) as w:
+               w.write(u.atoms)
+
         """
         self.filename = util.filename(filename, ext='gro')
         self.n_atoms = n_atoms
+        self.reindex = kwargs.pop('reindex', True)
 
         if convert_units is None:
             convert_units = flags['convert_lengths']
@@ -344,6 +390,15 @@ class GROWriter(base.WriterBase):
         except (AttributeError, NoDataError):
             resids = itertools.cycle((1,))
             missing_topology.append('resids')
+
+        if not self.reindex:
+            try:
+                atom_indices = ag_or_ts.ids
+            except (AttributeError, NoDataError):
+                atom_indices = range(1, ag_or_ts.n_atoms+1)
+                missing_topology.append('ids')
+        else:
+            atom_indices = range(1, ag_or_ts.n_atoms + 1)
         if missing_topology:
             warnings.warn(
                 "Supplied AtomGroup was missing the following attributes: "
@@ -377,7 +432,7 @@ class GROWriter(base.WriterBase):
             # all attributes could be infinite cycles!
             for atom_index, resid, resname, name in zip(
                     range(ag_or_ts.n_atoms), resids, resnames, names):
-                truncated_atom_index = util.ltruncate_int(atom_index + 1, 5)
+                truncated_atom_index = util.ltruncate_int(atom_indices[atom_index], 5)
                 truncated_resid = util.ltruncate_int(resid, 5)
                 if has_velocities:
                     output_gro.write(self.fmt['xyz_v'].format(

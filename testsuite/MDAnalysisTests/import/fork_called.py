@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -19,34 +19,13 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-cdef extern from *:
-    ctypedef char const_char "const char"
+from __future__ import absolute_import, print_function
+import os
+import mock
 
-cdef extern from "stdio.h":
-    int printf(const_char *, ...)
+"""Tests whether os.fork() is called as a side effect when importing MDAnalysis.
+See PR #1794 for details."""
 
-cdef extern from "stdlib.h":
-    ctypedef struct time_t:
-        pass
-    time_t time(time_t*)
-    void*   malloc (size_t, size_t)
-    void*   realloc (void*, size_t)
-    void    srand(unsigned int)
-    int     rand()
-
-cdef extern from "math.h":
-    double  sqrt(double)
-
-cdef extern from "spe.h":
-    ctypedef struct IVWrapper:
-        pass
-    ctypedef void* empty
-
-    int trmIndex(int, int)
-    double ed(double*, int, int, int)
-    double stress(double, double, int, int)
-    double neighbours_stress(double, double, int, int, double)
-    int neighbours(double, int, double, int*, int*, int*)
-    int* nearest_neighbours(double*, int, int)
-    int cmp_ivwrapper(void*,void*)
-    double CStochasticProximityEmbedding(double*, double*, double, int, int, double, double, int, int, int)
+with mock.patch('os.fork') as os_dot_fork:
+    import MDAnalysis
+    assert not os_dot_fork.called

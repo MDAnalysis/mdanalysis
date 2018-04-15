@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -19,24 +19,26 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-cdef extern from *:
-    ctypedef char const_char "const char"
 
-cdef extern from "stdio.h":
-    #extern int printf (__const char *__restrict __format, ...);
-    int printf(const_char *, ...)
+import pytest
+import numpy as np
+from numpy.testing import assert_equal
 
-cdef extern from "stdlib.h":
-    void *calloc (size_t COUNT, size_t ELTSIZE)
+import MDAnalysis as mda
 
-cdef extern from "float.h":
-    enum:  FLT_MAX
+def test_transform_StoR_pass():
+    box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
+    s = np.array([[0.5, -0.1, 0.5]], dtype=np.float32)
 
-cdef extern from "ap.h":
-    int trmIndex(int, int)
-    int sqmIndex(int, int, int)
-    float pwmax(float, float)
-    float pwmin(float, float)
-    float min(float*, int)
-    float max(float*, int)
-    int CAffinityPropagation(float*, int, float, int, int, bint, long*)
+    original_r = np.array([[ 5.75,  0.36066014, 0.75000012]], dtype=np.float32)
+
+    test_r = mda.lib.distances.transform_StoR(s, box)
+
+    assert_equal(original_r, test_r)
+
+def test_transform_StoR_fail():
+    box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
+    s = np.array([[0.5, -0.1, 0.5]])
+
+    with pytest.raises(TypeError, match='S must be of type float32'):
+        r = mda.lib.distances.transform_StoR(s, box)

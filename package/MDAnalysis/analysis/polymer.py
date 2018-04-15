@@ -55,7 +55,8 @@ class PersistenceLength(AnalysisBase):
 
     Notes
     -----
-    This analysis requires that the trajectory supports indexing
+    This analysis requires that the trajectory supports indexing.
+
 
     .. versionadded:: 0.13.0
     """
@@ -75,6 +76,10 @@ class PersistenceLength(AnalysisBase):
         step : int, optional
             Frame index to stop analysis. Default: None becomes
             n_frames. Iteration stops *before* this frame number.
+        verbose : bool (optional)
+            Show detailed progress of the calculation if set to ``True``; the
+            default is ``False``.
+
         """
         super(PersistenceLength, self).__init__(
             atomgroups[0].universe.trajectory, **kwargs)

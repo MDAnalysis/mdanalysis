@@ -215,10 +215,10 @@ def helanal_trajectory(universe, selection="name CA",
           If the specified finish time precedes the specified start time or
           current time stamp of trajectory object.
 
-    .. Note::
-
-       Only a single helix is analyzed. Use the selection to specify the
-       helix, e.g. with "name CA and resid 1:20" or use start=1, stop=20.
+    Notes
+    -----
+    Only a single helix is analyzed. Use the selection to specify the helix,
+    e.g. with "name CA and resid 1:20" or use start=1, stop=20.
 
 
     .. versionchanged:: 0.13.0
@@ -487,9 +487,6 @@ def helanal_main(pdbfile, selection="name CA", ref_axis=None):
     logger *MDAnalysis.analysis.helanal*. A simple way to enable a logger is to
     use :func:`~MDAnalysis.lib.log.start_logging`.
 
-    .. Note:: Only a single helix is analyzed. Use the selection to specify
-              the helix, e.g. with "name CA and resid 1:20".
-
     Parameters
     ----------
     pdbfile : str
@@ -512,6 +509,13 @@ def helanal_main(pdbfile, selection="name CA", ref_axis=None):
         * Best fit tilt
         * Rotation angles: local screw angles (per residue)
 
+
+    Notes
+    -----
+    Only a single helix is analyzed. Use the selection to specify the
+    helix, e.g. with "name CA and resid 1:20".
+
+
     Example
     -------
     Analyze helix 8 in AdK (PDB 4AKE); the standard logger is started and
@@ -528,6 +532,7 @@ def helanal_main(pdbfile, selection="name CA", ref_axis=None):
     .. versionchanged:: 0.16.0
        Removed the `start` and `end` keywords for selecting residues because this can
        be accomplished more transparently with `selection`.
+
     """
 
     universe = MDAnalysis.Universe(pdbfile)

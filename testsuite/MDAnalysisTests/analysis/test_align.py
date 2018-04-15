@@ -27,7 +27,7 @@ import MDAnalysis.analysis.rms as rms
 import os
 import numpy as np
 import pytest
-from MDAnalysis import SelectionError
+from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import PSF, DCD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
 from numpy.testing import (
@@ -69,6 +69,64 @@ class TestRotationMatrix(object):
              [1.1, 1.1, 1.1]]
         with pytest.raises(ValueError):
             align.rotation_matrix(a, b)
+
+
+class TestGetMatchingAtoms(object):
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return mda.Universe(PSF, DCD)
+
+    @staticmethod
+    @pytest.fixture()
+    def reference():
+        return mda.Universe(PSF, DCD)
+
+    @staticmethod
+    @pytest.fixture()
+    def reference_small(reference):
+        return mda.Merge(reference.select_atoms(
+            "not name H* and not atom 4AKE 1 CA"))
+
+    @pytest.mark.parametrize("strict", (True, False))
+    def test_match(self, universe, reference, strict,
+                   selection="protein and backbone"):
+        ref = reference.select_atoms(selection)
+        mobile = universe.select_atoms(selection)
+        groups = align.get_matching_atoms(ref, mobile, strict=strict)
+        assert_equal(groups[0].names, groups[1].names)
+
+    @pytest.mark.parametrize("strict", (True, False))
+    def test_nomatch_atoms_raise(self, universe, reference,
+                                 strict, selection="protein and backbone"):
+        # one atom less but same residues; with strict=False should try
+        # to get selections (but current code fails, so we also raise SelectionError)
+        ref = reference.select_atoms(selection).atoms[1:]
+        mobile = universe.select_atoms(selection)
+        if strict:
+            with pytest.raises(SelectionError):
+                groups = align.get_matching_atoms(ref, mobile, strict=strict)
+        else:
+            with pytest.warns(SelectionWarning):
+                with pytest.raises(SelectionError):
+                    groups = align.get_matching_atoms(ref, mobile, strict=strict)
+
+    @pytest.mark.parametrize("strict", (True, False))
+    def test_nomatch_residues_raise_empty(self, universe, reference_small,
+                                          strict, selection="protein and backbone"):
+        # one atom less and all residues different: will currently create
+        # empty selections with strict=False, see also
+        # https://gist.github.com/orbeckst/2686badcd15031e6c946baf9164a683d
+        ref = reference_small.select_atoms(selection)
+        mobile = universe.select_atoms(selection)
+        if strict:
+            with pytest.raises(SelectionError):
+                groups = align.get_matching_atoms(ref, mobile, strict=strict)
+        else:
+            with pytest.warns(SelectionWarning):
+                with pytest.raises(SelectionError):
+                    groups = align.get_matching_atoms(ref, mobile, strict=strict)
+
 
 
 class TestAlign(object):

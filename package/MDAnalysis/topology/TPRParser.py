@@ -59,6 +59,7 @@ approximate Gromacs release numbers are listed in the table
    103        26             5.1                  yes
 
    110        26             2016                 yes
+   112        26             2018                 yes
    ========== ============== ==================== =====
 
 For further discussion and notes see `Issue 2`_. Please *open a new issue* in

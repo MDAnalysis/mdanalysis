@@ -21,6 +21,9 @@
 #
 from __future__ import absolute_import
 
+from six.moves import StringIO
+from numpy.testing import assert_equal, assert_almost_equal
+import pytest
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -33,7 +36,7 @@ from MDAnalysisTests.datafiles import (
 class TestPQRParser(ParserBase):
     parser = mda.topology.PQRParser.PQRParser
     ref_filename = PQR
-    expected_attrs = ['ids', 'names', 'charges', 'radii',
+    expected_attrs = ['ids', 'names', 'charges', 'radii', 'record_types',
                       'resids', 'resnames', 'icodes',
                       'segids']
     guessed_attrs = ['masses', 'types']
@@ -55,3 +58,39 @@ class TestPQRParser2(TestPQRParser):
     ref_filename = PQR_icodes
     expected_n_atoms = 5313
     expected_n_residues = 474
+
+
+def test_record_types():
+    u = mda.Universe(PQR_icodes)
+
+    assert u.atoms[4052].record_type == 'ATOM'
+    assert u.atoms[4053].record_type == 'HETATM'
+
+    assert_equal(u.atoms[:10].record_types, 'ATOM')
+    assert_equal(u.atoms[4060:4070].record_types, 'HETATM')
+
+
+GROMACS_PQR = '''
+REMARK    The B-factors in this file hold atomic radii
+REMARK    The occupancy in this file hold atomic charges
+TITLE     system
+REMARK    THIS IS A SIMULATION BOX
+CRYST1   35.060   34.040   38.990  90.00  90.00  90.00 P 1           1
+MODEL        1
+ATOM      1  O    ZR     1      15.710  17.670  23.340 -0.67  1.48           O
+TER
+ENDMDL
+'''
+
+def test_gromacs_flavour():
+    u = mda.Universe(StringIO(GROMACS_PQR), format='PQR')
+
+    assert len(u.atoms) == 1
+    # topology things
+    assert u.atoms[0].type == 'O'
+    assert u.atoms[0].segid == 'SYSTEM'
+    assert not u._topology.types.is_guessed
+    assert u.atoms[0].radius == pytest.approx(1.48)
+    assert u.atoms[0].charge == pytest.approx(-0.67)
+    # coordinatey things
+    assert_almost_equal(u.atoms[0].position, [15.710, 17.670, 23.340], decimal=4)

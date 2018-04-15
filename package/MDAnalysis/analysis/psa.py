@@ -218,6 +218,7 @@ from six import string_types
 
 import numpy as np
 from scipy import spatial, cluster
+from scipy.spatial.distance import directed_hausdorff
 import matplotlib
 
 import warnings
@@ -320,6 +321,14 @@ def get_msd_matrix(P, Q, axis=None):
     return np.asarray([sqnorm(p - Q, axis=axis) for p in P])
 
 
+def reshaper(path, axis):
+    """Flatten path when appropriate to facilitate calculations
+    requiring two dimensional input.
+    """
+    if len(axis) > 1:
+        path = path.reshape(len(path), -1)
+    return path
+
 def get_coord_axes(path):
     """Return the number of atoms and the axes corresponding to atoms
     and coordinates for a given path.
@@ -364,6 +373,10 @@ def get_coord_axes(path):
 def hausdorff(P, Q):
     r"""Calculate the symmetric Hausdorff distance between two paths.
 
+    The metric used is RMSD, as opposed to the more conventional L2
+    (Euclidean) norm, because this is convenient for i.e., comparing
+    protein configurations.
+
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
     :attr:`MDAnalysis.core.groups.AtomGroup.positions`). *P* (*Q*) has
@@ -405,36 +418,29 @@ def hausdorff(P, Q):
 
     Notes
     -----
-    The Hausdorff distance is calculated in a brute force manner from the
-    distance matrix without further optimizations, essentially following
-    [Huttenlocher1993]_.
-
     :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
-    implementation of the early break algorithm of [Taha2015]_; note that one
-    still has to calculate the *symmetric* Hausdorff distance as
-    `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
-
+    implementation of the early break algorithm of [Taha2015]_; the
+    latter code is used here to calculate the symmetric Hausdorff
+    distance with an RMSD metric
 
     References
     ----------
-    .. [Huttenlocher1993] D. P. Huttenlocher, G. A. Klanderman, and
-        W. J. Rucklidge. Comparing images using the Hausdorff distance. IEEE
-        Transactions on Pattern Analysis and Machine Intelligence,
-        15(9):850–863, 1993.
     .. [Taha2015] A. A. Taha and A. Hanbury. An efficient algorithm for
        calculating the exact Hausdorff distance. IEEE Transactions On Pattern
        Analysis And Machine Intelligence, 37:2153-63, 2015.
 
-
-    See Also
-    --------
-    scipy.spatial.distance.directed_hausdorff
-
     """
-    N, axis = get_coord_axes(P)
-    d = get_msd_matrix(P, Q, axis=axis)
-    return (max(np.amax(np.amin(d, axis=0)),
-                np.amax(np.amin(d, axis=1))) / N)**0.5
+    N_p, axis_p = get_coord_axes(P)
+    N_q, axis_q = get_coord_axes(Q)
+
+    if N_p != N_q:
+        raise ValueError("P and Q must have matching sizes")
+
+    P = reshaper(P, axis_p)
+    Q = reshaper(Q, axis_q)
+
+    return max(directed_hausdorff(P, Q)[0],
+               directed_hausdorff(Q, P)[0]) / np.sqrt(N_p)
 
 
 def hausdorff_wavg(P, Q):

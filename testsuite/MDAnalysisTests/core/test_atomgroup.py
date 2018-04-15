@@ -56,52 +56,6 @@ class TestDeprecationWarnings(object):
         with pytest.deprecated_call():
             mda.core.AtomGroup.Universe(PSF, DCD)
 
-    def test_old_AtomGroup_init_warns(self):
-        u = make_Universe(('names',))
-        at_list = list(u.atoms[:10])
-        with pytest.deprecated_call():
-            ag = mda.core.groups.AtomGroup(at_list)
-
-    def test_old_AtomGroup_init_works(self):
-        u = make_Universe(('names',))
-        at_list = list(u.atoms[:10])
-        ag = mda.core.groups.AtomGroup(at_list)
-
-        assert isinstance(ag, mda.core.groups.AtomGroup)
-        assert len(ag) == 10
-        assert_equal(ag.names, u.atoms[:10].names)
-
-    def test_old_ResidueGroup_init_warns(self):
-        u = make_Universe(('resnames',))
-        res_list = list(u.residues[:10])
-        with pytest.deprecated_call():
-            rg = mda.core.groups.ResidueGroup(res_list)
-
-    def test_old_ResidueGroup_init_works(self):
-        u = make_Universe(('resnames',))
-        res_list = list(u.residues[:10])
-        rg = mda.core.groups.ResidueGroup(res_list)
-
-        assert isinstance(rg, mda.core.groups.ResidueGroup)
-        assert len(rg) == 10
-        assert_equal(rg.resnames, u.residues[:10].resnames)
-
-    def test_old_SegmentGroup_init_warns(self):
-        u = make_Universe(('segids',))
-        seg_list = list(u.segments[:3])
-        with pytest.deprecated_call():
-            sg = mda.core.groups.SegmentGroup(seg_list)
-
-    def test_old_SegmentGroup_init_works(self):
-        u = make_Universe(('segids',))
-        seg_list = list(u.segments[:3])
-        sg = mda.core.groups.SegmentGroup(seg_list)
-
-        assert isinstance(sg, mda.core.groups.SegmentGroup)
-        assert len(sg) == 3
-        assert_equal(sg.segids, u.segments[:3].segids)
-
-
 class TestAtomGroupToTopology(object):
     """Test the conversion of AtomGroup to TopologyObjects"""
     @pytest.fixture()

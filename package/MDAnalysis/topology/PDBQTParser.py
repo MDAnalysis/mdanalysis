@@ -70,6 +70,7 @@ from ..core.topologyattrs import (
     Charges,
     Masses,
     Occupancies,
+    RecordTypes,
     Resids,
     Resnums,
     Resnames,
@@ -89,6 +90,7 @@ class PDBQTParser(TopologyReaderBase):
      - resnames
      - chainIDs (becomes segid)
      - resids
+     - record_types (ATOM/HETATM)
      - icodes
      - occupancies
      - tempfactors
@@ -97,6 +99,9 @@ class PDBQTParser(TopologyReaderBase):
     Guesses the following:
      - elements
      - masses
+
+    .. versionchanged:: 0.18.0
+       Added parsing of Record types
     """
     format = 'PDBQT'
 
@@ -107,6 +112,7 @@ class PDBQTParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object
         """
+        record_types = []
         serials = []
         names = []
         altlocs = []
@@ -124,6 +130,7 @@ class PDBQTParser(TopologyReaderBase):
                 line = line.strip()
                 if not line.startswith(('ATOM', 'HETATM')):
                     continue
+                record_types.append(line[:6].strip())
                 serials.append(int(line[6:11]))
                 names.append(line[12:16].strip())
                 altlocs.append(line[16:17].strip())
@@ -142,6 +149,7 @@ class PDBQTParser(TopologyReaderBase):
 
         attrs = []
         for attrlist, Attr, dtype in (
+                (record_types, RecordTypes, object),
                 (serials, Atomids, np.int32),
                 (names, Atomnames, object),
                 (altlocs, AltLocs, object),

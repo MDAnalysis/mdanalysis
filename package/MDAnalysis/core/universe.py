@@ -87,11 +87,27 @@ import errno
 import numpy as np
 import logging
 import copy
-import uuid
 import warnings
 
 import MDAnalysis
 import sys
+
+# When used in an MPI environment with Infiniband, importing MDAnalysis may
+# trigger an MPI warning because importing the uuid module triggers a call to
+# os.fork(). This happens if MPI_Init() has been called prior to importing
+# MDAnalysis. The problem is actually caused by the uuid module and not by
+# MDAnalysis itself. Python 3.7 fixes the problem. However, for Python < 3.7,
+# the uuid module works perfectly fine with os.fork() disabled during import.
+# A clean solution is therefore simply to disable os.fork() prior to importing
+# the uuid module and to re-enable it afterwards.
+import os
+if sys.version_info >= (3, 7):
+    import uuid
+else:
+    _os_dot_fork, os.fork = os.fork, None
+    import uuid
+    os.fork = _os_dot_fork
+    del _os_dot_fork
 
 from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
@@ -315,6 +331,12 @@ class Universe(object):
         # Universes are anchors by default
         self.is_anchor = kwargs.get('is_anchor', True)
 
+    def copy(self):
+        """Return an independent copy of this Universe"""
+        new = self.__class__(self._topology.copy())
+        new.trajectory = self.trajectory.copy()
+        return new
+
     def _generate_from_topology(self):
         # generate Universe version of each class
         # AG, RG, SG, A, R, S
@@ -414,8 +436,19 @@ class Universe(object):
         """
         if n_residues is None:
             n_residues = 1
+        elif atom_resindex is None:
+            warnings.warn(
+                'Multiple residues specified but no atom_resindex given.  '
+                'All atoms will be placed in first Residue.',
+                UserWarning)
         if n_segments is None:
             n_segments = 1
+        elif residue_segindex is None:
+            warnings.warn(
+                'Multiple segments specified but no segment_resindex given.  '
+                'All residues will be placed in first Segment',
+                UserWarning)
+
         top = Topology(n_atoms, n_residues, n_segments,
                        atom_resindex=atom_resindex,
                        residue_segindex=residue_segindex,

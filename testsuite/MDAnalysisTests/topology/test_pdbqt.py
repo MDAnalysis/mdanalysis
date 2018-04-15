@@ -34,7 +34,7 @@ class TestPDBQT(ParserBase):
     ref_filename = PDBQT_input
     expected_attrs = [
         'ids', 'names', 'charges', 'types', 'altLocs', 'resids', 'resnames',
-        'segids'
+        'segids', 'record_types'
     ]
     guessed_attrs = ['masses']
     expected_n_atoms = 1805

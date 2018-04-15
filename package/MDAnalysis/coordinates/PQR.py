@@ -92,10 +92,10 @@ option are guaranteed to conform to the above format::
 
    pdb2pqr --ff=charmm --whitespace 4ake.pdb 4ake.pqr
 
-.. _PQR:     http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr
-.. _APBS:    http://www.poissonboltzmann.org/apbs
-.. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr
-.. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
+.. _PQR:     https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html
+.. _APBS:    https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/index.html
+.. _PDB2PQR: https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html
+.. _PDB:     http://www.wwpdb.org/documentation/file-format
 """
 from __future__ import absolute_import
 from six.moves import zip
@@ -113,7 +113,7 @@ class PQRReader(base.SingleFrameReaderBase):
     """Read a PQR_ file into MDAnalysis.
 
     .. _PQR:
-        http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr
+        https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
@@ -121,15 +121,29 @@ class PQRReader(base.SingleFrameReaderBase):
     format = 'PQR'
     units = {'time': None, 'length': 'Angstrom'}
 
+    # how to slice fields[x:y] to grab coordinates
+    _SLICE_INDICES = {
+        'ORIGINAL': (-5, -2),
+        'NO_CHAINID': (-5, -2),
+        'GROMACS': (-6, -3),
+    }
+
     def _read_first_frame(self):
+        from ..topology.PQRParser import PQRParser
+        flavour = None
+
         coords = []
         unitcell = np.zeros(6, dtype=np.float32)
         with util.openany(self.filename) as pqrfile:
             for line in pqrfile:
                 if line.startswith(('ATOM', 'HETATM')):
+                    if flavour is None:
+                        flavour = PQRParser.guess_flavour(line)
+                        x, y = self._SLICE_INDICES[flavour]
+
                     fields = line.split()
                     # convert all entries at the end once for optimal speed
-                    coords.append(fields[-5:-2])
+                    coords.append(fields[x:y])
 
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(

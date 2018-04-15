@@ -20,22 +20,27 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
-GSD topology parser
+"""GSD topology parser
 =========================
 
 .. versionadded:: 0.17.0
 
-The :class:`GSDParser` generates a topology from files for the HOOMD_ code.
-
-Parser for the HOOMD-blue GSD topology/trajectory format. The GSD file stores
-information on both the topology and the trajectory in the same file, and allows
-for varying atom numbers/identities and topologies during the course of the
-simulation. At the moment MDAnalysis can deal only with the case in which there
-is no variation.
+The :class:`GSDParser` generates a topology from HOOMD_ GSD topology/trajectory
+files. The GSD file stores information on both the topology and the trajectory
+in the same file, and allows for varying atom numbers/identities and topologies
+during the course of the simulation. At the moment MDAnalysis can deal only
+with the case in which there is no variation. The trajectory data are read with
+the :class:`~MDAnalysis.coordinates.GSD.GSDReader` class.
 
 .. _HOOMD: http://codeblue.umich.edu/hoomd-blue/index.html
 .. _HOOMD GSD: https://bitbucket.org/glotzer/gsd
+
+
+To load a GSD HOOMD file::
+
+   import MDAnalysis as mda
+   u = mda.Universe("example.gsd")
+
 
 Classes
 -------
@@ -51,7 +56,6 @@ import gsd.hoomd
 import numpy as np
 
 from . import guessers
-from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (

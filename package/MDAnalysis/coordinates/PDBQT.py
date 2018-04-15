@@ -192,7 +192,7 @@ class PDBQTReader(base.SingleFrameReaderBase):
 class PDBQTWriter(base.WriterBase):
     """PDBQT writer that implements a subset of the PDB_ 3.2 standard and the PDBQT_ spec.
 
-    .. _PDB: http://www.wwpdb.org/documentation/format32/v3.2.html
+    .. _PDB: http://www.wwpdb.org/documentation/file-format
     .. _PDBQT: http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
     """
 

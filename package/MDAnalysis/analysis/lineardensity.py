@@ -56,6 +56,10 @@ class LinearDensity(AnalysisBase):
           The frame to end at [-1]
     step : int
           The step size through the trajectory in frames [0]
+    verbose : bool (optional)
+          Show detailed progress of the calculation if set to ``True``; the
+          default is ``False``.
+
 
     Example
     -------

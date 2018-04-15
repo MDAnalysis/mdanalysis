@@ -20,6 +20,7 @@ from six.moves import cPickle as pickle
 from collections import namedtuple
 import os
 import string
+import struct
 
 import hypothesis.strategies as strategies
 from hypothesis import example, given
@@ -242,6 +243,22 @@ def test_write_header(tmpdir):
         assert header['nsavc'] == 10
         assert np.allclose(header['delta'], .02)
 
+    # we also check the bytes written directly.
+    with open(testfile, 'rb') as fh:
+        header_bytes = fh.read()
+    # check for magic number
+    assert struct.unpack('i', header_bytes[:4])[0] == 84
+    # magic number should be written again before remark section
+    assert struct.unpack('i', header_bytes[88:92])[0] == 84
+    # length of remark section. We hard code this to 244 right now
+    assert struct.unpack('i', header_bytes[92:96])[0] == 244
+    # say we have 3 block of length 80
+    assert struct.unpack('i', header_bytes[96:100])[0] == 3
+    # after the remark section the length should be reported again
+    assert struct.unpack('i', header_bytes[340:344])[0] == 244
+    # this is a magic number as far as I see
+    assert struct.unpack('i', header_bytes[344:348])[0] == 4
+
 
 def test_write_no_header(tmpdir):
     fname = str(tmpdir.join('test.dcd'))
@@ -301,7 +318,7 @@ def write_dcd(in_name, out_name, remarks='testing', header=None):
 
 @given(remarks=strategies.text(
     alphabet=string.printable, min_size=0,
-    max_size=240))  # handle the printable ASCII strings
+    max_size=239))  # handle the printable ASCII strings
 @example(remarks='')
 def test_written_remarks_property(remarks, tmpdir, dcd):
     # property based testing for writing of a wide range of string
@@ -310,7 +327,7 @@ def test_written_remarks_property(remarks, tmpdir, dcd):
     header = dcd.header
     header['remarks'] = remarks
     write_dcd(DCD, testfile, header=header)
-    expected_remarks = remarks[:240]
+    expected_remarks = remarks
     with DCDFile(testfile) as f:
         assert f.header['remarks'] == expected_remarks
 
@@ -323,6 +340,8 @@ def written_dcd(tmpdir_factory):
     testfile = str(testfile)
     write_dcd(DCD, testfile)
     Result = namedtuple("Result", "testfile, header, orgfile")
+    # throw away last char we didn't save due to null termination
+    header['remarks'] = header['remarks'][:-1]
     return Result(testfile, header, DCD)
 
 

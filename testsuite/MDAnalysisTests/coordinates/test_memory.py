@@ -75,6 +75,8 @@ class MemoryReference(BaseReference):
 
     def iter_ts(self, i):
         ts = self.universe.trajectory[i]
+        # correct time because memory reader doesn't read the correct time
+        ts.time = ts.frame * self.dt
         return ts
 
 

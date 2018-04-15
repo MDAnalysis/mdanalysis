@@ -27,7 +27,7 @@ import numpy as np
 
 import pytest
 
-from numpy.testing import (assert_equal, assert_almost_equal)
+from numpy.testing import (assert_equal, assert_almost_equal, assert_array_almost_equal)
 
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (PDB, PSF, CRD, DCD,
@@ -114,8 +114,7 @@ class TestChainReader(object):
                 ts_new._pos,
                 self.prec,
                 err_msg="Coordinates disagree at frame {0:d}".format(
-                    ts_orig.frame))
-
+                    ts_orig.frame))       
 
 class TestChainReaderCommonDt(object):
     common_dt = 100.0

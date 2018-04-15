@@ -40,6 +40,7 @@ from numpy.testing import (
     assert_equal,
 )
 import pytest
+from six import StringIO
 
 
 class TestGROReaderOld(RefAdK):
@@ -418,6 +419,52 @@ def test_growriter_resid_truncation():
     # larger digits should get truncated
     assert line.startswith('56789UNK')
 
+@tempdir.run_in_tempdir()
+class TestGrowriterReindex(object):
+    @pytest.fixture()
+    def u(self):
+        gro = '''test
+1
+    2CL      CL20850   0.000   0.000   0.000
+7.29748 7.66094 9.82962'''
+        u = mda.Universe(StringIO(gro), format='gro')
+        u.atoms[0].id = 3
+        return u
+
+    def test_growriter_resid_true(self, u):
+        u.atoms.write('temp.gro', reindex=True)
+
+        with open('temp.gro', 'r') as grofile:
+            grofile.readline()
+            grofile.readline()
+            line = grofile.readline()
+        assert line.startswith('    2CL      CL    1')
+
+    def test_growriter_resid_false(self, u):
+        u.atoms.write('temp.gro', reindex=False)
+        with open('temp.gro', 'r') as grofile:
+            grofile.readline()
+            grofile.readline()
+            line = grofile.readline()
+        assert line.startswith('    2CL      CL    3')
+
+    def test_writer_resid_false(self, u):
+        with mda.Writer('temp.gro', reindex=False) as w:
+            w.write(u.atoms)
+        with open('temp.gro', 'r') as grofile:
+            grofile.readline()
+            grofile.readline()
+            line = grofile.readline()
+        assert line.startswith('    2CL      CL    3')
+
+    def test_writer_resid_true(self, u):
+        with mda.Writer('temp.gro', reindex=True) as w:
+            w.write(u.atoms)
+        with open('temp.gro', 'r') as grofile:
+            grofile.readline()
+            grofile.readline()
+            line = grofile.readline()
+        assert line.startswith('    2CL      CL    1')
 
 class TestGROTimestep(BaseTimestepTest):
     Timestep = mda.coordinates.GRO.Timestep

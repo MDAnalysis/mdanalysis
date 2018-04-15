@@ -131,7 +131,9 @@ if __name__ == '__main__':
     except (OSError, IOError):
         warnings.warn('Cannot write the list of authors.')
 
-    RELEASE = "0.17.0"  # this must be in-sync with MDAnalysis
+    # this must be in-sync with MDAnalysis
+    RELEASE = "0.18.0"
+
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 

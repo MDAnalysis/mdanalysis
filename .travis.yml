@@ -31,6 +31,7 @@ env:
     - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn coveralls"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
+    - PIP_DEPENDENCIES="duecredit"
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
 

@@ -468,7 +468,8 @@ cdef class DCDFile:
         Parameters
         ----------
         remarks : str
-            remarks of DCD file. Shouldn't be more then 240 characters (ASCII)
+            remarks of DCD file. Writes up to 239 characters (ASCII). The
+            character 240 will be the null terminator
         natoms : int
             number of atoms to write
         istart : int
@@ -479,6 +480,7 @@ cdef class DCDFile:
             integrator time step. The time for 1 frame is nsavc * delta
         is_periodic : bool
             write unitcell information. Also pretends that file was written by CHARMM 24
+
         """
         if not self.is_open:
             raise IOError("No file open")

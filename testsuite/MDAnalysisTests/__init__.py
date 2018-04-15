@@ -87,7 +87,9 @@ import pytest
 
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
-__version__ = "0.17.0"  # keep in sync with RELEASE in setup.py
+# keep in sync with RELEASE in setup.py
+__version__ = "0.18.0"
+
 try:
     from MDAnalysisTests.authors import __authors__
 except ImportError:
@@ -100,6 +102,15 @@ except ImportError:
 
 import os
 import sys
+
+# To test duecredit in utils/test_duecredits.py.
+#
+# Note that the test environment on travis should have duecredit installed
+# (put it in PIP_DEPENDENCIES). Setting DUECREDIT_ENABLE to yes triggers
+# collection of citations on the first `import MDAnalysis` so the environment
+# variable *must* come before MDAnalysis is imported the first time. See
+# issue #412 https://github.com/MDAnalysis/mdanalysis/issues/412 and PR #1822.
+os.environ['DUECREDIT_ENABLE'] = 'yes'
 
 # Any tests that plot with matplotlib need to run with the simple agg backend because
 # on Travis there is no DISPLAY set
