@@ -267,7 +267,7 @@ class GROWriter(base.WriterBase):
        Removed the `convert_dimensions_to_unitcell` method,
        use `Timestep.triclinic_dimensions` instead.
        Now now writes velocities where possible.
-    .. versionchanged:: 0.17.1
+    .. versionchanged:: 0.18.0
        Added `reindex` keyword argument to allow original atom
        ids to be kept.
     """

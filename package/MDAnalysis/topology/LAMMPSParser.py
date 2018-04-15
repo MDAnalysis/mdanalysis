@@ -315,7 +315,7 @@ class DATAParser(TopologyReaderBase):
         Fills this into the Timestep object and returns it
 
         .. versionadded:: 0.9.0
-        .. versionchanged:: 0.17.1
+        .. versionchanged:: 0.18.0
            Added atom_style kwarg
         """
         if atom_style is None:

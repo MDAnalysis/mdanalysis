@@ -100,7 +100,7 @@ class PDBQTParser(TopologyReaderBase):
      - elements
      - masses
 
-    .. versionchanged:: 0.17.1
+    .. versionchanged:: 0.18.0
        Added parsing of Record types
     """
     format = 'PDBQT'
