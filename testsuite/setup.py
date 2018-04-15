@@ -132,7 +132,7 @@ if __name__ == '__main__':
         warnings.warn('Cannot write the list of authors.')
 
     # this must be in-sync with MDAnalysis
-    RELEASE = "0.18.0"
+    RELEASE = "0.18.1-dev"
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
