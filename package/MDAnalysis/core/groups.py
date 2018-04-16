@@ -2063,6 +2063,11 @@ class AtomGroup(GroupBase):
         """
         updating = selgroups.pop('updating', False)
         sel_strs = (sel,) + othersel
+
+        for group, thing in selgroups.items():
+            if not isinstance(thing, MDAnalysis.core.groups.AtomGroup):
+                raise TypeError("Only AtomGroup type is allowed for the passed arbitrary atomgroups, you provided type {} for {}".format(str(type(thing)), group))
+
         selections = tuple((selection.Parser.parse(s, selgroups)
                             for s in sel_strs))
         if updating:
