@@ -20,8 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
-=========================
+"""=========================
 Test cases for MDAnalysis
 =========================
 
@@ -35,10 +34,20 @@ an :exc:`ImportError` is raised.
 We are using the NumPy_ testing frame work; thus, :mod:`numpy` *must* be
 installed for the tests to run at all.
 
-Run all the tests with
+Run all the tests with ::
 
-   >>> from MDAnalysisTests import run
-   >>> run()
+    pytest --pyargs MDAnalysisTests
+
+If you have the `pytest-xdist`_ plugin installed then you can run the
+tests in parallel
+
+.. code-block:: bash
+
+   pytest -n 4 --pyargs MDAnalysisTests
+
+
+.. _`pytest-xdist`:
+   https://github.com/pytest-dev/pytest-xdist
 
 
 Data
