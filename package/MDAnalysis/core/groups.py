@@ -1821,6 +1821,10 @@ class AtomGroup(GroupBase):
         are not any duplicates, which can happen with complicated
         selections).
 
+        Raises
+        ------
+        `TypeError` if the arbitrary atomgroups passed are of type MDAnalysis.core.groups.AtomGroup
+
         Examples
         --------
         All simple selection listed below support multiple arguments which are
