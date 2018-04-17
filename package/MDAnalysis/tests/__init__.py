@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -36,8 +36,11 @@ installed for the tests to run at all.
 
 Run all the tests with
 
-   >>> import MDAnalysis.tests
-   >>> MDAnalysis.tests.test()
+.. code-block:: bash
+
+   pytest --pyargs MDAnalysisTests
+
+
 
 Data
 ====
@@ -79,11 +82,3 @@ The `SciPy testing guidelines`_ are also a good howto for writing test cases.
 .. _Gromacs: http://www.gromacs.org
 
 """
-from __future__ import absolute_import, print_function
-
-try:
-    from MDAnalysisTests import run as test
-except ImportError:
-    print("Install MDAnalysisTests first. The source package is available from")
-    print("http://pypi.python.org/pypi/MDAnalysisTests")
-    raise ImportError("Package MDAnalysisTests required!")
