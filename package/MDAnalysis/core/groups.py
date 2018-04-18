@@ -1824,7 +1824,7 @@ class AtomGroup(GroupBase):
 
         Raises
         ------
-        `TypeError` if the arbitrary atomgroups passed are of type MDAnalysis.core.groups.AtomGroup
+        `TypeError` if the arbitrary atomgroups passed are not of type `MDAnalysis.core.groups.AtomGroup`
 
         Examples
         --------
