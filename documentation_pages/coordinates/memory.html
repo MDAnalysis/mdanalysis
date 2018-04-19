@@ -478,8 +478,9 @@ specifying the order of columns through the format option.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>coordinate_array</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – The underlying array of coordinates</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>coordinate_array</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – The underlying array of coordinates. The MemoryReader now
+necessarily requires a np.ndarray</li>
 <li><strong>order</strong> (<em>{&quot;afc&quot;</em><em>, </em><em>&quot;acf&quot;</em><em>, </em><em>&quot;caf&quot;</em><em>, </em><em>&quot;fac&quot;</em><em>, </em><em>&quot;fca&quot;</em><em>, </em><em>&quot;cfa&quot;}</em><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
 to (a)tom, (f)rame, (c)oordinates all six combinations
 of ‘a’, ‘f’, ‘c’ are allowed ie “fac” - return array
@@ -495,12 +496,18 @@ when created from an array</li>
 </ul>
 </td>
 </tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">TypeError if the coordinate array passed is not a np.ndarray</p>
+</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">At the moment, only a fixed <cite>dimension</cite> is supported, i.e., the same
+<p>At the moment, only a fixed <cite>dimension</cite> is supported, i.e., the same
 unit cell for all frames in <cite>coordinate_array</cite>. See issue <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/1041">#1041</a>.</p>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.1: </span>The input to the MemoryReader now must be a np.ndarray</p>
+</div>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.memory.MemoryReader.OtherWriter">
