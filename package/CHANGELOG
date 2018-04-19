@@ -13,13 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/18
+??/??/18 richardjgowers
 
   * 0.18.1
 
 Enhancements
 
 Fixes
+  * Fixed order of indices in Angle/Dihedral/Improper repr
 
 Changes
 
