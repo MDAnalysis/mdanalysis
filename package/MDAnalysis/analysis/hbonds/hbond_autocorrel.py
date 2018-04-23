@@ -159,8 +159,25 @@ import scipy.optimize
 
 import warnings
 
+from MDAnalysis.due import due, BibTeX
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.distances import distance_array, calc_angles, calc_bonds
+
+due.cite(BibTeX(("""\
+@article{hbond_autocorrel,
+author = {Richard J. Gowers and Paola Carbone},
+title = {A multiscale approach to model hydrogen bonding: The case of polyamide},
+journal = {The Journal of Chemical Physics},
+volume = {142},
+number = {22},
+pages = {224907},
+year = {2015},
+doi = {10.1063/1.4922445},
+}"""
+    )),
+         description="Hydrogen bonding autocorrelation time",
+         path='MDAnalysis.analysis.hbonds.hbond_autocorrel',
+)
 
 
 class HydrogenBondAutoCorrel(object):
