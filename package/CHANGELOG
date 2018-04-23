@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/18 richardjgowers, palnabarun
+??/??/18 richardjgowers, palnabarun, orbeckst
 
   * 0.18.1
 
@@ -22,7 +22,8 @@ Enhancements
 Fixes
   * Fixed order of indices in Angle/Dihedral/Improper repr
   * coordinates.memory.MemoryReader now takes np.ndarray only (Issue #1685)
-
+  * Silenced warning when duecredit is not installed (Issue #1872)
+        
 Changes
 
 
