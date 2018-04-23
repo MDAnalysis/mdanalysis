@@ -82,10 +82,10 @@ except Exception as err:
         warnings.warn(errmsg)
         logging.getLogger("duecredit").error(
             "Failed to import duecredit due to {}".format(str(err)))
-    else:
-        # for debugging
-        import warnings
-        warnings.warn(str(err))
+    # else:
+    #   Do not issue any warnings if duecredit is not installed;
+    #   this is the user's choice (Issue #1872)
+
     # Initiate due stub
     due = InactiveDueCreditCollector()
     BibTeX = Doi = Url = _donothing_func
