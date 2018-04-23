@@ -18,6 +18,7 @@ The rules for this file:
   * 0.18.1
 
 Enhancements
+  * Added hbond_autocorrel duecredit stub
 
 Fixes
   * Fixed order of indices in Angle/Dihedral/Improper repr
