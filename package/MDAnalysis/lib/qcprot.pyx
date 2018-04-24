@@ -139,6 +139,31 @@ Users will typically use the :func:`CalcRMSDRotationalMatrix` function.
 import numpy as np
 cimport numpy as np
 
+from ..due import due, BibTeX, Doi
+
+# providing DOI for this citation doesnt seem to work (as of 22/04/18)
+_QCBIB = """\
+@article{qcprot2,
+author = {Pu Liu and Dimitris K. Agrafiotis and Douglas L. Theobald},
+title = {Fast determination of the optimal rotational matrix for macromolecular superpositions},
+journal = {Journal of Computational Chemistry},
+volume = {31},
+number = {7},
+pages = {1561-1563},
+doi = {10.1002/jcc.21439},
+}
+"""
+
+due.cite(Doi("10.1107/s0108767305015266"),
+         description="QCProt implementation",
+         path="MDAnalysis.lib.qcprot",
+         cite_module=True)
+due.cite(BibTeX(_QCBIB),
+         description="QCProt implementation",
+         path="MDAnalysis.lib.qcprot",
+         cite_module=True)
+
+
 import cython
 
 cdef extern from "math.h":
