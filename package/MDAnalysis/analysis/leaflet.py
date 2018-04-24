@@ -79,6 +79,14 @@ import networkx as NX
 from .. import core
 from . import distances
 
+from ..due import due, Doi
+
+due.cite(Doi("10.1002/jcc.21787"),
+         description="LeafletFinder algorithm",
+         path="MDAnalysis.analysis.leaflet",
+         cite_module=True)
+del Doi
+
 
 class LeafletFinder(object):
     """Identify atoms in the same leaflet of a lipid bilayer.
