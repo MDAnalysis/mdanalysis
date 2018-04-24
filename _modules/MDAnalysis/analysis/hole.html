@@ -74,9 +74,10 @@
 <span class="sd">:Copyright: GNU Public License v2</span>
 
 <span class="sd">With the help of this module, the :program:`hole` program from the HOLE_ suite</span>
-<span class="sd">of tools [Smart1993]_ [Smart1996]_ can be run on frames in a trajectory. Data</span>
-<span class="sd">can be combined and analyzed.</span>
-
+<span class="sd">of tools [Smart1993]_ [Smart1996]_ can be run on frames in an MD trajectory or</span>
+<span class="sd">NMR ensemble in order to analyze an ion channel pore or transporter pathway</span>
+<span class="sd">[Stelzl2014]_ as a function of time or arbitrary order parameters. Data can be</span>
+<span class="sd">combined and analyzed.</span>
 
 <span class="sd">HOLE_ must be installed separately and can be obtained in binary form</span>
 <span class="sd">from http://www.holeprogram.org/ or as source from</span>
@@ -270,10 +271,16 @@
 
 <span class="sd">.. [Smart1993] O.S. Smart, J.M. Goodfellow and B.A. Wallace.</span>
 <span class="sd">               The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.</span>
+<span class="sd">               DOI: 10.1016/S0006-3495(93)81293-1</span>
 <span class="sd">.. [Smart1996] O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.</span>
 <span class="sd">               HOLE: A program for the analysis of the pore dimensions of ion channel</span>
 <span class="sd">               structural models. J.Mol.Graph., 14:354–360, 1996.</span>
+<span class="sd">               DOI: 10.1016/S0263-7855(97)00009-X</span>
 <span class="sd">               URL http://www.holeprogram.org/</span>
+<span class="sd">.. [Stelzl2014] L. S. Stelzl, P. W. Fowler, M. S. P. Sansom, and O. Beckstein.</span>
+<span class="sd">               Flexible gates generate occluded intermediates in the transport cycle</span>
+<span class="sd">               of LacY. J Mol Biol, 426:735–751, 2014.</span>
+<span class="sd">               DOI: 10.1016/j.jmb.2013.10.024</span>
 
 <span class="sd">.. Footnotes</span>
 
@@ -316,6 +323,22 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="k">import</span> <span class="n">ApplicationError</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">which</span><span class="p">,</span> <span class="n">realpath</span><span class="p">,</span> <span class="n">asiterable</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">FORTRANReader</span>
+
+<span class="kn">from</span> <span class="nn">..due</span> <span class="k">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
+
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1016/S0006-3495(93)81293-1&quot;</span><span class="p">),</span>
+         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;HOLE program&quot;</span><span class="p">,</span>
+         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.hole&quot;</span><span class="p">,</span>
+         <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1016/S0263-7855(97)00009-X&quot;</span><span class="p">),</span>
+         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;HOLE program&quot;</span><span class="p">,</span>
+         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.hole&quot;</span><span class="p">,</span>
+         <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1016/j.jmb.2013.10.024&quot;</span><span class="p">),</span>
+         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;HOLE trajectory analysis with orderparameters&quot;</span><span class="p">,</span>
+         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.hole&quot;</span><span class="p">,</span>
+         <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">Doi</span>
 
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.hole&quot;</span><span class="p">)</span>

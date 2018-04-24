@@ -280,6 +280,14 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.psa&#39;</span><span class="p">)</span>
 
 
+<span class="kn">from</span> <span class="nn">..due</span> <span class="k">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
+
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1371/journal.pcbi.1004568&quot;</span><span class="p">),</span>
+         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Path Similarity Analysis algorithm and implementation&quot;</span><span class="p">,</span>
+         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.psa&quot;</span><span class="p">,</span>
+         <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">Doi</span>
+
 <div class="viewcode-block" id="get_path_metric_func"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.get_path_metric_func">[docs]</a><span class="k">def</span> <span class="nf">get_path_metric_func</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Selects a path metric function by name.</span>
 

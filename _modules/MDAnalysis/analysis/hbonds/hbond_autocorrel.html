@@ -208,6 +208,13 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="k">import</span> <span class="n">distance_array</span><span class="p">,</span> <span class="n">calc_angles</span><span class="p">,</span> <span class="n">calc_bonds</span>
 
+<span class="kn">from</span> <span class="nn">MDAnalysis.due</span> <span class="k">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1063/1.4922445&quot;</span><span class="p">),</span>
+         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Hydrogen bonding autocorrelation time&quot;</span><span class="p">,</span>
+         <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.hbonds.hbond_autocorrel&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">del</span> <span class="n">Doi</span>
+
 
 <div class="viewcode-block" id="HydrogenBondAutoCorrel"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Perform a time autocorrelation of the hydrogen bonds in the system.</span>

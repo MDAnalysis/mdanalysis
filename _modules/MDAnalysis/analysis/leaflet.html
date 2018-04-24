@@ -125,6 +125,14 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">core</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">distances</span>
 
+<span class="kn">from</span> <span class="nn">..due</span> <span class="k">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
+
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/jcc.21787&quot;</span><span class="p">),</span>
+         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;LeafletFinder algorithm&quot;</span><span class="p">,</span>
+         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.leaflet&quot;</span><span class="p">,</span>
+         <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">Doi</span>
+
 
 <div class="viewcode-block" id="LeafletFinder"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder">[docs]</a><span class="k">class</span> <span class="nc">LeafletFinder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Identify atoms in the same leaflet of a lipid bilayer.</span>

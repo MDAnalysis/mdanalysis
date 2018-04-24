@@ -60,8 +60,10 @@
 </tbody>
 </table>
 <p>With the help of this module, the <strong class="program">hole</strong> program from the <a class="reference external" href="http://www.holeprogram.org">HOLE</a> suite
-of tools <a class="reference internal" href="#smart1993" id="id1">[Smart1993]</a> <a class="reference internal" href="#smart1996" id="id2">[Smart1996]</a> can be run on frames in a trajectory. Data
-can be combined and analyzed.</p>
+of tools <a class="reference internal" href="#smart1993" id="id1">[Smart1993]</a> <a class="reference internal" href="#smart1996" id="id2">[Smart1996]</a> can be run on frames in an MD trajectory or
+NMR ensemble in order to analyze an ion channel pore or transporter pathway
+<a class="reference internal" href="#stelzl2014" id="id3">[Stelzl2014]</a> as a function of time or arbitrary order parameters. Data can be
+combined and analyzed.</p>
 <p><a class="reference external" href="http://www.holeprogram.org">HOLE</a> must be installed separately and can be obtained in binary form
 from <a class="reference external" href="http://www.holeprogram.org/">http://www.holeprogram.org/</a> or as source from
 <a class="reference external" href="https://github.com/osmart/hole2">https://github.com/osmart/hole2</a>. (HOLE is open source and available
@@ -79,7 +81,7 @@ points for applying <a class="reference external" href="http://www.holeprogram.o
 structure of the Gramicidin A (gA) channel. We use the <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE" title="MDAnalysis.analysis.hole.HOLE"><code class="xref py py-class docutils literal"><span class="pre">HOLE</span></code></a>
 class, which acts as a wrapper around <strong class="program">hole</strong>. It therefore
 shares some of the limitations of <a class="reference external" href="http://www.holeprogram.org">HOLE</a>, namely, that it can only
-process PDB files <a class="footnote-reference" href="#holedcd" id="id3">[1]</a>.</p>
+process PDB files <a class="footnote-reference" href="#holedcd" id="id4">[1]</a>.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hole</span> <span class="k">import</span> <span class="n">HOLE</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PDB_HOLE</span>
 
@@ -370,7 +372,7 @@ an integer.</li>
 from a CHARMM binary dynamics DCD coordinate file - using the
 <cite>dcd</cite> keyword or use <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLEtraj" title="MDAnalysis.analysis.hole.HOLEtraj"><code class="xref py py-class docutils literal"><span class="pre">HOLEtraj</span></code></a>.</li>
 <li>HOLE is very picky and does not read all DCD-like
-formats <a class="footnote-reference" href="#holedcd" id="id4">[1]</a>. If in doubt, look into the <cite>logfile</cite> for
+formats <a class="footnote-reference" href="#holedcd" id="id5">[1]</a>. If in doubt, look into the <cite>logfile</cite> for
 error diagnostics.</li>
 </ul>
 <dl class="attribute">
@@ -874,7 +876,8 @@ The data file can be written with the convenience function <a class="reference i
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label"><a class="fn-backref" href="#id1">[Smart1993]</a></td><td>O.S. Smart, J.M. Goodfellow and B.A. Wallace.
-The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.</td></tr>
+The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.
+DOI: 10.1016/S0006-3495(93)81293-1</td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="smart1996" rules="none">
@@ -883,13 +886,23 @@ The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.</td
 <tr><td class="label"><a class="fn-backref" href="#id2">[Smart1996]</a></td><td>O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.
 HOLE: A program for the analysis of the pore dimensions of ion channel
 structural models. J.Mol.Graph., 14:354–360, 1996.
+DOI: 10.1016/S0263-7855(97)00009-X
 URL <a class="reference external" href="http://www.holeprogram.org/">http://www.holeprogram.org/</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="stelzl2014" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[Stelzl2014]</a></td><td>L. S. Stelzl, P. W. Fowler, M. S. P. Sansom, and O. Beckstein.
+Flexible gates generate occluded intermediates in the transport cycle
+of LacY. J Mol Biol, 426:735–751, 2014.
+DOI: 10.1016/j.jmb.2013.10.024</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="holedcd" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> PDB files are not the only files that <strong class="program">hole</strong> can
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id4">1</a>, <a class="fn-backref" href="#id5">2</a>)</em> PDB files are not the only files that <strong class="program">hole</strong> can
 read. In principle, it is also able to read CHARMM DCD
 trajectories and generate a hole profile for each frame. However,
 native support for DCD in <strong class="program">hole</strong> is patchy and not every

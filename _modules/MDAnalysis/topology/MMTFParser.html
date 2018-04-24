@@ -138,6 +138,7 @@
     <span class="n">SegmentAttr</span><span class="p">,</span>  <span class="c1"># for model</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..core.selection</span> <span class="k">import</span> <span class="n">RangeSelection</span>
+<span class="kn">from</span> <span class="nn">..due</span> <span class="k">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
 
 <span class="k">def</span> <span class="nf">_parse_mmtf</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
@@ -194,6 +195,11 @@
 <div class="viewcode-block" id="MMTFParser"><a class="viewcode-back" href="../../../documentation_pages/topology/MMTFParser.html#MDAnalysis.topology.MMTFParser.MMTFParser">[docs]</a><span class="k">class</span> <span class="nc">MMTFParser</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MMTF&#39;</span>
 
+    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1371/journal.pcbi.1005575&#39;</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MMTF Parser&quot;</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.topology.MMTFParser&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">MMTFDecoder</span><span class="p">):</span>
             <span class="n">mtop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
