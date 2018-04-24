@@ -40,13 +40,12 @@ class TestDuecredits(object):
     def test_duecredit_active(self):
         assert mda.due.active == True
 
-
-    def test_duecredit_collector_citations(self):
-        assert mda.due.citations[('MDAnalysis/',
-                                  'gowers2016')].cites_module == True
-        assert mda.due.citations[('MDAnalysis/',
-                                  '10.1002/jcc.21787')].cites_module == True
-
+    @pytest.mark.parametrize("module,path,citekey", [
+        ("MDAnalysis", "MDAnalysis", "gowers2016"),
+        ("MDAnalysis", "MDAnalysis", "10.1002/jcc.21787"),
+    ])
+    def test_duecredit_collector_primary(self, module, path, citekey):
+        assert mda.due.citations[(path, citekey)].cites_module == True
 
     @pytest.mark.parametrize("module,path,citekey", [
         ("MDAnalysis.analysis.psa",
@@ -56,6 +55,6 @@ class TestDuecredits(object):
          "MDAnalysis.analysis.hbonds.hbond_autocorrel",
          "10.1063/1.4922445"),
         ])
-    def test_duecredit_analysis(self, module, path, citekey):
+    def test_duecredit_collector_analysis(self, module, path, citekey):
         importlib.import_module(module)
         assert mda.due.citations[(path, citekey)].cites_module == True
