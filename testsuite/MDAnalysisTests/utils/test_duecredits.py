@@ -29,6 +29,7 @@ import importlib
 # (if set to 'no', the tests will be SKIPPED; has to be yes, true, or 1 for duecredit
 # to work; duecredit must also be installed)
 import MDAnalysis as mda
+from MDAnalysisTests.datafiles import MMTF
 
 
 @pytest.mark.skipif((os.environ.get('DUECREDIT_ENABLE', 'yes').lower()
@@ -80,3 +81,12 @@ class TestDuecredits(object):
     def test_duecredit_collector_analysis_modules(self, module, path, citekey):
         importlib.import_module(module)
         assert mda.due.citations[(path, citekey)].cites_module == True
+
+    def test_duecredit_mmtf(self):
+        # doesn't trigger on import but on use of either parser or reader
+        u = mda.Universe(MMTF)
+
+        assert mda.due.citations[('MDAnalysis.coordinates.MMTF',
+                                  '10.1371/journal.pcbi.1005575')].cites_module
+        assert mda.due.citations[('MDAnalysis.topology.MMTFParser',
+                                  '10.1371/journal.pcbi.1005575')].cites_module

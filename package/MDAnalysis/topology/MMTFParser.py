@@ -92,6 +92,7 @@ from ..core.topologyattrs import (
     SegmentAttr,  # for model
 )
 from ..core.selection import RangeSelection
+from ..due import due, Doi
 
 
 def _parse_mmtf(fn):
@@ -148,6 +149,11 @@ class ModelSelection(RangeSelection):
 class MMTFParser(base.TopologyReaderBase):
     format = 'MMTF'
 
+    @due.dcite(
+        Doi('10.1371/journal.pcbi.1005575'),
+        description="MMTF Parser",
+        path='MDAnalysis.topology.MMTFParser',
+    )
     def parse(self, **kwargs):
         if isinstance(self.filename, mmtf.MMTFDecoder):
             mtop = self.filename
