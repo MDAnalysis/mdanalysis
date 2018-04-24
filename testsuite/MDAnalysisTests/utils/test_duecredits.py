@@ -23,6 +23,8 @@ from __future__ import absolute_import
 import os
 import pytest
 
+import importlib
+
 # environment variable DUECREDIT_ENABLE is set to yes in MDAnalysisTests/__init__.py
 # (if set to 'no', the tests will be SKIPPED; has to be yes, true, or 1 for duecredit
 # to work; duecredit must also be installed)
@@ -40,8 +42,20 @@ class TestDuecredits(object):
 
 
     def test_duecredit_collector_citations(self):
-
         assert mda.due.citations[('MDAnalysis/',
                                   'gowers2016')].cites_module == True
         assert mda.due.citations[('MDAnalysis/',
                                   '10.1002/jcc.21787')].cites_module == True
+
+
+    @pytest.mark.parametrize("module,path,citekey", [
+        ("MDAnalysis.analysis.psa",
+         "MDAnalysis.analysis.psa",
+         "10.1371/journal.pcbi.1004568"),
+        ("MDAnalysis.analysis.hbonds.hbond_autocorrel",
+         "MDAnalysis.analysis.hbonds.hbond_autocorrel",
+         "10.1063/1.4922445"),
+        ])
+    def test_duecredit_analysis(self, module, path, citekey):
+        importlib.import_module(module)
+        assert mda.due.citations[(path, citekey)].cites_module == True
