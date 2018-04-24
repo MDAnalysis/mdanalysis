@@ -67,6 +67,12 @@ class TestDuecredits(object):
         ("MDAnalysis.analysis.hole",
          "MDAnalysis.analysis.hole",
          "10.1016/j.jmb.2013.10.024"),
+        ("MDAnalysis.lib.qcprot",
+         "MDAnalysis.lib.qcprot",
+         "10.1107/s0108767305015266"),
+        ("MDAnalysis.lib.qcprot",
+         "MDAnalysis.lib.qcprot",
+         "qcprot2"),
         ])
     def test_duecredit_collector_analysis_modules(self, module, path, citekey):
         importlib.import_module(module)
