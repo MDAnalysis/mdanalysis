@@ -234,6 +234,14 @@ import logging
 logger = logging.getLogger('MDAnalysis.analysis.psa')
 
 
+from ..due import due, Doi
+
+due.cite(Doi("10.1371/journal.pcbi.1004568"),
+         description="Path Similarity Analysis algorithm and implementation",
+         path="MDAnalysis.analysis.psa",
+         cite_module=True)
+del Doi
+
 def get_path_metric_func(name):
     """Selects a path metric function by name.
 
