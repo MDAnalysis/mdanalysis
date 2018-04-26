@@ -44,7 +44,7 @@ __all__ = [
     "PSF_TRICLINIC", "DCD_TRICLINIC",  # CHARMM c36 new unitcell, NPT 125 TIP3P (box vectors, see Issue 187 for details)
     "PSF_NAMD", "PDB_NAMD",  # NAMD
     "PSF_NAMD_TRICLINIC", "DCD_NAMD_TRICLINIC", # NAMD, triclinic unitcell (Issue 187)
-    "PSF_NAMD_GBIS", "DCD_NAMD_GBIS",  # NAMD, implicit solvent, 100 steps, #1819  
+    "PSF_NAMD_GBIS", "DCD_NAMD_GBIS",  # NAMD, implicit solvent, 100 steps, #1819
     "PSF_nosegid",  # psf without a segid, Issue 121
     "PDB_small",  # PDB
     "PDB_closed",
@@ -85,7 +85,7 @@ __all__ = [
     "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
-    "TXYZ", "ARC", 	      # Tinker files
+    "TXYZ", "ARC",        # Tinker files
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
@@ -154,6 +154,7 @@ __all__ = [
     "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
     "GSD",
+    "GRO_MEMPROT", "XTC_MEMPROT" # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
 ]
 
 from pkg_resources import resource_filename
@@ -240,6 +241,8 @@ TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
 XTC_sub_sol = resource_filename(__name__, 'data/cobrotoxin.xtc')
 PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
 PDB_xlserial = resource_filename(__name__, 'data/xl_serial.pdb')
+GRO_MEMPROT = resource_filename(__name__, 'data/analysis/YiiP_lipids.gro.gz')
+XTC_MEMPROT = resource_filename(__name__, 'data/analysis/YiiP_lipids.xtc')
 XTC_multi_frame = resource_filename(
     __name__, 'data/xtc_test_only_10_frame_10_atoms.xtc'
 )
