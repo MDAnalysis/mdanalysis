@@ -198,6 +198,8 @@ class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
         name for the attribute on a singular object (Atom/Residue/Segment)
     per_object : str
         If there is a strict mapping between Component and Attribute
+    dtype : int/float/object
+        Type to coerce this attribute to be.  For string use 'object'
     top : Topology
         handle for the Topology object TopologyAttr is associated with
 
@@ -211,9 +213,13 @@ class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
 
     groupdoc = None
     singledoc = None
+    dtype = None
 
     def __init__(self, values, guessed=False):
-        self.values = values
+        if self.dtype is None:
+            self.values = values
+        else:
+            self.values = np.asarray(values, dtype=self.dtype)
         self._guessed = guessed
 
     @staticmethod
@@ -244,6 +250,9 @@ class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
         """
         if values is None:
             values = cls._gen_initial_values(n_atoms, n_residues, n_segments)
+        elif cls.dtype is not None:
+            # if supplied starting values and statically typed
+            values = np.asarray(values, dtype=cls.dtype)
         return cls(values)
 
     def copy(self):
@@ -450,6 +459,7 @@ class Atomids(AtomAttr):
     attrname = 'ids'
     singular = 'id'
     per_object = 'atom'
+    dtype = int
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -463,6 +473,7 @@ class Atomnames(AtomAttr):
     attrname = 'names'
     singular = 'name'
     per_object = 'atom'
+    dtype = object
     transplants = defaultdict(list)
 
     @staticmethod
@@ -627,6 +638,7 @@ class Atomtypes(AtomAttr):
     attrname = 'types'
     singular = 'type'
     per_object = 'atom'
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -638,6 +650,7 @@ class Elements(AtomAttr):
     """Element for each atom"""
     attrname = 'elements'
     singular = 'element'
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -650,6 +663,7 @@ class Radii(AtomAttr):
     attrname = 'radii'
     singular = 'radius'
     per_object = 'atom'
+    dtype = float
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -698,6 +712,7 @@ class ChainIDs(AtomAttr):
     attrname = 'chainIDs'
     singular = 'chainID'
     per_object = 'atom'
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -709,6 +724,7 @@ class Tempfactors(AtomAttr):
     attrname = 'tempfactors'
     singular = 'tempfactor'
     per_object = 'atom'
+    dtype = float
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -722,6 +738,7 @@ class Masses(AtomAttr):
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
+    dtype = np.float64
 
     groupdoc = """Mass of each component in the Group.
 
@@ -732,10 +749,6 @@ class Masses(AtomAttr):
     """
 
     singledoc = """Mass of the component."""
-
-    def __init__(self, values, guessed=False):
-        self.values = np.asarray(values, dtype=np.float64)
-        self._guessed = guessed
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1092,6 +1105,7 @@ class Charges(AtomAttr):
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
+    dtype = float
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1137,6 +1151,7 @@ class Bfactors(AtomAttr):
     attrname = 'bfactors'
     singular = 'bfactor'
     per_object = 'atom'
+    dtype = float
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1148,6 +1163,7 @@ class Occupancies(AtomAttr):
     attrname = 'occupancies'
     singular = 'occupancy'
     per_object = 'atom'
+    dtype = float
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1160,6 +1176,7 @@ class AltLocs(AtomAttr):
     attrname = 'altLocs'
     singular = 'altLoc'
     per_object = 'atom'
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1205,6 +1222,7 @@ class Resids(ResidueAttr):
     attrname = 'resids'
     singular = 'resid'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
+    dtype = int
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1217,6 +1235,7 @@ class Resnames(ResidueAttr):
     singular = 'resname'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
     transplants = defaultdict(list)
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1378,6 +1397,7 @@ class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
+    dtype = int
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1388,6 +1408,7 @@ class ICodes(ResidueAttr):
     """Insertion code for Atoms"""
     attrname = 'icodes'
     singular = 'icode'
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1402,6 +1423,7 @@ class Moltypes(ResidueAttr):
     attrname = 'moltypes'
     singular = 'moltype'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
+    dtype = object
 
 
 class Molnums(ResidueAttr):
@@ -1412,7 +1434,7 @@ class Molnums(ResidueAttr):
     attrname = 'molnums'
     singular = 'molnum'
     target_classes = [AtomGroup, ResidueGroup, Atom, Residue]
-
+    dtype = int
 
 # segment attributes
 
@@ -1454,6 +1476,7 @@ class Segids(SegmentAttr):
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):

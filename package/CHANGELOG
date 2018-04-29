@@ -26,8 +26,11 @@ Fixes
   * coordinates.memory.MemoryReader now takes np.ndarray only (Issue #1685)
   * Silenced warning when duecredit is not installed (Issue #1872)
   * Fixed HBondAnalysis not considering PBC for distances (Issue #1878)
+  * Adding new TopologyAttrs with values defined always coerces this into
+    a numpy array (Issue #1876)
 
 Changes
+  * TopologyAttrs are now statically typed (Issue #1876)
 
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
