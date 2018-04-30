@@ -326,10 +326,9 @@ import warnings
 import logging
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
-from MDAnalysis.lib.mdamath import norm, angle
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
-from MDAnalysis.lib.distances import calc_angles
+from MDAnalysis.lib.distances import calc_bonds, calc_angles
 
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
@@ -802,11 +801,13 @@ class HydrogenBondAnalysis(object):
                       "constructing the HydrogenBondAnalysis class is safer. "
                       "Removal of this feature is targeted for 1.0",
                       category=DeprecationWarning)
+        box = self.u.dimensions if self.pbc else None
         try:
             hydrogens = [
                 a for a in self.u.atoms[atom.index + 1:atom.index + 4]
-                if a.name.startswith(('H', '1H', '2H', '3H')) \
-                    and self.calc_eucl_distance(atom, a) < self.r_cov[atom.name[0]]]
+                if (a.name.startswith(('H', '1H', '2H', '3H')) and
+                    self.calc_eucl_distance(atom, a, box) < self.r_cov[atom.name[0]])
+                ]
         except IndexError:
             hydrogens = []  # weird corner case that atom is the last one in universe
         return hydrogens
@@ -981,6 +982,7 @@ class HydrogenBondAnalysis(object):
             if self.update_selection2:
                 self._update_selection_2()
 
+            box = self.u.dimensions if self.pbc else None
             if self.selection1_type in ('donor', 'both') and self._s2_acceptors:
                 self.logger_debug("Selection 1 Donors <-> Acceptors")
                 ns_acceptors = AtomNeighborSearch(self._s2_acceptors)
@@ -989,10 +991,9 @@ class HydrogenBondAnalysis(object):
                     for h in donor_h_set:
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
-                            box = self.u.dimensions if self.pbc else None
                             angle = self.calc_angle(d, h, a, box=box)
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = self.calc_eucl_distance(donor_atom, a)
+                            dist = self.calc_eucl_distance(donor_atom, a, box)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
                                     "S1-D: {0!s} <-> S2-A: {1!s} {2:f} A, {3:f} DEG".format(h.index, a.index, dist, angle))
@@ -1015,10 +1016,9 @@ class HydrogenBondAnalysis(object):
                                     (h.index, a.index) in already_found or
                                     (a.index, h.index) in already_found):
                                 continue
-                            box = self.u.dimensions if self.pbc else None
                             angle = self.calc_angle(d, h, a, box=box)
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = self.calc_eucl_distance(donor_atom, a)
+                            dist = self.calc_eucl_distance(donor_atom, a, box)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
                                     "S1-A: {0!s} <-> S2-D: {1!s} {2:f} A, {3:f} DEG".format(a.index, h.index, dist, angle))
@@ -1044,9 +1044,9 @@ class HydrogenBondAnalysis(object):
         return np.rad2deg(angle[0])
 
     @staticmethod
-    def calc_eucl_distance(a1, a2):
+    def calc_eucl_distance(a1, a2, box=None):
         """Calculate the Euclidean distance between two atoms. """
-        return norm(a2.position - a1.position)
+        return calc_bonds(a1.position[None, :], a2.position[None, :], box=box)[0]
 
     @property
     def timeseries(self):
