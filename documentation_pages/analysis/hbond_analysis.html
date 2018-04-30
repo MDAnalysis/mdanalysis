@@ -706,7 +706,7 @@ and added <em>kwargs</em> so that it can be used instead of
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OE1', 'OC2', 'SG', 'OD2', 'OC1', 'O', 'OW', 'OG', 'OE2', 'SD', 'OH', 'OD1', 'ND1', 'OG1', 'NE2', 'OH2'), 'GLYCAM06': ('OS', 'OY', 'NT', 'N', 'O', 'SM', 'O2', 'OW', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('O', 'OE1', 'OW', 'OC1', 'OH', 'SG', 'OD1', 'OD2', 'OC2', 'ND1', 'NE2', 'SD', 'OG', 'OH2', 'OG1', 'OE2'), 'GLYCAM06': ('O', 'NT', 'SM', 'OW', 'OH', 'O2', 'OS', 'N', 'OY'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -714,7 +714,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('NE', 'NZ', 'NE1', 'ND2', 'SG', 'NH1', 'NH2', 'N', 'OW', 'OG', 'OH', 'ND1', 'OG1', 'NE2', 'OH2'), 'GLYCAM06': ('OW', 'N3', 'N', 'OH', 'NT'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('NH1', 'OW', 'OH', 'NE', 'SG', 'NE1', 'N', 'ND1', 'OG', 'NE2', 'OG1', 'OH2', 'ND2', 'NZ', 'NH2'), 'GLYCAM06': ('N3', 'OH', 'NT', 'OW', 'N'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
@@ -728,7 +728,7 @@ use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
 
 <dl class="staticmethod">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.calc_eucl_distance">
-<em class="property">static </em><code class="descname">calc_eucl_distance</code><span class="sig-paren">(</span><em>a1</em>, <em>a2</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_analysis.html#HydrogenBondAnalysis.calc_eucl_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.calc_eucl_distance" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">calc_eucl_distance</code><span class="sig-paren">(</span><em>a1</em>, <em>a2</em>, <em>box=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_analysis.html#HydrogenBondAnalysis.calc_eucl_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.calc_eucl_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the Euclidean distance between two atoms.</p>
 </dd></dl>
 
