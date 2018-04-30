@@ -837,11 +837,12 @@ class HydrogenBondAnalysis(object):
             self.logger_debug("Selection 1 acceptors: {0}".format(len(self._s1_acceptors)))
 
     def _update_selection_2(self):
+        box = self.u.dimensions if self.pbc else None
         self._s2 = self.u.select_atoms(self.selection2)
         if self.filter_first and self._s2:
             self.logger_debug('Size of selection 2 before filtering:'
                               ' {} atoms'.format(len(self._s2)))
-            ns_selection_2 = AtomNeighborSearch(self._s2)
+            ns_selection_2 = AtomNeighborSearch(self._s2, box)
             self._s2 = ns_selection_2.search(self._s1, 3. * self.distance)
         self.logger_debug('Size of selection 2: {0} atoms'.format(len(self._s2)))
         if not self._s2:
@@ -985,7 +986,7 @@ class HydrogenBondAnalysis(object):
             box = self.u.dimensions if self.pbc else None
             if self.selection1_type in ('donor', 'both') and self._s2_acceptors:
                 self.logger_debug("Selection 1 Donors <-> Acceptors")
-                ns_acceptors = AtomNeighborSearch(self._s2_acceptors)
+                ns_acceptors = AtomNeighborSearch(self._s2_acceptors, box)
                 for i, donor_h_set in self._s1_donors_h.items():
                     d = self._s1_donors[i]
                     for h in donor_h_set:
@@ -1006,7 +1007,7 @@ class HydrogenBondAnalysis(object):
                                 already_found[(h.index, a.index)] = True
             if self.selection1_type in ('acceptor', 'both') and self._s1_acceptors:
                 self.logger_debug("Selection 1 Acceptors <-> Donors")
-                ns_acceptors = AtomNeighborSearch(self._s1_acceptors)
+                ns_acceptors = AtomNeighborSearch(self._s1_acceptors, box)
                 for i, donor_h_set in self._s2_donors_h.items():
                     d = self._s2_donors[i]
                     for h in donor_h_set:
