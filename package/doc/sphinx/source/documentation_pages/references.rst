@@ -12,6 +12,9 @@
  References
 ************
 
+.. Note:: *Please cite your use of MDAnalysis and the packages and
+          algorithms that it uses. Thanks!*
+
 
 Citations for the whole MDAnalysis library
 ==========================================
@@ -125,19 +128,20 @@ packages used. Duecredit is easy to install via ``pip``. Simply type:
 duecredit_ will remain an optional dependency, i.e. any code using
 MDAnalysis will work correctly even without duecredit installed.
 
-A list of citations for ``yourscript.py`` can be obtained using simple
-commands.
+A list of citations for ``yourscript.py`` can be obtained by running
+it together with the ``duecredit`` module
 
 .. code-block:: bash
 
    cd /path/to/yourmodule
    python -m duecredit yourscript.py
 
-or set the environment variable :envvar:`DUECREDIT_ENABLE`
+or by setting the environment variable :envvar:`DUECREDIT_ENABLE`
 
 .. code-block:: bash
 
-   DUECREDIT-ENABLE=yes python yourscript.py
+   export DUECREDIT_ENABLE=yes
+   python yourscript.py
 
 Once the citations have been extracted (to a hidden file in the
 current directory), you can use the :program:`duecredit` program to
@@ -148,9 +152,6 @@ BibTeX format, using:
  
    duecredit summary --format=bibtex 
 
-
-**Please cite your use of MDAnalysis and the packages and algorithms
-that it uses. Thanks!**
 
 
 .. _duecredit: https://github.com/duecredit/duecredit
