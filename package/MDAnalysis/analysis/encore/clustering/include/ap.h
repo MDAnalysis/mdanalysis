@@ -23,8 +23,10 @@ int trmIndex(int, int);
 
 int sqmIndex(int, int, int);
 
-float min(float*, int);
+#ifndef _WIN32
+    float min(float*, int);
+    float max(float*, int);
+#endif
 
-float max(float*, int);
 
 int CAffinityPropagation(float*, int, float, int, int, int, long*);

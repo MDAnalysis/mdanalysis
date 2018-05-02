@@ -307,7 +307,7 @@ static void _calc_self_distance_array_triclinic(coordinate* ref, int numref,
   }
 }
 
-static void _coord_transform(coordinate* coords, int numCoords, coordinate* box)
+void _coord_transform(float coords[][3], int numCoords, float box[][3])
 {
   int i, j, k;
   float new[3];

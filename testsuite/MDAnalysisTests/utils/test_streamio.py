@@ -168,7 +168,7 @@ class TestNamedStream(object):
 
 
 class TestNamedStream_filename_behavior(object):
-    textname = "~/stories/jabberwock.txt"  # with tilde ~ to test regular expanduser()
+    textname = os.path.join("~", "stories", "jabberwock.txt") # with tilde ~ to test regular expanduser()
     # note: no setUp() because classes with generators would run it
     #       *for each generated test* and we need it for the generator method
 

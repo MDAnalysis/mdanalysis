@@ -24,6 +24,7 @@ from __future__ import absolute_import, division
 
 from six.moves import range, StringIO
 import pytest
+import os
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
@@ -105,7 +106,10 @@ class TestStringFunctions(object):
 
 
 def test_greedy_splitext(inp="foo/bar/boing.2.pdb.bz2",
-                         ref=("foo/bar/boing", ".2.pdb.bz2")):
+                         ref=["foo/bar/boing", ".2.pdb.bz2"]):
+    inp = os.path.normpath(inp)
+    ref[0] = os.path.normpath(ref[0])
+    ref[1] = os.path.normpath(ref[1])
     root, ext = util.greedy_splitext(inp)
     assert root == ref[0], "root incorrect"
     assert ext == ref[1], "extension incorrect"

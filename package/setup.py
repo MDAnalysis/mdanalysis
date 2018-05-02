@@ -286,6 +286,12 @@ def extensions(config):
     # The callable is passed so that it is only evaluated at install time.
 
     include_dirs = [get_numpy_include]
+    # Windows automatically handles math library linking
+    # and will not build MDAnalysis if we try to specify one
+    if os.name == 'nt':
+        mathlib = []
+    else:
+        mathlib = ['m']
 
     libdcd = MDAExtension('MDAnalysis.lib.formats.libdcd',
                           ['MDAnalysis/lib/formats/libdcd' + source_suffix],
@@ -295,13 +301,13 @@ def extensions(config):
     distances = MDAExtension('MDAnalysis.lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
-                             libraries=['m'],
+                             libraries=mathlib,
                              define_macros=define_macros,
                              extra_compile_args=extra_compile_args)
     distances_omp = MDAExtension('MDAnalysis.lib.c_distances_openmp',
                                  ['MDAnalysis/lib/c_distances_openmp' + source_suffix],
                                  include_dirs=include_dirs + ['MDAnalysis/lib/include'],
-                                 libraries=['m'] + parallel_libraries,
+                                 libraries=mathlib + parallel_libraries,
                                  define_macros=define_macros + parallel_macros,
                                  extra_compile_args=parallel_args + extra_compile_args,
                                  extra_link_args=parallel_args)
@@ -312,7 +318,7 @@ def extensions(config):
                           extra_compile_args=extra_compile_args)
     transformation = MDAExtension('MDAnalysis.lib._transformations',
                                   ['MDAnalysis/lib/src/transformations/transformations.c'],
-                                  libraries=['m'],
+                                  libraries=mathlib,
                                   define_macros=define_macros,
                                   include_dirs=include_dirs,
                                   extra_compile_args=extra_compile_args)
@@ -343,14 +349,14 @@ def extensions(config):
                                  sources=['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix,
                                           'MDAnalysis/analysis/encore/clustering/src/ap.c'],
                                  include_dirs=include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
-                                 libraries=["m"],
+                                 libraries=mathlib,
                                  define_macros=define_macros,
                                  extra_compile_args=extra_compile_args)
     spe_dimred = MDAExtension('MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed',
                               sources=['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix,
                                        'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
                               include_dirs=include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
-                              libraries=["m"],
+                              libraries=mathlib,
                               define_macros=define_macros,
                               extra_compile_args=extra_compile_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
@@ -394,7 +400,7 @@ def dynamic_author_list():
         # authors". We first want move the cursor down to the title of
         # interest.
         for line_no, line in enumerate(infile, start=1):
-            if line[:-1] == "Chronological list of authors":
+            if line.rstrip() == "Chronological list of authors":
                 break
         else:
             # If we did not break, it means we did not find the authors.

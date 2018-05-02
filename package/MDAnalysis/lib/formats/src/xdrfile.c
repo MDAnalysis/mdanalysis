@@ -45,7 +45,14 @@
 #endif
 
 #include <sys/types.h>
-#include <unistd.h>
+
+#ifdef __unix__
+    #include <unistd.h>
+#endif
+
+#ifdef _WIN32
+    #include <io.h>
+#endif
 
 #ifdef HAVE_RPC_XDR_H
 #  include <rpc/rpc.h>
@@ -2598,7 +2605,13 @@ xdrstdio_putbytes (XDR *xdrs, char *addr, unsigned int len)
 static off_t
 xdrstdio_getpos (XDR *xdrs)
 {
+    #ifdef __unix__
     return ftello((FILE *) xdrs->x_private);
+    #endif
+
+    #ifdef _WIN32
+    return _ftelli64((FILE *) xdrs->x_private);
+    #endif
 }
 
 static int
@@ -2610,7 +2623,13 @@ xdrstdio_setpos (XDR *xdrs, off_t pos, int whence)
     /* We return errno relying on the fact that it is never set to 0 on
      * success, which means that if an error occurrs it'll never be the same
      * as exdrOK, and xdr_seek won't be confused.*/
+    #ifdef __unix__
 	return fseeko((FILE *) xdrs->x_private, pos, whence) < 0 ? errno : exdrOK;
+    #endif
+
+    #ifdef _WIN32
+	return _fseeki64((FILE *) xdrs->x_private, pos, whence) < 0 ? errno : exdrOK;
+    #endif
 }
 
 

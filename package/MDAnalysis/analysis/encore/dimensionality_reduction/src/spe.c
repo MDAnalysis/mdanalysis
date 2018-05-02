@@ -26,7 +26,14 @@
 #include <math.h>
 #include <time.h>
 #include <sys/types.h>
-#include <unistd.h>
+
+#ifdef __unix__
+    #include <unistd.h>
+#endif
+
+#ifdef _WIN32
+    #include <io.h>
+#endif
 
 #define EPSILON 1e-8
 

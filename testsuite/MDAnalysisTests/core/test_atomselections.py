@@ -80,7 +80,10 @@ class TestSelectionsCHARMM(object):
         u = make_Universe(('resnames',))
         # set half the residues' names to the resname we're testing
         myprot = u.residues[::2]
-        myprot.resnames = resname
+        # Windows note: the parametrized test input string objects
+        # are actually of type 'numpy.str_' and coercion to str
+        # proper is needed for unit test on Windows
+        myprot.resnames = str(resname)
         # select protein
         sel = u.select_atoms('protein')
         # check that contents (atom indices) are identical afterwards
