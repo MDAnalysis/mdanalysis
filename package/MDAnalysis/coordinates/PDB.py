@@ -275,16 +275,27 @@ class PDBReader(base.ReaderBase):
         pdbfile = self._pdbfile = util.anyopen(filename)
 
         line = "magical"
+        # we handle windows file striding uniquely
+        # because file.tell() is not reliable on Windows
+        # for a text file and binary mode is not compatible
+        # with i.e., our use of anyopen for zip files
+        windows_overbyte = 0
         while line:
             # need to use readline so tell gives end of line
             # (rather than end of current chunk)
             line = pdbfile.readline()
+            # the tell() text opaque number striding is not portable
+            # to windows so compensate accordingly
+            if os.name == 'nt':
+                # for a text file mode these aren't necessarily
+                # bytes; var name for simplicity only
+                windows_overbyte += 1
 
             if line.startswith('MODEL'):
-                models.append(pdbfile.tell())
+                models.append(pdbfile.tell() - windows_overbyte)
             elif line.startswith('CRYST1'):
                 # remove size of line to get **start** of CRYST line
-                crysts.append(pdbfile.tell() - len(line))
+                crysts.append(pdbfile.tell() - len(line) - windows_overbyte)
             elif line.startswith('HEADER'):
                 # classification = line[10:50]
                 # date = line[50:59]

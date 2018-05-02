@@ -383,22 +383,6 @@ class TestMultiPDBReader(TestCase):
             assert_equal(len(u1.atoms), 1890)
             assert_equal(len(u1.bonds), 1922)
 
-    def test_conect_bonds_all(self):
-        conect = self.conect
-        assert_equal(len(conect.atoms), 1890)
-        assert_equal(len(conect.bonds), 1922)
-
-        with tempdir.in_tempdir():
-            try:
-                outfile = 'pdb-connect-bonds.pdb'
-                self.conect.atoms.write(outfile, bonds="all")
-                u2 = mda.Universe(outfile, guess_bonds=True)
-            finally:
-                os.unlink(outfile)
-            assert_equal(len(u2.atoms), 1890)
-            assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922)
-
-            # assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
 
     def test_numconnections(self):
         u = self.multiverse
@@ -459,6 +443,20 @@ class TestMultiPDBReader(TestCase):
                                               "the test reference; len(actual) is %d, len(desired) "
                                               "is %d" % (len(u._topology.bonds.values), len(desired)))
 
+def test_conect_bonds_all(tmpdir):
+    conect = mda.Universe(CONECT, guess_bonds=True)
+
+    assert_equal(len(conect.atoms), 1890)
+    assert_equal(len(conect.bonds), 1922)
+
+    outfile = os.path.join(str(tmpdir), 'pdb-connect-bonds.pdb')
+    conect.atoms.write(outfile, bonds="all")
+    u2 = mda.Universe(outfile, guess_bonds=True)
+
+    assert_equal(len(u2.atoms), 1890)
+    assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922)
+
+    # assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
 
 class TestMultiPDBWriter(TestCase):
     def setUp(self):

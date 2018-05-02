@@ -653,7 +653,7 @@ cdef class DCDFile:
 
         cdef np.ndarray[np.int64_t, ndim=1] c_indices
         if indices is None:
-            c_indices = np.arange(self.natoms)
+            c_indices = np.arange(self.natoms, dtype=np.int64)
             natoms = self.natoms
         else:
             natoms = len(indices)

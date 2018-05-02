@@ -26,10 +26,10 @@ import six
 from six.moves import range
 
 from MDAnalysisTests.datafiles import TRZ, TRZ_psf
-from MDAnalysisTests import tempdir
 from numpy.testing import assert_almost_equal
 import numpy as np
 import mock
+import os
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.hbonds import HydrogenBondAutoCorrel as HBAC
@@ -199,7 +199,7 @@ class TestHydrogenBondAutocorrel(object):
             np.array([0.33, 0.33, 5, 1, 0.1]),
         )
 
-    def test_save(self, u, hydrogens, oxygens, nitrogens):
+    def test_save(self, u, hydrogens, oxygens, nitrogens, tmpdir):
         hbond = HBAC(u,
                      hydrogens=hydrogens,
                      acceptors=oxygens,
@@ -209,12 +209,13 @@ class TestHydrogenBondAutocorrel(object):
         )
         hbond.run()
 
-        with tempdir.in_tempdir():
-            hbond.save_results('hbondout.npz')
+        tmpfile = os.path.join(str(tmpdir), 'hbondout.npz')
 
-            loaded = np.load('hbondout.npz')
-            assert 'time' in loaded
-            assert 'results' in loaded
+        hbond.save_results(tmpfile)
+
+        loaded = np.load(tmpfile)
+        assert 'time' in loaded
+        assert 'results' in loaded
 
     # setup errors
     def test_wronglength_DA(self, u, hydrogens, oxygens, nitrogens):

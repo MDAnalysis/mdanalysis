@@ -101,7 +101,10 @@ import sys
 # A clean solution is therefore simply to disable os.fork() prior to importing
 # the uuid module and to re-enable it afterwards.
 import os
-if sys.version_info >= (3, 7):
+
+# Windows doesn't have os.fork so can ignore
+# the issue for that platform
+if sys.version_info >= (3, 7) or os.name == 'nt':
     import uuid
 else:
     _os_dot_fork, os.fork = os.fork, None

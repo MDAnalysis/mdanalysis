@@ -65,7 +65,7 @@ def dynamic_author_list():
         # authors". We first want move the cursor down to the title of
         # interest.
         for line_no, line in enumerate(infile, start=1):
-            if line[:-1] == "Chronological list of authors":
+            if line.rstrip() == "Chronological list of authors":
                 break
         else:
             # If we did not break, it means we did not find the authors.

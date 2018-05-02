@@ -35,7 +35,6 @@ import numpy as np
 from MDAnalysisTests.coordinates.reference import RefTRZ
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from MDAnalysisTests.datafiles import (TRZ_psf, TRZ, two_water_gro)
-from MDAnalysisTests import tempdir
 
 
 class TestTRZReader(RefTRZ):
@@ -120,27 +119,17 @@ class TestTRZReader(RefTRZ):
         assert_equal(self.ref_title, universe.trajectory.title,
                      "wrong title in trz")
 
-    def test_get_writer(self, universe):
-        with tempdir.in_tempdir():
-            self.outfile = 'test-trz-writer.trz'
-            W = universe.trajectory.Writer(self.outfile)
+    def test_get_writer(self, universe, tmpdir):
+        self.outfile = os.path.join(str(tmpdir), 'test-trz-writer.trz')
+        with universe.trajectory.Writer(self.outfile) as W:
             assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
             assert_equal(W.n_atoms, universe.trajectory.n_atoms)
-            try:
-                os.unlink(self.outfile)
-            except OSError:
-                pass
 
-    def test_get_writer_2(self, universe):
-        with tempdir.in_tempdir():
-            self.outfile = 'test-trz-writer-1.trz'
-            W = universe.trajectory.Writer(self.outfile, n_atoms=100)
+    def test_get_writer_2(self, universe, tmpdir):
+        self.outfile = os.path.join(str(tmpdir), 'test-trz-writer-1.trz')
+        with universe.trajectory.Writer(self.outfile, n_atoms=100) as W:
             assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
             assert_equal(W.n_atoms, 100)
-            try:
-                os.unlink(self.outfile)
-            except OSError:
-                pass
 
 
 class TestTRZWriter(RefTRZ):
@@ -203,12 +192,9 @@ class TestTRZWriter2(object):
     def u(self):
         return mda.Universe(two_water_gro)
 
-    def test_writer_trz_from_other(self, u):
-        with tempdir.in_tempdir():
-            outfile = 'trz-writer-2.trz'
-            W = mda.coordinates.TRZ.TRZWriter(outfile,
-                                              n_atoms=len(u.atoms))
-
+    def test_writer_trz_from_other(self, u, tmpdir):
+        outfile = os.path.join(str(tmpdir), 'trz-writer-2.trz')
+        with mda.coordinates.TRZ.TRZWriter(outfile, len(u.atoms)) as W:
             W.write(u.trajectory.ts)
             W.close()
 
