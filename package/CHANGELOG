@@ -13,12 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/18 richardjgowers, palnabarun, orbeckst
+??/??/18 richardjgowers, palnabarun, orbeckst, kain88-de
 
   * 0.18.1
 
 Enhancements
   * Added various duecredit stubs
+  * Import time reduced by a factor two (PR #1881)
 
 Fixes
   * Fixed order of indices in Angle/Dihedral/Improper repr

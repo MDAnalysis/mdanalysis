@@ -103,7 +103,6 @@ import warnings
 
 from numpy.lib.utils import deprecate
 
-import MDAnalysis
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
 from ..lib import distances
@@ -114,6 +113,7 @@ from . import flags
 from ..exceptions import NoDataError
 from . import topologyobjects
 from ._get_readers import get_writer_for
+from . import flags
 
 
 def _unpickle(uhash, ix):
@@ -304,11 +304,12 @@ class _MutableBase(object):
                 # older AtomGroup init method..
                 u = args[0][0].universe
             except (TypeError, IndexError, AttributeError):
+                from .universe import Universe
                 # Let's be generic and get the first argument that's either a
                 # Universe, a Group, or a Component, and go from there.
                 # This is where the UpdatingAtomGroup args get matched.
                 for arg in args+tuple(kwargs.values()):
-                    if isinstance(arg, (MDAnalysis.Universe, GroupBase,
+                    if isinstance(arg, (Universe, GroupBase,
                                         ComponentBase)):
                         u = arg.universe
                         break
@@ -698,7 +699,7 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         atomgroup = self.atoms
-        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+        pbc = kwargs.pop('pbc', flags['use_pbc'])
 
         if pbc:
             x = atomgroup.pack_into_box(inplace=False)
@@ -735,7 +736,7 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         atomgroup = self.atoms
-        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+        pbc = kwargs.pop('pbc', flags['use_pbc'])
 
         if pbc:
             x = atomgroup.pack_into_box(inplace=False)
