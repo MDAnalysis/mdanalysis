@@ -321,16 +321,27 @@
         <span class="n">pdbfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdbfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
         <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;magical&quot;</span>
+        <span class="c1"># we handle windows file striding uniquely</span>
+        <span class="c1"># because file.tell() is not reliable on Windows</span>
+        <span class="c1"># for a text file and binary mode is not compatible</span>
+        <span class="c1"># with i.e., our use of anyopen for zip files</span>
+        <span class="n">windows_overbyte</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
             <span class="c1"># need to use readline so tell gives end of line</span>
             <span class="c1"># (rather than end of current chunk)</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">pdbfile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="c1"># the tell() text opaque number striding is not portable</span>
+            <span class="c1"># to windows so compensate accordingly</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;nt&#39;</span><span class="p">:</span>
+                <span class="c1"># for a text file mode these aren&#39;t necessarily</span>
+                <span class="c1"># bytes; var name for simplicity only</span>
+                <span class="n">windows_overbyte</span> <span class="o">+=</span> <span class="mi">1</span>
 
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;MODEL&#39;</span><span class="p">):</span>
-                <span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">tell</span><span class="p">())</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="n">windows_overbyte</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;CRYST1&#39;</span><span class="p">):</span>
                 <span class="c1"># remove size of line to get **start** of CRYST line</span>
-                <span class="n">crysts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+                <span class="n">crysts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="n">windows_overbyte</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;HEADER&#39;</span><span class="p">):</span>
                 <span class="c1"># classification = line[10:50]</span>
                 <span class="c1"># date = line[50:59]</span>
