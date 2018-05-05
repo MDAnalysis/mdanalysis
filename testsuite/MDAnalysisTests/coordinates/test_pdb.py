@@ -730,32 +730,18 @@ class TestPSF_PDBReader(TestPDBReader):
         assert isinstance(self.universe.trajectory, PDBReader), "failed to choose PDBReader"
 
 
-class TestPDBWriterOccupancies(TestCase):
-    """Tests for Issue #620"""
+def test_write_occupancies(tmpdir):
+    """Tests for Issue #620 Modify occupancies, write out the file and check"""
+    u = mda.Universe(PDB_small)
+    u.atoms.occupancies = 0.12
 
-    def setUp(self):
-        self.tempdir = tempdir.TempDir()
-        self.outfile = self.tempdir.name + '/occ.pdb'
+    outfile = str(tmpdir.join('occ.pdb'))
 
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.tempdir
-        del self.outfile
+    u.atoms.write(outfile)
 
-    def test_write_occupancies(self):
-        """Modify occupancies, write out the file and check"""
-        u = mda.Universe(PDB_small)
+    u2 = mda.Universe(outfile)
 
-        u.atoms.occupancies = 0.12
-
-        u.atoms.write(self.outfile)
-
-        u2 = mda.Universe(self.outfile)
-
-        assert all(u2.atoms.occupancies == 0.12)
+    assert_array_almost_equal(u2.atoms.occupancies, 0.12)
 
 
 class TestWriterAlignments(object):

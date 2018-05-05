@@ -543,3 +543,19 @@ class TestRecordTypes(object):
         assert not rt[0].dtype == bool
         assert (rt[0] == 'ATOM').all()
         assert (rt[1] == 'HETATM').all()
+
+
+def test_static_typing():
+    ta = tpattrs.Charges(['1.0', '2.0', '3.0'])
+
+    assert isinstance(ta.values, np.ndarray)
+    assert ta.values.dtype == float
+
+
+def test_static_typing_from_empty():
+    u = mda.Universe.empty(3)
+
+    u.add_TopologyAttr('masses', values=['1.0', '2.0', '3.0'])
+
+    assert isinstance(u._topology.masses.values, np.ndarray)
+    assert isinstance(u.atoms[0].mass, float)
