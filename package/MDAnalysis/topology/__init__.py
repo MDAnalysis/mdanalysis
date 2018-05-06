@@ -118,6 +118,9 @@ the attributes they provide.
                                resids, bonds,
                                angles, dihedrals
 
+   LAMMPS [#a]_      lammpsdump  id, masses      LAMMPS ascii dump file reader
+                                                 :mod:`MDAnalysis.topology.LAMMPSParser`
+
    XYZ [#a]_         xyz       names             XYZ File Parser.  Reads only the labels from atoms
                                                  and constructs minimal topology data.
                                                  :mod:`MDAnalysis.topology.XYZParser`
