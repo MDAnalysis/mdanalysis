@@ -115,12 +115,14 @@ Classes
 """
 from __future__ import absolute_import
 
-from six.moves import zip, range
+from six.moves import zip, range, map
+import os
 import numpy as np
 
 from ..core import flags
 from ..core.groups import requires
-from ..lib import util, mdamath
+from ..lib import util, mdamath, distances
+from ..lib.util import cached
 from . import DCD
 from .. import units
 from ..topology.LAMMPSParser import DATAParser
@@ -443,3 +445,87 @@ class DATAWriter(base.WriterBase):
 
             if has_velocities:
                 self._write_velocities(atoms)
+
+
+class DumpReader(base.ReaderBase):
+    """Reads the default LAMMPS dump format
+
+    .. versionadded:: 0.18.1
+    """
+    format = 'LAMMPSDUMP'
+
+    def __init__(self, filename, **kwargs):
+        super(DumpReader, self).__init__(filename, **kwargs)
+
+        root, ext = os.path.splitext(self.filename)
+        self._file = util.anyopen(self.filename)
+        self._cache = {}
+
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+
+        self._read_next_timestep()
+
+    @property
+    @cached('n_atoms')
+    def n_atoms(self):
+        with util.anyopen(self.filename) as f:
+            f.readline()
+            f.readline()
+            f.readline()
+            n_atoms = int(f.readline())
+        return n_atoms
+        
+    def close(self):
+        self._file.close()
+
+    def _read_next_timestep(self):
+        f = self._file
+        ts = self.ts
+
+        f.readline() # ITEM TIMESTEP
+        step_num = int(f.readline())
+        ts.data['step'] = step_num
+
+        f.readline() # ITEM NUMBER OF ATOMS
+        n_atoms = int(f.readline())
+        if n_atoms != self.n_atoms:
+            raise ValueError("Number of atoms in trajectory changed "
+                             "this is not suported in MDAnalysis")
+
+        triclinic = len(f.readline().split()) == 9  # ITEM BOX BOUNDS
+        if triclinic:
+            xlo, xhi, xy = map(float, f.readline().split())
+            ylo, yhi, xz = map(float, f.readline().split())
+            zlo, zhi, yz = map(float, f.readline().split())
+
+            box = np.zeros((3, 3), dtype=np.float64)
+            box[0] = xhi - xlo, 0.0, 0.0
+            box[1] = xy, yhi - ylo, 0.0
+            box[2] = xz, yz, zhi - zlo
+
+            xlen, ylen, zlen, alpha, beta, gamma = mdamath.triclinic_box(*box)
+        else:
+            xlo, xhi = map(float, f.readline().split())
+            ylo, yhi = map(float, f.readline().split())
+            zlo, zhi = map(float, f.readline().split())
+            xlen = xhi - xlo
+            ylen = yhi - ylo
+            zlen = zhi - zlo
+            alpha = beta = gamma = 90.
+        ts.dimensions = xlen, ylen, zlen, alpha, beta, gamma
+        
+        indices = np.zeros(self.n_atoms, dtype=int)
+
+        f.readline()  # ITEM ATOMS etc
+        for i in range(self.n_atoms):
+            idx, _, xs, ys, zs = f.readline().split()
+
+            indices[i] = idx
+            ts.positions[i] = xs, ys, zs
+
+        order = np.argsort(indices)
+        ts.positions = ts.positions[order]
+        # by default coordinates are given in scaled format, undo that
+        ts.positions = distances.transform_StoR(ts.positions, ts.dimensions)
+
+        return ts
