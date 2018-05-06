@@ -118,6 +118,7 @@ __all__ = [
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
     "LAMMPShyd", "LAMMPShyd2",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
+    "LAMMPSDUMP",
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -364,6 +365,7 @@ LAMMPScnt2 = resource_filename(__name__, "data/lammps/cnt-hexagonal-class1.data2
 LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
 LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
 LAMMPSdata_deletedatoms = resource_filename(__name__, 'data/lammps/deletedatoms.data')
+LAMMPSDUMP = resource_filename(__name__, "data/lammps/wat.lammpstrj")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 

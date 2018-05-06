@@ -198,7 +198,7 @@ For details see the report for `Issue 87`_.
                          'data/lammps/*.data', 'data/lammps/*.data.bz2',
                          'data/lammps/*.data2',
                          'data/lammps/*.dcd', 'data/lammps/*.trz',
-                         'data/lammps/*.inp',
+                         'data/lammps/*.inp', 'data/lammps/*.lammpstrj',
                          'data/gms/*.xyz', 'data/gms/*.gms',
                          'data/gms/*.gms.gz',
                          'data/*.inpcrd',
