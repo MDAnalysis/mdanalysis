@@ -458,12 +458,20 @@ class DumpReader(base.ReaderBase):
         super(DumpReader, self).__init__(filename, **kwargs)
 
         root, ext = os.path.splitext(self.filename)
-        self._file = util.anyopen(self.filename)
         self._cache = {}
 
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self._reopen()
 
         self._read_next_timestep()
+
+    def _reopen(self):
+        try:
+            self._file.close()
+        except AttributeError:
+            pass
+        self._file = util.anyopen(self.filename)
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts.frame = -1
 
     @property
     @cached('n_atoms')
@@ -474,13 +482,39 @@ class DumpReader(base.ReaderBase):
             f.readline()
             n_atoms = int(f.readline())
         return n_atoms
-        
+
+    @property
+    @cached('n_frames')
+    def n_frames(self):
+        # 2(timestep) + 2(natoms info) + 4(box info) + 1(atom header) + n_atoms
+        lines_per_frame = self.n_atoms + 9
+        offsets = []
+        counter = 0
+        with util.anyopen(self.filename) as f:
+            line = True
+            while line:
+                if not counter % lines_per_frame:
+                    offsets.append(f.tell())
+                line = f.readline()
+                counter += 1
+        self._offsets = offsets[:-1]  # last is EOF
+        return len(self._offsets)
+
     def close(self):
         self._file.close()
+
+    def _read_frame(self, frame):
+        self._file.seek(self._offsets[frame])
+        self.ts.frame = frame - 1  # gets +1'd in next
+
+        return self._read_next_timestep()
 
     def _read_next_timestep(self):
         f = self._file
         ts = self.ts
+        ts.frame += 1
+        if ts.frame >= len(self):
+            raise EOFError
 
         f.readline() # ITEM TIMESTEP
         step_num = int(f.readline())
@@ -513,7 +547,7 @@ class DumpReader(base.ReaderBase):
             zlen = zhi - zlo
             alpha = beta = gamma = 90.
         ts.dimensions = xlen, ylen, zlen, alpha, beta, gamma
-        
+
         indices = np.zeros(self.n_atoms, dtype=int)
 
         f.readline()  # ITEM ATOMS etc
