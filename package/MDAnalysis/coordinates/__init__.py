@@ -172,6 +172,8 @@ also recognized when they are compressed with :program:`gzip` or
    +---------------+-----------+-------+------------------------------------------------------+
    | LAMMPS [#a]_  | data      |  r    | Single frame of coordinates read from .data files    |
    +---------------+-----------+-------+------------------------------------------------------+
+   | LAMMPS [#a]_  | lammpsdump|  r    | Ascii trajectory in atom style                       |
+   +---------------+-----------+-------+------------------------------------------------------+
    | Gromacs       | xtc       |  r/w  | Compressed (lossy) xtc trajectory format. Module     |
    |               |           |       | :mod:`MDAnalysis.coordinates.XTC`                    |
    +---------------+-----------+-------+------------------------------------------------------+

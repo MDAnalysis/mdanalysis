@@ -24,8 +24,8 @@
 """LAMMPS DCD trajectory and DATA I/O  --- :mod:`MDAnalysis.coordinates.LAMMPS`
 ===============================================================================
 
-Classes to read and write LAMMPS_ DCD binary trajectories and LAMMPS DATA
-files. Trajectories can be read regardless of system-endianness
+Classes to read and write LAMMPS_ DCD binary trajectories, LAMMPS DATA files
+and LAMMPS dump files.  Trajectories can be read regardless of system-endianness
 as this is auto-detected.
 
 LAMMPS can `write DCD`_ trajectories but unlike a `CHARMM trajectory`_
@@ -50,6 +50,12 @@ Data file formats
 
 By default either the `atomic` or `full` atom styles are expected,
 however this can be customised, see :ref:`atom_style_kwarg`.
+
+Dump files
+----------
+
+The DumpReader expects ascii dump files written with the default
+`LAMMPS dump format`_ of 'atom'
 
 
 Example: Loading a LAMMPS simulation
@@ -95,6 +101,7 @@ See Also
 .. _units command: http://lammps.sandia.gov/doc/units.html
 .. _`Issue 64`: https://github.com/MDAnalysis/mdanalysis/issues/64
 .. _`Issue 84`: https://github.com/MDAnalysis/mdanalysis/issues/84
+.. _`LAMMPS dump format`: http://lammps.sandia.gov/doc/dump.html
 
 Classes
 -------
@@ -448,7 +455,12 @@ class DATAWriter(base.WriterBase):
 
 
 class DumpReader(base.ReaderBase):
-    """Reads the default LAMMPS dump format
+    """Reads the default `LAMMPS dump format`_
+
+    Expects trajectories produced by the default 'atom' style dump.
+
+    Will automatically convert positions from their scaled/fractional
+    representation to their real values.
 
     .. versionadded:: 0.18.1
     """

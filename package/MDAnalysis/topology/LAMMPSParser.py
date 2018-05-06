@@ -24,10 +24,11 @@
 LAMMPSParser
 ============
 
-Parses data_ files produced by LAMMPS_.
+Parses data_ or dump_ files produced by LAMMPS_.
 
 .. _LAMMPS: http://lammps.sandia.gov/
 .. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
+.. _dump: http://lammps.sandia.gov/doc/dump.html
 
 
 .. _atom_style_kwarg:
@@ -64,6 +65,9 @@ Classes
 .. autoclass:: DATAParser
    :members:
    :inherited-members:
+
+.. autoclass:: LammpsDumpParser
+   :members:
 
 Deprecated classes
 ------------------
@@ -577,6 +581,12 @@ class DATAParser(TopologyReaderBase):
 
 
 class LammpsDumpParser(TopologyReaderBase):
+    """Parses Lammps ascii dump files in 'atom' format
+
+    Only reads atom ids.  Sets all masses to 1.0.
+
+    .. versionadded:: 0.18.1
+    """
     format = 'LAMMPSDUMP'
 
     def parse(self, **kwargs):
