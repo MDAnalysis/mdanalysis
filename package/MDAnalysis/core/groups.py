@@ -1822,6 +1822,10 @@ class AtomGroup(GroupBase):
         are not any duplicates, which can happen with complicated
         selections).
 
+        Raises
+        ------
+        `TypeError` if the arbitrary atomgroups passed are not of type `MDAnalysis.core.groups.AtomGroup`
+
         Examples
         --------
         All simple selection listed below support multiple arguments which are
@@ -2064,6 +2068,11 @@ class AtomGroup(GroupBase):
         """
         updating = selgroups.pop('updating', False)
         sel_strs = (sel,) + othersel
+
+        for group, thing in selgroups.items():
+            if not isinstance(thing, MDAnalysis.core.groups.AtomGroup):
+                raise TypeError("Only AtomGroup type is allowed for the passed arbitrary atomgroups, you provided type {} for {}".format(str(type(thing)), group))
+
         selections = tuple((selection.Parser.parse(s, selgroups)
                             for s in sel_strs))
         if updating:
