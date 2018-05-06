@@ -35,6 +35,7 @@ from MDAnalysis.tests.datafiles import (
     LAMMPShyd,
     LAMMPShyd2,
     LAMMPSdata_deletedatoms,
+    LAMMPSDUMP,
 )
 
 
@@ -237,3 +238,33 @@ def test_interpret_atom_style_missing():
                        match='atom_style string missing required.+?'):
         style = mda.topology.LAMMPSParser.DATAParser._interpret_atom_style(
             'id charge z y x')
+
+
+class TestDumpParser(ParserBase):
+    expected_attrs = ['types']
+    guessed_attrs = ['masses']
+    expected_n_atoms = 24
+    expected_n_residues = 1
+    expected_n_segments = 1
+
+    parser = mda.topology.LAMMPSParser.LammpsDumpParser
+    ref_filename = LAMMPSDUMP
+
+    def test_creates_universe(self):
+        u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')
+
+        assert isinstance(u, mda.Universe)
+        assert len(u.atoms) == 24
+
+    def test_masses_warning(self):
+        # masses are mandatory, but badly guessed
+        # check that user is alerted
+        with self.parser(self.ref_filename) as p:
+            with pytest.warns(UserWarning, match='Guessed all Masses to 1.0'):
+                p.parse()
+            
+    def test_id_ordering(self):
+        # ids are nonsequential in file, but should get rearranged
+        u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')
+        # the 4th in file has id==13, but should have been sorted
+        assert u.atoms[3].id == 4
