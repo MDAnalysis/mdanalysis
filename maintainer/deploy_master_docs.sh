@@ -25,6 +25,14 @@
 #  (cd package && python setup.py build_sphinx)
 #
 
+# The release sitemap.xml is generated from the development
+# sitemap.xml by changing MDA_DEVELOPMENT_DOCS_URL --> MDA_RELEASE_DOCS_URL
+#
+# See comment in package/doc/sphinx/source/conf.py for site_url.
+#
+MDA_RELEASE_DOCS_URL="https://www.mdanalysis.org/docs/"
+MDA_DEVELOPMENT_DOCS_URL="https://www.mdanalysis.org/mdanalysis/"
+
 GH_REPOSITORY=github.com/MDAnalysis/docs.git
 #MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
 MDA_DOCDIR=package/doc/html/html
@@ -44,6 +52,9 @@ function die () {
 }
 
 rev=$(git rev-parse --short HEAD)
+rootdir="$(git rev-parse --show-toplevel)"
+
+maintainer_dir="${rootdir}/maintainer"
 
 # the following tests should be superfluous because of -o nounset
 test -n "${GH_TOKEN}" || die "GH_TOKEN is empty: need OAuth GitHub token to continue" 100
@@ -60,7 +71,7 @@ git config user.name "${GIT_CI_USER}"
 git config user.email "${GIT_CI_EMAIL}"
 
 git remote add docs "https://${GH_TOKEN}@${GH_REPOSITORY}"
-git fetch --depth 50 docs master
+git fetch --depth 10 docs master
 git reset docs/master
 
 touch .
@@ -68,6 +79,13 @@ touch .nojekyll
 
 git add -A .
 git commit -m "rebuilt html docs from branch ${GH_DOC_BRANCH} with sphinx at MDAnalysis/mdanalysis@${rev}"
+
+# fix sitemap.xml for release docs
+${maintainer_dir}/adapt_sitemap.py --search ${MDA_DEVELOPMENT_DOCS_URL} --replace ${MDA_RELEASE_DOCS_URL} -o sitemap.xml sitemap.xml
+
+git add sitemap.xml
+git commit -m "adjusted sitemap.xml for release docs at ${MDA_RELEASE_DOCS_URL}" 
+
 git push -q docs HEAD:master
 
 

@@ -42,10 +42,11 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
 mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
 # for sitemap with https://github.com/jdillard/sphinx-sitemap
-# NOTE: This sitemap is only correct for the release doccs. The development docs
-#       are served from https://www.mdanalysis.org/mdanalysis/ and the sitemap.xml
-#       will NOT be correct for the development docs.
-site_url = "https://www.mdanalysis.org/docs/"
+# NOTE: This sitemap is only correct for the DEVELOPMENT doccs. The RELEASE docs
+#       are served from https://www.mdanalysis.org/docs/ and the sitemap.xml
+#       is manually fixed when deploying the release docs with the
+#       maintainer/deploy_master_docs.sh script
+site_url = "https://www.mdanalysis.org/mdanalysis/"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
