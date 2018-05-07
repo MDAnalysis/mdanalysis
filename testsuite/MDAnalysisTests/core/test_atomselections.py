@@ -1022,3 +1022,9 @@ class TestICodeSelection(object):
         u = make_Universe(('resids',))
         with pytest.raises(ValueError):
             u.select_atoms('resid 10A-12')
+
+
+def test_arbitrary_atom_group_raises_error():
+    u = make_Universe(trajectory=True)
+    with pytest.raises(TypeError):
+        u.select_atoms('around 2.0 group this', this=u.atoms[0])

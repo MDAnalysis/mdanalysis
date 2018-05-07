@@ -28,6 +28,7 @@ Fixes
   * Fixed HBondAnalysis not considering PBC for distances (Issue #1878)
   * Adding new TopologyAttrs with values defined always coerces this into
     a numpy array (Issue #1876)
+  * Groups passed to select_atoms() are now type checked (Issue #1852)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)

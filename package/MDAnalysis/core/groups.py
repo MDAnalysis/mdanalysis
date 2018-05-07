@@ -1822,6 +1822,10 @@ class AtomGroup(GroupBase):
         are not any duplicates, which can happen with complicated
         selections).
 
+        Raises
+        ------
+        `TypeError` if the arbitrary atomgroups passed are not of type `MDAnalysis.core.groups.AtomGroup`
+
         Examples
         --------
         All simple selection listed below support multiple arguments which are
@@ -2056,14 +2060,22 @@ class AtomGroup(GroupBase):
            Added *bonded* selection
         .. versionchanged:: 0.16.0
            Resid selection now takes icodes into account where present.
-        .. versionadded:: 0.16.0
+        .. versionchanged:: 0.16.0
            Updating selections now possible by setting the ``updating`` argument.
-        .. versionadded:: 0.17.0
+        .. versionchanged:: 0.17.0
            Added *moltype* and *molnum* selections.
-
+        .. versionchanged:: 0.18.1
+           Added strict type checking for passed groups
         """
         updating = selgroups.pop('updating', False)
         sel_strs = (sel,) + othersel
+
+        for group, thing in selgroups.items():
+            if not isinstance(thing, AtomGroup):
+                raise TypeError("Passed groups must be AtomGroups. "
+                                "You provided {} for group '{}'".format(
+                                    thing.__class__.__name__, group))
+
         selections = tuple((selection.Parser.parse(s, selgroups)
                             for s in sel_strs))
         if updating:
