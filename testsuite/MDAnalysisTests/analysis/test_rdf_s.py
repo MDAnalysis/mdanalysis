@@ -24,15 +24,17 @@ from six.moves import zip
 
 import pytest
 
+from numpy.tests import assert_almost_equal
+
 import MDAnalysis as mda
 from MDAnalysis.analysis.rdf_s import InterRDF_s
 
-from MDAnalysisTests.datafiles import YiiP_lipids.gro, YiiP_lipids.xtc
+from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT
 
 
 @pytest.fixture(scope='module')
 def u():
-    return mda.Universe('YiiP_lipids.gro', 'YiiP_lipids.xtc')
+    return mda.Universe(GRO_MEMPROT, XTC_MEMPROT)
 
 
 @pytest.fixture(scope='module')
@@ -44,6 +46,13 @@ def sels(u):
     ag = [[s1, s2], [s3, s4]]
     return ag
 
+@pytest.fixture(scope='module')
+def rdf(u,sel):
+    return InterRDF_S(u, sel).run()
+
+@pytest.mark.parametrize("density, value", [
+            (True, 13275.775528444701),
+            (False, 0.021915460340071267)])
 
 def test_nbins(u):
     ag = sels(u)
@@ -61,12 +70,10 @@ def test_range(u):
     assert rdf.edges[-1] == rmax
 
 
-def test_count_size(u):
+def test_count_size(rdf):
     # ZND vs OD1 & OD2
     # should see 2 elements in rdf.count
-    # 
-    ag = sels(u)
-    rdf = InterRDF_s(u, ag).run()
+    #
     assert len(rdf.count) == 2
     assert len(rdf.count[0]) == 1
     assert len(rdf.count[0][0]) == 2
@@ -75,33 +82,22 @@ def test_count_size(u):
     assert len(rdf.count[1][1]) == 2
 
 
-def test_count(u):
+def test_count(rdf):
     # should see one distance with 5 counts in count[0][0][1]
     # should see one distance with 3 counts in count[1][1][0]
-    ag = sels(u)
-    rdf = InterRDF_s(u, ag).run()
     assert len(rdf.count[0][0][1][rdf.count[0][0][1] == 5]) == 1
     assert len(rdf.count[1][1][0][rdf.count[1][1][0] == 3]) == 1
 
 
-def test_double_run(u):
+def test_double_run(rdf):
     # running rdf twice should give the same result
-    ag = sels(u)
-    rdf = InterRDF_s(u, ag).run()
     assert len(rdf.count[0][0][1][rdf.count[0][0][1] == 5]) == 1
     assert len(rdf.count[1][1][0][rdf.count[1][1][0] == 3]) == 1
 
-
-def test_cdf(u)
-    ag = sels(u)
-    rdf = InterRDF_s(u, ag).run()    
-    rdf.cdf_s()
+def test_cdf(rdf):
     assert rdf.cdf_s[0][0][0][-1] == rdf.count[0][0][0].sum()/rdf.n_frames
-    
 
-def test_density(u)
-    ag = sels(u)
-    rdf_density_on = InterRDF_s(u, ag, density=True).run()
-    rdf_density_off = InterRDF_s(u, ag, density=False).run()
-    assert max(rdf_density_on.rdf_s[0][0][0]) == 13275.775528444701
-    assert max(rdf_density_off.rdf_s[0][0][0]) == 0.021915460340071267
+
+def test_density(u, sel, density, value):
+    rdf = InterRDF_s(u, sel, density=True).run()
+    assert_almost_equal(max(rdf.rdf_s[0][0][0]), value)
