@@ -22,6 +22,8 @@
 from __future__ import absolute_import
 from six.moves import zip
 
+import bz2
+import gzip
 import os
 import numpy as np
 import pytest
@@ -398,9 +400,26 @@ class TestDataWriterErrors(object):
 
 
 class TestLammpsDumpReader(object):
-    @pytest.fixture()
-    def u(self):
-        return mda.Universe(LAMMPSDUMP, format='LAMMPSDUMP')
+    @pytest.fixture(
+        params=['ascii', 'bz2', 'gzip']
+    )
+    def u(self, tmpdir, request):
+        trjtype = request.param
+        if trjtype == 'bz2':
+            # no conversion needed
+            f = LAMMPSDUMP
+        else:
+            f = str(tmpdir.join('lammps.' + trjtype))
+            with bz2.BZ2File(LAMMPSDUMP, 'rb') as datain:
+                data = datain.read()
+            if trjtype == 'ascii':
+                with open(f, 'wb') as fout:
+                    fout.write(data)
+            elif trjtype == 'gzip':
+                with gzip.GzipFile(f, 'wb') as fout:
+                    fout.write(data)
+
+        yield mda.Universe(f, format='LAMMPSDUMP')
 
     @pytest.fixture()
     def reference_positions(self):
