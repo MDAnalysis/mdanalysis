@@ -154,6 +154,7 @@ __all__ = [
     "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
     "GSD",
+    "GRO_MEMPROT", "XTC_MEMPROT" # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
 ]
 
 from pkg_resources import resource_filename
@@ -240,6 +241,8 @@ TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
 XTC_sub_sol = resource_filename(__name__, 'data/cobrotoxin.xtc')
 PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
 PDB_xlserial = resource_filename(__name__, 'data/xl_serial.pdb')
+GRO_MEMPROT = resource_filename(__name__, 'data/analysis/YiiP_lipids.gro')
+XTC_MEMPROT = resource_filename(__name__, 'data/analysis/YiiP_lipids.xtc')
 XTC_multi_frame = resource_filename(
     __name__, 'data/xtc_test_only_10_frame_10_atoms.xtc'
 )
