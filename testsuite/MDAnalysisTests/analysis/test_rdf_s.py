@@ -24,7 +24,7 @@ from six.moves import zip
 
 import pytest
 
-from numpy.tests import assert_almost_equal
+from numpy.testing import assert_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.rdf_s import InterRDF_s
