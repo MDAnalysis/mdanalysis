@@ -24,8 +24,27 @@
 Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`
 ================================================================
 
-Tools for calculating pair distribution functions ("radial
-distribution functions" or "RDF").
+This module contains two classes to calculate pair distribution functions
+ ("radial distribution functions" or "RDF").
+
+:class:`InterRDF` is a tool to calculate average radial distribution functions
+between two groups of atoms. Suppose we have two atom group A and B. A contains
+atom A1, A2, and B contains B1, B2. Give A and B to class:`InterRDF`, the output
+will be the average of RDFs bewteen A1 and B1, A1 and B2, A2 and B1, A2 and B2.
+
+:class:`InterRDF_s` is a tool to calculate site-specific radial distribution
+functions. Give the same A and B to class:`InterRDF_s`, the output will be
+a list of RDFs between A1 and B1, A1 and B2, A2 and B1, A2 and B2, which are the
+site-specific radial distribution functions.
+
+
+Classes:
+-------
+
+.. autoclass:: InterRDF
+.. autoclass:: InterRDF_s
+
+-------
 
 .. Not Implemented yet:
 .. - Structure factor?
@@ -38,6 +57,7 @@ import numpy as np
 from ..lib.util import blocks_of
 from ..lib import distances
 from .base import AnalysisBase
+from six.moves import zip, range
 
 
 class InterRDF(AnalysisBase):
@@ -161,3 +181,161 @@ class InterRDF(AnalysisBase):
         rdf = self.count / (density * vol * self.n_frames)
 
         self.rdf = rdf
+
+
+
+"""
+Site-specific Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf_s`
+================================================================
+
+Tools for calculating site-specific pair distribution functions ("radial
+distribution functions" or "RDF").
+
+"""
+
+class InterRDF_s(AnalysisBase):
+    """Site-specific intermolecular pair distribution function
+
+    Arguments
+    ---------
+    u : Universe
+       A Universe contains atoms in ags
+    ags : list
+         A list of pairs of AtomGroups
+    nbins : int (optional)
+          Number of bins in the histogram [75]
+    range : tuple or list (optional)
+          The size of the RDF [0.0, 15.0]
+    start : int (optional)
+          The frame to start at (default is first)
+    stop : int (optional)
+          The frame to end at (default is last)
+    step : int (optional)
+          The step size through the trajectory in frames (default is
+          every frame)
+
+    Example
+    -------
+    First create the :class:`InterRDF_s` object, by supplying one Universe
+    and one list of pairs of AtomGroups then use the :meth:`run` method ::
+
+      from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT
+      u = mda.Universe(GRO_MEMPROT, XTC_MEMPROT)
+
+      s1 = u.select_atoms('name ZND and resid 289')
+      s2 = u.select_atoms('(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)')
+      s3 = u.select_atoms('name ZND and (resid 291 or resid 292)')
+      s4 = u.select_atoms('(name OD1 or name OD2) and sphzone 5.0 (resid 291)')
+      ags = [[s1, s2], [s3, s4]]
+
+      rdf = InterRDF_s(u, ags)
+      rdf.run()
+
+    Results are available through the :attr:`bins` and :attr:`rdf`
+    attributes::
+
+      plt.plot(rdf.bins, rdf.rdf[0][0][0])
+
+    (Which plots the rdf between the first atom in s1 and the first atom in s2)
+
+    To generate cdf, use the 'cdf' method
+
+      cdf = rdf.get_cdf()
+
+    Results are available through the :attr:'cdf' attributes::
+
+      plt.plot(rdf.bins, rdf.cdf[0][0][0])
+
+    (Which plots the cdf between the first atom in s1 and the first atom in s2)
+
+    .. versionadded:: 0.19.0
+
+    """
+    def __init__(self, u, ags,
+                 nbins=75, range=(0.0, 15.0), density=True, **kwargs):
+        super(InterRDF_s, self).__init__(u.universe.trajectory, **kwargs)
+
+        # List of pairs of AtomGroups
+        self.ags = ags
+
+        self.u = u
+        self._density = density
+
+        self.rdf_settings = {'bins': nbins,
+                             'range': range}
+
+    def _prepare(self):
+        # Empty list to store the RDF
+        count_list = []
+        count, edges = np.histogram([-1], **self.rdf_settings)
+        count_list = [np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)), dtype=np.float64)
+                         for ag1, ag2 in self.ags]
+
+        self.count = count_list
+        self.edges = edges
+        self.bins = 0.5 * (edges[:-1] + edges[1:])
+
+        # Need to know average volume
+        self.volume = 0.0
+
+
+    def _single_frame(self):
+        for i, (ag1, ag2) in enumerate(self.ags):
+            result=distances.distance_array(ag1.positions, ag2.positions,
+                                            box=self.u.dimensions)
+            for j in range(ag1.n_atoms):
+                for k in range(ag2.n_atoms):
+                    count = np.histogram(result[j, k], **self.rdf_settings)[0]
+                    self.count[i][j, k, :] += count
+
+        self.volume += self._ts.volume
+
+
+    def _conclude(self):
+        # Volume in each radial shell
+        vol = np.power(self.edges[1:], 3) - np.power(self.edges[:-1], 3)
+        vol *= 4/3.0 * np.pi
+
+        # Empty lists to restore indices, RDF
+        indices = []
+        rdf = []
+
+        for i, (ag1, ag2) in enumerate(self.ags):
+            # Number of each selection
+            nA = len(ag1)
+            nB = len(ag2)
+            N = nA * nB
+            indices.append([ag1.indices, ag2.indices])
+
+            # Average number density
+            box_vol = self.volume / self.n_frames
+            density = N / box_vol
+
+            if self._density:
+                rdf.append(self.count[i] / (density * vol * self.n_frames))
+            else:
+                rdf.append(self.count[i] / (vol * self.n_frames))
+
+        self.rdf = rdf
+        self.indices = indices
+
+    def get_cdf(self):
+        """Calculate the cumulative distribution functions (CDF) for all sites.
+
+        Returns
+        -------
+              cdf : list
+                      list of arrays with the same structure as :attr:`rdf`
+        """
+        # Calculate cumulative distribution function
+        # Empty list to restore CDF
+        cdf = []
+
+        for count in self.count:
+            cdf.append(np.cumsum(count, axis=2) / self.n_frames)
+
+        # Results stored in self.cdf
+        # self.cdf is a list of cdf between pairs of AtomGroups in ags
+        self.cdf = cdf
+
+        return cdf
