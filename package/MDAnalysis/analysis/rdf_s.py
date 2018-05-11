@@ -156,7 +156,7 @@ class InterRDF_s(AnalysisBase):
         self.rdf_s = rdf_s
         self.indices = indices
 
-    def cdf_s(self):
+    def get_cdf(self):
         # Empty list to restore CDF
         cdf_s = []
 
