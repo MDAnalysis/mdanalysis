@@ -477,10 +477,7 @@ class DumpReader(base.ReaderBase):
         self._read_next_timestep()
 
     def _reopen(self):
-        try:
-            self._file.close()
-        except AttributeError:
-            pass
+        self.close()
         self._file = util.anyopen(self.filename)
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self.ts.frame = -1
@@ -513,7 +510,8 @@ class DumpReader(base.ReaderBase):
         return len(self._offsets)
 
     def close(self):
-        self._file.close()
+        if hasattr(self, '_file'):
+            self._file.close()
 
     def _read_frame(self, frame):
         self._file.seek(self._offsets[frame])
