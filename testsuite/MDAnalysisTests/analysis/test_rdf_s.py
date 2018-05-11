@@ -69,7 +69,11 @@ def test_range(u):
 def test_count_size(rdf):
     # ZND vs OD1 & OD2
     # should see 2 elements in rdf.count
-    #
+    # 1 element in rdf.count[0]
+    # 2 elements in rdf.count[0][0]
+    # 2 elements in rdf.count[1]
+    # 2 elements in rdf.count[1][0]
+    # 2 elements in rdf.count[1][1]
     assert len(rdf.count) == 2
     assert len(rdf.count[0]) == 1
     assert len(rdf.count[0][0]) == 2
@@ -91,7 +95,7 @@ def test_double_run(rdf):
     assert len(rdf.count[1][1][0][rdf.count[1][1][0] == 3]) == 1
 
 def test_cdf(rdf):
-    rdf.cdf_s()
+    rdf.get_cdf()
     assert rdf.cdf_s[0][0][0][-1] == rdf.count[0][0][0].sum()/rdf.n_frames
 
 
