@@ -47,12 +47,8 @@ def sels(u):
     return ag
 
 @pytest.fixture(scope='module')
-def rdf(u,sel):
-    return InterRDF_S(u, sel).run()
-
-@pytest.mark.parametrize("density, value", [
-            (True, 13275.775528444701),
-            (False, 0.021915460340071267)])
+def rdf(u,sels):
+    return InterRDF_s(u, sels).run()
 
 def test_nbins(u):
     ag = sels(u)
@@ -95,9 +91,14 @@ def test_double_run(rdf):
     assert len(rdf.count[1][1][0][rdf.count[1][1][0] == 3]) == 1
 
 def test_cdf(rdf):
+    rdf.cdf_s()
     assert rdf.cdf_s[0][0][0][-1] == rdf.count[0][0][0].sum()/rdf.n_frames
 
 
-def test_density(u, sel, density, value):
-    rdf = InterRDF_s(u, sel, density=True).run()
+@pytest.mark.parametrize("density, value", [
+            (True, 13275.775528444701),
+            (False, 0.021915460340071267)])
+
+def test_density(u, sels, density, value):
+    rdf = InterRDF_s(u, sels, density=density).run()
     assert_almost_equal(max(rdf.rdf_s[0][0][0]), value)
