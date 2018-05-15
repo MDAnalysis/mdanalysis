@@ -13,13 +13,16 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de
+??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de,
+         VOD555
 
   * 0.18.1
 
 Enhancements
   * Added various duecredit stubs
   * Import time reduced by a factor two (PR #1881)
+  * Added rdf.InterRDF_s to calculate site-specific pair distribution
+    functions (PR #1815)
 
 Fixes
   * Fixed order of indices in Angle/Dihedral/Improper repr
