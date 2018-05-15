@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- https://www.mdanalysis.org
-# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2018 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -27,7 +27,7 @@ import pytest
 from numpy.testing import assert_almost_equal
 
 import MDAnalysis as mda
-from MDAnalysis.analysis.rdf_s import InterRDF_s
+from MDAnalysis.analysis.rdf import InterRDF_s
 
 from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT
 
@@ -43,24 +43,24 @@ def sels(u):
     s2 = u.select_atoms('(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)')
     s3 = u.select_atoms('name ZND and (resid 291 or resid 292)')
     s4 = u.select_atoms('(name OD1 or name OD2) and sphzone 5.0 (resid 291)')
-    ag = [[s1, s2], [s3, s4]]
-    return ag
+    ags = [[s1, s2], [s3, s4]]
+    return ags
 
 @pytest.fixture(scope='module')
 def rdf(u,sels):
     return InterRDF_s(u, sels).run()
 
 def test_nbins(u):
-    ag = sels(u)
-    rdf = InterRDF_s(u, ag, nbins=412).run()
+    ags = sels(u)
+    rdf = InterRDF_s(u, ags, nbins=412).run()
 
     assert len(rdf.bins) == 412
 
 
 def test_range(u):
-    ag = sels(u)
+    ags = sels(u)
     rmin, rmax = 1.0, 13.0
-    rdf = InterRDF_s(u, ag, range=(rmin, rmax)).run()
+    rdf = InterRDF_s(u, ags, range=(rmin, rmax)).run()
 
     assert rdf.edges[0] == rmin
     assert rdf.edges[-1] == rmax
@@ -96,7 +96,7 @@ def test_double_run(rdf):
 
 def test_cdf(rdf):
     rdf.get_cdf()
-    assert rdf.cdf_s[0][0][0][-1] == rdf.count[0][0][0].sum()/rdf.n_frames
+    assert rdf.cdf[0][0][0][-1] == rdf.count[0][0][0].sum()/rdf.n_frames
 
 
 @pytest.mark.parametrize("density, value", [

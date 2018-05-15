@@ -21,10 +21,10 @@
 #
 
 """
-Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`
+Site-specific Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf_s`
 ================================================================
 
-Tools for calculating pair distribution functions ("radial
+Tools for calculating site-specific pair distribution functions ("radial
 distribution functions" or "RDF").
 
 .. Not Implemented yet:
@@ -44,14 +44,12 @@ from six.moves import zip, range
 class InterRDF_s(AnalysisBase):
     """Intermolecular pair distribution function
 
-    InterRDF_s(u, g1, g2, nbins=75, range=(0.0, 15.0))
-
     Arguments
     ---------
     u : Universe
        A Universe contains atoms in ags
     ags : list
-         A list AtomGroup pairs
+         A list of pairs of AtomGroups
     nbins : int (optional)
           Number of bins in the histogram [75]
     range : tuple or list (optional)
@@ -67,7 +65,16 @@ class InterRDF_s(AnalysisBase):
     Example
     -------
     First create the :class:`InterRDF_s` object, by supplying one Universe
-    and two AtomGroup selection lists then use the :meth:`run` method ::
+    and one list of pairs of AtomGroups then use the :meth:`run` method ::
+
+      from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT
+      u = mda.Universe(GRO_MEMPROT, XTC_MEMPROT)
+
+      s1 = u.select_atoms('name ZND and resid 289')
+      s2 = u.select_atoms('(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)')
+      s3 = u.select_atoms('name ZND and (resid 291 or resid 292)')
+      s4 = u.select_atoms('(name OD1 or name OD2) and sphzone 5.0 (resid 291)')
+      ags = [[s1, s2], [s3, s4]]
 
       rdf = InterRDF_s(u, ags)
       rdf.run()
@@ -77,24 +84,24 @@ class InterRDF_s(AnalysisBase):
 
       plt.plot(rdf.bins, rdf.rdf_s[0])
 
-    To generate cdf, use the 'cdf_s' mehthod
+    To generate cdf, use the 'cdf' mehthod
 
-      rdf.cdf_s()
+      cdf = rdf.get_cdf()
 
-    Results are available through the :attr:'cdf_s' attributes::
-      
-      plt.plot(rdf.bins, rdf.cdf_s[0])
+    Results are available through the :attr:'cdf' attributes::
 
-    .. versionadded:: 0.18.0
+      plt.plot(rdf.bins, rdf.cdf[0])
+
+    .. versionadded:: 0.19.0
 
     """
     def __init__(self, u, ags,
                  nbins=75, range=(0.0, 15.0), density=True, **kwargs):
         super(InterRDF_s, self).__init__(u.universe.trajectory, **kwargs)
 
-        # List of AtomGroups 
+        # List of pairs of AtomGroups
         self.ags = ags
-        
+
         self.u = u
         self._density = density
 
@@ -105,7 +112,7 @@ class InterRDF_s(AnalysisBase):
         # Empty list to store the RDF
         count_list = []
         count, edges = np.histogram([-1], **self.rdf_settings)
-        count_list = [np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)), dtype=np.float64) 
+        count_list = [np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)), dtype=np.float64)
                          for ag1, ag2 in self.ags]
 
         self.count = count_list
@@ -157,10 +164,13 @@ class InterRDF_s(AnalysisBase):
         self.indices = indices
 
     def get_cdf(self):
+        # Calculate cumulative distribution function
         # Empty list to restore CDF
-        cdf_s = []
+        cdf = []
 
         for count in self.count:
-            cdf_s.append(np.cumsum(count, axis=2) / self.n_frames)
+            cdf.append(np.cumsum(count, axis=2) / self.n_frames)
 
-        self.cdf_s = cdf_s
+        # Results stored in self.cdf
+        # self.cdf is a list of cdf between pairs of AtomGroups in ags
+        self.cdf = cdf
