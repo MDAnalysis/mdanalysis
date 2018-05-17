@@ -22,6 +22,7 @@
 from __future__ import absolute_import
 
 import numpy as np
+from collections import OrderedDict
 from MDAnalysis.coordinates.base import (
     Timestep,
     SingleFrameReaderBase,
@@ -43,6 +44,7 @@ class AmazingMultiFrameReader(ReaderBase):
         self.n_frames = 10
         self.n_atoms = 10
         self._auxs = {}
+        self._transformations = []
         # ts isn't a real timestep, but just an integer
         # whose value represents the frame number (0 based)
         self.ts = Timestep(self.n_atoms)

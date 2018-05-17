@@ -23,6 +23,7 @@ from __future__ import absolute_import
 import MDAnalysis as mda
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader, GROWriter
+from MDAnalysis.transformations import translate
 from MDAnalysisTests import make_Universe, tempdir
 from MDAnalysisTests.coordinates.base import (
     BaseReference, BaseReaderTest, BaseWriterTest, BaseTimestepTest,
@@ -290,6 +291,13 @@ class TestGROReaderNoConversion(BaseReaderTest):
                              dt=ref.aux_highf_dt,
                              initial_time=0, time_selector=None)
         return reader
+    
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def transformed(ref):
+        transformed = ref.reader(ref.trajectory, convert_units=False)
+        transformed.add_transformations(translate([1,1,1]), translate([0,0,0.33]))
+        return transformed
 
 
 class TestGROWriterNoConversion(BaseWriterTest):

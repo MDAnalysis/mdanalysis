@@ -397,4 +397,23 @@ class ChainReader(base.ProtoReader):
                     nframes=self.n_frames,
                     natoms=self.n_atoms))
 
+    def add_transformations(self, *transformations):
+        """ Adds all the transformations to be applied to the trajectory.
+        Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        to avoid unintended behaviour where the coordinates of each frame are transformed
+        multiple times when iterating over the trajectory.
+        
+        In this method the transformations are added directly to the reader instances and,
+        thus, will be applied correctly.
+        """
+        super(ChainReader, self).add_transformations(*transformations)
+        for r in self.readers:
+            r.add_transformations(*transformations)
 
+    def _apply_transformations(self, ts):
+        """ Applies the transformations to the timestep.
+        Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        to avoid applying the same transformations multiple times on each frame
+        """
+        
+        return ts

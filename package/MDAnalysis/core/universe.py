@@ -213,6 +213,10 @@ class Universe(object):
         Universe to only unpickle if a compatible Universe with matching
         *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will
         still be honored when unpickling.
+    transformations: function or list, optional
+        Provide a list of transformations that you wish to apply to the 
+        trajectory upon reading. Transformations can be found in 
+        :mod:`MDAnalysis.transformations`, or can be user-created.
     in_memory
         After reading in the trajectory, transfer it to an in-memory
         representations, which allow for manipulation of coordinates.
@@ -321,7 +325,13 @@ class Universe(object):
 
             if not coordinatefile:
                 coordinatefile = None
+                
             self.load_new(coordinatefile, **kwargs)
+            # parse transformations
+            trans_arg = kwargs.pop('transformations', None)
+            if trans_arg:
+                transforms =[trans_arg] if callable(trans_arg) else trans_arg
+                self.trajectory.add_transformations(*transforms)
 
         # Check for guess_bonds
         if kwargs.pop('guess_bonds', False):
@@ -333,6 +343,7 @@ class Universe(object):
         self._anchor_name = kwargs.get('anchor_name', None)
         # Universes are anchors by default
         self.is_anchor = kwargs.get('is_anchor', True)
+        
 
     def copy(self):
         """Return an independent copy of this Universe"""

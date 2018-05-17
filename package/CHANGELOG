@@ -14,11 +14,13 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
-         VOD555
+         VOD555, davidercruz
 
   * 0.18.1
 
 Enhancements
+  * Added a on-the-fly trajectory transformations API and a coordinate translation
+  	function (Issue #786)
   * Added various duecredit stubs
   * Import time reduced by a factor two (PR #1881)
   * added compound kwarg to center, centroid, center_of_geometry, center_of_mass (PR #1903)

@@ -55,6 +55,7 @@ from MDAnalysisTests.datafiles import (
 import MDAnalysis as mda
 import MDAnalysis.coordinates
 from MDAnalysis.topology.base import TopologyReaderBase
+from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 
 
@@ -303,6 +304,21 @@ def test_chainid_quick_select():
         assert len(u.C.atoms) == 5
         assert len(u.D.atoms) == 7
 
+class TestTransformations(object):
+    """Tests the transformations keyword
+    """
+    def test_callable(self):
+        u = mda.Universe(PSF,DCD, transformations=translate([10,10,10]))
+        uref = mda.Universe(PSF,DCD)
+        ref = translate([10,10,10])(uref.trajectory.ts)
+        assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
+
+    def test_list(self):
+        workflow = [translate([10,10,0]), translate([0,0,10])]
+        u = mda.Universe(PSF,DCD, transformations=workflow)
+        uref = mda.Universe(PSF,DCD)
+        ref = translate([10,10,10])(uref.trajectory.ts)
+        assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
 
 class TestGuessMasses(object):
     """Tests the Mass Guesser in topology.guessers
