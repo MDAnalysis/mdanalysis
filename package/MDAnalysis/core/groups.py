@@ -113,7 +113,6 @@ from . import flags
 from ..exceptions import NoDataError
 from . import topologyobjects
 from ._get_readers import get_writer_for
-from . import flags
 
 
 def _unpickle(uhash, ix):
@@ -996,7 +995,7 @@ class GroupBase(_MutableBase):
         center of geometry.
 
         `box` allows a unit cell to be given for the transformation. If not
-        specified, an the dimensions information from the current Timestep will
+        specified, the dimensions information from the current Timestep will
         be used.
 
         .. note::
@@ -1018,7 +1017,7 @@ class GroupBase(_MutableBase):
         elif compound.lower() == 'fragments':
             objects = atomgroup.fragments
         else:
-            raise ValueError("Unrecognised compound definition: {0}"
+            raise ValueError("Unrecognized compound definition: {0}"
                              "Please use one of 'group' 'residues' 'segments'"
                              "or 'fragments'".format(compound))
 
@@ -1028,7 +1027,7 @@ class GroupBase(_MutableBase):
         elif center.lower() in ('cog', 'centroid', 'centerofgeometry'):
             centers = np.vstack([o.atoms.center_of_geometry() for o in objects])
         else:
-            raise ValueError("Unrecognised center definition: {0}"
+            raise ValueError("Unrecognized center definition: {0}"
                              "Please use one of 'com' or 'cog'".format(center))
         centers = centers.astype(np.float32)
 
