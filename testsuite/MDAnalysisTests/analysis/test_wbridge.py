@@ -169,7 +169,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)')
         # Build an dummy WaterBridgeAnalysis object for testing
         wb._timeseries = True
-        wb.timesteps = range(1)
+        wb.timesteps = [0]
         wb._water_network = [{('SOL', 2): [{(2, 0, ('SOL', 2, 'HW1'), ('ALA', 1, 'O'), 2.0, 179.99998),
                                             (1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 179.99998)},
                                            {(3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 179.99998),
@@ -197,7 +197,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)')
         # Build an dummy WaterBridgeAnalysis object for testing
         wb._timeseries = True
-        wb.timesteps = range(6)
+        wb.timesteps = [0, 1, 2, 3, 4, 5]
         wb._water_network = [# a 2 * 2 water netwrok consists of all four links
                              {('SOL', 2): [{(2, 0, ('SOL', 2, 'HW1'), ('ALA', 1, 'O'), 2.0, 179.99998),
                                             (1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 179.99998)},
