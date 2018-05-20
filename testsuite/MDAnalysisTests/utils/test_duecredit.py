@@ -40,7 +40,7 @@ pytest.importorskip('duecredit')
                      in ('no', '0', 'false')),
                     reason=
                     "duecredit is explicitly disabled with DUECREDIT_ENABLE=no")
-class TestDuecredits(object):
+class TestDuecredit(object):
 
     def test_duecredit_active(self):
         assert mda.due.active == True
