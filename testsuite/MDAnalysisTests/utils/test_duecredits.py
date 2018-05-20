@@ -31,6 +31,10 @@ import importlib
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import MMTF
 
+# duecredit itself is not needed in the name space but this is a
+# convenient way to skip all tests if duecredit is not installed
+# (see https://github.com/MDAnalysis/mdanalysis/issues/1906)
+pytest.importorskip('duecredit')
 
 @pytest.mark.skipif((os.environ.get('DUECREDIT_ENABLE', 'yes').lower()
                      in ('no', '0', 'false')),
