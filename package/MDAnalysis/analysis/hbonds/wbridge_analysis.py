@@ -281,6 +281,7 @@ Classes
          import pandas as pd
          df = pd.DataFrame.from_records(w.table)
 """
+from __future__ import absolute_import, division
 import six
 
 from collections import defaultdict
