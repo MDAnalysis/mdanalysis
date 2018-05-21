@@ -25,22 +25,21 @@ related pages.
 
 You can always ask questions on the MDAnalysis mailing list:
 
-      http://groups.google.com/group/mdnalysis-discussion
+      https://groups.google.com/group/mdnalysis-discussion
 
-People there are very happy to help. When posting please remember to
-mention the release of MDAnalysis you are trying to install (e.g. "tar
-file MDAnalysis-0.7.3 from website" or "subversion r818"), all the
-commands that you typed to install the package, and the full output
-(typically right from 'python setup.py build'). You should also
-mention your operating system (e.g. Ubuntu 10.04) and Python version
-(output from 'python --version') so that we can better diagnose the
-problem.
+People there are very happy to help. When posting please remember to mention
+the release of MDAnalysis you are trying to install (e.g. "tar file
+MDAnalysis-0.7.3 from website" or "git commit deadbee3"), all the commands that
+you typed to install the package, and the full output (typically right from
+``python setup.py build``). You should also mention your operating system
+(e.g. Ubuntu 16.04) and Python version (output from ``python --version``) so
+that we can better diagnose the problem.
 
 
 Getting the source 
 ==================
 
-Download a tar ball from https://pypi.python.org/pypi/MDAnalysisTests; these
+Download a tar ball from https://pypi.org/project/MDAnalysisTests; these
 instructions apply to versions 0.7.4 or higher.
 
 Alternatively, check out the MDAnalysis directory from the git
@@ -62,10 +61,9 @@ and executing from the top directory ::
 This installs MDAnalysisTests in the system wide python directory;
 this may require administrative privileges.
 
-It is also possible to use --prefix, --home, or --user options for
-setup.py to install in a different (probably your private) python
-directory hierarchy. ``python setup.py install --help`` should show
-you your options.
+It is also possible to use ``--prefix``, ``--home``, or ``--user`` options for
+``setup.py`` to install in a different (probably your private) python directory
+hierarchy. ``python setup.py install --help`` should show you your options.
 
 If you have problem at this stage then have a look at the operating
 system specific notes at the end of this file or look in the issue
@@ -76,7 +74,7 @@ found in the comments
 Running tests
 =============
 
-See http://wiki.mdanalysis.org/UnitTests for details.
+See https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests for details.
 
 
 From sources
@@ -84,17 +82,11 @@ From sources
 
 From the top directory of the checked out sources:
 
-  pytest /testsuite/MDAnalysisTests/ --numprocesses 4
+  pytest --numprocesses 4 --disable-pytest-warnings testsuite/MDAnalysisTests/ 
 
-(use --numprocesses 4 if you have 4 cores available to run in parallel or
-adapt to available cores.)
+Use ``--numprocesses 4`` if you have 4 cores available to run in
+parallel or adapt to available cores. To run tests in parallel you
+will need to have *pytest-xdist>=1.18.1* installed (``pip install
+pytest-xdist``).
 
-To run tests in parallel you will need pytest-xdist>=1.18.1 installed.
-
-From installed package
-----------------------
-
-The test runner can be launched as
-
-  python -c 'from MDAnalysis.tests import test; test()'
 

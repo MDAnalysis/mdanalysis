@@ -32,6 +32,7 @@ Fixes
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)
+  * updated meta data for new PyPi (#1837)
 
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
