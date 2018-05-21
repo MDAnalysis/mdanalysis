@@ -15,7 +15,8 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 ------------------------------------------------------------------------------
 mm/dd/18
 
-  * 0.18.1
+  * 0.18.1 orbeckst
+    - skip tests for duecredit when duecredit is not installed (#1906)
 
 04/15/18 tylerjereddy, zemanj
   * 0.18.0
