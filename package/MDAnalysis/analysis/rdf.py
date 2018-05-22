@@ -24,8 +24,26 @@
 Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`
 ================================================================
 
-Tools for calculating pair distribution functions ("radial
-distribution functions" or "RDF").
+This module contains two classes to calculate pair distribution functions
+ ("radial distribution functions" or "RDF").
+
+class:`InterRDF` is a tool to calculate average radial distribution functions
+between two groups of atoms. Suppose we have two atom group A and B. A contains
+atom A1, A2, and B contains B1, B2. Give A and B to class:`InterRDF`, the output
+will be the average of RDFs bewteen A1 and B1, A1 and B2, A2 and B1, A2 and B2.
+
+class:`InterRDF_s` is a tool to calculate site-specific radial distribution
+functions. Give the same A and B to class:`InterRDF_s`, the output will be
+a list of RDFs between A1 and B1, A1 and B2, A2 and B1, A2 and B2.
+
+
+Classes:
+-------
+
+.. autoclass:: InterRDF
+.. autoclass:: InterRDF_s
+
+-------
 
 .. Not Implemented yet:
 .. - Structure factor?
@@ -175,7 +193,7 @@ distribution functions" or "RDF").
 """
 
 class InterRDF_s(AnalysisBase):
-    """Intermolecular pair distribution function
+    """Site-specific intermolecular pair distribution function
 
     Arguments
     ---------
@@ -219,7 +237,7 @@ class InterRDF_s(AnalysisBase):
 
     (Which plots the rdf between the first atom in s1 and the first atom in s2)
 
-    To generate cdf, use the 'cdf' mehthod
+    To generate cdf, use the 'cdf' method
 
       cdf = rdf.get_cdf()
 
@@ -301,6 +319,13 @@ class InterRDF_s(AnalysisBase):
         self.indices = indices
 
     def get_cdf(self):
+        """Calculate the cumulative distribution functions (CDF) for all sites.
+
+        Returns
+        -------
+              cdf : list
+                      list of arrays with the same structure as :attr:`rdf`
+        """
         # Calculate cumulative distribution function
         # Empty list to restore CDF
         cdf = []
@@ -311,3 +336,5 @@ class InterRDF_s(AnalysisBase):
         # Results stored in self.cdf
         # self.cdf is a list of cdf between pairs of AtomGroups in ags
         self.cdf = cdf
+
+        return cdf
