@@ -899,11 +899,29 @@ class TestAtomGroup(object):
 
     def test_center_of_geometry(self, ag):
         assert_almost_equal(ag.center_of_geometry(),
-                                  np.array([-0.04223963, 0.0141824, -0.03505163], dtype=np.float32))
+                            [-0.04223963, 0.0141824, -0.03505163], decimal=5)
 
     def test_center_of_mass(self, ag):
         assert_almost_equal(ag.center_of_mass(),
-                                  np.array([-0.01094035, 0.05727601, -0.12885778]))
+                            [-0.01094035, 0.05727601, -0.12885778], decimal=5)
+
+    @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
+                                                ('segids', 'segments')))
+    def test_center_of_geometry_compounds(self, ag, name, compound):
+        ref = [a.center_of_geometry() for a in ag.groupby(name).values()]
+        cog = ag.center_of_geometry(compound=compound)
+        assert_almost_equal(cog, ref, decimal=5)
+
+    @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
+                                                ('segids', 'segments')))
+    def test_center_of_mass_compounds(self, ag, name, compound):
+        ref = [a.center_of_mass() for a in ag.groupby(name).values()]
+        com = ag.center_of_mass(compound=compound)
+        assert_almost_equal(com, ref, decimal=5)
+
+    def test_center_wrong_compound(self, ag):
+        with pytest.raises(ValueError):
+            ag.center(weights=None, compound="foo")
 
     def test_coordinates(self, ag):
         assert_almost_equal(
