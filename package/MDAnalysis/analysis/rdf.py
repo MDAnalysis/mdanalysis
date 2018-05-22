@@ -27,14 +27,15 @@ Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`
 This module contains two classes to calculate pair distribution functions
  ("radial distribution functions" or "RDF").
 
-class:`InterRDF` is a tool to calculate average radial distribution functions
+:class:`InterRDF` is a tool to calculate average radial distribution functions
 between two groups of atoms. Suppose we have two atom group A and B. A contains
 atom A1, A2, and B contains B1, B2. Give A and B to class:`InterRDF`, the output
 will be the average of RDFs bewteen A1 and B1, A1 and B2, A2 and B1, A2 and B2.
 
-class:`InterRDF_s` is a tool to calculate site-specific radial distribution
+:class:`InterRDF_s` is a tool to calculate site-specific radial distribution
 functions. Give the same A and B to class:`InterRDF_s`, the output will be
-a list of RDFs between A1 and B1, A1 and B2, A2 and B1, A2 and B2.
+a list of RDFs between A1 and B1, A1 and B2, A2 and B1, A2 and B2, which are the
+site-specific radial distribution functions.
 
 
 Classes:
@@ -230,10 +231,10 @@ class InterRDF_s(AnalysisBase):
       rdf = InterRDF_s(u, ags)
       rdf.run()
 
-    Results are available through the :attr:`bins` and :attr:`rdf_s`
+    Results are available through the :attr:`bins` and :attr:`rdf`
     attributes::
 
-      plt.plot(rdf.bins, rdf.rdf_s[0][0][0])
+      plt.plot(rdf.bins, rdf.rdf[0][0][0])
 
     (Which plots the rdf between the first atom in s1 and the first atom in s2)
 
@@ -297,7 +298,7 @@ class InterRDF_s(AnalysisBase):
 
         # Empty lists to restore indices, RDF
         indices = []
-        rdf_s = []
+        rdf = []
 
         for i, (ag1, ag2) in enumerate(self.ags):
             # Number of each selection
@@ -311,11 +312,11 @@ class InterRDF_s(AnalysisBase):
             density = N / box_vol
 
             if self._density:
-                rdf_s.append(self.count[i] / (density * vol * self.n_frames))
+                rdf.append(self.count[i] / (density * vol * self.n_frames))
             else:
-                rdf_s.append(self.count[i] / (vol * self.n_frames))
+                rdf.append(self.count[i] / (vol * self.n_frames))
 
-        self.rdf_s = rdf_s
+        self.rdf = rdf
         self.indices = indices
 
     def get_cdf(self):

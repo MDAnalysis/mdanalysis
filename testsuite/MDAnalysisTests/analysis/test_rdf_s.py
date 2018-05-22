@@ -105,4 +105,4 @@ def test_cdf(rdf):
 
 def test_density(u, sels, density, value):
     rdf = InterRDF_s(u, sels, density=density).run()
-    assert_almost_equal(max(rdf.rdf_s[0][0][0]), value)
+    assert_almost_equal(max(rdf.rdf[0][0][0]), value)
