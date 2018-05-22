@@ -601,7 +601,7 @@ class GroupBase(_MutableBase):
     def dimensions(self, dimensions):
         self.universe.trajectory.ts.dimensions = dimensions
 
-    def center(self, weights, pbc=None):
+    def center(self, weights, pbc=None, compound='group'):
         """Calculate center of group given some weights
 
         Parameters
@@ -611,6 +611,13 @@ class GroupBase(_MutableBase):
         pbc : boolean, optional
             ``True``: Move all atoms within the primary unit cell
             before calculation [``False``]
+        compound : {'group', 'segments', 'residues'}, optional
+            If 'group', the center of mass of all atoms in the atomgroup will
+            be returned as a single position vector. Else, the centers of mass
+            of each segment or residue will be returned as an array of position
+            vectors, i.e. a 2d array. Note that, in any case, *only* the
+            positions of atoms *belonging to the atomgroup* will be
+            taken into account.
 
         Returns
         -------
@@ -631,6 +638,7 @@ class GroupBase(_MutableBase):
         If the :class:`MDAnalysis.core.flags` flag *use_pbc* is set to
         ``True`` then the `pbc` keyword is used by default.
 
+        .. versionchanged:: 0.19.0 Added `compound` parameter
         """
         atoms = self.atoms
         if pbc is None:
@@ -640,9 +648,43 @@ class GroupBase(_MutableBase):
         else:
             xyz = atoms.positions
 
-        return np.average(xyz, weights=weights, axis=0)
+        if compound.lower() == 'group':
+            return np.average(xyz, weights=weights, axis=0)
+        elif compound.lower() == 'residues':
+            compound_indices = atoms.resindices
+            n_compounds = atoms.n_residues
+        elif compound.lower() == 'segments':
+            compound_indices = atoms.segindices
+            n_compounds = atoms.n_segments
+        else:
+            raise ValueError("Unrecognized compound definition: {}\nPlease use"
+                             " one of 'group', 'residues', or 'segments'."
+                             "".format(compound))
 
-    def center_of_geometry(self, pbc=None):
+        # Sort positions and masses by compound index:
+        sort_indices = np.argsort(compound_indices)
+        compound_indices = compound_indices[sort_indices]
+        positions = atoms.positions[sort_indices]
+        weights = weights[sort_indices]
+        # Allocate output array:
+        coms = np.zeros((n_compounds, 3), dtype=np.float32)
+        # Get sizes of compounds:
+        unique_compound_indices, compound_sizes = np.unique(compound_indices,
+                                                            return_counts=True)
+        unique_compound_sizes = np.unique(compound_sizes)
+        # Compute centers per compound for each compound size:
+        for compound_size in unique_compound_sizes:
+            compound_mask = compound_sizes == compound_size
+            _compound_indices = unique_compound_indices[compound_mask]
+            atoms_mask = np.isin(compound_indices, _compound_indices)
+            _positions = positions[atoms_mask].reshape((-1, compound_size, 3))
+            _weights = weights[atoms_mask].reshape((-1, compound_size))
+            _coms = (_positions * _weights[:, :, None]).sum(axis=1)
+            _coms /= _weights.sum(axis=1)[:, None]
+            coms[compound_mask] = _coms
+        return coms
+
+    def center_of_geometry(self, pbc=None, compound='group'):
         """Center of geometry (also known as centroid) of the selection.
 
         Parameters
@@ -650,6 +692,13 @@ class GroupBase(_MutableBase):
         pbc : boolean, optional
             ``True``: Move all atoms within the primary unit cell
             before calculation [``False``]
+        compound : {'group', 'segments', 'residues'}, optional
+            If 'group', the center of mass of all atoms in the atomgroup will
+            be returned as a single position vector. Else, the centers of mass
+            of each segment or residue will be returned as an array of position
+            vectors, i.e. a 2d array. Note that, in any case, *only* the
+            positions of atoms *belonging to the atomgroup* will be
+            taken into account.
 
         Returns
         -------
@@ -664,7 +713,7 @@ class GroupBase(_MutableBase):
 
         .. versionchanged:: 0.8 Added `pbc` keyword
         """
-        return self.center(None, pbc=pbc)
+        return self.center(np.ones(self.n_atoms), pbc=pbc, compound=compound)
 
     centroid = center_of_geometry
 
