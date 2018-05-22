@@ -697,7 +697,7 @@ class GroupBase(_MutableBase):
         for compound_size in unique_compound_sizes:
             compound_mask = compound_sizes == compound_size
             _compound_indices = unique_compound_indices[compound_mask]
-            atoms_mask = np.isin(compound_indices, _compound_indices)
+            atoms_mask = np.in1d(compound_indices, _compound_indices)
             _coords = coords[atoms_mask].reshape((-1, compound_size, 3))
             if weights is None:
                 _centers = _coords.mean(axis=1)
