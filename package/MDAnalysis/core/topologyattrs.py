@@ -49,7 +49,7 @@ from numpy.lib.utils import deprecate
 
 from . import flags
 from ..lib.util import cached, convert_aa_code, iterable
-from ..lib import distances, transformations, mdamath
+from ..lib import transformations, mdamath
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
@@ -789,6 +789,14 @@ class Masses(AtomAttr):
 
         Parameters
         ----------
+        pbc : bool, optional
+            If ``True`` and `compound` is 'group', move all atoms to the primary
+            unit cell before calculation.
+            If ``True`` and `compound` is 'segments' or 'residues', the centers
+            of mass of each compound will be calculated without moving any
+            atoms to keep the compounds intact. Instead, the resulting
+            center-of-mass position vectors will be moved to the primary unit
+            cell after calculation.
         compound : {'group', 'segments', 'residues'}, optional
             If 'group', the center of mass of all atoms in the atomgroup will
             be returned as a single position vector. Else, the centers of mass
@@ -796,15 +804,6 @@ class Masses(AtomAttr):
             vectors, i.e. a 2d array. Note that, in any case, *only* the
             positions of atoms *belonging to the atomgroup* will be
             taken into account.
-        pbc : bool, optional
-            If ``True`` and `compound` is 'group', move all atoms to the primary
-            unit cell before calculation.
-            If ``True`` and `compund` is 'segments' or 'residues', the centers
-            of mass of each compound will be calculated without moving any
-            atoms to keep the compounds intact. Instead, the resulting
-            center-of-mass position vectors will be moved to the primary unit
-            cell after calculation.
-            [``False``]
 
         Returns
         -------
@@ -812,7 +811,7 @@ class Masses(AtomAttr):
             Position vector(s) of the center(s) of mass of the group.
             If `compound` was set to 'group', the output will be a single
             position vector.
-            If `compund` was set to 'segments' or 'residues', the output will
+            If `compound` was set to 'segments' or 'residues', the output will
             be a 2d array of shape ``(n, 3)`` where ``n`` is the number
             compounds.
 
