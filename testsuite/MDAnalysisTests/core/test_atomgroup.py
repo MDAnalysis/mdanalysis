@@ -33,7 +33,7 @@ from numpy.testing import (
 )
 
 import MDAnalysis as mda
-from MDAnalysis.lib import transformations
+from MDAnalysis.lib import distances, transformations
 from MDAnalysis.core.topologyobjects import (
     Bond,
     Angle,
@@ -905,18 +905,28 @@ class TestAtomGroup(object):
         assert_almost_equal(ag.center_of_mass(),
                             [-0.01094035, 0.05727601, -0.12885778], decimal=5)
 
+    @pytest.mark.parametrize('pbc', (True, False))
     @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
                                                 ('segids', 'segments')))
-    def test_center_of_geometry_compounds(self, ag, name, compound):
+    def test_center_of_geometry_compounds(self, ag, pbc, name, compound):
+        ag.universe.dimensions = [50, 50, 50, 90, 90, 90]
         ref = [a.center_of_geometry() for a in ag.groupby(name).values()]
-        cog = ag.center_of_geometry(compound=compound)
+        if pbc:
+            ref = np.asarray(ref, dtype=np.float32)
+            ref = distances.apply_PBC(ref, ag.dimensions)
+        cog = ag.center_of_geometry(pbc=pbc, compound=compound)
         assert_almost_equal(cog, ref, decimal=5)
 
+    @pytest.mark.parametrize('pbc', (True, False))
     @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
                                                 ('segids', 'segments')))
-    def test_center_of_mass_compounds(self, ag, name, compound):
+    def test_center_of_mass_compounds(self, ag, pbc, name, compound):
+        ag.universe.dimensions = [50, 50, 50, 90, 90, 90]
         ref = [a.center_of_mass() for a in ag.groupby(name).values()]
-        com = ag.center_of_mass(compound=compound)
+        if pbc:
+            ref = np.asarray(ref, dtype=np.float32)
+            ref = distances.apply_PBC(ref, ag.dimensions)
+        com = ag.center_of_mass(pbc=pbc, compound=compound)
         assert_almost_equal(com, ref, decimal=5)
 
     def test_center_wrong_compound(self, ag):
