@@ -807,7 +807,7 @@ class Masses(AtomAttr):
 
         Returns
         -------
-        center : numpy.ndarray with dtype=numpy.float32
+        center : numpy.ndarray
             Position vector(s) of the center(s) of mass of the group.
             If `compound` was set to 'group', the output will be a single
             position vector.

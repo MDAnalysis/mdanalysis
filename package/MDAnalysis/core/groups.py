@@ -630,7 +630,7 @@ class GroupBase(_MutableBase):
 
         Returns
         -------
-        center : numpy.ndarray with dtype=numpy.float32
+        center : numpy.ndarray
             Position vector(s) of the weighted center(s) of the group.
             If `compound` was set to 'group', the output will be a single
             position vector.
@@ -669,9 +669,7 @@ class GroupBase(_MutableBase):
                 coords = atoms.pack_into_box(inplace=False)
             else:
                 coords = atoms.positions
-            centers = np.average(coords, weights=weights, axis=0)
-            return centers.astype(np.float32) #TODO: check if astype() is really required (according to the numpy manual: no)
-
+            return np.average(coords, weights=weights, axis=0)
         elif compound.lower() == 'residues':
             compound_indices = atoms.resindices
             n_compounds = atoms.n_residues
@@ -690,7 +688,7 @@ class GroupBase(_MutableBase):
         if weights is not None:
             weights = weights[sort_indices]
         # Allocate output array:
-        centers = np.zeros((n_compounds, 3), dtype=np.float32)
+        centers = np.zeros((n_compounds, 3), dtype=coords.dtype)
         # Get sizes of compounds:
         unique_compound_indices, compound_sizes = np.unique(compound_indices,
                                                             return_counts=True)
@@ -738,7 +736,7 @@ class GroupBase(_MutableBase):
 
         Returns
         -------
-        center : numpy.ndarray with dtype=numpy.float32
+        center : numpy.ndarray
             Position vector(s) of the geometric center(s) of the group.
             If `compound` was set to 'group', the output will be a single
             position vector.
