@@ -780,10 +780,10 @@ class Masses(AtomAttr):
 
         return masses
 
-    def center_of_mass(group, compound='group', pbc=None):
+    def center_of_mass(group, pbc=None, compound='group'):
         """Center of mass of (compounds of) the group.
 
-        Computes the center of mass of *unique* atoms of the group.
+        Computes the center of mass of atoms in the group.
         Centers of mass per residue or per segment can be obtained by setting
         the `compound` parameter accordingly.
 
@@ -823,9 +823,9 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added `pbc` parameter
-        .. versionchanged:: 0.18.0 Added `compound` parameter
+        .. versionchanged:: 0.19.0 Added `compound` parameter
         """
-        atoms = group.atoms.unique
+        atoms = group.atoms
         return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound)
 
     transplants[GroupBase].append(
