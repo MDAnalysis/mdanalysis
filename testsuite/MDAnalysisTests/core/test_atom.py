@@ -22,6 +22,8 @@
 
 from __future__ import absolute_import
 
+import warnings
+
 import MDAnalysis as mda
 import numpy as np
 import pytest
@@ -120,7 +122,9 @@ class TestAtomNoForceNoVel(object):
     @staticmethod
     @pytest.fixture()
     def a():
-        u = mda.Universe(XYZ_mini)
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', UserWarning)
+            u = mda.Universe(XYZ_mini)
         return u.atoms[0]
 
     def test_velocity_fail(self, a):
