@@ -649,7 +649,7 @@ class GroupBase(_MutableBase):
             xyz = atoms.positions
 
         if compound.lower() == 'group':
-            return np.average(xyz, weights=weights, axis=0)
+            return np.average(xyz, weights=weights, axis=0).astype(np.float32)
         elif compound.lower() == 'residues':
             compound_indices = atoms.resindices
             n_compounds = atoms.n_residues
