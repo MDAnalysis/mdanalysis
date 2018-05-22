@@ -68,7 +68,11 @@ try:
                  as (os_dot_fork, os_dot_popen):
                 import duecredit
         else:
-            with patch('os.fork') as os_dot_fork, patch('os.popen') as os_dot_popen:
+            if not os.name == 'nt':
+                with patch('os.fork') as os_dot_fork, patch('os.popen') as os_dot_popen:
+                    import duecredit
+            else:
+                # Windows doesn't have os.fork
                 import duecredit
 
     from duecredit import due, BibTeX, Doi, Url
