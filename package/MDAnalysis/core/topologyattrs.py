@@ -790,13 +790,12 @@ class Masses(AtomAttr):
         Parameters
         ----------
         compound : {'group', 'segments', 'residues'}, optional
-            If 'group', the center of mass of all atoms in the group will be
-            returned as a single position vector.
-            Else, the centers of mass of each segment or residue will be
-            returned as an array of position vectors, i.e. a 2d array.
-            Note that, in any case, *only* the positions and masses of atoms
-            *belonging to the group* will be taken into account.
-            [``'group'``]
+            If 'group', the center of mass of all atoms in the atomgroup will
+            be returned as a single position vector. Else, the centers of mass
+            of each segment or residue will be returned as an array of position
+            vectors, i.e. a 2d array. Note that, in any case, *only* the
+            positions of atoms *belonging to the atomgroup* will be
+            taken into account.
         pbc : bool, optional
             If ``True`` and `compound` is 'group', move all atoms to the primary
             unit cell before calculation.
@@ -827,47 +826,7 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.18.0 Added `compound` parameter
         """
         atoms = group.atoms.unique
-        # COM of the whole group:
-        if compound == 'group':
-            return atoms.center(weights=atoms.masses, pbc=pbc)
-        # If COMs per compound are requested, get their number and indices:
-        elif compound.lower() == 'residues':
-            compound_indices = atoms.resindices
-            n_compounds = atoms.n_residues
-        elif compound.lower() == 'segments':
-            compound_indices = atoms.segindices
-            n_compounds = atoms.n_segments
-        else:
-            raise ValueError("Unrecognized compound definition: {}\nPlease use"
-                             " one of 'group', 'residues', or 'segments'."
-                             "".format(compound))
-        # Sort positions and masses by compound index:
-        sort_indices = np.argsort(compound_indices)
-        compound_indices = compound_indices[sort_indices]
-        positions = atoms.positions[sort_indices]
-        masses = atoms.masses[sort_indices]
-        # Allocate output array:
-        coms = np.zeros((n_compounds, 3), dtype=np.float32)
-        # Get sizes of compounds:
-        unique_compound_indices, compound_sizes = np.unique(compound_indices,
-                                                            return_counts=True)
-        unique_compound_sizes = np.unique(compound_sizes)
-        # Compute COMs per compound for each compound size:
-        for compound_size in unique_compound_sizes:
-            compound_mask = compound_sizes == compound_size
-            _compound_indices = unique_compound_indices[compound_mask]
-            atoms_mask = np.isin(compound_indices, _compound_indices)
-            _positions = positions[atoms_mask].reshape((-1, compound_size, 3))
-            _masses = masses[atoms_mask].reshape((-1, compound_size))
-            _coms = (_positions * _masses[:, :, None]).sum(axis=1)
-            _coms /= _masses.sum(axis=1)[:, None]
-            coms[compound_mask] = _coms
-        # Apply periodic boundary conditions if requested:
-        if pbc is None:
-            pbc = flags['use_pbc']
-        if pbc:
-            coms = distances.apply_PBC(coms, group.dimensions)
-        return coms
+        return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound)
 
     transplants[GroupBase].append(
         ('center_of_mass', center_of_mass))
