@@ -905,28 +905,38 @@ class TestAtomGroup(object):
         assert_almost_equal(ag.center_of_mass(),
                             [-0.01094035, 0.05727601, -0.12885778], decimal=5)
 
-    @pytest.mark.parametrize('pbc', (True, False))
     @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
                                                 ('segids', 'segments')))
-    def test_center_of_geometry_compounds(self, ag, pbc, name, compound):
-        ag.universe.dimensions = [50, 50, 50, 90, 90, 90]
+    def test_center_of_geometry_compounds(self, ag, name, compound):
         ref = [a.center_of_geometry() for a in ag.groupby(name).values()]
-        if pbc:
-            ref = np.asarray(ref, dtype=np.float32)
-            ref = distances.apply_PBC(ref, ag.dimensions)
-        cog = ag.center_of_geometry(pbc=pbc, compound=compound)
+        cog = ag.center_of_geometry(compound=compound)
         assert_almost_equal(cog, ref, decimal=5)
 
-    @pytest.mark.parametrize('pbc', (True, False))
     @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
                                                 ('segids', 'segments')))
-    def test_center_of_mass_compounds(self, ag, pbc, name, compound):
-        ag.universe.dimensions = [50, 50, 50, 90, 90, 90]
+    def test_center_of_mass_compounds(self, ag, name, compound):
         ref = [a.center_of_mass() for a in ag.groupby(name).values()]
-        if pbc:
-            ref = np.asarray(ref, dtype=np.float32)
-            ref = distances.apply_PBC(ref, ag.dimensions)
-        com = ag.center_of_mass(pbc=pbc, compound=compound)
+        com = ag.center_of_mass(compound=compound)
+        assert_almost_equal(com, ref, decimal=5)
+
+    @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
+                                                ('segids', 'segments')))
+    def test_center_of_geometry_compounds_pbc(self, ag, name, compound):
+        ag.dimensions = [50, 50, 50, 90, 90, 90]
+        ref = [a.center_of_geometry() for a in ag.groupby(name).values()]
+        ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
+                                  ag.dimensions)
+        cog = ag.center_of_geometry(pbc=True, compound=compound)
+        assert_almost_equal(cog, ref, decimal=5)
+
+    @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
+                                                ('segids', 'segments')))
+    def test_center_of_mass_compounds_pbc(self, ag, name, compound):
+        ag.dimensions = [50, 50, 50, 90, 90, 90]
+        ref = [a.center_of_mass() for a in ag.groupby(name).values()]
+        ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
+                                  ag.dimensions)
+        com = ag.center_of_mass(pbc=True, compound=compound)
         assert_almost_equal(com, ref, decimal=5)
 
     def test_center_wrong_compound(self, ag):
@@ -1053,6 +1063,7 @@ class TestAtomGroup(object):
 
     def test_packintobox_noshape(self, universe):
         ag = universe.atoms[:10]
+        ag.dimensions = np.zeros(6)
         with pytest.raises(ValueError):
             ag.pack_into_box()
 
