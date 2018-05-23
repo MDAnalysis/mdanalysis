@@ -47,8 +47,8 @@
             
   <span class="target" id="module-MDAnalysis.coordinates.LAMMPS"></span><div class="section" id="lammps-dcd-trajectory-and-data-i-o-mdanalysis-coordinates-lammps">
 <h1>6.10. LAMMPS DCD trajectory and DATA I/O  — <a class="reference internal" href="#module-MDAnalysis.coordinates.LAMMPS" title="MDAnalysis.coordinates.LAMMPS"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a><a class="headerlink" href="#lammps-dcd-trajectory-and-data-i-o-mdanalysis-coordinates-lammps" title="Permalink to this headline">¶</a></h1>
-<p>Classes to read and write <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD binary trajectories and LAMMPS DATA
-files. Trajectories can be read regardless of system-endianness
+<p>Classes to read and write <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD binary trajectories, LAMMPS DATA files
+and LAMMPS dump files.  Trajectories can be read regardless of system-endianness
 as this is auto-detected.</p>
 <p>LAMMPS can <a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">write DCD</a> trajectories but unlike a <a class="reference external" href="http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory">CHARMM trajectory</a>
 (which is often called a DCD even though CHARMM itself calls them
@@ -70,8 +70,13 @@ keywords <em>timeunit</em> and/or <em>lengthunit</em> to <a class="reference int
 <p>By default either the <cite>atomic</cite> or <cite>full</cite> atom styles are expected,
 however this can be customised, see <a class="reference internal" href="../topology/LAMMPSParser.html#atom-style-kwarg"><span class="std std-ref">Atom styles</span></a>.</p>
 </div>
+<div class="section" id="dump-files">
+<h2>6.10.2. Dump files<a class="headerlink" href="#dump-files" title="Permalink to this headline">¶</a></h2>
+<p>The DumpReader expects ascii dump files written with the default
+<a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">LAMMPS dump format</a> of ‘atom’</p>
+</div>
 <div class="section" id="example-loading-a-lammps-simulation">
-<h2>6.10.2. Example: Loading a LAMMPS simulation<a class="headerlink" href="#example-loading-a-lammps-simulation" title="Permalink to this headline">¶</a></h2>
+<h2>6.10.3. Example: Loading a LAMMPS simulation<a class="headerlink" href="#example-loading-a-lammps-simulation" title="Permalink to this headline">¶</a></h2>
 <p>To load a LAMMPS simulation from a LAMMPS data file (using the
 <a class="reference internal" href="../topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser" title="MDAnalysis.topology.LAMMPSParser.DATAParser"><code class="xref py py-class docutils literal"><span class="pre">DATAParser</span></code></a>) together with a
 LAMMPS DCD with “<em>real</em>” provide the keyword <em>format=”LAMMPS</em>”:</p>
@@ -101,7 +106,7 @@ for other recognized values and the documentation for the LAMMPS
 </div>
 </div>
 <div class="section" id="classes">
-<h2>6.10.3. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>6.10.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.LAMMPS.DCDReader">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.LAMMPS.</code><code class="descname">DCDReader</code><span class="sig-paren">(</span><em>dcdfilename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DCDReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="Permalink to this definition">¶</a></dt>
@@ -2034,8 +2039,9 @@ included.</p>
 <li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.9. INPCRD structure files in MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">6.10. LAMMPS DCD trajectory and DATA I/O  — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#data-file-formats">6.10.1. Data file formats</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#example-loading-a-lammps-simulation">6.10.2. Example: Loading a LAMMPS simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#classes">6.10.3. Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dump-files">6.10.2. Dump files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-loading-a-lammps-simulation">6.10.3. Example: Loading a LAMMPS simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">6.10.4. Classes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.11. MMTF trajectory reader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>

@@ -47,7 +47,7 @@
             
   <span class="target" id="module-MDAnalysis.topology.LAMMPSParser"></span><div class="section" id="lammpsparser">
 <h1>5.8. LAMMPSParser<a class="headerlink" href="#lammpsparser" title="Permalink to this headline">¶</a></h1>
-<p>Parses <a class="reference external" href="DATAfileformat::http://lammps.sandia.gov/doc/2001/data_format.html">data</a> files produced by <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a>.</p>
+<p>Parses <a class="reference external" href="DATAfileformat::http://lammps.sandia.gov/doc/2001/data_format.html">data</a> or <a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">dump</a> files produced by <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a>.</p>
 <div class="section" id="atom-styles">
 <span id="atom-style-kwarg"></span><h2>5.8.1. Atom styles<a class="headerlink" href="#atom-styles" title="Permalink to this headline">¶</a></h2>
 <p>By default parsers and readers for Lammps data files expect either an
@@ -374,6 +374,16 @@ is avoided.</p>
 </div>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.topology.LAMMPSParser.LammpsDumpParser">
+<em class="property">class </em><code class="descclassname">MDAnalysis.topology.LAMMPSParser.</code><code class="descname">LammpsDumpParser</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#LammpsDumpParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.LammpsDumpParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses Lammps ascii dump files in ‘atom’ format</p>
+<p>Only reads atom ids.  Sets all masses to 1.0.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.18.1.</span></p>
+</div>
 </dd></dl>
 
 </div>

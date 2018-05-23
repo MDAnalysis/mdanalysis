@@ -159,7 +159,6 @@
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">topologyobjects</span>
 <span class="kn">from</span> <span class="nn">._get_readers</span> <span class="k">import</span> <span class="n">get_writer_for</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">flags</span>
 
 
 <span class="k">def</span> <span class="nf">_unpickle</span><span class="p">(</span><span class="n">uhash</span><span class="p">,</span> <span class="n">ix</span><span class="p">):</span>
@@ -648,60 +647,148 @@
     <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">dimensions</span>
 
-    <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate center of group given some weights</span>
+    <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Weighted center of (compounds of) the group</span>
+
+<span class="sd">        Computes the weighted center of atoms in the group.</span>
+<span class="sd">        Weighted centers per residue or per segment can be obtained by setting</span>
+<span class="sd">        the `compound` parameter accordingly.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        weights : array_like</span>
-<span class="sd">            weights to be used</span>
-<span class="sd">        pbc : boolean, optional</span>
-<span class="sd">            ``True``: Move all atoms within the primary unit cell</span>
-<span class="sd">            before calculation [``False``]</span>
+<span class="sd">        weights : array_like or None</span>
+<span class="sd">            Weights to be used. Setting `weights=None` is equivalent to passing</span>
+<span class="sd">            identical weights for all atoms of the group.</span>
+<span class="sd">        pbc : bool or None, optional</span>
+<span class="sd">            If ``True`` and `compound` is &#39;group&#39;, move all atoms to the primary</span>
+<span class="sd">            unit cell before calculation. If ``True`` and `compound` is</span>
+<span class="sd">            &#39;segments&#39; or &#39;residues&#39;, the center of each compound will be</span>
+<span class="sd">            calculated without moving any atoms to keep the compounds intact.</span>
+<span class="sd">            Instead, the resulting position vectors will be moved to the primary</span>
+<span class="sd">            unit cell after calculation.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;}, optional</span>
+<span class="sd">            If &#39;group&#39;, the weighted center of all atoms in the group will be</span>
+<span class="sd">            returned as a single position vector. Else, the weighted centers of</span>
+<span class="sd">            each segment or residue will be returned as an array of position</span>
+<span class="sd">            vectors, i.e. a 2d array. Note that, in any case, *only* the</span>
+<span class="sd">            positions of atoms *belonging to the group* will be taken into</span>
+<span class="sd">            account.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        center : ndarray</span>
-<span class="sd">            weighted center of group</span>
+<span class="sd">        center : numpy.ndarray</span>
+<span class="sd">            Position vector(s) of the weighted center(s) of the group.</span>
+<span class="sd">            If `compound` was set to &#39;group&#39;, the output will be a single</span>
+<span class="sd">            position vector.</span>
+<span class="sd">            If `compound` was set to &#39;segments&#39; or &#39;residues&#39;, the output will be</span>
+<span class="sd">            a 2d array of shape ``(n, 3)`` where ``n`` is the number of</span>
+<span class="sd">            compounds.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">        To find the charge weighted center of a given Atomgroup::</span>
+<span class="sd">        To find the center of charge of a given AtomGroup::</span>
 
 <span class="sd">            &gt;&gt;&gt; sel = u.select_atoms(&#39;prop mass &gt; 4.0&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; sel.center(sel.charges)</span>
 
+<span class="sd">        To find the centers of mass per residue of all CA atoms::</span>
+
+<span class="sd">            &gt;&gt;&gt; sel = u.select_atoms(&#39;name CA&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; sel.center(sel.masses, compound=&#39;residues&#39;)</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        If the :class:`MDAnalysis.core.flags` flag *use_pbc* is set to</span>
 <span class="sd">        ``True`` then the `pbc` keyword is used by default.</span>
 
+<span class="sd">        .. versionchanged:: 0.19.0 Added `compound` parameter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
+
         <span class="k">if</span> <span class="n">pbc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pbc</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_pbc&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
-            <span class="n">xyz</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
+
+        <span class="k">if</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;residues&#39;</span><span class="p">:</span>
+            <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">resindices</span>
+            <span class="n">n_compounds</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">n_residues</span>
+        <span class="k">elif</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;segments&#39;</span><span class="p">:</span>
+            <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">segindices</span>
+            <span class="n">n_compounds</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">n_segments</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">xyz</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized compound definition: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">Please use&quot;</span>
+                             <span class="s2">&quot; one of &#39;group&#39;, &#39;residues&#39;, or &#39;segments&#39;.&quot;</span>
+                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">compound</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Sort positions and masses by compound index:</span>
+        <span class="n">sort_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">)</span>
+        <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">compound_indices</span><span class="p">[</span><span class="n">sort_indices</span><span class="p">]</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">sort_indices</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">sort_indices</span><span class="p">]</span>
+        <span class="c1"># Allocate output array:</span>
+        <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_compounds</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">coords</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="c1"># Get sizes of compounds:</span>
+        <span class="n">unique_compound_indices</span><span class="p">,</span> <span class="n">compound_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">,</span>
+                                                            <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">unique_compound_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">compound_sizes</span><span class="p">)</span>
+        <span class="c1"># Compute centers per compound for each compound size:</span>
+        <span class="k">for</span> <span class="n">compound_size</span> <span class="ow">in</span> <span class="n">unique_compound_sizes</span><span class="p">:</span>
+            <span class="n">compound_mask</span> <span class="o">=</span> <span class="n">compound_sizes</span> <span class="o">==</span> <span class="n">compound_size</span>
+            <span class="n">_compound_indices</span> <span class="o">=</span> <span class="n">unique_compound_indices</span><span class="p">[</span><span class="n">compound_mask</span><span class="p">]</span>
+            <span class="n">atoms_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">,</span> <span class="n">_compound_indices</span><span class="p">)</span>
+            <span class="n">_coords</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">atoms_mask</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">compound_size</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_centers</span> <span class="o">=</span> <span class="n">_coords</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_weights</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">atoms_mask</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">compound_size</span><span class="p">))</span>
+                <span class="n">_centers</span> <span class="o">=</span> <span class="p">(</span><span class="n">_coords</span> <span class="o">*</span> <span class="n">_weights</span><span class="p">[:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">_centers</span> <span class="o">/=</span> <span class="n">_weights</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="n">centers</span><span class="p">[</span><span class="n">compound_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">_centers</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="n">centers</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">atoms</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">centers</span>
 
-    <span class="k">def</span> <span class="nf">center_of_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Center of geometry (also known as centroid) of the selection.</span>
+    <span class="k">def</span> <span class="nf">center_of_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Center of geometry (also known as centroid) of the group.</span>
+
+<span class="sd">        Computes the center of geometry (a.k.a. centroid) of atoms in the group.</span>
+<span class="sd">        Centers of geometry per residue or per segment can be obtained by</span>
+<span class="sd">        setting the `compound` parameter accordingly.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        pbc : boolean, optional</span>
-<span class="sd">            ``True``: Move all atoms within the primary unit cell</span>
-<span class="sd">            before calculation [``False``]</span>
+<span class="sd">        pbc : bool or None, optional</span>
+<span class="sd">            If ``True`` and `compound` is &#39;group&#39;, move all atoms to the primary</span>
+<span class="sd">            unit cell before calculation. If ``True`` and `compound` is</span>
+<span class="sd">            &#39;segments&#39; or &#39;residues&#39;, the center of each compound will be</span>
+<span class="sd">            calculated without moving any atoms to keep the compounds intact.</span>
+<span class="sd">            Instead, the resulting position vectors will be moved to the primary</span>
+<span class="sd">            unit cell after calculation.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;}, optional</span>
+<span class="sd">            If &#39;group&#39;, the center of geometry of all atoms in the group will be</span>
+<span class="sd">            returned as a single position vector. Else, the centers of geometry</span>
+<span class="sd">            of each segment or residue will be returned as an array of position</span>
+<span class="sd">            vectors, i.e. a 2d array. Note that, in any case, *only* the</span>
+<span class="sd">            positions of atoms *belonging to the group* will be taken into</span>
+<span class="sd">            account.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        center : ndarray</span>
-<span class="sd">            geometric center of group</span>
+<span class="sd">        center : numpy.ndarray</span>
+<span class="sd">            Position vector(s) of the geometric center(s) of the group.</span>
+<span class="sd">            If `compound` was set to &#39;group&#39;, the output will be a single</span>
+<span class="sd">            position vector.</span>
+<span class="sd">            If `compound` was set to &#39;segments&#39; or &#39;residues&#39;, the output will be</span>
+<span class="sd">            a 2d array of shape ``(n, 3)`` where ``n`` is the number of</span>
+<span class="sd">            compounds.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -710,8 +797,9 @@
 
 
 <span class="sd">        .. versionchanged:: 0.8 Added `pbc` keyword</span>
+<span class="sd">        .. versionchanged:: 0.19.0 Added `compound` parameter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
 
     <span class="n">centroid</span> <span class="o">=</span> <span class="n">center_of_geometry</span>
 
@@ -1042,7 +1130,7 @@
 <span class="sd">        center of geometry.</span>
 
 <span class="sd">        `box` allows a unit cell to be given for the transformation. If not</span>
-<span class="sd">        specified, an the dimensions information from the current Timestep will</span>
+<span class="sd">        specified, the dimensions information from the current Timestep will</span>
 <span class="sd">        be used.</span>
 
 <span class="sd">        .. note::</span>
@@ -1064,7 +1152,7 @@
         <span class="k">elif</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;fragments&#39;</span><span class="p">:</span>
             <span class="n">objects</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">fragments</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised compound definition: </span><span class="si">{0}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized compound definition: </span><span class="si">{0}</span><span class="s2">&quot;</span>
                              <span class="s2">&quot;Please use one of &#39;group&#39; &#39;residues&#39; &#39;segments&#39;&quot;</span>
                              <span class="s2">&quot;or &#39;fragments&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">compound</span><span class="p">))</span>
 
@@ -1074,7 +1162,7 @@
         <span class="k">elif</span> <span class="n">center</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cog&#39;</span><span class="p">,</span> <span class="s1">&#39;centroid&#39;</span><span class="p">,</span> <span class="s1">&#39;centerofgeometry&#39;</span><span class="p">):</span>
             <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised center definition: </span><span class="si">{0}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized center definition: </span><span class="si">{0}</span><span class="s2">&quot;</span>
                              <span class="s2">&quot;Please use one of &#39;com&#39; or &#39;cog&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">center</span><span class="p">))</span>
         <span class="n">centers</span> <span class="o">=</span> <span class="n">centers</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
@@ -1868,6 +1956,10 @@
 <span class="sd">        are not any duplicates, which can happen with complicated</span>
 <span class="sd">        selections).</span>
 
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        `TypeError` if the arbitrary atomgroups passed are not of type `MDAnalysis.core.groups.AtomGroup`</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        All simple selection listed below support multiple arguments which are</span>
@@ -2102,14 +2194,22 @@
 <span class="sd">           Added *bonded* selection</span>
 <span class="sd">        .. versionchanged:: 0.16.0</span>
 <span class="sd">           Resid selection now takes icodes into account where present.</span>
-<span class="sd">        .. versionadded:: 0.16.0</span>
+<span class="sd">        .. versionchanged:: 0.16.0</span>
 <span class="sd">           Updating selections now possible by setting the ``updating`` argument.</span>
-<span class="sd">        .. versionadded:: 0.17.0</span>
+<span class="sd">        .. versionchanged:: 0.17.0</span>
 <span class="sd">           Added *moltype* and *molnum* selections.</span>
-
+<span class="sd">        .. versionchanged:: 0.18.1</span>
+<span class="sd">           Added strict type checking for passed groups</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">updating</span> <span class="o">=</span> <span class="n">selgroups</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;updating&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">sel_strs</span> <span class="o">=</span> <span class="p">(</span><span class="n">sel</span><span class="p">,)</span> <span class="o">+</span> <span class="n">othersel</span>
+
+        <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">thing</span> <span class="ow">in</span> <span class="n">selgroups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Passed groups must be AtomGroups. &quot;</span>
+                                <span class="s2">&quot;You provided </span><span class="si">{}</span><span class="s2"> for group &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                    <span class="n">thing</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">group</span><span class="p">))</span>
+
         <span class="n">selections</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">)</span>
                             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sel_strs</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">updating</span><span class="p">:</span>

@@ -378,52 +378,102 @@ calculation. [<code class="docutils literal"><span class="pre">False</span></cod
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.center">
-<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate center of group given some weights</p>
+<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weighted center of (compounds of) the group</p>
+<p>Computes the weighted center of atoms in the group.
+Weighted centers per residue or per segment can be obtained by setting
+the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>weights</strong> (<em>array_like</em>) – weights to be used</li>
-<li><strong>pbc</strong> (<em>boolean</em><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">True</span></code>: Move all atoms within the primary unit cell
-before calculation [<code class="docutils literal"><span class="pre">False</span></code>]</li>
+<li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
+identical weights for all atoms of the group.</li>
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is ‘group’, move all atoms to the primary
+unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
+‘segments’ or ‘residues’, the center of each compound will be
+calculated without moving any atoms to keep the compounds intact.
+Instead, the resulting position vectors will be moved to the primary
+unit cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If ‘group’, the weighted center of all atoms in the group will be
+returned as a single position vector. Else, the weighted centers of
+each segment or residue will be returned as an array of position
+vectors, i.e. a 2d array. Note that, in any case, <em>only</em> the
+positions of atoms <em>belonging to the group</em> will be taken into
+account.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – weighted center of group</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the weighted center(s) of the group.
+If <cite>compound</cite> was set to ‘group’, the output will be a single
+position vector.
+If <cite>compound</cite> was set to ‘segments’ or ‘residues’, the output will be
+a 2d array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal"><span class="pre">n</span></code> is the number of
+compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ndarray</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<p>To find the charge weighted center of a given Atomgroup:</p>
+<p>To find the center of charge of a given AtomGroup:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">charges</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To find the centers of mass per residue of all CA atoms:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">Notes</p>
 <p>If the <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
 <code class="docutils literal"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.center_of_geometry">
-<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the selection.</p>
+<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<p>Computes the center of geometry (a.k.a. centroid) of atoms in the group.
+Centers of geometry per residue or per segment can be obtained by
+setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<em>boolean</em><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">True</span></code>: Move all atoms within the primary unit cell
-before calculation [<code class="docutils literal"><span class="pre">False</span></code>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is ‘group’, move all atoms to the primary
+unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
+‘segments’ or ‘residues’, the center of each compound will be
+calculated without moving any atoms to keep the compounds intact.
+Instead, the resulting position vectors will be moved to the primary
+unit cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If ‘group’, the center of geometry of all atoms in the group will be
+returned as a single position vector. Else, the centers of geometry
+of each segment or residue will be returned as an array of position
+vectors, i.e. a 2d array. Note that, in any case, <em>only</em> the
+positions of atoms <em>belonging to the group</em> will be taken into
+account.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>center</strong> – geometric center of group</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the geometric center(s) of the group.
+If <cite>compound</cite> was set to ‘group’, the output will be a single
+position vector.
+If <cite>compound</cite> was set to ‘segments’ or ‘residues’, the output will be
+a 2d array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal"><span class="pre">n</span></code> is the number of
+compounds.</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">ndarray</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -433,22 +483,48 @@ before calculation [<code class="docutils literal"><span class="pre">False</span
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.centroid">
-<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.centroid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the selection.</p>
+<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.centroid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<p>Computes the center of geometry (a.k.a. centroid) of atoms in the group.
+Centers of geometry per residue or per segment can be obtained by
+setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<em>boolean</em><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">True</span></code>: Move all atoms within the primary unit cell
-before calculation [<code class="docutils literal"><span class="pre">False</span></code>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is ‘group’, move all atoms to the primary
+unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
+‘segments’ or ‘residues’, the center of each compound will be
+calculated without moving any atoms to keep the compounds intact.
+Instead, the resulting position vectors will be moved to the primary
+unit cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If ‘group’, the center of geometry of all atoms in the group will be
+returned as a single position vector. Else, the centers of geometry
+of each segment or residue will be returned as an array of position
+vectors, i.e. a 2d array. Note that, in any case, <em>only</em> the
+positions of atoms <em>belonging to the group</em> will be taken into
+account.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>center</strong> – geometric center of group</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the geometric center(s) of the group.
+If <cite>compound</cite> was set to ‘group’, the output will be a single
+position vector.
+If <cite>compound</cite> was set to ‘segments’ or ‘residues’, the output will be
+a 2d array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal"><span class="pre">n</span></code> is the number of
+compounds.</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">ndarray</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -457,6 +533,9 @@ before calculation [<code class="docutils literal"><span class="pre">False</span
 <code class="docutils literal"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
 </dd></dl>
 
@@ -997,6 +1076,14 @@ represented in the AtomGroup.</p>
 their index in the topology (this is to ensure that there
 are not any duplicates, which can happen with complicated
 selections).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><cite>TypeError</cite> if the arbitrary atomgroups passed are not of type <cite>MDAnalysis.core.groups.AtomGroup</cite></td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Examples</p>
 <p>All simple selection listed below support multiple arguments which are
 implicitly combined with an or operator. For example</p>
@@ -1235,11 +1322,14 @@ longer update across frames.</dd>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.16.0: </span>Resid selection now takes icodes into account where present.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.16.0: </span>Updating selections now possible by setting the <code class="docutils literal"><span class="pre">updating</span></code> argument.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.16.0: </span>Updating selections now possible by setting the <code class="docutils literal"><span class="pre">updating</span></code> argument.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.17.0: </span>Added <em>moltype</em> and <em>molnum</em> selections.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.17.0: </span>Added <em>moltype</em> and <em>molnum</em> selections.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.1: </span>Added strict type checking for passed groups</p>
 </div>
 </dd></dl>
 
@@ -1514,7 +1604,7 @@ inside the unit cell, but rather the center of the compound is.</p>
 specified. This can be either ‘com’ for center of mass, or ‘cog’ for
 center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
-specified, an the dimensions information from the current Timestep will
+specified, the dimensions information from the current Timestep will
 be used.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -1656,52 +1746,102 @@ calculation. [<code class="docutils literal"><span class="pre">False</span></cod
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.center">
-<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate center of group given some weights</p>
+<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weighted center of (compounds of) the group</p>
+<p>Computes the weighted center of atoms in the group.
+Weighted centers per residue or per segment can be obtained by setting
+the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>weights</strong> (<em>array_like</em>) – weights to be used</li>
-<li><strong>pbc</strong> (<em>boolean</em><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">True</span></code>: Move all atoms within the primary unit cell
-before calculation [<code class="docutils literal"><span class="pre">False</span></code>]</li>
+<li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
+identical weights for all atoms of the group.</li>
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is ‘group’, move all atoms to the primary
+unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
+‘segments’ or ‘residues’, the center of each compound will be
+calculated without moving any atoms to keep the compounds intact.
+Instead, the resulting position vectors will be moved to the primary
+unit cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If ‘group’, the weighted center of all atoms in the group will be
+returned as a single position vector. Else, the weighted centers of
+each segment or residue will be returned as an array of position
+vectors, i.e. a 2d array. Note that, in any case, <em>only</em> the
+positions of atoms <em>belonging to the group</em> will be taken into
+account.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – weighted center of group</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the weighted center(s) of the group.
+If <cite>compound</cite> was set to ‘group’, the output will be a single
+position vector.
+If <cite>compound</cite> was set to ‘segments’ or ‘residues’, the output will be
+a 2d array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal"><span class="pre">n</span></code> is the number of
+compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ndarray</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<p>To find the charge weighted center of a given Atomgroup:</p>
+<p>To find the center of charge of a given AtomGroup:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">charges</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To find the centers of mass per residue of all CA atoms:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">Notes</p>
 <p>If the <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
 <code class="docutils literal"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.center_of_geometry">
-<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the selection.</p>
+<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<p>Computes the center of geometry (a.k.a. centroid) of atoms in the group.
+Centers of geometry per residue or per segment can be obtained by
+setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<em>boolean</em><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">True</span></code>: Move all atoms within the primary unit cell
-before calculation [<code class="docutils literal"><span class="pre">False</span></code>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is ‘group’, move all atoms to the primary
+unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
+‘segments’ or ‘residues’, the center of each compound will be
+calculated without moving any atoms to keep the compounds intact.
+Instead, the resulting position vectors will be moved to the primary
+unit cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If ‘group’, the center of geometry of all atoms in the group will be
+returned as a single position vector. Else, the centers of geometry
+of each segment or residue will be returned as an array of position
+vectors, i.e. a 2d array. Note that, in any case, <em>only</em> the
+positions of atoms <em>belonging to the group</em> will be taken into
+account.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>center</strong> – geometric center of group</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the geometric center(s) of the group.
+If <cite>compound</cite> was set to ‘group’, the output will be a single
+position vector.
+If <cite>compound</cite> was set to ‘segments’ or ‘residues’, the output will be
+a 2d array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal"><span class="pre">n</span></code> is the number of
+compounds.</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">ndarray</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1711,22 +1851,48 @@ before calculation [<code class="docutils literal"><span class="pre">False</span
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.centroid">
-<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.centroid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the selection.</p>
+<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.centroid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<p>Computes the center of geometry (a.k.a. centroid) of atoms in the group.
+Centers of geometry per residue or per segment can be obtained by
+setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<em>boolean</em><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">True</span></code>: Move all atoms within the primary unit cell
-before calculation [<code class="docutils literal"><span class="pre">False</span></code>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is ‘group’, move all atoms to the primary
+unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
+‘segments’ or ‘residues’, the center of each compound will be
+calculated without moving any atoms to keep the compounds intact.
+Instead, the resulting position vectors will be moved to the primary
+unit cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If ‘group’, the center of geometry of all atoms in the group will be
+returned as a single position vector. Else, the centers of geometry
+of each segment or residue will be returned as an array of position
+vectors, i.e. a 2d array. Note that, in any case, <em>only</em> the
+positions of atoms <em>belonging to the group</em> will be taken into
+account.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>center</strong> – geometric center of group</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the geometric center(s) of the group.
+If <cite>compound</cite> was set to ‘group’, the output will be a single
+position vector.
+If <cite>compound</cite> was set to ‘segments’ or ‘residues’, the output will be
+a 2d array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal"><span class="pre">n</span></code> is the number of
+compounds.</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">ndarray</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1735,6 +1901,9 @@ before calculation [<code class="docutils literal"><span class="pre">False</span
 <code class="docutils literal"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
 </dd></dl>
 
@@ -2397,7 +2566,7 @@ inside the unit cell, but rather the center of the compound is.</p>
 specified. This can be either ‘com’ for center of mass, or ‘cog’ for
 center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
-specified, an the dimensions information from the current Timestep will
+specified, the dimensions information from the current Timestep will
 be used.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -2503,52 +2672,102 @@ calculation. [<code class="docutils literal"><span class="pre">False</span></cod
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.center">
-<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate center of group given some weights</p>
+<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weighted center of (compounds of) the group</p>
+<p>Computes the weighted center of atoms in the group.
+Weighted centers per residue or per segment can be obtained by setting
+the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>weights</strong> (<em>array_like</em>) – weights to be used</li>
-<li><strong>pbc</strong> (<em>boolean</em><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">True</span></code>: Move all atoms within the primary unit cell
-before calculation [<code class="docutils literal"><span class="pre">False</span></code>]</li>
+<li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
+identical weights for all atoms of the group.</li>
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is ‘group’, move all atoms to the primary
+unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
+‘segments’ or ‘residues’, the center of each compound will be
+calculated without moving any atoms to keep the compounds intact.
+Instead, the resulting position vectors will be moved to the primary
+unit cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If ‘group’, the weighted center of all atoms in the group will be
+returned as a single position vector. Else, the weighted centers of
+each segment or residue will be returned as an array of position
+vectors, i.e. a 2d array. Note that, in any case, <em>only</em> the
+positions of atoms <em>belonging to the group</em> will be taken into
+account.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – weighted center of group</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the weighted center(s) of the group.
+If <cite>compound</cite> was set to ‘group’, the output will be a single
+position vector.
+If <cite>compound</cite> was set to ‘segments’ or ‘residues’, the output will be
+a 2d array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal"><span class="pre">n</span></code> is the number of
+compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ndarray</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<p>To find the charge weighted center of a given Atomgroup:</p>
+<p>To find the center of charge of a given AtomGroup:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">charges</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To find the centers of mass per residue of all CA atoms:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">Notes</p>
 <p>If the <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
 <code class="docutils literal"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.center_of_geometry">
-<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the selection.</p>
+<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<p>Computes the center of geometry (a.k.a. centroid) of atoms in the group.
+Centers of geometry per residue or per segment can be obtained by
+setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<em>boolean</em><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">True</span></code>: Move all atoms within the primary unit cell
-before calculation [<code class="docutils literal"><span class="pre">False</span></code>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is ‘group’, move all atoms to the primary
+unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
+‘segments’ or ‘residues’, the center of each compound will be
+calculated without moving any atoms to keep the compounds intact.
+Instead, the resulting position vectors will be moved to the primary
+unit cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If ‘group’, the center of geometry of all atoms in the group will be
+returned as a single position vector. Else, the centers of geometry
+of each segment or residue will be returned as an array of position
+vectors, i.e. a 2d array. Note that, in any case, <em>only</em> the
+positions of atoms <em>belonging to the group</em> will be taken into
+account.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>center</strong> – geometric center of group</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the geometric center(s) of the group.
+If <cite>compound</cite> was set to ‘group’, the output will be a single
+position vector.
+If <cite>compound</cite> was set to ‘segments’ or ‘residues’, the output will be
+a 2d array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal"><span class="pre">n</span></code> is the number of
+compounds.</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">ndarray</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -2558,22 +2777,48 @@ before calculation [<code class="docutils literal"><span class="pre">False</span
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.centroid">
-<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.centroid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the selection.</p>
+<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.centroid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<p>Computes the center of geometry (a.k.a. centroid) of atoms in the group.
+Centers of geometry per residue or per segment can be obtained by
+setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<em>boolean</em><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">True</span></code>: Move all atoms within the primary unit cell
-before calculation [<code class="docutils literal"><span class="pre">False</span></code>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is ‘group’, move all atoms to the primary
+unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
+‘segments’ or ‘residues’, the center of each compound will be
+calculated without moving any atoms to keep the compounds intact.
+Instead, the resulting position vectors will be moved to the primary
+unit cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If ‘group’, the center of geometry of all atoms in the group will be
+returned as a single position vector. Else, the centers of geometry
+of each segment or residue will be returned as an array of position
+vectors, i.e. a 2d array. Note that, in any case, <em>only</em> the
+positions of atoms <em>belonging to the group</em> will be taken into
+account.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>center</strong> – geometric center of group</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the geometric center(s) of the group.
+If <cite>compound</cite> was set to ‘group’, the output will be a single
+position vector.
+If <cite>compound</cite> was set to ‘segments’ or ‘residues’, the output will be
+a 2d array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal"><span class="pre">n</span></code> is the number of
+compounds.</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">ndarray</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -2582,6 +2827,9 @@ before calculation [<code class="docutils literal"><span class="pre">False</span
 <code class="docutils literal"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
 </dd></dl>
 
@@ -3246,7 +3494,7 @@ inside the unit cell, but rather the center of the compound is.</p>
 specified. This can be either ‘com’ for center of mass, or ‘cog’ for
 center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
-specified, an the dimensions information from the current Timestep will
+specified, the dimensions information from the current Timestep will
 be used.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>

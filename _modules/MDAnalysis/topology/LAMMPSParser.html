@@ -70,10 +70,11 @@
 <span class="sd">LAMMPSParser</span>
 <span class="sd">============</span>
 
-<span class="sd">Parses data_ files produced by LAMMPS_.</span>
+<span class="sd">Parses data_ or dump_ files produced by LAMMPS_.</span>
 
 <span class="sd">.. _LAMMPS: http://lammps.sandia.gov/</span>
 <span class="sd">.. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html</span>
+<span class="sd">.. _dump: http://lammps.sandia.gov/doc/dump.html</span>
 
 
 <span class="sd">.. _atom_style_kwarg:</span>
@@ -111,6 +112,9 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
+<span class="sd">.. autoclass:: LammpsDumpParser</span>
+<span class="sd">   :members:</span>
+
 <span class="sd">Deprecated classes</span>
 <span class="sd">------------------</span>
 
@@ -126,6 +130,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">guessers</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">openany</span><span class="p">,</span> <span class="n">conv_float</span>
@@ -619,6 +624,54 @@
             <span class="n">unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span>
 
         <span class="k">return</span> <span class="n">unitcell</span></div>
+
+
+<div class="viewcode-block" id="LammpsDumpParser"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.LammpsDumpParser">[docs]</a><span class="k">class</span> <span class="nc">LammpsDumpParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parses Lammps ascii dump files in &#39;atom&#39; format</span>
+
+<span class="sd">    Only reads atom ids.  Sets all masses to 1.0.</span>
+
+<span class="sd">    .. versionadded:: 0.18.1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;LAMMPSDUMP&#39;</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># ITEM TIMESTEP</span>
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># 0</span>
+
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># ITEM NUMBER OF ATOMS</span>
+            <span class="n">natoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># ITEM BOX</span>
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># x</span>
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># y</span>
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># z</span>
+
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">types</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+            
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># ITEM ATOMS</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">natoms</span><span class="p">):</span>
+                <span class="n">idx</span><span class="p">,</span> <span class="n">atype</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+                <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+                <span class="n">types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">atype</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="n">types</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomids</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomtypes</span><span class="p">(</span><span class="n">types</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Masses</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Guessed all Masses to 1.0&#39;</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">Topology</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span></div>
 
 
 <span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>

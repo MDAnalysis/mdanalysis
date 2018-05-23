@@ -826,19 +826,40 @@
 
         <span class="k">return</span> <span class="n">masses</span>
 
-    <span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Center of mass of the Group.</span>
+    <span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Center of mass of (compounds of) the group.</span>
+
+<span class="sd">        Computes the center of mass of atoms in the group.</span>
+<span class="sd">        Centers of mass per residue or per segment can be obtained by setting</span>
+<span class="sd">        the `compound` parameter accordingly.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        pbc : bool, optional</span>
-<span class="sd">            If ``True``, move all atoms within the primary unit cell before</span>
-<span class="sd">            calculation. [``False``]</span>
+<span class="sd">            If ``True`` and `compound` is &#39;group&#39;, move all atoms to the primary</span>
+<span class="sd">            unit cell before calculation.</span>
+<span class="sd">            If ``True`` and `compound` is &#39;segments&#39; or &#39;residues&#39;, the centers</span>
+<span class="sd">            of mass of each compound will be calculated without moving any</span>
+<span class="sd">            atoms to keep the compounds intact. Instead, the resulting</span>
+<span class="sd">            center-of-mass position vectors will be moved to the primary unit</span>
+<span class="sd">            cell after calculation.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;}, optional</span>
+<span class="sd">            If &#39;group&#39;, the center of mass of all atoms in the atomgroup will</span>
+<span class="sd">            be returned as a single position vector. Else, the centers of mass</span>
+<span class="sd">            of each segment or residue will be returned as an array of position</span>
+<span class="sd">            vectors, i.e. a 2d array. Note that, in any case, *only* the</span>
+<span class="sd">            positions of atoms *belonging to the atomgroup* will be</span>
+<span class="sd">            taken into account.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        center : ndarray</span>
-<span class="sd">            center of group given masses as weights</span>
+<span class="sd">        center : numpy.ndarray</span>
+<span class="sd">            Position vector(s) of the center(s) of mass of the group.</span>
+<span class="sd">            If `compound` was set to &#39;group&#39;, the output will be a single</span>
+<span class="sd">            position vector.</span>
+<span class="sd">            If `compound` was set to &#39;segments&#39; or &#39;residues&#39;, the output will</span>
+<span class="sd">            be a 2d array of shape ``(n, 3)`` where ``n`` is the number</span>
+<span class="sd">            compounds.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -847,9 +868,10 @@
 
 
 <span class="sd">        .. versionchanged:: 0.8 Added `pbc` parameter</span>
+<span class="sd">        .. versionchanged:: 0.19.0 Added `compound` parameter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span>
-                                  <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">)</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
 
     <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;center_of_mass&#39;</span><span class="p">,</span> <span class="n">center_of_mass</span><span class="p">))</span>

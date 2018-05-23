@@ -151,8 +151,8 @@ format is explicitly specified with the <em>format</em> keyword to
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe.load_new" title="MDAnalysis.core.universe.Universe.load_new"><code class="xref py py-meth docutils literal"><span class="pre">load_new()</span></code></a>.  A number of files are
 also recognized when they are compressed with <strong class="program">gzip</strong> or
 <strong class="program">bzip2</strong> such as “.xyz.bz2”.</p>
-<span id="id2"></span><table border="1" class="docutils" id="id22">
-<caption><span class="caption-text">Table of supported coordinate formats</span><a class="headerlink" href="#id22" title="Permalink to this table">¶</a></caption>
+<span id="id2"></span><table border="1" class="docutils" id="id23">
+<caption><span class="caption-text">Table of supported coordinate formats</span><a class="headerlink" href="#id23" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col width="17%" />
 <col width="13%" />
@@ -188,40 +188,45 @@ Module <a class="reference internal" href="LAMMPS.html#module-MDAnalysis.coordin
 <td>r</td>
 <td>Single frame of coordinates read from .data files</td>
 </tr>
-<tr class="row-odd"><td>Gromacs</td>
+<tr class="row-odd"><td>LAMMPS <a class="footnote-reference" href="#a" id="id4">[1]</a></td>
+<td>lammpsdump</td>
+<td>r</td>
+<td>Ascii trajectory in atom style</td>
+</tr>
+<tr class="row-even"><td>Gromacs</td>
 <td>xtc</td>
 <td>r/w</td>
 <td>Compressed (lossy) xtc trajectory format. Module
 <a class="reference internal" href="XTC.html#module-MDAnalysis.coordinates.XTC" title="MDAnalysis.coordinates.XTC"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Gromacs</td>
+<tr class="row-odd"><td>Gromacs</td>
 <td>trr</td>
 <td>r/w</td>
 <td>Full precision trr trajectory. Coordinates and
 velocities are processed. Module
 <a class="reference internal" href="TRR.html#module-MDAnalysis.coordinates.TRR" title="MDAnalysis.coordinates.TRR"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>XYZ <a class="footnote-reference" href="#a" id="id4">[1]</a></td>
+<tr class="row-even"><td>XYZ <a class="footnote-reference" href="#a" id="id5">[1]</a></td>
 <td>xyz</td>
 <td>r/w</td>
 <td>Generic white-space separate XYZ format; can be
 compressed (gzip or bzip2). Module
 <a class="reference internal" href="XYZ.html#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></td>
 </tr>
-<tr class="row-even"><td>TXYZ <a class="footnote-reference" href="#a" id="id5">[1]</a></td>
+<tr class="row-odd"><td>TXYZ <a class="footnote-reference" href="#a" id="id6">[1]</a></td>
 <td>txyz,
 arc</td>
 <td>r</td>
 <td>Tinker XYZ format.
 Module <a class="reference internal" href="TXYZ.html#module-MDAnalysis.coordinates.TXYZ" title="MDAnalysis.coordinates.TXYZ"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>HOOMD <a class="footnote-reference" href="#a" id="id6">[1]</a></td>
+<tr class="row-even"><td>HOOMD <a class="footnote-reference" href="#a" id="id7">[1]</a></td>
 <td>gsd</td>
 <td>r</td>
 <td>HOOMD GSD format (using <a class="reference external" href="https://gsd.readthedocs.io/en/stable/python-module-gsd.hoomd.html#module-gsd.hoomd" title="(in GSD v1.5.1)"><code class="xref py py-mod docutils literal"><span class="pre">gsd.hoomd</span></code></a>).
 Module <a class="reference internal" href="GSD.html#module-MDAnalysis.coordinates.GSD" title="MDAnalysis.coordinates.GSD"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></td>
 </tr>
-<tr class="row-even"><td>GAMESS</td>
+<tr class="row-odd"><td>GAMESS</td>
 <td>gms,
 log,
 out</td>
@@ -230,7 +235,7 @@ out</td>
 compressed (gzip or bzip2). Module
 <a class="reference internal" href="GMS.html#module-MDAnalysis.coordinates.GMS" title="MDAnalysis.coordinates.GMS"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>AMBER</td>
+<tr class="row-even"><td>AMBER</td>
 <td>trj,
 mdcrd</td>
 <td>r</td>
@@ -238,22 +243,22 @@ mdcrd</td>
 periodic box is autodetected (<em>experimental</em>).
 Module <a class="reference internal" href="TRJ.html#module-MDAnalysis.coordinates.TRJ" title="MDAnalysis.coordinates.TRJ"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></td>
 </tr>
-<tr class="row-even"><td>AMBER</td>
+<tr class="row-odd"><td>AMBER</td>
 <td>inpcrd,
 restrt</td>
 <td>r</td>
 <td>formatted (ASCII) coordinate/restart file
 Module <a class="reference internal" href="INPCRD.html#module-MDAnalysis.coordinates.INPCRD" title="MDAnalysis.coordinates.INPCRD"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>AMBER</td>
+<tr class="row-even"><td>AMBER</td>
 <td>ncdf, nc</td>
 <td>r/w</td>
 <td>binary (NetCDF) trajectories are fully supported with
 optional <a class="reference external" href="https://github.com/Unidata/netcdf4-python">netcdf4-python</a> module (coordinates and
 velocities). Module <a class="reference internal" href="TRJ.html#module-MDAnalysis.coordinates.TRJ" title="MDAnalysis.coordinates.TRJ"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Brookhaven
-<a class="footnote-reference" href="#a" id="id7">[1]</a></td>
+<tr class="row-odd"><td>Brookhaven
+<a class="footnote-reference" href="#a" id="id8">[1]</a></td>
 <td>pdb/ent</td>
 <td>r/w</td>
 <td>a relaxed PDB format (as used in MD simulations)
@@ -261,7 +266,7 @@ is read by default; Multiple frames (MODEL)
 are supported but require the <em>multiframe</em> keyword.
 Module <a class="reference internal" href="PDB.html#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>XPDB</td>
+<tr class="row-even"><td>XPDB</td>
 <td>pdb</td>
 <td>r</td>
 <td>Extended PDB format (can use 5-digit residue
@@ -269,66 +274,66 @@ numbers). To use, specify the format “XPBD”
 explicitly: <code class="docutils literal"><span class="pre">Universe(...,</span> <span class="pre">format=&quot;XPDB&quot;)</span></code>.
 Module <a class="reference internal" href="PDB.html#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></td>
 </tr>
-<tr class="row-even"><td>PDBQT <a class="footnote-reference" href="#a" id="id8">[1]</a></td>
+<tr class="row-odd"><td>PDBQT <a class="footnote-reference" href="#a" id="id9">[1]</a></td>
 <td>pdbqt</td>
 <td>r/w</td>
 <td>file format used by AutoDock with atom types <em>t</em>
 and partial charges <em>q</em>. Module:
 <a class="reference internal" href="PDBQT.html#module-MDAnalysis.coordinates.PDBQT" title="MDAnalysis.coordinates.PDBQT"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>PQR <a class="footnote-reference" href="#a" id="id9">[1]</a></td>
+<tr class="row-even"><td>PQR <a class="footnote-reference" href="#a" id="id10">[1]</a></td>
 <td>pqr</td>
 <td>r/w</td>
 <td>PDB-like but whitespace-separated files with charge
 and radius information. Module
 <a class="reference internal" href="PQR.html#module-MDAnalysis.coordinates.PQR" title="MDAnalysis.coordinates.PQR"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></td>
 </tr>
-<tr class="row-even"><td>GROMOS96
-<a class="footnote-reference" href="#a" id="id10">[1]</a></td>
+<tr class="row-odd"><td>GROMOS96
+<a class="footnote-reference" href="#a" id="id11">[1]</a></td>
 <td>gro</td>
 <td>r/w</td>
 <td>basic GROMOS96 format (velocities as well). Module
 <a class="reference internal" href="GRO.html#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>CHARMM
-CARD <a class="footnote-reference" href="#a" id="id11">[1]</a></td>
+<tr class="row-even"><td>CHARMM
+CARD <a class="footnote-reference" href="#a" id="id12">[1]</a></td>
 <td>crd</td>
 <td>r/w</td>
 <td>“CARD” coordinate output from CHARMM; deals with
 either standard or EXTended format. Module
 <a class="reference internal" href="CRD.html#module-MDAnalysis.coordinates.CRD" title="MDAnalysis.coordinates.CRD"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></td>
 </tr>
-<tr class="row-even"><td>DESRES <a class="footnote-reference" href="#a" id="id12">[1]</a></td>
+<tr class="row-odd"><td>DESRES <a class="footnote-reference" href="#a" id="id13">[1]</a></td>
 <td>dms</td>
 <td>r</td>
 <td>DESRES Molecular Structure file format reader.
 Module <a class="reference internal" href="DMS.html#module-MDAnalysis.coordinates.DMS" title="MDAnalysis.coordinates.DMS"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>IBIsCO/YASP</td>
+<tr class="row-even"><td>IBIsCO/YASP</td>
 <td>trz</td>
 <td>r/w</td>
 <td>Binary IBIsCO or YASP trajectories Module
 <a class="reference internal" href="TRZ.html#module-MDAnalysis.coordinates.TRZ" title="MDAnalysis.coordinates.TRZ"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></td>
 </tr>
-<tr class="row-even"><td>MOL2</td>
+<tr class="row-odd"><td>MOL2</td>
 <td>mol2</td>
 <td>r/w</td>
 <td>Text-based Tripos molecular structure format
 <a class="reference internal" href="MOL2.html#module-MDAnalysis.coordinates.MOL2" title="MDAnalysis.coordinates.MOL2"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>DL_Poly <a class="footnote-reference" href="#a" id="id13">[1]</a></td>
+<tr class="row-even"><td>DL_Poly <a class="footnote-reference" href="#a" id="id14">[1]</a></td>
 <td>config</td>
 <td>r</td>
 <td>DL_Poly ascii config file
 <code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.DLPOLY</span></code></td>
 </tr>
-<tr class="row-even"><td>DL_Poly <a class="footnote-reference" href="#a" id="id14">[1]</a></td>
+<tr class="row-odd"><td>DL_Poly <a class="footnote-reference" href="#a" id="id15">[1]</a></td>
 <td>history</td>
 <td>r</td>
 <td>DL_Poly ascii history file
 <code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.DLPOLY</span></code></td>
 </tr>
-<tr class="row-odd"><td>MMTF <a class="footnote-reference" href="#a" id="id15">[1]</a></td>
+<tr class="row-even"><td>MMTF <a class="footnote-reference" href="#a" id="id16">[1]</a></td>
 <td>mmtf</td>
 <td>r</td>
 <td>Macromolecular Transmission Format
@@ -339,7 +344,7 @@ Module <a class="reference internal" href="DMS.html#module-MDAnalysis.coordinate
 <table class="docutils footnote" frame="void" id="a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>, <a class="fn-backref" href="#id5">3</a>, <a class="fn-backref" href="#id6">4</a>, <a class="fn-backref" href="#id7">5</a>, <a class="fn-backref" href="#id8">6</a>, <a class="fn-backref" href="#id9">7</a>, <a class="fn-backref" href="#id10">8</a>, <a class="fn-backref" href="#id11">9</a>, <a class="fn-backref" href="#id12">10</a>, <a class="fn-backref" href="#id13">11</a>, <a class="fn-backref" href="#id14">12</a>, <a class="fn-backref" href="#id15">13</a>)</em> This format can also be used to provide basic <em>topology</em>
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>, <a class="fn-backref" href="#id5">3</a>, <a class="fn-backref" href="#id6">4</a>, <a class="fn-backref" href="#id7">5</a>, <a class="fn-backref" href="#id8">6</a>, <a class="fn-backref" href="#id9">7</a>, <a class="fn-backref" href="#id10">8</a>, <a class="fn-backref" href="#id11">9</a>, <a class="fn-backref" href="#id12">10</a>, <a class="fn-backref" href="#id13">11</a>, <a class="fn-backref" href="#id14">12</a>, <a class="fn-backref" href="#id15">13</a>, <a class="fn-backref" href="#id16">14</a>)</em> This format can also be used to provide basic <em>topology</em>
 information (i.e. the list of atoms); it is possible to create a
 full <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-mod docutils literal"><span class="pre">Universe</span></code></a> by simply
 providing a file of this format: <code class="docutils literal"><span class="pre">u</span> <span class="pre">=</span> <span class="pre">Universe(filename)</span></code></td></tr>
@@ -347,7 +352,7 @@ providing a file of this format: <code class="docutils literal"><span class="pre
 </table>
 </div>
 <div class="section" id="trajectory-api">
-<span id="id16"></span><h2>6.1.5. Trajectory API<a class="headerlink" href="#trajectory-api" title="Permalink to this headline">¶</a></h2>
+<span id="id17"></span><h2>6.1.5. Trajectory API<a class="headerlink" href="#trajectory-api" title="Permalink to this headline">¶</a></h2>
 <p>The <strong>Trajectory API</strong> defines how classes have to be structured that allow
 reading and writing of coordinate files. By following the API it is possible to
 seamlessly enhance the I/O capabilities of MDAnalysis. The actual underlying
@@ -515,8 +520,8 @@ this attribute.</p>
 <h3>6.1.5.4. Trajectory Reader class<a class="headerlink" href="#trajectory-reader-class" title="Permalink to this headline">¶</a></h3>
 <p>Trajectory readers are derived from <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.ReaderBase</span></code></a>.
 Typically, many methods and attributes are overriden.</p>
-<div class="section" id="id17">
-<h4>6.1.5.4.1. Methods<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id18">
+<h4>6.1.5.4.1. Methods<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
 <p>The <a class="reference internal" href="DCD.html#MDAnalysis.coordinates.DCD.DCDReader" title="MDAnalysis.coordinates.DCD.DCDReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.DCD.DCDReader</span></code></a> class is the primary
 implementation example.</p>
 <p><strong>Mandatory methods</strong></p>
@@ -627,8 +632,8 @@ filled in; the actual keyword arguments depend on the Writer.</p>
 </dl>
 </div></blockquote>
 </div>
-<div class="section" id="id18">
-<h4>6.1.5.4.2. Attributes<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id19">
+<h4>6.1.5.4.2. Attributes<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><code class="docutils literal"><span class="pre">filename</span></code></dt>
@@ -704,8 +709,8 @@ another frame is appended to the trajectory.</p>
 <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Timestep</span><span class="p">)</span>    <span class="c1"># same as write_next_timestep()</span>
 </pre></div>
 </div>
-<div class="section" id="id19">
-<h4>6.1.5.5.1. Methods<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id20">
+<h4>6.1.5.5.1. Methods<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><code class="docutils literal"><span class="pre">__init__(filename,n_atoms[,start[,step[,delta[,remarks]]]])</span></code></dt>
@@ -724,8 +729,8 @@ unitcell representation of the format</dd>
 </dl>
 </div></blockquote>
 </div>
-<div class="section" id="id20">
-<h4>6.1.5.5.2. Attributes<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id21">
+<h4>6.1.5.5.2. Attributes<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><code class="docutils literal"><span class="pre">filename</span></code></dt>
@@ -769,8 +774,8 @@ way.</p>
 arguments (filename and n_atoms) as for the Trajectory writers. In
 this way, the simple <a class="reference internal" href="core.html#MDAnalysis.coordinates.core.writer" title="MDAnalysis.coordinates.core.writer"><code class="xref py py-func docutils literal"><span class="pre">writer()</span></code></a>
 factory function can be used for all writers.</p>
-<div class="section" id="id21">
-<h4>6.1.5.6.1. Methods<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id22">
+<h4>6.1.5.6.1. Methods<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><code class="docutils literal"><span class="pre">__init__(filename,</span> <span class="pre">**kwargs)</span></code></dt>

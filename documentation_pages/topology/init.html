@@ -60,13 +60,13 @@ when data is not provided by a file, it will be guessed based on other data in
 the file.  In the event that this happens, a UserWarning will always be issued.</p>
 <p>The following table lists the currently supported topology formats along with
 the attributes they provide.</p>
-<span id="supported-topology-formats"></span><table border="1" class="docutils" id="id16">
-<caption><span class="caption-text">Table of Supported Topology Formats</span><a class="headerlink" href="#id16" title="Permalink to this table">¶</a></caption>
+<span id="supported-topology-formats"></span><table border="1" class="docutils" id="id17">
+<caption><span class="caption-text">Table of Supported Topology Formats</span><a class="headerlink" href="#id17" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col width="18%" />
-<col width="9%" />
-<col width="18%" />
-<col width="56%" />
+<col width="17%" />
+<col width="10%" />
+<col width="17%" />
+<col width="55%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -204,14 +204,20 @@ angles, dihedrals</td>
 <td>LAMMPS Data file parser
 <a class="reference internal" href="LAMMPSParser.html#module-MDAnalysis.topology.LAMMPSParser" title="MDAnalysis.topology.LAMMPSParser"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.LAMMPSParser</span></code></a></td>
 </tr>
-<tr class="row-even"><td>XYZ <a class="footnote-reference" href="#a" id="id11">[1]</a></td>
+<tr class="row-even"><td>LAMMPS <a class="footnote-reference" href="#a" id="id11">[1]</a></td>
+<td>lammpsdump</td>
+<td>id, masses</td>
+<td>LAMMPS ascii dump file reader
+<a class="reference internal" href="LAMMPSParser.html#module-MDAnalysis.topology.LAMMPSParser" title="MDAnalysis.topology.LAMMPSParser"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.LAMMPSParser</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>XYZ <a class="footnote-reference" href="#a" id="id12">[1]</a></td>
 <td>xyz</td>
 <td>names</td>
 <td>XYZ File Parser.  Reads only the labels from atoms
 and constructs minimal topology data.
 <a class="reference internal" href="XYZParser.html#module-MDAnalysis.topology.XYZParser" title="MDAnalysis.topology.XYZParser"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.XYZParser</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>TXYZ <a class="footnote-reference" href="#a" id="id12">[1]</a></td>
+<tr class="row-even"><td>TXYZ <a class="footnote-reference" href="#a" id="id13">[1]</a></td>
 <td>txyz,
 arc</td>
 <td>names, atomids,
@@ -221,7 +227,7 @@ bonds</td>
 and connectivity; masses are guessed from atoms names.
 <a class="reference internal" href="TXYZParser.html#module-MDAnalysis.topology.TXYZParser" title="MDAnalysis.topology.TXYZParser"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.TXYZParser</span></code></a></td>
 </tr>
-<tr class="row-even"><td>GAMESS <a class="footnote-reference" href="#a" id="id13">[1]</a></td>
+<tr class="row-odd"><td>GAMESS <a class="footnote-reference" href="#a" id="id14">[1]</a></td>
 <td>gms,
 log</td>
 <td>names,
@@ -231,7 +237,7 @@ section (atom, elems and coords) and construct
 topology.
 <a class="reference internal" href="GMSParser.html#module-MDAnalysis.topology.GMSParser" title="MDAnalysis.topology.GMSParser"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.GMSParser</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>DL_Poly <a class="footnote-reference" href="#a" id="id14">[1]</a></td>
+<tr class="row-even"><td>DL_Poly <a class="footnote-reference" href="#a" id="id15">[1]</a></td>
 <td>config,
 history</td>
 <td>ids, names</td>
@@ -240,7 +246,7 @@ atom names. If atoms are written out of order, will
 correct the order.
 <a class="reference internal" href="DLPolyParser.html#module-MDAnalysis.topology.DLPolyParser" title="MDAnalysis.topology.DLPolyParser"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Hoomd XML</td>
+<tr class="row-odd"><td>Hoomd XML</td>
 <td>xml</td>
 <td>types, charges,
 radii, masses
@@ -251,7 +257,7 @@ masses, and charges if possible. Also reads bonds,
 angles, and dihedrals.
 <a class="reference internal" href="HoomdXMLParser.html#module-MDAnalysis.topology.HoomdXMLParser" title="MDAnalysis.topology.HoomdXMLParser"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.HoomdXMLParser</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>GSD <a class="footnote-reference" href="#a" id="id15">[1]</a></td>
+<tr class="row-even"><td>GSD <a class="footnote-reference" href="#a" id="id16">[1]</a></td>
 <td>gsd</td>
 <td>types, charges,
 radii, masses
@@ -262,17 +268,17 @@ masses, and charges if possible. Also reads bonds,
 angles, and dihedrals.
 <code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.GSDParser</span></code></td>
 </tr>
-<tr class="row-even"><td>Macromolecular</td>
+<tr class="row-odd"><td>Macromolecular</td>
 <td>mmtf</td>
 <td>altLocs,</td>
 <td><a class="reference external" href="https://mmtf.rcsb.org/">Macromolecular Transmission Format (MMTF)</a>.</td>
 </tr>
-<tr class="row-odd"><td>transmission</td>
+<tr class="row-even"><td>transmission</td>
 <td>&#160;</td>
 <td>bfactors, bonds,</td>
 <td>An efficient compact format for biomolecular</td>
 </tr>
-<tr class="row-even"><td>format</td>
+<tr class="row-odd"><td>format</td>
 <td>&#160;</td>
 <td>charges, masses,
 names,
@@ -287,7 +293,7 @@ segids, models</td>
 <table class="docutils footnote" frame="void" id="a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>, <a class="fn-backref" href="#id7">7</a>, <a class="fn-backref" href="#id9">8</a>, <a class="fn-backref" href="#id10">9</a>, <a class="fn-backref" href="#id11">10</a>, <a class="fn-backref" href="#id12">11</a>, <a class="fn-backref" href="#id13">12</a>, <a class="fn-backref" href="#id14">13</a>, <a class="fn-backref" href="#id15">14</a>)</em> This format can also be used to provide <em>coordinates</em> so that
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>, <a class="fn-backref" href="#id7">7</a>, <a class="fn-backref" href="#id9">8</a>, <a class="fn-backref" href="#id10">9</a>, <a class="fn-backref" href="#id11">10</a>, <a class="fn-backref" href="#id12">11</a>, <a class="fn-backref" href="#id13">12</a>, <a class="fn-backref" href="#id14">13</a>, <a class="fn-backref" href="#id15">14</a>, <a class="fn-backref" href="#id16">15</a>)</em> This format can also be used to provide <em>coordinates</em> so that
 it is possible to create a full
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-mod docutils literal"><span class="pre">Universe</span></code></a> by simply providing
 a file of this format as the sole argument to

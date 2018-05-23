@@ -156,7 +156,7 @@ the trajectory, then <code class="xref py py-attr docutils literal"><span class=
 <li>only trajectories with time in ps and lengths in Angstroem are processed</li>
 <li>scale_factors are not supported (and not checked)</li>
 </ul>
-<p>The NCDF reader uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> and therefore <code class="xref py py-mod docutils literal"><span class="pre">scipy</span></code> must
+<p>The NCDF reader uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.1.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> and therefore <code class="xref py py-mod docutils literal"><span class="pre">scipy</span></code> must
 be installed. It supports the <em>mmap</em> keyword argument (when reading):
 <code class="docutils literal"><span class="pre">mmap=True</span></code> is memory efficient and directly maps the trajectory on disk
 to memory (using the <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">mmap</span></code></a>); <code class="docutils literal"><span class="pre">mmap=False</span></code> may consume large
@@ -176,7 +176,7 @@ might be faster. The default is <code class="docutils literal"><span class="pre"
 kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other Readers.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.17.0: </span>Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> and supports the <em>mmap</em> kwarg.</p>
+<p><span class="versionmodified">Changed in version 0.17.0: </span>Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.1.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> and supports the <em>mmap</em> kwarg.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader.Writer">
@@ -211,7 +211,7 @@ kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other R
 <dd><p>Close trajectory; any further access will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The underlying <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> module may open netcdf
+<p class="last">The underlying <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.1.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> module may open netcdf
 files with <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">mmap</span></code></a> if <code class="docutils literal"><span class="pre">mmap=True</span></code> was
 set. Hence <em>any</em> reference to an array <em>must</em> be removed
 before the file can be closed.</p>
@@ -253,13 +253,13 @@ selects the value of <code class="xref py py-data docutils literal"><span class=
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>MDAnalysis uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> to access AMBER files, which are in
-netcdf 3 format. Although <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> is very fast at reading
+<p>MDAnalysis uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.1.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> to access AMBER files, which are in
+netcdf 3 format. Although <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.1.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> is very fast at reading
 these files, it is <em>very</em> slow when writing, and it becomes slower the
 longer the files are. On the other hand, the <a class="reference external" href="https://unidata.github.io/netcdf4-python/">netCDF4</a> package (which
 requires the compiled netcdf library to be installed) is fast at writing
 but slow at reading. Therefore, we try to use <code class="xref py py-mod docutils literal"><span class="pre">netCDF4</span></code> for writing if
-available but otherwise fall back to the slower <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a>.</p>
+available but otherwise fall back to the slower <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.1.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a>.</p>
 <p><strong>AMBER users</strong> might have a hard time getting netCDF4 to work with a
 conda-based installation (as discussed in <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/506#issuecomment-225081416">Issue #506</a>) because of the way
 that AMBER itself handles netcdf: When the AMBER environment is loaded, the
@@ -297,7 +297,7 @@ environment before importing MDAnalysis.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.17.0: </span>Use fast <code class="xref py py-mod docutils literal"><span class="pre">netCDF4</span></code> for writing but fall back to slow
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> if <code class="xref py py-mod docutils literal"><span class="pre">netCDF4</span></code> is not available.</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.1.0)"><code class="xref py py-mod docutils literal"><span class="pre">scipy.io.netcdf</span></code></a> if <code class="xref py py-mod docutils literal"><span class="pre">netCDF4</span></code> is not available.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic">
