@@ -28,8 +28,11 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import GSD
 from numpy.testing import assert_equal
+import os
 
 
+@pytest.mark.skipif(os.name == 'nt',
+                    reason="gsd not windows compatible")
 class TestGSDParser(ParserBase):
     parser = mda.topology.GSDParser.GSDParser
     ref_filename = GSD
