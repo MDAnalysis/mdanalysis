@@ -20,31 +20,84 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
-Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`
+r"""Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`
 ================================================================
 
-This module contains two classes to calculate pair distribution functions
- ("radial distribution functions" or "RDF").
+This module contains two classes to calculate radial
+`pair distribution functions`_ (`radial distribution functions`_ or "RDF").
+The RDF :math:`g_{ab}(r)` between types of particles :math:`a` and :math:`b` is
+
+.. math::
+
+   g_{ab}(r) = (N_{a} N_{b})^{-1} \sum_{i=1}^{N_a} \sum_{j=1}^{N_b}
+               \langle \delta(|\mathbf{r}_i - \mathbf{r}_j| - r) \rangle
+
+which is normalized so that the RDF becomes 1 for large separations in a
+homogenous system. The RDF effectively counts the average number of :math:`b`
+neighbours in a shell at distance :math:`r` around a :math:`a` particle and
+represents it as a density.
+
+The radial cumulative distribution function is
+
+.. math::
+
+   G_{ab}(r) = \int_0^r \!\!dr' 4\pi r'^2 g_{ab}(r')
+
+and the average number of :math:`b` particles within radius :math:`r`
+
+.. math::
+
+   N_{ab}(r) = \rho G_{ab}(r)
+
+(with the appropriate density :math:`\rho`). The latter function can be used to
+compute, for instance, coordination numbers such as the number of neighbors in
+the first solvation shell :math:`N(r_1)` where :math:`r_1` is the position of
+the first minimum in :math:`g(r)`.
+
+
+.. _`pair distribution functions`:
+   https://en.wikipedia.org/wiki/Pair_distribution_function
+.. _`radial distribution functions`:
+   https://en.wikipedia.org/wiki/Radial_distribution_function
+
+
+Average radial distribution function
+------------------------------------
 
 :class:`InterRDF` is a tool to calculate average radial distribution functions
-between two groups of atoms. Suppose we have two atom group A and B. A contains
-atom A1, A2, and B contains B1, B2. Give A and B to class:`InterRDF`, the output
-will be the average of RDFs bewteen A1 and B1, A1 and B2, A2 and B1, A2 and B2.
-
-:class:`InterRDF_s` is a tool to calculate site-specific radial distribution
-functions. Give the same A and B to class:`InterRDF_s`, the output will be
-a list of RDFs between A1 and B1, A1 and B2, A2 and B1, A2 and B2, which are the
-site-specific radial distribution functions.
-
-
-Classes:
--------
+between two groups of atoms. Suppose we have two AtomGroups ``A`` and
+``B``. ``A`` contains atom ``A1``, ``A2``, and ``B`` contains ``B1``,
+``B2``. Give ``A`` and ``B`` to class:`InterRDF`, the output will be the
+average of RDFs between ``A1`` and ``B1``, ``A1`` and ``B2``, ``A2`` and
+``B1``, ``A2`` and ``B2``. A typical application is to calculate the RDF of
+solvent with itself or with another solute.
 
 .. autoclass:: InterRDF
-.. autoclass:: InterRDF_s
+   :members:
+   :inherited-members:
 
--------
+
+Site-specific radial distribution function
+------------------------------------------
+
+:class:`InterRDF_s` calculates site-specific radial distribution
+functions. Instead of two groups of atoms it takes as input a list of pairs of
+AtomGroup, ``[[A, B], [C, D], ...]``. Give the same ``A`` and ``B`` to
+:class:`InterRDF_s`, the output will be a list of RDFs between ``A1`` and
+``B1``, ``A1`` and ``B2``, ``A2`` and ``B1``, ``A2`` and ``B2`` (and similarly
+for ``C`` and ``D``). These site-specific radial distribution functions are
+typically calculated if one is interested in the solvation shells of a ligand
+in a binding site or the solvation of specific residues in a protein. A common
+use case is to choose ``A`` and ``C`` to be AtomGroups that only contain a
+single atom and ``W`` all solvent molecules: ``InterRDF_s(u, [[A, W], [B,
+W]])`` will then produce the RDF of solvent around atom ``A[0]`` and around
+atom ``B[0]``.
+
+
+.. autoclass:: InterRDF_s
+   :members:
+   :inherited-members:
+
 
 .. Not Implemented yet:
 .. - Structure factor?
@@ -183,25 +236,16 @@ class InterRDF(AnalysisBase):
         self.rdf = rdf
 
 
-
-"""
-Site-specific Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf_s`
-================================================================
-
-Tools for calculating site-specific pair distribution functions ("radial
-distribution functions" or "RDF").
-
-"""
-
 class InterRDF_s(AnalysisBase):
     """Site-specific intermolecular pair distribution function
 
     Arguments
     ---------
     u : Universe
-       A Universe contains atoms in ags
+          a Universe that contains atoms in `ags`
     ags : list
-         A list of pairs of AtomGroups
+          a list of pairs of :class:`~MDAnalysis.core.groups.AtomGroup`
+          instances
     nbins : int (optional)
           Number of bins in the histogram [75]
     range : tuple or list (optional)
@@ -216,8 +260,10 @@ class InterRDF_s(AnalysisBase):
 
     Example
     -------
-    First create the :class:`InterRDF_s` object, by supplying one Universe
-    and one list of pairs of AtomGroups then use the :meth:`run` method ::
+
+    First create the :class:`InterRDF_s` object, by supplying one Universe and
+    one list of pairs of AtomGroups, then use the :meth:`~InterRDF_s.run`
+    method::
 
       from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT
       u = mda.Universe(GRO_MEMPROT, XTC_MEMPROT)
@@ -231,22 +277,25 @@ class InterRDF_s(AnalysisBase):
       rdf = InterRDF_s(u, ags)
       rdf.run()
 
-    Results are available through the :attr:`bins` and :attr:`rdf`
-    attributes::
+    Results are available through the :attr:`bins` and :attr:`rdf` attributes::
 
       plt.plot(rdf.bins, rdf.rdf[0][0][0])
 
-    (Which plots the rdf between the first atom in s1 and the first atom in s2)
+    (Which plots the rdf between the first atom in ``s1`` and the first atom in
+    ``s2``)
 
-    To generate cdf, use the 'cdf' method
+    To generate the *cumulative distribution function* (cdf), use the
+    :meth:`~InterRDF_s.get_cdf` method ::
 
       cdf = rdf.get_cdf()
 
-    Results are available through the :attr:'cdf' attributes::
+    Results are available through the :attr:'cdf' attribute::
 
       plt.plot(rdf.bins, rdf.cdf[0][0][0])
 
-    (Which plots the cdf between the first atom in s1 and the first atom in s2)
+    (Which plots the cdf between the first atom in ``s1`` and the first atom in
+    ``s2``)
+
 
     .. versionadded:: 0.19.0
 
@@ -322,10 +371,14 @@ class InterRDF_s(AnalysisBase):
     def get_cdf(self):
         """Calculate the cumulative distribution functions (CDF) for all sites.
 
+        Note that this is the actual count within a given radius, i.e.,
+        :math:`N(r)`.
+
         Returns
         -------
               cdf : list
                       list of arrays with the same structure as :attr:`rdf`
+
         """
         # Calculate cumulative distribution function
         # Empty list to restore CDF

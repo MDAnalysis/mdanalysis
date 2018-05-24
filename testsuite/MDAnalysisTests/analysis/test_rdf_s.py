@@ -19,8 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-from six.moves import zip
+from __future__ import absolute_import, division
 
 import pytest
 
@@ -47,7 +46,7 @@ def sels(u):
     return ags
 
 @pytest.fixture(scope='module')
-def rdf(u,sels):
+def rdf(u, sels):
     return InterRDF_s(u, sels).run()
 
 def test_nbins(u):
@@ -100,8 +99,8 @@ def test_cdf(rdf):
 
 
 @pytest.mark.parametrize("density, value", [
-            (True, 13275.775528444701),
-            (False, 0.021915460340071267)])
+    (True, 13275.775528444701),
+    (False, 0.021915460340071267)])
 
 def test_density(u, sels, density, value):
     rdf = InterRDF_s(u, sels, density=density).run()
