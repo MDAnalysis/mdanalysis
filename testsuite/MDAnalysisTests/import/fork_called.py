@@ -22,9 +22,6 @@
 from __future__ import absolute_import, print_function
 import os
 import mock
-import warnings
-
-warnings.simplefilter('ignore', ImportWarning)
 
 """Tests whether os.fork() is called as a side effect when importing MDAnalysis.
 See PR #1794 for details."""
