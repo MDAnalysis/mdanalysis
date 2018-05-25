@@ -23,7 +23,7 @@ from __future__ import absolute_import, print_function
 
 
 from six.moves import cPickle
-import warnings
+
 import os
 
 try:
@@ -86,16 +86,12 @@ class TestUniverseCreation(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
     def test_load_topology_stringio(self):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            u = mda.Universe(StringIO(CHOL_GRO), format='GRO')
+        u = mda.Universe(StringIO(CHOL_GRO), format='GRO')
         assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
         assert_equal(u.trajectory.ts.positions[0], np.array([65.580002, 29.360001, 40.050003], dtype=np.float32))
 
     def test_load_trajectory_stringio(self):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            u = mda.Universe(StringIO(CHOL_GRO), StringIO(CHOL_GRO),  format='GRO', topology_format='GRO')
+        u = mda.Universe(StringIO(CHOL_GRO), StringIO(CHOL_GRO),  format='GRO', topology_format='GRO')
         assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
 
     def test_make_universe_no_args(self):
@@ -350,24 +346,19 @@ class TestGuessBonds(object):
 
     def test_universe_guess_bonds_no_vdwradii(self):
         """Make a Universe that has atoms with unknown vdwradii."""
-        with pytest.raises(ValueError), warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
+        with pytest.raises(ValueError):
             mda.Universe(two_water_gro_nonames, guess_bonds = True)
 
     def test_universe_guess_bonds_with_vdwradii(self, vdw):
         """Unknown atom types, but with vdw radii here to save the day"""
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            u = mda.Universe(two_water_gro_nonames, guess_bonds=True,
-                             vdwradii=vdw)
+        u = mda.Universe(two_water_gro_nonames, guess_bonds=True,
+                                vdwradii=vdw)
         self._check_universe(u)
         assert u.kwargs['guess_bonds']
         assert_equal(vdw, u.kwargs['vdwradii'])
 
     def test_universe_guess_bonds_off(self):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            u = mda.Universe(two_water_gro_nonames, guess_bonds=False)
+        u = mda.Universe(two_water_gro_nonames, guess_bonds=False)
 
         for attr in ('bonds', 'angles', 'dihedrals'):
             assert not hasattr(u, attr)
@@ -399,18 +390,14 @@ class TestGuessBonds(object):
         self._check_atomgroup(ag, u)
 
     def test_atomgroup_guess_bonds_no_vdwradii(self):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            u = mda.Universe(two_water_gro_nonames)
+        u = mda.Universe(two_water_gro_nonames)
 
         ag = u.atoms[:3]
         with pytest.raises(ValueError):
             ag.guess_bonds()
 
     def test_atomgroup_guess_bonds_with_vdwradii(self, vdw):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            u = mda.Universe(two_water_gro_nonames)
+        u = mda.Universe(two_water_gro_nonames)
 
         ag = u.atoms[:3]
         ag.guess_bonds(vdwradii=vdw)
@@ -612,21 +599,15 @@ class TestAddTopologyAttr(object):
 class TestAllCoordinatesKwarg(object):
     @pytest.fixture(scope='class')
     def u_GRO_TRR(self):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            return mda.Universe(GRO, TRR)
+        return mda.Universe(GRO, TRR)
 
     @pytest.fixture(scope='class')
     def u_GRO_TRR_allcoords(self):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            return mda.Universe(GRO, TRR, all_coordinates=True)
+        return mda.Universe(GRO, TRR, all_coordinates=True)
 
     @pytest.fixture(scope='class')
     def u_GRO(self):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            return mda.Universe(GRO)
+        return mda.Universe(GRO)
 
     def test_all_coordinates_length(self, u_GRO_TRR, u_GRO_TRR_allcoords):
         # length with all_coords should be +1
