@@ -279,11 +279,13 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
     def test_Writer(self, u, tmpdir, n_frames=3):
         ext = os.path.splitext(self.trajectory)[1]
         outfile = str(tmpdir.join('lammps-writer-test' + ext))
-        W = mda.Writer(outfile, n_atoms=u.atoms.n_atoms,
-                       format=self.format)
-        with u.trajectory.OtherWriter(outfile) as w:
+
+        with mda.Writer(outfile,
+                        n_atoms=u.atoms.n_atoms,
+                        format=self.format) as w:
             for ts in u.trajectory[:n_frames]:
                 w.write(ts)
+
         short = mda.Universe(self.topology, outfile)
         assert_equal(short.trajectory.n_frames, n_frames,
                      err_msg="number of frames mismatch")
