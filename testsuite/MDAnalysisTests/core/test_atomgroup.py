@@ -24,7 +24,6 @@ from __future__ import division, absolute_import
 from glob import glob
 import itertools
 from os import path
-import warnings
 
 import numpy as np
 
@@ -103,9 +102,7 @@ class TestAtomGroupWriting(object):
 
     def test_write_no_args(self, u, tmpdir):
         with tmpdir.as_cwd():
-            with warnings.catch_warnings():
-                warnings.simplefilter('ignore', UserWarning)
-                u.atoms.write()
+            u.atoms.write()
             files = glob('*')
             assert len(files) == 1
 
@@ -152,9 +149,7 @@ class _WriteAtoms(object):
         return mda.Universe(outfile, convert_units=True)
 
     def test_write_atoms(self, universe, outfile):
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            universe.atoms.write(outfile)
+        universe.atoms.write(outfile)
         u2 = self.universe_from_tmp(outfile)
         assert_almost_equal(
             universe.atoms.positions, u2.atoms.positions,
@@ -169,9 +164,7 @@ class _WriteAtoms(object):
 
     def test_write_selection(self, universe, outfile):
         CA = universe.select_atoms('name CA')
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            CA.write(outfile)
+        CA.write(outfile)
         u2 = self.universe_from_tmp(outfile)
         # check EVERYTHING, otherwise we might get false positives!
         CA2 = u2.atoms
@@ -183,10 +176,8 @@ class _WriteAtoms(object):
 
     def test_write_Residue(self, universe, outfile):
         G = universe.select_atoms('segid 4AKE and resname ARG').residues[-2].atoms  # 2nd but last Arg
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            G.write(outfile)
-            u2 = self.universe_from_tmp(outfile)
+        G.write(outfile)
+        u2 = self.universe_from_tmp(outfile)
         # check EVERYTHING, otherwise we might get false positives!
         G2 = u2.atoms
         assert len(u2.atoms) == len(G.atoms), "written R206 Residue does not " \
@@ -197,10 +188,8 @@ class _WriteAtoms(object):
 
     def test_write_ResidueGroup(self, universe, outfile):
         G = universe.select_atoms('segid 4AKE and resname LEU')
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            G.write(outfile)
-            u2 = self.universe_from_tmp(outfile)
+        G.write(outfile)
+        u2 = self.universe_from_tmp(outfile)
         G2 = u2.atoms
         assert len(u2.atoms) == len(G.atoms), "written LEU ResidueGroup does " \
                                               "not match original ResidueGroup"
@@ -210,9 +199,7 @@ class _WriteAtoms(object):
 
     def test_write_Segment(self, universe, outfile):
         G = universe.select_atoms('segid 4AKE')
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
-            G.write(outfile)
+        G.write(outfile)
         u2 = self.universe_from_tmp(outfile)
         G2 = u2.atoms
         assert len(u2.atoms) == len(G.atoms), "written s4AKE segment does not" \
@@ -223,8 +210,7 @@ class _WriteAtoms(object):
 
     def test_write_Universe(self, universe, outfile):
         U = universe
-        with mda.Writer(outfile) as W, warnings.catch_warnings():
-            warnings.simplefilter('ignore', UserWarning)
+        with mda.Writer(outfile) as W:
             W.write(U)
         u2 = self.universe_from_tmp(outfile)
         assert len(u2.atoms) == len(U.atoms), "written 4AKE universe does not" \
@@ -843,8 +829,7 @@ class TestPBCFlag(object):
 def test_instantselection_termini():
     """Test that instant selections work, even for residues that are also termini (Issue 70)"""
     universe = mda.Universe(PSF, DCD)
-    with pytest.deprecated_call():
-        assert_equal(universe.residues[20].CA.name, 'CA', "CA of MET21 is not selected correctly")
+    assert_equal(universe.residues[20].CA.name, 'CA', "CA of MET21 is not selected correctly")
     del universe
 
 
@@ -876,8 +861,7 @@ class TestAtomGroup(object):
                      universe.atoms.ix[0:8:2])
 
     def test_getitem_str(self, universe):
-        with pytest.deprecated_call():
-            ag1 = universe.atoms['HT1']
+        ag1 = universe.atoms['HT1']
         # select_atoms always returns an AtomGroup even if single result
         ag2 = universe.select_atoms('name HT1')[0]
         assert_equal(ag1, ag2)

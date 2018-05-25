@@ -282,8 +282,7 @@ class TestResnames(TestResidueAttr):
     def test_residuegroup_getattr_single(self):
         u = make_Universe(('resnames',))
 
-        with pytest.deprecated_call():
-            res = u.residues.RsB
+        res = u.residues.RsB
 
         assert isinstance(res, groups.Residue)
         assert res == u.residues[1]
@@ -292,8 +291,7 @@ class TestResnames(TestResidueAttr):
         u = make_Universe(('resnames',))
         u.residues[:10].resnames = 'ABC'
 
-        with pytest.deprecated_call():
-            rg = u.residues.ABC
+        rg = u.residues.ABC
 
         assert isinstance(rg, groups.ResidueGroup)
         assert len(rg) == 10
@@ -303,11 +301,11 @@ class TestResnames(TestResidueAttr):
         with pytest.raises(AttributeError):
             getattr(u.residues, 'foo')
 
+
     def test_segment_getattr_singular(self):
         u = make_Universe(('resnames',))
 
-        with pytest.deprecated_call():
-            res = u.segments[0].RsB
+        res = u.segments[0].RsB
 
         assert isinstance(res, groups.Residue)
         assert res == u.residues[1]
@@ -316,8 +314,7 @@ class TestResnames(TestResidueAttr):
         u = make_Universe(('resnames',))
         u.residues[:3].resnames = 'bar'
 
-        with pytest.deprecated_call():
-            rg = u.segments[0].bar
+        rg = u.segments[0].bar
 
         assert isinstance(rg, groups.ResidueGroup)
         assert len(rg) == 3
