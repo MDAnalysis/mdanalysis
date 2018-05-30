@@ -25,7 +25,7 @@ Enhancements
   * Added rdf.InterRDF_s to calculate site-specific pair distribution
     functions (PR #1815)
   * Increased performance of (repeated) calls to AtomGroup.pack_into_box()
-    (PR #????)
+    (PR #1922)
 
 Fixes
   * Fixed order of indices in Angle/Dihedral/Improper repr
@@ -42,7 +42,7 @@ Changes
   * TopologyAttrs are now statically typed (Issue #1876)
   * updated meta data for new PyPi (#1837)
   * AtomGroup.atoms, ResidueGroup.residues, and SegmentGroup.segments now return
-    themselves instead of a new object to increase performance (PR #????)
+    themselves instead of a new object to increase performance (PR #1922)
 
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
