@@ -1184,17 +1184,17 @@ class GroupBase(_MutableBase):
         Returns
         -------
         dict
-            Unique values of the multiple combinations of topology attributes 
+            Unique values of the multiple combinations of topology attributes
             as keys, Groups as values.
 
         Example
-        -------      
-        To group atoms with the same mass together:     
-                
+        -------
+        To group atoms with the same mass together:
+
         >>> ag.groupby('masses')
         {12.010999999999999: <AtomGroup with 462 atoms>,
          14.007: <AtomGroup with 116 atoms>,
-         15.999000000000001: <AtomGroup with 134 atoms>}        
+         15.999000000000001: <AtomGroup with 134 atoms>}
 
         To group atoms with the same residue name and mass together:
 
@@ -1205,24 +1205,24 @@ class GroupBase(_MutableBase):
            ('ALA', 15.999): <AtomGroup with 19 atoms>},
            ('ARG', 1.008): <AtomGroup with 169 atoms>,
            ...}
-          
+
           >>> ag.groupby(['resnames', 'masses'])('ALA', 15.999)
            <AtomGroup with 19 atoms>
-        
+
         .. versionadded:: 0.16.0
         .. versionchanged:: 0.18.0 The function accepts multiple attributes
         """
-        
+
         res = dict()
-        
+
         if isinstance(topattrs, (string_types, bytes)):
             attr=topattrs
             if isinstance(topattrs, bytes):
                 attr = topattrs.decode('utf-8')
             ta = getattr(self, attr)
-            
+
             return {i: self[ta == i] for i in set(ta)}
-        
+
         else:
             attr = topattrs[0]
             ta = getattr(self, attr)
@@ -1231,7 +1231,7 @@ class GroupBase(_MutableBase):
                     res[i] = self[ta == i]
                 else:
                     res[i] = self[ta == i].groupby(topattrs[1:])
-                    
+
             return util.flatten_dict(res)
 
 
@@ -2528,7 +2528,7 @@ class ResidueGroup(GroupBase):
     @property
     def n_residues(self):
         """Number of residues in the :class:`ResidueGroup`.
-        
+
         Equivalent to ``len(self)``.
         """
         return len(self)
@@ -2671,7 +2671,7 @@ class SegmentGroup(GroupBase):
     @property
     def n_segments(self):
         """Number of segments in the :class:`SegmentGroup`.
-        
+
         Equivalent to ``len(self)``.
         """
         return len(self)

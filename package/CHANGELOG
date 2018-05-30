@@ -24,6 +24,8 @@ Enhancements
   * added compound kwarg to center, centroid, center_of_geometry, center_of_mass (PR #1903)
   * Added rdf.InterRDF_s to calculate site-specific pair distribution
     functions (PR #1815)
+  * Increased performance of (repeated) calls to AtomGroup.pack_into_box()
+    (PR #????)
 
 Fixes
   * Fixed order of indices in Angle/Dihedral/Improper repr
@@ -33,10 +35,14 @@ Fixes
   * Adding new TopologyAttrs with values defined always coerces this into
     a numpy array (Issue #1876)
   * Groups passed to select_atoms() are now type checked (Issue #1852)
+  * Fixed inconsistent handling of groups with/without duplicates in
+    pack_into_box() (Issue #1911)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)
   * updated meta data for new PyPi (#1837)
+  * AtomGroup.atoms, ResidueGroup.residues, and SegmentGroup.segments now return
+    themselves instead of a new object to increase performance (PR #????)
 
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
