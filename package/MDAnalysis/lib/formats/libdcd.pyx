@@ -292,6 +292,8 @@ cdef class DCDFile:
             self.close()
 
         if mode == 'r':
+            if not path.isfile(self.fname):
+                raise IOError("DCD file does not exist")
             fio_mode = FIO_READ
         elif mode == 'w':
             fio_mode = FIO_WRITE
