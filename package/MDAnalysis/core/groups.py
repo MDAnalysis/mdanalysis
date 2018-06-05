@@ -1885,11 +1885,11 @@ class AtomGroup(GroupBase):
         # then be replaced by the __getattr__() error message. To prevent the
         # message from being overridden, we raise a RuntimeError instead.
         if self.isunique:
-            msg = ("{cls}._unique_restore_mask is not available if the {cls} "
-                   "is unique. ".format(self.__class__.__name__))
+            msg = ("{0}._unique_restore_mask is not available if the {0} is "
+                   "unique. ".format(self.__class__.__name__))
         else:
-            msg = ("{cls}._unique_restore_mask is only available after "
-                   "accessing {cls}.unique. ".format(self.__class__.__name__))
+            msg = ("{0}._unique_restore_mask is only available after "
+                   "accessing {0}.unique. ".format(self.__class__.__name__))
         msg += ("If you see this error message in an unmodified release "
                 "version of MDAnalysis, this is almost certainly a bug!")
         raise RuntimeError(msg)
