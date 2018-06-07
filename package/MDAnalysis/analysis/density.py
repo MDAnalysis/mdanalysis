@@ -184,7 +184,6 @@ import logging
 
 logger = logging.getLogger("MDAnalysis.analysis.density")
 
-
 class Density(Grid):
     r"""Class representing a density on a regular cartesian grid.
 
@@ -277,7 +276,6 @@ class Density(Grid):
     See Also
     --------
     gridData.core.Grid : the base class of :class:`Density`.
-
 
     Examples
     --------
@@ -497,12 +495,47 @@ class Density(Grid):
             grid_type = 'histogram'
         return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + ' bins>'
 
+def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
+    """Function to set the grid dimensions to user defined values
+       
+       Called by : density_from_Universe 
+       Condition : gridcenter must be defined
+
+       Parameters
+       ----------
+       gridcenter : numpy array containing the x,y,z of the box center (np.float32)
+       x/y/zdim :   box edge lengths in each dimension
+       smin/smax :  minimum and maximum x,y,z padded coordinates for given selection
+
+       Returns
+       -------
+       umin/umax :  replacement values for the box min and max values (np.float32)
+       
+    """
+    #Copy grid to umin and umax and then set the min/max to half the edge values
+    umin = np.copy(gridcenter)
+    umax = np.copy(gridcenter)
+    umin[0] -= xdim/2
+    umin[1] -= ydim/2
+    umin[2] -= zdim/2
+    umax[0] += xdim/2
+    umax[1] += ydim/2
+    umax[2] += zdim/2
+    #Test if any selected atom (+padding) coords fall outside of the user defined grid
+    if any(smin < umin) or any(smax > umax):
+        errmsg = "User defined grid does not fit selected atoms"
+        logger.fatal(errmsg)
+        raise ValueError(errmsg)
+    #Return umin and umax
+    return umin, umax
+
 def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           start=None, stop=None, step=None,
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
                           use_kdtree=True, update_selection=False,
                           verbose=None, interval=1, quiet=None,
-                          parameters=None):
+                          parameters=None,
+                          gridcenter=None, xdim=1.0, ydim=1.0, zdim=1.0):
     """Create a density grid from a :class:`MDAnalysis.Universe` object.
 
     The trajectory is read, frame by frame, and the atoms selected with `atomselection` are
@@ -550,6 +583,14 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
            Show status update every `interval` frame [1]
     parameters : dict (optional)
             `dict` with some special parameters for :class:`Density` (see docs)
+    gridcenter : np.array float (option)
+            User defined grid center (x,y,z: numpy array float 32) in Angstroem 
+    xdim : float (optional - ignored if gridcenter is None)
+            User defined x dimension edge in Angstroem [2.0]
+    ydim : float (optional - ignored if gridcenter is None)
+            User defined y dimension edge in Angstroem [2.0]
+    zdim : float (optional - ignored if gridcenter is None)
+            User defined z dimension edge in Angstroem [2.0]
 
     Returns
     -------
@@ -639,8 +680,17 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     # ideal solution would use images: implement 'looking across the
     # periodic boundaries' but that gets complicate when the box
     # rotates due to RMS fitting.
+
+    # User defined grid comment: do as else part of the next if?
+
     smin = np.min(coord, axis=0) - padding
     smax = np.max(coord, axis=0) + padding
+
+    #### USER DEFINED GRID
+    #Set umin to gridcenter-dims and umax to center+dims 
+    if gridcenter is not None:
+        smin, smax = _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax)
+    #### END USER DEFINED GRID
 
     BINS = fixedwidth_bins(delta, smin, smax)
     arange = np.vstack((BINS['min'], BINS['max']))
