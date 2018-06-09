@@ -25,6 +25,7 @@ from __future__ import absolute_import, division
 from six.moves import range, StringIO
 import pytest
 import os
+import warnings
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
@@ -33,9 +34,9 @@ from numpy.testing import (assert_equal, assert_almost_equal,
 import MDAnalysis as mda
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
-from MDAnalysis.lib.util import cached
+from MDAnalysis.lib.util import cached, static_variables, warn_if_not_unique
 from MDAnalysis.core.topologyattrs import Bonds
-from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.exceptions import NoDataError, DuplicateWarning
 
 
 from MDAnalysisTests.datafiles import Make_Whole
@@ -1080,5 +1081,208 @@ class TestFlattenDict(object):
             assert k[0] in d
             assert k[1] in d[k[0]]
             assert result[k] in d[k[0]].values()
+
+class TestStaticVariables(object):
+    """Tests concerning the decorator @static_variables
+    """
+
+    def test_static_variables(self):
+        x = [0]
+
+        @static_variables(foo=0, bar={'test': x})
+        def myfunc():
+            assert myfunc.foo is 0
+            assert type(myfunc.bar) is type(dict())
+            if 'test2' not in myfunc.bar:
+                myfunc.bar['test2'] = "a"
+            else:
+                myfunc.bar['test2'] += "a"
+            myfunc.bar['test'][0] += 1
+            return myfunc.bar['test']
+
+        assert hasattr(myfunc, 'foo')
+        assert hasattr(myfunc, 'bar')
+
+        y = myfunc()
+        assert y is x
+        assert x[0] is 1
+        assert myfunc.bar['test'][0] is 1
+        assert myfunc.bar['test2'] == "a"
+
+        x = [0]
+        y = myfunc()
+        assert y is not x
+        assert myfunc.bar['test'][0] is 2
+        assert myfunc.bar['test2'] == "aa"
+
+class TestWarnIfNotUnique(object):
+    """Tests concerning the decorator @warn_if_not_uniue
+    """
+
+    @pytest.fixture()
+    def warn_msg(self, func, group, group_name):
+        msg = ("{}.{}(): {} {} contains duplicates. Results might be "
+               "biased!".format(group.__class__.__name__, func.__name__,
+                                group_name, group.__repr__()))
+        return msg
+
+    def test_warn_if_not_unique(self, atoms):
+        # Check that the warn_if_not_unique decorator has a "static variable"
+        # warn_if_not_unique.warned:
+        assert hasattr(warn_if_not_unique, 'warned')
+        assert warn_if_not_unique.warned is False
+
+    def test_warn_if_not_unique_once_outer(self, atoms):
+
+        # Construct a scenario with two nested functions, each one decorated
+        # with @warn_if_not_unique:
+
+        @warn_if_not_unique
+        def inner(group):
+            if not group.isunique:
+                # The inner function should not trigger a warning, and the state
+                # of warn_if_not_unique.warned should reflect that:
+                assert warn_if_not_unique.warned is True
+            return 0
+
+        @warn_if_not_unique
+        def outer(group):
+            return inner(group)
+
+        # Check that no warning is raised for a unique group:
+        assert atoms.isunique
+        with pytest.warns(None) as w:
+            x = outer(atoms)
+            assert x is 0
+            assert not w.list
+
+        # Check that a warning is raised for a group with duplicates:
+        ag = atoms + atoms[0]
+        msg = self.warn_msg(outer, ag, "'ag'")
+        with pytest.warns(DuplicateWarning) as w:
+            assert warn_if_not_unique.warned is False
+            x = outer(ag)
+            # Assert that the "warned" state is restored:
+            assert warn_if_not_unique.warned is False
+            # Check correct function execution:
+            assert x is 0
+            # Only one warning must have been raised:
+            assert len(w) == 1
+            # For whatever reason pytest.warns(DuplicateWarning, match=msg)
+            # doesn't work, so we compare the recorded warning message instead:
+            assert w[0].message.args[0] == msg
+            # Make sure the warning uses the correct stacklevel and references
+            # this file instead of MDAnalysis/lib/util.py:
+            assert w[0].filename == __file__
+
+    def test_warned_state_restored_on_failure(self, atoms):
+
+        # A decorated function raising an exception:
+        @warn_if_not_unique
+        def thisfails(group):
+            raise ValueError()
+
+        ag = atoms + atoms[0]
+        msg = self.warn_msg(thisfails, ag, "'ag'")
+        with pytest.warns(DuplicateWarning) as w:
+            assert warn_if_not_unique.warned is False
+            with pytest.raises(ValueError):
+                thisfails(ag)
+            # Assert that the "warned" state is restored despite `thisfails`
+            # raising an exception:
+            assert warn_if_not_unique.warned is False
+            assert len(w) == 1
+            assert w[0].message.args[0] == msg
+            assert w[0].filename == __file__
+
+    def test_warn_if_not_unique_once_inner(self, atoms):
+
+        # Construct a scenario with two nested functions, each one decorated
+        # with @warn_if_not_unique, but the outer function adds a duplicate
+        # to the group:
+
+        @warn_if_not_unique
+        def inner(group):
+            return 0
+
+        @warn_if_not_unique
+        def outer(group):
+            dupgroup = group + group[0]
+            return inner(dupgroup)
+
+        # Check that even though outer() is called the warning is raised for
+        # inner():
+        msg = self.warn_msg(inner, atoms + atoms[0], "'dupgroup'")
+        with pytest.warns(DuplicateWarning) as w:
+            assert warn_if_not_unique.warned is False
+            x = outer(atoms)
+            # Assert that the "warned" state is restored:
+            assert warn_if_not_unique.warned is False
+            # Check correct function execution:
+            assert x is 0
+            # Only one warning must have been raised:
+            assert len(w) == 1
+            assert w[0].message.args[0] == msg
+            assert w[0].filename == __file__
+
+    def test_warn_if_not_unique_multiple_references(self, atoms):
+        ag = atoms + atoms[0]
+        aag = ag
+        aaag = aag
+
+        @warn_if_not_unique
+        def func(group):
+            return group.isunique
+
+        # Check that the warning message contains the names of all references to
+        # the group in alphabetic order:
+        msg = self.warn_msg(func, ag, "'aaag' a.k.a. 'aag' a.k.a. 'ag'")
+        with pytest.warns(DuplicateWarning) as w:
+            x = func(ag)
+            # Assert that the "warned" state is restored:
+            assert warn_if_not_unique.warned is False
+            # Check correct function execution:
+            assert x is False
+            # Check warning message:
+            assert w[0].message.args[0] == msg
+            # Check correct file referenced:
+            assert w[0].filename == __file__
+
+    def test_warn_if_not_unique_unnamed(self, atoms):
+
+        @warn_if_not_unique
+        def func(group):
+            pass
+
+        msg = self.warn_msg(func, atoms + atoms[0],
+                            "'unnamed {}'".format(atoms.__class__.__name__))
+        with pytest.warns(DuplicateWarning) as w:
+            x = func(atoms + atoms[0])
+            # Check warning message:
+            assert w[0].message.args[0] == msg
+
+    def test_warn_if_not_unique_fails_for_non_groupmethods(self):
+
+        @warn_if_not_unique
+        def func(group):
+            pass
             
-            
+        class dummy(object):
+            pass
+
+        with pytest.raises(AttributeError):
+            func(dummy())
+
+    def test_filter_duplicate_with_userwarning(self, atoms):
+
+        @warn_if_not_unique
+        def func(group):
+            pass
+
+        with warnings.catch_warnings(record=True) as record:
+            warnings.resetwarnings()
+            warnings.filterwarnings("ignore", category=UserWarning)
+            with pytest.warns(None) as w:
+                func(atoms)
+                assert not w.list
+            assert len(record) == 0

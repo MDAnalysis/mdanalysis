@@ -30,7 +30,7 @@ particles in the system (which MDAnalysis calls :class:`Atom`). Groups of
 :class:`atoms<Atom>` are handled as :class:`AtomGroup` instances. The
 :class:`AtomGroup` is probably the most important object in MDAnalysis because
 virtually everything can be accessed through it. :class:`AtomGroup` instances
-can be easily created (e.g., from a :meth:`AtomGroup.select_atoms` selection or
+can be easily created (e.g., from an :meth:`AtomGroup.select_atoms` selection or
 simply by slicing).
 
 For convenience, chemically meaningful groups of :class:`Atoms<Atom>` such as a
@@ -103,7 +103,7 @@ from numpy.lib.utils import deprecate
 
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
-from ..lib.util import cached
+from ..lib.util import cached, warn_if_not_unique
 from ..lib import distances
 from ..lib import transformations
 from ..selections import get_writer as get_selection_writer_for
@@ -247,7 +247,7 @@ class _TopologyAttrContainer(object):
 
     @classmethod
     def _add_prop(cls, attr):
-        """Add *attr* into the namespace for this class
+        """Add `attr` into the namespace for this class
 
         Parameters
         ----------
@@ -646,6 +646,7 @@ class GroupBase(_MutableBase):
         #    return ``not np.any(mask)`` here but using the following is faster:
         return not np.count_nonzero(mask)
 
+    @warn_if_not_unique
     def center(self, weights, pbc=None, compound='group'):
         """Weighted center of (compounds of) the group
 
@@ -756,6 +757,7 @@ class GroupBase(_MutableBase):
             centers = distances.apply_PBC(centers, atoms.dimensions)
         return centers
 
+    @warn_if_not_unique
     def center_of_geometry(self, pbc=None, compound='group'):
         """Center of geometry (also known as centroid) of the group.
 
@@ -871,7 +873,7 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        atomgroup = self.atoms
+        atomgroup = self.atoms.unique
         pbc = kwargs.pop('pbc', flags['use_pbc'])
 
         if pbc:
@@ -1206,6 +1208,22 @@ class GroupBase(_MutableBase):
             if not all(s == 0.0):
                 o.atoms.translate(s)
 
+    def copy(self):
+        """Get another group identical to this one.
+
+
+        .. versionadded:: 0.19.0
+        """
+        group = self[:]
+        # Try to fill the copied group's uniqueness caches:
+        try:
+            group._cache['isunique'] = self._cache['isunique']
+            if group._cache['isunique']:
+                group._cache['unique'] = group
+        except KeyError:
+            pass
+        return group
+
     def groupby(self, topattrs):
         """Group together items in this group according to values of *topattr*
 
@@ -1269,7 +1287,6 @@ class GroupBase(_MutableBase):
                     res[i] = self[ta == i].groupby(topattrs[1:])
 
             return util.flatten_dict(res)
-
 
     @_only_same_level
     def concatenate(self, other):
@@ -1643,8 +1660,8 @@ class AtomGroup(GroupBase):
         define angles or dihedrals).
 
     :class:`AtomGroups<AtomGroup>` can be compared and combined using group
-    operators. For instance, :class:`AtomGroups<AtomGroup>` can be concatenated using `+`
-    or :meth:`concatenate`::
+    operators. For instance, :class:`AtomGroups<AtomGroup>` can be concatenated
+    using `+` or :meth:`concatenate`::
 
         ag_concat = ag1 + ag2  # or ag_concat = ag1.concatenate(ag2)
 
@@ -1739,7 +1756,7 @@ class AtomGroup(GroupBase):
 
         ag.CA
 
-    will provide a :class:`AtomGroup` of all CA :class:`Atoms<Atom>` in the
+    will provide an :class:`AtomGroup` of all CA :class:`Atoms<Atom>` in the
     group. These *instant selector* attributes are auto-generated for
     each atom name encountered in the group.
 
@@ -1815,7 +1832,10 @@ class AtomGroup(GroupBase):
         """A sorted :class:`ResidueGroup` of the unique
         :class:`Residues<Residue>` present in the :class:`AtomGroup`.
         """
-        return self.universe.residues[np.unique(self.resindices)]
+        rg = self.universe.residues[np.unique(self.resindices)]
+        rg._cache['isunique'] = True
+        rg._cache['unique'] = rg
+        return rg
 
     @residues.setter
     def residues(self, new):
@@ -1859,7 +1879,10 @@ class AtomGroup(GroupBase):
         """A sorted :class:`SegmentGroup` of the unique segments present in the
         :class:`AtomGroup`.
         """
-        return self.universe.segments[np.unique(self.segindices)]
+        sg = self.universe.segments[np.unique(self.segindices)]
+        sg._cache['isunique'] = True
+        sg._cache['unique'] = sg
+        return sg
 
     @segments.setter
     def segments(self, new):
@@ -1924,6 +1947,9 @@ class AtomGroup(GroupBase):
 
 
         .. versionadded:: 0.16.0
+        .. versionchanged:: 0.19.0 If the :class:`AtomGroup` is already unique,
+            :attr:`AtomGroup.unique` now returns the group itself instead of a
+            copy.
         """
         if self.isunique:
             return self
@@ -2580,13 +2606,24 @@ class ResidueGroup(GroupBase):
 
     @property
     def atoms(self):
-        """A :class:`AtomGroup` of :class:`Atoms<Atom>` presented in this
+        """An :class:`AtomGroup` of :class:`Atoms<Atom>` present in this
         :class:`ResidueGroup`.
 
         The :class:`Atoms<Atom>` are ordered locally by :class:`Residue` in the
         :class:`ResidueGroup`.  Duplicates are *not* removed.
         """
-        return self.universe.atoms[np.concatenate(self.indices)]
+        ag = self.universe.atoms[np.concatenate(self.indices)]
+        # If the ResidueGroup is known to be unique, this also holds for the
+        # atoms therein, since atoms can only belong to one residue at a time.
+        # On the contrary, if the ResidueGroup is not unique, this does not
+        # imply non-unique atoms, since residues might be empty.
+        try:
+            if self._cache['isunique']:
+                ag._cache['isunique'] = True
+                ag._cache['unique'] = ag
+        except KeyError:
+            pass
+        return ag
 
     @property
     def n_atoms(self):
@@ -2616,7 +2653,10 @@ class ResidueGroup(GroupBase):
         """Get sorted :class:`SegmentGroup` of the unique segments present in
         the :class:`ResidueGroup`.
         """
-        return self.universe.segments[np.unique(self.segindices)]
+        sg = self.universe.segments[np.unique(self.segindices)]
+        sg._cache['isunique'] = True
+        sg._cache['unique'] = sg
+        return sg
 
     @segments.setter
     def segments(self, new):
@@ -2679,6 +2719,9 @@ class ResidueGroup(GroupBase):
 
 
         .. versionadded:: 0.16.0
+        .. versionchanged:: 0.19.0 If the :class:`ResidueGroup` is already
+            unique, :attr:`ResidueGroup.unique` now returns the group itself
+            instead of a copy.
         """
         if self.isunique:
             return self
@@ -2717,7 +2760,18 @@ class SegmentGroup(GroupBase):
         are further ordered by :class:`Segment` in the :class:`SegmentGroup`.
         Duplicates are *not* removed.
         """
-        return self.universe.atoms[np.concatenate(self.indices)]
+        ag = self.universe.atoms[np.concatenate(self.indices)]
+        # If the SegmentGroup is known to be unique, this also holds for the
+        # residues therein, and thus, also for the atoms in those residues.
+        # On the contrary, if the SegmentGroup is not unique, this does not
+        # imply non-unique atoms, since segments or residues might be empty.
+        try:
+            if self._cache['isunique']:
+                ag._cache['isunique'] = True
+                ag._cache['unique'] = ag
+        except KeyError:
+            pass
+        return ag
 
     @property
     def n_atoms(self):
@@ -2737,7 +2791,18 @@ class SegmentGroup(GroupBase):
         :class:`Segment` in the :class:`SegmentGroup`. Duplicates are *not*
         removed.
         """
-        return self.universe.residues[np.concatenate(self.resindices)]
+        rg = self.universe.residues[np.concatenate(self.resindices)]
+        # If the SegmentGroup is known to be unique, this also holds for the
+        # residues therein. On the contrary, if the SegmentGroup is not unique,
+        # this does not imply non-unique residues, since segments might be
+        # empty.
+        try:
+            if self._cache['isunique']:
+                rg._cache['isunique'] = True
+                rg._cache['unique'] = rg
+        except KeyError:
+            pass
+        return rg
 
     @property
     def n_residues(self):
@@ -2788,6 +2853,9 @@ class SegmentGroup(GroupBase):
 
 
         .. versionadded:: 0.16.0
+        .. versionchanged:: 0.19.0 If the :class:`SegmentGroup` is already
+            unique, :attr:`SegmentGroup.unique` now returns the group itself
+            instead of a copy.
         """
         if self.isunique:
             return self
@@ -3055,10 +3123,18 @@ class Residue(ComponentBase):
 
     @property
     def atoms(self):
-        return self.universe.atoms[self.universe._topology.indices[self][0]]
+        """An :class:`AtomGroup` of :class:`Atoms<Atom>` present in this
+        :class:`Residue`.
+        """
+        ag = self.universe.atoms[self.universe._topology.indices[self][0]]
+        ag._cache['isunique'] = True
+        ag._cache['unique'] = ag
+        return ag
 
     @property
     def segment(self):
+        """The :class:`Segment` this :class:`Residue` belongs to.
+        """
         return self.universe.segments[self.universe._topology.segindices[self]]
 
     @segment.setter
@@ -3091,12 +3167,23 @@ class Segment(ComponentBase):
 
     @property
     def atoms(self):
-        return self.universe.atoms[self.universe._topology.indices[self][0]]
+        """An :class:`AtomGroup` of :class:`Atoms<Atom>` present in this
+        :class:`Segment`.
+        """
+        ag = self.universe.atoms[self.universe._topology.indices[self][0]]
+        ag._cache['isunique'] = True
+        ag._cache['unique'] = ag
+        return ag
 
     @property
     def residues(self):
-        u = self.universe
-        return u.residues[u._topology.resindices[self][0]]
+        """A :class:`ResidueGroup` of :class:`Residues<Residue>` present in this
+        :class:`Segment`.
+        """
+        rg = self.universe.residues[self.universe._topology.resindices[self][0]]
+        rg._cache['isunique'] = True
+        rg._cache['unique'] = rg
+        return rg
 
     def __getattr__(self, attr):
         # DEPRECATED in 0.16.2
@@ -3273,6 +3360,23 @@ class UpdatingAtomGroup(AtomGroup):
         # With a shorthand to conditionally append the 's' in 'selections'.
         return "{}, with selection{} {} on {}>".format(basestr[:-1],
                     "s"[len(self._selection_strings)==1:], sels, basegrp)
+
+    @property
+    def atoms(self):
+        """Get a *static* :class:`AtomGroup` identical to the group of currently
+        selected :class:`Atoms<Atom>` in the :class:`UpdatingAtomGroup`.
+        """
+        return self[:]
+
+    def copy(self):
+        """Get another :class:`UpdatingAtomGroup` identical to this one.
+
+
+        .. versionadded:: 0.19.0
+        """
+        return UpdatingAtomGroup(self._base_group, self._selections,
+                                 self._selection_strings)
+
 
 # Define relationships between these classes
 # with Level objects

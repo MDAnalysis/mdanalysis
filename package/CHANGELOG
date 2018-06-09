@@ -26,6 +26,9 @@ Enhancements
     functions (PR #1815)
   * Increased performance of (repeated) calls to AtomGroup.pack_into_box()
     (PR #1922)
+  * Added boolean property *Group.isunique (PR #1922)
+  * Added *Group.copy() methods returning an identical copy of the respective
+    group (PR #1922)
 
 Fixes
   * Fixed order of indices in Angle/Dihedral/Improper repr
@@ -43,6 +46,10 @@ Changes
   * updated meta data for new PyPi (#1837)
   * AtomGroup.atoms, ResidueGroup.residues, and SegmentGroup.segments now return
     themselves instead of a new object to increase performance (PR #1922)
+  * *Group.unique now returns a new object only if the respective group contains
+    duplicates. Otherwise, the group itself is returned. Repeated access of
+    *Group.unique will always return the same object unless the group is
+    updated or modified. (PR #1922)
 
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,

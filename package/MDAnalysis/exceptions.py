@@ -71,3 +71,17 @@ class StreamWarning(Warning):
     :class:`~MDAnalysis.lib.util.NamedStream`). This does not work everywhere
     in MDAnalysis (yet).
     """
+
+
+class DuplicateWarning(UserWarning):
+    """Warning indicating possible problems arising from an
+    :class:`~MDAnalysis.core.groups.AtomGroup` /
+    :class:`~MDAnalysis.core.groups.ResidueGroup` /
+    :class:`~MDAnalysis.core.groups.SegmentGroup` containing duplicate
+    :class:`Atoms<MDAnalysis.core.groups.Atom>` /
+    :class:`Residues<MDAnalysis.core.groups.Residue>` /
+    :class:`Segments<MDAnalysis.core.groups.Segment>`\ .
+
+
+    .. versionadded:: 0.19.0
+    """
