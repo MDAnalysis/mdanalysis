@@ -1257,7 +1257,7 @@ class TestWarnIfNotUnique(object):
         msg = self.warn_msg(func, atoms + atoms[0],
                             "'unnamed {}'".format(atoms.__class__.__name__))
         with pytest.warns(DuplicateWarning) as w:
-            x = func(atoms + atoms[0])
+            func(atoms + atoms[0])
             # Check warning message:
             assert w[0].message.args[0] == msg
 
