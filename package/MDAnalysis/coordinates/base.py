@@ -1795,7 +1795,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         except ValueError:
             raise ValueError("Can't add transformations again. Please create new Universe object")  
         else:
-                self.ts = self._apply_transformations(self.ts)
+            self.ts = self._apply_transformations(self.ts)
                 
              
         # call reader here to apply the newly added transformation on the
@@ -1870,6 +1870,8 @@ class ReaderBase(ProtoReader):
         """
         new = self.__class__(self.filename,
                              n_atoms=self.n_atoms)
+        if self.transformations:
+            new.add_transformations(*self.transformations)
         # seek the new reader to the same frame we started with
         new[self.ts.frame]
         # then copy over the current Timestep in case it has
@@ -2044,6 +2046,10 @@ class SingleFrameReaderBase(ProtoReader):
         new.ts = self.ts.copy()
         for auxname, auxread in self._auxs.items():
             new.add_auxiliary(auxname, auxread.copy())
+        # since the transformations have already been applied to the frame
+        # simply copy the property
+        new.transformations = self.transformations
+        
         return new
 
     def _read_first_frame(self):  # pragma: no cover
@@ -2051,7 +2057,10 @@ class SingleFrameReaderBase(ProtoReader):
         pass
 
     def rewind(self):
-        pass
+        self._read_first_frame()
+        for auxname, auxread in self._auxs.items():
+            self.ts = auxread.update_ts(self.ts)
+        super(SingleFrameReaderBase, self)._apply_transformations(self.ts)
 
     def _reopen(self):
         pass
@@ -2076,24 +2085,45 @@ class SingleFrameReaderBase(ProtoReader):
         pass
     
     def add_transformations(self, *transformations):
-        """ Adds all the transformations to be applied to the trajectory.
-        Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
-        to avoid unintended behaviour where the coordinates of each frame are transformed
-        multiple times when iterating over the trajectory.
+        """ Add all transformations to be applied to the trajectory.
         
-        In this method, the trajectory is modified all at once and once only.
+        This function take as list of transformations as an argument. These
+        transformations are functions that will be called by the Reader and given
+        a :class:`Timestep` object as argument, which will be transformed and returned
+        to the Reader.
+        The transformations can be part of the :mod:`~MDAnalysis.transformations` 
+        module, or created by the user, and are stored as a list `transformations`. 
+        This list can only be modified once, and further calls of this function will
+        raise an exception.
+        
+        .. code-block:: python
+                         
+          u = MDAnalysis.Universe(topology, coordinates)
+          workflow = [some_transform, another_transform, this_transform]
+          u.trajectory.add_transformations(*workflow)
+        
+        Parameters
+        ----------
+        transform_list : list
+            list of all the transformations that will be applied to the coordinates
+            
+        See Also
+        --------
+        :mod:`MDAnalysis.transformations`
         """
+        #Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        #to avoid unintended behaviour where the coordinates of each frame are transformed
+        #multiple times when iterating over the trajectory.
+        #In this method, the trajectory is modified all at once and once only.
+        
         super(SingleFrameReaderBase, self).add_transformations(*transformations)
         for transform in self.transformations:
             self.ts = transform(self.ts)
-                
-        
 
     def _apply_transformations(self, ts):
-        """ Applies the transformations to the timestep.
-        Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
-        to avoid applying the same transformations multiple times on each frame
-        """
+        """ Applies the transformations to the timestep."""
+        # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        # to avoid applying the same transformations multiple times on each frame
         
         return ts
 

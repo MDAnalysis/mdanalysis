@@ -396,6 +396,28 @@ class BaseReaderTest(object):
             assert_array_almost_equal(transformed[0].positions, first_ideal, decimal = ref.prec)
         else:
             assert_array_almost_equal(transformed[0].positions, first_ideal, decimal = ref.prec)
+
+    def test_transformation_rewind(self,ref, transformed):
+        # this test checks if the transformations are applied after rewinding the
+        # trajectory
+        v1 = np.float32((1,1,1))
+        v2 = np.float32((0,0,0.33))
+        ideal_coords = ref.iter_ts(0).positions + v1 + v2
+        transformed.rewind()
+        assert_array_almost_equal(transformed[0].positions, ideal_coords, decimal = ref.prec)
+    
+    def test_transformations_copy(self,ref,transformed):
+        # this test checks if transformations are carried over a copy and if the
+        # coordinates of the copy are equal to the original's
+        v1 = np.float32((1,1,1))
+        v2 = np.float32((0,0,0.33))
+        new = transformed.copy()
+        assert_equal(transformed.transformations, new.transformations, 
+                     "transformations are not equal")
+        for i, ts in enumerate(new):
+            ideal_coords = ref.iter_ts(i).positions + v1 + v2
+            assert_array_almost_equal(ts.positions, ideal_coords, decimal = ref.prec)
+            
         
     def test_add_another_transformations_raises_ValueError(self, transformed):
         # After defining the transformations, the workflow cannot be changed

@@ -28,6 +28,7 @@ Enhancements
     functions (PR #1815)
 
 Fixes
+  * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
   * Fixed order of indices in Angle/Dihedral/Improper repr
   * coordinates.memory.MemoryReader now takes np.ndarray only (Issue #1685)
   * Silenced warning when duecredit is not installed (Issue #1872)

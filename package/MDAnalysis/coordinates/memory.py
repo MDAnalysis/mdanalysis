@@ -339,6 +339,9 @@ class MemoryReader(base.ProtoReader):
         new.ts = self.ts.copy()
         for auxname, auxread in self._auxs.items():
             new.add_auxiliary(auxname, auxread.copy())
+        # since transformations are already applied to the whole trajectory
+        # simply copy the property
+        new.transformations = self.transformations
 
         return new
 
@@ -482,22 +485,45 @@ class MemoryReader(base.ProtoReader):
                 ))
     
     def add_transformations(self, *transformations):
-        """ Adds all the transformations to be applied to the trajectory.
-        Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
-        to avoid unintended behaviour where the coordinates of each frame are transformed
-        multiple times when iterating over the trajectory.
+        """ Add all transformations to be applied to the trajectory.
         
-        In this method, the trajectory is modified all at once and once only.
+        This function take as list of transformations as an argument. These
+        transformations are functions that will be called by the Reader and given
+        a :class:`Timestep` object as argument, which will be transformed and returned
+        to the Reader.
+        The transformations can be part of the :mod:`~MDAnalysis.transformations` 
+        module, or created by the user, and are stored as a list `transformations`. 
+        This list can only be modified once, and further calls of this function will
+        raise an exception.
+        
+        .. code-block:: python
+                         
+          u = MDAnalysis.Universe(topology, coordinates)
+          workflow = [some_transform, another_transform, this_transform]
+          u.trajectory.add_transformations(*workflow)
+        
+        Parameters
+        ----------
+        transform_list : list
+            list of all the transformations that will be applied to the coordinates
+            
+        See Also
+        --------
+        :mod:`MDAnalysis.transformations`
         """
+        #Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        #to avoid unintended behaviour where the coordinates of each frame are transformed
+        #multiple times when iterating over the trajectory.
+        #In this method, the trajectory is modified all at once and once only.
+        
         super(MemoryReader, self).add_transformations(*transformations)
         for i, ts in enumerate(self):
             for transform in self.transformations:
                 ts = transform(ts)
 
     def _apply_transformations(self, ts):
-        """ Applies the transformations to the timestep.
-        Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
-        to avoid applying the same transformations multiple times on each frame
-        """
+        """ Applies the transformations to the timestep."""
+        # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        # to avoid applying the same transformations multiple times on each frame
         
         return ts
