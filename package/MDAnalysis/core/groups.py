@@ -711,11 +711,19 @@ class GroupBase(_MutableBase):
 
         atoms = self.atoms
 
+        # enforce calculations in double precision:
+        dtype = np.float64
+
         if compound.lower() == 'group':
             if pbc:
                 coords = atoms.pack_into_box(inplace=False)
             else:
                 coords = atoms.positions
+            # promote coords or weights to dtype if required:
+            if weights is None:
+                coords = coords.astype(dtype, copy=False)
+            else:
+                weights = weights.astype(dtype, copy=False)
             return np.average(coords, weights=weights, axis=0)
         elif compound.lower() == 'residues':
             compound_indices = atoms.resindices
@@ -728,14 +736,18 @@ class GroupBase(_MutableBase):
                              " one of 'group', 'residues', or 'segments'."
                              "".format(compound))
 
-        # Sort positions and masses by compound index:
+        # Sort positions and weights by compound index and promote to dtype if
+        # required:
         sort_indices = np.argsort(compound_indices)
         compound_indices = compound_indices[sort_indices]
         coords = atoms.positions[sort_indices]
-        if weights is not None:
+        if weights is None:
+            coords = coords.astype(dtype, copy=False)
+        else:
+            weights = weights.astype(dtype, copy=False)
             weights = weights[sort_indices]
         # Allocate output array:
-        centers = np.zeros((n_compounds, 3), dtype=coords.dtype)
+        centers = np.zeros((n_compounds, 3), dtype=dtype)
         # Get sizes of compounds:
         unique_compound_indices, compound_sizes = np.unique(compound_indices,
                                                             return_counts=True)
