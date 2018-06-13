@@ -397,4 +397,45 @@ class ChainReader(base.ProtoReader):
                     nframes=self.n_frames,
                     natoms=self.n_atoms))
 
+    def add_transformations(self, *transformations):
+        """ Add all transformations to be applied to the trajectory.
+        
+        This function take as list of transformations as an argument. These
+        transformations are functions that will be called by the Reader and given
+        a :class:`Timestep` object as argument, which will be transformed and returned
+        to the Reader.
+        The transformations can be part of the :mod:`~MDAnalysis.transformations` 
+        module, or created by the user, and are stored as a list `transformations`. 
+        This list can only be modified once, and further calls of this function will
+        raise an exception.
+        
+        .. code-block:: python
+                         
+          u = MDAnalysis.Universe(topology, coordinates)
+          workflow = [some_transform, another_transform, this_transform]
+          u.trajectory.add_transformations(*workflow)
+        
+        Parameters
+        ----------
+        transform_list : list
+            list of all the transformations that will be applied to the coordinates
+            
+        See Also
+        --------
+        :mod:`MDAnalysis.transformations`
+        """
+        #Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        #to avoid unintended behaviour where the coordinates of each frame are transformed
+        #multiple times when iterating over the trajectory.
+        #In this method, the trajectory is modified all at once and once only.
+        
+        super(ChainReader, self).add_transformations(*transformations)
+        for r in self.readers:
+            r.add_transformations(*transformations)
 
+    def _apply_transformations(self, ts):
+        """ Applies the transformations to the timestep."""
+        # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        # to avoid applying the same transformations multiple times on each frame
+        
+        return ts

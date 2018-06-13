@@ -30,6 +30,7 @@ import pytest
 from numpy.testing import (assert_equal, assert_almost_equal, assert_array_almost_equal)
 
 import MDAnalysis as mda
+from MDAnalysis.transformations import translate
 from MDAnalysisTests.datafiles import (PDB, PSF, CRD, DCD,
                                        GRO, XTC, TRR, PDB_small, PDB_closed)
 
@@ -41,6 +42,12 @@ class TestChainReader(object):
     def universe(self):
         return mda.Universe(PSF,
                             [DCD, CRD, DCD, CRD, DCD, CRD, CRD])
+    
+    @pytest.fixture()
+    def transformed(ref):
+        return mda.Universe(PSF,
+                            [DCD, CRD, DCD, CRD, DCD, CRD, CRD],
+                            transformations=[translate([10,10,10])])
 
     def test_next_trajectory(self, universe):
         universe.trajectory.rewind()
@@ -115,6 +122,46 @@ class TestChainReader(object):
                 self.prec,
                 err_msg="Coordinates disagree at frame {0:d}".format(
                     ts_orig.frame))       
+    
+    def test_transform_iteration(self, universe, transformed):
+        vector = np.float32([10,10,10])
+        # # Are the transformations applied and
+        # are the coordinates "overtransformed"?
+        # iterate once:
+        for ts in transformed.trajectory:
+            frame = ts.frame
+            ref = universe.trajectory[frame].positions + vector
+            assert_almost_equal(ts.positions, ref, decimal = 6)
+        # iterate again:
+        for ts in transformed.trajectory:
+            frame = ts.frame
+            ref = universe.trajectory[frame].positions + vector
+            assert_almost_equal(ts.positions, ref, decimal = 6)
+    
+    def test_transform_slice(self, universe, transformed):
+        vector = np.float32([10,10,10])
+        # what happens when we slice the trajectory?
+        for ts in transformed.trajectory[5:17:3]:
+            frame = ts.frame
+            ref = universe.trajectory[frame].positions + vector
+            assert_almost_equal(ts.positions, ref, decimal = 6)
+    
+    def test_transform_switch(self, universe, transformed):
+        vector = np.float32([10,10,10])
+        # grab a frame:
+        ref = universe.trajectory[2].positions + vector
+        assert_almost_equal(transformed.trajectory[2].positions, ref, decimal = 6)
+        # now switch to another frame
+        newref = universe.trajectory[10].positions + vector
+        assert_almost_equal(transformed.trajectory[10].positions, newref, decimal = 6)
+        # what happens when we comeback to the previous frame?
+        assert_almost_equal(transformed.trajectory[2].positions, ref, decimal = 6)
+    
+    def test_transfrom_rewind(self, universe, transformed):
+        vector = np.float32([10,10,10])
+        ref = universe.trajectory[0].positions + vector
+        transformed.trajectory.rewind()
+        assert_almost_equal(transformed.trajectory.ts.positions, ref, decimal = 6)
 
 class TestChainReaderCommonDt(object):
     common_dt = 100.0

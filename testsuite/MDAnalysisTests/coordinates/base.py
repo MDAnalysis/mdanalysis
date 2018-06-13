@@ -30,6 +30,7 @@ from numpy.testing import (assert_equal, assert_almost_equal,
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
+from MDAnalysis.transformations import translate
 from MDAnalysis import NoDataError
 from MDAnalysis.lib.mdamath import triclinic_vectors
 
@@ -208,7 +209,14 @@ class BaseReaderTest(object):
         reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
         reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
         return reader
-
+    
+    @staticmethod
+    @pytest.fixture()
+    def transformed(ref):
+        transformed = ref.reader(ref.trajectory)
+        transformed.add_transformations(translate([1,1,1]), translate([0,0,0.33]))
+        return transformed
+    
     def test_n_atoms(self, ref, reader):
         assert_equal(reader.n_atoms, ref.n_atoms)
 
@@ -338,7 +346,83 @@ class BaseReaderTest(object):
         for ts in reader[:-1]:
             pass
         assert_equal(reader.frame, 0)
+        
+    def test_transformations_iter(self, ref, transformed):
+        # test one iteration and see if the transformations are applied
+        v1 = np.float32((1,1,1))
+        v2 = np.float32((0,0,0.33)) 
+        for i, ts in enumerate(transformed):
+            idealcoords = ref.iter_ts(i).positions + v1 + v2
+            assert_array_almost_equal(ts.positions, idealcoords, decimal=ref.prec)
+    
+    def test_transformations_2iter(self, ref, transformed):
+        # Are the transformations applied and
+        # are the coordinates "overtransformed"?
+        v1 = np.float32((1,1,1))
+        v2 = np.float32((0,0,0.33))
+        idealcoords=[]
+        for i, ts in enumerate(transformed):
+            idealcoords.append(ref.iter_ts(i).positions + v1 + v2)
+            assert_array_almost_equal(ts.positions, idealcoords[i], decimal=ref.prec)
+            
+        for i, ts in enumerate(transformed):
+            assert_almost_equal(ts.positions, idealcoords[i], decimal=ref.prec)
+            
+    def test_transformations_slice(self, ref, transformed):
+        # Are the transformations applied when iterating over a slice of the trajectory?
+        v1 = np.float32((1,1,1))
+        v2 = np.float32((0,0,0.33))
+        for i,ts in enumerate(transformed[2:3:1]):
+            idealcoords = ref.iter_ts(ts.frame).positions + v1 + v2
+            assert_array_almost_equal(ts.positions, idealcoords, decimal = ref.prec)
+            
+        
+    def test_transformations_switch_frame(self, ref, transformed):
+        # This test checks if the transformations are applied and if the coordinates
+        # "overtransformed" on different situations
+        # Are the transformations applied when we switch to a different frame?
+        v1 = np.float32((1,1,1))
+        v2 = np.float32((0,0,0.33))
+        first_ideal = ref.iter_ts(0).positions + v1 + v2
+        if len(transformed)>1:
+            assert_array_almost_equal(transformed[0].positions, first_ideal, decimal = ref.prec)
+            second_ideal = ref.iter_ts(1).positions + v1 + v2
+            assert_array_almost_equal(transformed[1].positions, second_ideal, decimal = ref.prec)
+            
+            # What if we comeback to the previous frame?
+            assert_array_almost_equal(transformed[0].positions, first_ideal, decimal = ref.prec)
+            
+            # How about we switch the frame to itself?
+            assert_array_almost_equal(transformed[0].positions, first_ideal, decimal = ref.prec)
+        else:
+            assert_array_almost_equal(transformed[0].positions, first_ideal, decimal = ref.prec)
 
+    def test_transformation_rewind(self,ref, transformed):
+        # this test checks if the transformations are applied after rewinding the
+        # trajectory
+        v1 = np.float32((1,1,1))
+        v2 = np.float32((0,0,0.33))
+        ideal_coords = ref.iter_ts(0).positions + v1 + v2
+        transformed.rewind()
+        assert_array_almost_equal(transformed[0].positions, ideal_coords, decimal = ref.prec)
+    
+    def test_transformations_copy(self,ref,transformed):
+        # this test checks if transformations are carried over a copy and if the
+        # coordinates of the copy are equal to the original's
+        v1 = np.float32((1,1,1))
+        v2 = np.float32((0,0,0.33))
+        new = transformed.copy()
+        assert_equal(transformed.transformations, new.transformations, 
+                     "transformations are not equal")
+        for i, ts in enumerate(new):
+            ideal_coords = ref.iter_ts(i).positions + v1 + v2
+            assert_array_almost_equal(ts.positions, ideal_coords, decimal = ref.prec)
+            
+        
+    def test_add_another_transformations_raises_ValueError(self, transformed):
+        # After defining the transformations, the workflow cannot be changed
+        with pytest.raises(ValueError):
+            transformed.add_transformations(translate([2,2,2]))
 
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):
