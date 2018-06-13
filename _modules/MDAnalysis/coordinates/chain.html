@@ -441,9 +441,50 @@
                     <span class="n">fname</span><span class="o">=</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_filename</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
                            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">],</span>
                     <span class="n">nframes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
-                    <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span></div>
+                    <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
 
+<div class="viewcode-block" id="ChainReader.add_transformations"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.add_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add all transformations to be applied to the trajectory.</span>
+<span class="sd">        </span>
+<span class="sd">        This function take as list of transformations as an argument. These</span>
+<span class="sd">        transformations are functions that will be called by the Reader and given</span>
+<span class="sd">        a :class:`Timestep` object as argument, which will be transformed and returned</span>
+<span class="sd">        to the Reader.</span>
+<span class="sd">        The transformations can be part of the :mod:`~MDAnalysis.transformations` </span>
+<span class="sd">        module, or created by the user, and are stored as a list `transformations`. </span>
+<span class="sd">        This list can only be modified once, and further calls of this function will</span>
+<span class="sd">        raise an exception.</span>
+<span class="sd">        </span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">                         </span>
+<span class="sd">          u = MDAnalysis.Universe(topology, coordinates)</span>
+<span class="sd">          workflow = [some_transform, another_transform, this_transform]</span>
+<span class="sd">          u.trajectory.add_transformations(*workflow)</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        transform_list : list</span>
+<span class="sd">            list of all the transformations that will be applied to the coordinates</span>
+<span class="sd">            </span>
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :mod:`MDAnalysis.transformations`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`</span>
+        <span class="c1">#to avoid unintended behaviour where the coordinates of each frame are transformed</span>
+        <span class="c1">#multiple times when iterating over the trajectory.</span>
+        <span class="c1">#In this method, the trajectory is modified all at once and once only.</span>
+        
+        <span class="nb">super</span><span class="p">(</span><span class="n">ChainReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transformations</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transformations</span><span class="p">)</span></div>
 
+    <span class="k">def</span> <span class="nf">_apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Applies the transformations to the timestep.&quot;&quot;&quot;</span>
+        <span class="c1"># Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`</span>
+        <span class="c1"># to avoid applying the same transformations multiple times on each frame</span>
+        
+        <span class="k">return</span> <span class="n">ts</span></div>
 </pre></div>
 
           </div>

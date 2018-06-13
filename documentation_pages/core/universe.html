@@ -161,6 +161,9 @@ prevent this Universe from being considered. [<code class="docutils literal"><sp
 Universe to only unpickle if a compatible Universe with matching
 <em>anchor_name</em> is found. Even if <em>anchor_name</em> is set <em>is_anchor</em> will
 still be honored when unpickling.</li>
+<li><strong>transformations</strong> (<a class="reference internal" href="../analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="MDAnalysis.analysis.encore.utils.ParallelCalculation.function"><em>function</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em>, </em><em>optional</em>) – Provide a list of transformations that you wish to apply to the
+trajectory upon reading. Transformations can be found in
+<code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.transformations</span></code>, or can be user-created.</li>
 <li><strong>in_memory</strong> – After reading in the trajectory, transfer it to an in-memory
 representations, which allow for manipulation of coordinates.</li>
 <li><strong>in_memory_step</strong> – Only read every nth frame into in-memory representation.</li>

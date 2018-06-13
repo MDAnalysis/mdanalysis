@@ -140,6 +140,37 @@ the <a class="reference internal" href="../auxiliary/init.html#auxiliary-api"><s
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.XTCReader.add_transformations">
+<code class="descname">add_transformations</code><span class="sig-paren">(</span><em>*transformations</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.add_transformations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add all transformations to be applied to the trajectory.</p>
+<p>This function take as list of transformations as an argument. These
+transformations are functions that will be called by the Reader and given
+a <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code> object as argument, which will be transformed and returned
+to the Reader.
+The transformations can be part of the <code class="xref py py-mod docutils literal"><span class="pre">transformations</span></code>
+module, or created by the user, and are stored as a list <cite>transformations</cite>.
+This list can only be modified once, and further calls of this function will
+raise an exception.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">)</span>
+<span class="n">workflow</span> <span class="o">=</span> <span class="p">[</span><span class="n">some_transform</span><span class="p">,</span> <span class="n">another_transform</span><span class="p">,</span> <span class="n">this_transform</span><span class="p">]</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">workflow</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.transformations</span></code></p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.XTC.XTCReader.aux_list">
 <code class="descname">aux_list</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.aux_list" title="Permalink to this definition">¶</a></dt>
@@ -666,6 +697,12 @@ time = <code class="xref py py-attr docutils literal"><span class="pre">Timestep
 the first frame no time as elapsed. Thus, a trajectory with two frames will
 be considered to have a length of a single time step <cite>dt</cite> and a
 “trajectory” with a single frame will be reported as length 0.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.XTCReader.transformations">
+<code class="descname">transformations</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.transformations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of transformations</p>
 </dd></dl>
 
 </dd></dl>

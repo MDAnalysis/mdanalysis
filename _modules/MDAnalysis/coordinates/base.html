@@ -324,6 +324,7 @@
 
         <span class="c1"># set up aux namespace for adding auxiliary data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aux</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">()</span></div>
+        
 
 <div class="viewcode-block" id="Timestep.from_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.DCD.Timestep.from_timestep">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_timestep</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1216,6 +1217,7 @@
         <span class="c1"># initialise list to store added auxiliary readers in</span>
         <span class="c1"># subclasses should now call super</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transformations</span><span class="o">=</span><span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
@@ -1247,6 +1249,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">auxname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux_list</span><span class="p">:</span>
                 <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">auxname</span><span class="p">]</span><span class="o">.</span><span class="n">update_ts</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+            
+            <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_transformations</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+                
         <span class="k">return</span> <span class="n">ts</span></div>
 
     <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1402,10 +1407,13 @@
         <span class="c1"># return ts</span>
 
     <span class="k">def</span> <span class="nf">_read_frame_with_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Move to *frame*, updating ts with trajectory and auxiliary data.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Move to *frame*, updating ts with trajectory, transformations and auxiliary data.&quot;&quot;&quot;</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">aux</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux_list</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">aux</span><span class="p">]</span><span class="o">.</span><span class="n">update_ts</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+            
+        <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_transformations</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+                
         <span class="k">return</span> <span class="n">ts</span>
 
     <span class="k">def</span> <span class="nf">_sliced_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
@@ -1786,8 +1794,68 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">auxnames</span><span class="p">:</span>
             <span class="n">auxnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux_list</span>
         <span class="n">descriptions</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">aux</span><span class="p">]</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span> <span class="k">for</span> <span class="n">aux</span> <span class="ow">in</span> <span class="n">auxnames</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">descriptions</span></div></div>
-
+        <span class="k">return</span> <span class="n">descriptions</span></div>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the list of transformations&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transformations</span>
+    
+    <span class="nd">@transformations</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformations</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transformations</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transformations</span> <span class="o">=</span> <span class="n">transformations</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Transformations are already set&quot;</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="ProtoReader.add_transformations"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.ProtoReader.add_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add all transformations to be applied to the trajectory.</span>
+<span class="sd">        </span>
+<span class="sd">        This function take as list of transformations as an argument. These</span>
+<span class="sd">        transformations are functions that will be called by the Reader and given</span>
+<span class="sd">        a :class:`Timestep` object as argument, which will be transformed and returned</span>
+<span class="sd">        to the Reader.</span>
+<span class="sd">        The transformations can be part of the :mod:`~MDAnalysis.transformations` </span>
+<span class="sd">        module, or created by the user, and are stored as a list `transformations`. </span>
+<span class="sd">        This list can only be modified once, and further calls of this function will</span>
+<span class="sd">        raise an exception.</span>
+<span class="sd">        </span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">                         </span>
+<span class="sd">          u = MDAnalysis.Universe(topology, coordinates)</span>
+<span class="sd">          workflow = [some_transform, another_transform, this_transform]</span>
+<span class="sd">          u.trajectory.add_transformations(*workflow)</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        transform_list : list</span>
+<span class="sd">            list of all the transformations that will be applied to the coordinates</span>
+<span class="sd">            </span>
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :mod:`MDAnalysis.transformations`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span> <span class="o">=</span> <span class="n">transformations</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t add transformations again. Please create new Universe object&quot;</span><span class="p">)</span>  
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span></div>
+                
+             
+        <span class="c1"># call reader here to apply the newly added transformation on the</span>
+        <span class="c1"># current loaded frame?</span>
+        
+    <span class="k">def</span> <span class="nf">_apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Applies all the transformations given by the user &quot;&quot;&quot;</span>
+        
+        <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">ts</span></div>
+            
+    
 
 <div class="viewcode-block" id="ReaderBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.ReaderBase">[docs]</a><span class="k">class</span> <span class="nc">ReaderBase</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for trajectory readers that extends :class:`ProtoReader` with a</span>
@@ -1848,6 +1916,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
                              <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
+            <span class="n">new</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">)</span>
         <span class="c1"># seek the new reader to the same frame we started with</span>
         <span class="n">new</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span>
         <span class="c1"># then copy over the current Timestep in case it has</span>
@@ -2022,6 +2092,10 @@
         <span class="n">new</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">auxread</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">new</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxname</span><span class="p">,</span> <span class="n">auxread</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="c1"># since the transformations have already been applied to the frame</span>
+        <span class="c1"># simply copy the property</span>
+        <span class="n">new</span><span class="o">.</span><span class="n">transformations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span>
+        
         <span class="k">return</span> <span class="n">new</span></div>
 
     <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
@@ -2029,7 +2103,10 @@
         <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_first_frame</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">auxread</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">auxread</span><span class="o">.</span><span class="n">update_ts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SingleFrameReaderBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
@@ -2051,7 +2128,51 @@
         <span class="c1"># all single frame readers should use context managers to access</span>
         <span class="c1"># self.filename. Explicitly setting it to the null action in case</span>
         <span class="c1"># the IOBase.close method is ever changed from that.</span>
-        <span class="k">pass</span></div>
+        <span class="k">pass</span>
+    
+<div class="viewcode-block" id="SingleFrameReaderBase.add_transformations"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.SingleFrameReaderBase.add_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add all transformations to be applied to the trajectory.</span>
+<span class="sd">        </span>
+<span class="sd">        This function take as list of transformations as an argument. These</span>
+<span class="sd">        transformations are functions that will be called by the Reader and given</span>
+<span class="sd">        a :class:`Timestep` object as argument, which will be transformed and returned</span>
+<span class="sd">        to the Reader.</span>
+<span class="sd">        The transformations can be part of the :mod:`~MDAnalysis.transformations` </span>
+<span class="sd">        module, or created by the user, and are stored as a list `transformations`. </span>
+<span class="sd">        This list can only be modified once, and further calls of this function will</span>
+<span class="sd">        raise an exception.</span>
+<span class="sd">        </span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">                         </span>
+<span class="sd">          u = MDAnalysis.Universe(topology, coordinates)</span>
+<span class="sd">          workflow = [some_transform, another_transform, this_transform]</span>
+<span class="sd">          u.trajectory.add_transformations(*workflow)</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        transform_list : list</span>
+<span class="sd">            list of all the transformations that will be applied to the coordinates</span>
+<span class="sd">            </span>
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :mod:`MDAnalysis.transformations`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`</span>
+        <span class="c1">#to avoid unintended behaviour where the coordinates of each frame are transformed</span>
+        <span class="c1">#multiple times when iterating over the trajectory.</span>
+        <span class="c1">#In this method, the trajectory is modified all at once and once only.</span>
+        
+        <span class="nb">super</span><span class="p">(</span><span class="n">SingleFrameReaderBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transformations</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Applies the transformations to the timestep.&quot;&quot;&quot;</span>
+        <span class="c1"># Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`</span>
+        <span class="c1"># to avoid applying the same transformations multiple times on each frame</span>
+        
+        <span class="k">return</span> <span class="n">ts</span></div>
+
 </pre></div>
 
           </div>

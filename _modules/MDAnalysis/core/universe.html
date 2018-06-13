@@ -259,6 +259,10 @@
 <span class="sd">        Universe to only unpickle if a compatible Universe with matching</span>
 <span class="sd">        *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will</span>
 <span class="sd">        still be honored when unpickling.</span>
+<span class="sd">    transformations: function or list, optional</span>
+<span class="sd">        Provide a list of transformations that you wish to apply to the </span>
+<span class="sd">        trajectory upon reading. Transformations can be found in </span>
+<span class="sd">        :mod:`MDAnalysis.transformations`, or can be user-created.</span>
 <span class="sd">    in_memory</span>
 <span class="sd">        After reading in the trajectory, transfer it to an in-memory</span>
 <span class="sd">        representations, which allow for manipulation of coordinates.</span>
@@ -367,7 +371,13 @@
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">coordinatefile</span><span class="p">:</span>
                 <span class="n">coordinatefile</span> <span class="o">=</span> <span class="kc">None</span>
+                
             <span class="bp">self</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span><span class="n">coordinatefile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="c1"># parse transformations</span>
+            <span class="n">trans_arg</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;transformations&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">trans_arg</span><span class="p">:</span>
+                <span class="n">transforms</span> <span class="o">=</span><span class="p">[</span><span class="n">trans_arg</span><span class="p">]</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">trans_arg</span><span class="p">)</span> <span class="k">else</span> <span class="n">trans_arg</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transforms</span><span class="p">)</span>
 
         <span class="c1"># Check for guess_bonds</span>
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;guess_bonds&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
@@ -379,6 +389,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_anchor_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;anchor_name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="c1"># Universes are anchors by default</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_anchor</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_anchor&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        
 
 <div class="viewcode-block" id="Universe.copy"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an independent copy of this Universe&quot;&quot;&quot;</span>
