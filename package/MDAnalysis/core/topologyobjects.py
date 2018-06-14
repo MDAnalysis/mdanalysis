@@ -197,13 +197,9 @@ class Bond(TopologyObject):
         .. versionchanged:: 0.11.0
            Added pbc keyword
         """
-        if pbc:
-            box = self.universe.dimensions
-            return distances.self_distance_array(
-                np.array([self[0].position, self[1].position]),
-                box=box)[0]
-        else:
-            return mdamath.norm(self[0].position - self[1].position)
+        box = self.universe.dimensions if pbc else None
+
+        return distances.calc_distance(self[0].position, self[1].position, box)
 
     value = length
 
@@ -220,7 +216,7 @@ class Angle(TopologyObject):
     """
     btype = 'angle'
 
-    def angle(self):
+    def angle(self, pbc=False):
         """Returns the angle in degrees of this Angle.
 
         Angle between atoms 0 and 2 with apex at 1::
@@ -238,10 +234,13 @@ class Angle(TopologyObject):
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.17.0
            Fixed angles close to 180 giving NaN
+        .. versionchanged:: 0.18.1
+           Added pbc keyword
         """
-        a = self[0].position - self[1].position
-        b = self[2].position - self[1].position
-        return np.rad2deg(mdamath.angle(a, b))
+        box = self.universe.dimensions if pbc else None
+
+        return distances.calc_angle(
+            self[0].position, self[1].position, self[2].position, box)
 
     value = angle
 
@@ -265,7 +264,7 @@ class Dihedral(TopologyObject):
     # http://cbio.bmt.tue.nl/pumma/uploads/Theory/dihedral.png
     btype = 'dihedral'
 
-    def dihedral(self):
+    def dihedral(self, pbc=False):
         """Calculate the dihedral angle in degrees.
 
         Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
@@ -284,12 +283,14 @@ class Dihedral(TopologyObject):
         4 decimals (and is only tested to 3 decimals).
 
         .. versionadded:: 0.9.0
+        .. versionchanged:: 0.18.1
+           Added pbc keyword
         """
+        box = self.universe.dimensions if pbc else None
         A, B, C, D = self.atoms
-        ab = A.position - B.position
-        bc = B.position - C.position
-        cd = C.position - D.position
-        return np.rad2deg(mdamath.dihedral(ab, bc, cd))
+
+        return distances.calc_dihedral(
+            A.position, B.position, C.position, D.position, box)
 
     value = dihedral
 

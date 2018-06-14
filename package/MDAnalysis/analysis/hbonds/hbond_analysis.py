@@ -328,7 +328,8 @@ import logging
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
-from MDAnalysis.lib.distances import calc_bonds, calc_angles
+from MDAnalysis.lib import distances
+from MDAnalysis.lib.distances import calc_bonds
 
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
@@ -1037,17 +1038,12 @@ class HydrogenBondAnalysis(object):
     @staticmethod
     def calc_angle(d, h, a, box=None):
         """Calculate the angle (in degrees) between two atoms with H at apex."""
-        v1= d.position
-        v2= h.position
-        v3= a.position
-        angle= calc_angles(v1[None, :], v2[None, :], v3[None, :], box=box)
-    
-        return np.rad2deg(angle[0])
+        return distances.calc_angle(d.position, h.position, a.position, box)
 
     @staticmethod
     def calc_eucl_distance(a1, a2, box=None):
         """Calculate the Euclidean distance between two atoms. """
-        return calc_bonds(a1.position[None, :], a2.position[None, :], box=box)[0]
+        return distances.calc_distance(a1.position, a2.position, box)
 
     @property
     def timeseries(self):

@@ -51,6 +51,8 @@ Fixes
   * PDBWriter now properly sets start value
 
 Changes
+  * Added calc_distance, calc_angle and calc_dihedral to lib.distances
+    (Issue #1262 #1938)
   * TopologyAttrs are now statically typed (Issue #1876)
   * updated meta data for new PyPi (#1837)
   * AtomGroup.atoms, ResidueGroup.residues, and SegmentGroup.segments now return
