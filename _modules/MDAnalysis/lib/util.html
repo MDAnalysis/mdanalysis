@@ -221,8 +221,9 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">from</span> <span class="nn">numpy.testing</span> <span class="k">import</span> <span class="n">assert_equal</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">StreamWarning</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">StreamWarning</span><span class="p">,</span> <span class="n">DuplicateWarning</span>
 
 
 <span class="c1"># Python 3.0, 3.1 do not have the builtin callable()</span>
@@ -1739,8 +1740,9 @@
 
 <span class="sd">    Note</span>
 <span class="sd">    -----</span>
-<span class="sd">    Based on https://stackoverflow.com/a/6027615/ by user https://stackoverflow.com/users/1897/imran</span>
-<span class="sd">    </span>
+<span class="sd">    Based on https://stackoverflow.com/a/6027615/</span>
+<span class="sd">    by user https://stackoverflow.com/users/1897/imran</span>
+
 <span class="sd">    .. versionadded:: 0.18.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1755,6 +1757,97 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">new_key</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">static_variables</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorator equipping functions or methods with static variables.</span>
+
+<span class="sd">    Static variables are declared and initialized by supplying keyword arguments</span>
+<span class="sd">    and initial values to the decorator.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &gt;&gt;&gt; @static(msg=&#39;foo calls&#39;, calls=0)</span>
+<span class="sd">    &gt;&gt;&gt; def foo():</span>
+<span class="sd">    &gt;&gt;&gt;     foo.calls += 1</span>
+<span class="sd">    &gt;&gt;&gt;     print(&quot;{}: {}&quot;.format(foo.msg, foo.calls))</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; foo()</span>
+<span class="sd">    foo calls: 1</span>
+<span class="sd">    &gt;&gt;&gt; foo()</span>
+<span class="sd">    foo calls: 2</span>
+
+
+<span class="sd">    .. note:: Based on https://stackoverflow.com/a/279586</span>
+<span class="sd">        by user `Claudiu&lt;https://stackoverflow.com/users/15055/claudiu&gt;`</span>
+
+<span class="sd">    .. versionadded:: 0.19.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">static_decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">kwarg</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">kwarg</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">kwarg</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">func</span>
+    <span class="k">return</span> <span class="n">static_decorator</span>
+
+
+<span class="c1"># In a lot of Atom/Residue/SegmentGroup methods such as center_of_geometry() and</span>
+<span class="c1"># the like, results are biased if the calling group is not unique, i.e., if it</span>
+<span class="c1"># contains duplicates.</span>
+<span class="c1"># We therefore raise a `DuplicateWarning` whenever an affected method is called</span>
+<span class="c1"># from a non-unique group. Since several of the affected methods involve calls</span>
+<span class="c1"># to other affected methods, simply raising a warning in every affected method</span>
+<span class="c1"># would potentially lead to a massive amount of warnings. This is exactly where</span>
+<span class="c1"># the `warn_if_unique` decorator below comes into play. It ensures that a</span>
+<span class="c1"># warning is only raised once for a method using this decorator, and suppresses</span>
+<span class="c1"># all such warnings that would potentially be raised in methods called by that</span>
+<span class="c1"># method. Of course, as it is generally the case with Python warnings, this is</span>
+<span class="c1"># *not threadsafe*.</span>
+
+<span class="nd">@static_variables</span><span class="p">(</span><span class="n">warned</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">warn_if_not_unique</span><span class="p">(</span><span class="n">groupmethod</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorator triggering a :class:`DuplicateWarning` if the underlying group</span>
+<span class="sd">    is not unique.</span>
+
+<span class="sd">    Assures that during execution of the decorated method, only the first of</span>
+<span class="sd">    potentially multiple warnings concerning the uniqueness of groups is shown.</span>
+
+<span class="sd">    .. versionadded:: 0.19.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">groupmethod</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Proceed as usual if the calling group is unique or a DuplicateWarning</span>
+        <span class="c1"># has already been thrown:</span>
+        <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">isunique</span> <span class="ow">or</span> <span class="n">warn_if_not_unique</span><span class="o">.</span><span class="n">warned</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">groupmethod</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Otherwise, throw a DuplicateWarning and execute the method.</span>
+        <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">group</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">groupmethod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="c1"># Try to get the group&#39;s variable name(s):</span>
+        <span class="n">caller_locals</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">currentframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_locals</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="n">group_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">caller_locals</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="n">group</span><span class="p">:</span>
+                    <span class="n">group_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">group_names</span><span class="p">:</span>
+            <span class="n">group_name</span> <span class="o">=</span> <span class="s2">&quot;&#39;unnamed </span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">group_name</span> <span class="o">=</span> <span class="n">group_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">group_name</span> <span class="o">=</span> <span class="s2">&quot; a.k.a. &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">group_names</span><span class="p">))</span>
+        <span class="n">group_repr</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(): </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> contains duplicates. Results might be biased!&quot;</span>
+               <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">group_repr</span><span class="p">))</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">DuplicateWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warn_if_not_unique</span><span class="o">.</span><span class="n">warned</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">groupmethod</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">warn_if_not_unique</span><span class="o">.</span><span class="n">warned</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
 </pre></div>
 
           </div>

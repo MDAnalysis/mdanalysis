@@ -285,12 +285,12 @@
       </ul></li>
       <li><a href="documentation_pages/lib/distances.html#MDAnalysis.lib.distances.apply_PBC">apply_PBC() (in module MDAnalysis.lib.distances)</a>, <a href="documentation_pages/lib/distances.html#MDAnalysis.lib.distances.apply_PBC">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball">Arcball (class in MDAnalysis.lib.transformations)</a>
 </li>
       <li><a href="documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.arcball_nearest_axis">arcball_nearest_axis() (in module MDAnalysis.lib.transformations)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.args">args (MDAnalysis.analysis.encore.utils.ParallelCalculation attribute)</a>
 </li>
       <li><a href="documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix.as_array">as_array() (MDAnalysis.analysis.encore.utils.TriangularMatrix method)</a>
@@ -346,9 +346,15 @@
       <ul>
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.atoms">(MDAnalysis.core.groups.AtomGroup attribute)</a>
 </li>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.Residue.atoms">(MDAnalysis.core.groups.Residue attribute)</a>
+</li>
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup.atoms">(MDAnalysis.core.groups.ResidueGroup attribute)</a>
 </li>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.Segment.atoms">(MDAnalysis.core.groups.Segment attribute)</a>
+</li>
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.atoms">(MDAnalysis.core.groups.SegmentGroup attribute)</a>
+</li>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup.atoms">(MDAnalysis.core.groups.UpdatingAtomGroup attribute)</a>
 </li>
         <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject.atoms">(MDAnalysis.core.topologyobjects.TopologyObject attribute)</a>
 </li>
@@ -1424,6 +1430,14 @@
 </li>
         <li><a href="documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.Timestep.copy">(MDAnalysis.coordinates.memory.Timestep method)</a>
 </li>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.copy">(MDAnalysis.core.groups.AtomGroup method)</a>
+</li>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup.copy">(MDAnalysis.core.groups.ResidueGroup method)</a>
+</li>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.copy">(MDAnalysis.core.groups.SegmentGroup method)</a>
+</li>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup.copy">(MDAnalysis.core.groups.UpdatingAtomGroup method)</a>
+</li>
         <li><a href="documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.copy">(MDAnalysis.core.topology.Topology method)</a>
 </li>
         <li><a href="documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.copy">(MDAnalysis.core.topology.TransTable method)</a>
@@ -1605,10 +1619,10 @@
 </li>
       <li><a href="documentation_pages/topology/DMSParser.html#MDAnalysis.topology.DMSParser.DMSParser">DMSParser (class in MDAnalysis.topology.DMSParser)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/coordinates/DMS.html#MDAnalysis.coordinates.DMS.DMSReader">DMSReader (class in MDAnalysis.coordinates.DMS)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atom">do_atom() (in module MDAnalysis.topology.tpr.utils)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atoms">do_atoms() (in module MDAnalysis.topology.tpr.utils)</a>
@@ -1728,6 +1742,8 @@
       <li><a href="documentation_pages/coordinates/dummy.html#MDAnalysis.coordinates.dummy.DummyReader">DummyReader (class in MDAnalysis.coordinates.dummy)</a>, <a href="documentation_pages/coordinates/dummy.html#MDAnalysis.coordinates.dummy.DummyReader">[1]</a>
 </li>
       <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.dump_contents">dump_contents() (MDAnalysis.core.topologyobjects.TopologyGroup method)</a>
+</li>
+      <li><a href="documentation_pages/exceptions.html#MDAnalysis.exceptions.DuplicateWarning">DuplicateWarning</a>
 </li>
   </ul></td>
 </tr></table>
@@ -2330,14 +2346,22 @@
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.issubset">(MDAnalysis.core.groups.SegmentGroup method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.issuperset">issuperset() (MDAnalysis.core.groups.AtomGroup method)</a>
 
       <ul>
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup.issuperset">(MDAnalysis.core.groups.ResidueGroup method)</a>
 </li>
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.issuperset">(MDAnalysis.core.groups.SegmentGroup method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.isunique">isunique (MDAnalysis.core.groups.AtomGroup attribute)</a>
+
+      <ul>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup.isunique">(MDAnalysis.core.groups.ResidueGroup attribute)</a>
+</li>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.isunique">(MDAnalysis.core.groups.SegmentGroup attribute)</a>
 </li>
       </ul></li>
       <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.iter_as_aux">iter_as_aux() (MDAnalysis.coordinates.base.ProtoReader method)</a>
@@ -3531,6 +3555,8 @@
       <ul>
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup.residues">(MDAnalysis.core.groups.ResidueGroup attribute)</a>
 </li>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.Segment.residues">(MDAnalysis.core.groups.Segment attribute)</a>
+</li>
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.residues">(MDAnalysis.core.groups.SegmentGroup attribute)</a>
 </li>
       </ul></li>
@@ -3725,6 +3751,8 @@
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Segindices">Segindices (class in MDAnalysis.core.topologyattrs)</a>
 </li>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.Segment">Segment (class in MDAnalysis.core.groups)</a>
+</li>
+      <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.Residue.segment">segment (MDAnalysis.core.groups.Residue attribute)</a>
 </li>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentAttr">SegmentAttr (class in MDAnalysis.core.topologyattrs)</a>
 </li>
@@ -4284,8 +4312,6 @@
       </ul></li>
       <li><a href="documentation_pages/units.html#MDAnalysis.units.unit_types">unit_types (in module MDAnalysis.units)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.units">units (MDAnalysis.analysis.density.Density attribute)</a>
 
       <ul>
@@ -4294,10 +4320,20 @@
         <li><a href="documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.units">(MDAnalysis.coordinates.chain.ChainReader attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe">Universe (class in MDAnalysis.core.universe)</a>
 </li>
-      <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.universe">universe (MDAnalysis.core.topologyobjects.TopologyGroup attribute)</a>
+      <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.universe">universe (MDAnalysis.core.groups.AtomGroup attribute)</a>
+
+      <ul>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup.universe">(MDAnalysis.core.groups.ResidueGroup attribute)</a>
 </li>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.universe">(MDAnalysis.core.groups.SegmentGroup attribute)</a>
+</li>
+        <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.universe">(MDAnalysis.core.topologyobjects.TopologyGroup attribute)</a>
+</li>
+      </ul></li>
       <li><a href="documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.universes">universes (MDAnalysis.analysis.psa.PSAnalysis attribute)</a>
 </li>
       <li><a href="documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.update">update() (MDAnalysis.analysis.leaflet.LeafletFinder method)</a>

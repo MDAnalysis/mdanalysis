@@ -71,18 +71,18 @@
 <span class="sd">Core objects: Containers --- :mod:`MDAnalysis.core.groups`</span>
 <span class="sd">==========================================================</span>
 
-<span class="sd">The :class:`~MDAnalysis.core.universe.Universe` instance contains all</span>
-<span class="sd">the particles in the system (which MDAnalysis calls</span>
-<span class="sd">:class:`Atom`). Groups of atoms are handled as :class:`AtomGroup`</span>
-<span class="sd">instances. The :class:`AtomGroup` is probably the most important</span>
-<span class="sd">object in MDAnalysis because virtually everything can be accessed</span>
-<span class="sd">through it. `AtomGroup` instances can be easily created (e.g., from a</span>
-<span class="sd">:meth:`AtomGroup.select_atoms` selection or just by slicing).</span>
+<span class="sd">The :class:`~MDAnalysis.core.universe.Universe` instance contains all the</span>
+<span class="sd">particles in the system (which MDAnalysis calls :class:`Atom`). Groups of</span>
+<span class="sd">:class:`atoms&lt;Atom&gt;` are handled as :class:`AtomGroup` instances. The</span>
+<span class="sd">:class:`AtomGroup` is probably the most important object in MDAnalysis because</span>
+<span class="sd">virtually everything can be accessed through it. :class:`AtomGroup` instances</span>
+<span class="sd">can be easily created (e.g., from an :meth:`AtomGroup.select_atoms` selection or</span>
+<span class="sd">simply by slicing).</span>
 
-<span class="sd">For convenience, chemically meaningful groups of atoms such as a</span>
-<span class="sd">:class:`Residue` or a :class:`Segment` (typically a whole molecule or</span>
-<span class="sd">all of the solvent) also exist as containers, as well as groups of</span>
-<span class="sd">these units ((:class:`ResidueGroup`, :class:`SegmentGroup`).</span>
+<span class="sd">For convenience, chemically meaningful groups of :class:`Atoms&lt;Atom&gt;` such as a</span>
+<span class="sd">:class:`Residue` or a :class:`Segment` (typically a whole molecule or all of the</span>
+<span class="sd">solvent) also exist as containers, as well as groups of these units</span>
+<span class="sd">(:class:`ResidueGroup`, :class:`SegmentGroup`).</span>
 
 
 <span class="sd">Classes</span>
@@ -119,9 +119,8 @@
 <span class="sd">Levels</span>
 <span class="sd">------</span>
 
-<span class="sd">Each of the above classes has a level attribute.  This can be used to</span>
-<span class="sd">verify that two objects are of the same level, or to access a particular</span>
-<span class="sd">class::</span>
+<span class="sd">Each of the above classes has a *level* attribute.  This can be used to verify</span>
+<span class="sd">that two objects are of the same level, or to access a particular class::</span>
 
 <span class="sd">   u = mda.Universe()</span>
 
@@ -132,7 +131,6 @@
 
 <span class="sd">   ag.level.singular  # Returns Atom class</span>
 <span class="sd">   at.level.plural  # Returns AtomGroup class</span>
-
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
@@ -151,6 +149,7 @@
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_ANCHOR_UNIVERSES</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">warn_if_not_unique</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">distances</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">transformations</span>
 <span class="kn">from</span> <span class="nn">..selections</span> <span class="k">import</span> <span class="n">get_writer</span> <span class="k">as</span> <span class="n">get_selection_writer_for</span>
@@ -181,14 +180,14 @@
 
 
 <span class="k">def</span> <span class="nf">make_classes</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Make a fresh copy of all Classes</span>
+    <span class="sd">&quot;&quot;&quot;Make a fresh copy of all classes</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Two dictionaries. One with a set of :class:`_TopologyAttrContainer` classes</span>
-<span class="sd">    to serve as bases for universe-specific MDA container classes. Another with</span>
-<span class="sd">    the final merged versions of those classes. The classes themselves are used</span>
-<span class="sd">    as hashing keys.</span>
+<span class="sd">    to serve as bases for :class:`~MDAnalysis.core.universe.Universe`\ -specific</span>
+<span class="sd">    MDA container classes. Another with the final merged versions of those</span>
+<span class="sd">    classes. The classes themselves are used as hashing keys.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bases</span> <span class="o">=</span> <span class="p">{}</span>
@@ -219,14 +218,15 @@
 
 <span class="sd">    :class:`_TopologyAttrContainer` is a convenience class to encapsulate the</span>
 <span class="sd">    functions that deal with:</span>
-<span class="sd">    * the import and namespace transplant of :class:`TopologyAttr` objects;</span>
+<span class="sd">    * the import and namespace transplant of</span>
+<span class="sd">      :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` objects;</span>
 <span class="sd">    * the copying (subclassing) of itself to create distinct bases for the</span>
 <span class="sd">      different container classes (:class:`AtomGroup`, :class:`ResidueGroup`,</span>
 <span class="sd">      :class:`SegmentGroup`, :class:`Atom`, :class:`Residue`, :class:`Segment`,</span>
 <span class="sd">      and subclasses thereof);</span>
 <span class="sd">    * the mixing (subclassing and co-inheritance) with the container classes.</span>
 <span class="sd">      The mixed subclasses become the final container classes specific to each</span>
-<span class="sd">      :class:`Universe`.</span>
+<span class="sd">      :class:`~MDAnalysis.core.universe.Universe`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_subclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">is_group</span><span class="p">):</span>
@@ -236,10 +236,12 @@
 <span class="sd">        ----------</span>
 <span class="sd">        is_group : bool</span>
 <span class="sd">            The :attr:`_is_group` of the returned class will be set to</span>
-<span class="sd">            *is_group*. This is used to distinguish between Groups (AtomGroup</span>
-<span class="sd">            etc.) and Components (Atom etc.) in internal methods when</span>
-<span class="sd">            considering actions such as addition between objects, adding</span>
-<span class="sd">            TopologyAttributes to them.</span>
+<span class="sd">            `is_group`. This is used to distinguish between Groups</span>
+<span class="sd">            (:class:`AtomGroup` etc.) and Components (:class:`Atom` etc.) in</span>
+<span class="sd">            internal methods when considering actions such as addition of</span>
+<span class="sd">            objects or adding</span>
+<span class="sd">            :class:`TopologyAttributes&lt;MDAnalysis.core.topologyattrs.TopologyAttr&gt;`</span>
+<span class="sd">            to them.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -270,7 +272,7 @@
 
 <span class="sd">        The new class will have an attribute `_derived_class` added, pointing</span>
 <span class="sd">        to itself. This pointer instructs which class to use when</span>
-<span class="sd">        slicing/adding instances of the new class. At initialization time the</span>
+<span class="sd">        slicing/adding instances of the new class. At initialization time, the</span>
 <span class="sd">        new class may choose to point `_derived_class` to another class (as is</span>
 <span class="sd">        done in the initialization of :class:`UpdatingAtomGroup`).</span>
 
@@ -291,11 +293,11 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_add_prop</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add attr into the namespace for this class</span>
+        <span class="sd">&quot;&quot;&quot;Add `attr` into the namespace for this class</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        attr : A TopologyAttr object</span>
+<span class="sd">        attr : A :class:`TopologyAttr` object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">getter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">attr</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -330,8 +332,10 @@
 <span class="sd">    Base class that merges appropriate :class:`_TopologyAttrContainer` classes.</span>
 
 <span class="sd">    Implements :meth:`__new__`. In it the instantiating class is fetched from</span>
-<span class="sd">    :attr:`Universe._classes`. If there is a cache miss, a merged class is made</span>
-<span class="sd">    with a base from :attr:`Universe._class_bases` and cached.</span>
+<span class="sd">    :attr:`~MDAnalysis.core.universe.Universe._classes`. If there is a cache</span>
+<span class="sd">    miss, a merged class is made</span>
+<span class="sd">    with a base from :attr:`~MDAnalysis.core.universe.Universe._class_bases`</span>
+<span class="sd">    and cached.</span>
 
 <span class="sd">    The classes themselves are used as the cache dictionary keys for simplcity</span>
 <span class="sd">    in cache retrieval.</span>
@@ -411,7 +415,8 @@
 
 
 <span class="k">class</span> <span class="nc">GroupBase</span><span class="p">(</span><span class="n">_MutableBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class from which a Universe&#39;s Group class is built.</span>
+    <span class="sd">&quot;&quot;&quot;Base class from which a :class:`&lt;~MDAnalysis.core.universe.Universe`\ &#39;s</span>
+<span class="sd">    Group class is built.</span>
 
 <span class="sd">    Instances of :class:`GroupBase` provide the following operations that</span>
 <span class="sd">    conserve element repetitions and order:</span>
@@ -586,7 +591,8 @@
 
 <span class="sd">        Two groups are equal if they contain the same indices in</span>
 <span class="sd">        the same order. Groups that are not at the same level or that belong</span>
-<span class="sd">        to different universe cannot be compared.</span>
+<span class="sd">        to different :class:`Universes&lt;MDAnalysis.core.universe.Universe&gt;`</span>
+<span class="sd">        cannot be compared.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">o_ix</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">ix</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">o_ix</span><span class="p">)</span>
@@ -609,6 +615,9 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The underlying :class:`~MDAnalysis.core.universe.Universe` the group</span>
+<span class="sd">        belongs to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span>
 
     <span class="nd">@property</span>
@@ -629,12 +638,12 @@
     <span class="k">def</span> <span class="nf">ix_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Unique indices of the components in the Group.</span>
 
-<span class="sd">        For a Group, ix_array is the same as ix. This method gives a</span>
-<span class="sd">        consistent API between components and groups.</span>
+<span class="sd">        For a Group, :attr:`ix_array` is the same as :attr:`ix`. This method</span>
+<span class="sd">        gives a consistent API between components and groups.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        ix</span>
+<span class="sd">        :attr:`ix`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ix</span>
 
@@ -647,12 +656,49 @@
     <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">dimensions</span>
 
+    <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;isunique&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">isunique</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Boolean indicating whether all components of the group are unique,</span>
+<span class="sd">        i.e., the group contains no duplicates.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">           &gt;&gt;&gt; ag = u.atoms[[2, 1, 2, 2, 1, 0]]</span>
+<span class="sd">           &gt;&gt;&gt; ag</span>
+<span class="sd">           &lt;AtomGroup with 6 atoms&gt;</span>
+<span class="sd">           &gt;&gt;&gt; ag.isunique</span>
+<span class="sd">           False</span>
+<span class="sd">           &gt;&gt;&gt; ag2 = ag.unique</span>
+<span class="sd">           &gt;&gt;&gt; ag2</span>
+<span class="sd">           &lt;AtomGroup with 3 atoms&gt;</span>
+<span class="sd">           &gt;&gt;&gt; ag2.isunique</span>
+<span class="sd">           True</span>
+
+
+<span class="sd">        .. versionadded:: 0.19.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="c1"># Fast check for uniqueness</span>
+        <span class="c1"># 1. get sorted array of component indices:</span>
+        <span class="n">s_ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
+        <span class="c1"># 2. If the group&#39;s components are unique, no pair of adjacent values in</span>
+        <span class="c1">#    the sorted indices array are equal. We therefore compute a boolean</span>
+        <span class="c1">#    mask indicating equality of adjacent sorted indices:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">s_ix</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">s_ix</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># 3. The group is unique if all elements in the mask are False. We could</span>
+        <span class="c1">#    return ``not np.any(mask)`` here but using the following is faster:</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+
+    <span class="nd">@warn_if_not_unique</span>
     <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Weighted center of (compounds of) the group</span>
 
-<span class="sd">        Computes the weighted center of atoms in the group.</span>
-<span class="sd">        Weighted centers per residue or per segment can be obtained by setting</span>
-<span class="sd">        the `compound` parameter accordingly.</span>
+<span class="sd">        Computes the weighted center of :class:`Atoms&lt;Atom&gt;` in the group.</span>
+<span class="sd">        Weighted centers per :class:`Residue` or per :class:`Segment` can be</span>
+<span class="sd">        obtained by setting the `compound` parameter accordingly.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -660,39 +706,39 @@
 <span class="sd">            Weights to be used. Setting `weights=None` is equivalent to passing</span>
 <span class="sd">            identical weights for all atoms of the group.</span>
 <span class="sd">        pbc : bool or None, optional</span>
-<span class="sd">            If ``True`` and `compound` is &#39;group&#39;, move all atoms to the primary</span>
-<span class="sd">            unit cell before calculation. If ``True`` and `compound` is</span>
-<span class="sd">            &#39;segments&#39; or &#39;residues&#39;, the center of each compound will be</span>
-<span class="sd">            calculated without moving any atoms to keep the compounds intact.</span>
-<span class="sd">            Instead, the resulting position vectors will be moved to the primary</span>
-<span class="sd">            unit cell after calculation.</span>
+<span class="sd">            If ``True`` and `compound` is ``&#39;group&#39;``, move all atoms to the</span>
+<span class="sd">            primary unit cell before calculation. If ``True`` and `compound` is</span>
+<span class="sd">            ``&#39;segments&#39;`` or ``&#39;residues&#39;``, the center of each compound will</span>
+<span class="sd">            be calculated without moving any :class:`Atoms&lt;Atom&gt;` to keep the</span>
+<span class="sd">            compounds intact. Instead, the resulting position vectors will be</span>
+<span class="sd">            moved to the primary unit cell after calculation.</span>
 <span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;}, optional</span>
-<span class="sd">            If &#39;group&#39;, the weighted center of all atoms in the group will be</span>
-<span class="sd">            returned as a single position vector. Else, the weighted centers of</span>
-<span class="sd">            each segment or residue will be returned as an array of position</span>
-<span class="sd">            vectors, i.e. a 2d array. Note that, in any case, *only* the</span>
-<span class="sd">            positions of atoms *belonging to the group* will be taken into</span>
-<span class="sd">            account.</span>
+<span class="sd">            If ``&#39;group&#39;``, the weighted center of all atoms in the group will</span>
+<span class="sd">            be returned as a single position vector. Else, the weighted centers</span>
+<span class="sd">            of each :class:`Segment` or :class:`Residue` will be returned as an</span>
+<span class="sd">            array of position vectors, i.e. a 2d array. Note that, in any case,</span>
+<span class="sd">            *only* the positions of :class:`Atoms&lt;Atom&gt;` *belonging to the</span>
+<span class="sd">            group* will be taken into account.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        center : numpy.ndarray</span>
 <span class="sd">            Position vector(s) of the weighted center(s) of the group.</span>
-<span class="sd">            If `compound` was set to &#39;group&#39;, the output will be a single</span>
+<span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
 <span class="sd">            position vector.</span>
-<span class="sd">            If `compound` was set to &#39;segments&#39; or &#39;residues&#39;, the output will be</span>
-<span class="sd">            a 2d array of shape ``(n, 3)`` where ``n`` is the number of</span>
-<span class="sd">            compounds.</span>
+<span class="sd">            If `compound` was set to ``&#39;segments&#39;`` or ``&#39;residues&#39;``, the</span>
+<span class="sd">            output will be a 2d array of shape ``(n, 3)`` where ``n`` is the</span>
+<span class="sd">            number of compounds.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">        To find the center of charge of a given AtomGroup::</span>
+<span class="sd">        To find the center of charge of a given :class:`AtomGroup`::</span>
 
 <span class="sd">            &gt;&gt;&gt; sel = u.select_atoms(&#39;prop mass &gt; 4.0&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; sel.center(sel.charges)</span>
 
-<span class="sd">        To find the centers of mass per residue of all CA atoms::</span>
+<span class="sd">        To find the centers of mass per residue of all CA :class:`Atoms&lt;Atom&gt;`::</span>
 
 <span class="sd">            &gt;&gt;&gt; sel = u.select_atoms(&#39;name CA&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; sel.center(sel.masses, compound=&#39;residues&#39;)</span>
@@ -701,6 +747,7 @@
 <span class="sd">        -----</span>
 <span class="sd">        If the :class:`MDAnalysis.core.flags` flag *use_pbc* is set to</span>
 <span class="sd">        ``True`` then the `pbc` keyword is used by default.</span>
+
 
 <span class="sd">        .. versionchanged:: 0.19.0 Added `compound` parameter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -756,39 +803,41 @@
             <span class="n">centers</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">atoms</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">centers</span>
 
+    <span class="nd">@warn_if_not_unique</span>
     <span class="k">def</span> <span class="nf">center_of_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Center of geometry (also known as centroid) of the group.</span>
 
-<span class="sd">        Computes the center of geometry (a.k.a. centroid) of atoms in the group.</span>
-<span class="sd">        Centers of geometry per residue or per segment can be obtained by</span>
-<span class="sd">        setting the `compound` parameter accordingly.</span>
+<span class="sd">        Computes the center of geometry (a.k.a. centroid) of</span>
+<span class="sd">        :class:`Atoms&lt;Atom&gt;` in the group. Centers of geometry per</span>
+<span class="sd">        :class:`Residue` or per :class:`Segment` can be obtained by setting the</span>
+<span class="sd">        `compound` parameter accordingly.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        pbc : bool or None, optional</span>
-<span class="sd">            If ``True`` and `compound` is &#39;group&#39;, move all atoms to the primary</span>
-<span class="sd">            unit cell before calculation. If ``True`` and `compound` is</span>
-<span class="sd">            &#39;segments&#39; or &#39;residues&#39;, the center of each compound will be</span>
-<span class="sd">            calculated without moving any atoms to keep the compounds intact.</span>
-<span class="sd">            Instead, the resulting position vectors will be moved to the primary</span>
-<span class="sd">            unit cell after calculation.</span>
+<span class="sd">            If ``True`` and `compound` is ``&#39;group&#39;``, move all atoms to the</span>
+<span class="sd">            primary unit cell before calculation. If ``True`` and `compound` is</span>
+<span class="sd">            ``&#39;segments&#39;`` or ``&#39;residues&#39;``, the center of each compound will</span>
+<span class="sd">            be calculated without moving any :class:`Atoms&lt;Atom&gt;` to keep the</span>
+<span class="sd">            compounds intact. Instead, the resulting position vectors will be</span>
+<span class="sd">            moved to the primary unit cell after calculation.</span>
 <span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;}, optional</span>
-<span class="sd">            If &#39;group&#39;, the center of geometry of all atoms in the group will be</span>
-<span class="sd">            returned as a single position vector. Else, the centers of geometry</span>
-<span class="sd">            of each segment or residue will be returned as an array of position</span>
-<span class="sd">            vectors, i.e. a 2d array. Note that, in any case, *only* the</span>
-<span class="sd">            positions of atoms *belonging to the group* will be taken into</span>
-<span class="sd">            account.</span>
+<span class="sd">            If ``&#39;group&#39;``, the center of geometry of all :class:`Atoms&lt;Atom&gt;`</span>
+<span class="sd">            in the group will be returned as a single position vector. Else, the</span>
+<span class="sd">            centers of geometry of each :class:`Segment` or :class:`Residue`</span>
+<span class="sd">            will be returned as an array of position vectors, i.e. a 2d array.</span>
+<span class="sd">            Note that, in any case, *only* the positions of :class:`Atoms&lt;Atom&gt;`</span>
+<span class="sd">            *belonging to the group* will be taken into account.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        center : numpy.ndarray</span>
 <span class="sd">            Position vector(s) of the geometric center(s) of the group.</span>
-<span class="sd">            If `compound` was set to &#39;group&#39;, the output will be a single</span>
+<span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
 <span class="sd">            position vector.</span>
-<span class="sd">            If `compound` was set to &#39;segments&#39; or &#39;residues&#39;, the output will be</span>
-<span class="sd">            a 2d array of shape ``(n, 3)`` where ``n`` is the number of</span>
-<span class="sd">            compounds.</span>
+<span class="sd">            If `compound` was set to ``&#39;segments&#39;`` or ``&#39;residues&#39;``, the</span>
+<span class="sd">            output will be a 2d array of shape ``(n, 3)`` where ``n`` is the</span>
+<span class="sd">            number of compounds.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -814,14 +863,14 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        pbc : bool, optional</span>
-<span class="sd">            If ``True``, move all atoms within the primary unit cell before</span>
-<span class="sd">            calculation. [``False``]</span>
+<span class="sd">            If ``True``, move all :class:`Atoms&lt;Atom&gt;` to the primary unit cell</span>
+<span class="sd">            before calculation. [``False``]</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">         corners : array</span>
+<span class="sd">         corners : numpy.ndarray</span>
 <span class="sd">            2x3 array giving corners of bounding box as</span>
-<span class="sd">            [[xmin, ymin, zmin], [xmax, ymax, zmax]].</span>
+<span class="sd">            ``[[xmin, ymin, zmin], [xmax, ymax, zmax]]``.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -845,20 +894,21 @@
     <span class="k">def</span> <span class="nf">bsphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the bounding sphere of the selection.</span>
 
-<span class="sd">        The sphere is calculated relative to the centre of geometry.</span>
+<span class="sd">        The sphere is calculated relative to the</span>
+<span class="sd">        :meth:`center of geometry&lt;center_of_geometry&gt;`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        pbc : bool, optional</span>
-<span class="sd">            If ``True``, move all atoms within the primary unit cell before</span>
+<span class="sd">            If ``True``, move all atoms to the primary unit cell before</span>
 <span class="sd">            calculation. [``False``]</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        R : float</span>
-<span class="sd">            Radius of bounding sphere.</span>
-<span class="sd">        center : array</span>
-<span class="sd">            Coordinates of sphere center as ``[xcen,ycen,zcen]``.</span>
+<span class="sd">            Radius of the bounding sphere.</span>
+<span class="sd">        center : numpy.ndarray</span>
+<span class="sd">            Coordinates of the sphere center as ``[xcen, ycen, zcen]``.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -869,7 +919,7 @@
 <span class="sd">        .. versionadded:: 0.7.3</span>
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unique</span>
         <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;pbc&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_pbc&#39;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
@@ -886,11 +936,13 @@
     <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply homogenous transformation matrix `M` to the coordinates.</span>
 
+<span class="sd">        :class:`Atom` coordinates are rotated and translated in-place.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        M : array</span>
-<span class="sd">            4x4 matrix, with the rotation in ``R = M[:3,:3]`` and the</span>
-<span class="sd">            translation in ``t = M[:3,3]``.</span>
+<span class="sd">        M : array_like</span>
+<span class="sd">            4x4 matrix with the rotation in ``R = M[:3, :3]`` and the</span>
+<span class="sd">            translation in ``t = M[:3, 3]``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -902,14 +954,15 @@
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        The rotation :math:`\mathsf{R}` is applied before the translation</span>
-<span class="sd">        :math:`\mathbf{t}`:</span>
+<span class="sd">        The rotation :math:`\mathsf{R}` is about the origin and is applied</span>
+<span class="sd">        before the translation :math:`\mathbf{t}`:</span>
 
 <span class="sd">        .. math::</span>
 
 <span class="sd">           \mathbf{x}&#39; = \mathsf{R}\mathbf{x} + \mathbf{t}</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
@@ -917,7 +970,7 @@
     <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply translation vector `t` to the selection&#39;s coordinates.</span>
 
-<span class="sd">        Atom coordinates are translated in-place.</span>
+<span class="sd">        :class:`Atom` coordinates are translated in-place.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -958,22 +1011,24 @@
 
 <span class="sd">            \mathbf{x}&#39; = \mathsf{R}\mathbf{x}</span>
 
+<span class="sd">        :class:`Atom` coordinates are rotated in-place.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        R : array_like</span>
-<span class="sd">            3x3 rotation matrix to use for applying rotation.</span>
+<span class="sd">            3x3 rotation matrix</span>
 <span class="sd">        point : array_like, optional</span>
 <span class="sd">            Center of rotation</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        self : AtomGroup</span>
+<span class="sd">        self</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        By default rotates around center of origin ``point=(0, 0, 0)``. To</span>
-<span class="sd">        rotate around center of geometry of the atomgroup use ``ag.rotate(R,</span>
-<span class="sd">        point=ag.centroid)``.</span>
+<span class="sd">        By default, rotates about the origin ``point=(0, 0, 0)``. To rotate</span>
+<span class="sd">        a group ``g`` around its center of geometry, use</span>
+<span class="sd">        ``g.rotate(R, point=g.center_of_geometry())``.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -985,13 +1040,15 @@
         <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
 
         <span class="c1"># changes the coordinates (in place)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="n">point</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unique</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unique</span><span class="o">.</span><span class="n">indices</span>
+        <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unique</span>
+        <span class="n">require_translation</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">require_translation</span><span class="p">:</span>
+            <span class="n">atomgroup</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="n">point</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">indices</span>
         <span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">require_translation</span><span class="p">:</span>
+            <span class="n">atomgroup</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span>
 
@@ -1010,7 +1067,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        self : AtomGroup</span>
+<span class="sd">        self</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1026,17 +1083,21 @@
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        MDAnalysis.lib.transformations.rotation_matrix : calculate :math:`\mathsf{R}`</span>
+<span class="sd">        MDAnalysis.lib.transformations.rotation_matrix :</span>
+<span class="sd">            calculate :math:`\mathsf{R}`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
-        <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="k">if</span> <span class="n">point</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="n">point</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">pack_into_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Shift all atoms in this group to be within the primary unit cell.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Shift all :class:`Atoms&lt;Atom&gt;` in this group to the primary unit</span>
+<span class="sd">        cell.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1051,7 +1112,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        coords : array</span>
+<span class="sd">        coords : numpy.ndarray</span>
 <span class="sd">            Shifted atom coordinates.</span>
 
 <span class="sd">        Notes</span>
@@ -1067,42 +1128,55 @@
 <span class="sd">        The default is to take unit cell information from the underlying</span>
 <span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep` instance. The optional</span>
 <span class="sd">        argument `box` can be used to provide alternative unit cell information</span>
-<span class="sd">        (in the MDAnalysis standard format ``[Lx, Ly, Lz, alpha, beta,</span>
-<span class="sd">        gamma]``).</span>
+<span class="sd">        (in the MDAnalysis standard format</span>
+<span class="sd">        ``[Lx, Ly, Lz, alpha, beta, gamma]``).</span>
 
 <span class="sd">        Works with either orthogonal or triclinic box types.</span>
 
+<span class="sd">        .. note::</span>
+<span class="sd">            :meth:`AtomGroup.pack_into_box` is currently faster than</span>
+<span class="sd">            :meth:`ResidueGroup.pack_into_box` or</span>
+<span class="sd">            :meth:`SegmentGroup.pack_into_box`.</span>
+
 
 <span class="sd">        .. versionadded:: 0.8</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unique</span>
-        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Try and auto detect box dimensions</span>
-            <span class="n">box</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">dimensions</span>  <span class="c1"># Can accept any box</span>
+        <span class="c1"># Try and auto detect box dimensions:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span>
 
-        <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-            <span class="c1"># for a vector representation, diagonal cannot be zero</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="c1"># For a vector representation, the diagonal must not be zero, for a</span>
+        <span class="c1"># [x, y, z, alpha, beta, gamma] representation, no element must be zero:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">())</span> \
+            <span class="ow">or</span> <span class="p">(</span><span class="n">box</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;One or more box dimensions is zero.&quot;</span>
-                                 <span class="s2">&quot;  You can specify a boxsize with &#39;box =&#39;&quot;</span><span class="p">)</span>
+                                 <span class="s2">&quot;  You can specify a box with &#39;box =&#39;&quot;</span><span class="p">)</span>
+        <span class="c1"># no matter what kind of group we have, we need to work on its atoms:</span>
+        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="c1"># If self is unique, so are its atoms. Thus, if the group is unique, we</span>
+        <span class="c1"># can use its atoms as is.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
+            <span class="n">packed_coords</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+                <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">packed_coords</span>
+                <span class="k">return</span> <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">packed_coords</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">box</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>  <span class="c1"># Check that a box dimension isn&#39;t zero</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;One or more box dimensions is zero.&quot;</span>
-                                 <span class="s2">&quot;  You can specify a boxsize with &#39;box=&#39;&quot;</span><span class="p">)</span>
-
-        <span class="n">coords</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
-
-        <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
+            <span class="n">unique_ag</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">unique</span>
+            <span class="n">unique_ix</span> <span class="o">=</span> <span class="n">unique_ag</span><span class="o">.</span><span class="n">ix</span>
+            <span class="n">restore_mask</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">_unique_restore_mask</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">unique_ix</span><span class="p">]</span>
+            <span class="n">packed_coords</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+                <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">unique_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">packed_coords</span>
+                <span class="k">return</span> <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">unique_ix</span><span class="p">[</span><span class="n">restore_mask</span><span class="p">]]</span>
+            <span class="k">return</span> <span class="n">packed_coords</span><span class="p">[</span><span class="n">restore_mask</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s2">&quot;com&quot;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Shift the contents of this Group back into the unit cell.</span>
+        <span class="sd">&quot;&quot;&quot;Shift the contents of this group back into the unit cell.</span>
 
 <span class="sd">        This is a more powerful version of :meth:`pack_into_box`, allowing</span>
-<span class="sd">        groups of atoms to be kept together through the process.</span>
+<span class="sd">        groups of :class:`Atoms&lt;Atom&gt;` to be kept together through the process.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1110,7 +1184,7 @@
 <span class="sd">            The group which will be kept together through the shifting process.</span>
 <span class="sd">        center : {&#39;com&#39;, &#39;cog&#39;}</span>
 <span class="sd">            How to define the center of a given group of atoms.</span>
-<span class="sd">        box : array</span>
+<span class="sd">        box : array_like</span>
 <span class="sd">            Box dimensions, can be either orthogonal or triclinic information.</span>
 <span class="sd">            Cell dimensions must be in an identical to format to those returned</span>
 <span class="sd">            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,</span>
@@ -1122,19 +1196,21 @@
 <span class="sd">        When specifying a `compound`, the translation is calculated based on</span>
 <span class="sd">        each compound. The same translation is applied to all atoms</span>
 <span class="sd">        within this compound, meaning it will not be broken by the shift.</span>
-<span class="sd">        This might however mean that all atoms from the compound are not</span>
+<span class="sd">        This might however mean that not all atoms from the compound are</span>
 <span class="sd">        inside the unit cell, but rather the center of the compound is.</span>
 
 <span class="sd">        `center` allows the definition of the center of each group to be</span>
-<span class="sd">        specified. This can be either &#39;com&#39; for center of mass, or &#39;cog&#39; for</span>
-<span class="sd">        center of geometry.</span>
+<span class="sd">        specified. This can be either ``&#39;com&#39;`` for center of mass, or ``&#39;cog&#39;``</span>
+<span class="sd">        for center of geometry.</span>
 
 <span class="sd">        `box` allows a unit cell to be given for the transformation. If not</span>
-<span class="sd">        specified, the dimensions information from the current Timestep will</span>
-<span class="sd">        be used.</span>
+<span class="sd">        specified, the :attr:`~MDAnalysis.coordinates.base.Timestep.dimensions`</span>
+<span class="sd">        information from the current</span>
+<span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep` will be used.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">           wrap with all default keywords is identical to :meth:`pack_into_box`</span>
+<span class="sd">           :meth:`wrap` with all default keywords is identical to</span>
+<span class="sd">           :meth:`pack_into_box`</span>
 
 
 <span class="sd">        .. versionadded:: 0.9.2</span>
@@ -1178,30 +1254,46 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">):</span>
                 <span class="n">o</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get another group identical to this one.</span>
+
+
+<span class="sd">        .. versionadded:: 0.19.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[:]</span>
+        <span class="c1"># Try to fill the copied group&#39;s uniqueness caches:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]:</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">group</span>
+
     <span class="k">def</span> <span class="nf">groupby</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topattrs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Group together items in this group according to values of *topattr*</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        topattrs: str or list</span>
-<span class="sd">           One or more topology attribute to group components by.</span>
+<span class="sd">           One or more topology attributes to group components by.</span>
 <span class="sd">           Single arguments are passed as a string. Multiple arguments</span>
 <span class="sd">           are passed as a list.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
-<span class="sd">            Unique values of the multiple combinations of topology attributes </span>
+<span class="sd">            Unique values of the multiple combinations of topology attributes</span>
 <span class="sd">            as keys, Groups as values.</span>
 
 <span class="sd">        Example</span>
-<span class="sd">        -------      </span>
-<span class="sd">        To group atoms with the same mass together:     </span>
-<span class="sd">                </span>
+<span class="sd">        -------</span>
+<span class="sd">        To group atoms with the same mass together:</span>
+
 <span class="sd">        &gt;&gt;&gt; ag.groupby(&#39;masses&#39;)</span>
 <span class="sd">        {12.010999999999999: &lt;AtomGroup with 462 atoms&gt;,</span>
 <span class="sd">         14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
-<span class="sd">         15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}        </span>
+<span class="sd">         15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
 
 <span class="sd">        To group atoms with the same residue name and mass together:</span>
 
@@ -1212,24 +1304,25 @@
 <span class="sd">           (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;},</span>
 <span class="sd">           (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
 <span class="sd">           ...}</span>
-<span class="sd">          </span>
+
 <span class="sd">          &gt;&gt;&gt; ag.groupby([&#39;resnames&#39;, &#39;masses&#39;])(&#39;ALA&#39;, 15.999)</span>
 <span class="sd">           &lt;AtomGroup with 19 atoms&gt;</span>
-<span class="sd">        </span>
+
+
 <span class="sd">        .. versionadded:: 0.16.0</span>
 <span class="sd">        .. versionchanged:: 0.18.0 The function accepts multiple attributes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="n">res</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topattrs</span><span class="p">,</span> <span class="p">(</span><span class="n">string_types</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
             <span class="n">attr</span><span class="o">=</span><span class="n">topattrs</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topattrs</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
                 <span class="n">attr</span> <span class="o">=</span> <span class="n">topattrs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
             <span class="n">ta</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-            
+
             <span class="k">return</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="n">ta</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">ta</span><span class="p">)}</span>
-        
+
         <span class="k">else</span><span class="p">:</span>
             <span class="n">attr</span> <span class="o">=</span> <span class="n">topattrs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">ta</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
@@ -1238,9 +1331,8 @@
                     <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">ta</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">ta</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">topattrs</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-                    
-            <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
+            <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
     <span class="nd">@_only_same_level</span>
     <span class="k">def</span> <span class="nf">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -1271,6 +1363,7 @@
 <span class="sd">        array([&#39;O&#39;, &#39;O&#39;, &#39;O&#39;], dtype=object)</span>
 <span class="sd">        &gt;&gt;&gt; ag3[-3:].names</span>
 <span class="sd">        array([&#39;N&#39;, &#39;N&#39;, &#39;N&#39;], dtype=object)</span>
+
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1311,6 +1404,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        concatenate, intersection</span>
 
+
 <span class="sd">        .. versionadded:: 0.16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">o_ix</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">ix_array</span>
@@ -1348,6 +1442,7 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        union</span>
+
 
 <span class="sd">        .. versionadded:: 0.16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1389,6 +1484,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        concatenate, difference</span>
 
+
 <span class="sd">        .. versionadded:: 0.16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">o_ix</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">ix_array</span>
@@ -1417,6 +1513,7 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        subtract, symmetric_difference</span>
+
 
 <span class="sd">        .. versionadded:: 0.16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1454,6 +1551,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        difference</span>
 
+
 <span class="sd">        .. versionadded:: 0.16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">o_ix</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">ix_array</span>
@@ -1469,8 +1567,9 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Bool</span>
-<span class="sd">            True if the two Groups do not have common elements</span>
+<span class="sd">        bool</span>
+<span class="sd">            ``True`` if the two Groups do not have common elements</span>
+
 
 <span class="sd">        .. versionadded:: 0.16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1489,8 +1588,9 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Bool</span>
-<span class="sd">            True if this Group is a subset of the other one</span>
+<span class="sd">        bool</span>
+<span class="sd">            ``True`` if this Group is a subset of the other one</span>
+
 
 <span class="sd">        .. versionadded:: 0.16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1508,8 +1608,9 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Bool</span>
-<span class="sd">            True if this Group is a strict subset of the other one</span>
+<span class="sd">        bool</span>
+<span class="sd">            ``True`` if this Group is a strict subset of the other one</span>
+
 
 <span class="sd">        .. versionadded:: 0.16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1526,8 +1627,9 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Bool</span>
-<span class="sd">            True if this Group is a subset of the other one</span>
+<span class="sd">        bool</span>
+<span class="sd">            ``True`` if this Group is a subset of the other one</span>
+
 
 <span class="sd">        .. versionadded:: 0.16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1545,8 +1647,9 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Bool</span>
-<span class="sd">            True if this Group is a strict superset of the other one</span>
+<span class="sd">        bool</span>
+<span class="sd">            ``True`` if this Group is a strict superset of the other one</span>
+
 
 <span class="sd">        .. versionadded:: 0.16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1556,30 +1659,31 @@
 <div class="viewcode-block" id="AtomGroup"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup">[docs]</a><span class="k">class</span> <span class="nc">AtomGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An ordered array of atoms.</span>
 
-<span class="sd">    Can be initiated from an iterable of Atoms::</span>
+<span class="sd">    Can be initiated from an iterable of :class:`Atoms&lt;Atom&gt;`::</span>
 
 <span class="sd">        ag = AtomGroup([Atom1, Atom2, Atom3])</span>
 
-<span class="sd">    Or from providing a list of indices and the Universe which is should belong</span>
-<span class="sd">    to::</span>
+<span class="sd">    Or from providing a list of indices and the</span>
+<span class="sd">    :class:`~MDAnalysis.core.universe.Universe` it should belong to::</span>
 
 <span class="sd">        ag = AtomGroup([72, 14, 25], u)</span>
 
-<span class="sd">    Alternatively an :class:`AtomGroup` is generated by indexing/slicing another</span>
-<span class="sd">    AtomGroup, such as the Group of all atoms in the :class:`Universe` at</span>
+<span class="sd">    Alternatively, an :class:`AtomGroup` is generated by indexing/slicing</span>
+<span class="sd">    another :class:`AtomGroup`, such as the group of all :class:`Atoms&lt;Atom&gt;` in</span>
+<span class="sd">    the :class:`~MDAnalysis.core.universe.Universe` at</span>
 <span class="sd">    :attr:`MDAnalysis.core.universe.Universe.atoms`.</span>
 
-<span class="sd">    An AtomGroup can be indexed and sliced like a list::</span>
+<span class="sd">    An :class:`AtomGroup` can be indexed and sliced like a list::</span>
 
 <span class="sd">        ag[0], ag[-1]</span>
 
 <span class="sd">    will return the first and the last :class:`Atom` in the group whereas the</span>
-<span class="sd">    slice ::</span>
+<span class="sd">    slice::</span>
 
 <span class="sd">        ag[0:6:2]</span>
 
-<span class="sd">    returns an AtomGroup of every second element, corresponding to indices 0,</span>
-<span class="sd">    2, and 4.</span>
+<span class="sd">    returns an :class:`AtomGroup` of every second element, corresponding to</span>
+<span class="sd">    indices 0, 2, and 4.</span>
 
 <span class="sd">    It also supports &quot;advanced slicing&quot; when the argument is a</span>
 <span class="sd">    :class:`numpy.ndarray` or a :class:`list`::</span>
@@ -1587,42 +1691,44 @@
 <span class="sd">        aslice = [0, 3, -1, 10, 3]</span>
 <span class="sd">        ag[aslice]</span>
 
-<span class="sd">    will return a new AtomGroup of atoms with those indices in the old</span>
-<span class="sd">    AtomGroup.</span>
+<span class="sd">    will return a new :class:`AtomGroup` of :class:`Atoms&lt;Atom&gt;` with those</span>
+<span class="sd">    indices in the old :class:`AtomGroup`.</span>
 
-<span class="sd">    Finally, AtomGroups can be created from a selection.  See</span>
-<span class="sd">    :meth:`select_atoms`.</span>
+<span class="sd">    Finally, :class:`AtomGroups&lt;AtomGroup&gt;` can be created from a selection.</span>
+<span class="sd">    See :meth:`select_atoms`.</span>
 
 <span class="sd">    .. note::</span>
 
-<span class="sd">        AtomGroups originating from a selection are sorted and</span>
-<span class="sd">        duplicate elements are removed. This is not true for AtomGroups</span>
-<span class="sd">        produced by slicing. Thus slicing can be used when the order of</span>
-<span class="sd">        atoms is crucial (for instance, in order to define angles or</span>
-<span class="sd">        dihedrals).</span>
+<span class="sd">        :class:`AtomGroups&lt;AtomGroup&gt;` originating from a selection are sorted</span>
+<span class="sd">        and duplicate elements are removed. This is not true for</span>
+<span class="sd">        :class:`AtomGroups&lt;AtomGroup&gt;` produced by slicing. Thus, slicing can be</span>
+<span class="sd">        used when the order of atoms is crucial (for instance, in order to</span>
+<span class="sd">        define angles or dihedrals).</span>
 
-<span class="sd">    AtomGroups can be compared and combined using group operators. For</span>
-<span class="sd">    instance, AtomGroups can be concatenated using `+` or :meth:`concatenate`::</span>
+<span class="sd">    :class:`AtomGroups&lt;AtomGroup&gt;` can be compared and combined using group</span>
+<span class="sd">    operators. For instance, :class:`AtomGroups&lt;AtomGroup&gt;` can be concatenated</span>
+<span class="sd">    using `+` or :meth:`concatenate`::</span>
 
 <span class="sd">        ag_concat = ag1 + ag2  # or ag_concat = ag1.concatenate(ag2)</span>
 
-<span class="sd">    When groups are concatenated, the order of the atoms is conserved. If atoms</span>
-<span class="sd">    appear several times in one of the groups, the duplicates are kept in the</span>
-<span class="sd">    resulting group. On the contrary to :meth:`concatenate`, :meth:`union`</span>
-<span class="sd">    treats the AtomGroups as sets, duplicates are removed from the resulting</span>
-<span class="sd">    group, and atoms are ordered. The `|` operator is synomymous to</span>
+<span class="sd">    When groups are concatenated, the order of the :class:`Atoms&lt;Atom&gt;` is</span>
+<span class="sd">    conserved. If :class:`Atoms&lt;Atom&gt;` appear several times in one of the</span>
+<span class="sd">    groups, the duplicates are kept in the resulting group. On the contrary to</span>
+<span class="sd">    :meth:`concatenate`, :meth:`union` treats the :class:`AtomGroups&lt;AtomGroup&gt;`</span>
+<span class="sd">    as sets so that duplicates are removed from the resulting group, and</span>
+<span class="sd">    :class:`Atoms&lt;Atom&gt;` are ordered. The `|` operator is synomymous to</span>
 <span class="sd">    :meth:`union`::</span>
 
 <span class="sd">        ag_union = ag1 | ag2  # or ag_union = ag1.union(ag2)</span>
 
 <span class="sd">    The opposite operation to :meth:`concatenate` is :meth:`subtract`. This</span>
-<span class="sd">    method creates a new group with all the atoms of the group that are not in</span>
-<span class="sd">    a given other group; the order of the atoms is kept, so as duplicates.</span>
-<span class="sd">    :meth:`difference` is the set version of :meth:`subtract`. The resulting</span>
-<span class="sd">    group is sorted and deduplicated.</span>
+<span class="sd">    method creates a new group with all the :class:`Atoms&lt;Atom&gt;` of the group</span>
+<span class="sd">    that are not in a given other group; the order of the :class:`Atoms&lt;Atom&gt;`</span>
+<span class="sd">    is kept, and so are duplicates. :meth:`difference` is the set version of</span>
+<span class="sd">    :meth:`subtract`. The resulting group is sorted and deduplicated.</span>
 
 <span class="sd">    All set methods are listed in the table below. These methods treat the</span>
-<span class="sd">    groups as sorted and deduplicated sets of atoms.</span>
+<span class="sd">    groups as sorted and deduplicated sets of :class:`Atoms&lt;Atom&gt;`.</span>
 
 <span class="sd">    +-------------------------------+------------+----------------------------+</span>
 <span class="sd">    | Operation                     | Equivalent | Result                     |</span>
@@ -1659,8 +1765,7 @@
 <span class="sd">    |                               |            | ``t`` but not both         |</span>
 <span class="sd">    +-------------------------------+------------+----------------------------+</span>
 
-<span class="sd">    The following methods keep the order of the atoms, and keep duplicated</span>
-<span class="sd">    atoms.</span>
+<span class="sd">    The following methods keep the order of the atoms as well as duplicates.</span>
 
 <span class="sd">    +-------------------------------+------------+----------------------------+</span>
 <span class="sd">    | Operation                     | Equivalent | Result                     |</span>
@@ -1681,33 +1786,33 @@
 <span class="sd">    |                               |            | in ``t``                   |</span>
 <span class="sd">    +-------------------------------+------------+----------------------------+</span>
 
-<span class="sd">    The `in` operator allows to test if an :class:`Atom` is in the AtomGroup.</span>
+<span class="sd">    The `in` operator allows to test if an :class:`Atom` is in the</span>
+<span class="sd">    :class:`AtomGroup`.</span>
 
-<span class="sd">    AtomGroup instances are always bound to a</span>
+<span class="sd">    :class:`AtomGroup` instances are always bound to a</span>
 <span class="sd">    :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.</span>
-
 
 <span class="sd">    .. rubric:: Deprecated functionality</span>
 
 <span class="sd">    *Instant selectors* will be removed in the 1.0 release.  See issue `#1377</span>
 <span class="sd">    &lt;https://github.com/MDAnalysis/mdanalysis/issues/1377&gt;`_ for more details.</span>
 
-<span class="sd">    Atoms can also be accessed in a Pythonic fashion by using the atom name as</span>
-<span class="sd">    an attribute. For instance, ::</span>
+<span class="sd">    :class:`Atoms&lt;Atom&gt;` can also be accessed in a Pythonic fashion by using the</span>
+<span class="sd">    :class:`Atom` name as an attribute. For instance, ::</span>
 
 <span class="sd">        ag.CA</span>
 
-<span class="sd">    will provide a :class:`AtomGroup` of all CA atoms in the</span>
+<span class="sd">    will provide an :class:`AtomGroup` of all CA :class:`Atoms&lt;Atom&gt;` in the</span>
 <span class="sd">    group. These *instant selector* attributes are auto-generated for</span>
 <span class="sd">    each atom name encountered in the group.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    The name-attribute instant selector access to atoms is mainly</span>
-<span class="sd">    meant for quick interactive work. Thus it either returns a</span>
-<span class="sd">    single :class:`Atom` if there is only one matching atom, *or* a</span>
-<span class="sd">    new :class:`AtomGroup` for multiple matches.  This makes it</span>
-<span class="sd">    difficult to use the feature consistently in scripts.</span>
+<span class="sd">    The name-attribute instant selector access to :class:`Atoms&lt;Atom&gt;` is mainly</span>
+<span class="sd">    meant for quick interactive work. Thus it either returns a single</span>
+<span class="sd">    :class:`Atom` if there is only one matching :class:`Atom`, *or* a</span>
+<span class="sd">    new :class:`AtomGroup` for multiple matches.  This makes it difficult to use</span>
+<span class="sd">    the feature consistently in scripts.</span>
 
 
 <span class="sd">    See Also</span>
@@ -1716,9 +1821,9 @@
 
 
 <span class="sd">    .. deprecated:: 0.16.2</span>
-<span class="sd">       *Instant selectors* of AtomGroup will be removed in the 1.0 release.</span>
-<span class="sd">       See :ref:`Instant selectors &lt;instance-selectors&gt;` for details and alternatives.</span>
-
+<span class="sd">       *Instant selectors* of :class:`AtomGroup` will be removed in the 1.0</span>
+<span class="sd">       release. See :ref:`Instant selectors &lt;instance-selectors&gt;` for details</span>
+<span class="sd">       and alternatives.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="c1"># DEPRECATED in 0.16.2</span>
@@ -1756,21 +1861,38 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get another AtomGroup identical to this one.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
+        <span class="sd">&quot;&quot;&quot;The :class:`AtomGroup` itself.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        copy : return a true copy of the :class:`AtomGroup`</span>
+
+
+<span class="sd">        .. versionchanged:: 0.19.0</span>
+<span class="sd">           In previous versions, this returned a copy, but now</span>
+<span class="sd">           the :class:`AtomGroup` itself is returned. This should</span>
+<span class="sd">           not affect any code but only speed up calculations.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of atoms in AtomGroup.</span>
+        <span class="sd">&quot;&quot;&quot;Number of atoms in the :class:`AtomGroup`.</span>
 
-<span class="sd">        Equivalent to ``len(self)``.&quot;&quot;&quot;</span>
+<span class="sd">        Equivalent to ``len(self)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get sorted :class:`ResidueGroup` of the (unique) residues</span>
-<span class="sd">        represented in the AtomGroup.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resindices</span><span class="p">)]</span>
+        <span class="sd">&quot;&quot;&quot;A sorted :class:`ResidueGroup` of the unique</span>
+<span class="sd">        :class:`Residues&lt;Residue&gt;` present in the :class:`AtomGroup`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resindices</span><span class="p">)]</span>
+        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
+        <span class="k">return</span> <span class="n">rg</span>
 
     <span class="nd">@residues</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1801,7 +1923,8 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of unique residues represented in the AtomGroup.</span>
+        <span class="sd">&quot;&quot;&quot;Number of unique :class:`Residues&lt;Residue&gt;` present in the</span>
+<span class="sd">        :class:`AtomGroup`.</span>
 
 <span class="sd">        Equivalent to ``len(self.residues)``.</span>
 
@@ -1810,9 +1933,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get sorted :class:`SegmentGroup` of the (unique) segments</span>
-<span class="sd">        represented in the AtomGroup.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segindices</span><span class="p">)]</span>
+        <span class="sd">&quot;&quot;&quot;A sorted :class:`SegmentGroup` of the unique segments present in the</span>
+<span class="sd">        :class:`AtomGroup`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segindices</span><span class="p">)]</span>
+        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sg</span>
+        <span class="k">return</span> <span class="n">sg</span>
 
     <span class="nd">@segments</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1821,16 +1948,43 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of unique segments represented in the AtomGroup.</span>
+        <span class="sd">&quot;&quot;&quot;Number of unique segments present in the :class:`AtomGroup`.</span>
 
 <span class="sd">        Equivalent to ``len(self.segments)``.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;unique_restore_mask&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_unique_restore_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># The _unique_restore_mask property&#39;s cache is populated whenever the</span>
+        <span class="c1"># AtomGroup.unique property of a *non-unique* AtomGroup is accessed.</span>
+        <span class="c1"># If _unique_restore_mask is not cached, it is *definitely* used in the</span>
+        <span class="c1"># wrong place, so we raise an exception here. In principle, the</span>
+        <span class="c1"># exception should be an AttributeError, but the error message would</span>
+        <span class="c1"># then be replaced by the __getattr__() error message. To prevent the</span>
+        <span class="c1"># message from being overridden, we raise a RuntimeError instead.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">._unique_restore_mask is not available if the </span><span class="si">{0}</span><span class="s2"> is &quot;</span>
+                   <span class="s2">&quot;unique. &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">._unique_restore_mask is only available after &quot;</span>
+                   <span class="s2">&quot;accessing </span><span class="si">{0}</span><span class="s2">.unique. &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;If you see this error message in an unmodified release &quot;</span>
+                <span class="s2">&quot;version of MDAnalysis, this is almost certainly a bug!&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="nd">@_unique_restore_mask</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">_unique_restore_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique_restore_mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;unique&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return an AtomGroup containing sorted and unique atoms only.</span>
+        <span class="sd">&quot;&quot;&quot;An :class:`AtomGroup` containing sorted and unique</span>
+<span class="sd">        :class:`Atoms&lt;Atom&gt;` only.</span>
+
+<span class="sd">        If the :class:`AtomGroup` is unique, this is the group itself.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1845,27 +1999,56 @@
 <span class="sd">           &lt;AtomGroup with 3 atoms&gt;</span>
 <span class="sd">           &gt;&gt;&gt; ag2.ix</span>
 <span class="sd">           array([0, 1, 2])</span>
+<span class="sd">           &gt;&gt;&gt; ag2.unique is ag2</span>
+<span class="sd">           True</span>
+
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
+<span class="sd">        .. versionchanged:: 0.19.0 If the :class:`AtomGroup` is already unique,</span>
+<span class="sd">            :attr:`AtomGroup.unique` now returns the group itself instead of a</span>
+<span class="sd">            copy.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="n">unique_ix</span><span class="p">,</span> <span class="n">restore_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_unique</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">unique_ix</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unique_restore_mask</span> <span class="o">=</span> <span class="n">restore_mask</span>
+        <span class="c1"># Since we know that _unique is a unique AtomGroup, we set its</span>
+        <span class="c1"># uniqueness caches from here:</span>
+        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
+        <span class="k">return</span> <span class="n">_unique</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Coordinates of the atoms in the AtomGroup.</span>
+        <span class="sd">&quot;&quot;&quot;Coordinates of the :class:`Atoms&lt;Atom&gt;` in the :class:`AtomGroup`.</span>
+
+<span class="sd">        A :class:`numpy.ndarray` with</span>
+<span class="sd">        :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``</span>
+<span class="sd">        and :attr:`~numpy.ndarray.dtype`\ ``=numpy.float32``.</span>
 
 <span class="sd">        The positions can be changed by assigning an array of the appropriate</span>
-<span class="sd">        shape, i.e. either Nx3 to assign individual coordinates or 3, to assign</span>
-<span class="sd">        the *same* coordinate to all atoms (e.g. ``ag.positions =</span>
-<span class="sd">        array([0,0,0])`` will move all particles to the origin).</span>
+<span class="sd">        shape, i.e., either ``(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)`` to</span>
+<span class="sd">        assign individual coordinates, or ``(3,)`` to assign the *same*</span>
+<span class="sd">        coordinate to all :class:`Atoms&lt;Atom&gt;` (e.g.,</span>
+<span class="sd">        ``ag.positions = array([0,0,0])`` will move all :class:`Atoms&lt;Atom&gt;`</span>
+<span class="sd">        to the origin).</span>
 
-<span class="sd">        .. note:: Changing the position is not reflected in any files;</span>
-<span class="sd">                  reading any frame from the trajectory will replace</span>
-<span class="sd">                  the change with that from the file *except* if the</span>
-<span class="sd">                  trajectory is held in memory, e.g., when the</span>
-<span class="sd">                  :class:`~MDAnalysis.core.universe.Universe.transfer_to_memory`</span>
+<span class="sd">        .. note:: Changing positions is not reflected in any files; reading any</span>
+<span class="sd">                  frame from the</span>
+<span class="sd">                  :attr:`~MDAnalysis.core.universe.Universe.trajectory` will</span>
+<span class="sd">                  replace the change with that from the file *except* if the</span>
+<span class="sd">                  :attr:`~MDAnalysis.core.universe.Universe.trajectory` is held</span>
+<span class="sd">                  in memory, e.g., when the</span>
+<span class="sd">                  :meth:`~MDAnalysis.core.universe.Universe.transfer_to_memory`</span>
 <span class="sd">                  method was used.</span>
 
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
+<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">            does not contain</span>
+<span class="sd">            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
 
@@ -1876,17 +2059,24 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Velocities of the atoms in the AtomGroup.</span>
+        <span class="sd">&quot;&quot;&quot;Velocities of the :class:`Atoms&lt;Atom&gt;` in the :class:`AtomGroup`.</span>
+
+<span class="sd">        A :class:`numpy.ndarray` with</span>
+<span class="sd">        :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``</span>
+<span class="sd">        and :attr:`~numpy.ndarray.dtype`\ ``=numpy.float32``.</span>
 
 <span class="sd">        The velocities can be changed by assigning an array of the appropriate</span>
-<span class="sd">        shape, i.e. either Nx3 to assign individual velocities or 3 to assign</span>
-<span class="sd">        the *same* velocity to all atoms (e.g. ``ag.velocity = array([0,0,0])``</span>
-<span class="sd">        will give all particles zero velocity).</span>
+<span class="sd">        shape, i.e. either ``(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)`` to assign</span>
+<span class="sd">        individual velocities or ``(3,)`` to assign the *same* velocity to all</span>
+<span class="sd">        :class:`Atoms&lt;Atom&gt;` (e.g. ``ag.velocities = array([0,0,0])`` will give</span>
+<span class="sd">        all :class:`Atoms&lt;Atom&gt;` zero :attr:`~Atom.velocity`).</span>
 
-<span class="sd">        Raises a :exc:`NoDataError` if the underlying</span>
-<span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep` does not contain</span>
-<span class="sd">        :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.</span>
-
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
+<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">            does not contain</span>
+<span class="sd">            :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1904,13 +2094,23 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">forces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Forces on each atom in the AtomGroup.</span>
+        <span class="sd">&quot;&quot;&quot;Forces on each :class:`Atom` in the :class:`AtomGroup`.</span>
 
-<span class="sd">        The velocities can be changed by assigning an array of the appropriate</span>
-<span class="sd">        shape, i.e. either Nx3 to assign individual velocities or 3 to assign</span>
-<span class="sd">        the *same* velocity to all atoms (e.g. ``ag.velocity = array([0,0,0])``</span>
-<span class="sd">        will give all particles zero velocity).</span>
+<span class="sd">        A :class:`numpy.ndarray` with</span>
+<span class="sd">        :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``</span>
+<span class="sd">        and :attr:`~numpy.ndarray.dtype`\ ``=numpy.float32``.</span>
 
+<span class="sd">        The forces can be changed by assigning an array of the appropriate</span>
+<span class="sd">        shape, i.e. either ``(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)`` to assign</span>
+<span class="sd">        individual forces or ``(3,)`` to assign the *same* force to all</span>
+<span class="sd">        :class:`Atoms&lt;Atom&gt;` (e.g. ``ag.forces = array([0,0,0])`` will give all</span>
+<span class="sd">        :class:`Atoms&lt;Atom&gt;` a zero :attr:`~Atom.force`).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
+<span class="sd">            If the :class:`~MDAnalysis.coordinates.base.Timestep` does not</span>
+<span class="sd">            contain :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1935,8 +2135,8 @@
 
 <span class="sd">        If :attr:`~AtomGroup.ts` is modified then these modifications</span>
 <span class="sd">        will be present until the frame number changes (which</span>
-<span class="sd">        typically happens when the underlying trajectory frame</span>
-<span class="sd">        changes).</span>
+<span class="sd">        typically happens when the underlying</span>
+<span class="sd">        :attr:`~MDAnalysis.core.universe.Universe.trajectory` frame changes).</span>
 
 <span class="sd">        It is not possible to assign a new</span>
 <span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep` to the</span>
@@ -1949,16 +2149,17 @@
     <span class="c1"># As with universe.select_atoms, needing to fish out specific kwargs</span>
     <span class="c1"># (namely, &#39;updating&#39;) doesn&#39;t allow a very clean signature.</span>
 <div class="viewcode-block" id="AtomGroup.select_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">,</span> <span class="o">**</span><span class="n">selgroups</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select atoms using a selection string.</span>
+        <span class="sd">&quot;&quot;&quot;Select :class:`Atoms&lt;Atom&gt;` using a selection string.</span>
 
-<span class="sd">        Returns an :class:`AtomGroup` with atoms sorted according to</span>
-<span class="sd">        their index in the topology (this is to ensure that there</span>
-<span class="sd">        are not any duplicates, which can happen with complicated</span>
-<span class="sd">        selections).</span>
+<span class="sd">        Returns an :class:`AtomGroup` with :class:`Atoms&lt;Atom&gt;` sorted according</span>
+<span class="sd">        to their index in the topology (this is to ensure that there are no</span>
+<span class="sd">        duplicates, which can happen with complicated selections).</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `TypeError` if the arbitrary atomgroups passed are not of type `MDAnalysis.core.groups.AtomGroup`</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the arbitrary groups passed are not of type</span>
+<span class="sd">            :class:`MDAnalysis.core.groups.AtomGroup`</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1998,12 +2199,11 @@
 <span class="sd">        -----</span>
 
 <span class="sd">        If exact ordering of atoms is required (for instance, for</span>
-<span class="sd">        :meth:`~AtomGroup.angle` or :meth:`~AtomGroup.dihedral`</span>
-<span class="sd">        calculations) then one supplies selections *separately* in the</span>
-<span class="sd">        required order. Also, when multiple :class:`AtomGroup`</span>
-<span class="sd">        instances are concatenated with the ``+`` operator then the</span>
-<span class="sd">        order of :class:`Atom` instances is preserved and duplicates</span>
-<span class="sd">        are not removed.</span>
+<span class="sd">        :meth:`~AtomGroup.angle` or :meth:`~AtomGroup.dihedral` calculations)</span>
+<span class="sd">        then one supplies selections *separately* in the required order. Also,</span>
+<span class="sd">        when multiple :class:`AtomGroup` instances are concatenated with the</span>
+<span class="sd">        ``+`` operator, then the order of :class:`Atom` instances is preserved</span>
+<span class="sd">        and duplicates are *not* removed.</span>
 
 
 <span class="sd">        See Also</span>
@@ -2132,8 +2332,9 @@
 <span class="sd">                selects all atoms within a range of (1-based) inclusive indices,</span>
 <span class="sd">                e.g. ``bynum 1`` selects the first atom in the universe;</span>
 <span class="sd">                ``bynum 5:10`` selects atoms 5 through 10 inclusive. All atoms</span>
-<span class="sd">                in the :class:`MDAnalysis.Universe` are consecutively numbered,</span>
-<span class="sd">                and the index runs from 1 up to the total number of atoms.</span>
+<span class="sd">                in the :class:`~MDAnalysis.core.universe.Universe` are</span>
+<span class="sd">                consecutively numbered, and the index runs from 1 up to the</span>
+<span class="sd">                total number of atoms.</span>
 
 <span class="sd">        **Preexisting selections**</span>
 
@@ -2147,7 +2348,7 @@
 <span class="sd">                included in the parsing just by comparison of atom indices.</span>
 <span class="sd">                This means that it is up to the user to make sure the</span>
 <span class="sd">                `group-name` group was defined in an appropriate</span>
-<span class="sd">                :class:`Universe`.</span>
+<span class="sd">                :class:`~MDAnalysis.core.universe.Universe`.</span>
 
 <span class="sd">            global *selection*</span>
 <span class="sd">                by default, when issuing</span>
@@ -2162,7 +2363,8 @@
 <span class="sd">                ``global`` absent, the result would be an empty selection since</span>
 <span class="sd">                the ``protein`` subselection would itself be empty. When issuing</span>
 <span class="sd">                :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from a</span>
-<span class="sd">                :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored.</span>
+<span class="sd">                :class:`~MDAnalysis.core.universe.Universe`, ``global`` is</span>
+<span class="sd">                ignored.</span>
 
 <span class="sd">        **Dynamic selections**</span>
 <span class="sd">            If :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` is</span>
@@ -2183,23 +2385,17 @@
 <span class="sd">            longer update across frames.</span>
 
 
-<span class="sd">        .. versionchanged:: 0.7.4</span>
-<span class="sd">           Added *resnum* selection.</span>
-<span class="sd">        .. versionchanged:: 0.8.1</span>
-<span class="sd">           Added *group* and *fullgroup* selections.</span>
-<span class="sd">        .. deprecated:: 0.11</span>
-<span class="sd">           The use of ``fullgroup`` has been deprecated in favor of the equivalent</span>
-<span class="sd">           ``global group``.</span>
-<span class="sd">        .. versionchanged:: 0.13.0</span>
-<span class="sd">           Added *bonded* selection</span>
-<span class="sd">        .. versionchanged:: 0.16.0</span>
-<span class="sd">           Resid selection now takes icodes into account where present.</span>
-<span class="sd">        .. versionchanged:: 0.16.0</span>
-<span class="sd">           Updating selections now possible by setting the ``updating`` argument.</span>
-<span class="sd">        .. versionchanged:: 0.17.0</span>
-<span class="sd">           Added *moltype* and *molnum* selections.</span>
-<span class="sd">        .. versionchanged:: 0.18.1</span>
-<span class="sd">           Added strict type checking for passed groups</span>
+<span class="sd">        .. versionchanged:: 0.7.4 Added *resnum* selection.</span>
+<span class="sd">        .. versionchanged:: 0.8.1 Added *group* and *fullgroup* selections.</span>
+<span class="sd">        .. deprecated:: 0.11 The use of *fullgroup* has been deprecated in favor</span>
+<span class="sd">            of the equivalent *global group* selections.</span>
+<span class="sd">        .. versionchanged:: 0.13.0 Added *bonded* selection.</span>
+<span class="sd">        .. versionchanged:: 0.16.0 Resid selection now takes icodes into account</span>
+<span class="sd">            where present.</span>
+<span class="sd">        .. versionchanged:: 0.16.0 Updating selections now possible by setting</span>
+<span class="sd">            the `updating` argument.</span>
+<span class="sd">        .. versionchanged:: 0.17.0 Added *moltype* and *molnum* selections.</span>
+<span class="sd">        .. versionchanged:: 0.18.1 Added strict type checking for passed groups.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">updating</span> <span class="o">=</span> <span class="n">selgroups</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;updating&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">sel_strs</span> <span class="o">=</span> <span class="p">(</span><span class="n">sel</span><span class="p">,)</span> <span class="o">+</span> <span class="n">othersel</span>
@@ -2221,7 +2417,8 @@
         <span class="k">return</span> <span class="n">atomgrp</span></div>
 
 <div class="viewcode-block" id="AtomGroup.split"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Split AtomGroup into a list of atomgroups by `level`.</span>
+        <span class="sd">&quot;&quot;&quot;Split :class:`AtomGroup` into a :class:`list` of</span>
+<span class="sd">        :class:`AtomGroups&lt;AtomGroup&gt;` by `level`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2229,8 +2426,7 @@
 
 
 <span class="sd">        .. versionadded:: 0.9.0</span>
-<span class="sd">        .. versionchanged:: 0.17.0</span>
-<span class="sd">           Added the &#39;molecule&#39; level.</span>
+<span class="sd">        .. versionchanged:: 0.17.0 Added the &#39;molecule&#39; level.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">accessors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;segment&#39;</span><span class="p">:</span> <span class="s1">&#39;segindices&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;residue&#39;</span><span class="p">:</span> <span class="s1">&#39;resindices&#39;</span><span class="p">,</span>
@@ -2255,12 +2451,13 @@
                 <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">levelindices</span><span class="p">)]</span></div>
 
 <div class="viewcode-block" id="AtomGroup.guess_bonds"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">guess_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Guess bonds that exist within this AtomGroup and add to Universe</span>
+        <span class="sd">&quot;&quot;&quot;Guess bonds that exist within this :class:`AtomGroup` and add them to</span>
+<span class="sd">        the underlying :attr:`~AtomGroup.universe`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        vdwradii : dict, optional</span>
-<span class="sd">          Dict relating atom type: vdw radii</span>
+<span class="sd">            Dict relating atom types: vdw radii</span>
 
 
 <span class="sd">        See Also</span>
@@ -2269,7 +2466,6 @@
 
 
 <span class="sd">        .. versionadded:: 0.10.0</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..topology.core</span> <span class="k">import</span> <span class="n">guess_bonds</span><span class="p">,</span> <span class="n">guess_angles</span><span class="p">,</span> <span class="n">guess_dihedrals</span>
         <span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="k">import</span> <span class="n">Bonds</span><span class="p">,</span> <span class="n">Angles</span><span class="p">,</span> <span class="n">Dihedrals</span>
@@ -2298,15 +2494,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bond</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This AtomGroup represented as a Bond object</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">          A :class:`MDAnalysis.core.topologyobjects.Bond` object</span>
+        <span class="sd">&quot;&quot;&quot;This :class:`AtomGroup` represented as a</span>
+<span class="sd">        :class:`MDAnalysis.core.topologyobjects.Bond` object</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">          `ValueError` if the AtomGroup is not length 2</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the :class:`AtomGroup` is not length 2</span>
 
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
@@ -2318,15 +2512,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This AtomGroup represented as an Angle object</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">          A :class:`MDAnalysis.core.topologyobjects.Angle` object</span>
+        <span class="sd">&quot;&quot;&quot;This :class:`AtomGroup` represented as an</span>
+<span class="sd">        :class:`MDAnalysis.core.topologyobjects.Angle` object</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">          `ValueError` if the AtomGroup is not length 3</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the :class:`AtomGroup` is not length 3</span>
 
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
@@ -2338,15 +2530,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dihedral</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This AtomGroup represented as a Dihedral object</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">          A :class:`MDAnalysis.core.topologyobjects.Dihedral` object</span>
+        <span class="sd">&quot;&quot;&quot;This :class:`AtomGroup` represented as a</span>
+<span class="sd">        :class:`~MDAnalysis.core.topologyobjects.Dihedral` object</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">          `ValueError` if the AtomGroup is not length 4</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the :class:`AtomGroup` is not length 4</span>
 
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
@@ -2358,15 +2548,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">improper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This AtomGroup represented as an ImproperDihedral object</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">          A :class:`MDAnalysis.core.topologyobjects.ImproperDihedral` object</span>
+        <span class="sd">&quot;&quot;&quot;This :class:`AtomGroup` represented as an</span>
+<span class="sd">        :class:`MDAnalysis.core.topologyobjects.ImproperDihedral` object</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">          `ValueError` if the AtomGroup is not length 4</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the :class:`AtomGroup` is not length 4</span>
 
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
@@ -2403,10 +2591,8 @@
 <span class="sd">            Default os ``&quot;conect&quot;``.</span>
 
 
-<span class="sd">        .. versionchanged:: 0.9.0</span>
-<span class="sd">           Merged with write_selection.  This method can now write both</span>
-<span class="sd">           selections out.</span>
-
+<span class="sd">        .. versionchanged:: 0.9.0 Merged with write_selection. This method can</span>
+<span class="sd">            now write both selections out.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check that AtomGroup actually has any atoms (Issue #434)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -2460,63 +2646,85 @@
 <div class="viewcode-block" id="ResidueGroup"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup">[docs]</a><span class="k">class</span> <span class="nc">ResidueGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ResidueGroup base class.</span>
 
-<span class="sd">    This class is used by a :class:`Universe` for generating its</span>
-<span class="sd">    Topology-specific :class:`ResidueGroup` class. All the</span>
-<span class="sd">    :class:`TopologyAttr` components are obtained from</span>
-<span class="sd">    :class:`GroupBase`, so this class only includes ad-hoc methods</span>
-<span class="sd">    specific to ResidueGroups.</span>
+<span class="sd">    This class is used by a :class:`~MDAnalysis.core.universe.Universe` for</span>
+<span class="sd">    generating its Topology-specific :class:`ResidueGroup` class. All the</span>
+<span class="sd">    :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` components are obtained</span>
+<span class="sd">    from :class:`GroupBase`, so this class only includes ad-hoc methods</span>
+<span class="sd">    specific to :class:`ResidueGroups&lt;ResidueGroup&gt;`.</span>
 
 <span class="sd">    ResidueGroups can be compared and combined using group operators. See the</span>
 <span class="sd">    list of these operators on :class:`GroupBase`.</span>
 
 <span class="sd">    .. deprecated:: 0.16.2</span>
 <span class="sd">       *Instant selectors* of Segments will be removed in the 1.0 release.</span>
-<span class="sd">       See :ref:`Instant selectors &lt;instance-selectors&gt;` for details and alternatives.</span>
-
+<span class="sd">       See :ref:`Instant selectors &lt;instance-selectors&gt;` for details and</span>
+<span class="sd">       alternatives.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get an :class:`AtomGroup` of atoms represented in this</span>
+        <span class="sd">&quot;&quot;&quot;An :class:`AtomGroup` of :class:`Atoms&lt;Atom&gt;` present in this</span>
 <span class="sd">        :class:`ResidueGroup`.</span>
 
-<span class="sd">        The atoms are ordered locally by residue in the</span>
-<span class="sd">        :class:`ResidueGroup`.  No duplicates are removed.</span>
-
+<span class="sd">        The :class:`Atoms&lt;Atom&gt;` are ordered locally by :class:`Residue` in the</span>
+<span class="sd">        :class:`ResidueGroup`.  Duplicates are *not* removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
+        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
+        <span class="c1"># If the ResidueGroup is known to be unique, this also holds for the</span>
+        <span class="c1"># atoms therein, since atoms can only belong to one residue at a time.</span>
+        <span class="c1"># On the contrary, if the ResidueGroup is not unique, this does not</span>
+        <span class="c1"># imply non-unique atoms, since residues might be empty.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]:</span>
+                <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">ag</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of atoms represented in :class:`ResidueGroup`, including</span>
-<span class="sd">        duplicate residues.</span>
+        <span class="sd">&quot;&quot;&quot;Number of :class:`Atoms&lt;Atom&gt;` present in this :class:`ResidueGroup`,</span>
+<span class="sd">        including duplicate residues (and thus, duplicate atoms).</span>
 
 <span class="sd">        Equivalent to ``len(self.atoms)``.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get another :class:`ResidueGroup` identical to this one.</span>
+        <span class="sd">&quot;&quot;&quot;The :class:`ResidueGroup` itself.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        copy : return a true copy of the :class:`ResidueGroup`</span>
+
+
+<span class="sd">        .. versionchanged:: 0.19.0</span>
+<span class="sd">           In previous versions, this returned a copy, but now</span>
+<span class="sd">           the :class:`ResidueGroup` itself is returned. This should</span>
+<span class="sd">           not affect any code but only speed up calculations.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of residues in ResidueGroup. Equivalent to ``len(self)``.</span>
+        <span class="sd">&quot;&quot;&quot;Number of residues in the :class:`ResidueGroup`.</span>
 
+<span class="sd">        Equivalent to ``len(self)``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get sorted SegmentGroup of the (unique) segments represented in the</span>
-<span class="sd">        ResidueGroup.</span>
-
+        <span class="sd">&quot;&quot;&quot;Get sorted :class:`SegmentGroup` of the unique segments present in</span>
+<span class="sd">        the :class:`ResidueGroup`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segindices</span><span class="p">)]</span>
+        <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segindices</span><span class="p">)]</span>
+        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sg</span>
+        <span class="k">return</span> <span class="n">sg</span>
 
     <span class="nd">@segments</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -2529,8 +2737,8 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">s_ix</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">segindex</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">new</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can only set ResidueGroup residues to Segment &quot;</span>
-                                <span class="s2">&quot;or ResidueGroup not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can only set ResidueGroup segments to Segment &quot;</span>
+                                <span class="s2">&quot;or SegmentGroup, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                     <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">new</span>
                                               <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Segment</span><span class="p">))</span>
                                 <span class="p">))</span>
@@ -2547,16 +2755,19 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of unique segments represented in the ResidueGroup.</span>
+        <span class="sd">&quot;&quot;&quot;Number of unique segments present in the ResidueGroup.</span>
 
 <span class="sd">        Equivalent to ``len(self.segments)``.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;unique&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a ResidueGroup containing sorted and unique residues only.</span>
+        <span class="sd">&quot;&quot;&quot;Return a :class:`ResidueGroup` containing sorted and unique</span>
+<span class="sd">        :class:`Residues&lt;Residue&gt;` only.</span>
+
+<span class="sd">        If the :class:`ResidueGroup` is unique, this is the group itself.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -2571,86 +2782,137 @@
 <span class="sd">           &lt;ResidueGroup with 3 residues&gt;</span>
 <span class="sd">           &gt;&gt;&gt; rg2.ix</span>
 <span class="sd">           array([0, 1, 2])</span>
+<span class="sd">           &gt;&gt;&gt; rg2.unique is rg2</span>
+<span class="sd">           True</span>
+
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
+<span class="sd">        .. versionchanged:: 0.19.0 If the :class:`ResidueGroup` is already</span>
+<span class="sd">            unique, :attr:`ResidueGroup.unique` now returns the group itself</span>
+<span class="sd">            instead of a copy.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)]</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="n">_unique</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)]</span>
+        <span class="c1"># Since we know that _unique is a unique ResidueGroup, we set its</span>
+        <span class="c1"># uniqueness caches from here:</span>
+        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
+        <span class="k">return</span> <span class="n">_unique</span></div>
 
 
 <div class="viewcode-block" id="SegmentGroup"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup">[docs]</a><span class="k">class</span> <span class="nc">SegmentGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;SegmentGroup base class.</span>
+    <span class="sd">&quot;&quot;&quot;:class:`SegmentGroup` base class.</span>
 
-<span class="sd">    This class is used by a Universe for generating its Topology-specific</span>
-<span class="sd">    SegmentGroup class. All the TopologyAttr components are obtained from</span>
-<span class="sd">    GroupBase, so this class only includes ad-hoc methods specific to</span>
-<span class="sd">    SegmentGroups.</span>
+<span class="sd">    This class is used by a :class:`~MDAnalysis.core.universe.Universe` for</span>
+<span class="sd">    generating its Topology-specific :class:`SegmentGroup` class. All the</span>
+<span class="sd">    :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` components are obtained</span>
+<span class="sd">    from :class:`GroupBase`, so this class only includes ad-hoc methods specific</span>
+<span class="sd">    to :class:`SegmentGroups&lt;SegmentGroup&gt;`.</span>
 
-<span class="sd">    SegmentGroups can be compared and combined using group operators. See the</span>
-<span class="sd">    list of these operators on :class:`GroupBase`.</span>
+<span class="sd">    :class:`SegmentGroups&lt;SegmentGroup&gt;` can be compared and combined using</span>
+<span class="sd">    group operators. See the list of these operators on :class:`GroupBase`.</span>
 
 <span class="sd">    .. deprecated:: 0.16.2</span>
 <span class="sd">       *Instant selectors* of Segments will be removed in the 1.0 release.</span>
-<span class="sd">       See :ref:`Instant selectors &lt;instance-selectors&gt;` for details and alternatives.</span>
-
+<span class="sd">       See :ref:`Instant selectors &lt;instance-selectors&gt;` for details and</span>
+<span class="sd">       alternatives.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get an AtomGroup of atoms represented in this SegmentGroup.</span>
+        <span class="sd">&quot;&quot;&quot;An :class:`AtomGroup` of :class:`Atoms&lt;Atom&gt;` present in this</span>
+<span class="sd">        :class:`SegmentGroup`.</span>
 
-<span class="sd">        The atoms are ordered locally by residue, which are further ordered by</span>
-<span class="sd">        segment in the SegmentGroup. No duplicates are removed.</span>
-
+<span class="sd">        The :class:`Atoms&lt;Atom&gt;` are ordered locally by :class:`Residue`, which</span>
+<span class="sd">        are further ordered by :class:`Segment` in the :class:`SegmentGroup`.</span>
+<span class="sd">        Duplicates are *not* removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
+        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
+        <span class="c1"># If the SegmentGroup is known to be unique, this also holds for the</span>
+        <span class="c1"># residues therein, and thus, also for the atoms in those residues.</span>
+        <span class="c1"># On the contrary, if the SegmentGroup is not unique, this does not</span>
+        <span class="c1"># imply non-unique atoms, since segments or residues might be empty.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]:</span>
+                <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">ag</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of atoms represented in SegmentGroup, including duplicate</span>
-<span class="sd">        segments.</span>
+        <span class="sd">&quot;&quot;&quot;Number of atoms present in the :class:`SegmentGroup`, including</span>
+<span class="sd">        duplicate segments (and thus, duplicate atoms).</span>
 
 <span class="sd">        Equivalent to ``len(self.atoms)``.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a ResidueGroup of residues represented in this SegmentGroup.</span>
+        <span class="sd">&quot;&quot;&quot;A :class:`ResidueGroup` of :class:`Residues&lt;Residue&gt;` present in this</span>
+<span class="sd">        :class:`SegmentGroup`.</span>
 
-<span class="sd">        The residues are ordered locally by segment in the SegmentGroup.</span>
-<span class="sd">        No duplicates are removed.</span>
-
+<span class="sd">        The :class:`Residues&lt;Residue&gt;` are ordered locally by</span>
+<span class="sd">        :class:`Segment` in the :class:`SegmentGroup`. Duplicates are *not*</span>
+<span class="sd">        removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resindices</span><span class="p">)]</span>
+        <span class="n">rg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resindices</span><span class="p">)]</span>
+        <span class="c1"># If the SegmentGroup is known to be unique, this also holds for the</span>
+        <span class="c1"># residues therein. On the contrary, if the SegmentGroup is not unique,</span>
+        <span class="c1"># this does not imply non-unique residues, since segments might be</span>
+        <span class="c1"># empty.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]:</span>
+                <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">rg</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of residues represented in SegmentGroup, including duplicate</span>
-<span class="sd">        segments.</span>
+        <span class="sd">&quot;&quot;&quot;Number of residues present in this :class:`SegmentGroup`, including</span>
+<span class="sd">        duplicate segments (and thus, residues).</span>
 
 <span class="sd">        Equivalent to ``len(self.residues)``.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get another SegmentGroup identical to this one.</span>
+        <span class="sd">&quot;&quot;&quot;The :class:`SegmentGroup` itself.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        copy : return a true copy of the :class:`SegmentGroup`</span>
+
+
+<span class="sd">        .. versionchanged:: 0.19.0</span>
+<span class="sd">           In previous versions, this returned a copy, but now</span>
+<span class="sd">           the :class:`SegmentGroup` itself is returned. This should</span>
+<span class="sd">           not affect any code but only speed up calculations.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of segments in SegmentGroup. Equivalent to ``len(self)``.</span>
+        <span class="sd">&quot;&quot;&quot;Number of segments in the :class:`SegmentGroup`.</span>
 
+<span class="sd">        Equivalent to ``len(self)``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;unique&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a SegmentGroup containing sorted and unique segments only.</span>
+        <span class="sd">&quot;&quot;&quot;Return a :class:`SegmentGroup` containing sorted and unique</span>
+<span class="sd">        :class:`Segments&lt;Segment&gt;` only.</span>
+
+<span class="sd">        If the :class:`SegmentGroup` is unique, this is the group itself.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -2665,16 +2927,29 @@
 <span class="sd">           &lt;SegmentGroup with 3 segments&gt;</span>
 <span class="sd">           &gt;&gt;&gt; sg2.ix</span>
 <span class="sd">           array([0, 1, 2])</span>
+<span class="sd">           &gt;&gt;&gt; sg2.unique is sg2</span>
+<span class="sd">           True</span>
+
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
-
+<span class="sd">        .. versionchanged:: 0.19.0 If the :class:`SegmentGroup` is already</span>
+<span class="sd">            unique, :attr:`SegmentGroup.unique` now returns the group itself</span>
+<span class="sd">            instead of a copy.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)]</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="n">_unique</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)]</span>
+        <span class="c1"># Since we know that _unique is a unique SegmentGroup, we set its</span>
+        <span class="c1"># uniqueness caches from here:</span>
+        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
+        <span class="k">return</span> <span class="n">_unique</span></div>
 
 
 <span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
 <span class="k">class</span> <span class="nc">ComponentBase</span><span class="p">(</span><span class="n">_MutableBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class from which a Universe&#39;s Component class is built.</span>
+    <span class="sd">&quot;&quot;&quot;Base class from which a :class:`~MDAnalysis.core.universe.Universe`\ &#39;s</span>
+<span class="sd">    Component class is built.</span>
 
 <span class="sd">    Components are the individual objects that are found in Groups.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2713,7 +2988,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        Group</span>
 <span class="sd">            Group with elements of `self` and `other` concatenated</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">o_ix</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">ix_array</span>
 
@@ -2733,7 +3007,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        self</span>
 <span class="sd">            Group with elements of `self` reproduced</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">other</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix_array</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
@@ -2750,10 +3023,10 @@
     <span class="k">def</span> <span class="nf">ix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Unique index of this component.</span>
 
-<span class="sd">        If this component is an Atom, this is the index of the atom.</span>
-<span class="sd">        If it is a Residue, this is the index of the residue.</span>
-<span class="sd">        If it is a Segment, this is the index of the segment.</span>
-
+<span class="sd">        If this component is an :class:`Atom`, this is the index of the</span>
+<span class="sd">        :class:`Atom`.</span>
+<span class="sd">        If it is a :class:`Residue`, this is the index of the :class:`Residue`.</span>
+<span class="sd">        If it is a :class:`Segment`, this is the index of the :class:`Segment`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ix</span>
 
@@ -2771,12 +3044,13 @@
 
 
 <div class="viewcode-block" id="Atom"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.Atom">[docs]</a><span class="k">class</span> <span class="nc">Atom</span><span class="p">(</span><span class="n">ComponentBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Atom base class.</span>
+    <span class="sd">&quot;&quot;&quot;:class:`Atom` base class.</span>
 
-<span class="sd">    This class is used by a Universe for generating its Topology-specific Atom</span>
-<span class="sd">    class. All the TopologyAttr components are obtained from ComponentBase, so</span>
-<span class="sd">    this class only includes ad-hoc methods specific to Atoms.</span>
-
+<span class="sd">    This class is used by a :class:`~MDAnalysis.core.universe.Universe` for</span>
+<span class="sd">    generating its Topology-specific :class:`Atom` class. All the</span>
+<span class="sd">    :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` components are obtained</span>
+<span class="sd">    from :class:`ComponentBase`, so this class only includes ad-hoc methods</span>
+<span class="sd">    specific to :class:`Atoms&lt;Atom&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Try and catch known attributes and give better error message&quot;&quot;&quot;</span>
@@ -2809,8 +3083,8 @@
     <span class="nd">@residue</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">Residue</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;Can only set Atom residue to Residue, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">new</span><span class="p">)))</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can only set Atom residue to Residue, not </span><span class="si">{}</span><span class="s2">&quot;</span>
+                            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">new</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">move_atom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">new</span><span class="o">.</span><span class="n">resindex</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -2828,9 +3102,16 @@
 
 <span class="sd">        The position can be changed by assigning an array of length (3,).</span>
 
-<span class="sd">        .. note:: changing the position is not reflected in any files; reading any</span>
-<span class="sd">                  frame from the trajectory will replace the change with that</span>
-<span class="sd">                  from the file</span>
+<span class="sd">        .. note:: changing the position is not reflected in any files; reading</span>
+<span class="sd">                  any frame from the trajectory will replace the change with</span>
+<span class="sd">                  that from the file</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
+<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">            does not contain</span>
+<span class="sd">            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
@@ -2842,15 +3123,18 @@
     <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Velocity of the atom.</span>
 
-<span class="sd">        The velocity can be changed by assigning an array of shape (3,).</span>
+<span class="sd">        The velocity can be changed by assigning an array of shape ``(3,)``.</span>
 
-<span class="sd">        .. note:: changing the velocity is not reflected in any files; reading any</span>
-<span class="sd">                  frame from the trajectory will replace the change with that</span>
-<span class="sd">                  from the file</span>
+<span class="sd">        .. note:: changing the velocity is not reflected in any files; reading</span>
+<span class="sd">                  any frame from the trajectory will replace the change with</span>
+<span class="sd">                  that from the file</span>
 
-<span class="sd">        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory</span>
-<span class="sd">        does not contain velocities.</span>
-
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
+<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">            does not contain</span>
+<span class="sd">            :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">try</span><span class="p">:</span>
@@ -2870,15 +3154,18 @@
     <span class="k">def</span> <span class="nf">force</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Force on the atom.</span>
 
-<span class="sd">        The force can be changed by assigning an array of shape (3,).</span>
+<span class="sd">        The force can be changed by assigning an array of shape ``(3,)``.</span>
 
 <span class="sd">        .. note:: changing the force is not reflected in any files; reading any</span>
 <span class="sd">                  frame from the trajectory will replace the change with that</span>
 <span class="sd">                  from the file</span>
 
-<span class="sd">        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory</span>
-<span class="sd">        does not contain forces.</span>
-
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
+<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">            does not contain</span>
+<span class="sd">            :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">try</span><span class="p">:</span>
@@ -2896,13 +3183,13 @@
 
 
 <div class="viewcode-block" id="Residue"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.Residue">[docs]</a><span class="k">class</span> <span class="nc">Residue</span><span class="p">(</span><span class="n">ComponentBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Residue base class.</span>
+    <span class="sd">&quot;&quot;&quot;:class:`Residue` base class.</span>
 
-<span class="sd">    This class is used by a Universe for generating its Topology-specific</span>
-<span class="sd">    Residue class. All the TopologyAttr components are obtained from</span>
-<span class="sd">    ComponentBase, so this class only includes ad-hoc methods specific to</span>
-<span class="sd">    Residues.</span>
-
+<span class="sd">    This class is used by a :class:`~MDAnalysis.core.universe.Universe` for</span>
+<span class="sd">    generating its Topology-specific :class:`Residue` class. All the</span>
+<span class="sd">    :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` components are obtained</span>
+<span class="sd">    from :class:`ComponentBase`, so this class only includes ad-hoc methods</span>
+<span class="sd">    specific to :class:`Residues&lt;Residue&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">me</span> <span class="o">=</span> <span class="s1">&#39;&lt;Residue&#39;</span>
@@ -2915,32 +3202,41 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="bp">self</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="sd">&quot;&quot;&quot;An :class:`AtomGroup` of :class:`Atoms&lt;Atom&gt;` present in this</span>
+<span class="sd">        :class:`Residue`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="bp">self</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="k">return</span> <span class="n">ag</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">segment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The :class:`Segment` this :class:`Residue` belongs to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">segindices</span><span class="p">[</span><span class="bp">self</span><span class="p">]]</span>
 
     <span class="nd">@segment</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">Segment</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;Can only set Residue segment to Segment, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">new</span><span class="p">)))</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can only set Residue segment to Segment, not </span><span class="si">{}</span><span class="s2">&quot;</span>
+                            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">new</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">move_residue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">new</span><span class="o">.</span><span class="n">segindex</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Segment"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.Segment">[docs]</a><span class="k">class</span> <span class="nc">Segment</span><span class="p">(</span><span class="n">ComponentBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Segment base class.</span>
+    <span class="sd">&quot;&quot;&quot;:class:`Segment` base class.</span>
 
-<span class="sd">    This class is used by a Universe for generating its Topology-specific</span>
-<span class="sd">    Segment class. All the TopologyAttr components are obtained from</span>
-<span class="sd">    ComponentBase, so this class only includes ad-hoc methods specific to</span>
-<span class="sd">    Segments.</span>
+<span class="sd">    This class is used by a :class:`~MDAnalysis.core.universe.Universe` for</span>
+<span class="sd">    generating its Topology-specific :class:`Segment` class. All the</span>
+<span class="sd">    :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` components are obtained</span>
+<span class="sd">    from :class:`ComponentBase`, so this class only includes ad-hoc methods</span>
+<span class="sd">    specific to :class:`Segments&lt;Segment&gt;`.</span>
 
 <span class="sd">    .. deprecated:: 0.16.2</span>
-<span class="sd">       *Instant selectors* of Segments will be removed in the 1.0 release.</span>
-<span class="sd">       See :ref:`Instant selectors &lt;instance-selectors&gt;` for details and alternatives.</span>
-
+<span class="sd">       *Instant selectors* of :class:`Segments&lt;Segment&gt;` will be removed in the</span>
+<span class="sd">       1.0 release. See :ref:`Instant selectors &lt;instance-selectors&gt;` for</span>
+<span class="sd">       details and alternatives.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">me</span> <span class="o">=</span> <span class="s1">&#39;&lt;Segment&#39;</span>
@@ -2950,11 +3246,23 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="bp">self</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="sd">&quot;&quot;&quot;An :class:`AtomGroup` of :class:`Atoms&lt;Atom&gt;` present in this</span>
+<span class="sd">        :class:`Segment`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="bp">self</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="k">return</span> <span class="n">ag</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resindices</span><span class="p">[</span><span class="bp">self</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="sd">&quot;&quot;&quot;A :class:`ResidueGroup` of :class:`Residues&lt;Residue&gt;` present in this</span>
+<span class="sd">        :class:`Segment`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resindices</span><span class="p">[</span><span class="bp">self</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
+        <span class="k">return</span> <span class="n">rg</span>
 
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="c1"># DEPRECATED in 0.16.2</span>
@@ -2964,8 +3272,8 @@
         <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">attr</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
             <span class="n">resnum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">attr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
             <span class="n">rg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">resnum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># convert to 0 based</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Instant selectors Segment.r&lt;N&gt; will be removed in 1.0. &quot;</span>
-                          <span class="s2">&quot;Use Segment.residues[N-1] instead.&quot;</span><span class="p">,</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Instant selectors Segment.r&lt;N&gt; will be removed in &quot;</span>
+                          <span class="s2">&quot;1.0. Use Segment.residues[N-1] instead.&quot;</span><span class="p">,</span>
                           <span class="ne">DeprecationWarning</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">rg</span>
         <span class="c1"># Resname accesss</span>
@@ -3001,8 +3309,8 @@
 <span class="sd">    normally; otherwise the group is updated (the stored selections are</span>
 <span class="sd">    re-applied), and only then is the attribute returned.</span>
 
-<span class="sd">    .. versionadded:: 0.16.0</span>
 
+<span class="sd">    .. versionadded:: 0.16.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># WARNING: This class has __getattribute__ and __getattr__ methods (the</span>
     <span class="c1"># latter inherited from AtomGroup). Because of this bugs introduced in the</span>
@@ -3020,7 +3328,6 @@
 <span class="sd">            group on which *selections* are to be applied.</span>
 <span class="sd">        selections : a tuple of :class:`~MDAnalysis.core.selection.Selection`</span>
 <span class="sd">            instances selections ready to be applied to *base_group*.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Because we&#39;re implementing __getattribute__, which needs _u for</span>
         <span class="c1"># its check, no self.attribute access can be made before this line</span>
@@ -3041,7 +3348,6 @@
 
 <span class="sd">        This method is triggered automatically when accessing attributes, if</span>
 <span class="sd">        the last update occurred under a different trajectory frame.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_group</span>
         <span class="n">sels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selections</span>
@@ -3051,7 +3357,8 @@
                      <span class="n">sels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">bg</span><span class="p">))</span><span class="o">.</span><span class="n">ix</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
-        <span class="c1"># Run back through AtomGroup init with this information to remake ourselves</span>
+        <span class="c1"># Run back through AtomGroup init with this information to remake</span>
+        <span class="c1"># ourselves</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">UpdatingAtomGroup</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_uptodate</span> <span class="o">=</span> <span class="kc">True</span></div>
 
@@ -3067,8 +3374,8 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        bool</span>
-<span class="sd">            `True` if the group&#39;s selection is up-to-date, `False` otherwise.</span>
-
+<span class="sd">            ``True`` if the group&#39;s selection is up-to-date, ``False``</span>
+<span class="sd">            otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lastupdate</span>
@@ -3088,13 +3395,12 @@
 
     <span class="k">def</span> <span class="nf">_ensure_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checks whether the selection needs updating and updates it, if needed.</span>
+<span class="sd">        Checks whether the selection needs updating and updates it if needed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        bool</span>
-<span class="sd">            `True` if the group was already up-to-date, `False` otherwise.</span>
-
+<span class="sd">            ``True`` if the group was already up-to-date, ``False`` otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_uptodate</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
@@ -3116,7 +3422,8 @@
         <span class="c1"># - recreate UAG as created through select_atoms (basegroup and selstrs)</span>
         <span class="c1"># even if base_group is a UAG this will work through recursion</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">_unpickle_uag</span><span class="p">,</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_group</span><span class="o">.</span><span class="n">__reduce__</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selections</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection_strings</span><span class="p">))</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_group</span><span class="o">.</span><span class="n">__reduce__</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selections</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">_selection_strings</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">basestr</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">UpdatingAtomGroup</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
@@ -3131,7 +3438,70 @@
             <span class="n">basegrp</span> <span class="o">=</span> <span class="s2">&quot;another AtomGroup.&quot;</span>
         <span class="c1"># With a shorthand to conditionally append the &#39;s&#39; in &#39;selections&#39;.</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">, with selection</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> on </span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basestr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                    <span class="s2">&quot;s&quot;</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection_strings</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:],</span> <span class="n">sels</span><span class="p">,</span> <span class="n">basegrp</span><span class="p">)</span></div>
+                    <span class="s2">&quot;s&quot;</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection_strings</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:],</span> <span class="n">sels</span><span class="p">,</span> <span class="n">basegrp</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a *static* :class:`AtomGroup` identical to the group of currently</span>
+<span class="sd">        selected :class:`Atoms&lt;Atom&gt;` in the :class:`UpdatingAtomGroup`.</span>
+
+
+<span class="sd">        By returning a *static* :class:`AtomGroup` it becomes possible to</span>
+<span class="sd">        compare the contents of the group *between* trajectory frames. See the</span>
+<span class="sd">        Example below.</span>
+
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        The :attr:`atoms` attribute of an :class:`UpdatingAtomGroup` behaves</span>
+<span class="sd">        differently from :attr:`AtomGroup.atoms`: the latter returns the</span>
+<span class="sd">        :class:`AtomGroup` itself whereas the former returns a</span>
+<span class="sd">        :class:`AtomGroup` and not an :class:`UpdatingAtomGroup` (for this, use</span>
+<span class="sd">        :meth:`UpdatingAtomGroup.copy`).</span>
+
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        The static :attr:`atoms` allows comparison of groups of atoms between</span>
+<span class="sd">        frames. For example, track water molecules that move in and out of a</span>
+<span class="sd">        solvation shell of a protein::</span>
+
+<span class="sd">          u = mda.Universe(TPR, XTC)</span>
+<span class="sd">          water_shell = u.select_atoms(&quot;name OW and around 3.5 protein&quot;, updating=True)</span>
+<span class="sd">          water_shell_prev = water_shell.atoms</span>
+
+<span class="sd">          for ts in u.trajectory:</span>
+<span class="sd">              exchanged = water_shell - water_shell_prev</span>
+
+<span class="sd">              print(ts.time, &quot;waters in shell =&quot;, water_shell.n_residues)</span>
+<span class="sd">              print(ts.time, &quot;waters that exchanged = &quot;, exchanged.n_residues)</span>
+<span class="sd">              print(ts.time, &quot;waters that remained bound = &quot;,</span>
+<span class="sd">                    water_shell.n_residues - exchanged.n_residues)</span>
+
+<span class="sd">              water_shell_prev = water_shell.atoms</span>
+
+<span class="sd">        By remembering the atoms of the current time step in</span>
+<span class="sd">        `water_shell_prev`, it becomes possible to use the :meth:`subtraction</span>
+<span class="sd">        of AtomGroups&lt;AtomGroup.subtract&gt;` to find the water molecules that</span>
+<span class="sd">        changed.</span>
+
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        copy : return a true copy of the :class:`UpdatingAtomGroup`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[:]</span>
+
+<div class="viewcode-block" id="UpdatingAtomGroup.copy"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get another :class:`UpdatingAtomGroup` identical to this one.</span>
+
+
+<span class="sd">        .. versionadded:: 0.19.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">UpdatingAtomGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selections</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_selection_strings</span><span class="p">)</span></div></div>
+
 
 <span class="c1"># Define relationships between these classes</span>
 <span class="c1"># with Level objects</span>
@@ -3148,17 +3518,17 @@
 <span class="n">SegmentGroup</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">SEGMENTLEVEL</span>
 
 <span class="k">def</span> <span class="nf">requires</span><span class="p">(</span><span class="o">*</span><span class="n">attrs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decorator to check if all AtomGroup arguments have certain attributes</span>
+    <span class="sd">&quot;&quot;&quot;Decorator to check if all :class:`AtomGroup` arguments have certain</span>
+<span class="sd">    attributes</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
-<span class="sd">    When used to wrap a function, will check all AtomGroup arguments for the</span>
-<span class="sd">    listed requirements</span>
+<span class="sd">    When used to wrap a function, will check all :class:`AtomGroup` arguments</span>
+<span class="sd">    for the listed requirements</span>
 
 <span class="sd">    @requires(&#39;masses&#39;, &#39;charges&#39;)</span>
 <span class="sd">    def mass_times_charge(atomgroup):</span>
 <span class="sd">        return atomgroup.masses * atomgroup.charges</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">require_dec</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
