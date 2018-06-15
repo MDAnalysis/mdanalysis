@@ -1112,18 +1112,18 @@ class GroupBase(_MutableBase):
         if self.isunique:
             packed_coords = distances.apply_PBC(ag.positions, box)
             if inplace:
-                ag.universe.coord.positions[ag.ix] = packed_coords
-                return ag.universe.coord.positions[ag.ix]
+                ag.universe.trajectory.ts.positions[ag.ix] = packed_coords
+                return ag.universe.trajectory.ts.positions[ag.ix]
             return packed_coords
         else:
             unique_ag = ag.unique
             unique_ix = unique_ag.ix
             restore_mask = ag._unique_restore_mask
-            coords = ag.universe.coord.positions[unique_ix]
+            coords = ag.universe.trajectory.ts.positions[unique_ix]
             packed_coords = distances.apply_PBC(coords, box)
             if inplace:
-                ag.universe.coord.positions[unique_ix] = packed_coords
-                return ag.universe.coord.positions[unique_ix[restore_mask]]
+                ag.universe.trajectory.ts.positions[unique_ix] = packed_coords
+                return ag.universe.trajectory.ts.positions[unique_ix[restore_mask]]
             return packed_coords[restore_mask]
 
     def wrap(self, compound="atoms", center="com", box=None):
@@ -1815,7 +1815,18 @@ class AtomGroup(GroupBase):
 
     @property
     def atoms(self):
-        """The :class:`AtomGroup` itself
+        """The :class:`AtomGroup` itself.
+
+        See Also
+        --------
+        copy : return a true copy of the :class:`AtomGroup`
+
+
+        .. versionchanged:: 0.19.0
+           In previous versions, this returned a copy, but now
+           the :class:`AtomGroup` itself is returned. This should
+           not affect any code but only speed up calculations.
+
         """
         return self
 
@@ -2637,6 +2648,17 @@ class ResidueGroup(GroupBase):
     @property
     def residues(self):
         """The :class:`ResidueGroup` itself.
+
+        See Also
+        --------
+        copy : return a true copy of the :class:`ResidueGroup`
+
+
+        .. versionchanged:: 0.19.0
+           In previous versions, this returned a copy, but now
+           the :class:`ResidueGroup` itself is returned. This should
+           not affect any code but only speed up calculations.
+
         """
         return self
 
@@ -2816,6 +2838,17 @@ class SegmentGroup(GroupBase):
     @property
     def segments(self):
         """The :class:`SegmentGroup` itself.
+
+        See Also
+        --------
+        copy : return a true copy of the :class:`SegmentGroup`
+
+
+        .. versionchanged:: 0.19.0
+           In previous versions, this returned a copy, but now
+           the :class:`SegmentGroup` itself is returned. This should
+           not affect any code but only speed up calculations.
+
         """
         return self
 
@@ -3365,6 +3398,52 @@ class UpdatingAtomGroup(AtomGroup):
     def atoms(self):
         """Get a *static* :class:`AtomGroup` identical to the group of currently
         selected :class:`Atoms<Atom>` in the :class:`UpdatingAtomGroup`.
+
+
+        By returning a *static* :class:`AtomGroup` it becomes possible to
+        compare the contents of the group *between* trajectory frames. See the
+        Example below.
+
+
+        Note
+        ----
+        The :attr:`atoms` attribute of an :class:`UpdatingAtomGroup` behaves
+        differently from :attr:`AtomGroup.atoms`: the latter returns the
+        :class:`AtomGroup` itself whereas the former returns a
+        :class:`AtomGroup` and not an :class:`UpdatingAtomGroup` (for this, use
+        :meth:`UpdatingAtomGroup.copy`).
+
+
+        Example
+        -------
+        The static :attr:`atoms` allows comparison of groups of atoms between
+        frames. For example, track water molecules that move in and out of a
+        solvation shell of a protein::
+
+          u = mda.Universe(TPR, XTC)
+          water_shell = u.select_atoms("name OW and around 3.5 protein", updating=True)
+          water_shell_prev = water_shell.atoms
+
+          for ts in u.trajectory:
+              exchanged = water_shell - water_shell_prev
+
+              print(ts.time, "waters in shell =", water_shell.n_residues)
+              print(ts.time, "waters that exchanged = ", exchanged.n_residues)
+              print(ts.time, "waters that remained bound = ",
+                    water_shell.n_residues - exchanged.n_residues)
+
+              water_shell_prev = water_shell.atoms
+
+        By remembering the atoms of the current time step in
+        `water_shell_prev`, it becomes possible to use the :meth:`subtraction
+        of AtomGroups<AtomGroup.subtract>` to find the water molecules that
+        changed.
+
+
+        See Also
+        --------
+        copy : return a true copy of the :class:`UpdatingAtomGroup`
+
         """
         return self[:]
 
