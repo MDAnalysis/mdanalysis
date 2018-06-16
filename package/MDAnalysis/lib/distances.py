@@ -905,7 +905,6 @@ def calc_angle(a, b, c, box=None):
       single coordinate vectors
     box : numpy.ndarray, optional
       simulation box, if given periodic boundary conditions will be applied
-      to the vectors a->b and b->c.
 
     .. versionadded:: 0.18.1
     """
@@ -921,7 +920,6 @@ def calc_dihedral(a, b, c, d, box=None):
       single coordinate vectors
     box : numpy.ndarray, optional
       simulation box, if given periodic boundary conditions will be applied
-      to the vectors a->b and b->c.
 
     .. versionadded:: 0.18.1
     """
