@@ -24,6 +24,7 @@ import itertools
 import numpy as np
 import pytest
 from six.moves import zip, range
+from six.moves import cPickle as pickle
 from unittest import TestCase
 from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_allclose)
@@ -423,6 +424,16 @@ class BaseReaderTest(object):
         # After defining the transformations, the workflow cannot be changed
         with pytest.raises(ValueError):
             transformed.add_transformations(translate([2,2,2]))
+
+    @pytest.mark.parametrize("protocol", range(1, pickle.HIGHEST_PROTOCOL+1))
+    def test_pickle(self, reader, protocol):
+        try:
+            s = pickle.dumps(reader, protocol=protocol)
+        except TypeError as err:
+            pytest.fail("Reader cannot be pickled with protocol={}\n{}".format(
+                protocol, err))
+        assert len(s) > 1000
+
 
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):

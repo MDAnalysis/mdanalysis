@@ -21,6 +21,7 @@
 #
 from __future__ import division, absolute_import
 from six.moves import zip
+from six.moves import cPickle as pickle
 
 import numpy as np
 import os
@@ -119,8 +120,8 @@ class TestChainReader(object):
                 ts_new._pos,
                 self.prec,
                 err_msg="Coordinates disagree at frame {0:d}".format(
-                    ts_orig.frame))       
-    
+                    ts_orig.frame))
+
     def test_transform_iteration(self, universe, transformed):
         vector = np.float32([10,10,10])
         # # Are the transformations applied and
@@ -135,7 +136,7 @@ class TestChainReader(object):
             frame = ts.frame
             ref = universe.trajectory[frame].positions + vector
             assert_almost_equal(ts.positions, ref, decimal = 6)
-    
+
     def test_transform_slice(self, universe, transformed):
         vector = np.float32([10,10,10])
         # what happens when we slice the trajectory?
@@ -143,7 +144,7 @@ class TestChainReader(object):
             frame = ts.frame
             ref = universe.trajectory[frame].positions + vector
             assert_almost_equal(ts.positions, ref, decimal = 6)
-    
+
     def test_transform_switch(self, universe, transformed):
         vector = np.float32([10,10,10])
         # grab a frame:
@@ -154,12 +155,21 @@ class TestChainReader(object):
         assert_almost_equal(transformed.trajectory[10].positions, newref, decimal = 6)
         # what happens when we comeback to the previous frame?
         assert_almost_equal(transformed.trajectory[2].positions, ref, decimal = 6)
-    
+
     def test_transfrom_rewind(self, universe, transformed):
         vector = np.float32([10,10,10])
         ref = universe.trajectory[0].positions + vector
         transformed.trajectory.rewind()
         assert_almost_equal(transformed.trajectory.ts.positions, ref, decimal = 6)
+
+    @pytest.mark.parametrize("protocol", range(1, pickle.HIGHEST_PROTOCOL+1))
+    def test_pickle(self, universe, protocol):
+        try:
+            s = pickle.dumps(universe.trajectory, protocol=protocol)
+        except TypeError as err:
+            pytest.fail("ChainReader cannot be pickled with protocol={}\n{}".format(
+                protocol, err))
+        assert len(s) > 1000
 
 class TestChainReaderCommonDt(object):
     common_dt = 100.0
