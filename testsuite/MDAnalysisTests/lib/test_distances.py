@@ -51,7 +51,7 @@ shifts = [
 @pytest.mark.parametrize('shift', shifts)
 @pytest.mark.parametrize('periodic', [True, False])
 def test_calc_distance(shift, periodic):
-    box = np.array([10, 10, 10, 90., 90., 90.], dtype=np.float32)
+    box = np.array([10, 20, 30, 90., 90., 90.], dtype=np.float32)
 
     coords = np.array([[1, 1, 1], [3, 1, 1]], dtype=np.float32)
 
@@ -73,6 +73,8 @@ def test_calc_distance(shift, periodic):
     (np.array([[1, 1, 1], [1, 2, 1], [2, 2, 1]], dtype=np.float32), 90.),
     # straight line / 180.
     (np.array([[1, 1, 1], [1, 2, 1], [1, 3, 1]], dtype=np.float32), 180.),
+    # 45
+    (np.array([[1, 1, 1], [1, 2, 1], [2, 1, 1]], dtype=np.float32), 45.),
 ])
 @pytest.mark.parametrize('shift', shifts)
 @pytest.mark.parametrize('periodic', [True, False])
@@ -102,6 +104,14 @@ def test_calc_angle(case, shift, periodic):
     (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 2, 1]], dtype=np.float32), 0.),
     # 180 degree (trans)
     (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 0, 1]], dtype=np.float32), 180.),
+    # 90 degree
+    (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 1, 2]], dtype=np.float32), 90.),
+    # other 90 degree
+    (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 1, 0]], dtype=np.float32), 90.),
+    # 45 degree
+    (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 2, 2]], dtype=np.float32), 45.),
+    # 135
+    (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 0, 2]], dtype=np.float32), 135.),
 ])
 @pytest.mark.parametrize('shift', shifts)
 @pytest.mark.parametrize('periodic', [True, False])
