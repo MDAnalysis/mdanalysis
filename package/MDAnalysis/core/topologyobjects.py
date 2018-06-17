@@ -191,11 +191,13 @@ class Bond(TopologyObject):
         else:
             raise ValueError("Unrecognised Atom")
 
-    def length(self, pbc=False):
+    def length(self, pbc=True):
         """Length of the bond.
 
         .. versionchanged:: 0.11.0
            Added pbc keyword
+        .. versionchanged:: 0.18.1
+           Changed default of pbc to True
         """
         box = self.universe.dimensions if pbc else None
 
