@@ -1663,7 +1663,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         if start < 0:
             start = 0
 
-        if step < 0 and start > nframes:
+        if step < 0 and start >= nframes:
             start = nframes - 1
 
         if stop is None:
