@@ -218,7 +218,7 @@ class Angle(TopologyObject):
     """
     btype = 'angle'
 
-    def angle(self, pbc=False):
+    def angle(self, pbc=True):
         """Returns the angle in degrees of this Angle.
 
         Angle between atoms 0 and 2 with apex at 1::
@@ -266,7 +266,7 @@ class Dihedral(TopologyObject):
     # http://cbio.bmt.tue.nl/pumma/uploads/Theory/dihedral.png
     btype = 'dihedral'
 
-    def dihedral(self, pbc=False):
+    def dihedral(self, pbc=True):
         """Calculate the dihedral angle in degrees.
 
         Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
