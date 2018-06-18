@@ -222,6 +222,9 @@ class Universe(object):
         representations, which allow for manipulation of coordinates.
     in_memory_step
         Only read every nth frame into in-memory representation.
+    continuous : bool, optional
+        treat as time continues when using several trajectories with time
+        information
 
     Attributes
     ----------
