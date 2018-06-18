@@ -137,6 +137,18 @@ class ChainReader(base.ProtoReader):
     represent multiple trajectories as one virtual trajectory. Users
     typically do not need to use the :class:`ChainReader` explicitly.
 
+    Chainreader can also handle a continuous trajectory split over several
+    files. To use this passe the 'continuous == True' keyword argument. An
+    example take the following trajectory that is split into three parts. The
+    colum represents the time and the trajectory segments overlap. With the
+    continuous chainreader only the frames marked with a + will be read.
+
+    part01:  ++++--
+    part02:      ++++++-
+    part03:            ++++++++
+
+    The default chainreader will read all frames.
+
     Notes
     -----
     The trajectory API attributes exist but most of them only reflect the first
