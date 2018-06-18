@@ -28,21 +28,21 @@ import math
 from numpy.testing import assert_array_almost_equal
 
 import MDAnalysis as mda
-from MDAnalysis.transformations import rotate
+from MDAnalysis.transformations import rotateby
 from MDAnalysis.lib.transformations import rotation_matrix
 from MDAnalysisTests.datafiles import GRO
 
-def test_translate_custom_position():
+def test_rotate_custom_position():
     u = mda.Universe(GRO)
     vector = np.float32([1,0,0])
     pos = np.float32([0,0,0])
     matrix = rotation_matrix(math.pi/2, vector, pos)[:3, :3]
     ref = u.trajectory.ts
     ref.positions = np.dot(ref.positions, matrix)
-    transformed = rotate(math.pi/2, vector, position = pos)(ref) 
+    transformed = rotateby(math.pi/2, vector, position = pos)(ref) 
     assert_array_almost_equal(transformed, ref.positions, decimal=6)
     
-def test_translate_atomgroup():
+def test_rotate_atomgroup():
     u = mda.Universe(GRO)
     vector = np.float32([1,0,0])
     ref_pos = np.float32([52.953686, 44.179996, 29.397898])
@@ -50,7 +50,7 @@ def test_translate_atomgroup():
     ref = u.trajectory.ts
     ref.positions = np.dot(ref.positions, matrix)
     selection = u.atoms.select_atoms('resid 1')
-    transformed = rotate(math.pi/2, vector, ag = selection, center='geometry')(ref) 
+    transformed = rotateby(math.pi/2, vector, ag = selection, center='geometry')(ref) 
     assert_array_almost_equal(transformed, ref.positions, decimal=6)
     
     

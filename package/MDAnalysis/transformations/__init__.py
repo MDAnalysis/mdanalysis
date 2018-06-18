@@ -85,7 +85,7 @@ e.g. giving a workflow as a keyword argument when defining the universe:
 from __future__ import absolute_import
 
 from .translate import translate
-from .rotate import rotate
+from .rotate import rotateby
 
 
 

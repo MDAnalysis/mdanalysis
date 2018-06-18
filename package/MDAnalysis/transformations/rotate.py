@@ -36,7 +36,7 @@ import numpy as np
 from ..lib.transformations import rotation_matrix
 from ..core.groups import AtomGroup
 
-def rotate(angle, direction, center="geometry", **kwargs):
+def rotateby(angle, direction, center="geometry", pbc=None, ag=None, position=[]):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by 
     the user, combining the direction vector and a position. This position can be the center
@@ -49,7 +49,7 @@ def rotate(angle, direction, center="geometry", **kwargs):
         ts = u.trajectory.ts
         angle = math.pi/2
         ag = u.atoms()
-        rotated = MDAnalysis.transformations.rotate(angle, a)(ts)
+        rotated = MDAnalysis.transformations.rotate(angle, ag)(ts)
     
     e.g. rotate the coordinates by a custom axis:
     
@@ -77,11 +77,9 @@ def rotate(angle, direction, center="geometry", **kwargs):
     pbc: bool or None, optional
         If True, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center
-    point: list, optional
+    position: list, optional
         list of the coordinates of the point from where a custom axis of rotation will
         be defined. 
-    ts: Timestep
-        frame that will be transformed
 
     Returns
     -------
@@ -90,9 +88,7 @@ def rotate(angle, direction, center="geometry", **kwargs):
     '''
     theta = np.float32(angle)
     vector = np.float32(direction)
-    position = kwargs.pop("position", [])
-    ag = kwargs.pop("ag", None)
-    pbc_arg = kwargs.pop("pbc", None)
+    pbc_arg = pbc
     if len(position)>2:
         position = np.float32(position)
     elif isinstance(ag, AtomGroup):
