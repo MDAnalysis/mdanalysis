@@ -29,10 +29,61 @@ from numpy.testing import (
     assert_equal,
 )
 
-import MDAnalysis as mda
+import numpy as np
 
-from MDAnalysisTests.datafiles import CRD
+import MDAnalysis as mda
+from MDAnalysis.coordinates.CRD import CRDReader, CRDWriter
+from MDAnalysis.coordinates.base import Timestep
+
+from MDAnalysisTests.datafiles import PSF, CRD, COORDINATES_ADK
 from MDAnalysisTests import make_Universe
+from MDAnalysisTests.coordinates.base import (
+    BaseReference, BaseReaderTest, BaseWriterTest,
+)
+
+
+class CRDReference(BaseReference):
+    def __init__(self):
+        super(CRDReference, self).__init__()
+        self.trajectory = CRD
+        self.topology = PSF
+        self.reader = CRDReader
+        self.writer = CRDWriter
+        self.ext = 'crd'
+        self.n_frames = 1
+        self.totaltime = 0
+        self.n_atoms = 3341
+        self.container_format = True
+        self.dimensions = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        self.volume = 0.0
+
+        self.first_frame = Timestep(self.n_atoms)
+        self.first_frame.positions = np.loadtxt(COORDINATES_ADK, delimiter=',',
+                                                dtype=np.float32)
+        self.first_frame.frame = 0
+        self.first_frame.aux.lowf = self.aux_lowf_data[0]
+        self.first_frame.aux.highf = self.aux_highf_data[0]
+
+        self.last_frame = self.first_frame.copy()
+
+
+class TestCRDReader(BaseReaderTest):
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def ref():
+        return CRDReference()
+
+    def test_time(self, ref, reader):
+        u = mda.Universe(ref.topology, ref.trajectory)
+        assert_equal(u.trajectory.time, 0.0,
+                     "wrong time of the frame")
+
+    def test_full_slice(self, ref, reader):
+        u = mda.Universe(ref.topology, ref.trajectory)
+        trj_iter = u.trajectory[:]
+        frames = [ts.frame for ts in trj_iter]
+        assert_equal(frames, np.arange(u.trajectory.n_frames))
+
 
 
 class TestCRDWriter(object):

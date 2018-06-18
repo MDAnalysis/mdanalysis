@@ -37,6 +37,8 @@ Note that the files are actually located in a separate package,
 from __future__ import absolute_import
 
 __all__ = [
+    "COORDINATES_ADK", # numpy/csv file with 3341 coordinates from CRD
+                       # np.savetxt("data/adk_positions.csv.gz", u.atoms.positions, delimiter=",")
     "PSF", "DCD", "CRD",  # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
     "DCD2", # CHARMM (AdK example, DIMS trajectory from PLOS Comput Biol paper)
     "PSF_notop", "PSF_BAD",  # Same as PSF but no bonds etc, malformed version of previous
@@ -67,7 +69,6 @@ __all__ = [
     "PDB_chainidrepeat",  # Issue #1107
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "GRO_incomplete_vels",
-    "COORDINATES_GRO_BZ2",
     "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
     "GRO_residwrap",  # resids wrapping because of 5 digit field (Issue #728)
     "GRO_residwrap_0base",  # corner case of #728 with resid=0 for first atom
@@ -136,6 +137,7 @@ __all__ = [
     "COORDINATES_XYZ_BZ2",
     "COORDINATES_GRO",
     "COORDINATES_GRO_INCOMPLETE_VELOCITY",
+    "COORDINATES_GRO_BZ2",
     "Martini_membrane_gro", # for testing the leaflet finder
     "COORDINATES_XTC",
     "COORDINATES_TRR",
@@ -184,6 +186,8 @@ COORDINATES_XTC = resource_filename(__name__, 'data/coordinates/test.xtc')
 COORDINATES_TRR = resource_filename(__name__, 'data/coordinates/test.trr')
 COORDINATES_DCD = resource_filename(__name__, 'data/coordinates/test.dcd')
 COORDINATES_TOPOLOGY = resource_filename(__name__, 'data/coordinates/test_topology.pdb')
+
+COORDINATES_ADK = resource_filename(__name__, 'data/adk_positions.csv.gz')
 
 PSF = resource_filename(__name__, 'data/adk.psf')
 PSF_notop = resource_filename(__name__, 'data/adk_notop.psf')
