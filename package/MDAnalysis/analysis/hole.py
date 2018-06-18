@@ -1228,7 +1228,7 @@ class HOLEtraj(BaseHOLE):
              description).
 
 
-        .. versionchanged:: 0.17.1
+        .. versionchanged:: 0.18.1
            `cpoint` can also be an ``AtomGroup``
         """
 
@@ -1319,10 +1319,10 @@ class HOLEtraj(BaseHOLE):
         #       (although the file renaming might create problems...)
         protein = self.universe.select_atoms(self.selection)
         for q, ts in zip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
-            logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
+            logger.debug("HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
             if self._dynamic_cpoint:
                 hole_kw['cpoint'] = self.cpoint.center_of_geometry()
-                logger.info("New dynamic CPOINT %r for frame %r", hole_kw['cpoint'], ts.frame)
+                logger.debug("New dynamic CPOINT %r for frame %r", hole_kw['cpoint'], ts.frame)
 
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)  # only need an empty file that can be overwritten, close right away (Issue 129)

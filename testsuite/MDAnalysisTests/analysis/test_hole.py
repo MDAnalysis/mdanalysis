@@ -29,10 +29,9 @@ import MDAnalysis.analysis.hole
 from MDAnalysis.analysis.hole import HOLEtraj, HOLE
 
 from numpy.testing import (
-    assert_equal,
     assert_almost_equal,
-    assert_array_equal,
-    assert_array_almost_equal
+    assert_equal,
+    assert_almost_equal
 )
 import numpy as np
 import matplotlib
@@ -75,7 +74,7 @@ class TestHOLE(object):
 
         p = profiles_values[0]
 
-        assert_equal(len(p), 425, err_msg="wrong number of points in HOLE profile")
+        assert len(p) == 425, "wrong number of points in HOLE profile"
         assert_almost_equal(p.rxncoord.mean(), -1.41225, err_msg="wrong mean HOLE rxncoord")
         assert_almost_equal(p.radius.min(), 1.19707, err_msg="wrong min HOLE radius")
 
@@ -84,8 +83,7 @@ class TestHOLE(object):
             filename = H.create_vmd_surface(filename="hole.vmd")
             with open(filename) as f:
                 nlines = len(f.readlines())
-            assert_equal(nlines, 6504,
-                         err_msg="HOLE VMD surface file is incomplete")
+            assert nlines == 6504, "HOLE VMD surface file is incomplete"
 
 
 
@@ -121,24 +119,23 @@ class _TestHOLEtraj(object):
             "min_radius": np.array([[5., 1.19819], [6., 1.29628]]),
         }
 
-
     # This is VERY slow on 11 frames so we just take 2
     def test_HOLEtraj(self, H, frames, reference):
-        assert_array_equal(sorted(H.profiles.keys()), frames,
+        assert_equal(sorted(H.profiles.keys()), frames,
                            err_msg="H.profiles.keys() should contain the frame numbers")
 
         data = np.transpose([(len(p), p.rxncoord.mean(), p.radius.min())
                              for p in H.profiles.values()])
 
-        assert_array_equal(data[0], reference["profile length"],
+        assert_equal(data[0], reference["profile length"],
                            err_msg="incorrect profile lengths")
-        assert_array_almost_equal(data[1], reference["mean HOLE rxncoord"],
+        assert_almost_equal(data[1], reference["mean HOLE rxncoord"],
                                   err_msg="wrong mean HOLE rxncoord")
-        assert_array_almost_equal(data[2], reference["minimum radius"],
+        assert_almost_equal(data[2], reference["minimum radius"],
                                   err_msg="wrong minimum radius")
 
     def test_min_radius(self, H, reference):
-        assert_array_almost_equal(
+        assert_almost_equal(
             H.min_radius(), reference['min_radius'],
             err_msg="min_radius() array not correct"
         )
