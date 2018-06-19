@@ -275,7 +275,7 @@ class TestChainReaderContinuous(object):
 
     def test_unsupported_filetypes(self):
         with pytest.raises(NotImplementedError):
-            mda.Universe(PDB, [XTC, GRO], continuous=True)
+            mda.Universe(PSF, [DCD, DCD], continuous=True)
 
 @pytest.mark.parametrize('l, ref', ([((0, 3), (3, 3), (4, 7)), (0, 1, 2)],
                                     [((0, 9), (0, 4)), (0, 1)],
@@ -288,6 +288,7 @@ def test_multilevel_arg_sort(l, ref):
 @pytest.mark.parametrize('l, ref', ([((0, 4), (3, 6), (6, 9)), (0, 1, 2)],
                                     [((0, 3), (3, 4), (4, 7)), (0, 1, 2)],
                                     [((0, 3), (3, 5), (4, 7)), (0, 1, 2)],
+                                    [((0, 3), (0, 4), (3, 5), (4, 7)), (1, 2, 3)],
                                     [((0, 3), (0, 4)), (1,)],
                                     [((0, 3), (0, 3)), (1,)],
                                     [((1, 3), (0, 4)), (0,)],

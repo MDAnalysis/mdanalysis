@@ -137,8 +137,8 @@ def filter_times(times, dt):
             used_idx.append(i + offset)
 
     # take care of first special case
-    if (times[-2][1] <= times[-1][1]):
-        used_idx.append(len(times) - (2-offset))
+    if offset == 1 and (times[-2][1] <= times[-1][1]):
+        used_idx.append(len(times) - 1)
 
     return used_idx
 
