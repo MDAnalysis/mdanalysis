@@ -86,8 +86,6 @@ def rotateby(angle, direction, center="geometry", pbc=None, ag=None, position=[]
     :class:`~MDAnalysis.coordinates.base.Timestep` object
     
     '''
-    theta = angle
-    vector = direction
     pbc_arg = pbc
     if len(position)>2:
         position = position
@@ -102,7 +100,7 @@ def rotateby(angle, direction, center="geometry", pbc=None, ag=None, position=[]
         raise ValueError('A position or an AtomGroup must be specified') 
     
     def wrapper(ts):
-        rotation = rotation_matrix(theta, vector, position)[:3, :3]
+        rotation = rotation_matrix(angle, direction, position)[:3, :3]
         ts.positions= np.dot(ts.positions, rotation)
         
         return ts
