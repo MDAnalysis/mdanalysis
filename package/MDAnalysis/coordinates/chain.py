@@ -308,12 +308,6 @@ class ChainReader(base.ProtoReader):
                 r2[0], r1[0]
                 start_time = r2.time
 
-                # trajectory doesn't contain valid frames
-                if r1.time >= start_time:
-                    # this ensure bisect works correctly
-                    sf.append(sf[-1])
-                    continue
-
                 if start_time > n_frames * dt:
                     warnings.warn("Missing frame in continuous chain", UserWarning)
                 # find end where trajectory was restarted from
