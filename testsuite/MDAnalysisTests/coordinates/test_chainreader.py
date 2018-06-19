@@ -206,6 +206,10 @@ def build_trajectories(folder, sequences, fmt='xtc'):
     result list correspond to a frame of the conatenated trajectory, The
     first element of each tuple is the time it corresponds to, the second
     element is the index of the input the frame comes from.
+
+    See original gist and PR 1728 for comparison with gromacs trjcat.
+
+    https://gist.github.com/jbarnoud/cacd0957d3df01d1577f640b20e86039
     """
     template = 'trjcat_test_{{}}.{}'.format(fmt)
     template = os.path.join(folder, template)
@@ -266,11 +270,11 @@ class TestChainReaderContinuous(object):
             mda.Universe(utop._topology, fnames, continuous=True)
 
     def test_mixed_filetypes(self):
-        with pytest.raises(RuntimeError):
+        with pytest.raises(ValueError):
             mda.Universe(PDB, [XTC, TRR], continuous=True)
 
     def test_unsupported_filetypes(self):
-        with pytest.raises(RuntimeError):
+        with pytest.raises(NotImplementedError):
             mda.Universe(PDB, [XTC, GRO], continuous=True)
 
 @pytest.mark.parametrize('l, ref', ([((0, 3), (3, 3), (4, 7)), (0, 1, 2)],

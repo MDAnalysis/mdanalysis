@@ -57,8 +57,9 @@ from . import core
 
 
 def multi_level_argsort(l):
-    """
-    This sorts based on the start time.
+    """Return indices to sort a multi value tuple. Sorting is done on the first
+    value of the tuple.
+
 
     Parameters
     ----------
@@ -67,6 +68,12 @@ def multi_level_argsort(l):
     Returns
     -------
     indices
+
+    Example
+    -------
+    >>> multi_level_argsort(((0, 2), (4, 9), (0, 4), (7, 9)))
+    [0, 2, 1, 3]
+
     """
     return [el[0] for el in sorted(enumerate(l), key=lambda x: x[1][0])]
 
@@ -75,22 +82,28 @@ def filter_times(times, dt):
     """Given a list of start and end times this function filters out any duplicate
     time steps preferring the last tuple.
 
-    ((0, 3), (0, 3)) -> (1, )
-    ((0, 3), (0, 4)) -> (1, )
-    ((0, 3), (3, 4)) -> (0, 1)
-    ((0, 3), (2, 5), (4, 9)) -> (1, 2, 3)
-
-
     Parameters
     ----------
-    times :
+    times : list
         sorted list of times
-    dt :
+    dt : float
         timestep between two frames
 
     Returns
     -------
-    indices of times to used with overlaps removed
+    list:
+        indices of times to be used with overlaps removed
+
+    Example
+    -------
+    >>> filter_times(((0, 3), (0, 3)))
+    [1, ]
+    >>> filter_times(((0, 3), (0, 4)))
+    [1, ]
+    >>> filter_times(((0, 3), (3, 4)))
+    [0, 1]
+    >>> filter_times(((0, 3), (2, 5), (4, 9)))
+    [1, 2, 3]
 
     """
     # Special cases
@@ -147,7 +160,8 @@ class ChainReader(base.ProtoReader):
     part02:      ++++++-
     part03:            ++++++++
 
-    The default chainreader will read all frames.
+    The default chainreader will read all frames. The continuous option is
+    currently only supported for XTC and TRR files.
 
     Notes
     -----
@@ -162,13 +176,14 @@ class ChainReader(base.ProtoReader):
     .. versionchanged:: 0.13.0
        :attr:`time` now reports the time summed over each trajectory's
        frames and individual :attr:`dt`.
+    .. versionchanged:: 0.19.0
+       added continuous trajectory option
 
     """
     format = 'CHAIN'
 
     def __init__(self, filenames, skip=1, dt=None, continuous=False, **kwargs):
-        """Set up the chain reader. This can also be used similar to `gmx trjcat` to
-        treat several parts of a long simulation as a single trajectory.
+        """Set up the chain reader.
 
         Parameters
         ----------
@@ -246,12 +261,12 @@ class ChainReader(base.ProtoReader):
         if continuous:
             filetypes = np.unique([r.format for r in self.readers])
             if not len(filetypes) == 1:
-                raise RuntimeError("Continuous only supported with all files "
-                                   "are from the same format. found {}".format(filetypes))
+                raise ValueError("Continuous only supported when all files "
+                                 "are using the same format. found {}".format(filetypes))
             if np.any(np.array(n_frames) == 1):
                 raise RuntimeError("Need at least two frames in every trajectory")
             if filetypes[0] not in ['XTC', 'TRR']:
-                raise RuntimeError("continuous only supported for xtc and trr format")
+                raise NotImplementedError("continuous only supported for xtc and trr format")
 
             # TODO: allow floating point precision in dt check
             dt = self._get_same('dt')
