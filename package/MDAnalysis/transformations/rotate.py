@@ -86,16 +86,16 @@ def rotateby(angle, direction, center="geometry", pbc=None, ag=None, position=[]
     :class:`~MDAnalysis.coordinates.base.Timestep` object
     
     '''
-    theta = np.float32(angle)
-    vector = np.float32(direction)
+    theta = angle
+    vector = direction
     pbc_arg = pbc
     if len(position)>2:
-        position = np.float32(position)
+        position = position
     elif isinstance(ag, AtomGroup):
         if center == "geometry":
-            position = ag.center_of_geometry(pbc = pbc_arg)
+            position = ag.center_of_geometry(pbc=pbc_arg)
         elif center == "mass":
-            position = ag.center_of_mass(pbc = pbc_arg)
+            position = ag.center_of_mass(pbc=pbc_arg)
         else:
             raise ValueError('{} is not a valid argument for center'.format(center))
     else:

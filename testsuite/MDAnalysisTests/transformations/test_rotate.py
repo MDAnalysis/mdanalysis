@@ -24,33 +24,42 @@ from __future__ import absolute_import
 
 import numpy as np
 import pytest
-import math
 from numpy.testing import assert_array_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysis.transformations import rotateby
 from MDAnalysis.lib.transformations import rotation_matrix
-from MDAnalysisTests.datafiles import GRO
+from MDAnalysisTests import make_Universe
 
-def test_rotate_custom_position():
-    u = mda.Universe(GRO)
-    vector = np.float32([1,0,0])
-    pos = np.float32([0,0,0])
-    matrix = rotation_matrix(math.pi/2, vector, pos)[:3, :3]
-    ref = u.trajectory.ts
+def rotateby_universes():
+    # create the Universe objects for the tests
+    reference = make_Universe(trajectory=True)
+    transformed = make_Universe(trajectory=True)
+    return reference, transformed
+
+def test_rotateby_custom_position():
+    # what happens when we use a custom position for the axis of rotation?
+    ref_u, trans_u = rotateby_universes()
+    trans = trans_u.trajectory.ts
+    ref = ref_u.trajectory.ts
+    vector = [1,0,0]
+    pos = [0,0,0]
+    matrix = rotation_matrix(np.pi / 2, vector, pos)[:3, :3]
     ref.positions = np.dot(ref.positions, matrix)
-    transformed = rotateby(math.pi/2, vector, position = pos)(ref) 
-    assert_array_almost_equal(transformed, ref.positions, decimal=6)
+    transformed = rotateby(np.pi / 2, vector, position=pos)(trans)
+    assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
-def test_rotate_atomgroup():
-    u = mda.Universe(GRO)
-    vector = np.float32([1,0,0])
-    ref_pos = np.float32([52.953686, 44.179996, 29.397898])
-    matrix = rotation_matrix(math.pi/2, vector, ref_pos)[:3, :3]
-    ref = u.trajectory.ts
+def test_rotateby_atomgroup():
+    # what happens when we rotate arround the center of geometry of a residue?
+    ref_u, trans_u = rotateby_universes()
+    trans = trans_u.trajectory.ts
+    ref = ref_u.trajectory.ts
+    center_pos = [6,7,8]
+    vector = [1,0,0]
+    matrix = rotation_matrix(np.pi, vector, center_pos)[:3, :3]
     ref.positions = np.dot(ref.positions, matrix)
-    selection = u.atoms.select_atoms('resid 1')
-    transformed = rotateby(math.pi/2, vector, ag = selection, center='geometry')(ref) 
-    assert_array_almost_equal(transformed, ref.positions, decimal=6)
+    selection = trans_u.residues[0].atoms
+    transformed = rotateby(np.pi, vector, ag=selection, center='geometry')(trans) 
+    assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
     
