@@ -31,6 +31,7 @@ from MDAnalysis.transformations import rotateby
 from MDAnalysis.lib.transformations import rotation_matrix
 from MDAnalysisTests import make_Universe
 
+@pytest.fixture()
 def rotateby_universes():
     # create the Universe objects for the tests
     reference = make_Universe(trajectory=True)

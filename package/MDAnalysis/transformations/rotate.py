@@ -36,7 +36,7 @@ import numpy as np
 from ..lib.transformations import rotation_matrix
 from ..core.groups import AtomGroup
 
-def rotateby(angle, direction, center="geometry", pbc=None, ag=None, position=[]):
+def rotateby(angle, direction, center="geometry", pbc=None, ag=None, position=None):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by 
     the user, combining the direction vector and a position. This position can be the center
@@ -87,7 +87,7 @@ def rotateby(angle, direction, center="geometry", pbc=None, ag=None, position=[]
     
     '''
     pbc_arg = pbc
-    if len(position)>2:
+    if position and len(position)>2:
         position = position
     elif isinstance(ag, AtomGroup):
         if center == "geometry":
