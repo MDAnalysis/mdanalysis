@@ -30,7 +30,7 @@ or defined by centering an AtomGroup in the unit cell using the function
 `center_in_box`
     
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 
 import numpy as np
 
