@@ -99,11 +99,11 @@ def rotateby(angle, direction, center="geometry", pbc=None, ag=None, position=[]
     else:
         raise ValueError('A position or an AtomGroup must be specified') 
     
-    def wrapper(ts):
+    def wrapped(ts):
         rotation = rotation_matrix(angle, direction, position)[:3, :3]
         ts.positions= np.dot(ts.positions, rotation)
         
         return ts
     
-    return wrapper
+    return wrapped
     
