@@ -237,7 +237,7 @@ class Angle(TopologyObject):
         .. versionchanged:: 0.17.0
            Fixed angles close to 180 giving NaN
         .. versionchanged:: 0.18.1
-           Added pbc keyword
+           Added pbc keyword, default True
         """
         box = self.universe.dimensions if pbc else None
 
@@ -286,7 +286,7 @@ class Dihedral(TopologyObject):
 
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.18.1
-           Added pbc keyword
+           Added pbc keyword, default True
         """
         box = self.universe.dimensions if pbc else None
         A, B, C, D = self.atoms
