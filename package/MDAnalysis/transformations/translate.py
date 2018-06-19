@@ -21,13 +21,13 @@
 #
 
 """\
-Translate trajectory --- :mod:`MDAnalysis.transformations.translate`
-====================================================================
+Trajectory translation --- :mod:`MDAnalysis.transformations.translate`
+=====================================================================
 
 Translate the coordinates of a given trajectory by a given vector.
-This is a wrapped function so usage is as the following example:
-
-    ts = MDAnalysis.transformations.translate(vector)(timestep)
+The vector can either be user defined, using the function `translate`
+or defined by centering an AtomGroup in the unit cell using the function
+`center_in_box`
     
 """
 from __future__ import absolute_import
