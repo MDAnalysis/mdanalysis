@@ -496,7 +496,7 @@ class Density(Grid):
         return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + ' bins>'
 
 def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
-    """Function to set the grid dimensions to user defined values
+    """Helper function to set the grid dimensions to user defined values
        
        Called by : density_from_Universe 
        Condition : gridcenter must be defined
@@ -505,7 +505,7 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
        ----------
        gridcenter : numpy array containing the x,y,z of the box center (np.float32)
        x/y/zdim :   box edge lengths in each dimension
-       smin/smax :  minimum and maximum x,y,z padded coordinates for given selection
+       smin/smax :  minimum and maximum x,y,z for given selection (padding ignored)
 
        Returns
        -------
@@ -521,11 +521,14 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     umax[0] += xdim/2
     umax[1] += ydim/2
     umax[2] += zdim/2
-    #Test if any selected atom (+padding) coords fall outside of the user defined grid
+
+    # Here we test if coords of selection fall outside of the defined grid
+    # if this happens, we through a warning to tell users they may want to
+    # resize their grids
     if any(smin < umin) or any(smax > umax):
-        errmsg = "User defined grid does not fit selected atoms"
-        logger.fatal(errmsg)
-        raise ValueError(errmsg)
+        msg = "Atom selection does not fit grid -- you may want to define a larger box"
+        logger.warning(msg)
+    
     #Return umin and umax
     return umin, umax
 
@@ -560,7 +563,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             are passed through as they are.
     padding : float (optional)
             increase histogram dimensions by padding (on top of initial box size)
-            in Angstroem [2.0]
+            in Angstroem. Note: Padding is ignored when setting a user defined grid [2.0]
     soluteselection : str (optional)
             MDAnalysis selection for the solute, e.g. "protein" [``None``]
     cutoff : float (optional)
@@ -636,6 +639,8 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     (Using the special case for the bulk with `soluteselection` and `cutoff`
     improves performance over the simple `update_selection` approach.)
 
+    If you are interested in setting a grid box
+
     .. versionchanged:: 0.13.0
        *update_selection* and *quiet* keywords added
 
@@ -681,16 +686,16 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     # periodic boundaries' but that gets complicate when the box
     # rotates due to RMS fitting.
 
-    # User defined grid comment: do as else part of the next if?
-
-    smin = np.min(coord, axis=0) - padding
-    smax = np.max(coord, axis=0) + padding
-
-    #### USER DEFINED GRID
-    #Set umin to gridcenter-dims and umax to center+dims 
     if gridcenter is not None:
+        # We first generate a copy of smin/smax from the coords to
+        # check if the defined box might be too small for the selection
+        smin = np.min(coord, axis=0) 
+        smax = np.max(coord, axis=0)
+        # Then call the user grid function and overwrite smin/smax
         smin, smax = _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax)
-    #### END USER DEFINED GRID
+    else:
+        smin = np.min(coord, axis=0) - padding
+        smax = np.max(coord, axis=0) + padding
 
     BINS = fixedwidth_bins(delta, smin, smax)
     arange = np.vstack((BINS['min'], BINS['max']))
