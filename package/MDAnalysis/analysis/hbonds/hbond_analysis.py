@@ -329,7 +329,6 @@ from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, Selectio
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib import distances
-from MDAnalysis.lib.distances import calc_bonds
 
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
