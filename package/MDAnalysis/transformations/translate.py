@@ -71,7 +71,8 @@ def center_in_box(ag, center='geometry', box=None, pbc=None):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
-    is centered on the unit cell.
+    is centered on the unit cell. The unit cell dimensions are taken from the input Timestep object or
+    can be defined using the `box` argument.
     
     Example
     -------
@@ -88,7 +89,7 @@ def center_in_box(ag, center='geometry', box=None, pbc=None):
     center: str, optional
         used to choose the method of centering on the given atom group. Can be 'geometry'
         or 'mass'
-    box: array
+    box: array, optional
         Box dimensions, can be either orthogonal or triclinic information.
         Cell dimensions must be in an identical to format to those returned
         by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
@@ -104,15 +105,18 @@ def center_in_box(ag, center='geometry', box=None, pbc=None):
     """
     
     pbc_arg = pbc
-    if isinstance(ag, AtomGroup):
-        if center == "geometry":
+    try:
+        if center == 'geometry':
             ag_center = ag.center_of_geometry(pbc=pbc_arg)
-        elif center == "mass":
+        elif center == 'mass':
             ag_center = ag.center_of_mass(pbc=pbc_arg)
         else:
             raise ValueError('{} is not a valid argument for center'.format(center))
-    else:
-        raise ValueError('{} is not an AtomGroup object'.format(ag))
+    except AttributeError:
+        if center == 'mass':
+            raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
+        else:
+            raise ValueError('{} is not an AtomGroup object'.format(ag))
     
     def wrapped(ts):
         if box:
@@ -120,7 +124,7 @@ def center_in_box(ag, center='geometry', box=None, pbc=None):
         else:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
         vector = boxcenter - ag_center
-        translate(vector)(ts)
+        ts.positions += vector
         
         return ts
     
