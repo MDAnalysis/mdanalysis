@@ -1285,7 +1285,7 @@ class SurvivalProbability(object):
         """
         survivors = set(selected[t])
         i = 0
-        while (t + i) < t + tau and (t + i) < len(selected):
+        while (t + i) < t + tau:
             next = set(selected[t + i])
             survivors = survivors.intersection(next)
             i += 1
