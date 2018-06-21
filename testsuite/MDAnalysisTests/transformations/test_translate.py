@@ -58,7 +58,7 @@ def test_translate_vector(translate_universes):
     with pytest.raises(ValueError):
         translate(vector)(ts)
 
-def test_center_in_box_args(translate_universes):
+def test_center_in_box_bad_ag(translate_universes):
     # this universe as a box size zero
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
@@ -66,18 +66,38 @@ def test_center_in_box_args(translate_universes):
     bad_ag = 1
     with pytest.raises(ValueError): 
         center_in_box(bad_ag)(ts)
+
+def test_center_in_box_bad_box(translate_universes):
+    # this universe as a box size zero
+    ts = translate_universes[0].trajectory.ts
+    ag = translate_universes[0].residues[0].atoms
     # what if the box is in the wrong format?
     bad_box = [1, 2, 3]
     with pytest.raises(ValueError): 
         center_in_box(ag, box=bad_box)(ts)
+    
+def test_center_in_box_bad_box(translate_universes):    
+    # this universe as a box size zero
+    ts = translate_universes[0].trajectory.ts
+    ag = translate_universes[0].residues[0].atoms
     # is pbc passed to the center methods?
     # if yes it should raise an exception for boxes that are zero in size
     with pytest.raises(ValueError): 
         center_in_box(ag, pbc=True)(ts)
+
+def test_center_in_box_bad_box(translate_universes):
+    # this universe as a box size zero
+    ts = translate_universes[0].trajectory.ts
+    ag = translate_universes[0].residues[0].atoms
     # what if a wrong center type name is passed?
-    bad_center = "charge"
+    bad_center = " "
     with pytest.raises(ValueError): 
         center_in_box(ag, center=bad_center)(ts)
+    
+def test_center_in_box_bad_box(translate_universes):   
+    # this universe as a box size zero
+    ts = translate_universes[0].trajectory.ts
+    ag = translate_universes[0].residues[0].atoms
     # if the universe has no masses and `mass` is passed as the center arg
     bad_center = "mass"
     with pytest.raises(AttributeError): 
