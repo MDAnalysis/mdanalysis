@@ -1249,7 +1249,7 @@ class SurvivalProbability(object):
         """
         n = 0
         sumDeltaP = 0.0
-        for frame_no in range(len(selected) - window_size):
+        for frame_no in range(len(selected) - window_size - 1):
             delta = self._getOneDeltaPoint(selected, frame_no, window_size)
             sumDeltaP += delta
             n += 1
@@ -1278,15 +1278,15 @@ class SurvivalProbability(object):
 
     def _NumPart_tau(self, selected, t, tau):
         """
-        Compares the molecules in t selection and t+tau selection and
-        select only the particles that remain from t to t+tau and
-        at each point in between.
-        It returns the number of remaining particles.
+        Returns the number of particles that persist from t to t + tau.
         """
+
         survivors = set(selected[t])
-        i = 0
-        while (t + i) < t + tau:
+        # For optimisation, start from t + tau
+        for i in range(tau, 0, -1):
             next = set(selected[t + i])
             survivors = survivors.intersection(next)
-            i += 1
+            if len(survivors) == 0:
+                return 0
+
         return len(survivors)
