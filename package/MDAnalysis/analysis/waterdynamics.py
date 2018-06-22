@@ -1242,7 +1242,7 @@ class SurvivalProbability(object):
                 if Nt == 0:
                     continue
 
-                Ntau = len(set.intersection(*selected[t:t+tau]
+                Ntau = len(set.intersection(*selected[t:t+tau]))
 
                 # store survival probability at each t
                 deltaP.append(Ntau / Nt)
