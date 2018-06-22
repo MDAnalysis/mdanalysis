@@ -89,6 +89,8 @@ class TestHOLE(object):
 
 class _TestHOLEtraj(object):
     filename = MULTIPDB_HOLE
+
+    # This is VERY slow on 11 frames so we just take 2
     start = 5
     stop = 7
 
@@ -99,27 +101,15 @@ class _TestHOLEtraj(object):
     def universe(self):
         return MDAnalysis.Universe(self.filename)
 
-    @pytest.fixture()
-    def H(self, universe, tmpdir):
-        with tmpdir.as_cwd():
-            H = HOLEtraj(universe, start=self.start, stop=self.stop, raseed=31415)
-            H.run()
-        return H
 
     @pytest.fixture()
     def frames(self, universe):
         return [ts.frame for ts in universe.trajectory[self.start:self.stop]]
 
-    @pytest.fixture()
-    def reference(self):
-        return {
-            "profile length": [401, 399],
-            "mean HOLE rxncoord": [1.98767,  0.0878],
-            "minimum radius": [1.19819, 1.29628],
-            "min_radius": np.array([[5., 1.19819], [6., 1.29628]]),
-        }
+    # class needs fixtures:
+    #    H --- HOLEtraj after HOLEtraj.run()
+    #    reference --- reference values dict (see TestHOLEtraj_default below for details)
 
-    # This is VERY slow on 11 frames so we just take 2
     def test_HOLEtraj(self, H, frames, reference):
         assert_equal(sorted(H.profiles.keys()), frames,
                            err_msg="H.profiles.keys() should contain the frame numbers")
@@ -155,11 +145,25 @@ class _TestHOLEtraj(object):
 
 @pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
 class TestHOLEtraj_default(_TestHOLEtraj):
-    pass
+    @pytest.fixture()
+    def reference(self):
+        return {
+            "profile length": [401, 399],
+            "mean HOLE rxncoord": [1.98767,  0.0878],
+            "minimum radius": [1.19819, 1.29628],
+            "min_radius": np.array([[5., 1.19819], [6., 1.29628]]),
+        }
+
+    @pytest.fixture()
+    def H(self, universe, tmpdir):
+        with tmpdir.as_cwd():
+            H = HOLEtraj(universe, start=self.start, stop=self.stop, raseed=31415)
+            H.run()
+        return H
+
 
 @pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
 class TestHOLEtraj_dynamic_cpoint(_TestHOLEtraj):
-
     @pytest.fixture()
     def reference(self):
         return {
@@ -168,7 +172,6 @@ class TestHOLEtraj_dynamic_cpoint(_TestHOLEtraj):
             "minimum radius": [1.19819, 1.29357],
             "min_radius": np.array([[5., 1.19819], [6., 1.29357]]),
         }
-
 
     @pytest.fixture()
     def H(self, universe, tmpdir):

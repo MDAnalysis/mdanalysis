@@ -620,11 +620,6 @@ class HOLE(BaseHOLE):
     The class also provides some simple plotting functions of the collected
     data such as :meth:`HOLE.plot` or :meth:`HOLE.plot3D`.
 
-    .. versionadded:: 0.7.7
-
-    .. versionchanged:: 0.16.0
-           Added `raseed` keyword argument.
-
     .. _`HOLE control parameters`:
        http://www.holeprogram.org/doc/old/hole_d03.html
 
@@ -800,6 +795,12 @@ class HOLE(BaseHOLE):
         - HOLE is very picky and does not read all DCD-like
           formats [#HOLEDCD]_. If in doubt, look into the `logfile` for
           error diagnostics.
+
+
+        .. versionadded:: 0.7.7
+
+        .. versionchanged:: 0.16.0
+           Added `raseed` keyword argument.
 
         """
 
@@ -1136,7 +1137,7 @@ class HOLE(BaseHOLE):
                         # end of records (empty line)
                         read_data = False
                         frame_hole_output = np.rec.fromrecords(records, formats="i4,f8,f8",
-                                                                  names="frame,rxncoord,radius")
+                                                               names="frame,rxncoord,radius")
                         # store the profile
                         self.profiles[hole_profile_no] = frame_hole_output
                         logger.debug("Collected HOLE profile for frame %d (%d datapoints)",
