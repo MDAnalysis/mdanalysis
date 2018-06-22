@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
-         VOD555, davidercruz
+         VOD555, davidercruz, jbarnoud
 
   * 0.18.1
 
@@ -31,6 +31,7 @@ Enhancements
   * Added boolean property *Group.isunique (PR #1922)
   * Added *Group.copy() methods returning an identical copy of the respective
     group (PR #1922)
+  * Improves performances when accessing groups (PR #1951)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
