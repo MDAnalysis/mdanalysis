@@ -1232,8 +1232,7 @@ class SurvivalProbability(object):
             return
 
     
-        for tau in list(range(1, self.dtmax + 1):
-
+        for tau in list(range(1, self.dtmax + 1)):
             deltaP = []
             for t in range(len(selected) - tau):
 
@@ -1242,7 +1241,7 @@ class SurvivalProbability(object):
                 if Nt == 0:
                     continue
 
-                Ntau = len(set.intersection(*selected[t:t+tau]
+                Ntau = len(set.intersection(*selected[t:t+tau]))
 
                 # store survival probability at each t
                 deltaP.append(Ntau / Nt)
