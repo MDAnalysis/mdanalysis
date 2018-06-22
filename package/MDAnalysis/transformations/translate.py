@@ -67,7 +67,7 @@ def translate(vector):
     
     return wrapped
 
-def center_in_box(ag, center='geometry', box=None, pbc=None):
+def center_in_box(ag, center='geometry', point=None, pbc=None):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -89,12 +89,10 @@ def center_in_box(ag, center='geometry', box=None, pbc=None):
     center: str, optional
         used to choose the method of centering on the given atom group. Can be 'geometry'
         or 'mass'
-    box: array, optional
-        Box dimensions, can be either orthogonal or triclinic information.
-        Cell dimensions must be in an identical to format to those returned
-        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
-        ``[lx, ly, lz, alpha, beta, gamma]``. If ``None``, uses these
-        timestep dimensions.
+    point: list, optional
+        overrides the unit cell center - the coordinates of the Timestep are translated so
+        that the center of mass/geometry of the given AtomGroup is aligned to this position
+        instead. Defined as a list of size 3. Example: [1, 2, 3]
     pbc: bool or None, optional
         If True, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry
@@ -119,8 +117,11 @@ def center_in_box(ag, center='geometry', box=None, pbc=None):
             raise ValueError('{} is not an AtomGroup object'.format(ag))
     
     def wrapped(ts):
-        if box:
-            boxcenter = np.sum(triclinic_vectors(box), axis=0) / 2
+        if point:
+            if len(point)==3:
+                boxcenter = np.float32(point)
+            else:
+                raise ValueError('{} is not a valid point'.format(point))
         else:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
         vector = boxcenter - ag_center
