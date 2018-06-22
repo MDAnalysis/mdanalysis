@@ -1,29 +1,11 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
-#
-# MDAnalysis --- https://www.mdanalysis.org
-# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
-# (see the file AUTHORS for the full list of names)
-#
-# Released under the GNU Public Licence, v2 or any higher version
-#
-# Please cite your use of MDAnalysis in published work:
-#
-# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
-# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
-# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
-# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
-# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
-#
-# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
-# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
-# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
-#
+.. Contains the formatted docstrings for the transformations located in 'mdanalysis/MDAnalysis/transformations'
+.. _transformations:
 
+**************************
+Trajectory transformations
+**************************
 
-"""\
-Trajectory transformations --- :mod:`MDAnalysis.transformations`
-================================================================
+.. module:: MDAnalysis.transformations
 
 The transformations submodule contains a collection of functions to modify the 
 trajectory. Coordinate transformations, such as PBC corrections and molecule fitting
@@ -53,8 +35,7 @@ So, a transformation can be roughly defined as follows:
 See :func:`MDAnalysis.transformations.translate` for a simple example.    
     
 
-Examples
---------
+.. rubric:: Examples
 
 e.g. translate the coordinates of a frame:
 
@@ -81,10 +62,8 @@ e.g. giving a workflow as a keyword argument when defining the universe:
     u = MDAnalysis.Universe(topology, trajectory, transformations = *workflow)
     
     
-"""
+.. rubric:: Currently implemented transformations
 
-from __future__ import absolute_import
-
-from .translate import translate
-
-
+.. toctree::
+   
+   ./transformations/translate
