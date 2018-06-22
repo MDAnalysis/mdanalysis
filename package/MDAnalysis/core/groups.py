@@ -104,6 +104,7 @@ from numpy.lib.utils import deprecate
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
 from ..lib.util import cached, warn_if_not_unique
+from ..lib.cutil import unique_int_1d
 from ..lib import distances
 from ..lib import transformations
 from ..selections import get_writer as get_selection_writer_for
@@ -1843,7 +1844,7 @@ class AtomGroup(GroupBase):
         """A sorted :class:`ResidueGroup` of the unique
         :class:`Residues<Residue>` present in the :class:`AtomGroup`.
         """
-        rg = self.universe.residues[np.unique(self.resindices)]
+        rg = self.universe.residues[unique_int_1d(self.resindices)]
         rg._cache['isunique'] = True
         rg._cache['unique'] = rg
         return rg
@@ -1890,7 +1891,7 @@ class AtomGroup(GroupBase):
         """A sorted :class:`SegmentGroup` of the unique segments present in the
         :class:`AtomGroup`.
         """
-        sg = self.universe.segments[np.unique(self.segindices)]
+        sg = self.universe.segments[unique_int_1d(self.segindices)]
         sg._cache['isunique'] = True
         sg._cache['unique'] = sg
         return sg
@@ -2402,7 +2403,7 @@ class AtomGroup(GroupBase):
                                                          accessors.keys()))
 
         return [self[levelindices == index] for index in
-                np.unique(levelindices)]
+                unique_int_1d(levelindices)]
 
     def guess_bonds(self, vdwradii=None):
         """Guess bonds that exist within this :class:`AtomGroup` and add them to
@@ -2675,7 +2676,7 @@ class ResidueGroup(GroupBase):
         """Get sorted :class:`SegmentGroup` of the unique segments present in
         the :class:`ResidueGroup`.
         """
-        sg = self.universe.segments[np.unique(self.segindices)]
+        sg = self.universe.segments[unique_int_1d(self.segindices)]
         sg._cache['isunique'] = True
         sg._cache['unique'] = sg
         return sg
@@ -2747,7 +2748,7 @@ class ResidueGroup(GroupBase):
         """
         if self.isunique:
             return self
-        _unique = self.universe.residues[np.unique(self.ix)]
+        _unique = self.universe.residues[unique_int_1d(self.ix)]
         # Since we know that _unique is a unique ResidueGroup, we set its
         # uniqueness caches from here:
         _unique._cache['isunique'] = True
@@ -2892,7 +2893,7 @@ class SegmentGroup(GroupBase):
         """
         if self.isunique:
             return self
-        _unique = self.universe.segments[np.unique(self.ix)]
+        _unique = self.universe.segments[unique_int_1d(self.ix)]
         # Since we know that _unique is a unique SegmentGroup, we set its
         # uniqueness caches from here:
         _unique._cache['isunique'] = True
