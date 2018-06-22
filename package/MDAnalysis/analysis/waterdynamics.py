@@ -1218,75 +1218,35 @@ class SurvivalProbability(object):
 
 
     def run(self):
-        """Analyze trajectory and produce timeseries"""
+        """
+        Analyze trajectory and produce timeseries of the survival probability.
+        """
 
-        # select all frames to an array
-        selected = self._selection_serial(self.universe, self.selection)
+        # select all survivors to an array of sets
+        selected = []
+        for ts in self.universe.trajectory[self.t0:self.tf]:
+            selected.append(set(self.universe.select_atoms(self.selection)))
 
         if len(selected) < self.dtmax:
-            print ("ERROR: Cannot select fewer frames than dtmax")
+            print("ERROR: Cannot select fewer frames than dtmax")
             return
 
-        for window_size in list(range(1, self.dtmax + 1)):
-            output = self._getMeanOnePoint(selected, window_size)
-            self.timeseries.append(output)
 
+        for tau in list(range(1, self.dtmax + 1):
 
-    def _selection_serial(self, universe, selection_str):
-        selected = []
-        pm = ProgressMeter(self.tf-self.t0, interval=10,
-                           verbose=True, offset=-self.t0)
-        for ts in universe.trajectory[self.t0:self.tf]:
-            selected.append(universe.select_atoms(selection_str))
-            pm.echo(ts.frame)
-        return selected
+            deltaP = []
+            for t in range(len(selected) - tau):
 
+                Nt = float(len(selected[t]))
 
-    def _getMeanOnePoint(self, selected, window_size):
-        """
-        This function gets one point of the plot P(t) vs t. It uses the
-        _getOneDeltaPoint() function to calculate the average.
-        """
-        n = 0
-        sumDeltaP = 0.0
-        for frame_no in range(len(selected) - window_size - 1):
-            delta = self._getOneDeltaPoint(selected, frame_no, window_size)
-            sumDeltaP += delta
-            n += 1
+                if Nt == 0:
+                    continue
 
-        return sumDeltaP/n
+                Ntau = len(set.intersection(*selected[t:t+tau]
 
+                # store survival probability at each t
+                deltaP.append(Ntau / Nt)
 
-    def _getOneDeltaPoint(self, selected, t, tau):
-        """
-        Gives one point to calculate the mean and
-        gets one point of the plot C_vect vs t.
-        - Ex: t=1 and tau=1 calculates
-        how many selected water molecules survive from the frame 1 to 2
-        - Ex: t=5 and tau=3 calculates
-        how many selected water molecules survive from the frame 5 to 8
-        """
+            # store mean survival probability for each tau
+            self.timeseries.append(np.mean(np.asarray(deltaP)))
 
-        Nt = len(selected[t])
-        if Nt == 0:
-            return 0
-
-        # fraction of water molecules that survived
-        Ntau = self._NumPart_tau(selected, t, tau)
-        return Ntau/Nt
-
-
-    def _NumPart_tau(self, selected, t, tau):
-        """
-        Returns the number of particles that persist from t to t + tau.
-        """
-
-        survivors = set(selected[t])
-        # For optimisation, start from t + tau
-        for i in range(tau, 0, -1):
-            next = set(selected[t + i])
-            survivors = survivors.intersection(next)
-            if len(survivors) == 0:
-                return 0
-
-        return len(survivors)
