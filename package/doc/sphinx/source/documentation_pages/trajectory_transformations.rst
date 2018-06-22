@@ -17,19 +17,48 @@ of the :mod:`~MDAnalysis.coordinates.base` module, or upon Universe creation usi
 the keyword argument `transformations`. Note that in the two latter cases, the 
 workflow cannot be changed after being defined.
 
-In addition to the specific arguments that each transformation can take, they also 
-contain a wrapped function that takes a `Timestep` object as argument. 
+A simple transformation that takes no other arguments but the `Timestep`can be defined
+as the following example:
+
+.. code-block:: python
+
+	def up_by_2(ts):
+    	"""
+    	Translate all coordinates by 2 Å up along the Z dimension.
+    	"""
+    	ts.positions = ts.positions + np.array([0, 0, 2], dtype=np.float32)
+    	return ts
+
+
+If the transformation requires other arguments besides the `Timestep`, the transformation 
+takes these arguments, while a wrapped function takes the `Timestep` object as 
+argument. 
 So, a transformation can be roughly defined as follows:
 
 .. code-block:: python
 
-    def transformations(*args,**kwargs):
-        # do some things
-            def wrapped(ts):
-                # apply changes to the Timestep object
-                return ts
-            
-            return wrapped
+    def up_by_x(distance):
+    	"""
+    	Creates a transformation that will translate all coordinates by a given amount along the Z dimension.
+    	"""
+    	def wrapped(ts):
+        	ts.positions = ts.positions + np.array([0, 0, distance], dtype=np.float32)
+        return ts
+    return wrapped
+    
+    
+An alternative to using a wrapped function is using partials from :mod:`functools`. The
+above function can be written as:
+
+.. code-block:: python
+
+	import functools
+
+	def up_by_x(ts, distance):
+    	ts.positions = ts.positions + np.array([0, 0, distance], dtype=np.float32)
+    	return ts
+
+	up_by_2 = functools.partial(up_by_x, distance=2)
 
 
 See :func:`MDAnalysis.transformations.translate` for a simple example.    
@@ -37,7 +66,7 @@ See :func:`MDAnalysis.transformations.translate` for a simple example.
 
 .. rubric:: Examples
 
-e.g. translate the coordinates of a frame:
+Translating the coordinates of a frame:
 
 .. code-block:: python
 
@@ -51,7 +80,7 @@ e.g. create a workflow and adding it to the trajectory:
     u = MDAnalysis.Universe(topology, trajectory)
     workflow = [MDAnalysis.transformations.translate([1,1,1]), 
                 MDAnalysis.transformations.translate([1,2,3])]
-    u.trajetory.add_transformations(*workflow)
+    u.trajcetory.add_transformations(*workflow)
 
 e.g. giving a workflow as a keyword argument when defining the universe:
 
