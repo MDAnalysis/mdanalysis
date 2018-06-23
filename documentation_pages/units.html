@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>13. Constants and unit conversion — MDAnalysis.units &#8212; MDAnalysis 0.18.1-dev documentation</title>
+    <title>14. Constants and unit conversion — MDAnalysis.units &#8212; MDAnalysis 0.18.1-dev documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -28,8 +28,8 @@
     <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="14. Custom exceptions and warnings — MDAnalysis.exceptions" href="exceptions.html" />
-    <link rel="prev" title="12. Version information for MDAnalysis - MDAnalysis.version" href="version.html" />
+    <link rel="next" title="15. Custom exceptions and warnings — MDAnalysis.exceptions" href="exceptions.html" />
+    <link rel="prev" title="13. Version information for MDAnalysis - MDAnalysis.version" href="version.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -43,10 +43,12 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.units"></span><div class="section" id="constants-and-unit-conversion-mdanalysis-units">
-<h1>13. Constants and unit conversion — <a class="reference internal" href="#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.units</span></code></a><a class="headerlink" href="#constants-and-unit-conversion-mdanalysis-units" title="Permalink to this headline">¶</a></h1>
+<h1>14. Constants and unit conversion — <a class="reference internal" href="#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.units</span></code></a><a class="headerlink" href="#constants-and-unit-conversion-mdanalysis-units" title="Permalink to this headline">¶</a></h1>
 <p>The base units of MDAnalysis trajectories are the <strong>Å</strong> (<strong>ångström</strong>) for
 <strong>length</strong> and <strong>ps</strong> (<strong>pico second</strong>) for <strong>time</strong>. By default, all positions
 are in Å and all times are in ps, regardless of how the MD code stored
@@ -96,7 +98,7 @@ table on <a class="reference internal" href="#table-baseunits"><span class="std 
 </tbody>
 </table>
 <div class="section" id="implementation-notes">
-<h2>13.1. Implementation notes<a class="headerlink" href="#implementation-notes" title="Permalink to this headline">¶</a></h2>
+<h2>14.1. Implementation notes<a class="headerlink" href="#implementation-notes" title="Permalink to this headline">¶</a></h2>
 <p>All conversions with <a class="reference internal" href="#MDAnalysis.units.convert" title="MDAnalysis.units.convert"><code class="xref py py-func docutils literal"><span class="pre">convert()</span></code></a> are carried out in a simple fashion: the
 conversion factor <span class="math">\(f_{b,b'}\)</span> from the base unit <span class="math">\(b\)</span> to another unit
 <span class="math">\(b'\)</span> is precomputed and stored (see <a class="reference internal" href="#data"><span class="std std-ref">Data</span></a>). The numerical value of
@@ -117,7 +119,7 @@ an intermediate step:</p>
 </pre></div>
 </div>
 <div class="section" id="conversions">
-<h3>13.1.1. Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h3>
+<h3>14.1.1. Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h3>
 <p>Examples for how to calculate some of the conversion factors that are
 hard-coded in <a class="reference internal" href="#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal"><span class="pre">units</span></code></a> (see <a class="reference internal" href="#data"><span class="std std-ref">Data</span></a>).</p>
 <dl class="docutils">
@@ -157,7 +159,7 @@ hard-coded in <a class="reference internal" href="#module-MDAnalysis.units" titl
 </div>
 </div>
 <div class="section" id="functions">
-<h2>13.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h2>14.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.units.get_conversion_factor">
 <code class="descclassname">MDAnalysis.units.</code><code class="descname">get_conversion_factor</code><span class="sig-paren">(</span><em>unit_type</em>, <em>u1</em>, <em>u2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MDAnalysis/units.html#get_conversion_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.units.get_conversion_factor" title="Permalink to this definition">¶</a></dt>
@@ -189,7 +191,7 @@ incompatible units.</td>
 
 </div>
 <div class="section" id="data">
-<span id="id2"></span><h2>13.3. Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>14.3. Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
 <dt id="MDAnalysis.units.constants">
 <code class="descclassname">MDAnalysis.units.</code><code class="descname">constants</code><em class="property"> = {'N_Avogadro': 6.02214129e+23, 'calorie': 4.184, 'elementary_charge': 1.602176565e-19}</em><a class="headerlink" href="#MDAnalysis.units.constants" title="Permalink to this definition">¶</a></dt>
@@ -300,7 +302,7 @@ The <a class="reference external" href="http://ambermd.org/formats.html#parm">co
 
 <dl class="data">
 <dt id="MDAnalysis.units.conversion_factor">
-<code class="descclassname">MDAnalysis.units.</code><code class="descname">conversion_factor</code><em class="property"> = {'charge': {'e': 1.0, 'C': 1.602176565e-19, 'Amber': 18.2223, 'As': 1.602176565e-19}, 'density': {'Molar': 1660.5389210321898, 'SPC': 30.37184690488927, 'TIP4P': 29.886382818497438, 'Å^{-3}': 1.0, 'TIP3P': 29.85655608913766, 'A^{-3}': 1.0, 'nanometer^{-3}': 1000.0, 'nm^{-3}': 1000.0, 'Angstrom^{-3}': 1.0, 'water': 30.00628806551247}, 'energy': {'kcal/mol': 0.2390057361376673, 'J': 1.66053892103219e-21, 'kJ/mol': 1.0, 'eV': 0.01036426919046959}, 'force': {'kcal/(mol*Angstrom)': 0.2390057361376673, 'J/m': 1.66053892103219e-11, 'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*Å)': 1.0, 'N': 1.66053892103219e-11, 'Newton': 1.66053892103219e-11, 'kJ/(mol*nm)': 10.0, 'kJ/(mol*A)': 1.0}, 'length': {'fm': 100000.0, 'nanometer': 0.1, 'pm': 100.0, 'angstrom': 1.0, 'A': 1.0, 'Å': 1.0, 'nm': 0.1, 'femtometer': 100000.0, 'Angstrom': 1.0, 'picometer': 100.0}, 'speed': {'Angstrom/picosecond': 1.0, 'pm/ps': 100.0, 'Å/ps': 1.0, 'Angstrom/ps': 1.0, 'nanometer/ps': 0.1, 'angstrom/picosecond': 1.0, 'A/ps': 1.0, 'm/s': 100.0, 'nanometer/picosecond': 0.1, 'Angstrom/AKMA': 0.04888821, 'angstrom/femtosecond': 1000.0, 'angstrom/fs': 1000.0, 'Angstrom/fs': 1000.0, 'nm/ns': 100.0, 'Angstrom/femtosecond': 1000.0, 'nm/ps': 0.1}, 'time': {'picosecond': 1.0, 'AKMA': 20.45482949774598, 'fs': 1000.0, 's': 1e-12, 'femtosecond': 1000.0, 'nanosecond': 0.001, 'sec': 1e-12, 'second': 1e-12, 'ps': 1.0, 'ns': 0.001}}</em><a class="headerlink" href="#MDAnalysis.units.conversion_factor" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">conversion_factor</code><em class="property"> = {'charge': {'As': 1.602176565e-19, 'C': 1.602176565e-19, 'Amber': 18.2223, 'e': 1.0}, 'density': {'Molar': 1660.5389210321898, 'nanometer^{-3}': 1000.0, 'Å^{-3}': 1.0, 'Angstrom^{-3}': 1.0, 'nm^{-3}': 1000.0, 'TIP4P': 29.886382818497438, 'water': 30.00628806551247, 'SPC': 30.37184690488927, 'TIP3P': 29.85655608913766, 'A^{-3}': 1.0}, 'energy': {'eV': 0.01036426919046959, 'kcal/mol': 0.2390057361376673, 'kJ/mol': 1.0, 'J': 1.66053892103219e-21}, 'force': {'kJ/(mol*A)': 1.0, 'kJ/(mol*Å)': 1.0, 'Newton': 1.66053892103219e-11, 'kJ/(mol*nm)': 10.0, 'N': 1.66053892103219e-11, 'J/m': 1.66053892103219e-11, 'kcal/(mol*Angstrom)': 0.2390057361376673, 'kJ/(mol*Angstrom)': 1.0}, 'length': {'fm': 100000.0, 'angstrom': 1.0, 'nanometer': 0.1, 'femtometer': 100000.0, 'nm': 0.1, 'Angstrom': 1.0, 'pm': 100.0, 'Å': 1.0, 'picometer': 100.0, 'A': 1.0}, 'speed': {'angstrom/picosecond': 1.0, 'A/ps': 1.0, 'm/s': 100.0, 'pm/ps': 100.0, 'angstrom/fs': 1000.0, 'Angstrom/fs': 1000.0, 'Angstrom/picosecond': 1.0, 'nanometer/picosecond': 0.1, 'Angstrom/ps': 1.0, 'nanometer/ps': 0.1, 'Angstrom/AKMA': 0.04888821, 'nm/ns': 100.0, 'Å/ps': 1.0, 'Angstrom/femtosecond': 1000.0, 'nm/ps': 0.1, 'angstrom/femtosecond': 1000.0}, 'time': {'second': 1e-12, 'nanosecond': 0.001, 'AKMA': 20.45482949774598, 's': 1e-12, 'femtosecond': 1000.0, 'ps': 1.0, 'fs': 1000.0, 'ns': 0.001, 'picosecond': 1.0, 'sec': 1e-12}}</em><a class="headerlink" href="#MDAnalysis.units.conversion_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#MDAnalysis.units.conversion_factor" title="MDAnalysis.units.conversion_factor"><code class="xref py py-data docutils literal"><span class="pre">conversion_factor</span></code></a> is used by <a class="reference internal" href="#MDAnalysis.units.get_conversion_factor" title="MDAnalysis.units.get_conversion_factor"><code class="xref py py-func docutils literal"><span class="pre">get_conversion_factor()</span></code></a> – Note – any observable with a unit (i.e. one with an entry in
 the <code class="xref py py-attr docutils literal"><span class="pre">unit</span></code> attribute) needs an entry in <a class="reference internal" href="#MDAnalysis.units.conversion_factor" title="MDAnalysis.units.conversion_factor"><code class="xref py py-data docutils literal"><span class="pre">conversion_factor</span></code></a></p>
 </dd></dl>
@@ -315,7 +317,7 @@ unit type.</p>
 
 </div>
 <div class="section" id="references-and-footnotes">
-<h2>13.4. References and footnotes<a class="headerlink" href="#references-and-footnotes" title="Permalink to this headline">¶</a></h2>
+<h2>14.4. References and footnotes<a class="headerlink" href="#references-and-footnotes" title="Permalink to this headline">¶</a></h2>
 <table class="docutils citation" frame="void" id="jorgensen1998" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -342,6 +344,7 @@ become</p>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -375,32 +378,33 @@ become</p>
 <li class="toctree-l1"><a class="reference internal" href="analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections_modules.html">7. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">8. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core_modules.html">9. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#implementation-notes">13.1. Implementation notes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#conversions">13.1.1. Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">7. Trajectory transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">14. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-notes">14.1. Implementation notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#conversions">14.1.1. Conversions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#functions">13.2. Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data">13.3. Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#references-and-footnotes">13.4. References and footnotes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">14.2. Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data">14.3. Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references-and-footnotes">14.4. References and footnotes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">15. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">16. References</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="version.html" title="previous chapter">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
-      <li>Next: <a href="exceptions.html" title="next chapter">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+      <li>Previous: <a href="version.html" title="previous chapter">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+      <li>Next: <a href="exceptions.html" title="next chapter">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
   </ul></li>
 </ul>
 </div>
@@ -423,7 +427,7 @@ become</p>
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
       <a href="../_sources/documentation_pages/units.rst.txt"

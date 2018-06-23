@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>8.1. Auxiliary Readers — MDAnalysis.auxiliary &#8212; MDAnalysis 0.18.1-dev documentation</title>
+    <title>9.1. Auxiliary Readers — MDAnalysis.auxiliary &#8212; MDAnalysis 0.18.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -28,8 +28,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="8.2. Auxiliary Readers — MDAnalysis.auxiliary.base" href="base.html" />
-    <link rel="prev" title="8. Auxiliary modules" href="../auxiliary_modules.html" />
+    <link rel="next" title="9.2. Auxiliary Readers — MDAnalysis.auxiliary.base" href="base.html" />
+    <link rel="prev" title="9. Auxiliary modules" href="../auxiliary_modules.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -43,10 +43,12 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.auxiliary.__init__"></span><div class="section" id="auxiliary-readers-mdanalysis-auxiliary">
-<h1>8.1. Auxiliary Readers — <code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.auxiliary</span></code><a class="headerlink" href="#auxiliary-readers-mdanalysis-auxiliary" title="Permalink to this headline">¶</a></h1>
+<h1>9.1. Auxiliary Readers — <code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.auxiliary</span></code><a class="headerlink" href="#auxiliary-readers-mdanalysis-auxiliary" title="Permalink to this headline">¶</a></h1>
 <p>The auxiliary submodule contains code for reading ‘auxiliary’ data from a
 trajectory and allowing alignment with trajectory timesteps. Additional
 methods in <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.ProtoReader</span></code></a> allow auxiliary data
@@ -56,7 +58,7 @@ regular trajectory file to be read by the trajectory Reader. They may be stored
 internally (e.g. in an array) or read from a file. In general, auxiliary data is
 assumed to be time ordered and contain no duplicates.</p>
 <div class="section" id="supported-formats">
-<h2>8.1.1. Supported formats<a class="headerlink" href="#supported-formats" title="Permalink to this headline">¶</a></h2>
+<h2>9.1.1. Supported formats<a class="headerlink" href="#supported-formats" title="Permalink to this headline">¶</a></h2>
 <p>Currently supported formats:</p>
 <blockquote>
 <div><table border="1" class="docutils">
@@ -98,7 +100,7 @@ reader for .xvg files.</td>
 </div></blockquote>
 </div>
 <div class="section" id="auxiliary-api">
-<span id="id1"></span><h2>8.1.2. Auxiliary API<a class="headerlink" href="#auxiliary-api" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>9.1.2. Auxiliary API<a class="headerlink" href="#auxiliary-api" title="Permalink to this headline">¶</a></h2>
 <p>Auxiliary readers inherit from the base
 <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal"><span class="pre">AuxReader</span></code></a>. In stand-alone use they
 allow iteration over each step in a set of auxiliary data:</p>
@@ -142,7 +144,7 @@ function <a class="reference internal" href="core.html#MDAnalysis.auxiliary.core
 </pre></div>
 </div>
 <div class="section" id="auxiliaries-and-trajectories">
-<h3>8.1.2.1. Auxiliaries and trajectories<a class="headerlink" href="#auxiliaries-and-trajectories" title="Permalink to this headline">¶</a></h3>
+<h3>9.1.2.1. Auxiliaries and trajectories<a class="headerlink" href="#auxiliaries-and-trajectories" title="Permalink to this headline">¶</a></h3>
 <p>For alignment with trajectory data, auxiliary readers provide methods to
 assign each auxiliary step to the nearest trajectory timestep, read all steps
 assigned to a trajectory timestep and calculate ‘representative’ value(s) of
@@ -157,7 +159,7 @@ instance from the trajectory), as:</p>
 <p>If there are no auxiliary steps assigned to a given timestep (or none within
 <code class="docutils literal"><span class="pre">cutoff</span></code>, if set), the representative value(s) are set to <code class="docutils literal"><span class="pre">np.nan</span></code>.</p>
 <div class="section" id="adding-an-auxiliary-to-a-trajectory">
-<h4>8.1.2.1.1. Adding an auxiliary to a trajectory<a class="headerlink" href="#adding-an-auxiliary-to-a-trajectory" title="Permalink to this headline">¶</a></h4>
+<h4>9.1.2.1.1. Adding an auxiliary to a trajectory<a class="headerlink" href="#adding-an-auxiliary-to-a-trajectory" title="Permalink to this headline">¶</a></h4>
 <p>Auxiliary data may be added to a trajectory Reader through the
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.add_auxiliary" title="MDAnalysis.coordinates.base.ProtoReader.add_auxiliary"><code class="xref py py-meth docutils literal"><span class="pre">add_auxiliary()</span></code></a> method. Auxiliary data
 may be passed in as a AuxReader instance, or directly as e.g. a filename, in
@@ -173,7 +175,7 @@ updated, and the representative auxiliary value(s) will be available as e.g.
 <code class="docutils literal"><span class="pre">u.trajectory.ts.aux.pullforce</span></code>.</p>
 </div>
 <div class="section" id="iterating-by-an-auxiliary">
-<h4>8.1.2.1.2. Iterating by an auxiliary<a class="headerlink" href="#iterating-by-an-auxiliary" title="Permalink to this headline">¶</a></h4>
+<h4>9.1.2.1.2. Iterating by an auxiliary<a class="headerlink" href="#iterating-by-an-auxiliary" title="Permalink to this headline">¶</a></h4>
 <p>The trajectory <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></code></a> methods
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.next_as_aux" title="MDAnalysis.coordinates.base.ProtoReader.next_as_aux"><code class="xref py py-meth docutils literal"><span class="pre">next_as_aux()</span></code></a> and
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.iter_as_aux" title="MDAnalysis.coordinates.base.ProtoReader.iter_as_aux"><code class="xref py py-meth docutils literal"><span class="pre">iter_as_aux()</span></code></a> allow for movement
@@ -211,7 +213,7 @@ over the auxiliary independent of the trajectory:</p>
 timestep after iteration is complete.</p>
 </div>
 <div class="section" id="accessing-auxiliary-attributes">
-<h4>8.1.2.1.3. Accessing auxiliary attributes<a class="headerlink" href="#accessing-auxiliary-attributes" title="Permalink to this headline">¶</a></h4>
+<h4>9.1.2.1.3. Accessing auxiliary attributes<a class="headerlink" href="#accessing-auxiliary-attributes" title="Permalink to this headline">¶</a></h4>
 <p>To check the values of attributes of an added auxiliary, use
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.get_aux_attribute" title="MDAnalysis.coordinates.base.ProtoReader.get_aux_attribute"><code class="xref py py-meth docutils literal"><span class="pre">get_aux_attribute()</span></code></a>, e.g.:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pullf_dt</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">get_aux_attribute</span><span class="p">(</span><span class="s1">&#39;pullforce&#39;</span><span class="p">,</span> <span class="s1">&#39;dt&#39;</span><span class="p">)</span>
@@ -230,7 +232,7 @@ directly by using <a class="reference internal" href="../coordinates/base.html#M
 </div>
 </div>
 <div class="section" id="recreating-auxiliaries">
-<h3>8.1.2.2. Recreating auxiliaries<a class="headerlink" href="#recreating-auxiliaries" title="Permalink to this headline">¶</a></h3>
+<h3>9.1.2.2. Recreating auxiliaries<a class="headerlink" href="#recreating-auxiliaries" title="Permalink to this headline">¶</a></h3>
 <p>To recreate an auxiliary, the set of attributes necessary to replicate it can
 first be obtained with <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxReader.get_description" title="MDAnalysis.auxiliary.base.AuxReader.get_description"><code class="xref py py-meth docutils literal"><span class="pre">get_description()</span></code></a>.
 The returned dictionary can then be passed to
@@ -257,14 +259,14 @@ obtained using <a class="reference internal" href="../coordinates/base.html#MDAn
 </div>
 </div>
 <div class="section" id="auxstep-class">
-<span id="auxstep-api"></span><h3>8.1.2.3. AuxStep class<a class="headerlink" href="#auxstep-class" title="Permalink to this headline">¶</a></h3>
+<span id="auxstep-api"></span><h3>9.1.2.3. AuxStep class<a class="headerlink" href="#auxstep-class" title="Permalink to this headline">¶</a></h3>
 <p>An AuxStep instance holds the auxiliary data for the current step. It is
 updated whenever the a new auxiliary step is read.</p>
 <p>AuxStep classes are derived from the base class
 <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxStep" title="MDAnalysis.auxiliary.base.AuxStep"><code class="xref py py-class docutils literal"><span class="pre">AuxStep</span></code></a>. The appropriate AuxStep class for
 a given auxiliary reader is identified in the reader by the <cite>_Auxstep</cite> attribute.</p>
 <div class="section" id="attributes">
-<h4>8.1.2.3.1. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h4>
+<h4>9.1.2.3.1. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h4>
 <p>The following are inherited from <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxStep" title="MDAnalysis.auxiliary.base.AuxStep"><code class="xref py py-class docutils literal"><span class="pre">AuxStep</span></code></a>:</p>
 <blockquote>
 <div><dl class="docutils">
@@ -311,7 +313,7 @@ format. If <code class="docutils literal"><span class="pre">None</span></code> (
 </div></blockquote>
 </div>
 <div class="section" id="methods">
-<h4>8.1.2.3.2. Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h4>
+<h4>9.1.2.3.2. Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h4>
 <p>The following methods are inherited from
 <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxStep" title="MDAnalysis.auxiliary.base.AuxStep"><code class="xref py py-class docutils literal"><span class="pre">AuxStep</span></code></a>:</p>
 <blockquote>
@@ -347,22 +349,22 @@ no auxiliary steps are assigned to the current frame.</dd>
 </div>
 </div>
 <div class="section" id="auxreader-class">
-<span id="auxreader-api"></span><h3>8.1.2.4. AuxReader class<a class="headerlink" href="#auxreader-class" title="Permalink to this headline">¶</a></h3>
+<span id="auxreader-api"></span><h3>9.1.2.4. AuxReader class<a class="headerlink" href="#auxreader-class" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="registry">
-<h4>8.1.2.4.1. Registry<a class="headerlink" href="#registry" title="Permalink to this headline">¶</a></h4>
+<h4>9.1.2.4.1. Registry<a class="headerlink" href="#registry" title="Permalink to this headline">¶</a></h4>
 <p>In order to facilitate guessing of appropriate AuxReaders, all AuxReaders
 should set as appropriate <cite>format</cite> attribute. For files, this will be the
 expected file extension (in all caps).</p>
 </div>
 <div class="section" id="replicating-auxiliaries">
-<h4>8.1.2.4.2. Replicating auxiliaries<a class="headerlink" href="#replicating-auxiliaries" title="Permalink to this headline">¶</a></h4>
+<h4>9.1.2.4.2. Replicating auxiliaries<a class="headerlink" href="#replicating-auxiliaries" title="Permalink to this headline">¶</a></h4>
 <p>The names of the necessary attributes for replicating an auxiliary are stored in
 <cite>required_attrs</cite>, initially set in the base AuxReader. If a particular
 AuxReader introduces additional attributes required to reload an auxiliary,
 these should be added.</p>
 </div>
 <div class="section" id="id2">
-<h4>8.1.2.4.3. Attributes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<h4>9.1.2.4.3. Attributes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
 <p>The following attributes are inherited from
 <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal"><span class="pre">AuxReader</span></code></a>:</p>
 <blockquote>
@@ -420,7 +422,7 @@ of the auxiliary for recreating.</dd>
 <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxStep" title="MDAnalysis.auxiliary.base.AuxStep"><code class="xref py py-class docutils literal"><span class="pre">AuxStep</span></code></a> with the <cite>_Auxstep</cite> class attribute</p>
 </div>
 <div class="section" id="id3">
-<h4>8.1.2.4.4. Methods<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<h4>9.1.2.4.4. Methods<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
 <p>The following methods are inherited from
 <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal"><span class="pre">AuxReader</span></code></a>:</p>
 <blockquote>
@@ -534,6 +536,7 @@ following (these may be overwritten by subclasses as appropriate):</p>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -567,40 +570,41 @@ following (these may be overwritten by subclasses as appropriate):</p>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">7. Selection exporters</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../auxiliary_modules.html">8. Auxiliary modules</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">8.1. Auxiliary Readers — <code class="docutils literal"><span class="pre">MDAnalysis.auxiliary</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#supported-formats">8.1.1. Supported formats</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#auxiliary-api">8.1.2. Auxiliary API</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#auxiliaries-and-trajectories">8.1.2.1. Auxiliaries and trajectories</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#recreating-auxiliaries">8.1.2.2. Recreating auxiliaries</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#auxstep-class">8.1.2.3. AuxStep class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#auxreader-class">8.1.2.4. AuxReader class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">9.1. Auxiliary Readers — <code class="docutils literal"><span class="pre">MDAnalysis.auxiliary</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#supported-formats">9.1.1. Supported formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auxiliary-api">9.1.2. Auxiliary API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#auxiliaries-and-trajectories">9.1.2.1. Auxiliaries and trajectories</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recreating-auxiliaries">9.1.2.2. Recreating auxiliaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#auxstep-class">9.1.2.3. AuxStep class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#auxreader-class">9.1.2.4. AuxReader class</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">8.2. Auxiliary Readers — <code class="docutils literal"><span class="pre">MDAnalysis.auxiliary.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">8.3. Common functions for auxiliary reading — <code class="docutils literal"><span class="pre">MDAnalysis.auxiliary.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XVG.html">8.4. XVG auxiliary reader — <code class="docutils literal"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">9.2. Auxiliary Readers — <code class="docutils literal"><span class="pre">MDAnalysis.auxiliary.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">9.3. Common functions for auxiliary reading — <code class="docutils literal"><span class="pre">MDAnalysis.auxiliary.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XVG.html">9.4. XVG auxiliary reader — <code class="docutils literal"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">9. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">10. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">11. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">12. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">13. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">14. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">15. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../auxiliary_modules.html">8. Auxiliary modules</a><ul>
-      <li>Previous: <a href="../auxiliary_modules.html" title="previous chapter">8. Auxiliary modules</a></li>
-      <li>Next: <a href="base.html" title="next chapter">8.2. Auxiliary Readers — <code class="docutils literal"><span class="pre">MDAnalysis.auxiliary.base</span></code></a></li>
+  <li><a href="../auxiliary_modules.html">9. Auxiliary modules</a><ul>
+      <li>Previous: <a href="../auxiliary_modules.html" title="previous chapter">9. Auxiliary modules</a></li>
+      <li>Next: <a href="base.html" title="next chapter">9.2. Auxiliary Readers — <code class="docutils literal"><span class="pre">MDAnalysis.auxiliary.base</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -624,7 +628,7 @@ following (these may be overwritten by subclasses as appropriate):</p>
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
       <a href="../../_sources/documentation_pages/auxiliary/init.rst.txt"
