@@ -43,6 +43,8 @@ Fixes
   * Groups passed to select_atoms() are now type checked (Issue #1852)
   * Fixed inconsistent handling of groups with/without duplicates in
     pack_into_box() (Issue #1911)
+  * Fixed format of MODEL number in PDB file writing (Issue #1950)
+  * PDBWriter now properly sets start value
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)

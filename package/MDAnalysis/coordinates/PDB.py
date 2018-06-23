@@ -436,6 +436,18 @@ class PDBWriter(base.WriterBase):
 
     Note
     ----
+    Writing bonds currently only works when writing a whole :class:`Universe`
+    and if bond information is available in the topology.  (For selections
+    smaller than the whole :class:`Universe`, the atom numbering in the CONECT_
+    records would not match the numbering of the atoms in the new PDB file and
+    therefore a :exc:`NotImplementedError` is raised.)
+
+    The maximum frame number that can be stored in a PDB file is 9999 and it
+    will wrap around (see :meth:`MODEL` for further details).
+
+
+    See Also
+    --------
     This class is identical to :class:`MultiPDBWriter` with the one
     exception that it defaults to writing single-frame PDB files as if
     `multiframe` = ``False`` was selected.
@@ -466,7 +478,7 @@ class PDBWriter(base.WriterBase):
         'COMPND': "COMPND    {0}\n",
         'HEADER': "HEADER    {0}\n",
         'TITLE': "TITLE     {0}\n",
-        'MODEL': "MODEL     {0:5d}\n",
+        'MODEL': "MODEL     {0:>4d}\n",
         'NUMMDL': "NUMMDL    {0:5d}\n",
         'ENDMDL': "ENDMDL\n",
         'END': "END\n",
@@ -521,7 +533,8 @@ class PDBWriter(base.WriterBase):
         filename: str
            name of output file
         start: int (optional)
-           starting timestep
+           starting timestep (the first frame will have MODEL number `start` + 1
+           because the PDB standard prescribes MODEL numbers starting at 1)
         step: int (optional)
            skip between subsequent timesteps
         remarks: str (optional)
@@ -541,15 +554,6 @@ class PDBWriter(base.WriterBase):
            ``False``: write a single frame to the file; ``True``: create a
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
-
-        Note
-        ----
-        Writing bonds currently only works when writing a whole
-        :class:`Universe` and if bond information is available in the topology.
-        (For selections smaller than the whole :class:`Universe`, the atom
-        numbering in the CONECT_ records would not match the numbering of the
-        atoms in the new PDB file and therefore a :exc:`NotImplementedError` is
-        raised.)
 
 
         .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
@@ -571,11 +575,10 @@ class PDBWriter(base.WriterBase):
         self._multiframe = self.multiframe if multiframe is None else multiframe
         self.bonds = bonds
 
-        self.frames_written = 0
         if start < 0:
             raise ValueError("'Start' must be a positive value")
 
-        self.start = start
+        self.start =  self.frames_written = start
         self.step = step
         self.remarks = remarks
 
@@ -596,7 +599,7 @@ class PDBWriter(base.WriterBase):
 
     def _write_pdb_title(self):
         if self._multiframe:
-            self.TITLE("MDANALYSIS FRAMES FROM {0:d}, SKIP {1:d}: {2!s}"
+            self.TITLE("MDANALYSIS FRAMES FROM {0:d}, STEP {1:d}: {2!s}"
                        "".format(self.start, self.step, self.remarks))
         else:
             self.TITLE("MDANALYSIS FRAME {0:d}: {1!s}"
@@ -762,7 +765,7 @@ class PDBWriter(base.WriterBase):
         or a :class:`~MDAnalysis.core.universe.Universe`.
 
         The method writes the frames from the one specified as *start* until
-        the end, using a step of *skip* (*start* and *skip* are set in the
+        the end, using a step of *step* (*start* and *step* are set in the
         constructor). Thus, if *u* is a Universe then ::
 
            u.trajectory[-2]
@@ -771,7 +774,7 @@ class PDBWriter(base.WriterBase):
 
         will write a PDB trajectory containing the last 2 frames and ::
 
-           pdb = PDBWriter("out.pdb", u.atoms.n_atoms, start=12, skip=2)
+           pdb = PDBWriter("out.pdb", u.atoms.n_atoms, start=12, step=2)
            pdb.write_all_timesteps(u)
 
         will be writing frames 12, 14, 16, ...
@@ -989,10 +992,21 @@ class PDBWriter(base.WriterBase):
     def MODEL(self, modelnumber):
         """Write the MODEL_ record.
 
+        .. note::
+
+           The maximum MODEL number is limited to 9999 in the PDB
+           standard (i.e., 4 digits). If frame numbers are larger than
+           9999, they will wrap around, i.e., 9998, 9999, 0, 1, 2, ...
+
+
         .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
 
+
+        .. versionchanged:: 0.18.1
+           Maximum model number is enforced.
+
         """
-        self.pdbfile.write(self.fmt['MODEL'].format(modelnumber))
+        self.pdbfile.write(self.fmt['MODEL'].format(int(str(modelnumber)[-4:])))
 
     def END(self):
         """Write END_ record.
