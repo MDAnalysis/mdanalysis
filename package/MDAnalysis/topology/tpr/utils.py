@@ -635,6 +635,17 @@ def do_moltype(data, symtab, fver):
                 dihs += list(ik_obj.process(ias))
             elif ik_obj.name in ['IDIHS', 'PIDIHS']:
                 impr += list(ik_obj.process(ias))
+            elif ik_obj.name == 'SETTLE':
+                # SETTLE interactions are optimized triangular constraints for
+                # water molecules. They should be counted as a pair of bonds
+                # between the oxigen and the hydrogens. The format only
+                # specifies the index of the oxygen and assumes that the next
+                # two atoms are the hydrogens.
+                base_atom = ilist.iatoms[-1]
+                bonds += [
+                    [base_atom, base_atom + 1],
+                    [base_atom, base_atom + 2]
+                ]
             else:
                 # other interaction types are not interested at the moment
                 pass
