@@ -184,7 +184,6 @@ class TestPDBWriter(TestCase):
                             err_msg="Writing PDB file with PDBWriter "
                                     "does not reproduce original coordinates")
 
-
     def test_writer_no_resnames(self):
         self.u_no_resnames.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
@@ -290,15 +289,14 @@ class TestPDBWriter(TestCase):
             u.atoms.write(self.outfile)
         del u
 
-    def test_check_header_title_multiframe(self):
+    def test_check_HEADER_TITLE_multiframe(self):
         """Check whether HEADER and TITLE are written just once in a multi-
         frame PDB file (Issue 741)"""
         u = mda.Universe(PSF, DCD)
-        pdb = mda.Writer(self.outfile, multiframe=True)
         protein = u.select_atoms("protein and name CA")
-        for ts in u.trajectory[:5]:
-            pdb.write(protein)
-        pdb.close()
+        with mda.Writer(self.outfile, multiframe=True) as pdb:
+            for ts in u.trajectory[:5]:
+                pdb.write(protein)
 
         with open(self.outfile) as f:
             got_header = 0
@@ -310,6 +308,26 @@ class TestPDBWriter(TestCase):
                 elif line.startswith('TITLE'):
                     got_title += 1
                     assert got_title <= 1, "There should be only one TITLE."
+
+    def test_check_MODEL_multiframe(self, maxframes=12):
+        """Check whether MODEL number is in the right column (Issue #1950)"""
+        u = mda.Universe(PSF, DCD)
+        protein = u.select_atoms("protein and name CA")
+        with mda.Writer(self.outfile, multiframe=True) as pdb:
+            for ts in u.trajectory[:maxframes]:
+                pdb.write(protein)
+
+        def get_MODEL_lines(filename):
+            with open(filename) as pdb:
+                for line in pdb:
+                    if line.startswith("MODEL"):
+                        yield line
+
+        MODEL_lines = list(get_MODEL_lines(self.outfile))
+
+        assert len(MODEL_lines) == maxframes
+        for model, line in enumerate(MODEL_lines, start=1):
+            assert line[10:14] == "{0:>4d}".format(model)
 
 
 class TestMultiPDBReader(TestCase):

@@ -466,7 +466,7 @@ class PDBWriter(base.WriterBase):
         'COMPND': "COMPND    {0}\n",
         'HEADER': "HEADER    {0}\n",
         'TITLE': "TITLE     {0}\n",
-        'MODEL': "MODEL     {0:5d}\n",
+        'MODEL': "MODEL     {0:>4d}\n",
         'NUMMDL': "NUMMDL    {0:5d}\n",
         'ENDMDL': "ENDMDL\n",
         'END': "END\n",
