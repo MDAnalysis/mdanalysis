@@ -33,6 +33,7 @@ or defined by centering an AtomGroup in the unit cell using the function
 from __future__ import absolute_import, division
 
 import numpy as np
+from functools import partial
 
 from ..lib.mdamath import triclinic_vectors
 from ..core.groups import AtomGroup
@@ -48,7 +49,7 @@ def translate(vector):
     
     Parameters
     ----------
-    vector: list
+    vector: array-like
         coordinates of the vector to which the coordinates will be translated
         
     Returns
@@ -89,10 +90,10 @@ def center_in_box(ag, center='geometry', point=None, pbc=None):
     center: str, optional
         used to choose the method of centering on the given atom group. Can be 'geometry'
         or 'mass'
-    point: list, optional
+    point: array-like, optional
         overrides the unit cell center - the coordinates of the Timestep are translated so
         that the center of mass/geometry of the given AtomGroup is aligned to this position
-        instead. Defined as a list of size 3. Example: [1, 2, 3]
+        instead. Defined as an array of size 3. Example: [1, 2, 3]
     pbc: bool or None, optional
         If True, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry
@@ -105,9 +106,9 @@ def center_in_box(ag, center='geometry', point=None, pbc=None):
     pbc_arg = pbc
     try:
         if center == 'geometry':
-            ag_center = ag.center_of_geometry(pbc=pbc_arg)
+            center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
         elif center == 'mass':
-            ag_center = ag.center_of_mass(pbc=pbc_arg)
+            center_method = partial(ag.center_of_mass, pbc=pbc_arg)
         else:
             raise ValueError('{} is not a valid argument for center'.format(center))
     except AttributeError:
@@ -115,8 +116,9 @@ def center_in_box(ag, center='geometry', point=None, pbc=None):
             raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
         else:
             raise ValueError('{} is not an AtomGroup object'.format(ag))
-    
+
     def wrapped(ts):
+        ag_center = center_method()
         if point:
             if len(point)==3:
                 boxcenter = np.float32(point)

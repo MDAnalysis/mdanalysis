@@ -19,7 +19,7 @@ The rules for this file:
   * 0.18.1
 
 Enhancements
-  * Added a box centering trajectory transformation
+  * Added a box centering trajectory transformation (PR #1946)
   * Added a on-the-fly trajectory transformations API and a coordinate translation
   	function (Issue #786)
   * Added various duecredit stubs
