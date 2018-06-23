@@ -31,7 +31,7 @@ Enhancements
   * Added boolean property *Group.isunique (PR #1922)
   * Added *Group.copy() methods returning an identical copy of the respective
     group (PR #1922)
-  * Improves performances when accessing groups (PR #1951)
+  * Use a faster function to deduplicate indices (PR #1951)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)

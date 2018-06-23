@@ -19,6 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
 
 import pytest
 import numpy as np
@@ -32,6 +33,8 @@ from MDAnalysis.lib.cutil import unique_int_1d
     [1, 1, 1, 1, ],  # all identical
     [2, 3, 5, 7, ],  # all different, monotonic
     [5, 2, 7, 3, ],  # all different, non-monotonic
+    [1, 2, 2, 4, 4, 6, ],  # duplicates, monotonic
+    [1, 2, 2, 6, 4, 4, ],  # duplicates, non-monotonic
 ))
 def test_unique_int_1d(values):
     array = np.array(values, dtype=int)
