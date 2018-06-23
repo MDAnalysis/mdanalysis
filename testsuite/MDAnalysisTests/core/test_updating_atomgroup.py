@@ -114,6 +114,18 @@ class TestUpdatingSelection(object):
         with pytest.raises(TypeError):
             u.select_atoms("group updating", {"updating": True})
 
+    def test_atoms(self, ag_updating):
+        ag = ag_updating.atoms
+        assert isinstance(ag, mda.core.groups.AtomGroup)
+        assert ag is not ag_updating
+        assert ag == ag_updating
+
+    def test_copy(self, ag_updating):
+        cgroup = ag_updating.copy()
+        assert isinstance(cgroup, mda.core.groups.UpdatingAtomGroup)
+        assert cgroup is not ag_updating
+        assert cgroup == ag_updating
+
 
 class TestUpdatingSelectionNotraj(object):
     @pytest.fixture()
