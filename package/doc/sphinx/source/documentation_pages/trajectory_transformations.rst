@@ -17,14 +17,14 @@ of the :mod:`~MDAnalysis.coordinates.base` module, or upon Universe creation usi
 the keyword argument `transformations`. Note that in the two latter cases, the 
 workflow cannot be changed after being defined.
 
-A simple transformation that takes no other arguments but the `Timestep`can be defined
+A simple transformation that takes no other arguments but the `Timestep` can be defined
 as the following example:
 
 .. code-block:: python
 
-	def up_by_2(ts):
+    def up_by_2(ts):
     	"""
-    	Translate all coordinates by 2 Å up along the Z dimension.
+    	Translate all coordinates by 2 angstroms up along the Z dimension.
     	"""
     	ts.positions = ts.positions + np.array([0, 0, 2], dtype=np.float32)
     	return ts
@@ -52,13 +52,13 @@ above function can be written as:
 
 .. code-block:: python
 
-	import functools
+    import functools
 
-	def up_by_x(ts, distance):
+    def up_by_x(ts, distance):
     	ts.positions = ts.positions + np.array([0, 0, distance], dtype=np.float32)
     	return ts
 
-	up_by_2 = functools.partial(up_by_x, distance=2)
+    up_by_2 = functools.partial(up_by_x, distance=2)
 
 
 See :func:`MDAnalysis.transformations.translate` for a simple example.    
