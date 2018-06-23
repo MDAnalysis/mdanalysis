@@ -104,6 +104,11 @@ def center_in_box(ag, center='geometry', point=None, pbc=None):
     """
     
     pbc_arg = pbc
+    if point:
+            if len(point)==3:
+                boxcenter = np.float32(point)
+            else:
+                raise ValueError('{} is not a valid point'.format(point))
     try:
         if center == 'geometry':
             center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
@@ -116,16 +121,13 @@ def center_in_box(ag, center='geometry', point=None, pbc=None):
             raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
         else:
             raise ValueError('{} is not an AtomGroup object'.format(ag))
-
+  
     def wrapped(ts):
-        ag_center = center_method()
-        if point:
-            if len(point)==3:
-                boxcenter = np.float32(point)
-            else:
-                raise ValueError('{} is not a valid point'.format(point))
-        else:
+        if not boxcenter:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
+    
+        ag_center = center_method()
+
         vector = boxcenter - ag_center
         ts.positions += vector
         
