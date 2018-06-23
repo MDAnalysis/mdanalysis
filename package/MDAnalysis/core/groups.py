@@ -740,7 +740,7 @@ class GroupBase(_MutableBase):
         # Get sizes of compounds:
         unique_compound_indices, compound_sizes = np.unique(compound_indices,
                                                             return_counts=True)
-        unique_compound_sizes = np.unique(compound_sizes)
+        unique_compound_sizes = unique_int_1d(compound_sizes)
         # Compute centers per compound for each compound size:
         for compound_size in unique_compound_sizes:
             compound_mask = compound_sizes == compound_size
