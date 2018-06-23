@@ -25,6 +25,8 @@ import cython
 import numpy as np
 cimport numpy as np
 
+__all__ = ['unique_int_1d', ]
+
 
 @cython.boundscheck(False) # turn off bounds-checking for entire function
 @cython.wraparound(False)  # turn off negative index wrapping for entire function

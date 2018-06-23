@@ -109,6 +109,7 @@ Containers and lists
 .. autofunction:: asiterable
 .. autofunction:: hasmethod
 .. autoclass:: Namespace
+.. autofunction:: unique_int_1d
 
 File parsing
 ------------
@@ -178,6 +179,7 @@ from numpy.testing import assert_equal
 import inspect
 
 from ..exceptions import StreamWarning, DuplicateWarning
+from ._cutil import *
 
 
 # Python 3.0, 3.1 do not have the builtin callable()

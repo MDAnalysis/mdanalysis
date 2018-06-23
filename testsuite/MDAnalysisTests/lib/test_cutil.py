@@ -25,7 +25,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib.cutil import unique_int_1d
+from MDAnalysis.lib._cutil import unique_int_1d
 
 
 @pytest.mark.parametrize('values', (
