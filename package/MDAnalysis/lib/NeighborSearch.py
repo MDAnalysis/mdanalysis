@@ -32,7 +32,7 @@ from __future__ import absolute_import
 import numpy as np
 from Bio.KDTree import KDTree
 from MDAnalysis.lib.pkdtree import PeriodicKDTree
-from MDAnalysis.lib.cutil import unique_int_1d
+from MDAnalysis.lib.util import unique_int_1d
 
 from MDAnalysis.core.groups import AtomGroup, Atom
 

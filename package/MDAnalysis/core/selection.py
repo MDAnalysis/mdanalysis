@@ -51,7 +51,7 @@ from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
 
 from MDAnalysis.lib.pkdtree import PeriodicKDTree
-from MDAnalysis.lib.cutil import unique_int_1d
+from MDAnalysis.lib.util import unique_int_1d
 from MDAnalysis.core import flags
 from ..lib import distances
 from ..exceptions import SelectionError, NoDataError

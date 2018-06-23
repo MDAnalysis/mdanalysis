@@ -339,8 +339,8 @@ def extensions(config):
                         include_dirs=include_dirs,
                         define_macros=define_macros,
                         extra_compile_args=extra_compile_args)
-    cutil = MDAExtension('MDAnalysis.lib.cutil',
-                         sources=['MDAnalysis/lib/cutil' + source_suffix],
+    cutil = MDAExtension('MDAnalysis.lib._cutil',
+                         sources=['MDAnalysis/lib/_cutil' + source_suffix],
                          include_dirs=include_dirs,
                          define_macros=define_macros,
                          extra_compile_args=extra_compile_args)
