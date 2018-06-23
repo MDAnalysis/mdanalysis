@@ -484,6 +484,18 @@
 
 <span class="sd">    Note</span>
 <span class="sd">    ----</span>
+<span class="sd">    Writing bonds currently only works when writing a whole :class:`Universe`</span>
+<span class="sd">    and if bond information is available in the topology.  (For selections</span>
+<span class="sd">    smaller than the whole :class:`Universe`, the atom numbering in the CONECT_</span>
+<span class="sd">    records would not match the numbering of the atoms in the new PDB file and</span>
+<span class="sd">    therefore a :exc:`NotImplementedError` is raised.)</span>
+
+<span class="sd">    The maximum frame number that can be stored in a PDB file is 9999 and it</span>
+<span class="sd">    will wrap around (see :meth:`MODEL` for further details).</span>
+
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
 <span class="sd">    This class is identical to :class:`MultiPDBWriter` with the one</span>
 <span class="sd">    exception that it defaults to writing single-frame PDB files as if</span>
 <span class="sd">    `multiframe` = ``False`` was selected.</span>
@@ -514,7 +526,7 @@
         <span class="s1">&#39;COMPND&#39;</span><span class="p">:</span> <span class="s2">&quot;COMPND    </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s1">&#39;HEADER&#39;</span><span class="p">:</span> <span class="s2">&quot;HEADER    </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s1">&#39;TITLE&#39;</span><span class="p">:</span> <span class="s2">&quot;TITLE     </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="s1">&#39;MODEL&#39;</span><span class="p">:</span> <span class="s2">&quot;MODEL     </span><span class="si">{0:5d}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;MODEL&#39;</span><span class="p">:</span> <span class="s2">&quot;MODEL     </span><span class="si">{0:&gt;4d}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s1">&#39;NUMMDL&#39;</span><span class="p">:</span> <span class="s2">&quot;NUMMDL    </span><span class="si">{0:5d}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s1">&#39;ENDMDL&#39;</span><span class="p">:</span> <span class="s2">&quot;ENDMDL</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s1">&#39;END&#39;</span><span class="p">:</span> <span class="s2">&quot;END</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
@@ -569,7 +581,8 @@
 <span class="sd">        filename: str</span>
 <span class="sd">           name of output file</span>
 <span class="sd">        start: int (optional)</span>
-<span class="sd">           starting timestep</span>
+<span class="sd">           starting timestep (the first frame will have MODEL number `start` + 1</span>
+<span class="sd">           because the PDB standard prescribes MODEL numbers starting at 1)</span>
 <span class="sd">        step: int (optional)</span>
 <span class="sd">           skip between subsequent timesteps</span>
 <span class="sd">        remarks: str (optional)</span>
@@ -589,15 +602,6 @@
 <span class="sd">           ``False``: write a single frame to the file; ``True``: create a</span>
 <span class="sd">           multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_</span>
 <span class="sd">           records. If ``None``, then the class default is chosen.    [``None``]</span>
-
-<span class="sd">        Note</span>
-<span class="sd">        ----</span>
-<span class="sd">        Writing bonds currently only works when writing a whole</span>
-<span class="sd">        :class:`Universe` and if bond information is available in the topology.</span>
-<span class="sd">        (For selections smaller than the whole :class:`Universe`, the atom</span>
-<span class="sd">        numbering in the CONECT_ records would not match the numbering of the</span>
-<span class="sd">        atoms in the new PDB file and therefore a :exc:`NotImplementedError` is</span>
-<span class="sd">        raised.)</span>
 
 
 <span class="sd">        .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT</span>
@@ -619,11 +623,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_multiframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiframe</span> <span class="k">if</span> <span class="n">multiframe</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">multiframe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span> <span class="o">=</span> <span class="n">bonds</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;Start&#39; must be a positive value&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">=</span> <span class="n">start</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="n">remarks</span>
 
@@ -644,7 +647,7 @@
 
     <span class="k">def</span> <span class="nf">_write_pdb_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multiframe</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">TITLE</span><span class="p">(</span><span class="s2">&quot;MDANALYSIS FRAMES FROM </span><span class="si">{0:d}</span><span class="s2">, SKIP </span><span class="si">{1:d}</span><span class="s2">: </span><span class="si">{2!s}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">TITLE</span><span class="p">(</span><span class="s2">&quot;MDANALYSIS FRAMES FROM </span><span class="si">{0:d}</span><span class="s2">, STEP </span><span class="si">{1:d}</span><span class="s2">: </span><span class="si">{2!s}</span><span class="s2">&quot;</span>
                        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">TITLE</span><span class="p">(</span><span class="s2">&quot;MDANALYSIS FRAME </span><span class="si">{0:d}</span><span class="s2">: </span><span class="si">{1!s}</span><span class="s2">&quot;</span>
@@ -810,7 +813,7 @@
 <span class="sd">        or a :class:`~MDAnalysis.core.universe.Universe`.</span>
 
 <span class="sd">        The method writes the frames from the one specified as *start* until</span>
-<span class="sd">        the end, using a step of *skip* (*start* and *skip* are set in the</span>
+<span class="sd">        the end, using a step of *step* (*start* and *step* are set in the</span>
 <span class="sd">        constructor). Thus, if *u* is a Universe then ::</span>
 
 <span class="sd">           u.trajectory[-2]</span>
@@ -819,7 +822,7 @@
 
 <span class="sd">        will write a PDB trajectory containing the last 2 frames and ::</span>
 
-<span class="sd">           pdb = PDBWriter(&quot;out.pdb&quot;, u.atoms.n_atoms, start=12, skip=2)</span>
+<span class="sd">           pdb = PDBWriter(&quot;out.pdb&quot;, u.atoms.n_atoms, start=12, step=2)</span>
 <span class="sd">           pdb.write_all_timesteps(u)</span>
 
 <span class="sd">        will be writing frames 12, 14, 16, ...</span>
@@ -1037,10 +1040,21 @@
 <div class="viewcode-block" id="PDBWriter.MODEL"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.MODEL">[docs]</a>    <span class="k">def</span> <span class="nf">MODEL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modelnumber</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the MODEL_ record.</span>
 
+<span class="sd">        .. note::</span>
+
+<span class="sd">           The maximum MODEL number is limited to 9999 in the PDB</span>
+<span class="sd">           standard (i.e., 4 digits). If frame numbers are larger than</span>
+<span class="sd">           9999, they will wrap around, i.e., 9998, 9999, 0, 1, 2, ...</span>
+
+
 <span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL</span>
 
+
+<span class="sd">        .. versionchanged:: 0.18.1</span>
+<span class="sd">           Maximum model number is enforced.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;MODEL&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelnumber</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;MODEL&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">modelnumber</span><span class="p">)[</span><span class="o">-</span><span class="mi">4</span><span class="p">:])))</span></div>
 
 <div class="viewcode-block" id="PDBWriter.END"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.END">[docs]</a>    <span class="k">def</span> <span class="nf">END</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write END_ record.</span>
