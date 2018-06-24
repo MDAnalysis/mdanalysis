@@ -25,7 +25,7 @@ import cython
 import numpy as np
 cimport numpy as np
 
-__all__ = ['unique_int_1d', ]
+__all__ = ['unique_int_1d', 'unique_int_1d_alt']
 
 
 @cython.boundscheck(False) # turn off bounds-checking for entire function
@@ -55,7 +55,7 @@ def unique_int_1d(np.ndarray[np.int64_t, ndim=1] values):
 
     if n_values == 0:
         return result
-    
+
     result[0] = values[0]
     for i in range(1, n_values):
         if values[i] != result[j]:
@@ -67,4 +67,49 @@ def unique_int_1d(np.ndarray[np.int64_t, ndim=1] values):
     if not is_monotonic:
         result.sort()
         result = unique_int_1d(result)
+    return result
+
+
+@cython.boundscheck(False) # turn off bounds-checking for entire function
+@cython.wraparound(False)  # turn off negative index wrapping for entire function
+def unique_int_1d_alt(np.ndarray[np.int64_t, ndim=1] values):
+    """
+    Find the unique elements of a 1D array of integers.
+
+    This function is optimal on sorted arrays.
+
+    Parameters
+    ----------
+    values: np.ndarray
+        1D array of int in which to find the unique values.
+
+    Returns
+    -------
+    np.ndarray
+
+    .. versionadded:: 0.19.0
+    """
+    cdef bint is_monotonic = True
+    cdef int i = 0
+    cdef int j = 0
+    cdef int n_values = values.shape[0]
+    cdef np.ndarray[np.int64_t, ndim=1] result = np.empty(n_values, dtype=np.int64)
+
+    if n_values == 0:
+        return result
+
+    result[0] = values[0]
+    for i in range(1, n_values):
+        if values[i] != result[j]:
+            j += 1
+            result[j] = values[i]
+        if values[i] < values[i - 1]:
+            is_monotonic = False
+            break
+
+    if not is_monotonic:
+        values.sort()
+        result = unique_int_1d_alt(values)
+    else:
+        result = result[:j + 1]
     return result
