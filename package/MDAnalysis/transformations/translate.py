@@ -21,13 +21,13 @@
 #
 
 """\
-Translate trajectory --- :mod:`MDAnalysis.transformations.translate`
-====================================================================
+Translations --- :mod:`MDAnalysis.transformations.translate`
+============================================================
 
 Translate the coordinates of a given trajectory by a given vector.
-This is a wrapped function so usage is as the following example:
 
-    ts = MDAnalysis.transformations.translate(vector)(timestep)
+.. autofunction:: translate   
+    
     
 """
 from __future__ import absolute_import
@@ -41,13 +41,16 @@ def translate(vector):
     
     Example
     -------
+    
+    .. code-block:: python
+    
         ts = MDAnalysis.transformations.translate([1,2,3])(ts)    
     
     Parameters
     ----------
     vector: list
         coordinates of the vector to which the coordinates will be translated
-    ts: Timestep
+    ts: :class:`~MDAnalysis.coordinates.base.Timestep`
         frame that will be transformed
      
     Returns
