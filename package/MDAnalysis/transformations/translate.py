@@ -22,7 +22,7 @@
 
 """\
 Trajectory translation --- :mod:`MDAnalysis.transformations.translate`
-=====================================================================
+======================================================================
 
 Translate the coordinates of a given trajectory by a given vector.
 The vector can either be user defined, using the function `translate`
@@ -104,8 +104,7 @@ def center_in_box(ag, center='geometry', point=None, pbc=None):
     """
     
     pbc_arg = pbc
-    point = np.array(point)
-    if point.any() and len(point)!=3:
+    if point and len(point)!=3:
         raise ValueError('{} is not a valid point'.format(point))
     try:
         if center == 'geometry':
@@ -121,8 +120,8 @@ def center_in_box(ag, center='geometry', point=None, pbc=None):
             raise ValueError('{} is not an AtomGroup object'.format(ag))
   
     def wrapped(ts):
-        if point.any():
-            boxcenter = point
+        if point:
+            boxcenter = np.float32(point)
         else:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
     
