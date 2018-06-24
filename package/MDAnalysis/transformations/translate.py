@@ -96,7 +96,7 @@ def center_in_box(ag, center='geometry', point=None, pbc=None):
         instead. Defined as an array of size 3. Example: [1, 2, 3]
     pbc: bool or None, optional
         If True, all the atoms from the given AtomGroup will be moved to the unit cell
-        before calculating the center of mass or geometry
+        before calculating the center of mass or geometry. Default is `None`.
     
     Returns
     -------
