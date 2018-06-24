@@ -41,7 +41,6 @@ def universe():
 def g(universe):
     return universe.atoms.segments
 
-
 def test_newSegmentGroup(universe):
     """test that slicing a SegmentGroup returns a new SegmentGroup (Issue 135)"""
     g = universe.atoms.segments
