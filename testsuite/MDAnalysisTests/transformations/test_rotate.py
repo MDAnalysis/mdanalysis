@@ -32,35 +32,151 @@ from MDAnalysis.lib.transformations import rotation_matrix
 from MDAnalysisTests import make_Universe
 
 @pytest.fixture()
-def rotateby_universes():
+def rotate_universes():
     # create the Universe objects for the tests
     reference = make_Universe(trajectory=True)
-    transformed = make_Universe(trajectory=True)
+    transformed = make_Universe(['masses'], trajectory=True)
+    transformed.trajectory.ts.dimensions = np.array([372., 373., 374., 90, 90, 90])
     return reference, transformed
 
-def test_rotateby_custom_position():
+def test_rotateby_custom_position(rotate_universes):
     # what happens when we use a custom position for the axis of rotation?
-    ref_u, trans_u = rotateby_universes()
+    ref_u = rotate_universes[0]
+    trans_u = rotate_universes[1]
     trans = trans_u.trajectory.ts
     ref = ref_u.trajectory.ts
     vector = [1,0,0]
     pos = [0,0,0]
-    matrix = rotation_matrix(np.pi / 2, vector, pos)[:3, :3]
+    angle = 90
+    matrix = rotation_matrix(np.deg2rad(angle), vector, pos)[:3, :3]
     ref.positions = np.dot(ref.positions, matrix)
-    transformed = rotateby(np.pi / 2, vector, position=pos)(trans)
+    transformed = rotateby(angle, vector, position=pos)(trans)
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
-def test_rotateby_atomgroup():
-    # what happens when we rotate arround the center of geometry of a residue?
-    ref_u, trans_u = rotateby_universes()
+def test_rotateby_atomgroup_cog_nopbc(rotate_universes):
+    # what happens when we rotate arround the center of geometry of a residue
+    # without pbc?
+    ref_u = rotate_universes[0]
+    trans_u = rotate_universes[1]
     trans = trans_u.trajectory.ts
     ref = ref_u.trajectory.ts
     center_pos = [6,7,8]
     vector = [1,0,0]
-    matrix = rotation_matrix(np.pi, vector, center_pos)[:3, :3]
+    angle = 90
+    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)[:3, :3]
     ref.positions = np.dot(ref.positions, matrix)
     selection = trans_u.residues[0].atoms
-    transformed = rotateby(np.pi, vector, ag=selection, center='geometry')(trans) 
+    transformed = rotateby(angle, vector, ag=selection, center='geometry')(trans) 
+    assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
+
+def test_rotateby_atomgroup_com_nopbc(rotate_universes):
+    # what happens when we rotate arround the center of mass of a residue
+    # without pbc?
+    ref_u = rotate_universes[0]
+    trans_u = rotate_universes[1]
+    trans = trans_u.trajectory.ts
+    ref = ref_u.trajectory.ts
+    vector = [1,0,0]
+    angle = 90
+    selection = trans_u.residues[0].atoms
+    center_pos = selection.center_of_mass()
+    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)[:3, :3]
+    ref.positions = np.dot(ref.positions, matrix)
+    transformed = rotateby(angle, vector, ag=selection, center='mass')(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
+def test_rotateby_atomgroup_cog_pbc(rotate_universes):
+    # what happens when we rotate arround the center of geometry of a residue
+    # with pbc?
+    ref_u = rotate_universes[0]
+    trans_u = rotate_universes[1]
+    trans = trans_u.trajectory.ts
+    ref = ref_u.trajectory.ts
+    vector = [1,0,0]
+    angle = 90
+    selection = trans_u.residues[0].atoms
+    center_pos = selection.center_of_geometry(pbc=True)
+    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)[:3, :3]
+    ref.positions = np.dot(ref.positions, matrix)
+    transformed = rotateby(angle, vector, ag=selection, center='geometry', pbc=True)(trans) 
+    assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
+
+def test_rotateby_atomgroup_com_pbc(rotate_universes):
+    # what happens when we rotate arround the center of mass of a residue
+    # with pbc?
+    ref_u = rotate_universes[0]
+    trans_u = rotate_universes[1]
+    trans = trans_u.trajectory.ts
+    ref = ref_u.trajectory.ts
+    vector = [1,0,0]
+    angle = 90
+    selection = trans_u.residues[0].atoms
+    center_pos = selection.center_of_mass(pbc=True)
+    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)[:3, :3]
+    ref.positions = np.dot(ref.positions, matrix)
+    transformed = rotateby(angle, vector, ag=selection, center='mass', pbc=True)(trans) 
+    assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
+def test_rotateby_bad_ag(rotate_universes):
+    # this universe as a box size zero
+    ts = rotate_universes[0].trajectory.ts
+    ag = rotate_universes[0].residues[0].atoms
+    # what happens if something other than an AtomGroup is given?
+    angle = 90
+    vector = [0, 0, 1]
+    bad_ag = 1
+    with pytest.raises(ValueError): 
+        rotateby(angle, vector, ag = bad_ag)(ts)
+
+def test_rotateby_bad_position(rotate_universes):
+    # this universe as a box size zero
+    ts = rotate_universes[0].trajectory.ts
+    # what if the box is in the wrong format?
+    angle = 90
+    vector = [0, 0, 1]
+    bad_position = [1]
+    with pytest.raises(ValueError): 
+        rotateby(angle, vector, position=bad_position)(ts)
+    
+def test_rotateby_bad_pbc(rotate_universes):    
+    # this universe as a box size zero
+    ts = rotate_universes[0].trajectory.ts
+    ag = rotate_universes[0].residues[0].atoms
+    # is pbc passed to the center methods?
+    # if yes it should raise an exception for boxes that are zero in size
+    angle = 90
+    vector = [0, 0, 1]
+    with pytest.raises(ValueError): 
+        rotateby(angle, vector, ag = ag, pbc=True)(ts)
+
+def test_rotateby_bad_center(rotate_universes):
+    # this universe as a box size zero
+    ts = rotate_universes[0].trajectory.ts
+    ag = rotate_universes[0].residues[0].atoms
+    # what if a wrong center type name is passed?
+    angle = 90
+    vector = [0, 0, 1]
+    bad_center = " "
+    with pytest.raises(ValueError): 
+        rotateby(angle, vector, ag = ag, center=bad_center)(ts)
+    
+def test_rotateby_no_masses(rotate_universes):   
+    # this universe as a box size zero
+    ts = rotate_universes[0].trajectory.ts
+    ag = rotate_universes[0].residues[0].atoms
+    # if the universe has no masses and `mass` is passed as the center arg
+    angle = 90
+    vector = [0, 0, 1]
+    bad_center = "mass"
+    with pytest.raises(AttributeError): 
+        rotateby(angle, vector, ag = ag, center=bad_center)(ts)
+
+def test_rotateby_no_args(rotate_universes):
+    # this universe as a box size zero
+    ts = rotate_universes[0].trajectory.ts
+    angle = 90
+    vector = [0, 0, 1]
+    # if no position or AtomGroup are passed to the function
+    # it should raise a ValueError
+    with pytest.raises(ValueError): 
+        rotateby(angle, vector)(ts)

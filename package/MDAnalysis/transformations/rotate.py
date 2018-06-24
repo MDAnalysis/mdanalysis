@@ -32,11 +32,12 @@ from __future__ import absolute_import
 
 import math
 import numpy as np
+from functools import partial
 
 from ..lib.transformations import rotation_matrix
 from ..core.groups import AtomGroup
 
-def rotateby(angle, direction, center="geometry", pbc=None, ag=None, position=None):
+def rotateby(angle, direction, position=None, center="geometry", pbc=None, ag=None):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by 
     the user, combining the direction vector and a position. This position can be the center
@@ -64,8 +65,8 @@ def rotateby(angle, direction, center="geometry", pbc=None, ag=None, position=No
     Parameters
     ----------
     angle: float
-        rotation angle in radians
-    direction: list
+        rotation angle in degrees
+    direction: array-like
         vector that will define the direction of a custom axis of rotation from the
         provided point.
     ag: AtomGroup, optional
@@ -76,31 +77,44 @@ def rotateby(angle, direction, center="geometry", pbc=None, ag=None, position=No
         or 'mass'
     pbc: bool or None, optional
         If True, all the atoms from the given AtomGroup will be moved to the unit cell
-        before calculating the center
-    position: list, optional
+        before calculating the center. Warning: Wrapping/unwrapping the trajectory or 
+        performing PBC corrections may not be possible after rotating the trajectory. 
+    position: array-like, optional
         list of the coordinates of the point from where a custom axis of rotation will
         be defined. 
 
     Returns
     -------
     :class:`~MDAnalysis.coordinates.base.Timestep` object
-    
+
     '''
     pbc_arg = pbc
-    if position and len(position)>2:
-        position = position
-    elif isinstance(ag, AtomGroup):
-        if center == "geometry":
-            position = ag.center_of_geometry(pbc=pbc_arg)
-        elif center == "mass":
-            position = ag.center_of_mass(pbc=pbc_arg)
-        else:
-            raise ValueError('{} is not a valid argument for center'.format(center))
+    angle = np.deg2rad(angle)
+    if position:
+        if len(position)!=3:
+            raise ValueError('{} is not a valid point'.format(position))
+    elif ag:
+        try:
+            if center == 'geometry':
+                center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
+            elif center == 'mass':
+                center_method = partial(ag.center_of_mass, pbc=pbc_arg)
+            else:
+                raise ValueError('{} is not a valid argument for center'.format(center))
+        except AttributeError:
+            if center == 'mass':
+                raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
+            else:
+                raise ValueError('{} is not an AtomGroup object'.format(ag))
     else:
-        raise ValueError('A position or an AtomGroup must be specified') 
+        raise ValueError('A position or an AtomGroup must be specified')
     
     def wrapped(ts):
-        rotation = rotation_matrix(angle, direction, position)[:3, :3]
+        if position:
+            point = position
+        else:
+            point = center_method()
+        rotation = rotation_matrix(angle, direction, point)[:3, :3]
         ts.positions= np.dot(ts.positions, rotation)
         
         return ts
