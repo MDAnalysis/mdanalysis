@@ -25,6 +25,8 @@ import pytest
 import numpy as np
 from numpy.testing import assert_equal
 
+import itertools
+
 import MDAnalysis as mda
 
 from MDAnalysis.lib.mdamath import triclinic_vectors
@@ -77,7 +79,7 @@ points = (np.random.uniform(low=0, high=1.0,
 np.random.seed(90003)
 
 
-@pytest.mark.parametrize('box, query', zip(boxes_1, query_1))
+@pytest.mark.parametrize('box, query', itertools.product(boxes_1, query_1))
 def test_capped_distance_checkbrute(box, query):
     max_cutoff = 0.3
     # capped distance should be able to handle array of vectors
