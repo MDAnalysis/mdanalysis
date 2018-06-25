@@ -389,6 +389,140 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
 
     return distances
 
+def capped_distance(reference, configuration, max_cutoff, min_cutoff=None, box=None, method=None):
+    """Calculates the pairs and distance within a specified distance
+
+    If a *box* is supplied, then a minimum image convention is used
+    to evaluate the distances.
+
+    An automatic guessing of optimized method to calculate the distances is
+    included in the function. An optional keyword for the method is also
+    provided. Users can override the method with this functionality.
+    Currently pkdtree and bruteforce are implemented.
+
+
+    Parameters
+    -----------
+    reference : array
+        The shape of the reference array should be ``(N, 3)``
+        or a (3, ) coordinate.
+    configuration : array
+        Similar to reference array and  second group of coordinates
+    max_cutoff : float
+        Maximum cutoff distance between the reference and configuration
+    min_cutoff : (optional) float
+        Minimum cutoff distance between reference and configuration [None]
+    box : (optional) array or None
+        The dimensions, if provided, must be provided in the same
+        The unitcell dimesions for this system format as returned
+        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        ``[lx,ly, lz, alpha, beta, gamma]``. Minimum image convention
+        is applied if the box is provided [None]
+    method : (optional) 'bruteforce' or 'pkdtree' or 'None'
+        Keyword to override the automatic guessing of method built-in
+        in the function [None]
+
+    Returns
+    -------
+    pairs : array
+        Pair of indices, one from each reference and configuration such that
+        distance between them is  within the ``max_cutoff`` and ``min_cutoff``
+        pairs[i,j] contains the indices i from reference coordinates, and
+        j from configuration
+    distances : array
+        Distances corresponding to each pair of indices.
+        d[k] corresponding to the pairs[i,j] gives the distance between
+        i-th and j-th coordinate in reference and configuration respectively
+
+        .. code-block:: python
+
+            pairs, distances = capped_distances(reference, coordinates, max_cutoff)
+            for indx, [a,b] in enumerate(pairs):
+                coord1 = reference[a]
+                coord2 = configuration[b]
+                distance = distances[indx]
+
+    Note
+    -----
+    Currently only supports brute force.
+
+    .. SeeAlso:: :func:'MDAnalysis.lib.distances.distance_array'
+
+    Similar methods can be defined and can be directly linked to this function.
+
+
+    """
+
+    if box is not None:
+        boxtype = _box_check(box)
+        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        if (boxtype == 'tri_box'):
+            box = triclinic_vectors(box)
+        if (boxtype == 'tri_vecs_bad'):
+            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+    if method is None:
+        method = _determine_method(reference, configuration,
+                                   max_cutoff, box=box)
+
+    if method == 'bruteforce':
+        pairs, dist = _bruteforce_capped(reference, configuration,
+                                         max_cutoff, min_cutoff=min_cutoff,
+                                         box=box)
+    # if method = 'pkdt':
+        # pairs = _pkdt_capped(reference, configuration, cutoff, box = None)
+    return np.array(pairs), np.array(dist)
+
+
+def _determine_method(reference, configuration, cutoff, box):
+    """
+    Switch between different methods based on the the optimized time.
+    All the rules to select the method based on the input can be
+    incorporated here.
+
+    Returns
+    -------
+    String of the method. Supports ``bruteforce`` or ``pkdt`` as of now
+
+    Note
+    ----
+    Just a basic rule based on the number of particles
+    """
+    # if (len(reference) > 1000) or (len(configuration) > 1000):
+    #       return 'pkdt'
+    return 'bruteforce'
+
+
+def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None, box=None):
+    """ 
+    Using naive distance calulations, returns a list
+    containing the indices with one from each
+    reference and configuration list, such that the distance between
+    them is less than the specified cutoff distance
+    """
+    pairs, distance = [], []
+
+    reference = np.asarray(reference, dtype=np.float32)
+    configuration = np.asarray(configuration, dtype=np.float32)
+
+    if reference.shape == (3, ):
+        reference = reference[None, :]
+    if configuration.shape == (3, ):
+        configuration = configuration[None, :]
+
+    _check_array(reference, 'reference')
+    _check_array(configuration, 'configuration')
+
+    for i, coords in enumerate(reference):
+        dist = distance_array(coords[None, :], configuration, box=box)[0]
+        if min_cutoff is not None:
+            idx = np.where((dist <= max_cutoff) & (dist > min_cutoff))[0]
+        else:
+            idx = np.where((dist <= max_cutoff))[0]
+        for j in idx:
+            pairs.append((i, j))
+            distance.append(dist[j])
+    return pairs, distance
+
 
 def transform_RtoS(inputcoords, box, backend="serial"):
     """Transform an array of coordinates from real space to S space (aka lambda space)
