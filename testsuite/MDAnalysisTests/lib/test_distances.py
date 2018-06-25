@@ -73,10 +73,11 @@ query_1 = (np.array([0.1, 0.1, 0.1], dtype=np.float32),
            np.array([[0.1, 0.1, 0.1],
                      [0.2, 0.1, 0.1]], dtype=np.float32))
 
+np.random.seed(90003)
 points = (np.random.uniform(low=0, high=1.0,
                         size=(100, 3))*(boxes_1[0][:3])).astype(np.float32)
 
-np.random.seed(90003)
+
 
 
 @pytest.mark.parametrize('box, query', itertools.product(boxes_1, query_1))
