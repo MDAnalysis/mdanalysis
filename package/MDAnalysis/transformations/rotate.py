@@ -37,10 +37,10 @@ from functools import partial
 from ..lib.transformations import rotation_matrix
 from ..core.groups import AtomGroup
 
-def rotateby(angle, direction, position=None, center="geometry", pbc=None, ag=None):
+def rotateby(angle, direction, point=None, center="geometry", pbc=False, ag=None):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by 
-    the user, combining the direction vector and a position. This position can be the center
+    the user, combining the direction vector and a point. This point can be the center
     of geometry or the center of mass of a user defined AtomGroup, or a list defining custom
     coordinates. 
     e.g. rotate the coordinates by pi/2 on a x axis centered on a given atom group:
@@ -48,7 +48,7 @@ def rotateby(angle, direction, position=None, center="geometry", pbc=None, ag=No
     .. code-block:: python
     
         ts = u.trajectory.ts
-        angle = math.pi/2
+        angle = 90
         ag = u.atoms()
         rotated = MDAnalysis.transformations.rotate(angle, ag)(ts)
     
@@ -57,7 +57,7 @@ def rotateby(angle, direction, position=None, center="geometry", pbc=None, ag=No
     .. code-block:: python
 
         ts = u.trajectory.ts
-        angle = math.pi/2
+        angle = 90
         p = [1,2,3]
         d = [0,0,1]
         rotated = MDAnalysis.transformations.rotate(angle, point=point, direction=d)(ts) 
@@ -75,24 +75,30 @@ def rotateby(angle, direction, position=None, center="geometry", pbc=None, ag=No
     center: str, optional
         used to choose the method of centering on the given atom group. Can be 'geometry'
         or 'mass'
-    pbc: bool or None, optional
-        If True, all the atoms from the given AtomGroup will be moved to the unit cell
-        before calculating the center. Warning: Wrapping/unwrapping the trajectory or 
-        performing PBC corrections may not be possible after rotating the trajectory. 
-    position: array-like, optional
+    pbc: bool, optional
+        If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
+        before calculating the center of mass or geometry. Default is `False`, no changes
+        to the atom coordinates are done before calculating the center of the AtomGroup. 
+    point: array-like, optional
         list of the coordinates of the point from where a custom axis of rotation will
         be defined. 
 
     Returns
     -------
     :class:`~MDAnalysis.coordinates.base.Timestep` object
+    
+    Warning
+    -------
+    Wrapping/unwrapping the trajectory or performing PBC corrections may not be possible 
+    after rotating the trajectory.
 
     '''
     pbc_arg = pbc
     angle = np.deg2rad(angle)
-    if position:
-        if len(position)!=3:
-            raise ValueError('{} is not a valid point'.format(position))
+    if point:
+        point = np.asarray(point, np.float32)
+        if point.shape != (3, ) and point.shape != (1, 3):
+            raise ValueError('{} is not a valid point'.format(point))
     elif ag:
         try:
             if center == 'geometry':
@@ -107,14 +113,14 @@ def rotateby(angle, direction, position=None, center="geometry", pbc=None, ag=No
             else:
                 raise ValueError('{} is not an AtomGroup object'.format(ag))
     else:
-        raise ValueError('A position or an AtomGroup must be specified')
+        raise ValueError('A point or an AtomGroup must be specified')
     
     def wrapped(ts):
-        if position:
-            point = position
+        if point is None:
+            position = center_method()
         else:
-            point = center_method()
-        rotation = rotation_matrix(angle, direction, point)[:3, :3]
+            position = point
+        rotation = rotation_matrix(angle, direction, position)[:3, :3]
         ts.positions= np.dot(ts.positions, rotation)
         
         return ts

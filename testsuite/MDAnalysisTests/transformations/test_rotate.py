@@ -39,8 +39,30 @@ def rotate_universes():
     transformed.trajectory.ts.dimensions = np.array([372., 373., 374., 90, 90, 90])
     return reference, transformed
 
+def test_rotation_matrix():
+    # test if the rotation_matrix function is working properly
+    # simple angle and unit vector on origin
+    angle = 180
+    vector = [0, 0, 1]
+    pos = [0, 0, 0]
+    ref_matrix = np.asarray([[-1, 0, 0],
+                             [0, -1, 0],
+                             [0, 0, 1]], np.float64)
+    matrix = rotation_matrix(np.deg2rad(angle), vector, pos)[:3, :3]
+    assert_array_almost_equal(matrix, ref_matrix, decimal=6)
+    # another angle in a custom axis
+    angle = 60
+    vector = [1, 2, 3]
+    pos = [1, 2, 3]
+    ref_matrix = np.asarray([[ 0.53571429, -0.6229365 ,  0.57005291],
+                             [ 0.76579365,  0.64285714, -0.01716931],
+                             [-0.35576719,  0.44574074,  0.82142857]], np.float64)
+    matrix = rotation_matrix(np.deg2rad(angle), vector, pos)[:3, :3]
+    assert_array_almost_equal(matrix, ref_matrix, decimal=6)
+    
+
 def test_rotateby_custom_position(rotate_universes):
-    # what happens when we use a custom position for the axis of rotation?
+    # what happens when we use a custom point for the axis of rotation?
     ref_u = rotate_universes[0]
     trans_u = rotate_universes[1]
     trans = trans_u.trajectory.ts
@@ -50,7 +72,7 @@ def test_rotateby_custom_position(rotate_universes):
     angle = 90
     matrix = rotation_matrix(np.deg2rad(angle), vector, pos)[:3, :3]
     ref.positions = np.dot(ref.positions, matrix)
-    transformed = rotateby(angle, vector, position=pos)(trans)
+    transformed = rotateby(angle, vector, point=pos)(trans)
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
 def test_rotateby_atomgroup_cog_nopbc(rotate_universes):
@@ -136,7 +158,7 @@ def test_rotateby_bad_position(rotate_universes):
     vector = [0, 0, 1]
     bad_position = [1]
     with pytest.raises(ValueError): 
-        rotateby(angle, vector, position=bad_position)(ts)
+        rotateby(angle, vector, point=bad_position)(ts)
     
 def test_rotateby_bad_pbc(rotate_universes):    
     # this universe as a box size zero
@@ -176,7 +198,7 @@ def test_rotateby_no_args(rotate_universes):
     ts = rotate_universes[0].trajectory.ts
     angle = 90
     vector = [0, 0, 1]
-    # if no position or AtomGroup are passed to the function
+    # if no point or AtomGroup are passed to the function
     # it should raise a ValueError
     with pytest.raises(ValueError): 
         rotateby(angle, vector)(ts)
