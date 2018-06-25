@@ -73,22 +73,24 @@ query_1 = (np.array([0.1, 0.1, 0.1], dtype=np.float32),
            np.array([[0.1, 0.1, 0.1],
                      [0.2, 0.1, 0.1]], dtype=np.float32))
 
+method_1 = ('bruteforce', 'pkdtree')
+
 np.random.seed(90003)
 points = (np.random.uniform(low=0, high=1.0,
                         size=(100, 3))*(boxes_1[0][:3])).astype(np.float32)
 
 
-
-
-@pytest.mark.parametrize('box, query', itertools.product(boxes_1, query_1))
-def test_capped_distance_checkbrute(box, query):
+@pytest.mark.parametrize('box, query , method',
+                         itertools.product(boxes_1, query_1, method_1))
+def test_capped_distance_checkbrute(box, query, method):
     max_cutoff = 0.3
     # capped distance should be able to handle array of vectors
     # as well as single vectors.
     pairs, dist = mda.lib.distances.capped_distance(query,
                                                     points,
                                                     max_cutoff,
-                                                    box=box)
+                                                    box=box,
+                                                    method=method)
     if(query.shape[0] == 3):
         distances = mda.lib.distances.distance_array(query[None, :],
                                                      points, box=box)

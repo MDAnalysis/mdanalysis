@@ -471,10 +471,10 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None, box=N
         pairs, dist = _bruteforce_capped(reference, configuration,
                                          max_cutoff, min_cutoff=min_cutoff,
                                          box=box)
-    if method == 'pkdt':
-        pairs, dist = _pkdt_capped(reference, configuration,
-                                   max_cutoff, min_cutoff=min_cutoff,
-                                   box=box)
+    if method == 'pkdtree':
+        pairs, dist = _pkdtree_capped(reference, configuration,
+                                      max_cutoff, min_cutoff=min_cutoff,
+                                      box=box)
     return np.array(pairs), np.array(dist)
 
 
@@ -493,12 +493,12 @@ def _determine_method(reference, configuration, cutoff, box):
     Just a basic rule based on the number of particles
     """
     # if (len(reference) > 1000) or (len(configuration) > 1000):
-    #       return 'pkdt'
+    #       return 'pkdtree'
     return 'bruteforce'
 
 
 def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None, box=None):
-    """ 
+    """
     Using naive distance calulations, returns a list
     containing the indices with one from each
     reference and configuration list, such that the distance between
@@ -528,6 +528,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None, bo
             distance.append(dist[j])
     return pairs, distance
 
+
 def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None, box=None):
     """ Capped Distance evaluations using KDtree.
 
@@ -537,7 +538,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None, box=N
     --------
     pairs : list
         List of atom indices which are within the specified cutoff distance.
-        pairs `(i, j)` corresponds to i-th particle in reference and 
+        pairs `(i, j)` corresponds to i-th particle in reference and
         j-th particle in configuration
     distance : list
         Distance between two atoms corresponding to the (i, j) indices
@@ -563,22 +564,23 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None, box=N
     # Build The KDTree
     if box is not None:
         kdtree = PeriodicKDTree(box, bucket_size=10)
-    else :
+    else:
         kdtree = KDTree(dim=3, bucket_size=10)
 
     kdtree.set_coords(configuration)
     # Search for every query point
-    for idx,centers in enumerate(reference):
+    for idx, centers in enumerate(reference):
         kdtree.search(centers, max_cutoff)
         indices = kdtree.get_indices()
-        dist = distance_array(centers.reshape((1,3)), configuration[indices],box=box)[0]
+        dist = distance_array(centers.reshape((1, 3)),
+                              configuration[indices], box=box)[0]
         if min_cutoff is not None:
             mask = np.where(dist > min_cutoff)[0]
             dist = dist[mask]
             indices = [indices[mask[i]] for i in range(len(mask))]
         if len(indices) != 0:
             for num, j in enumerate(indices):
-                pairs.append((idx,j))
+                pairs.append((idx, j))
                 distances.append(dist[num])
     return pairs, distances
 
