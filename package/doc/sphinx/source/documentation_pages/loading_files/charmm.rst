@@ -4,6 +4,10 @@
 Loading CHARMM files with MDAnalysis
 ####################################
 
+MDAnalysis can read a PSF files to provide topology information,
+DCD files for trajectories and CARD files for a single frame of coordinates.
+It is also possible to write to these coordinate formats too.
+
 .. _load_psf:
 
 Loading PSF files
@@ -55,3 +59,10 @@ For full implementation details see :mod:`MDAnalysis.coordinates.DCD`.
 
 Loading CRD files
 -----------------
+
+Both the standard and extended (EXT) CHARMM CARD formats are supported, with the
+suffix ``.crd``.
+
+.. note::
+   CHARMM CARD files have no simulation box information stored.  MDAnalysis will
+   set box dimensions to 0.0 when reading these files.
