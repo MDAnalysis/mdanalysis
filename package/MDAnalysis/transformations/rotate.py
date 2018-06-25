@@ -43,7 +43,7 @@ def rotateby(angle, direction, point=None, center="geometry", pbc=False, ag=None
     the user, combining the direction vector and a point. This point can be the center
     of geometry or the center of mass of a user defined AtomGroup, or a list defining custom
     coordinates. 
-    e.g. rotate the coordinates by pi/2 on a x axis centered on a given atom group:
+    e.g. rotate the coordinates by 90 degrees on a x axis centered on a given atom group:
     
     .. code-block:: python
     
