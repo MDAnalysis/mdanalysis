@@ -72,6 +72,7 @@ from numpy.lib.utils import deprecate
 from .mdamath import triclinic_vectors, triclinic_box
 
 
+
 # hack to select backend with backend=<backend> kwarg. Note that
 # the cython parallel code (prange) in parallel.distances is
 # independent from the OpenMP code
@@ -389,6 +390,7 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
 
     return distances
 
+
 def capped_distance(reference, configuration, max_cutoff, min_cutoff=None, box=None, method=None):
     """Calculates the pairs and distance within a specified distance
 
@@ -444,9 +446,10 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None, box=N
 
     Note
     -----
-    Currently only supports brute force.
+    Currently only supports brute force and Periodic KDtree
 
     .. SeeAlso:: :func:'MDAnalysis.lib.distances.distance_array'
+    .. SeeAlso:: :func:'MDAnalysis.lib.pkdtree.PeriodicKDTree'
 
     Similar methods can be defined and can be directly linked to this function.
 
@@ -468,8 +471,10 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None, box=N
         pairs, dist = _bruteforce_capped(reference, configuration,
                                          max_cutoff, min_cutoff=min_cutoff,
                                          box=box)
-    # if method = 'pkdt':
-        # pairs = _pkdt_capped(reference, configuration, cutoff, box = None)
+    if method == 'pkdt':
+        pairs, dist = _pkdt_capped(reference, configuration,
+                                   max_cutoff, min_cutoff=min_cutoff,
+                                   box=box)
     return np.array(pairs), np.array(dist)
 
 
@@ -522,6 +527,60 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None, bo
             pairs.append((i, j))
             distance.append(dist[j])
     return pairs, distance
+
+def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None, box=None):
+    """ Capped Distance evaluations using KDtree.
+
+    Uses minimum image convention if *box* is specified
+
+    Returns:
+    --------
+    pairs : list
+        List of atom indices which are within the specified cutoff distance.
+        pairs `(i, j)` corresponds to i-th particle in reference and 
+        j-th particle in configuration
+    distance : list
+        Distance between two atoms corresponding to the (i, j) indices
+        in pairs.
+
+    """
+    from .pkdtree import PeriodicKDTree
+    from Bio.KDTree import KDTree
+
+    pairs, distances = [], []
+
+    reference = np.asarray(reference, dtype=np.float32)
+    configuration = np.asarray(configuration, dtype=np.float32)
+
+    if reference.shape == (3, ):
+        reference = reference[None, :]
+    if configuration.shape == (3, ):
+        configuration = configuration[None, :]
+
+    _check_array(reference, 'reference')
+    _check_array(configuration, 'configuration')
+
+    # Build The KDTree
+    if box is not None:
+        kdtree = PeriodicKDTree(box, bucket_size=10)
+    else :
+        kdtree = KDTree(dim=3, bucket_size=10)
+
+    kdtree.set_coords(configuration)
+    # Search for every query point
+    for idx,centers in enumerate(reference):
+        kdtree.search(centers, max_cutoff)
+        indices = kdtree.get_indices()
+        dist = distance_array(centers.reshape((1,3)), configuration[indices],box=box)[0]
+        if min_cutoff is not None:
+            mask = np.where(dist > min_cutoff)[0]
+            dist = dist[mask]
+            indices = [indices[mask[i]] for i in range(len(mask))]
+        if len(indices) != 0:
+            for num, j in enumerate(indices):
+                pairs.append((idx,j))
+                distances.append(dist[num])
+    return pairs, distances
 
 
 def transform_RtoS(inputcoords, box, backend="serial"):
