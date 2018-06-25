@@ -95,7 +95,7 @@ def center_in_box(ag, center='geometry', point=None, pbc=False):
         that the center of mass/geometry of the given AtomGroup is aligned to this position
         instead. Defined as an array of size 3. Example: [1, 2, 3]
     pbc: bool, optional
-        If True, all the atoms from the given AtomGroup will be moved to the unit cell
+        If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry. Default is `False`, no changes
         to the atom coordinates are done before calculating the center of the AtomGroup. 
     
@@ -106,8 +106,10 @@ def center_in_box(ag, center='geometry', point=None, pbc=False):
     """
     
     pbc_arg = pbc
-    if point and len(point)!=3:
-        raise ValueError('{} is not a valid point'.format(point))
+    if point:
+        point = np.asarray(point, np.float32)
+        if point.shape != (3, ) and point.shape != (1, 3):
+            raise ValueError('{} is not a valid point'.format(point))
     try:
         if center == 'geometry':
             center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
@@ -122,10 +124,10 @@ def center_in_box(ag, center='geometry', point=None, pbc=False):
             raise ValueError('{} is not an AtomGroup object'.format(ag))
   
     def wrapped(ts):
-        if point:
-            boxcenter = np.float32(point)
-        else:
+        if point is None:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
+        else:
+            boxcenter = np.float32(point)
     
         ag_center = center_method()
 
