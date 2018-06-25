@@ -26,16 +26,6 @@ Classes to read and write DCD binary trajectories, the format used by
 CHARMM, NAMD, and also LAMMPS. Trajectories can be read regardless of
 system-endianness as this is auto-detected.
 
-Generally, DCD trajectories produced by any code can be read (with the
-:class:`DCDReader`) although there can be issues with the unitcell (simulation
-box) representation (see :attr:`DCDReader.dimensions`). DCDs can also be
-written but the :class:`DCDWriter` follows recent NAMD/VMD convention for the
-unitcell but still writes AKMA time. Reading and writing these trajectories
-within MDAnalysis will work seamlessly but if you process those trajectories
-with other tools you might need to watch out that time and unitcell dimensions
-are correctly interpreted.
-
-
 See Also
 --------
 :mod:`MDAnalysis.coordinates.LAMMPS`
