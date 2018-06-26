@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+ # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
@@ -406,10 +406,11 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None, box=N
     Parameters
     -----------
     reference : array
-        The shape of the reference array should be ``(N, 3)``
-        or a (3, ) coordinate.
+        reference coordinates array with shape ``reference.shape = (3,)``
+        or ``reference.shape = (len(reference), 3)``
     configuration : array
-        Similar to reference array and  second group of coordinates
+        Configuration coordinate array with shape ``reference.shape = (3,)``
+        or ``reference.shape = (len(reference), 3)``
     max_cutoff : float
         Maximum cutoff distance between the reference and configuration
     min_cutoff : (optional) float
@@ -451,9 +452,6 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None, box=N
     .. SeeAlso:: :func:'MDAnalysis.lib.distances.distance_array'
     .. SeeAlso:: :func:'MDAnalysis.lib.pkdtree.PeriodicKDTree'
 
-    Similar methods can be defined and can be directly linked to this function.
-
-
     """
 
     if box is not None:
@@ -463,22 +461,16 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None, box=N
             box = triclinic_vectors(box)
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
-    if method is None:
-        method = _determine_method(reference, configuration,
-                                   max_cutoff, box=box)
-
-    if method == 'bruteforce':
-        pairs, dist = _bruteforce_capped(reference, configuration,
-                                         max_cutoff, min_cutoff=min_cutoff,
-                                         box=box)
-    if method == 'pkdtree':
-        pairs, dist = _pkdtree_capped(reference, configuration,
-                                      max_cutoff, min_cutoff=min_cutoff,
-                                      box=box)
+    method = _determine_method(reference, configuration,
+                                   max_cutoff, min_cutoff=min_cutoff,
+                                   box=box, method=method)
+    pairs, dist = method(reference, configuration, max_cutoff,
+                         min_cutoff=min_cutoff, box=box)
+    
     return np.array(pairs), np.array(dist)
 
 
-def _determine_method(reference, configuration, cutoff, box):
+def _determine_method(reference, configuration, max_cutoff, min_cutoff=None, box=None, method=None):
     """
     Switch between different methods based on the the optimized time.
     All the rules to select the method based on the input can be
@@ -486,22 +478,44 @@ def _determine_method(reference, configuration, cutoff, box):
 
     Returns
     -------
-    String of the method. Supports ``bruteforce`` or ``pkdt`` as of now
+    Function object based on the rules and specified method
+    
+    Currently implemented methods are
+    bruteforce : returns ``_bruteforce_capped``
+    PKDtree : return ``_pkdtree_capped`
 
-    Note
-    ----
-    Just a basic rule based on the number of particles
     """
-    # if (len(reference) > 1000) or (len(configuration) > 1000):
-    #       return 'pkdtree'
-    return 'bruteforce'
+    methods = {'bruteforce': _bruteforce_capped,
+            'pkdtree':_pkdtree_capped}
+    
+    if method is not None:
+        return methods[method]
+
+    if len(reference) > 5000 and len(configuration) > 5000:
+        if box is None and reference.shape[0] != 3 and configuration.shape[0] != 3:
+            min_dim = np.array([reference.min(axis=0),
+                               configuration.min(axis=0)])
+            max_dim = np.array([reference.max(axis=0),
+                               configuration.max(axis=0)])
+            size = max_dim.max(axis=0) - min_dim.min(axis=0)
+        elif box is not None:
+            if box.shape[0] == 6:
+                size = box[:3]
+            else:
+                size = box.max(axis=0) - box.min(axis=0)
+
+        if np.any(size < 10.0*max_cutoff) and len(reference) > 100000 and len(configuration) > 100000:
+            return methods['bruteforce']
+        else:
+            return methods['pkdtree']
+    return methods['bruteforce']
 
 
 def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None, box=None):
     """
     Using naive distance calulations, returns a list
     containing the indices with one from each
-    reference and configuration list, such that the distance between
+    reference and configuration arrays, such that the distance between
     them is less than the specified cutoff distance
     """
     pairs, distance = [], []
