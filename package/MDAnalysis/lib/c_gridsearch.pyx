@@ -34,22 +34,14 @@ DEF GRID_ALLOCATION_INCREMENT = 50
 DEF BOX_MARGIN=1.0010
 DEF MAX_NTRICVEC=12
 
-
-# Cython C imports (no Python here!)
-from cython.parallel cimport prange
 from libc.stdlib cimport malloc, realloc, free, abort
 from libc.stdio cimport fprintf, stderr
 from libc.math cimport sqrt
 from libc.math cimport abs as real_abs
 
-cimport openmp
-
-
-# Python imports
 import numpy as np
 cimport numpy as np
 
-# Ctypes
 ctypedef np.int_t ns_int
 ctypedef np.float32_t real
 ctypedef real rvec[DIM]
@@ -93,7 +85,6 @@ cdef struct cPBCBox_t:
     ns_int[DIM]   tric_shift[MAX_NTRICVEC]
     real[DIM]  tric_vec[MAX_NTRICVEC]
 
-# noinspection PyNoneFunctionAssignment
 cdef class PBCBox(object):
     cdef cPBCBox_t c_pbcbox
     cdef rvec center
@@ -270,8 +261,6 @@ cdef class PBCBox(object):
 
     def put_atoms_in_bbox(self, real[:,::1] coords):
         return np.asarray(self.fast_put_atoms_in_bbox(coords))
-
-
 
 ########################################################################################################################
 #
@@ -495,50 +484,6 @@ cdef ns_neighborhood *retrieve_neighborhood(rvec current_coords, real[:, ::1]nei
                 nchecked += 1
 
     return neighborhood
-
-
-cdef ns_neighborhood_holder *ns_core_parallel(real[:, ::1] refcoords,
-                                     real[:, ::1] neighborcoords,
-                                     ns_grid *grid,
-                                     PBCBox box,
-                                     real cutoff,
-                                     int nthreads=-1) nogil:
-    cdef ns_int coordid, i, j
-    cdef ns_int ncoords = refcoords.shape[0]
-    cdef ns_int ncoords_neighbors = neighborcoords.shape[0]
-    cdef real cutoff2 = cutoff * cutoff
-    cdef ns_neighborhood_holder *holder
-
-    cdef ns_int *neighbor_buf
-    cdef ns_int buf_size, ibuf
-
-    if nthreads < 0:
-        nthreads = openmp.omp_get_num_threads()
-
-    holder = create_neighborhood_holder()
-    if holder == NULL:
-        fprintf(stderr,"FATAL: Could not allocate memory for NS holder\n",
-                sizeof(ns_int) * ncoords)
-        abort()
-
-    holder.size = ncoords
-    holder.neighborhoods = <ns_neighborhood **> malloc(sizeof(ns_neighborhood *) * ncoords)
-    if holder.neighborhoods == NULL:
-        fprintf(stderr,"FATAL: Could not allocate memory for NS holder.neighborhoods (requested: %i bytes)\n",
-                sizeof(ns_neighborhood) * ncoords)
-        abort()
-
-    # Here starts the real core and the iteration over coordinates
-    for coordid in prange(ncoords, schedule='dynamic', num_threads=nthreads):
-        holder.neighborhoods[coordid] = retrieve_neighborhood(&refcoords[coordid, XX],
-                                                              neighborcoords,
-                                                              grid,
-                                                              box,
-                                                              cutoff2)
-        holder.neighborhoods[coordid].cutoff = cutoff
-
-    return holder
-
 cdef ns_neighborhood_holder *ns_core(real[:, ::1] refcoords,
                                      real[:, ::1] neighborcoords,
                                      ns_grid *grid,
@@ -577,7 +522,6 @@ cdef ns_neighborhood_holder *ns_core(real[:, ::1] refcoords,
 
     return holder
 
-
 # Python interface
 cdef class FastNS(object):
     cdef PBCBox box
@@ -610,21 +554,7 @@ cdef class FastNS(object):
     def __dealloc__(self):
         #destroy_nsgrid(self.grid)
         self.grid.size = 0
-
-        #free(self.grid)
-
-    def set_nthreads(self, nthreads, silent=False):
-        import multiprocessing
-
-        if nthreads > multiprocessing.cpu_count():
-            print("Warning: the number of threads requested if greater than the number of cores available. Performances may not be optimal!")
-
-        if not silent:
-            print("Number of threads for NS adjusted to {}.".format(nthreads))
-
-        self.nthreads = nthreads
-
-
+    
     def set_coords(self, real[:, ::1] coords):
         self.coords = coords
 
@@ -689,15 +619,8 @@ cdef class FastNS(object):
         # Make sure atoms are inside the brick-shaped box
         search_coords_bbox = self.box.fast_put_atoms_in_bbox(search_coords)
 
-
         with nogil:
-            # Retrieve neighbors from grid
-            if self.nthreads == 1:
-                holder = ns_core(search_coords_bbox, self.coords_bbox, self.grid, self.box, self.cutoff)
-            else:
-                holder = ns_core_parallel(search_coords_bbox, self.coords_bbox, self.grid, self.box, self.cutoff, self.nthreads)
-
-
+            holder = ns_core(search_coords_bbox, self.coords_bbox, self.grid, self.box, self.cutoff)
 
         neighbors = []
         ###Modify for distance
@@ -741,7 +664,3 @@ cdef class FastNS(object):
         free_neighborhood_holder(holder)
 
         return neighbors, sqdist, indx
-
-
-
-__version__ = "26"
