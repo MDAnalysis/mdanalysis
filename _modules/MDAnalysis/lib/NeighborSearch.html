@@ -80,6 +80,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">Bio.KDTree</span> <span class="k">import</span> <span class="n">KDTree</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.pkdtree</span> <span class="k">import</span> <span class="n">PeriodicKDTree</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">unique_int_1d</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="k">import</span> <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">Atom</span>
 
@@ -142,7 +143,9 @@
         <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
             <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span><span class="o">.</span><span class="n">get_indices</span><span class="p">())</span>
-        <span class="n">unique_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">indices</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">l</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">unique_idx</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">indices</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">l</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index2level</span><span class="p">(</span><span class="n">unique_idx</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_index2level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>

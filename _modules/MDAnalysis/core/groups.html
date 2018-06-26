@@ -151,7 +151,7 @@
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_ANCHOR_UNIVERSES</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">util</span>
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">warn_if_not_unique</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span> <span class="n">unique_int_1d</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">distances</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">transformations</span>
 <span class="kn">from</span> <span class="nn">..selections</span> <span class="k">import</span> <span class="n">get_writer</span> <span class="k">as</span> <span class="n">get_selection_writer_for</span>
@@ -787,7 +787,7 @@
         <span class="c1"># Get sizes of compounds:</span>
         <span class="n">unique_compound_indices</span><span class="p">,</span> <span class="n">compound_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">,</span>
                                                             <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">unique_compound_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">compound_sizes</span><span class="p">)</span>
+        <span class="n">unique_compound_sizes</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">compound_sizes</span><span class="p">)</span>
         <span class="c1"># Compute centers per compound for each compound size:</span>
         <span class="k">for</span> <span class="n">compound_size</span> <span class="ow">in</span> <span class="n">unique_compound_sizes</span><span class="p">:</span>
             <span class="n">compound_mask</span> <span class="o">=</span> <span class="n">compound_sizes</span> <span class="o">==</span> <span class="n">compound_size</span>
@@ -1891,7 +1891,7 @@
         <span class="sd">&quot;&quot;&quot;A sorted :class:`ResidueGroup` of the unique</span>
 <span class="sd">        :class:`Residues&lt;Residue&gt;` present in the :class:`AtomGroup`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resindices</span><span class="p">)]</span>
+        <span class="n">rg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resindices</span><span class="p">)]</span>
         <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
         <span class="k">return</span> <span class="n">rg</span>
@@ -1938,7 +1938,7 @@
         <span class="sd">&quot;&quot;&quot;A sorted :class:`SegmentGroup` of the unique segments present in the</span>
 <span class="sd">        :class:`AtomGroup`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segindices</span><span class="p">)]</span>
+        <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segindices</span><span class="p">)]</span>
         <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sg</span>
         <span class="k">return</span> <span class="n">sg</span>
@@ -2450,7 +2450,7 @@
                                                          <span class="n">accessors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">levelindices</span> <span class="o">==</span> <span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">levelindices</span><span class="p">)]</span></div>
+                <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">levelindices</span><span class="p">)]</span></div>
 
 <div class="viewcode-block" id="AtomGroup.guess_bonds"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">guess_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Guess bonds that exist within this :class:`AtomGroup` and add them to</span>
@@ -2723,7 +2723,7 @@
         <span class="sd">&quot;&quot;&quot;Get sorted :class:`SegmentGroup` of the unique segments present in</span>
 <span class="sd">        the :class:`ResidueGroup`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segindices</span><span class="p">)]</span>
+        <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segindices</span><span class="p">)]</span>
         <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sg</span>
         <span class="k">return</span> <span class="n">sg</span>
@@ -2795,7 +2795,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
-        <span class="n">_unique</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)]</span>
+        <span class="n">_unique</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)]</span>
         <span class="c1"># Since we know that _unique is a unique ResidueGroup, we set its</span>
         <span class="c1"># uniqueness caches from here:</span>
         <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
@@ -2940,7 +2940,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
-        <span class="n">_unique</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)]</span>
+        <span class="n">_unique</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)]</span>
         <span class="c1"># Since we know that _unique is a unique SegmentGroup, we set its</span>
         <span class="c1"># uniqueness caches from here:</span>
         <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
