@@ -51,7 +51,8 @@ typical string representation found throughout MDAnalysis.
 
    The Amber charge is converted to electron charges as used in
    MDAnalysis and other packages. To get back Amber charges, multiply
-   by 18.2223.
+   by 18.2223 (i.e., with
+   :data:`MDAnalysis.units.chargeUnit_factor['Amber']<MDAnalysis.units.chargeUnit_factor>`).
 
 For implementation details, see
 :mod:`MDAnalysis.topology.TOPParser`.

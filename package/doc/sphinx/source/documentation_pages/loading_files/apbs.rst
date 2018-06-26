@@ -1,11 +1,11 @@
 .. _load_apbs:
 
-#############################################
-Loading Poisson Boltzmann files in MDAnalysis
-#############################################
+#################################################
+Loading Poisson Boltzmann PQR files in MDAnalysis
+#################################################
 
-MDAnalysis is able to read and write PQR files produced by
-Poisson Boltzmann.
+MDAnalysis is able to read and write PQR files produced and read by
+typical Poisson Boltzmann solvers such as APBS_.
 
 .. _load_pqr:
 
