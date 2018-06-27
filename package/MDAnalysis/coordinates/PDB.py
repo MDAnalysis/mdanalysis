@@ -136,7 +136,7 @@ Classes
 
 
 .. _`PDB 3.2 standard`:
-    http://www.wwpdb.org/documentation/format32/v3.2.html
+    http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
 
 """
 from __future__ import absolute_import
@@ -180,11 +180,11 @@ class PDBReader(base.ReaderBase):
     Reads multi-`MODEL`_ PDB files as trajectories.
 
     .. _PDB-formatted:
-       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
+       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
     .. _PDB coordinate section:
-       http://www.wwpdb.org/documentation/format32/sect9.html
+       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html
     .. _MODEL:
-       http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
+       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
 
     =============  ============  ===========  =============================================
     COLUMNS        DATA  TYPE    FIELD        DEFINITION
@@ -428,10 +428,10 @@ class PDBWriter(base.WriterBase):
     multiple models (using the MODEL_ and ENDMDL_ records).
 
     .. _`PDB 3.2 standard`:
-       http://www.wwpdb.org/documentation/format32/v3.2.html
-    .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
-    .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
-    .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
+       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
+    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
+    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
+    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
 
 
     Note
@@ -556,9 +556,9 @@ class PDBWriter(base.WriterBase):
            records. If ``None``, then the class default is chosen.    [``None``]
 
 
-        .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
-        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
+        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
+        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
 
         """
         # n_atoms = None : dummy keyword argument
@@ -870,9 +870,9 @@ class PDBWriter(base.WriterBase):
         :class:`PDBWriter` is in single frame mode and no MODEL_
         records are written.
 
-        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
-        .. _NUMMDL: http://www.wwpdb.org/documentation/format32/sect2.html#NUMMDL
+        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
+        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
+        .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#NUMMDL
 
         .. versionchanged:: 0.7.6
            The *multiframe* keyword was added, which completely determines if
@@ -929,7 +929,7 @@ class PDBWriter(base.WriterBase):
             vals['segID'] = segids[i][:4]
             vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
 
-            # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
+            # .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))
         if multiframe:
             self.ENDMDL()
@@ -938,7 +938,7 @@ class PDBWriter(base.WriterBase):
     def HEADER(self, trajectory):
         """Write HEADER_ record.
 
-        .. _HEADER: http://www.wwpdb.org/documentation/format32/sect2.html#HEADER
+        .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER
 
         """
         if not hasattr(trajectory, 'header'):
@@ -949,7 +949,7 @@ class PDBWriter(base.WriterBase):
     def TITLE(self, *title):
         """Write TITLE_ record.
 
-        .. _TITLE: http://www.wwpdb.org/documentation/format32/sect2.html
+        .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html
 
         """
         line = " ".join(title)  # TODO: should do continuation automatically
@@ -963,8 +963,8 @@ class PDBWriter(base.WriterBase):
 
         See also `REMARK (update)`_.
 
-        .. _REMARK: http://www.wwpdb.org/documentation/format32/remarks1.html
-        .. _REMARK (update): http://www.wwpdb.org/documentation/format32/remarks2.html
+        .. _REMARK: http://www.wwpdb.org/documentation/file-format-content/format32/remarks1.html
+        .. _REMARK (update): http://www.wwpdb.org/documentation/file-format-content/format32/remarks2.html
 
         """
         for remark in remarks:
@@ -980,7 +980,7 @@ class PDBWriter(base.WriterBase):
     def CRYST1(self, dimensions, spacegroup='P 1', zvalue=1):
         """Write CRYST1_ record.
 
-        .. _CRYST1: http://www.wwpdb.org/documentation/format32/sect8.html
+        .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format32/sect8.html#CRYST1
 
         """
         self.pdbfile.write(self.fmt['CRYST1'].format(
@@ -999,7 +999,7 @@ class PDBWriter(base.WriterBase):
            9999, they will wrap around, i.e., 9998, 9999, 0, 1, 2, ...
 
 
-        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
+        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
 
 
         .. versionchanged:: 0.18.1
@@ -1016,7 +1016,7 @@ class PDBWriter(base.WriterBase):
         method right before closing the file it is recommended to *not* call
         :meth:`~PDBWriter.END` explicitly.
 
-        .. _END: http://www.wwpdb.org/documentation/format32/sect11.html#END
+        .. _END: http://www.wwpdb.org/documentation/file-format-content/format32/sect11.html#END
 
         """
         if not self.has_END:
@@ -1027,7 +1027,7 @@ class PDBWriter(base.WriterBase):
     def ENDMDL(self):
         """Write the ENDMDL_ record.
 
-        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
 
         """
         self.pdbfile.write(self.fmt['ENDMDL'])
@@ -1035,7 +1035,7 @@ class PDBWriter(base.WriterBase):
     def CONECT(self, conect):
         """Write CONECT_ record.
 
-        .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
+        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
 
         """
         conect = ["{0:5d}".format(entry + 1) for entry in conect]
@@ -1075,9 +1075,9 @@ class MultiPDBWriter(PDBWriter):
     and ENDMDL_ records).
 
 
-    .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
-    .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
-    .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
+    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
+    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
+    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
 
 
     See Also
