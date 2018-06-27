@@ -228,11 +228,11 @@ def distance_array(reference, configuration, box=None, result=None, backend="ser
     Parameters
     ----------
     reference : numpy.ndarray
-        Reference coordinate array of shape ``(n, 3)``, will be converted to
-        ``dtype=numpy.float32``.
+        Reference coordinate array of shape ``(n, 3)`` (``dtype`` is arbitrary,
+        will be converted to ``dtype=numpy.float32`` internally)
     configuration : numpy.ndarray
-        Configuration coordinate array of shape ``(m, 3)``, will be converted to
-        ``dtype=numpy.float32``.
+        Configuration coordinate array of shape ``(m, 3)`` (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
     box : numpy.ndarray or None
         Dimensions of the cell; if provided, the minimum image convention is
         applied. The dimensions must be provided in the same format as returned
@@ -263,7 +263,7 @@ def distance_array(reference, configuration, box=None, result=None, backend="ser
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
     .. versionchanged:: 0.19.0
-       Added input array dtype conversion to ``numpy.float32``.
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
     ref = reference.astype(np.float32, order='C', copy=True)
     conf = configuration.astype(np.float32, order='C', copy=True)
@@ -318,8 +318,8 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
     Parameters
     ----------
     reference : numpy.ndarray
-        Reference coordinate array with ``N=len(ref)`` coordinates, will be
-        converted to ``dtype=numpy.float32``.
+        Reference coordinate array with ``N=len(ref)`` coordinates (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
     box : numpy.ndarray or None
         Dimensions of the cell; if provided, the minimum image convention is
         applied. The dimensions must be provided in the same format as returned
@@ -355,7 +355,7 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
     .. versionchanged:: 0.19.0
-       Added input array dtype conversion to ``numpy.float32``.
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
     ref = reference.astype(np.float32, order='C', copy=True)
 
@@ -406,7 +406,8 @@ def transform_RtoS(inputcoords, box, backend="serial"):
     Parameters
     ----------
     inputcoords : array
-        A (3,) coordinate or (n x 3) array of coordinates, type ``np.float32``.
+        A (3,) coordinate or (n x 3) array of coordinates (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
     box : array
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
@@ -423,8 +424,10 @@ def transform_RtoS(inputcoords, box, backend="serial"):
 
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    coords = inputcoords.copy('C')
+    coords = inputcoords.astype(np.float32, order='C', copy=True)
 
     is_1d = False  # True if only one vector coordinate
     if len(coords.shape) == 1:
@@ -465,7 +468,8 @@ def transform_StoR(inputcoords, box, backend="serial"):
     Parameters
     ----------
     inputcoords : array
-        A (3,) coordinate or (n x 3) array of coordinates, type ``np.float32``.
+        A (3,) coordinate or (n x 3) array of coordinates (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
     box : array
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
@@ -483,9 +487,10 @@ def transform_StoR(inputcoords, box, backend="serial"):
 
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    _check_array_dtype(inputcoords, 'S')
-    coords = inputcoords.copy('C')
+    coords = inputcoords.astype(np.float32, order='C', copy=True)
 
     is_1d = False  # True if only one vector coordinate
     if len(coords.shape) == 1:
@@ -533,9 +538,11 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     Parameters
     ----------
     coords1 : array
-        An array of coordinates for one half of the bond.
+        An array of coordinates for one half of the bond (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
     coords2 : array
-        An array of coordinates for the other half of bond
+        An array of coordinates for the other half of bond (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
     box : array
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
@@ -558,9 +565,11 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     .. versionadded:: 0.8
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    atom1 = coords1.copy('C')
-    atom2 = coords2.copy('C')
+    atom1 = coords1.astype(np.float32, order='C', copy=True)
+    atom2 = coords2.astype(np.float32, order='C', copy=True)
 
     _check_array(atom1, 'atom1')
     _check_array(atom2, 'atom2')
@@ -618,11 +627,14 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="seria
     Parameters
     ----------
     coords1 : numpy.ndarray
-        Coordinate array of one side of angles.
+        Coordinate array of one side of angles (``dtype`` is arbitrary, will be
+        converted to ``dtype=numpy.float32`` internally)
     coords2 : numpy.ndarray
-        Coordinate array of apex of angles.
+        Coordinate array of apex of angles (``dtype`` is arbitrary, will be
+        converted to ``dtype=numpy.float32`` internally)
     coords3 : numpy.ndarray
-        Coordinate array of other side of angles.
+        Coordinate array of other side of angles (``dtype`` is arbitrary, will be
+        converted to ``dtype=numpy.float32`` internally)
     box : numpy.ndarray, optional
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
@@ -647,10 +659,12 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="seria
        Added optional box argument to account for periodic boundaries in calculation
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    atom1 = coords1.copy('C')
-    atom2 = coords2.copy('C')
-    atom3 = coords3.copy('C')
+    atom1 = coords1.astype(np.float32, order='C', copy=True)
+    atom2 = coords2.astype(np.float32, order='C', copy=True)
+    atom3 = coords3.astype(np.float32, order='C', copy=True)
     numatom = atom1.shape[0]
 
     _check_array(atom1, 'coords1')
@@ -717,13 +731,17 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     Parameters
     ----------
     coords1 : array
-        Coordinate array of 1st atom in dihedrals.
+        Coordinate array of 1st atom in dihedrals (``dtype`` is arbitrary, will
+        be converted to ``dtype=numpy.float32`` internally)
     coords2 : array
-        Coordinate array of 2nd atom in dihedrals.
+        Coordinate array of 2nd atom in dihedrals (``dtype`` is arbitrary, will
+        be converted to ``dtype=numpy.float32`` internally)
     coords3 : array
-        Coordinate array of 3rd atom in dihedrals.
+        Coordinate array of 3rd atom in dihedrals (``dtype`` is arbitrary, will
+        be converted to ``dtype=numpy.float32`` internally)
     coords4 : array
-        Coordinate array of 4th atom in dihedrals.
+        Coordinate array of 4th atom in dihedrals (``dtype`` is arbitrary, will
+        be converted to ``dtype=numpy.float32`` internally)
     box : array
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
@@ -750,11 +768,13 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
        Renamed from calc_torsions to calc_dihedrals
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    atom1 = coords1.copy('C')
-    atom2 = coords2.copy('C')
-    atom3 = coords3.copy('C')
-    atom4 = coords4.copy('C')
+    atom1 = coords1.astype(np.float32, order='C', copy=True)
+    atom2 = coords2.astype(np.float32, order='C', copy=True)
+    atom3 = coords3.astype(np.float32, order='C', copy=True)
+    atom4 = coords4.astype(np.float32, order='C', copy=True)
 
     _check_array(atom1, 'atom1')
     _check_array(atom2, 'atom2')
@@ -803,8 +823,8 @@ def apply_PBC(incoords, box, backend="serial"):
     Parameters
     ----------
     incoords : numpy.ndarray
-        Coordinate array of shape ``(n, 3)``, will be converted to
-        ``dtype=numpy.float32``.
+        Coordinate array of shape ``(n, 3)`` (``dtype`` is arbitrary, will be
+        converted to ``dtype=numpy.float32`` internally)
     box : array
         The unitcell dimesions for this system; can be either orthogonal or
         triclinic information. The dimensions must be provided in the same
@@ -826,7 +846,7 @@ def apply_PBC(incoords, box, backend="serial"):
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
     .. versionchanged:: 0.19.0
-       Added input array dtype conversion to ``numpy.float32``.
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
     coords = incoords.astype(np.float32, order='C', copy=True)
 

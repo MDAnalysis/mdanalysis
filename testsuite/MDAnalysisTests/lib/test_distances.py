@@ -27,19 +27,13 @@ from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 
-def test_transform_StoR_pass():
+@pytest.mark.parametrize('coord_dtype', (np.float32, np.float64))
+def test_transform_StoR_pass(coord_dtype):
     box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
-    s = np.array([[0.5, -0.1, 0.5]], dtype=np.float32)
+    s = np.array([[0.5, -0.1, 0.5]], dtype=coord_dtype)
 
     original_r = np.array([[ 5.75,  0.36066014, 0.75000012]], dtype=np.float32)
 
     test_r = mda.lib.distances.transform_StoR(s, box)
 
     assert_equal(original_r, test_r)
-
-def test_transform_StoR_fail():
-    box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
-    s = np.array([[0.5, -0.1, 0.5]])
-
-    with pytest.raises(TypeError, match='S must be of type float32'):
-        r = mda.lib.distances.transform_StoR(s, box)
