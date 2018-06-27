@@ -275,27 +275,29 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reference : numpy.array of numpy.float32</span>
-<span class="sd">        Reference coordinate array.</span>
-<span class="sd">    configuration : numpy.array of numpy.float32</span>
-<span class="sd">        Configuration coordinate array.</span>
-<span class="sd">    box : numpy.array or None</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array of shape ``(n, 3)`` (``dtype`` is arbitrary,</span>
+<span class="sd">        will be converted to ``dtype=numpy.float32`` internally)</span>
+<span class="sd">    configuration : numpy.ndarray</span>
+<span class="sd">        Configuration coordinate array of shape ``(m, 3)`` (``dtype`` is</span>
+<span class="sd">        arbitrary, will be converted to ``dtype=numpy.float32`` internally)</span>
+<span class="sd">    box : numpy.ndarray or None</span>
 <span class="sd">        Dimensions of the cell; if provided, the minimum image convention is</span>
 <span class="sd">        applied. The dimensions must be provided in the same format as returned</span>
 <span class="sd">        by by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,</span>
 <span class="sd">        ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    result : numpy.array of numpy.float64, optional</span>
+<span class="sd">    result : numpy.ndarray(dtype=numpy.float64), optional</span>
 <span class="sd">        Preallocated result array which must have the</span>
 <span class="sd">        shape ``(len(ref), len(conf))`` and ``dtype=numpy.float64``.</span>
 <span class="sd">        Avoids creating the array which saves time when the function</span>
 <span class="sd">        is called repeatedly. [``None``]</span>
-<span class="sd">    backend</span>
+<span class="sd">    backend : str</span>
 <span class="sd">        Select the type of acceleration; &quot;serial&quot; is always available. Other</span>
 <span class="sd">        possibilities are &quot;OpenMP&quot; (OpenMP).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    d : numpy.array</span>
+<span class="sd">    d : numpy.ndarray</span>
 <span class="sd">        ``(len(reference),len(configuration))`` numpy array with the distances</span>
 <span class="sd">        ``d[i,j]`` between reference coordinates `i` and configuration</span>
 <span class="sd">        coordinates `j`.</span>
@@ -308,9 +310,11 @@
 
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ref</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="n">conf</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+    <span class="n">ref</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">conf</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">_check_array</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="s1">&#39;conf&#39;</span><span class="p">)</span>
     <span class="n">_check_array</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;ref&#39;</span><span class="p">)</span>
@@ -361,25 +365,25 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reference : array</span>
-<span class="sd">        Reference coordinate array with ``N=len(ref)`` coordinates.</span>
-<span class="sd">    box : array or None</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array with ``N=len(ref)`` coordinates (``dtype`` is</span>
+<span class="sd">        arbitrary, will be converted to ``dtype=numpy.float32`` internally)</span>
+<span class="sd">    box : numpy.ndarray or None</span>
 <span class="sd">        Dimensions of the cell; if provided, the minimum image convention is</span>
 <span class="sd">        applied. The dimensions must be provided in the same format as returned</span>
 <span class="sd">        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,</span>
 <span class="sd">        ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    result : array, optional</span>
-<span class="sd">        Preallocated result array which must have the shape</span>
-<span class="sd">        ``(N*(N-1)/2,)`` and dtype ``numpy.float64``. Avoids creating</span>
-<span class="sd">        the array which saves time when the function is called</span>
-<span class="sd">        repeatedly. [``None``]</span>
-<span class="sd">    backend</span>
+<span class="sd">    result : numpy.ndarray(dtype=numpy.float64), optional</span>
+<span class="sd">        Preallocated result array which must have the shape ``(N*(N-1)/2,)`` and</span>
+<span class="sd">        dtype ``numpy.float64``. Avoids creating the array which saves time when</span>
+<span class="sd">        the function is called repeatedly. [``None``]</span>
+<span class="sd">    backend : str</span>
 <span class="sd">        Select the type of acceleration; &quot;serial&quot; is always available. Other</span>
 <span class="sd">        possibilities are &quot;OpenMP&quot; (OpenMP).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    d : array</span>
+<span class="sd">    d : numpy.ndarray</span>
 <span class="sd">        ``N*(N-1)/2`` numpy 1D array with the distances dist[i,j] between ref</span>
 <span class="sd">        coordinates i and j at position d[k]. Loop through d:</span>
 
@@ -393,13 +397,15 @@
 <span class="sd">    Note</span>
 <span class="sd">    ----</span>
 <span class="sd">    This method is slower than it could be because internally we need to make</span>
-<span class="sd">    copies of the coordinate arrays.</span>
+<span class="sd">    copies of the coordinate array.</span>
 
 
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ref</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+    <span class="n">ref</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">_check_array</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;ref&#39;</span><span class="p">)</span>
 
@@ -448,13 +454,14 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    inputcoords : array</span>
-<span class="sd">        A (3,) coordinate or (n x 3) array of coordinates, type ``np.float32``.</span>
+<span class="sd">        A (3,) coordinate or (n x 3) array of coordinates (``dtype`` is</span>
+<span class="sd">        arbitrary, will be converted to ``dtype=numpy.float32`` internally)</span>
 <span class="sd">    box : array</span>
 <span class="sd">        The unitcell dimesions for this system.</span>
 <span class="sd">        The dimensions must be provided in the same format as returned</span>
 <span class="sd">        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,</span>
 <span class="sd">        ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    backend</span>
+<span class="sd">    backend : str</span>
 <span class="sd">        Select the type of acceleration; &quot;serial&quot; is always available. Other</span>
 <span class="sd">        possibilities are &quot;OpenMP&quot; (OpenMP).</span>
 
@@ -465,8 +472,10 @@
 
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">inputcoords</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">inputcoords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">is_1d</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># True if only one vector coordinate</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -507,13 +516,14 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    inputcoords : array</span>
-<span class="sd">        A (3,) coordinate or (n x 3) array of coordinates, type ``np.float32``.</span>
+<span class="sd">        A (3,) coordinate or (n x 3) array of coordinates (``dtype`` is</span>
+<span class="sd">        arbitrary, will be converted to ``dtype=numpy.float32`` internally)</span>
 <span class="sd">    box : array</span>
 <span class="sd">        The unitcell dimesions for this system.</span>
 <span class="sd">        The dimensions must be provided in the same format as returned</span>
 <span class="sd">        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,</span>
 <span class="sd">        ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    backend</span>
+<span class="sd">    backend : str</span>
 <span class="sd">        Select the type of acceleration; &quot;serial&quot; is always available. Other</span>
 <span class="sd">        possibilities are &quot;OpenMP&quot; (OpenMP).</span>
 
@@ -525,9 +535,10 @@
 
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_check_array_dtype</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">)</span>
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">inputcoords</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">inputcoords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">is_1d</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># True if only one vector coordinate</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -575,9 +586,11 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    coords1 : array</span>
-<span class="sd">        An array of coordinates for one half of the bond.</span>
+<span class="sd">        An array of coordinates for one half of the bond (``dtype`` is</span>
+<span class="sd">        arbitrary, will be converted to ``dtype=numpy.float32`` internally)</span>
 <span class="sd">    coords2 : array</span>
-<span class="sd">        An array of coordinates for the other half of bond</span>
+<span class="sd">        An array of coordinates for the other half of bond (``dtype`` is</span>
+<span class="sd">        arbitrary, will be converted to ``dtype=numpy.float32`` internally)</span>
 <span class="sd">    box : array</span>
 <span class="sd">        The unitcell dimesions for this system.</span>
 <span class="sd">        The dimensions must be provided in the same format as returned</span>
@@ -587,7 +600,7 @@
 <span class="sd">        Preallocated result array which must be same length as coord</span>
 <span class="sd">        arrays and ``dtype=numpy.float64``. Avoids creating the</span>
 <span class="sd">        array which saves time when the function is called repeatedly. [None]</span>
-<span class="sd">    backend</span>
+<span class="sd">    backend : str</span>
 <span class="sd">        Select the type of acceleration; &quot;serial&quot; is always available. Other</span>
 <span class="sd">        possibilities are &quot;OpenMP&quot; (OpenMP).</span>
 
@@ -600,9 +613,11 @@
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">atom1</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="n">atom2</span> <span class="o">=</span> <span class="n">coords2</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+    <span class="n">atom1</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">atom2</span> <span class="o">=</span> <span class="n">coords2</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">_check_array</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="s1">&#39;atom1&#39;</span><span class="p">)</span>
     <span class="n">_check_array</span><span class="p">(</span><span class="n">atom2</span><span class="p">,</span> <span class="s1">&#39;atom2&#39;</span><span class="p">)</span>
@@ -659,29 +674,32 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    coords1 : array</span>
-<span class="sd">        Coordinate array of one side of angles.</span>
-<span class="sd">    coords2 : array</span>
-<span class="sd">        Coordinate array of apex of angles.</span>
-<span class="sd">    coords3 : array</span>
-<span class="sd">        Coordinate array of other side of angles.</span>
-<span class="sd">    box : array</span>
+<span class="sd">    coords1 : numpy.ndarray</span>
+<span class="sd">        Coordinate array of one side of angles (``dtype`` is arbitrary, will be</span>
+<span class="sd">        converted to ``dtype=numpy.float32`` internally)</span>
+<span class="sd">    coords2 : numpy.ndarray</span>
+<span class="sd">        Coordinate array of apex of angles (``dtype`` is arbitrary, will be</span>
+<span class="sd">        converted to ``dtype=numpy.float32`` internally)</span>
+<span class="sd">    coords3 : numpy.ndarray</span>
+<span class="sd">        Coordinate array of other side of angles (``dtype`` is arbitrary, will be</span>
+<span class="sd">        converted to ``dtype=numpy.float32`` internally)</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimesions for this system.</span>
 <span class="sd">        The dimensions must be provided in the same format as returned</span>
 <span class="sd">        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,</span>
 <span class="sd">        ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    result : array, optional</span>
+<span class="sd">    result : numpy.ndarray, optional</span>
 <span class="sd">        Preallocated result array which must be same length as coord</span>
 <span class="sd">        arrays and ``dtype=numpy.float64``. Avoids creating the</span>
 <span class="sd">        array which saves time when the function is called repeatedly. [None]</span>
-<span class="sd">    backend</span>
+<span class="sd">    backend : str</span>
 <span class="sd">        Select the type of acceleration; &quot;serial&quot; is always available. Other</span>
 <span class="sd">        possibilities are &quot;OpenMP&quot; (OpenMP).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    angles : array</span>
-<span class="sd">        A numpy.array of angles in radians.</span>
+<span class="sd">    angles : numpy.ndarray</span>
+<span class="sd">        An array of angles in radians.</span>
 
 
 <span class="sd">    .. versionadded:: 0.8</span>
@@ -689,10 +707,12 @@
 <span class="sd">       Added optional box argument to account for periodic boundaries in calculation</span>
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">atom1</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="n">atom2</span> <span class="o">=</span> <span class="n">coords2</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="n">atom3</span> <span class="o">=</span> <span class="n">coords3</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+    <span class="n">atom1</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">atom2</span> <span class="o">=</span> <span class="n">coords2</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">atom3</span> <span class="o">=</span> <span class="n">coords3</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">numatom</span> <span class="o">=</span> <span class="n">atom1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">_check_array</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="s1">&#39;coords1&#39;</span><span class="p">)</span>
@@ -759,13 +779,17 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    coords1 : array</span>
-<span class="sd">        Coordinate array of 1st atom in dihedrals.</span>
+<span class="sd">        Coordinate array of 1st atom in dihedrals (``dtype`` is arbitrary, will</span>
+<span class="sd">        be converted to ``dtype=numpy.float32`` internally)</span>
 <span class="sd">    coords2 : array</span>
-<span class="sd">        Coordinate array of 2nd atom in dihedrals.</span>
+<span class="sd">        Coordinate array of 2nd atom in dihedrals (``dtype`` is arbitrary, will</span>
+<span class="sd">        be converted to ``dtype=numpy.float32`` internally)</span>
 <span class="sd">    coords3 : array</span>
-<span class="sd">        Coordinate array of 3rd atom in dihedrals.</span>
+<span class="sd">        Coordinate array of 3rd atom in dihedrals (``dtype`` is arbitrary, will</span>
+<span class="sd">        be converted to ``dtype=numpy.float32`` internally)</span>
 <span class="sd">    coords4 : array</span>
-<span class="sd">        Coordinate array of 4th atom in dihedrals.</span>
+<span class="sd">        Coordinate array of 4th atom in dihedrals (``dtype`` is arbitrary, will</span>
+<span class="sd">        be converted to ``dtype=numpy.float32`` internally)</span>
 <span class="sd">    box : array</span>
 <span class="sd">        The unitcell dimesions for this system.</span>
 <span class="sd">        The dimensions must be provided in the same format as returned</span>
@@ -775,7 +799,7 @@
 <span class="sd">        Preallocated result array which must be same length as coord</span>
 <span class="sd">        arrays and ``dtype=numpy.float64``. Avoids creating the</span>
 <span class="sd">        array which saves time when the function is called repeatedly. [None]</span>
-<span class="sd">    backend</span>
+<span class="sd">    backend : str</span>
 <span class="sd">        Select the type of acceleration; &quot;serial&quot; is always available. Other</span>
 <span class="sd">        possibilities are &quot;OpenMP&quot; (OpenMP).</span>
 
@@ -792,11 +816,13 @@
 <span class="sd">       Renamed from calc_torsions to calc_dihedrals</span>
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">atom1</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="n">atom2</span> <span class="o">=</span> <span class="n">coords2</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="n">atom3</span> <span class="o">=</span> <span class="n">coords3</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="n">atom4</span> <span class="o">=</span> <span class="n">coords4</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+    <span class="n">atom1</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">atom2</span> <span class="o">=</span> <span class="n">coords2</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">atom3</span> <span class="o">=</span> <span class="n">coords3</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">atom4</span> <span class="o">=</span> <span class="n">coords4</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">_check_array</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="s1">&#39;atom1&#39;</span><span class="p">)</span>
     <span class="n">_check_array</span><span class="p">(</span><span class="n">atom2</span><span class="p">,</span> <span class="s1">&#39;atom2&#39;</span><span class="p">)</span>
@@ -844,21 +870,22 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    coords : array</span>
-<span class="sd">        Coordinate array (of type numpy.float32).</span>
+<span class="sd">    incoords : numpy.ndarray</span>
+<span class="sd">        Coordinate array of shape ``(n, 3)`` (``dtype`` is arbitrary, will be</span>
+<span class="sd">        converted to ``dtype=numpy.float32`` internally)</span>
 <span class="sd">    box : array</span>
 <span class="sd">        The unitcell dimesions for this system; can be either orthogonal or</span>
 <span class="sd">        triclinic information. The dimensions must be provided in the same</span>
 <span class="sd">        format as returned by</span>
 <span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx, ly, lz,</span>
 <span class="sd">        alpha, beta, gamma]``.</span>
-<span class="sd">    backend</span>
-<span class="sd">        Select the type of acceleration; &quot;serial&quot; is always available. Other</span>
-<span class="sd">        possibilities are &quot;OpenMP&quot; (OpenMP).</span>
+<span class="sd">    backend : str</span>
+<span class="sd">        Select the type of acceleration; ``&quot;serial&quot;`` is always available. Other</span>
+<span class="sd">        possibilities are ``&quot;OpenMP&quot;`` (OpenMP).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    newcoords : array</span>
+<span class="sd">    newcoords : numpy.ndarray(dtype=numpy.float32)</span>
 <span class="sd">        Coordinates that are now all within the primary unit cell, as defined</span>
 <span class="sd">        by box.</span>
 
@@ -866,8 +893,10 @@
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">incoords</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">incoords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">_check_array</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="s1">&#39;coords&#39;</span><span class="p">)</span>
 

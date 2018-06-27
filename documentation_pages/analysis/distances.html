@@ -73,17 +73,19 @@ filled. This can speed up calculations.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>reference</strong> (<em>numpy.array of numpy.float32</em>) – Reference coordinate array.</li>
-<li><strong>configuration</strong> (<em>numpy.array of numpy.float32</em>) – Configuration coordinate array.</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)"><em>numpy.array</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
+<li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – Reference coordinate array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary,
+will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
+<li><strong>configuration</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – Configuration coordinate array of shape <code class="docutils literal"><span class="pre">(m,</span> <span class="pre">3)</span></code> (<code class="docutils literal"><span class="pre">dtype</span></code> is
+arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
+<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
 applied. The dimensions must be provided in the same format as returned
 by by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>result</strong> (<em>numpy.array of numpy.float64</em><em>, </em><em>optional</em>) – Preallocated result array which must have the
+<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em>(</em><em>dtype=numpy.float64</em><em>)</em><em>, </em><em>optional</em>) – Preallocated result array which must have the
 shape <code class="docutils literal"><span class="pre">(len(ref),</span> <span class="pre">len(conf))</span></code> and <code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>.
 Avoids creating the array which saves time when the function
 is called repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>backend</strong> – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -93,7 +95,7 @@ possibilities are “OpenMP” (OpenMP).</li>
 coordinates <cite>j</cite>.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -105,6 +107,9 @@ copies of the ref and conf arrays.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -122,16 +127,16 @@ is filled. This can speed up calculations.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>reference</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – Reference coordinate array with <code class="docutils literal"><span class="pre">N=len(ref)</span></code> coordinates.</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
+<li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – Reference coordinate array with <code class="docutils literal"><span class="pre">N=len(ref)</span></code> coordinates (<code class="docutils literal"><span class="pre">dtype</span></code> is
+arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
+<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
 applied. The dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>result</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape
-<code class="docutils literal"><span class="pre">(N*(N-1)/2,)</span></code> and dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code>. Avoids creating
-the array which saves time when the function is called
-repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>backend</strong> – Select the type of acceleration; “serial” is always available. Other
+<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em>(</em><em>dtype=numpy.float64</em><em>)</em><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal"><span class="pre">(N*(N-1)/2,)</span></code> and
+dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code>. Avoids creating the array which saves time when
+the function is called repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -147,7 +152,7 @@ coordinates i and j at position d[k]. Loop through d:</p>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -155,10 +160,13 @@ coordinates i and j at position d[k]. Loop through d:</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This method is slower than it could be because internally we need to make
-copies of the coordinate arrays.</p>
+copies of the coordinate array.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</p>
 </div>
 </dd></dl>
 
