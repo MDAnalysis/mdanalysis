@@ -184,7 +184,7 @@
 
 
 <span class="sd">.. _`PDB 3.2 standard`:</span>
-<span class="sd">    http://www.wwpdb.org/documentation/format32/v3.2.html</span>
+<span class="sd">    http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
@@ -228,11 +228,11 @@
 <span class="sd">    Reads multi-`MODEL`_ PDB files as trajectories.</span>
 
 <span class="sd">    .. _PDB-formatted:</span>
-<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html</span>
+<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html</span>
 <span class="sd">    .. _PDB coordinate section:</span>
-<span class="sd">       http://www.wwpdb.org/documentation/format32/sect9.html</span>
+<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html</span>
 <span class="sd">    .. _MODEL:</span>
-<span class="sd">       http://www.wwpdb.org/documentation/format32/sect9.html#MODEL</span>
+<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
 
 <span class="sd">    =============  ============  ===========  =============================================</span>
 <span class="sd">    COLUMNS        DATA  TYPE    FIELD        DEFINITION</span>
@@ -476,10 +476,10 @@
 <span class="sd">    multiple models (using the MODEL_ and ENDMDL_ records).</span>
 
 <span class="sd">    .. _`PDB 3.2 standard`:</span>
-<span class="sd">       http://www.wwpdb.org/documentation/format32/v3.2.html</span>
-<span class="sd">    .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL</span>
-<span class="sd">    .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL</span>
-<span class="sd">    .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT</span>
+<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html</span>
+<span class="sd">    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
+<span class="sd">    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL</span>
+<span class="sd">    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT</span>
 
 
 <span class="sd">    Note</span>
@@ -604,9 +604,9 @@
 <span class="sd">           records. If ``None``, then the class default is chosen.    [``None``]</span>
 
 
-<span class="sd">        .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT</span>
-<span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL</span>
-<span class="sd">        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL</span>
+<span class="sd">        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT</span>
+<span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
+<span class="sd">        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># n_atoms = None : dummy keyword argument</span>
@@ -918,9 +918,9 @@
 <span class="sd">        :class:`PDBWriter` is in single frame mode and no MODEL_</span>
 <span class="sd">        records are written.</span>
 
-<span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL</span>
-<span class="sd">        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL</span>
-<span class="sd">        .. _NUMMDL: http://www.wwpdb.org/documentation/format32/sect2.html#NUMMDL</span>
+<span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
+<span class="sd">        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL</span>
+<span class="sd">        .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#NUMMDL</span>
 
 <span class="sd">        .. versionchanged:: 0.7.6</span>
 <span class="sd">           The *multiframe* keyword was added, which completely determines if</span>
@@ -977,7 +977,7 @@
             <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;segID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segids</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="mi">4</span><span class="p">]</span>
             <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;element&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atomnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())[:</span><span class="mi">2</span><span class="p">]</span>
 
-            <span class="c1"># .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html</span>
+            <span class="c1"># .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;ATOM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">vals</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">multiframe</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ENDMDL</span><span class="p">()</span>
@@ -986,7 +986,7 @@
 <div class="viewcode-block" id="PDBWriter.HEADER"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.HEADER">[docs]</a>    <span class="k">def</span> <span class="nf">HEADER</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write HEADER_ record.</span>
 
-<span class="sd">        .. _HEADER: http://www.wwpdb.org/documentation/format32/sect2.html#HEADER</span>
+<span class="sd">        .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">):</span>
@@ -997,7 +997,7 @@
 <div class="viewcode-block" id="PDBWriter.TITLE"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.TITLE">[docs]</a>    <span class="k">def</span> <span class="nf">TITLE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">title</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write TITLE_ record.</span>
 
-<span class="sd">        .. _TITLE: http://www.wwpdb.org/documentation/format32/sect2.html</span>
+<span class="sd">        .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>  <span class="c1"># TODO: should do continuation automatically</span>
@@ -1011,8 +1011,8 @@
 
 <span class="sd">        See also `REMARK (update)`_.</span>
 
-<span class="sd">        .. _REMARK: http://www.wwpdb.org/documentation/format32/remarks1.html</span>
-<span class="sd">        .. _REMARK (update): http://www.wwpdb.org/documentation/format32/remarks2.html</span>
+<span class="sd">        .. _REMARK: http://www.wwpdb.org/documentation/file-format-content/format32/remarks1.html</span>
+<span class="sd">        .. _REMARK (update): http://www.wwpdb.org/documentation/file-format-content/format32/remarks2.html</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">remark</span> <span class="ow">in</span> <span class="n">remarks</span><span class="p">:</span>
@@ -1028,7 +1028,7 @@
 <div class="viewcode-block" id="PDBWriter.CRYST1"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.CRYST1">[docs]</a>    <span class="k">def</span> <span class="nf">CRYST1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">,</span> <span class="n">spacegroup</span><span class="o">=</span><span class="s1">&#39;P 1&#39;</span><span class="p">,</span> <span class="n">zvalue</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write CRYST1_ record.</span>
 
-<span class="sd">        .. _CRYST1: http://www.wwpdb.org/documentation/format32/sect8.html</span>
+<span class="sd">        .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format32/sect8.html#CRYST1</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;CRYST1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -1047,7 +1047,7 @@
 <span class="sd">           9999, they will wrap around, i.e., 9998, 9999, 0, 1, 2, ...</span>
 
 
-<span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL</span>
+<span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
 
 
 <span class="sd">        .. versionchanged:: 0.18.1</span>
@@ -1064,7 +1064,7 @@
 <span class="sd">        method right before closing the file it is recommended to *not* call</span>
 <span class="sd">        :meth:`~PDBWriter.END` explicitly.</span>
 
-<span class="sd">        .. _END: http://www.wwpdb.org/documentation/format32/sect11.html#END</span>
+<span class="sd">        .. _END: http://www.wwpdb.org/documentation/file-format-content/format32/sect11.html#END</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_END</span><span class="p">:</span>
@@ -1075,7 +1075,7 @@
 <div class="viewcode-block" id="PDBWriter.ENDMDL"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.ENDMDL">[docs]</a>    <span class="k">def</span> <span class="nf">ENDMDL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the ENDMDL_ record.</span>
 
-<span class="sd">        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL</span>
+<span class="sd">        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;ENDMDL&#39;</span><span class="p">])</span></div>
@@ -1083,7 +1083,7 @@
 <div class="viewcode-block" id="PDBWriter.CONECT"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.CONECT">[docs]</a>    <span class="k">def</span> <span class="nf">CONECT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conect</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write CONECT_ record.</span>
 
-<span class="sd">        .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT</span>
+<span class="sd">        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">conect</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{0:5d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entry</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">conect</span><span class="p">]</span>
@@ -1123,9 +1123,9 @@
 <span class="sd">    and ENDMDL_ records).</span>
 
 
-<span class="sd">    .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL</span>
-<span class="sd">    .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL</span>
-<span class="sd">    .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT</span>
+<span class="sd">    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
+<span class="sd">    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL</span>
+<span class="sd">    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT</span>
 
 
 <span class="sd">    See Also</span>
