@@ -82,6 +82,8 @@ e.g. giving a workflow as a keyword argument when defining the universe:
 """
 from __future__ import absolute_import
 
+from .pbc import unwrap
 from .translate import translate
+
 
 

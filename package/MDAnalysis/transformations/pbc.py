@@ -31,111 +31,41 @@ from __future__ import absolute_import
 
 import numpy as np
 
-from ..lib.distances import apply_PBC
-from ..lib.mdamath import triclinic_vectors, _is_contiguous
+from MDAnalysis.lib.mdamath import make_whole
 
-def make_whole(atomgroup, reference_atom=None):
-    """Move all atoms in a single molecule so that bonds don't split over images
-
-    Atoms are modified in place.
-
-    This function is most useful when atoms have been packed into the primary
-    unit cell, causing breaks mid molecule, with the molecule then appearing
-    on either side of the unit cell. This is problematic for operations
-    such as calculating the center of mass of the molecule. ::
-
-       +-----------+     +-----------+
-       |           |     |           |
-       | 6       3 |     |         3 | 6
-       | !       ! |     |         ! | !
-       |-5-8   1-2-| ->  |       1-2-|-5-8
-       | !       ! |     |         ! | !
-       | 7       4 |     |         4 | 7
-       |           |     |           |
-       +-----------+     +-----------+
-
-
+def unwrap(atomgroup):
+    """Makes all the molecules in the given atomgroup, that have been broken over
+    periodic boundary conditions, whole again. This is useful for visualisation and
+    some calculations such as the center of mass.
+    
+    This function is most useful when used in conjunction with other transformations such 
+    as translate and center. 
+    
     Parameters
     ----------
-    atomgroup : AtomGroup
-        The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
-        The positions of this are modified in place.  All these atoms
-        must belong in the same molecule or fragment.
-
-    Raises
-    ------
-    NoDataError
-        There are no bonds present.
-        (See :func:`~MDAnalysis.topology.core.guess_bonds`)
-
-    ValueError
-        The algorithm fails to work.  This is usually
-        caused by the atomgroup not being a single fragment.
-        (ie the molecule can't be traversed by following bonds)
-
-
-    Example
-    -------
-    Make fragments whole::
-
-        from MDAnalysis.transformations.pbc import make_whole
-
-        # This algorithm requires bonds, these can be guessed!
-        u = mda.Universe(......, guess_bonds=True)
-
-        # MDAnalysis can split molecules into their fragments
-        # based on bonding information.
-        # Note that this function will only handle a single fragment
-        # at a time, necessitating a loop.
-        for frag in u.fragments:
-          make_whole(frag)
-
-
-    """
-    # check if box is valid
-    box = atomgroup.dimensions[:3]
-    if all(box == 0.0):
-        raise ValueError("Supplied box had zero size")
-    # this will fail if the atomgroup has no bonds
-    try:
-        b = atomgroup.bonds
-    except (AttributeError, NoDataError):
-        raise NoDataError("The atomgroup is required to have bonds")
-    # check if molecule is contiguous
-    if not _is_contiguous(atomgroup, atomgroup[0]):
-        raise ValueError("atomgroup not contiguous from bonds")
+    atomgroup:
+        atomgroup containing all the molecules that are to be made whole again.
     
-    tric = triclinic_vectors(atomgroup.dimensions)
-    halfbox = tric.sum(axis=0) / 2.0
-    atgp = atomgroup
-    diffs = None
-    count = 0
-    idx = None
-    prev ={}
-    while True:
-        count +=1
-        if diffs is not None:
-            if idx is not None:
-                prev[count] = idx
-            idx = np.unique(np.where(diffs)[0])
-            atgp = atgp.bonds.atom2[idx]
-            # the following check is for cases when an atom in the atom2 group
-            # is connected to two atoms in atom1. Since where changing the positions
-            # of the atom2 group, suchs cases lead to the while loop being stuck:
-            # this atom is moved back and forth between the two atoms it is conected
-            # to. Since were tracking the atoms that need changing, if this group stays
-            # the same over an iteration, we change atom1.positions instead.
-            if prev.has_key(count) and np.array_equal(prev[count], idx):
-                atgp.bonds.atom1.positions = atgp.bonds.atom2.positions - newvecs 
-        vecs = atgp.bonds.atom2.positions - atgp.bonds.atom1.positions
-        vecs += halfbox
-        newvecs = apply_PBC(vecs, atgp.dimensions)
-        diffs = np.any(~np.isclose(vecs, newvecs, 1e-6), axis=1)
-        if not diffs.sum():
-            break
-        newvecs -= halfbox
-        atgp.bonds.atom2.positions = atgp.bonds.atom1.positions + newvecs
-        # for debugging purposes. Also makes a nice animation
-        #atomgroup.write(filename='updated_%d.pdb'%count)
+    Returns
+    -------
+    :class:`~MDAnalysis.coordinates.base.Timestep` object
+    
+    Note
+    ----
+    If the AtomGroup provided has molecules whose bonds are not described in the
+    AtomGroup.bonds property will cause the transformation to fail, but won't be
+    made whole again.
+    """
+    
 
-
+    try:
+        atomgroup.positions
+    except AttributeError:
+        raise AttributeError("{} is not an AtomGroup".format(atomgroup))
+    
+    def wrapped(ts):
+        make_whole(atomgroup)
+            
+        return ts
+    
+    return wrapped

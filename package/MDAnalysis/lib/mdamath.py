@@ -279,7 +279,7 @@ def _is_contiguous(atomgroup, atom):
     return True
 
 
-def make_whole(atomgroup, reference_atom=None):
+def make_whole(atomgroup):
     """Move all atoms in a single molecule so that bonds don't split over images
 
     Atoms are modified in place.
@@ -306,9 +306,6 @@ def make_whole(atomgroup, reference_atom=None):
         The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
         The positions of this are modified in place.  All these atoms
         must belong in the same molecule or fragment.
-    reference_atom : :class:`~MDAnalysis.core.groups.Atom`
-        The atom around which all other atoms will be moved.
-        Defaults to atom 0 in the atomgroup.
 
     Raises
     ------
@@ -321,15 +318,12 @@ def make_whole(atomgroup, reference_atom=None):
         caused by the atomgroup not being a single fragment.
         (ie the molecule can't be traversed by following bonds)
 
-    Note
-    ----
-    Only orthogonal boxes are currently supported.
 
     Example
     -------
     Make fragments whole::
 
-        from MDAnalysis.util.mdamath import make_whole
+        from MDAnalysis.transformations.pbc import make_whole
 
         # This algorithm requires bonds, these can be guessed!
         u = mda.Universe(......, guess_bonds=True)
@@ -341,92 +335,72 @@ def make_whole(atomgroup, reference_atom=None):
         for frag in u.fragments:
           make_whole(frag)
 
-    Alternatively, to keep a single atom in place as the anchor::
 
-        # This will mean that atomgroup[10] will NOT get moved,
-        # and all other atoms will move (if necessary).
-        make_whole(atomgroup, reference_atom=atomgroup[10])
-
-
-    .. versionadded:: 0.11.0
     """
+    from ..lib.distances import apply_PBC
+    
+    # check if box is valid
+    box = atomgroup.dimensions[:3]
+    if all(box == 0.0):
+        raise ValueError("Supplied box had zero size")
+    # this will fail if the atomgroup has no bonds
     try:
         b = atomgroup.bonds
     except (AttributeError, NoDataError):
         raise NoDataError("The atomgroup is required to have bonds")
-
-    if reference_atom is None:
-        ref = atomgroup[0]
-    else:
-        ref = reference_atom
-        # Sanity check
-        if not ref in atomgroup:
-            raise ValueError("Reference atom not in atomgroup")
-
-    # Check all of atomgroup is accessible from ref
-    if not _is_contiguous(atomgroup, ref):
-        raise ValueError("atomgroup not contiguous from bonds")
-
-    # Not sure if this is actually a requirement...
-    # I think application of pbc would need to be changed for triclinic boxes
-    # but that's all?  How does minimum bond length criteria change?
-    if not all(atomgroup.dimensions[3:] == 90.0):
-        raise ValueError("Non orthogonal boxes are not supported")
-    box = atomgroup.dimensions[:3]
-
-    if all(box == 0.0):
-        raise ValueError("Supplied box had zero size")
-
+    # check if box is too small
     box_length = box.min() / 2.0
-
     bondlengths = atomgroup.bonds.bonds(pbc=True)
     if bondlengths.min() * 1.4 > box_length:
         raise ValueError("Box lengths are too small relative to bond lengths")
-
-    # All checks done, let's continue
-    # If bond lengths don't change after pbc applied, then no bonds
-    # straddle the box boundaries
-    if np.allclose(atomgroup.bonds.bonds(), bondlengths):
-        return
-    # Can't reuse this calculation of bond lengths as we're changing
-    # stuff as we go.
-
-    processed = set()  # Who have I already done?
-    ref_points = set([ref])  # Who is safe to use as reference point?
-
-    ag_set = set(atomgroup)
-    nres = len(atomgroup)  # total size of the problem
-    nloops = 0
-    while len(ref_points) < nres:  # While all atoms aren't correct
-        nloops += 1
-        if nloops > nres:  # To prevent infinite loop
-            # This point probable isn't reachable with the above _is_contiguous
-            # check, but better safe than sorry.
-            raise ValueError("Algorithm couldn't traverse atomgroup. "
-                             "Perhaps the atomgroup isn't fully connected")
-
-        # We want to iterate over atoms that are good to use as reference
-        # points, but haven't been processed yet.
-        todo = ref_points.difference(processed)
-        for atom in todo:
-            for b in atom.bonds:
-                other = b.partner(atom)
-                # Avoid atoms not in our scope
-                if other not in ag_set:
-                    continue
-                if other in ref_points:
-                    continue
-                if b.length() > box_length:
-                    # Vector from ref atom to other
-                    vec = other.position - ref.position
-                    # Apply pbc to this vector
-                    vec -= np.rint(vec/box) * box
-                    # Define the position of other based on this vector
-                    other.position = ref.position + vec
-                # This atom can now be used as a reference point
-                ref_points.add(other)
-
-            processed.add(atom)
+    
+    tric = triclinic_vectors(atomgroup.dimensions)
+    halfbox = tric.sum(axis=0) / 2.0
+    atgp = atomgroup
+    diffs = None
+    count = 0
+    idx = None
+    prev = {}
+    repeats = 0
+    while True:
+        # this method is iterative, as correcting a bond causes other to become distorted
+        if diffs is not None:
+            if idx is not None:
+                prev[count] = idx
+            idx = np.unique(np.where(diffs)[0])
+            atgp = atgp.bonds.atom2[idx]
+        # get the bond vectors and translate them to the center of the unit cell
+        # all the vectors that are bigger than half the unit cell will be outside
+        # these are the ones we want to "correct"
+        vecs = atgp.bonds.atom2.positions - atgp.bonds.atom1.positions
+        vecs += halfbox
+        # apply PBC on the vectors
+        newvecs = apply_PBC(vecs, atgp.dimensions)
+        # diffs is used to check which the atoms are already in their correct positions
+        # if all of them are correct then break the loop
+        diffs = np.any(~np.isclose(vecs, newvecs, 1e-6), axis=1)
+        if not diffs.sum():
+            break
+        # the new vectors are translated back to the origin and positions are updated
+        newvecs -= halfbox
+        atgp.bonds.atom2.positions = atgp.bonds.atom1.positions + newvecs
+        
+        # the following check is for cases when an atom in the atom2 group
+        # is connected to two atoms in atom1. Since where changing the positions
+        # of the atom2 group, suchs cases lead to the while loop being stuck:
+        # this atom is moved back and forth between the two atoms it is conected
+        # to. Since were tracking the atoms that need changing, if this group stays
+        # the same over multiple iterations, we change atom1.positions instead.
+        if diffs is not None and idx is not None:
+            if prev.has_key(count) and np.array_equal(prev[count], idx):
+                repeats +=1 
+                if repeats > len(idx):
+                    atgp.bonds.atom1.positions = atgp.bonds.atom2.positions - newvecs
+            else:
+                repeats = 0
+        count += 1
+        # for debugging purposes. Also makes a nice animation
+        #atomgroup.write(filename='updated_%d.pdb'%count)
 
 
 def one_to_many_pointers(Ni, Nj, i2j):

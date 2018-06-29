@@ -257,13 +257,6 @@ class TestMakeWhole(object):
         with pytest.raises(NoDataError):
             mdamath.make_whole(ag)
 
-    def test_not_orthogonal(self, universe, ag):
-        # Not an orthogonal unit cell
-
-        universe.dimensions = [10., 10., 10., 80., 80., 80]
-        with pytest.raises(ValueError):
-            mdamath.make_whole(ag)
-
     def test_zero_box_size(self, universe, ag):
         universe.dimensions = [0., 0., 0., 90., 90., 90.]
         with pytest.raises(ValueError):
@@ -275,16 +268,6 @@ class TestMakeWhole(object):
         universe.dimensions = [100.0, 100.0, 0.5, 90., 90., 90.]
         with pytest.raises(ValueError):
             mdamath.make_whole(ag)
-
-    def test_wrong_reference_atom(self, universe, ag):
-        # Reference atom not in atomgroup
-        with pytest.raises(ValueError):
-            mdamath.make_whole(ag, reference_atom=universe.atoms[-1])
-
-    def test_impossible_solve(self, universe):
-        # check that the algorithm sees the bad walk
-        with pytest.raises(ValueError):
-            mdamath.make_whole(universe.atoms)
 
     def test_walk_1(self, universe, ag):
         # self.ag is contiguous
@@ -312,24 +295,7 @@ class TestMakeWhole(object):
         assert_array_almost_equal(universe.atoms[7].position,
                                   np.array([120.0, 50.0, 0.0]))
 
-    def test_solve_2(self, universe, ag):
-        # use but specify the center atom
-
-        refpos = universe.atoms[4:8].positions.copy()
-
-        mdamath.make_whole(ag, reference_atom=universe.residues[0].atoms[4])
-
-        assert_array_almost_equal(universe.atoms[4:8].positions, refpos)
-        assert_array_almost_equal(universe.atoms[0].position,
-                                  np.array([-20.0, 50.0, 0.0]))
-        assert_array_almost_equal(universe.atoms[1].position,
-                                  np.array([-10.0, 50.0, 0.0]))
-        assert_array_almost_equal(universe.atoms[2].position,
-                                  np.array([-10.0, 60.0, 0.0]))
-        assert_array_almost_equal(universe.atoms[3].position,
-                                  np.array([-10.0, 40.0, 0.0]))
-
-    def test_solve_3(self, universe):
+    def test_solve_2(self, universe):
         # put in a chunk that doesn't need any work
 
         refpos = universe.atoms[:1].positions.copy()
@@ -337,31 +303,6 @@ class TestMakeWhole(object):
         mdamath.make_whole(universe.atoms[:1])
 
         assert_array_almost_equal(universe.atoms[:1].positions, refpos)
-
-    def test_solve_4(self, universe):
-        # Put in only some of a fragment,
-        # check that not everything gets moved
-
-        chunk = universe.atoms[:7]
-        refpos = universe.atoms[7].position.copy()
-
-        mdamath.make_whole(chunk)
-
-        assert_array_almost_equal(universe.atoms[7].position, refpos)
-        assert_array_almost_equal(universe.atoms[4].position,
-                                  np.array([110.0, 50.0, 0.0]))
-        assert_array_almost_equal(universe.atoms[5].position,
-                                  np.array([110.0, 60.0, 0.0]))
-        assert_array_almost_equal(universe.atoms[6].position,
-                                  np.array([110.0, 40.0, 0.0]))
-
-    def test_double_frag_short_bonds(self, universe, ag):
-        # previous bug where if two fragments are given
-        # but all bonds were short, the algorithm didn't
-        # complain
-        mdamath.make_whole(ag)
-        with pytest.raises(ValueError):
-            mdamath.make_whole(universe.atoms)
 
 
 class Class_with_Caches(object):
