@@ -464,7 +464,7 @@
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">ref_points</span><span class="p">:</span>
                     <span class="k">continue</span>
-                <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">box_length</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">box_length</span><span class="p">:</span>
                     <span class="c1"># Vector from ref atom to other</span>
                     <span class="n">vec</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">ref</span><span class="o">.</span><span class="n">position</span>
                     <span class="c1"># Apply pbc to this vector</span>

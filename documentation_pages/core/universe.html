@@ -125,7 +125,7 @@ loaded from the “topology” file unless a trajectory is supplied.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>topology</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>Topology object</em><em> or </em><em>stream</em>) – A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
+<li><strong>topology</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>Topology object</em><em> or </em><em>stream</em>) – A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
 define the list of atoms. If the file includes bond information,
 partial charges, atom masses, … then these data will be available to
 MDAnalysis. A “structure” file (PSF, PDB or GRO, in the sense of a
@@ -142,28 +142,28 @@ has to guess the file format for each individual list member.
 [<code class="docutils literal"><span class="pre">None</span></code>] Can also pass a subclass of
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.ProtoReader</span></code></a> to define a custom
 reader to be used on the trajectory file.</li>
-<li><strong>all_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – If set to <code class="docutils literal"><span class="pre">True</span></code> specifies that if more than one filename is passed
+<li><strong>all_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If set to <code class="docutils literal"><span class="pre">True</span></code> specifies that if more than one filename is passed
 they are all to be used, if possible, as coordinate files (employing a
 <a class="reference internal" href="../coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.chain.ChainReader</span></code></a>). [<code class="docutils literal"><span class="pre">False</span></code>] The
 default behavior is to take the first file as a topology and the
 remaining as coordinates. The first argument will always always be used
 to infer a topology regardless of <em>all_coordinates</em>. This parameter is
 ignored if only one argument is passed.</li>
-<li><strong>guess_bonds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Once Universe has been loaded, attempt to guess the connectivity
+<li><strong>guess_bonds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Once Universe has been loaded, attempt to guess the connectivity
 between atoms.  This will populate the .bonds .angles and .dihedrals
 attributes of the Universe.</li>
-<li><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a><em>, </em><em>optional</em>) – For use with <em>guess_bonds</em>. Supply a dict giving a vdwradii for each
+<li><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a><em>, </em><em>optional</em>) – For use with <em>guess_bonds</em>. Supply a dict giving a vdwradii for each
 atom type which are used in guessing bonds.</li>
-<li><strong>is_anchor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – When unpickling instances of
+<li><strong>is_anchor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – When unpickling instances of
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> existing Universes are
 searched for one where to anchor those atoms. Set to <code class="docutils literal"><span class="pre">False</span></code> to
 prevent this Universe from being considered. [<code class="docutils literal"><span class="pre">True</span></code>]</li>
-<li><strong>anchor_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>optional</em>) – Setting to other than <code class="docutils literal"><span class="pre">None</span></code> will cause
+<li><strong>anchor_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Setting to other than <code class="docutils literal"><span class="pre">None</span></code> will cause
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> instances pickled from the
 Universe to only unpickle if a compatible Universe with matching
 <em>anchor_name</em> is found. Even if <em>anchor_name</em> is set <em>is_anchor</em> will
 still be honored when unpickling.</li>
-<li><strong>transformations</strong> (<a class="reference internal" href="../analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="MDAnalysis.analysis.encore.utils.ParallelCalculation.function"><em>function</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em>, </em><em>optional</em>) – Provide a list of transformations that you wish to apply to the
+<li><strong>transformations</strong> (<a class="reference internal" href="../analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="MDAnalysis.analysis.encore.utils.ParallelCalculation.function"><em>function</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>optional</em>) – Provide a list of transformations that you wish to apply to the
 trajectory upon reading. Transformations can be found in
 <a class="reference internal" href="../trajectory_transformations.html#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.transformations</span></code></a>, or can be user-created.</li>
 <li><strong>in_memory</strong> – After reading in the trajectory, transfer it to an in-memory
@@ -213,7 +213,7 @@ be specified as a keyword.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>segment</strong> (<em>MDAnalysis.Segment</em>) – If there are multiple segments, then the Segment that the new
 Residue will belong in must be specified.</li>
-<li><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – For each Residue attribute, the value for the new Residue must be
+<li><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – For each Residue attribute, the value for the new Residue must be
 specified</li>
 </ul>
 </td>
@@ -248,7 +248,7 @@ been made, ie the change is rolled back.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – For each Segment attribute as a key, give the value in the new
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – For each Segment attribute as a key, give the value in the new
 Segment</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
@@ -272,7 +272,7 @@ all AtomGroups etc throughout the Universe.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>topologyattr</strong> (<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><em>TopologyAttr</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) – Either a MDAnalysis TopologyAttr object or the name of a possible
+<li><strong>topologyattr</strong> (<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><em>TopologyAttr</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/string.html#module-string" title="(in Python v3.7)"><em>string</em></a>) – Either a MDAnalysis TopologyAttr object or the name of a possible
 topology attribute.</li>
 <li><strong>values</strong> (<em>np.ndarray</em><em>, </em><em>optional</em>) – If initiating an attribute from a string, the initial values to
 use.  If not supplied, the new TopologyAttribute will have empty
@@ -354,15 +354,15 @@ for example for system building.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – number of Atoms in the Universe</li>
-<li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – number of Residues in the Universe, defaults to 1</li>
-<li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – number of Segments in the Universe, defaults to 1</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of Atoms in the Universe</li>
+<li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – number of Residues in the Universe, defaults to 1</li>
+<li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – number of Segments in the Universe, defaults to 1</li>
 <li><strong>atom_resindex</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)"><em>numpy.array</em></a><em>, </em><em>optional</em>) – mapping of atoms to residues</li>
 <li><strong>residue_segindex</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)"><em>numpy.array</em></a><em>, </em><em>optional</em>) – mapping of residues to segments</li>
-<li><strong>trajectory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, attaches a dummy reader to the Universe, therefore
+<li><strong>trajectory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, attaches a dummy reader to the Universe, therefore
 allowing coordinates to be set and written.  Default is False</li>
-<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – include velocities in the dummy Reader</li>
-<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – include forces in the dummy Reader</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – include velocities in the dummy Reader</li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – include forces in the dummy Reader</li>
 </ul>
 </td>
 </tr>
@@ -420,22 +420,22 @@ filenames.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – the coordinate file (single frame or trajectory) <em>or</em> a list of
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – the coordinate file (single frame or trajectory) <em>or</em> a list of
 filenames, which are read one after another.</li>
-<li><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><em>object</em></a><em> (</em><em>optional</em><em>)</em>) – provide the file format of the coordinate or trajectory file;
+<li><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a><em> (</em><em>optional</em><em>)</em>) – provide the file format of the coordinate or trajectory file;
 <code class="docutils literal"><span class="pre">None</span></code> guesses it from the file extension. Note that this
 keyword has no effect if a list of file names is supplied because
 the “chained” reader has to guess the file format for each
 individual list member [<code class="docutils literal"><span class="pre">None</span></code>]. Can also pass a subclass of
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.ProtoReader</span></code></a> to define a custom
 reader to be used on the trajectory file.</li>
-<li><strong>in_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Directly load trajectory into memory with the
+<li><strong>in_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Directly load trajectory into memory with the
 <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal"><span class="pre">MemoryReader</span></code></a></p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.16.0.</span></p>
 </div>
 </li>
-<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – Other kwargs are passed to the trajectory reader (only for
+<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Other kwargs are passed to the trajectory reader (only for
 advanced use)</li>
 </ul>
 </td>
@@ -500,10 +500,10 @@ editing of coordinates.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – start reading from the nth frame.</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – read upto and excluding the nth frame.</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – Read in every nth frame. [1]</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Will print the progress of loading trajectory to memory, if
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – start reading from the nth frame.</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – read upto and excluding the nth frame.</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Read in every nth frame. [1]</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Will print the progress of loading trajectory to memory, if
 set to True. Default value is False.</li>
 </ul>
 </td>
@@ -539,8 +539,8 @@ set to True. Default value is False.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – Too few arguments or an AtomGroup is empty and</li>
-<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> – Arguments are not <code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code> instances.</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – Too few arguments or an AtomGroup is empty and</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> – Arguments are not <code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code> instances.</li>
 </ul>
 </td>
 </tr>

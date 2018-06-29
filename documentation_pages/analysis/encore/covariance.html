@@ -72,7 +72,7 @@ an ensemble of structures.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ensemble</strong> (<em>Universe object</em>) – The structural ensemble</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Atom selection string in the MDAnalysis format.</li>
+<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Atom selection string in the MDAnalysis format.</li>
 <li><strong>estimator</strong> (<a class="reference internal" href="utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="MDAnalysis.analysis.encore.utils.ParallelCalculation.function"><em>function</em></a><em> (</em><em>optional</em><em>)</em>) – Function that estimates the covariance matrix. It requires at least
 a “coordinates” numpy array (of shape (N,M,3), where N is the number
 of frames and M the number of atoms). See ml_covariance_estimator and
@@ -134,7 +134,7 @@ Ledoit on his website:
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>coordinates</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)"><em>numpy.array</em></a>) – Flattened array of coordinates</li>
 <li><strong>reference_coordinates</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)"><em>numpy.array</em></a>) – Optional reference to use instead of mean</li>
-<li><strong>shrinkage_parameter</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Optional shrinkage parameter</li>
+<li><strong>shrinkage_parameter</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Optional shrinkage parameter</li>
 </ul>
 </td>
 </tr>

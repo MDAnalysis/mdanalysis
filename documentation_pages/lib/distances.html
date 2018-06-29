@@ -110,7 +110,7 @@ filled. This can speed up calculations.</p>
 will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
 <li><strong>configuration</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – Configuration coordinate array of shape <code class="docutils literal"><span class="pre">(m,</span> <span class="pre">3)</span></code> (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
+<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
 applied. The dimensions must be provided in the same format as returned
 by by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
@@ -118,7 +118,7 @@ by by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.co
 shape <code class="docutils literal"><span class="pre">(len(ref),</span> <span class="pre">len(conf))</span></code> and <code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>.
 Avoids creating the array which saves time when the function
 is called repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -162,14 +162,14 @@ is filled. This can speed up calculations.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – Reference coordinate array with <code class="docutils literal"><span class="pre">N=len(ref)</span></code> coordinates (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
+<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
 applied. The dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
 <li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em>(</em><em>dtype=numpy.float64</em><em>)</em><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal"><span class="pre">(N*(N-1)/2,)</span></code> and
 dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code>. Avoids creating the array which saves time when
 the function is called repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -225,18 +225,18 @@ up calculations.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coords1</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – An array of coordinates for one half of the bond (<code class="docutils literal"><span class="pre">dtype</span></code> is
+<li><strong>coords1</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – An array of coordinates for one half of the bond (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>coords2</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – An array of coordinates for the other half of bond (<code class="docutils literal"><span class="pre">dtype</span></code> is
+<li><strong>coords2</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – An array of coordinates for the other half of bond (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – The unitcell dimesions for this system.
+<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – The unitcell dimesions for this system.
 The dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>result</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a><em>, </em><em>optional</em>) – Preallocated result array which must be same length as coord
+<li><strong>result</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a><em>, </em><em>optional</em>) – Preallocated result array which must be same length as coord
 arrays and <code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>. Avoids creating the
 array which saves time when the function is called repeatedly. [None]</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -244,7 +244,7 @@ possibilities are “OpenMP” (OpenMP).</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>bondlengths</strong> – The length between each pair in coords1 and coords2</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)">array</a></p>
 </td>
 </tr>
 </tbody>
@@ -291,7 +291,7 @@ by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coord
 <li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must be same length as coord
 arrays and <code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>. Avoids creating the
 array which saves time when the function is called repeatedly. [None]</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -346,22 +346,22 @@ image:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coords1</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – Coordinate array of 1st atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
+<li><strong>coords1</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – Coordinate array of 1st atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
 be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>coords2</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – Coordinate array of 2nd atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
+<li><strong>coords2</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – Coordinate array of 2nd atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
 be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>coords3</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – Coordinate array of 3rd atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
+<li><strong>coords3</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – Coordinate array of 3rd atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
 be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>coords4</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – Coordinate array of 4th atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
+<li><strong>coords4</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – Coordinate array of 4th atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
 be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – The unitcell dimesions for this system.
+<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – The unitcell dimesions for this system.
 The dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>result</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a><em>, </em><em>optional</em>) – Preallocated result array which must be same length as coord
+<li><strong>result</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a><em>, </em><em>optional</em>) – Preallocated result array which must be same length as coord
 arrays and <code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>. Avoids creating the
 array which saves time when the function is called repeatedly. [None]</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -369,7 +369,7 @@ possibilities are “OpenMP” (OpenMP).</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>angles</strong> – A numpy.array of angles in radians.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)">array</a></p>
 </td>
 </tr>
 </tbody>
@@ -403,12 +403,12 @@ possibilities are “OpenMP” (OpenMP).</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>incoords</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will be
 converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – The unitcell dimesions for this system; can be either orthogonal or
+<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – The unitcell dimesions for this system; can be either orthogonal or
 triclinic information. The dimensions must be provided in the same
 format as returned by
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span>
 <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; <code class="docutils literal"><span class="pre">&quot;serial&quot;</span></code> is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; <code class="docutils literal"><span class="pre">&quot;serial&quot;</span></code> is always available. Other
 possibilities are <code class="docutils literal"><span class="pre">&quot;OpenMP&quot;</span></code> (OpenMP).</li>
 </ul>
 </td>
@@ -444,27 +444,31 @@ by box.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>inputcoords</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – A (3,) coordinate or (n x 3) array of coordinates (<code class="docutils literal"><span class="pre">dtype</span></code> is
+<li><strong>inputcoords</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – A (3,) coordinate or (n x 3) array of coordinates (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – The unitcell dimesions for this system.
+<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – The unitcell dimesions for this system.
 The dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>outcoords</strong> (<em>array</em>) – A n x 3 array of fractional coordiantes.</li>
-<li><em>.. versionchanged:: 0.13.0</em> – Added <em>backend</em> keyword.</li>
-<li><em>.. versionchanged:: 0.19.0</em> – Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</li>
-</ul>
-</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outcoords</strong> – A n x 3 array of fractional coordiantes.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)">array</a></p>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -478,21 +482,21 @@ possibilities are “OpenMP” (OpenMP).</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>inputcoords</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – A (3,) coordinate or (n x 3) array of coordinates (<code class="docutils literal"><span class="pre">dtype</span></code> is
+<li><strong>inputcoords</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – A (3,) coordinate or (n x 3) array of coordinates (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – The unitcell dimesions for this system.
+<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – The unitcell dimesions for this system.
 The dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outcoords</strong> – A n x 3 array of fracional coordiantes.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outcoords</strong> – A n x 3 array of fractional coordiantes.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)">array</a></p>
 </td>
 </tr>
 </tbody>
@@ -517,12 +521,12 @@ possibilities are “OpenMP” (OpenMP).</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>incoords</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will be
 converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – The unitcell dimesions for this system; can be either orthogonal or
+<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – The unitcell dimesions for this system; can be either orthogonal or
 triclinic information. The dimensions must be provided in the same
 format as returned by
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span>
 <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; <code class="docutils literal"><span class="pre">&quot;serial&quot;</span></code> is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; <code class="docutils literal"><span class="pre">&quot;serial&quot;</span></code> is always available. Other
 possibilities are <code class="docutils literal"><span class="pre">&quot;OpenMP&quot;</span></code> (OpenMP).</li>
 </ul>
 </td>
@@ -544,6 +548,28 @@ by box.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.distances.calc_angle">
+<code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">calc_angle</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>c</em>, <em>box=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#calc_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.calc_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angle (in degrees) between a, b and c, where b is apex of angle</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>b</strong><strong>, </strong><strong>c</strong> (<em>a</em><em>,</em>) – single coordinate vectors</li>
+<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – simulation box if given periodic boundary conditions will be applied to
+the vectors between atoms</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.18.1.</span></p>
 </div>
 </dd></dl>
 
@@ -578,7 +604,7 @@ by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coord
 <li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must be same length as coord
 arrays and <code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>. Avoids creating the
 array which saves time when the function is called repeatedly. [None]</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -627,18 +653,18 @@ up calculations.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coords1</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – An array of coordinates for one half of the bond (<code class="docutils literal"><span class="pre">dtype</span></code> is
+<li><strong>coords1</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – An array of coordinates for one half of the bond (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>coords2</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – An array of coordinates for the other half of bond (<code class="docutils literal"><span class="pre">dtype</span></code> is
+<li><strong>coords2</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – An array of coordinates for the other half of bond (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – The unitcell dimesions for this system.
+<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – The unitcell dimesions for this system.
 The dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>result</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a><em>, </em><em>optional</em>) – Preallocated result array which must be same length as coord
+<li><strong>result</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a><em>, </em><em>optional</em>) – Preallocated result array which must be same length as coord
 arrays and <code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>. Avoids creating the
 array which saves time when the function is called repeatedly. [None]</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -646,7 +672,7 @@ possibilities are “OpenMP” (OpenMP).</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>bondlengths</strong> – The length between each pair in coords1 and coords2</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)">array</a></p>
 </td>
 </tr>
 </tbody>
@@ -659,6 +685,27 @@ possibilities are “OpenMP” (OpenMP).</li>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.distances.calc_dihedral">
+<code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">calc_dihedral</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>c</em>, <em>d</em>, <em>box=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#calc_dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.calc_dihedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dihedral angle (in degrees) between planes (a, b, c) and (b, c, d)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>b</strong><strong>, </strong><strong>c</strong><strong>, </strong><strong>d</strong> (<em>a</em><em>,</em>) – single coordinate vectors</li>
+<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – simulation box, if given periodic boundary conditions will be applied</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.18.1.</span></p>
 </div>
 </dd></dl>
 
@@ -690,22 +737,22 @@ image:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coords1</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – Coordinate array of 1st atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
+<li><strong>coords1</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – Coordinate array of 1st atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
 be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>coords2</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – Coordinate array of 2nd atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
+<li><strong>coords2</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – Coordinate array of 2nd atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
 be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>coords3</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – Coordinate array of 3rd atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
+<li><strong>coords3</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – Coordinate array of 3rd atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
 be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>coords4</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – Coordinate array of 4th atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
+<li><strong>coords4</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – Coordinate array of 4th atom in dihedrals (<code class="docutils literal"><span class="pre">dtype</span></code> is arbitrary, will
 be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – The unitcell dimesions for this system.
+<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – The unitcell dimesions for this system.
 The dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>result</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a><em>, </em><em>optional</em>) – Preallocated result array which must be same length as coord
+<li><strong>result</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a><em>, </em><em>optional</em>) – Preallocated result array which must be same length as coord
 arrays and <code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>. Avoids creating the
 array which saves time when the function is called repeatedly. [None]</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -713,7 +760,7 @@ possibilities are “OpenMP” (OpenMP).</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>angles</strong> – A numpy.array of angles in radians.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)">array</a></p>
 </td>
 </tr>
 </tbody>
@@ -732,6 +779,27 @@ possibilities are “OpenMP” (OpenMP).</li>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.distances.calc_distance">
+<code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">calc_distance</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>box=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#calc_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.calc_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distance between a and b</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>b</strong> (<em>a</em><em>,</em>) – single coordinate vectors</li>
+<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – simulation box, if given periodic boundary conditions will be applied</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.18.1.</span></p>
 </div>
 </dd></dl>
 
@@ -755,7 +823,7 @@ filled. This can speed up calculations.</p>
 will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
 <li><strong>configuration</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – Configuration coordinate array of shape <code class="docutils literal"><span class="pre">(m,</span> <span class="pre">3)</span></code> (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
+<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
 applied. The dimensions must be provided in the same format as returned
 by by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
@@ -763,7 +831,7 @@ by by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.co
 shape <code class="docutils literal"><span class="pre">(len(ref),</span> <span class="pre">len(conf))</span></code> and <code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>.
 Avoids creating the array which saves time when the function
 is called repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -807,14 +875,14 @@ is filled. This can speed up calculations.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a>) – Reference coordinate array with <code class="docutils literal"><span class="pre">N=len(ref)</span></code> coordinates (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
+<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Dimensions of the cell; if provided, the minimum image convention is
 applied. The dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
 <li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><em>numpy.ndarray</em></a><em>(</em><em>dtype=numpy.float64</em><em>)</em><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal"><span class="pre">(N*(N-1)/2,)</span></code> and
 dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code>. Avoids creating the array which saves time when
 the function is called repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
@@ -859,27 +927,31 @@ copies of the coordinate array.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>inputcoords</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – A (3,) coordinate or (n x 3) array of coordinates (<code class="docutils literal"><span class="pre">dtype</span></code> is
+<li><strong>inputcoords</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – A (3,) coordinate or (n x 3) array of coordinates (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – The unitcell dimesions for this system.
+<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – The unitcell dimesions for this system.
 The dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>outcoords</strong> (<em>array</em>) – A n x 3 array of fractional coordiantes.</li>
-<li><em>.. versionchanged:: 0.13.0</em> – Added <em>backend</em> keyword.</li>
-<li><em>.. versionchanged:: 0.19.0</em> – Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</li>
-</ul>
-</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outcoords</strong> – A n x 3 array of fractional coordiantes.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)">array</a></p>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -893,21 +965,21 @@ possibilities are “OpenMP” (OpenMP).</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>inputcoords</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – A (3,) coordinate or (n x 3) array of coordinates (<code class="docutils literal"><span class="pre">dtype</span></code> is
+<li><strong>inputcoords</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – A (3,) coordinate or (n x 3) array of coordinates (<code class="docutils literal"><span class="pre">dtype</span></code> is
 arbitrary, will be converted to <code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code> internally)</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) – The unitcell dimesions for this system.
+<li><strong>box</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – The unitcell dimesions for this system.
 The dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>: <code class="docutils literal"><span class="pre">[lx,</span>
 <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
-<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Select the type of acceleration; “serial” is always available. Other
+<li><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Select the type of acceleration; “serial” is always available. Other
 possibilities are “OpenMP” (OpenMP).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outcoords</strong> – A n x 3 array of fracional coordiantes.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outcoords</strong> – A n x 3 array of fractional coordiantes.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)">array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)">array</a></p>
 </td>
 </tr>
 </tbody>

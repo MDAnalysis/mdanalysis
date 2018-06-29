@@ -190,21 +190,21 @@ principal components.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a><em>, </em><em>optional</em>) – A valid selection statement for choosing a subset of atoms from
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/string.html#module-string" title="(in Python v3.7)"><em>string</em></a><em>, </em><em>optional</em>) – A valid selection statement for choosing a subset of atoms from
 the atomgroup.</li>
 <li><strong>align</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, the trajectory will be aligned to a reference
 structure.</li>
 <li><strong>mean</strong> (<em>MDAnalysis atomgroup</em><em>, </em><em>optional</em>) – An optional reference structure to be used as the mean of the
 covariance matrix.</li>
-<li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – The number of principal components to be saved, default saves
+<li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – The number of principal components to be saved, default saves
 all principal components, Default: None</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to use for generation
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to use for generation
 of covariance matrix, Default: None</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – Last frame of trajectory to use for generation
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Last frame of trajectory to use for generation
 of covariance matrix, Default: None</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – Step between frames of trajectory to use for generation
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Step between frames of trajectory to use for generation
 of covariance matrix, Default: None</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal"><span class="pre">True</span></code>; the
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal"><span class="pre">True</span></code>; the
 default is <code class="docutils literal"><span class="pre">False</span></code>.</li>
 </ul>
 </td>
@@ -226,8 +226,8 @@ If you use this function please cite <a class="reference internal" href="#berkhe
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pca_space</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a><em>, </em><em>shape</em><em> (</em><em>number of frames</em><em>, </em><em>number of components</em><em>)</em>) – The PCA space to be analyzed.</li>
-<li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The index of the pca_component projectection to be analyzed.</li>
+<li><strong>pca_space</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a><em>, </em><em>shape</em><em> (</em><em>number of frames</em><em>, </em><em>number of components</em><em>)</em>) – The PCA space to be analyzed.</li>
+<li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The index of the pca_component projectection to be analyzed.</li>
 </ul>
 </td>
 </tr>

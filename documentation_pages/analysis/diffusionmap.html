@@ -239,7 +239,7 @@ computational cost of eigenvalue decomposition
 scales at O(N^3) where N is the number of frames.
 Cost can be reduced by increasing step interval or specifying a
 start and stop.</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>optional</em>) – Any valid selection string for
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Any valid selection string for
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></code></a>
 This selection of atoms is used to calculate the RMSD between
 different frames. Water should be excluded.</li>
@@ -249,15 +249,15 @@ equal length, and that the function should have weights as an
 optional argument. Weights give each index value its own weight for
 the metric calculation over the entire arrays. Default: metric is
 set to rms.rmsd().</li>
-<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><em>optional</em>) – Specify a given cutoff for metric values to be considered equal,
+<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – Specify a given cutoff for metric values to be considered equal,
 Default: 1EO-5</li>
-<li><strong>weights</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a><em>, </em><em>optional</em>) – Weights to be given to coordinates for metric calculation</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to analyse, Default: None becomes 0.</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – Frame index to stop analysis. Default: None becomes
+<li><strong>weights</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a><em>, </em><em>optional</em>) – Weights to be given to coordinates for metric calculation</li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to analyse, Default: None becomes 0.</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Frame index to stop analysis. Default: None becomes
 n_frames. Iteration stops <em>before</em> this frame number,
 which means that the trajectory would be read until the end.</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – Step between frames to analyse, Default: None becomes 1.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal"><span class="pre">True</span></code>; the
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Step between frames to analyse, Default: None becomes 1.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal"><span class="pre">True</span></code>; the
 default is <code class="docutils literal"><span class="pre">False</span></code>.</li>
 </ul>
 </td>

@@ -280,11 +280,11 @@ customized <cite>donors</cite> and/or <cite>acceptors</cite>.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
-<li><strong>selection1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for first selection [‘protein’]</li>
-<li><strong>selection2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for second selection [‘not resname SOL’]
+<li><strong>selection1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for first selection [‘protein’]</li>
+<li><strong>selection2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for second selection [‘not resname SOL’]
 This string selects everything except water where water is assumed
 to have a residue name as SOL.</li>
-<li><strong>water_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Selection string for bridging water selection [‘resname SOL’]
+<li><strong>water_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Selection string for bridging water selection [‘resname SOL’]
 The default selection assumes that the water molecules have residue
 name “SOL”. Change it to the appropriate selection for your
 specific force field.</p>
@@ -297,14 +297,14 @@ value for <cite>selection1_type</cite> automatically determines how
 ‘both’ then <cite>selection2</cite> will also contain ‘both’. If <cite>selection1</cite>
 is set to ‘donor’ then <cite>selection2</cite> is ‘acceptor’ (and vice versa).
 [‘both’].</li>
-<li><strong>update_selection1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Update selection 1 at each frame. Setting to <code class="docutils literal"><span class="pre">True</span></code> if the
+<li><strong>update_selection1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Update selection 1 at each frame. Setting to <code class="docutils literal"><span class="pre">True</span></code> if the
 selection is not static. Selection 1 is filtered first to speed up
 performance. Thus, setting to <code class="docutils literal"><span class="pre">True</span></code> is recommended if contact
 surface between selection 1 and selection 2 is constantly
 changing. [<code class="docutils literal"><span class="pre">False</span></code>]</li>
-<li><strong>update_selection2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Similiar to <em>update_selection1</em> but is acted upon selection 2.
+<li><strong>update_selection2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Similiar to <em>update_selection1</em> but is acted upon selection 2.
 [<code class="docutils literal"><span class="pre">False</span></code>]</li>
-<li><strong>update_water_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Update selection of water at each frame. Setting to <code class="docutils literal"><span class="pre">False</span></code> is
+<li><strong>update_water_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Update selection of water at each frame. Setting to <code class="docutils literal"><span class="pre">False</span></code> is
 <strong>only</strong> recommended when the total amount of water molecules in the
 simulation are small and when water molecules remain static across
 the simulation.</p>
@@ -314,15 +314,15 @@ update the water selection and set keyword <cite>filter_first</cite> to
 <code class="docutils literal"><span class="pre">True</span></code> so as to filter out water not residing between the two
 selections. [<code class="docutils literal"><span class="pre">True</span></code>]</p>
 </li>
-<li><strong>filter_first</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Filter the water selection to only include water within 3 *
+<li><strong>filter_first</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Filter the water selection to only include water within 3 *
 <cite>distance</cite> away from <cite>both</cite> selection 1 and selection 2.
 Selection 1 and selection 2 are both filtered to only include atoms
 3 * <cite>distance</cite> away from the other selection. [<code class="docutils literal"><span class="pre">True</span></code>]</li>
-<li><strong>distance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff for hydrogen bonds; only interactions with a H-A
+<li><strong>distance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff for hydrogen bonds; only interactions with a H-A
 distance &lt;= <cite>distance</cite> (and the appropriate D-H-A angle, see
 <cite>angle</cite>) are recorded. (Note: <cite>distance_type</cite> can change this to
 the D-A distance.) [3.0]</li>
-<li><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
+<li><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
 180º.  A hydrogen bond is only recorded if the D-H-A angle is
 &gt;=  <cite>angle</cite>. The default of 120º also finds fairly non-specific
 hydrogen interactions and a possibly better value is 150º. [120.0]</li>
@@ -335,22 +335,22 @@ hydrogen interactions and a possibly better value is 150º. [120.0]</li>
 <li><strong>acceptors</strong> (<em>sequence</em><em> (</em><em>optional</em><em>)</em>) – Extra H acceptor atom types (in addition to those in
 <code class="xref py py-attr docutils literal"><span class="pre">DEFAULT_ACCEPTORS</span></code>), must be a
 sequence.</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame-index for analysis, <code class="docutils literal"><span class="pre">None</span></code> is the first one, 0.
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame-index for analysis, <code class="docutils literal"><span class="pre">None</span></code> is the first one, 0.
 <cite>start</cite> and <cite>stop</cite> are 0-based frame indices and are used to slice
 the trajectory (if supported) [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – last trajectory frame for analysis, <code class="docutils literal"><span class="pre">None</span></code> is the last one
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – last trajectory frame for analysis, <code class="docutils literal"><span class="pre">None</span></code> is the last one
 [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – read every <cite>step</cite> between <cite>start</cite> (included) and <cite>stop</cite> (excluded),
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – read every <cite>step</cite> between <cite>start</cite> (included) and <cite>stop</cite> (excluded),
 <code class="docutils literal"><span class="pre">None</span></code> selects 1. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
 <li><strong>distance_type</strong> (<em>{&quot;hydrogen&quot;</em><em>, </em><em>&quot;heavy&quot;}</em><em> (</em><em>optional</em><em>)</em>) – Measure hydrogen bond lengths between donor and acceptor heavy
 attoms (“heavy”) or between donor hydrogen and acceptor heavy
 atom (“hydrogen”). If using “heavy” then one should set the
 <em>distance</em> cutoff to a higher value such as 3.5 Å. [“hydrogen”]</li>
-<li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – If set to <code class="docutils literal"><span class="pre">True</span></code> enables per-frame debug logging. This is disabled
+<li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – If set to <code class="docutils literal"><span class="pre">True</span></code> enables per-frame debug logging. This is disabled
 by default because it generates a very large amount of output in
 the log file. (Note that a logger must have been started to see
 the output, e.g. using <a class="reference internal" href="../lib/log.html#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.start_logging()</span></code></a>.)</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Toggle progress output. (Can also be given as keyword argument to
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Toggle progress output. (Can also be given as keyword argument to
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.run" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.run"><code class="xref py py-meth docutils literal"><span class="pre">run()</span></code></a>.)</li>
 </ul>
 </td>
@@ -457,9 +457,9 @@ format).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – toggle progress meter output
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – toggle progress meter output
 <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressMeter" title="MDAnalysis.lib.log.ProgressMeter"><code class="xref py py-class docutils literal"><span class="pre">ProgressMeter</span></code></a> [<code class="docutils literal"><span class="pre">True</span></code>]</li>
-<li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – enable detailed logging of debugging information; this can create
+<li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – enable detailed logging of debugging information; this can create
 <em>very big</em> log files so it is disabled (<code class="docutils literal"><span class="pre">False</span></code>) by default;
 setting <cite>debug</cite> toggles the debug status for
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis"><code class="xref py py-class docutils literal"><span class="pre">WaterBridgeAnalysis</span></code></a>, namely the value of
@@ -488,7 +488,7 @@ setting <cite>debug</cite> toggles the debug status for
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – path to the filename</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – path to the filename</td>
 </tr>
 </tbody>
 </table>

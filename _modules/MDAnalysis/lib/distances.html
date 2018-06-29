@@ -461,7 +461,7 @@
 <span class="sd">        The dimensions must be provided in the same format as returned</span>
 <span class="sd">        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,</span>
 <span class="sd">        ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    backend : str</span>
+<span class="sd">    backend : str, optional</span>
 <span class="sd">        Select the type of acceleration; &quot;serial&quot; is always available. Other</span>
 <span class="sd">        possibilities are &quot;OpenMP&quot; (OpenMP).</span>
 
@@ -469,6 +469,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    outcoords : array</span>
 <span class="sd">        A n x 3 array of fractional coordiantes.</span>
+
 
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       Added *backend* keyword.</span>
@@ -523,14 +524,14 @@
 <span class="sd">        The dimensions must be provided in the same format as returned</span>
 <span class="sd">        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,</span>
 <span class="sd">        ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    backend : str</span>
+<span class="sd">    backend : str, optional</span>
 <span class="sd">        Select the type of acceleration; &quot;serial&quot; is always available. Other</span>
 <span class="sd">        possibilities are &quot;OpenMP&quot; (OpenMP).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    outcoords : array</span>
-<span class="sd">        A n x 3 array of fracional coordiantes.</span>
+<span class="sd">        A n x 3 array of fractional coordiantes.</span>
 
 
 <span class="sd">    .. versionchanged:: 0.13.0</span>
@@ -927,6 +928,56 @@
                <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">coords</span></div>
+
+
+<div class="viewcode-block" id="calc_distance"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_distance">[docs]</a><span class="k">def</span> <span class="nf">calc_distance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Distance between a and b</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a, b : numpy.ndarray</span>
+<span class="sd">        single coordinate vectors</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
+<span class="sd">        simulation box, if given periodic boundary conditions will be applied</span>
+
+
+<span class="sd">    .. versionadded:: 0.18.1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">b</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="calc_angle"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_angle">[docs]</a><span class="k">def</span> <span class="nf">calc_angle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Angle (in degrees) between a, b and c, where b is apex of angle</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a, b, c : numpy.ndarray</span>
+<span class="sd">        single coordinate vectors</span>
+<span class="sd">    box : numpy.ndarray</span>
+<span class="sd">        simulation box if given periodic boundary conditions will be applied to</span>
+<span class="sd">        the vectors between atoms</span>
+
+
+<span class="sd">    .. versionadded:: 0.18.1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">calc_angles</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">b</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">c</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="calc_dihedral"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_dihedral">[docs]</a><span class="k">def</span> <span class="nf">calc_dihedral</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dihedral angle (in degrees) between planes (a, b, c) and (b, c, d)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a, b, c, d : numpy.ndarray</span>
+<span class="sd">        single coordinate vectors</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
+<span class="sd">        simulation box, if given periodic boundary conditions will be applied</span>
+
+
+<span class="sd">    .. versionadded:: 0.18.1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span>
+        <span class="n">calc_dihedrals</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">b</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">c</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">box</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span></div>
 </pre></div>
 
           </div>

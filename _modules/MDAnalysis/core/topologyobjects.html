@@ -239,19 +239,17 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised Atom&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Bond.length"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond.length">[docs]</a>    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Bond.length"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond.length">[docs]</a>    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Length of the bond.</span>
 
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Added pbc keyword</span>
+<span class="sd">        .. versionchanged:: 0.18.1</span>
+<span class="sd">           Changed default of pbc to True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
-            <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span>
-            <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">self_distance_array</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">]),</span>
-                <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">mdamath</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">)</span></div>
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span></div>
 
     <span class="n">value</span> <span class="o">=</span> <span class="n">length</span></div>
 
@@ -268,7 +266,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">btype</span> <span class="o">=</span> <span class="s1">&#39;angle&#39;</span>
 
-<div class="viewcode-block" id="Angle.angle"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Angle.angle">[docs]</a>    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Angle.angle"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Angle.angle">[docs]</a>    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the angle in degrees of this Angle.</span>
 
 <span class="sd">        Angle between atoms 0 and 2 with apex at 1::</span>
@@ -286,10 +284,13 @@
 <span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        .. versionchanged:: 0.17.0</span>
 <span class="sd">           Fixed angles close to 180 giving NaN</span>
+<span class="sd">        .. versionchanged:: 0.18.1</span>
+<span class="sd">           Added pbc keyword, default True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span></div>
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_angle</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span></div>
 
     <span class="n">value</span> <span class="o">=</span> <span class="n">angle</span></div>
 
@@ -313,7 +314,7 @@
     <span class="c1"># http://cbio.bmt.tue.nl/pumma/uploads/Theory/dihedral.png</span>
     <span class="n">btype</span> <span class="o">=</span> <span class="s1">&#39;dihedral&#39;</span>
 
-<div class="viewcode-block" id="Dihedral.dihedral"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Dihedral.dihedral">[docs]</a>    <span class="k">def</span> <span class="nf">dihedral</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Dihedral.dihedral"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Dihedral.dihedral">[docs]</a>    <span class="k">def</span> <span class="nf">dihedral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculate the dihedral angle in degrees.</span>
 
 <span class="sd">        Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle</span>
@@ -332,12 +333,14 @@
 <span class="sd">        4 decimals (and is only tested to 3 decimals).</span>
 
 <span class="sd">        .. versionadded:: 0.9.0</span>
+<span class="sd">        .. versionchanged:: 0.18.1</span>
+<span class="sd">           Added pbc keyword, default True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="n">ab</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">B</span><span class="o">.</span><span class="n">position</span>
-        <span class="n">bc</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span>
-        <span class="n">cd</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">position</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">dihedral</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">))</span></div>
+
+        <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_dihedral</span><span class="p">(</span>
+            <span class="n">A</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span></div>
 
     <span class="n">value</span> <span class="o">=</span> <span class="n">dihedral</span></div>
 

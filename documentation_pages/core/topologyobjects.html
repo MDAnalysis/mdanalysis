@@ -79,7 +79,7 @@ Atom 2 is the apex of the angle</p>
 </table>
 <dl class="method">
 <dt id="MDAnalysis.core.topologyobjects.Angle.angle">
-<code class="descname">angle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyobjects.html#Angle.angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Angle.angle" title="Permalink to this definition">¶</a></dt>
+<code class="descname">angle</code><span class="sig-paren">(</span><em>pbc=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyobjects.html#Angle.angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Angle.angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the angle in degrees of this Angle.</p>
 <p>Angle between atoms 0 and 2 with apex at 1:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>   <span class="mi">2</span>
@@ -95,15 +95,18 @@ Atom 2 is the apex of the angle</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.0.</span></p>
 </div>
-<div class="last versionchanged">
+<div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.17.0: </span>Fixed angles close to 180 giving NaN</p>
+</div>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.1: </span>Added pbc keyword, default True</p>
 </div>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyobjects.Angle.value">
-<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Angle.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><em>pbc=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Angle.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the angle in degrees of this Angle.</p>
 <p>Angle between atoms 0 and 2 with apex at 1:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>   <span class="mi">2</span>
@@ -119,8 +122,11 @@ Atom 2 is the apex of the angle</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.0.</span></p>
 </div>
-<div class="last versionchanged">
+<div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.17.0: </span>Fixed angles close to 180 giving NaN</p>
+</div>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.1: </span>Added pbc keyword, default True</p>
 </div>
 </div>
 </dd></dl>
@@ -162,10 +168,13 @@ bond was guessed.</p>
 </table>
 <dl class="method">
 <dt id="MDAnalysis.core.topologyobjects.Bond.length">
-<code class="descname">length</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyobjects.html#Bond.length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Bond.length" title="Permalink to this definition">¶</a></dt>
+<code class="descname">length</code><span class="sig-paren">(</span><em>pbc=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyobjects.html#Bond.length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Bond.length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Length of the bond.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Added pbc keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.1: </span>Changed default of pbc to True</p>
 </div>
 </dd></dl>
 
@@ -188,10 +197,13 @@ bond was guessed.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyobjects.Bond.value">
-<code class="descname">value</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Bond.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><em>pbc=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Bond.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Length of the bond.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Added pbc keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.1: </span>Changed default of pbc to True</p>
 </div>
 </dd></dl>
 
@@ -231,7 +243,7 @@ and stores atoms in <code class="xref py py-attr docutils literal"><span class="
 </table>
 <dl class="method">
 <dt id="MDAnalysis.core.topologyobjects.Dihedral.dihedral">
-<code class="descname">dihedral</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyobjects.html#Dihedral.dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Dihedral.dihedral" title="Permalink to this definition">¶</a></dt>
+<code class="descname">dihedral</code><span class="sig-paren">(</span><em>pbc=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyobjects.html#Dihedral.dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Dihedral.dihedral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the dihedral angle in degrees.</p>
 <p>Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
 between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
@@ -246,15 +258,18 @@ between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
 <p class="first admonition-title">Note</p>
 <p>The numerical precision is typically not better than
 4 decimals (and is only tested to 3 decimals).</p>
-<div class="last versionadded">
+<div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.1: </span>Added pbc keyword, default True</p>
 </div>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyobjects.Dihedral.value">
-<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Dihedral.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><em>pbc=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Dihedral.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the dihedral angle in degrees.</p>
 <p>Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
 between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
@@ -269,8 +284,11 @@ between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
 <p class="first admonition-title">Note</p>
 <p>The numerical precision is typically not better than
 4 decimals (and is only tested to 3 decimals).</p>
-<div class="last versionadded">
+<div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.1: </span>Added pbc keyword, default True</p>
 </div>
 </div>
 </dd></dl>
@@ -450,7 +468,7 @@ between atoms 1 and 2 and a bond between atoms 2 &amp; 3</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>result</strong> (<em>array_like</em>) – allows a predefined results array to be used, note that this
 will be overwritten</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – apply periodic boundary conditions when calculating angles
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – apply periodic boundary conditions when calculating angles
 [<code class="docutils literal"><span class="pre">False</span></code>] this is important when connecting vectors between
 atoms might require minimum image convention</li>
 </ul>
@@ -503,7 +521,7 @@ the AtomGroup which is passed.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>ag</strong> (<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The <cite>:class:~MDAnalysis.core.groups.AtomGroup</cite> to intersect
 with.</li>
-<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Only retrieve bonds which are completely contained within the
+<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Only retrieve bonds which are completely contained within the
 AtomGroup. [<code class="docutils literal"><span class="pre">False</span></code>]</li>
 </ul>
 </td>
@@ -554,7 +572,7 @@ group.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>result</strong> (<em>array_like</em>) – allows a predefined results array to be used, note that this
 will be overwritten</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – apply periodic boundary conditions when calculating angles
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – apply periodic boundary conditions when calculating angles
 [<code class="docutils literal"><span class="pre">False</span></code>] this is important when connecting vectors between
 atoms might require minimum image convention</li>
 </ul>

@@ -377,7 +377,7 @@ I/O code can be written in C or python or a mixture thereof.</p>
 <li>2011-04-20 added volume to Timestep</li>
 <li>2012-02-11 added _velocities to Timestep</li>
 <li>2012-05-24 multiframe keyword to distinguish trajectory from single frame writers</li>
-<li>2012-06-04 missing implementations of Reader.__getitem__ should raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a></li>
+<li>2012-06-04 missing implementations of Reader.__getitem__ should raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a></li>
 <li>2013-08-02 Readers/Writers must conform to the Python <a class="reference external" href="http://docs.python.org/2/reference/datamodel.html#context-managers">Context Manager</a> API</li>
 <li>2015-01-15 Timestep._init_unitcell() method added</li>
 <li>2015-06-11 Reworked Timestep init.  Base Timestep now does Vels &amp; Forces</li>
@@ -557,7 +557,7 @@ required.</dd>
 <dt><code class="docutils literal"><span class="pre">close()</span></code></dt>
 <dd>close the file and cease I/O</dd>
 <dt><code class="docutils literal"><span class="pre">next()</span></code></dt>
-<dd>advance to next time step or raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code></a> when moving
+<dd>advance to next time step or raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code></a> when moving
 past the last frame</dd>
 <dt><code class="docutils literal"><span class="pre">rewind()</span></code></dt>
 <dd>reposition to first frame</dd>
@@ -609,12 +609,12 @@ trajectory reader and if it can implement random access to frames. In many
 cases this is not easily (or reliably) implementable and thus one is
 restricted to sequential iteration.</p>
 <p class="last">If the Reader is not able to provide random access to frames then it
-should raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> on indexing. It is possible to partially
+should raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> on indexing. It is possible to partially
 implement <code class="docutils literal"><span class="pre">__getitem__</span></code> (as done on
 <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.ProtoReader.__getitem__</span></code> where slicing the
 full trajectory is equivalent to
 <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.ProtoReader.__iter__</span></code> (which is always
-implemented) and other slices raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a>.</p>
+implemented) and other slices raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a>.</p>
 </dd>
 <dt><code class="docutils literal"><span class="pre">parse_n_atoms(filename,</span> <span class="pre">**kwargs)</span></code></dt>
 <dd>Provide the number of atoms in the trajectory file, allowing the Reader
@@ -624,7 +624,7 @@ Must be implemented as either a staticmethod or a classmethod.</dd>
 <dd><p class="first">returns a <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.WriterBase" title="MDAnalysis.coordinates.base.WriterBase"><code class="xref py py-class docutils literal"><span class="pre">WriterBase</span></code></a> which is set up with
 the same parameters as the trajectory that is being read (e.g. time step,
 length etc), which facilitates copying and simple on-the-fly manipulation.</p>
-<p>If no Writer is defined then a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></code></a> is raised.</p>
+<p>If no Writer is defined then a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></code></a> is raised.</p>
 <p class="last">The <em>kwargs</em> can be used to customize the Writer as they are typically
 passed through to the init method of the Writer, with sensible defaults
 filled in; the actual keyword arguments depend on the Writer.</p>

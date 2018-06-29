@@ -66,15 +66,15 @@ trajectories in <em>little-endian</em> byte order.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The total number of atoms this Timestep describes</li>
-<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal"><span class="pre">True</span></code>]</li>
-<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal"><span class="pre">False</span></code>]</li>
-<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal"><span class="pre">False</span></code>]</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The total number of atoms this Timestep describes</li>
+<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal"><span class="pre">True</span></code>]</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal"><span class="pre">False</span></code>]</li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal"><span class="pre">False</span></code>]</li>
 <li><strong>reader</strong> (<em>Reader</em><em> (</em><em>optional</em><em>)</em>) – A weak reference to the owning Reader.  Used for
 when attributes require trajectory manipulation (e.g. dt)</li>
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.TRZ.Timestep.time" title="MDAnalysis.coordinates.TRZ.Timestep.time"><code class="xref py py-attr docutils literal"><span class="pre">time</span></code></a>
+<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.TRZ.Timestep.time" title="MDAnalysis.coordinates.TRZ.Timestep.time"><code class="xref py py-attr docutils literal"><span class="pre">time</span></code></a>
 is set, then <cite>dt</cite> will be ignored.</li>
-<li><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</li>
+<li><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</li>
 </ul>
 </td>
 </tr>
@@ -175,9 +175,9 @@ Now passes a weakref of self to ts (ts._reader).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>trzfilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – name of input file</li>
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – number of atoms in trajectory, must be taken from topology file!</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – converts units to MDAnalysis defaults</li>
+<li><strong>trzfilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of input file</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of atoms in trajectory, must be taken from topology file!</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – converts units to MDAnalysis defaults</li>
 </ul>
 </td>
 </tr>
@@ -235,11 +235,11 @@ Now passes a weakref of self to ts (ts._reader).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – name of output file</li>
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – number of atoms in trajectory</li>
-<li><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – title of the trajectory; the title must be 80 characters or
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of output file</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of atoms in trajectory</li>
+<li><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – title of the trajectory; the title must be 80 characters or
 shorter, a longer title raises a ValueError exception.</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; <code class="docutils literal"><span class="pre">None</span></code> selects
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; <code class="docutils literal"><span class="pre">None</span></code> selects
 the value of <code class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></code> [‘convert_lengths’].
 (see <a class="reference internal" href="../core/init.html#flags-label"><span class="std std-ref">Flags</span></a>)</li>
 </ul>
@@ -283,9 +283,9 @@ Now passes a weakref of self to ts (ts._reader).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>trzfilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – name of input file</li>
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – number of atoms in trajectory, must be taken from topology file!</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – converts units to MDAnalysis defaults</li>
+<li><strong>trzfilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of input file</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of atoms in trajectory, must be taken from topology file!</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – converts units to MDAnalysis defaults</li>
 </ul>
 </td>
 </tr>
@@ -343,11 +343,11 @@ Now passes a weakref of self to ts (ts._reader).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – name of output file</li>
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – number of atoms in trajectory</li>
-<li><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – title of the trajectory; the title must be 80 characters or
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of output file</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of atoms in trajectory</li>
+<li><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – title of the trajectory; the title must be 80 characters or
 shorter, a longer title raises a ValueError exception.</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; <code class="docutils literal"><span class="pre">None</span></code> selects
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; <code class="docutils literal"><span class="pre">None</span></code> selects
 the value of <code class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></code> [‘convert_lengths’].
 (see <a class="reference internal" href="../core/init.html#flags-label"><span class="std std-ref">Flags</span></a>)</li>
 </ul>
@@ -373,15 +373,15 @@ the value of <code class="xref py py-data docutils literal"><span class="pre">MD
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The total number of atoms this Timestep describes</li>
-<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal"><span class="pre">True</span></code>]</li>
-<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal"><span class="pre">False</span></code>]</li>
-<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal"><span class="pre">False</span></code>]</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The total number of atoms this Timestep describes</li>
+<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal"><span class="pre">True</span></code>]</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal"><span class="pre">False</span></code>]</li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal"><span class="pre">False</span></code>]</li>
 <li><strong>reader</strong> (<em>Reader</em><em> (</em><em>optional</em><em>)</em>) – A weak reference to the owning Reader.  Used for
 when attributes require trajectory manipulation (e.g. dt)</li>
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.TRZ.Timestep.time" title="MDAnalysis.coordinates.TRZ.Timestep.time"><code class="xref py py-attr docutils literal"><span class="pre">time</span></code></a>
+<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.TRZ.Timestep.time" title="MDAnalysis.coordinates.TRZ.Timestep.time"><code class="xref py py-attr docutils literal"><span class="pre">time</span></code></a>
 is set, then <cite>dt</cite> will be ignored.</li>
-<li><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</li>
+<li><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</li>
 </ul>
 </td>
 </tr>

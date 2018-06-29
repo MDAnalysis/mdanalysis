@@ -93,7 +93,7 @@ slice:</p>
 <p>returns an <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> of every second element, corresponding to
 indices 0, 2, and 4.</p>
 <p>It also supports “advanced slicing” when the argument is a
-<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> or a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">list</span></code></a>:</p>
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> or a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">list</span></code></a>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">aslice</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">ag</span><span class="p">[</span><span class="n">aslice</span><span class="p">]</span>
 </pre></div>
@@ -274,7 +274,7 @@ and alternatives.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> is not length 3</td>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> is not length 3</td>
 </tr>
 </tbody>
 </table>
@@ -314,7 +314,7 @@ not affect any code but only speed up calculations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to the primary unit cell
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to the primary unit cell
 before calculation. [<code class="docutils literal"><span class="pre">False</span></code>]</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>corners</strong> – 2x3 array giving corners of bounding box as
@@ -346,7 +346,7 @@ before calculation. [<code class="docutils literal"><span class="pre">False</spa
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> is not length 2</td>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> is not length 2</td>
 </tr>
 </tbody>
 </table>
@@ -365,7 +365,7 @@ before calculation. [<code class="docutils literal"><span class="pre">False</spa
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
 calculation. [<code class="docutils literal"><span class="pre">False</span></code>]</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
@@ -401,9 +401,9 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
+<li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
 identical weights for all atoms of the group.</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal"><span class="pre">'segments'</span></code> or <code class="docutils literal"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to keep the
@@ -463,7 +463,7 @@ number of compounds.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal"><span class="pre">'segments'</span></code> or <code class="docutils literal"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to keep the
@@ -515,7 +515,7 @@ number of compounds.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal"><span class="pre">'segments'</span></code> or <code class="docutils literal"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to keep the
@@ -636,7 +636,7 @@ duplicate elements</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> is not length 4</td>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> is not length 4</td>
 </tr>
 </tbody>
 </table>
@@ -682,14 +682,14 @@ contain <a class="reference internal" href="../coordinates/base.html#MDAnalysis.
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – One or more topology attributes to group components by.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – One or more topology attributes to group components by.
 Single arguments are passed as a string. Multiple arguments
 are passed as a list.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique values of the multiple combinations of topology attributes
 as keys, Groups as values.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -732,7 +732,7 @@ the underlying <a class="reference internal" href="#MDAnalysis.core.groups.AtomG
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a><em>, </em><em>optional</em>) – Dict relating atom types: vdw radii</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a><em>, </em><em>optional</em>) – Dict relating atom types: vdw radii</td>
 </tr>
 </tbody>
 </table>
@@ -754,7 +754,7 @@ the underlying <a class="reference internal" href="#MDAnalysis.core.groups.AtomG
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> is not length 4</td>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> is not length 4</td>
 </tr>
 </tbody>
 </table>
@@ -813,7 +813,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a strict subset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -834,7 +834,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a strict superset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -855,7 +855,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if the two Groups do not have common elements</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -877,7 +877,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a subset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -898,7 +898,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a subset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -993,7 +993,7 @@ Cell dimensions must be in an identical to format to those returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>,
 <code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. If <code class="docutils literal"><span class="pre">None</span></code>, uses these
 timestep dimensions.</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – <code class="docutils literal"><span class="pre">True</span></code> to change coordinates in place.</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – <code class="docutils literal"><span class="pre">True</span></code> to change coordinates in place.</li>
 </ul>
 </td>
 </tr>
@@ -1122,7 +1122,7 @@ a group <code class="docutils literal"><span class="pre">g</span></code> around 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Rotation angle in degrees.</li>
+<li><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Rotation angle in degrees.</li>
 <li><strong>axis</strong> (<em>array_like</em>) – Rotation axis vector.</li>
 <li><strong>point</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Center of rotation. If <code class="docutils literal"><span class="pre">None</span></code> then the center of geometry of this
 group is used.</li>
@@ -1172,7 +1172,7 @@ duplicates, which can happen with complicated selections).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> – If the arbitrary groups passed are not of type
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> – If the arbitrary groups passed are not of type
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a></td>
 </tr>
 </tbody>
@@ -1432,7 +1432,7 @@ the <cite>updating</cite> argument.</p>
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.split">
 <code class="descname">split</code><span class="sig-paren">(</span><em>level</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.split" title="Permalink to this definition">¶</a></dt>
-<dd><p>Split <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> into a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">list</span></code></a> of
+<dd><p>Split <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> into a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">list</span></code></a> of
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroups</span></code></a> by <cite>level</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1763,13 +1763,13 @@ need to write out a trajectory, see <code class="xref py py-mod docutils literal
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">None</span></code>: create TRJNAME_FRAME.FORMAT from filenamefmt [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>file_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>optional</em>) – PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">None</span></code>: create TRJNAME_FRAME.FORMAT from filenamefmt [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+<li><strong>file_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
 Jmol (spt); case-insensitive and can also be supplied as the
 filename extension [PDB]</li>
-<li><strong>filenamefmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>optional</em>) – format string for default filename; use substitution tokens
+<li><strong>filenamefmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – format string for default filename; use substitution tokens
 ‘trjname’ and ‘frame’ [“%(trjname)s_%(frame)d”]</li>
-<li><strong>bonds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>optional</em>) – how to handle bond information, especially relevant for PDBs.
+<li><strong>bonds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – how to handle bond information, especially relevant for PDBs.
 <code class="docutils literal"><span class="pre">&quot;conect&quot;</span></code>: write only the CONECT records defined in the original
 file. <code class="docutils literal"><span class="pre">&quot;all&quot;</span></code>: write out all bonds, both the original defined and
 those guessed by MDAnalysis. <code class="docutils literal"><span class="pre">None</span></code>: do not write out bonds.
@@ -1825,7 +1825,7 @@ alternatives.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to the primary unit cell
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to the primary unit cell
 before calculation. [<code class="docutils literal"><span class="pre">False</span></code>]</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>corners</strong> – 2x3 array giving corners of bounding box as
@@ -1858,7 +1858,7 @@ before calculation. [<code class="docutils literal"><span class="pre">False</spa
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
 calculation. [<code class="docutils literal"><span class="pre">False</span></code>]</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
@@ -1894,9 +1894,9 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
+<li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
 identical weights for all atoms of the group.</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal"><span class="pre">'segments'</span></code> or <code class="docutils literal"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to keep the
@@ -1956,7 +1956,7 @@ number of compounds.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal"><span class="pre">'segments'</span></code> or <code class="docutils literal"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to keep the
@@ -2008,7 +2008,7 @@ number of compounds.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal"><span class="pre">'segments'</span></code> or <code class="docutils literal"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to keep the
@@ -2134,14 +2134,14 @@ duplicate elements</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – One or more topology attributes to group components by.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – One or more topology attributes to group components by.
 Single arguments are passed as a string. Multiple arguments
 are passed as a list.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique values of the multiple combinations of topology attributes
 as keys, Groups as values.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -2225,7 +2225,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a strict subset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -2246,7 +2246,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a strict superset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -2267,7 +2267,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if the two Groups do not have common elements</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -2289,7 +2289,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a subset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -2310,7 +2310,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a subset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -2405,7 +2405,7 @@ Cell dimensions must be in an identical to format to those returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>,
 <code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. If <code class="docutils literal"><span class="pre">None</span></code>, uses these
 timestep dimensions.</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – <code class="docutils literal"><span class="pre">True</span></code> to change coordinates in place.</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – <code class="docutils literal"><span class="pre">True</span></code> to change coordinates in place.</li>
 </ul>
 </td>
 </tr>
@@ -2509,7 +2509,7 @@ a group <code class="docutils literal"><span class="pre">g</span></code> around 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Rotation angle in degrees.</li>
+<li><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Rotation angle in degrees.</li>
 <li><strong>axis</strong> (<em>array_like</em>) – Rotation axis vector.</li>
 <li><strong>point</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Center of rotation. If <code class="docutils literal"><span class="pre">None</span></code> then the center of geometry of this
 group is used.</li>
@@ -2851,7 +2851,7 @@ Duplicates are <em>not</em> removed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to the primary unit cell
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to the primary unit cell
 before calculation. [<code class="docutils literal"><span class="pre">False</span></code>]</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>corners</strong> – 2x3 array giving corners of bounding box as
@@ -2884,7 +2884,7 @@ before calculation. [<code class="docutils literal"><span class="pre">False</spa
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
 calculation. [<code class="docutils literal"><span class="pre">False</span></code>]</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
@@ -2920,9 +2920,9 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
+<li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
 identical weights for all atoms of the group.</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal"><span class="pre">'segments'</span></code> or <code class="docutils literal"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to keep the
@@ -2982,7 +2982,7 @@ number of compounds.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal"><span class="pre">'segments'</span></code> or <code class="docutils literal"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to keep the
@@ -3034,7 +3034,7 @@ number of compounds.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal"><span class="pre">'segments'</span></code> or <code class="docutils literal"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> to keep the
@@ -3160,14 +3160,14 @@ duplicate elements</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – One or more topology attributes to group components by.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topattrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – One or more topology attributes to group components by.
 Single arguments are passed as a string. Multiple arguments
 are passed as a list.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique values of the multiple combinations of topology attributes
 as keys, Groups as values.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -3251,7 +3251,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a strict subset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -3272,7 +3272,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a strict superset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -3293,7 +3293,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if the two Groups do not have common elements</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -3315,7 +3315,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a subset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -3336,7 +3336,7 @@ which are within 4.0A of two segments:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if this Group is a subset of the other one</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -3432,7 +3432,7 @@ Cell dimensions must be in an identical to format to those returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>,
 <code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. If <code class="docutils literal"><span class="pre">None</span></code>, uses these
 timestep dimensions.</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – <code class="docutils literal"><span class="pre">True</span></code> to change coordinates in place.</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – <code class="docutils literal"><span class="pre">True</span></code> to change coordinates in place.</li>
 </ul>
 </td>
 </tr>
@@ -3528,7 +3528,7 @@ a group <code class="docutils literal"><span class="pre">g</span></code> around 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Rotation angle in degrees.</li>
+<li><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Rotation angle in degrees.</li>
 <li><strong>axis</strong> (<em>array_like</em>) – Rotation axis vector.</li>
 <li><strong>point</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Center of rotation. If <code class="docutils literal"><span class="pre">None</span></code> then the center of geometry of this
 group is used.</li>
@@ -3937,7 +3937,7 @@ erroneous value.</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> if the group’s selection is up-to-date, <code class="docutils literal"><span class="pre">False</span></code>
 otherwise.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
