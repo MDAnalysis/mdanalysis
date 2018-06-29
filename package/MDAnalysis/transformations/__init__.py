@@ -22,8 +22,8 @@
 
 
 """\
-Trajectory transformations  --- :mod:`MDAnalysis.transformations`
-=================================================================
+Trajectory transformations --- :mod:`MDAnalysis.transformations`
+================================================================
 
 The transformations submodule contains a collection of functions to modify the 
 trajectory. Coordinate transformations, such as PBC corrections and molecule fitting
@@ -39,6 +39,8 @@ In addition to the specific arguments that each transformation can take, they al
 contain a wrapped function that takes a `Timestep` object as argument. 
 So, a transformation can be roughly defined as follows:
 
+.. code-block:: python
+
     def transformations(*args,**kwargs):
         # do some things
             def wrapped(ts):
@@ -48,23 +50,22 @@ So, a transformation can be roughly defined as follows:
             return wrapped
 
 
-See `MDAnalysis.transformations.translate` for a simple example.
-
-Currently implemented transformations are:
-    
-    - translate: translate the coordinates of a given trajectory frame by a given vector.
-    
+See :func:`MDAnalysis.transformations.translate` for a simple example.    
     
 
 Examples
 --------
 
 e.g. translate the coordinates of a frame:
-    
+
+.. code-block:: python
+
     u = MDAnalysis.Universe(topology, trajectory)
     new_ts = MDAnalysis.transformations.translate([1,1,1])(u.trajectory.ts)
 
 e.g. create a workflow and adding it to the trajectory:
+
+.. code-block:: python
 
     u = MDAnalysis.Universe(topology, trajectory)
     workflow = [MDAnalysis.transformations.translate([1,1,1]), 
@@ -72,14 +73,16 @@ e.g. create a workflow and adding it to the trajectory:
     u.trajetory.add_transformations(*workflow)
 
 e.g. giving a workflow as a keyword argument when defining the universe:
+
+.. code-block:: python
     
     workflow = [MDAnalysis.transformations.translate([1,1,1]), 
                 MDAnalysis.transformations.translate([1,2,3])]
     u = MDAnalysis.Universe(topology, trajectory, transformations = *workflow)
     
-
     
 """
+
 from __future__ import absolute_import
 
 from .pbc import unwrap

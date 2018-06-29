@@ -23,13 +23,14 @@
 from __future__ import absolute_import
 import pytest
 import numpy as np
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 
-def test_transform_StoR_pass():
+@pytest.mark.parametrize('coord_dtype', (np.float32, np.float64))
+def test_transform_StoR_pass(coord_dtype):
     box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
-    s = np.array([[0.5, -0.1, 0.5]], dtype=np.float32)
+    s = np.array([[0.5, -0.1, 0.5]], dtype=coord_dtype)
 
     original_r = np.array([[ 5.75,  0.36066014, 0.75000012]], dtype=np.float32)
 
@@ -37,9 +38,101 @@ def test_transform_StoR_pass():
 
     assert_equal(original_r, test_r)
 
-def test_transform_StoR_fail():
-    box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
-    s = np.array([[0.5, -0.1, 0.5]])
 
-    with pytest.raises(TypeError, match='S must be of type float32'):
-        r = mda.lib.distances.transform_StoR(s, box)
+# different boxlengths to shift a coordinate
+shifts = [
+    ((0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)), # no shifting
+    ((1, 0, 0), (0, 1, 1), (0, 0, 1), (1, 1, 0)), # single box lengths
+    ((-1, 0, 1), (0, -1, 0), (1, 0, 1), (-1, -1, -1)), # negative single
+    ((4, 3, -2), (-2, 2, 2), (-5, 2, 2), (0, 2, 2)),  # multiple boxlengths
+]
+
+
+@pytest.mark.parametrize('shift', shifts)
+@pytest.mark.parametrize('periodic', [True, False])
+def test_calc_distance(shift, periodic):
+    box = np.array([10, 20, 30, 90., 90., 90.], dtype=np.float32)
+
+    coords = np.array([[1, 1, 1], [3, 1, 1]], dtype=np.float32)
+
+    shift1, shift2, _, _ = shift
+
+    coords[0] += shift1 * box[:3]
+    coords[1] += shift2 * box[:3]
+
+    box = box if periodic else None
+    result = mda.lib.distances.calc_distance(coords[0], coords[1], box)
+
+    reference = 2.0 if periodic else np.linalg.norm(coords[0] - coords[1])
+
+    assert_almost_equal(result, reference, decimal=3)
+
+
+@pytest.mark.parametrize('case', [
+    # 90 degree angle
+    (np.array([[1, 1, 1], [1, 2, 1], [2, 2, 1]], dtype=np.float32), 90.),
+    # straight line / 180.
+    (np.array([[1, 1, 1], [1, 2, 1], [1, 3, 1]], dtype=np.float32), 180.),
+    # 45
+    (np.array([[1, 1, 1], [1, 2, 1], [2, 1, 1]], dtype=np.float32), 45.),
+])
+@pytest.mark.parametrize('shift', shifts)
+@pytest.mark.parametrize('periodic', [True, False])
+def test_calc_angle(case, shift, periodic):
+    def manual_angle(x, y, z):
+        return np.rad2deg(mda.lib.mdamath.angle(y - x, y - z))
+
+    box = np.array([10, 20, 30, 90., 90., 90.], dtype=np.float32)
+    (a, b, c), ref = case
+
+    shift1, shift2, shift3, _ = shift
+
+    a += shift1 * box[:3]
+    b += shift2 * box[:3]
+    c += shift3 * box[:3]
+
+    box = box if periodic else None
+    result = mda.lib.distances.calc_angle(a, b, c, box)
+
+    reference = ref if periodic else manual_angle(a, b, c)
+
+    assert_almost_equal(result, reference, decimal=3)
+
+
+@pytest.mark.parametrize('case', [
+    # 0 degree angle (cis)
+    (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 2, 1]], dtype=np.float32), 0.),
+    # 180 degree (trans)
+    (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 0, 1]], dtype=np.float32), 180.),
+    # 90 degree
+    (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 1, 2]], dtype=np.float32), 90.),
+    # other 90 degree
+    (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 1, 0]], dtype=np.float32), 90.),
+    # 45 degree
+    (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 2, 2]], dtype=np.float32), 45.),
+    # 135
+    (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 0, 2]], dtype=np.float32), 135.),
+])
+@pytest.mark.parametrize('shift', shifts)
+@pytest.mark.parametrize('periodic', [True, False])
+def test_calc_dihedral(case, shift, periodic):
+    def manual_dihedral(a, b, c, d):
+        return np.rad2deg(mda.lib.mdamath.dihedral(b - a, c - b, d - c))
+
+    box = np.array([10., 10., 10., 90., 90., 90.], dtype=np.float32)
+
+    (a, b, c, d), ref = case
+
+    shift1, shift2, shift3, shift4 = shift
+
+    a += shift1 * box[:3]
+    b += shift2 * box[:3]
+    c += shift3 * box[:3]
+    d += shift4 * box[:3]
+
+    box = box if periodic else None
+    result = mda.lib.distances.calc_dihedral(a, b, c, d, box)
+
+    reference = ref if periodic else manual_dihedral(a, b, c, d)
+
+    assert_almost_equal(abs(result), abs(reference), decimal=3)

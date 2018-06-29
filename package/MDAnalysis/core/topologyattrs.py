@@ -48,7 +48,7 @@ import warnings
 from numpy.lib.utils import deprecate
 
 from . import flags
-from ..lib.util import cached, convert_aa_code, iterable
+from ..lib.util import cached, convert_aa_code, iterable, warn_if_not_unique
 from ..lib import transformations, mdamath
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
@@ -780,6 +780,7 @@ class Masses(AtomAttr):
 
         return masses
 
+    @warn_if_not_unique
     def center_of_mass(group, pbc=None, compound='group'):
         """Center of mass of (compounds of) the group.
 
@@ -830,6 +831,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('center_of_mass', center_of_mass))
 
+    @warn_if_not_unique
     def total_mass(group):
         """Total mass of the Group.
 
@@ -839,6 +841,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('total_mass', total_mass))
 
+    @warn_if_not_unique
     def moment_of_inertia(group, **kwargs):
         """Tensor moment of inertia relative to center of mass as 3x3 numpy
         array.
@@ -897,6 +900,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('moment_of_inertia', moment_of_inertia))
 
+    @warn_if_not_unique
     def radius_of_gyration(group, **kwargs):
         """Radius of gyration.
 
@@ -933,6 +937,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('radius_of_gyration', radius_of_gyration))
 
+    @warn_if_not_unique
     def shape_parameter(group, **kwargs):
         """Shape parameter.
 
@@ -986,6 +991,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('shape_parameter', shape_parameter))
 
+    @warn_if_not_unique
     def asphericity(group, pbc=None):
         """Asphericity.
 
@@ -1046,6 +1052,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('asphericity', asphericity))
 
+    @warn_if_not_unique
     def principal_axes(group, pbc=None):
         """Calculate the principal axes from the moment of inertia.
 
@@ -1157,6 +1164,7 @@ class Charges(AtomAttr):
 
         return charges
 
+    @warn_if_not_unique
     def total_charge(group):
         """Total charge of the Group.
 

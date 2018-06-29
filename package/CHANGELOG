@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
-         VOD555, davidercruz
+         VOD555, davidercruz, jbarnoud
 
   * 0.18.1
 
@@ -26,6 +26,19 @@ Enhancements
   * added compound kwarg to center, centroid, center_of_geometry, center_of_mass (PR #1903)
   * Added rdf.InterRDF_s to calculate site-specific pair distribution
     functions (PR #1815)
+  * Increased performance of (repeated) calls to AtomGroup.pack_into_box()
+    (PR #1922)
+  * Added boolean property *Group.isunique (PR #1922)
+  * Added *Group.copy() methods returning an identical copy of the respective
+    group (PR #1922)
+  * Use a faster function to deduplicate indices (PR #1951)
+  * Calculations in *Group.center() are performed in double precision (#PR1936)
+  * Functions in lib.distances accept coordinate arrays of arbitrary dtype
+    (PR #1936)
+  * Added calc_distance, calc_angle and calc_dihedral to lib.distances
+    (Issue #1262 #1938)
+  * Added pbc kwarg to Bond/Angle/Dihedral/Improper object value method,
+    default True. (Issue #1938)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
@@ -36,10 +49,21 @@ Fixes
   * Adding new TopologyAttrs with values defined always coerces this into
     a numpy array (Issue #1876)
   * Groups passed to select_atoms() are now type checked (Issue #1852)
+  * Fixed inconsistent handling of groups with/without duplicates in
+    pack_into_box() (Issue #1911)
+  * Fixed format of MODEL number in PDB file writing (Issue #1950)
+  * PDBWriter now properly sets start value
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)
   * updated meta data for new PyPi (#1837)
+  * AtomGroup.atoms, ResidueGroup.residues, and SegmentGroup.segments now return
+    themselves instead of a new object to increase performance (PR #1922)
+  * *Group.unique now returns a new object only if the respective group contains
+    duplicates. Otherwise, the group itself is returned. Repeated access of
+    *Group.unique will always return the same object unless the group is
+    updated or modified. (PR #1922)
+  * The TPR parser reads SETTLE constraints as bonds. (Issue #1949)
 
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,

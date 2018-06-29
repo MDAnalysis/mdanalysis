@@ -313,12 +313,6 @@ def make_whole(atomgroup):
         There are no bonds present.
         (See :func:`~MDAnalysis.topology.core.guess_bonds`)
 
-    ValueError
-        The algorithm fails to work.  This is usually
-        caused by the atomgroup not being a single fragment.
-        (ie the molecule can't be traversed by following bonds)
-
-
     Example
     -------
     Make fragments whole::
@@ -352,8 +346,7 @@ def make_whole(atomgroup):
     box_length = box.min() / 2.0
     bondlengths = atomgroup.bonds.bonds(pbc=True)
     if bondlengths.min() * 1.4 > box_length:
-        raise ValueError("Box lengths are too small relative to bond lengths")
-    
+        raise ValueError("Box lengths are too small relative to bond lengths")    
     tric = triclinic_vectors(atomgroup.dimensions)
     halfbox = tric.sum(axis=0) / 2.0
     atgp = atomgroup

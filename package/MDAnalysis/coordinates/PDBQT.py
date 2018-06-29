@@ -59,7 +59,7 @@ class PDBQTReader(base.SingleFrameReaderBase):
 
 
     .. _PDB format documentation:
-       http://www.wwpdb.org/documentation/format32/sect9.html
+       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
     .. _AutoDOCK extensions:
        http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
 
@@ -192,7 +192,7 @@ class PDBQTReader(base.SingleFrameReaderBase):
 class PDBQTWriter(base.WriterBase):
     """PDBQT writer that implements a subset of the PDB_ 3.2 standard and the PDBQT_ spec.
 
-    .. _PDB: http://www.wwpdb.org/documentation/file-format
+    .. _PDB: http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
     .. _PDBQT: http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
     """
 
@@ -302,18 +302,18 @@ class PDBQTWriter(base.WriterBase):
                           self.pdb_coor_limits["max"]))
 
         # Write title record
-        # http://www.wwpdb.org/documentation/format32/sect2.html
+        # http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html
         line = "FRAME " + str(frame) + " FROM " + str(u.trajectory.filename)
         self.pdb.write(self.fmt['TITLE'].format(line))
 
         # Write CRYST1 record
-        # http://www.wwpdb.org/documentation/format32/sect8.html
+        # http://www.wwpdb.org/documentation/file-format-content/format32/sect8.html
         box = self.convert_dimensions_to_unitcell(u.trajectory.ts)
         self.pdb.write(self.fmt['CRYST1'].format(box=box[:3], ang=box[3:],
                                                  spacegroup='P 1', zvalue=1))
 
         # Write atom records
-        # http://www.wwpdb.org/documentation/format32/sect9.html
+        # http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html
         for serial, (pos, name, resname, chainid, resid, icode,
                      occupancy, tempfactor, charge, element) in enumerate(
                 zip(coor, attrs['names'], attrs['resnames'], attrs['chainids'],

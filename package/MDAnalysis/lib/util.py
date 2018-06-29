@@ -109,6 +109,7 @@ Containers and lists
 .. autofunction:: asiterable
 .. autofunction:: hasmethod
 .. autoclass:: Namespace
+.. autofunction:: unique_int_1d
 
 File parsing
 ------------
@@ -175,8 +176,10 @@ import mmtf
 import numpy as np
 import functools
 from numpy.testing import assert_equal
+import inspect
 
-from ..exceptions import StreamWarning
+from ..exceptions import StreamWarning, DuplicateWarning
+from ._cutil import *
 
 
 # Python 3.0, 3.1 do not have the builtin callable()
@@ -1693,8 +1696,9 @@ def flatten_dict(d, parent_key=tuple()):
 
     Note
     -----
-    Based on https://stackoverflow.com/a/6027615/ by user https://stackoverflow.com/users/1897/imran
-    
+    Based on https://stackoverflow.com/a/6027615/
+    by user https://stackoverflow.com/users/1897/imran
+
     .. versionadded:: 0.18.0
     """
 
@@ -1709,3 +1713,94 @@ def flatten_dict(d, parent_key=tuple()):
         else:
             items.append((new_key, v))
     return dict(items)
+
+
+def static_variables(**kwargs):
+    """Decorator equipping functions or methods with static variables.
+
+    Static variables are declared and initialized by supplying keyword arguments
+    and initial values to the decorator.
+
+    Example
+    -------
+
+    >>> @static(msg='foo calls', calls=0)
+    >>> def foo():
+    >>>     foo.calls += 1
+    >>>     print("{}: {}".format(foo.msg, foo.calls))
+    >>>
+    >>> foo()
+    foo calls: 1
+    >>> foo()
+    foo calls: 2
+
+
+    .. note:: Based on https://stackoverflow.com/a/279586
+        by user `Claudiu<https://stackoverflow.com/users/15055/claudiu>`
+
+    .. versionadded:: 0.19.0
+    """
+    def static_decorator(func):
+        for kwarg in kwargs:
+            setattr(func, kwarg, kwargs[kwarg])
+        return func
+    return static_decorator
+
+
+# In a lot of Atom/Residue/SegmentGroup methods such as center_of_geometry() and
+# the like, results are biased if the calling group is not unique, i.e., if it
+# contains duplicates.
+# We therefore raise a `DuplicateWarning` whenever an affected method is called
+# from a non-unique group. Since several of the affected methods involve calls
+# to other affected methods, simply raising a warning in every affected method
+# would potentially lead to a massive amount of warnings. This is exactly where
+# the `warn_if_unique` decorator below comes into play. It ensures that a
+# warning is only raised once for a method using this decorator, and suppresses
+# all such warnings that would potentially be raised in methods called by that
+# method. Of course, as it is generally the case with Python warnings, this is
+# *not threadsafe*.
+
+@static_variables(warned=False)
+def warn_if_not_unique(groupmethod):
+    """Decorator triggering a :class:`DuplicateWarning` if the underlying group
+    is not unique.
+
+    Assures that during execution of the decorated method, only the first of
+    potentially multiple warnings concerning the uniqueness of groups is shown.
+
+    .. versionadded:: 0.19.0
+    """
+    @wraps(groupmethod)
+    def wrapper(group, *args, **kwargs):
+        # Proceed as usual if the calling group is unique or a DuplicateWarning
+        # has already been thrown:
+        if group.isunique or warn_if_not_unique.warned:
+            return groupmethod(group, *args, **kwargs)
+        # Otherwise, throw a DuplicateWarning and execute the method.
+        method_name = ".".join((group.__class__.__name__, groupmethod.__name__))
+        # Try to get the group's variable name(s):
+        caller_locals = inspect.currentframe().f_back.f_locals.items()
+        group_names = []
+        for name, obj in caller_locals:
+            try:
+                if obj is group:
+                    group_names.append("'{}'".format(name))
+            except:
+                pass
+        if not group_names:
+            group_name = "'unnamed {}'".format(group.__class__.__name__)
+        elif len(group_names) == 1:
+            group_name = group_names[0]
+        else:
+            group_name = " a.k.a. ".join(sorted(group_names))
+        group_repr = repr(group)
+        msg = ("{}(): {} {} contains duplicates. Results might be biased!"
+               "".format(method_name, group_name, group_repr))
+        warnings.warn(message=msg, category=DuplicateWarning, stacklevel=2)
+        warn_if_not_unique.warned = True
+        try:
+            result = groupmethod(group, *args, **kwargs)
+        finally:
+            warn_if_not_unique.warned = False
+        return result
+    return wrapper
