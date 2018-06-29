@@ -23,7 +23,7 @@
 from __future__ import absolute_import
 import pytest
 import numpy as np
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 
@@ -65,7 +65,7 @@ def test_calc_distance(shift, periodic):
 
     reference = 2.0 if periodic else np.linalg.norm(coords[0] - coords[1])
 
-    assert result == pytest.approx(reference)
+    assert_almost_equal(result, reference, decimal=3)
 
 
 @pytest.mark.parametrize('case', [
@@ -96,7 +96,7 @@ def test_calc_angle(case, shift, periodic):
 
     reference = ref if periodic else manual_angle(a, b, c)
 
-    assert result == pytest.approx(reference, abs=1e-3)
+    assert_almost_equal(result, reference, decimal=3)
 
 
 @pytest.mark.parametrize('case', [
@@ -135,4 +135,4 @@ def test_calc_dihedral(case, shift, periodic):
 
     reference = ref if periodic else manual_dihedral(a, b, c, d)
 
-    assert abs(result) == pytest.approx(abs(reference), abs=1e-3)
+    assert_almost_equal(abs(result), abs(reference), decimal=3)
