@@ -101,8 +101,7 @@ def test_SurvivalProbability_t0Ignored(universe_prot):
     assert_almost_equal(sp.timeseries, [1.0, 0.391, 0.292, 0.261], decimal=3)
 
 
-
 def test_SurvivalProbability_zeroMolecules(universe):
     sp_zero = waterdynamics.SurvivalProbability(universe, SELECTION2, 0, 6, 3)
     sp_zero.run()
-    assert_almost_equal(sp_zero.timeseries[1], 0.0)
+    assert np.isnan(sp_zero.timeseries[1])
