@@ -413,7 +413,7 @@ def transform_RtoS(inputcoords, box, backend="serial"):
         The dimensions must be provided in the same format as returned
         by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,
         ly, lz, alpha, beta, gamma]``.
-    backend : str
+    backend : str, optional
         Select the type of acceleration; "serial" is always available. Other
         possibilities are "OpenMP" (OpenMP).
 
@@ -421,6 +421,7 @@ def transform_RtoS(inputcoords, box, backend="serial"):
     -------
     outcoords : array
         A n x 3 array of fractional coordiantes.
+
 
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
@@ -475,14 +476,14 @@ def transform_StoR(inputcoords, box, backend="serial"):
         The dimensions must be provided in the same format as returned
         by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,
         ly, lz, alpha, beta, gamma]``.
-    backend : str
+    backend : str, optional
         Select the type of acceleration; "serial" is always available. Other
         possibilities are "OpenMP" (OpenMP).
 
     Returns
     -------
     outcoords : array
-        A n x 3 array of fracional coordiantes.
+        A n x 3 array of fractional coordiantes.
 
 
     .. versionchanged:: 0.13.0
@@ -879,3 +880,53 @@ def apply_PBC(incoords, box, backend="serial"):
                backend=backend)
 
     return coords
+
+
+def calc_distance(a, b, box=None):
+    """Distance between a and b
+
+    Parameters
+    ----------
+    a, b : numpy.ndarray
+        single coordinate vectors
+    box : numpy.ndarray, optional
+        simulation box, if given periodic boundary conditions will be applied
+
+
+    .. versionadded:: 0.18.1
+    """
+    return calc_bonds(a[None, :], b[None, :], box=box)[0]
+
+
+def calc_angle(a, b, c, box=None):
+    """Angle (in degrees) between a, b and c, where b is apex of angle
+
+    Parameters
+    ----------
+    a, b, c : numpy.ndarray
+        single coordinate vectors
+    box : numpy.ndarray
+        simulation box if given periodic boundary conditions will be applied to
+        the vectors between atoms
+
+
+    .. versionadded:: 0.18.1
+    """
+    return np.rad2deg(calc_angles(a[None, :], b[None, :], c[None, :], box=box)[0])
+
+
+def calc_dihedral(a, b, c, d, box=None):
+    """Dihedral angle (in degrees) between planes (a, b, c) and (b, c, d)
+
+    Parameters
+    ----------
+    a, b, c, d : numpy.ndarray
+        single coordinate vectors
+    box : numpy.ndarray, optional
+        simulation box, if given periodic boundary conditions will be applied
+
+
+    .. versionadded:: 0.18.1
+    """
+    return np.rad2deg(
+        calc_dihedrals(a[None, :], b[None, :], c[None, :], d[None, :], box)[0])

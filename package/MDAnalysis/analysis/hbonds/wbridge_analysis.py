@@ -292,6 +292,7 @@ import warnings
 from .hbond_analysis import HydrogenBondAnalysis
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
+from MDAnalysis.lib import distances
 from MDAnalysis import SelectionWarning
 
 logger = logging.getLogger('MDAnalysis.analysis.wbridges')
@@ -634,9 +635,11 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = self.calc_eucl_distance(donor_atom, a)
+                            dist = distances.calc_distance(donor_atom.position,
+                                                           a.position)
                             if dist <= self.distance:
-                                angle = self.calc_angle(d, h, a)
+                                angle = distances.calc_angle(d.position, h.position,
+                                                             a.position)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "S1-D: {0!s} <-> W-A: {1!s} {2:f} A, {3:f} DEG"\
@@ -658,9 +661,11 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = self.calc_eucl_distance(donor_atom, a)
+                            dist = distances.calc_distance(donor_atom.position,
+                                                           a.position)
                             if dist <= self.distance:
-                                angle = self.calc_angle(d, h, a)
+                                angle = distances.calc_angle(d.position, h.position,
+                                                             a.position)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "S1-A: {0!s} <-> W-D: {1!s} {2:f} A, {3:f} DEG"\
@@ -706,9 +711,11 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy'  else d
-                            dist = self.calc_eucl_distance(donor_atom, a)
+                            dist = distances.calc_distance(donor_atom.position,
+                                                           a.position)
                             if dist <= self.distance:
-                                angle = self.calc_angle(d, h, a)
+                                angle = distances.calc_angle(d.position, h.position,
+                                                             a.position)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "WB-D: {0!s} <-> S2-A: {1!s} {2:f} A, {3:f} DEG"\
@@ -728,9 +735,11 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = self.calc_eucl_distance(donor_atom, a)
+                            dist = distances.calc_distance(donor_atom.position,
+                                                           a.position)
                             if dist <= self.distance:
-                                angle = self.calc_angle(d, h, a)
+                                angle = distances.calc_angle(d.position, h.position,
+                                                             a.position)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "WB-A: {0!s} <-> S2-D: {1!s} {2:f} A, {3:f} DEG"\
