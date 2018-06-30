@@ -121,11 +121,13 @@ import sys
 # issue #412 https://github.com/MDAnalysis/mdanalysis/issues/412 and PR #1822.
 os.environ['DUECREDIT_ENABLE'] = 'yes'
 
-# Any tests that plot with matplotlib need to run with the simple agg backend because
-# on Travis there is no DISPLAY set
+# Any tests that plot with matplotlib need to run with the simple agg backend
+# because on Travis there is no DISPLAY set. This doesn't warn if we import
+# files from the tests after loading matplotlib. This will remove unnecessary
+# user warnings. 
 try:
     import matplotlib
-    matplotlib.use('agg')
+    matplotlib.use('agg', warn=False)
 except ImportError:
     pass
 
