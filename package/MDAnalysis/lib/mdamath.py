@@ -416,7 +416,7 @@ def make_whole(atomgroup, reference_atom=None):
                     continue
                 if other in ref_points:
                     continue
-                if b.length() > box_length:
+                if b.length(pbc=False) > box_length:
                     # Vector from ref atom to other
                     vec = other.position - ref.position
                     # Apply pbc to this vector
