@@ -466,8 +466,8 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None, box=N
                                    box=box, method=method)
     pairs, dist = method(reference, configuration, max_cutoff,
                          min_cutoff=min_cutoff, box=box)
-    
-    return np.array(pairs), np.array(dist)
+
+    return np.asarray(pairs), np.asarray(dist)
 
 
 def _determine_method(reference, configuration, max_cutoff, min_cutoff=None, box=None, method=None):
