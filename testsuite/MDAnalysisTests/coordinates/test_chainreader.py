@@ -33,6 +33,7 @@ import MDAnalysis as mda
 from MDAnalysis.transformations import translate
 from MDAnalysisTests.datafiles import (PDB, PSF, CRD, DCD,
                                        GRO, XTC, TRR, PDB_small, PDB_closed)
+from MDAnalysisTests.util import no_warning
 
 
 class TestChainReader(object):
@@ -255,12 +256,35 @@ class TestChainReaderContinuous(object):
         for i, ts in enumerate(u.trajectory):
             assert_almost_equal(i, ts.time, decimal=4)
 
+    def test_start_frames(self, tmpdir):
+        folder = str(tmpdir)
+        sequences = ([0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7])
+        utop, fnames = build_trajectories(folder, sequences=sequences,)
+        u = mda.Universe(utop._topology, fnames, continuous=True)
+        assert_equal(u.trajectory._start_frames, [0, 2, 4])
+
     def test_missing(self, tmpdir):
         folder = str(tmpdir)
         sequences = ([0, 1, 2, 3], [5, 6, 7, 8, 9])
         utop, fnames = build_trajectories(folder, sequences=sequences,)
         u = mda.Universe(utop._topology, fnames, continuous=True)
         assert u.trajectory.n_frames == 9
+
+    def test_warning(self, tmpdir):
+        folder = str(tmpdir)
+        # this sequence *should* trigger a warning
+        sequences = ([0, 1, 2, 3], [5, 6, 7])
+        utop, fnames = build_trajectories(folder, sequences=sequences,)
+        with pytest.warns(UserWarning):
+            mda.Universe(utop._topology, fnames, continuous=True)
+
+    def test_easy_trigger_warning(self, tmpdir):
+        folder = str(tmpdir)
+        # this sequence shouldn't trigger a warning
+        sequences = ([0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7])
+        utop, fnames = build_trajectories(folder, sequences=sequences,)
+        with no_warning(UserWarning):
+            mda.Universe(utop._topology, fnames, continuous=True)
 
     def test_single_frames(self, tmpdir):
         folder = str(tmpdir)
