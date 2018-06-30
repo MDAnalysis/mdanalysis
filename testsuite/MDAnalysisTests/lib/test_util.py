@@ -289,12 +289,17 @@ class TestMakeWhole(object):
 
     def test_walk_1(self, universe, ag):
         # self.ag is contiguous
-        assert mdamath._is_contiguous(ag, universe.residues[0].atoms[0])
+        assert util._is_contiguous(
+            ag.atoms.ix.astype(np.int32),
+            ag.bonds.to_indices(),
+            universe.residues[0].atoms[0].index)
 
     def test_walk_2(self, universe):
         # u.atoms isnt all contiguous
-        assert not mdamath._is_contiguous(universe.atoms,
-                                          universe.residues[0].atoms[0])
+        assert not util._is_contiguous(
+            universe.atoms.ix.astype(np.int32),
+            universe.atoms.bonds.to_indices(),
+            universe.residues[0].atoms[0].index)
 
     def test_solve_1(self, universe, ag):
         # regular usage of function

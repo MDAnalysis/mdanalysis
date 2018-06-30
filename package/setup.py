@@ -341,9 +341,11 @@ def extensions(config):
                         extra_compile_args=extra_compile_args)
     cutil = MDAExtension('MDAnalysis.lib._cutil',
                          sources=['MDAnalysis/lib/_cutil' + source_suffix],
+                         language='c++',
                          include_dirs=include_dirs,
                          define_macros=define_macros,
-                         extra_compile_args=extra_compile_args)
+                         extra_compile_args=[a for a in extra_compile_args
+                                             if not a.startswith('-std')])
 
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',

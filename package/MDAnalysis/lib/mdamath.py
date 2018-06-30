@@ -43,7 +43,7 @@ from six.moves import zip
 import numpy as np
 
 from ..exceptions import NoDataError
-
+from . import util
 
 # geometric functions
 def norm(v):
@@ -249,36 +249,6 @@ def box_volume(dimensions):
     return np.linalg.det(triclinic_vectors(dimensions))
 
 
-def _is_contiguous(atomgroup, atom):
-    """Walk through atomgroup, starting with atom.
-
-    Returns
-    -------
-    bool
-        ``True`` if all of *atomgroup* is accessible through walking
-        along bonds.
-        ``False`` otherwise.
-    """
-    seen = set([atom])
-    walked = set()
-    ag_set = set(atomgroup)
-
-    nloops = 0
-    while len(seen) < len(atomgroup):
-        nloops += 1
-        if nloops > len(atomgroup):
-            return False
-
-        todo = seen.difference(walked)
-        for atom in todo:
-            for other in atom.bonded_atoms:
-                if other in ag_set:
-                    seen.add(other)
-            walked.add(atom)
-
-    return True
-
-
 def make_whole(atomgroup, reference_atom=None):
     """Move all atoms in a single molecule so that bonds don't split over images
 
@@ -329,7 +299,7 @@ def make_whole(atomgroup, reference_atom=None):
     -------
     Make fragments whole::
 
-        from MDAnalysis.util.mdamath import make_whole
+        from MDAnalysis.lib.mdamath import make_whole
 
         # This algorithm requires bonds, these can be guessed!
         u = mda.Universe(......, guess_bonds=True)
@@ -364,7 +334,9 @@ def make_whole(atomgroup, reference_atom=None):
             raise ValueError("Reference atom not in atomgroup")
 
     # Check all of atomgroup is accessible from ref
-    if not _is_contiguous(atomgroup, ref):
+    if not util._is_contiguous(atomgroup.indices.astype(np.int32),
+                               atomgroup.bonds.to_indices(),
+                               ref.index):
         raise ValueError("atomgroup not contiguous from bonds")
 
     # Not sure if this is actually a requirement...
