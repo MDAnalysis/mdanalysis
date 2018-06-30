@@ -223,8 +223,10 @@ class Universe(object):
     in_memory_step
         Only read every nth frame into in-memory representation.
     continuous : bool, optional
-        treat as time continues when using several trajectories with time
-        information
+        The `continuous` option is used by the
+        :mod:`ChainReader<MDAnalysis.coordinates.chain>`, which contains the
+        functionality to treat independent trajectory files as a single virtual
+        trajectory.
 
     Attributes
     ----------

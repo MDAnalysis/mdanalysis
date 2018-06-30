@@ -210,9 +210,10 @@ class ChainReader(base.ProtoReader):
             frames.
         continuous : bool (optional)
             treat all trajectories as one single long trajectory. Adds several
-            checks. Might not work with all trajectory formats! This should
-            ensure that there is no need to concatenate trajectories of GROMACS
-            simulations
+            checks; all trajectories have the same dt, they contain at least 2
+            frames, and they are all of the same file-type. Not implemented for
+            all trajectory formats! This can be used to analyze GROMACS
+            simulations without concatenating them prior to analysis.
         **kwargs : dict (optional)
             all other keyword arguments are passed on to each trajectory reader
             unchanged
