@@ -174,7 +174,8 @@ def assert_nowarns(warning_class, *args, **kwargs):
 @contextmanager
 def no_warning(warning_class):
     """contextmanager to check that no warning was raised"""
-    with pytest.warns(warning_class) as record:
+    with warnings.catch_warnings(record=True) as record:
+        warnings.simplefilter('always')
         yield
     if len(record) != 0:
         raise AssertionError("Raised warning of class {}".format(

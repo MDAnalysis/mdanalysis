@@ -248,7 +248,7 @@ class ChainReader(base.ProtoReader):
         n_frames = self._get('n_frames')
         # [0]: frames are 0-indexed internally
         # (see Timestep.check_slice_indices())
-        self.__start_frames = np.cumsum([0] + n_frames)
+        self._start_frames = np.cumsum([0] + n_frames)
 
         self.n_frames = np.sum(n_frames)
         self.dts = np.array(self._get('dt'))
@@ -309,6 +309,9 @@ class ChainReader(base.ProtoReader):
                 start_time = r2.time
 
                 if start_time > n_frames * dt:
+                    print(start_time, n_frames * dt)
+                    print(r1)
+                    print(r2)
                     warnings.warn("Missing frame in continuous chain", UserWarning)
                 # find end where trajectory was restarted from
                 for ts in r1[::-1]:
@@ -319,13 +322,12 @@ class ChainReader(base.ProtoReader):
 
             n_frames += self.readers[-1].n_frames
 
-            self.__start_frames = sf
+            self._start_frames = sf
             self.n_frames = n_frames
             self._sf = sf
 
         # make sure that iteration always yields frame 0
         # rewind() also sets self.ts
-        self.start_frames = self.__start_frames
         self.ts = None
         self.rewind()
 
@@ -363,11 +365,11 @@ class ChainReader(base.ProtoReader):
         if k < 0:
             raise IndexError("Virtual (chained) frames must be >= 0")
         # trajectory index i
-        i = bisect.bisect_right(self.__start_frames, k) - 1
+        i = bisect.bisect_right(self._start_frames, k) - 1
         if i < 0:
             raise IndexError("Cannot find trajectory for virtual frame {0:d}".format(k))
         # local frame index f in trajectory i (frame indices are 0-based)
-        f = k - self.__start_frames[i]
+        f = k - self._start_frames[i]
         return i, f
 
     # methods that can change with the current reader
