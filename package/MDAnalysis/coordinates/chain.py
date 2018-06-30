@@ -307,9 +307,9 @@ class ChainReader(base.ProtoReader):
             for r1, r2 in zip(self.readers[:-1], self.readers[1:]):
                 r2[0], r1[0]
                 start_time = r2.time
-
-                if start_time > n_frames * dt:
-                    print(start_time, n_frames * dt)
+                r1[-1]
+                if r1.time < start_time:
+                    print(r1.time, start_time)
                     print(r1)
                     print(r2)
                     warnings.warn("Missing frame in continuous chain", UserWarning)
