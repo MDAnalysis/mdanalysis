@@ -43,14 +43,6 @@ def test_transform_StoR_pass(coord_dtype):
     assert_equal(original_r, test_r)
 
 
-def test_transform_StoR_fail():
-    box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
-    s = np.array([[0.5, -0.1, 0.5]])
-
-    with pytest.raises(TypeError, match='S must be of type float32'):
-        r = mda.lib.distances.transform_StoR(s, box)
-
-
 def test_capped_distance_noresults():
     point1 = np.array([0.1, 0.1, 0.1], dtype=np.float32)
     point2 = np.array([0.95, 0.1, 0.1], dtype=np.float32)
