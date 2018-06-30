@@ -126,7 +126,7 @@ and writing XTC and TRR trajectories.
 
 
 Reading TRR and XTC files
-^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 All information present in the trajectory is read and made available
 in the :class:`Timestep`, either as `Timestep.positions`,
@@ -152,7 +152,7 @@ time point so MDAnalysis DOES WHAT?
 
 
 Writing TRR and XTC files
-^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 TODO:
 

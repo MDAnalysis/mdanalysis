@@ -17,18 +17,18 @@ PSF_ files from CHARMM, NAMD (whitespace separated)
 and XPLOR are supported as topology files.
 Both standard and extended (EXT) PSF formats are supported.
 Universes created from a PSF file will have the following attributes:
- - ids
- - atom names
- - atom types
- - masses
- - charges
- - resids
- - resnames
- - segids
- - bonds
- - angles
- - dihedrals
- - impropers
+- ids
+- atom names
+- atom types
+- masses
+- charges
+- resids
+- resnames
+- segids
+- bonds
+- angles
+- dihedrals
+- impropers
 
 For implementation details, see :mod:`MDAnalysis.topology.PSFParser`.
 
