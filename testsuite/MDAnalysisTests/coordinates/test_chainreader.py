@@ -283,7 +283,7 @@ class TestChainReaderContinuous(object):
         # interleaving is not supported by chainreader
         sequences = ([0, 2, 4, 6], [1, 3, 5, 7])
         utop, fnames = build_trajectories(folder, sequences=sequences,)
-        with pytest.raises():
+        with pytest.raises(RuntimeError):
             mda.Universe(utop._topology, fnames, continuous=True)
 
     def test_easy_trigger_warning(self, tmpdir):

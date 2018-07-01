@@ -307,13 +307,17 @@ class ChainReader(base.ProtoReader):
             n_frames = 0
             for r1, r2 in zip(self.readers[:-1], self.readers[1:]):
                 r2[0], r1[0]
+                r1_start_time = r1.time
                 start_time = r2.time
                 r1[-1]
                 if r1.time < start_time:
-                    print(r1.time, start_time)
-                    print(r1)
-                    print(r2)
                     warnings.warn("Missing frame in continuous chain", UserWarning)
+
+                # check for interleaving
+                r1[1]
+                if r1_start_time < start_time < r1.time:
+                    raise RuntimeError("Interleaving not supported.")
+
                 # find end where trajectory was restarted from
                 for ts in r1[::-1]:
                     if ts.time < start_time:
