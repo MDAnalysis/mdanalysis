@@ -42,8 +42,7 @@ DEF MAX_NTRICVEC=12
 
 from libc.stdlib cimport malloc, realloc, free, abort
 from libc.stdio cimport fprintf, stderr
-from libc.math cimport sqrt
-from libc.math cimport abs as real_abs
+
 
 import numpy as np
 cimport numpy as np
@@ -541,11 +540,7 @@ cdef class FastNS(object):
     cdef real[:, ::1] coords_bbox
     cdef readonly real cutoff
     cdef bint prepared
-    cdef ns_grid *grid
-
-
-    def __cinit__(self):
-        self.grid = <ns_grid *> malloc(sizeof(ns_grid))
+    cdef ns_grid grid
 
     def __init__(self, box):
         if box.shape != (3, 3):
@@ -562,9 +557,11 @@ cdef class FastNS(object):
 
         self.prepared = False
 
+        self.grid.size = 0
+
 
     def __dealloc__(self):
-        destroy_nsgrid(self.grid)
+        destroy_nsgrid(&self.grid)
         self.grid.size = 0
     
     def set_coords(self, real[:, ::1] coords):
@@ -608,7 +605,7 @@ cdef class FastNS(object):
             self.grid.size = self.grid.ncells[XX] * self.grid.ncells[YY] * self.grid.ncells[ZZ]
 
             # Populating grid
-            if populate_grid(self.grid, self.coords_bbox) == RET_OK:
+            if populate_grid(&self.grid, self.coords_bbox) == RET_OK:
                 initialization_ok = True
 
 
@@ -632,7 +629,7 @@ cdef class FastNS(object):
         search_coords_bbox = self.box.fast_put_atoms_in_bbox(search_coords)
 
         with nogil:
-            holder = ns_core(search_coords_bbox, self.coords_bbox, self.grid, self.box, self.cutoff)
+            holder = ns_core(search_coords_bbox, self.coords_bbox, &self.grid, self.box, self.cutoff)
 
         neighbors = []
         ###Modify for distance
