@@ -23,6 +23,7 @@
 
 import cython
 import numpy as np
+cimport numpy as np
 
 from libcpp.set cimport set as cset
 from libcpp.map cimport map as cmap
@@ -32,7 +33,7 @@ __all__ = ['unique_int_1d', '_is_contiguous']
 
 @cython.boundscheck(False) # turn off bounds-checking for entire function
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
-def unique_int_1d(long[:] values):
+def unique_int_1d(np.int64_t[:] values):
     """
     Find the unique elements of a 1D array of integers.
 
@@ -53,11 +54,11 @@ def unique_int_1d(long[:] values):
     cdef int i = 0
     cdef int j = 0
     cdef int n_values = values.shape[0]
-    cdef long[:] result = np.empty(n_values, dtype=np.int64)
+    cdef np.int64_t[:] result = np.empty(n_values, dtype=np.int64)
 
     if n_values == 0:
         return result
-    
+
     result[0] = values[0]
     for i in range(1, n_values):
         if values[i] != result[j]:
@@ -67,29 +68,23 @@ def unique_int_1d(long[:] values):
             is_monotonic = False
     result = result[:j + 1]
     if not is_monotonic:
-        result.sort()
-        result = unique_int_1d(result)
-    return result
+        result = unique_int_1d(np.sort(result))
+
+    return np.array(result)
 
 
 ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 cdef intset difference(intset a, intset b):
     """a.difference(b)
 
     Returns set of values in a which are not in b
     """
     cdef intset output
-
-    output = intset()
-
     for val in a:
         if b.count(val) != 1:
             output.insert(val)
-
     return output
 
 
@@ -135,10 +130,9 @@ def _is_contiguous(int[:] atoms, int[:, :] bonds, int start):
         x = bonds[i, 0]
         y = bonds[i, 1]
         # only add bonds if both atoms are in atoms set
-        if total.count(x):
-            if total.count(y):
-                bonding[x].insert(y)
-                bonding[y].insert(x)
+        if total.count(x) and total.count(y):
+            bonding[x].insert(y)
+            bonding[y].insert(x)
 
     seen = intset()
     seen.insert(start)
@@ -147,10 +141,8 @@ def _is_contiguous(int[:] atoms, int[:, :] bonds, int start):
     N = total.size()
 
     nloops = 0
-    while seen.size() < N:
+    while seen.size() < N and nloops < N:
         nloops += 1
-        if nloops >= N:
-            break
         # todo is set of start points
         # can start on anyone that has been seen, but not done yet
         todo = difference(seen, done)
@@ -162,9 +154,4 @@ def _is_contiguous(int[:] atoms, int[:, :] bonds, int start):
             done.insert(x)
 
     # if we saw all Atoms when walking, is_contiguous
-    if seen.size() == N:
-        result = True
-    else:
-        result = False
-
-    return result
+    return seen.size() == N

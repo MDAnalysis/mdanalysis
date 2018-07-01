@@ -51,6 +51,7 @@ import sys
 import shutil
 import tempfile
 import warnings
+import platform
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
@@ -255,6 +256,12 @@ def extensions(config):
     if arch:
         extra_compile_args.append('-march={}'.format(arch))
 
+    cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
+    cpp_extra_compile_args.append('-std=c++11')
+    # needed to specify c++ runtime library on OSX
+    if platform.system() == 'Darwin':
+        cpp_extra_compile_args.append('-stdlib=libc++')
+
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
     largefile_macros = [
@@ -344,8 +351,7 @@ def extensions(config):
                          language='c++',
                          include_dirs=include_dirs,
                          define_macros=define_macros,
-                         extra_compile_args=[a for a in extra_compile_args
-                                             if not a.startswith('-std')])
+                         extra_compile_args=cpp_extra_compile_args)
 
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
