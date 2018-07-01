@@ -1208,32 +1208,30 @@ class SurvivalProbability(object):
 
     """
 
-    def __init__(self, universe, selection, t0, tf, dtmax):
+    def __init__(self, universe, selection, t0, tf, tau_max):
         self.universe = universe
         self.selection = selection
         self.t0 = t0
         self.tf = tf
-        self.dtmax = dtmax
-        self.timeseries = []
+        self.tau_max = tau_max
 
 
     def run(self):
         """
         Analyze trajectory and produce timeseries of the survival probability.
         """
-
+        
         # select all survivors to an array of sets
         selected = []
-        for ts in self.universe.trajectory[self.t0:self.tf]:
+        for _ in self.universe.trajectory[self.t0:self.tf]:
             selected.append(set(self.universe.select_atoms(self.selection)))
 
-        if len(selected) < self.dtmax:
+        if len(selected) < self.tau_max:
             print("ERROR: Cannot select fewer frames than dtmax")
             return
 
-
-        for tau in list(range(1, self.dtmax + 1):
-
+        timeseries = []
+        for tau in list(range(1, self.tau_max + 1)):
             deltaP = []
             for t in range(len(selected) - tau):
 
@@ -1248,5 +1246,6 @@ class SurvivalProbability(object):
                 deltaP.append(Ntau / Nt)
 
             # store mean survival probability for each tau
-            self.timeseries.append(np.mean(np.asarray(deltaP)))
+            timeseries.append(np.mean(np.asarray(deltaP)))
+        return timeseries
 
