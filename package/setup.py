@@ -349,7 +349,8 @@ def extensions(config):
     cutil = MDAExtension('MDAnalysis.lib._cutil',
                          sources=['MDAnalysis/lib/_cutil' + source_suffix],
                          language='c++',
-                         include_dirs=include_dirs,
+                         libraries=mathlib,
+                         include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                          define_macros=define_macros,
                          extra_compile_args=cpp_extra_compile_args)
 

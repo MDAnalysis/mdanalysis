@@ -25,10 +25,20 @@ import cython
 import numpy as np
 cimport numpy as np
 
+from MDAnalysis import NoDataError
+
 from libcpp.set cimport set as cset
 from libcpp.map cimport map as cmap
 
-__all__ = ['unique_int_1d', '_is_contiguous']
+__all__ = ['unique_int_1d', 'make_whole']
+
+cdef extern from "calc_distances.h":
+    ctypedef float coordinate[3]
+    void minimum_image(double *x, float *box, float *inverse_box)
+    void minimum_image_triclinic(double *dx, coordinate *box)
+
+ctypedef cset[int] intset
+ctypedef cmap[int, intset] intmap
 
 
 @cython.boundscheck(False) # turn off bounds-checking for entire function
@@ -73,9 +83,6 @@ def unique_int_1d(np.int64_t[:] values):
     return np.array(result)
 
 
-ctypedef cset[int] intset
-ctypedef cmap[int, intset] intmap
-
 cdef intset difference(intset a, intset b):
     """a.difference(b)
 
@@ -90,68 +97,168 @@ cdef intset difference(intset a, intset b):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def _is_contiguous(int[:] atoms, int[:, :] bonds, int start):
-    """
+def make_whole(atomgroup, reference_atom=None):
+    """Move all atoms in a single molecule so that bonds don't split over images
+
+    Atom positions are modified in place.
+
+    This function is most useful when atoms have been packed into the primary
+    unit cell, causing breaks mid molecule, with the molecule then appearing
+    on either side of the unit cell. This is problematic for operations
+    such as calculating the center of mass of the molecule. ::
+
+       +-----------+     +-----------+
+       |           |     |           |
+       | 6       3 |     |         3 | 6
+       | !       ! |     |         ! | !
+       |-5-8   1-2-| ->  |       1-2-|-5-8
+       | !       ! |     |         ! | !
+       | 7       4 |     |         4 | 7
+       |           |     |           |
+       +-----------+     +-----------+
+
 
     Parameters
     ----------
-    atoms : np.ndarray
-        array of atom indices to consider
-    bonds : np.ndarray
-        array of bonds
-    start : int
-        where to start walking
+    atomgroup : AtomGroup
+        The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
+        The positions of this are modified in place.  All these atoms
+        must belong in the same molecule or fragment.
+    reference_atom : :class:`~MDAnalysis.core.groups.Atom`
+        The atom around which all other atoms will be moved.
+        Defaults to atom 0 in the atomgroup.
 
-    Returns
+    Raises
+    ------
+    NoDataError
+        There are no bonds present.
+        (See :func:`~MDAnalysis.topology.core.guess_bonds`)
+
+    ValueError
+        The algorithm fails to work.  This is usually
+        caused by the atomgroup not being a single fragment.
+        (ie the molecule can't be traversed by following bonds)
+
+
+    Example
     -------
-    result : bool
-        If entire molecule can be traversed by bonds
+    Make fragments whole::
+
+        from MDAnalysis.lib.mdamath import make_whole
+
+        # This algorithm requires bonds, these can be guessed!
+        u = mda.Universe(......, guess_bonds=True)
+
+        # MDAnalysis can split molecules into their fragments
+        # based on bonding information.
+        # Note that this function will only handle a single fragment
+        # at a time, necessitating a loop.
+        for frag in u.fragments:
+          make_whole(frag)
+
+    Alternatively, to keep a single atom in place as the anchor::
+
+        # This will mean that atomgroup[10] will NOT get moved,
+        # and all other atoms will move (if necessary).
+        make_whole(atomgroup, reference_atom=atomgroup[10])
+
+
+    .. versionadded:: 0.11.0
     """
-    cdef bint result
-    cdef intset seen, done, todo, total
+    cdef intset agset, refpoints, todo, done
+    cdef int i, nloops, ref, atom, other
     cdef intmap bonding
-    cdef int i, N, nloops
-    cdef int x, y
+    cdef int[:, :] bonds
+    cdef float[:, :] oldpos, newpos
+    cdef bint ortho
+    cdef float[:] box
+    cdef float tri_box[3][3]
+    cdef float inverse_box[3]
+    cdef double vec[3]
 
-    total = intset()
-    bonding = intmap()
+    if reference_atom is None:
+        ref = atomgroup[0].index
+    else:
+        # Sanity check
+        if not reference_atom in atomgroup:
+            raise ValueError("Reference atom not in atomgroup")
+        ref = reference_atom.index
 
-    # make set of which atoms exist
-    N = atoms.shape[0]
-    for i in range(N):
-        total.insert(atoms[i])
+    box = atomgroup.dimensions
 
-    if not total.count(start):
-        raise ValueError
+    for i in range(3):
+        if box[i] == 0.0:
+            raise ValueError("One or more dimensions was zero.  "
+                             "You can set dimensions using 'atomgroup.dimensions='")
 
-    # build C++ dict of bonds
-    N = bonds.shape[0]
-    for i in range(N):
-        x = bonds[i, 0]
-        y = bonds[i, 1]
+    ortho = True
+    for i in range(3, 6):
+        if box[i] != 90.0:
+            ortho = False
+
+    if ortho:
+        for i in range(3):
+            inverse_box[i] = 1.0 / box[i]
+    else:
+        from .mdamath import triclinic_vectors
+        tri_box = triclinic_vectors(box)
+
+    # set of indices in AtomGroup
+    agset = intset()
+    for i in atomgroup.indices.astype(np.int32):
+        agset.insert(i)
+    # C++ dict of bonds
+    try:
+        bonds = atomgroup.bonds.to_indices()
+    except (AttributeError, NoDataError):
+        raise NoDataError("The atomgroup is required to have bonds")
+    for i in range(bonds.shape[0]):
+        atom = bonds[i, 0]
+        other = bonds[i, 1]
         # only add bonds if both atoms are in atoms set
-        if total.count(x) and total.count(y):
-            bonding[x].insert(y)
-            bonding[y].insert(x)
+        if agset.count(atom) and agset.count(other):
+            bonding[atom].insert(other)
+            bonding[other].insert(atom)
 
-    seen = intset()
-    seen.insert(start)
-    done = intset()
+    oldpos = atomgroup.positions
+    newpos = np.zeros((oldpos.shape[0], 3), dtype=np.float32)
 
-    N = total.size()
+    done = intset()  # Who have I already done?
+    refpoints = intset()  # Who is safe to use as reference point?
+    # initially we have one starting atom whose position we trust
+    refpoints.insert(ref)
+    for i in range(3):
+        newpos[ref, i] = oldpos[ref, i]
 
     nloops = 0
-    while seen.size() < N and nloops < N:
+    while refpoints.size() < agset.size() and nloops < agset.size():
         nloops += 1
-        # todo is set of start points
-        # can start on anyone that has been seen, but not done yet
-        todo = difference(seen, done)
 
-        for x in todo:  # for each start point
-            for y in bonding[x]:  # add all bonded atoms
-                seen.insert(y)
-            # mark as done
-            done.insert(x)
+        # We want to iterate over atoms that are good to use as reference
+        # points, but haven't been done yet.
+        todo = difference(refpoints, done)
+        for atom in todo:
+            for other in bonding[atom]:
+                # If other is already a refpoint, leave alone
+                if refpoints.count(other):
+                    continue
+                # Draw vector from atom to other
+                for i in range(3):
+                    vec[i] = oldpos[other, i] - oldpos[atom, i]
+                # Apply periodic boundary conditions to this vector
+                if ortho:
+                    minimum_image(&vec[0], &box[0], &inverse_box[0])
+                else:
+                    minimum_image_triclinic(&vec[0], <coordinate*>&tri_box[0])
+                # Then define position of other based on this vector
+                for i in range(3):
+                    newpos[other, i] = newpos[atom, i] + vec[i]
 
-    # if we saw all Atoms when walking, is_contiguous
-    return seen.size() == N
+                # This other atom can now be used as a reference point
+                refpoints.insert(other)
+            done.insert(atom)
+
+    if refpoints.size() < agset.size():
+        raise ValueError("AtomGroup was not contiguous from bonds, process failed")
+    else:
+        atomgroup.positions = newpos
