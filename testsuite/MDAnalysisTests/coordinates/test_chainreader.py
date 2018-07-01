@@ -237,24 +237,48 @@ def build_trajectories(folder, sequences, fmt='xtc'):
 
 
 class TestChainReaderContinuous(object):
+    class SequenceInfo(object):
+        def __init__(self, seq, n_frames, order):
+            self.seq = seq
+            self.n_frames = n_frames
+            self.order = order
+
     @pytest.mark.parametrize('fmt', ('xtc', 'trr'))
-    @pytest.mark.parametrize('sequences, n_frames',
-                             [
-                                 [([0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7]), 8],
-                                 [([0, 1, 2, 4], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), 10],
-                                 [([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3]), 4],
-                                 [([5, 6, 7, 8, 9], [2, 3, 4, 5, 6], [0, 1, 2, 3]), 10],
-                                 [([0, 1, 2],) * 3, 3],
-                                 [([0, 1, 2, 3,], [3, 4], [4, 5, 6, 7]), 8],
-                                 [([5, 6, 7, 8, 9], [2, 3, 4, 5, 6], [0, 1, 2, 3]), 10]
-                              ])
-    def test_order(self, sequences, n_frames, tmpdir, fmt):
+    @pytest.mark.parametrize('seq_info',[
+        SequenceInfo(seq=([0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7]),
+                     n_frames=8,
+                     order=[0, 0, 1, 1, 2, 2, 2, 2]),
+        SequenceInfo(seq=([0, 1, 2, 4], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
+                     n_frames=10,
+                     order=np.ones(10)),
+        SequenceInfo(seq=([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3]),
+                     n_frames=4,
+                     order=np.ones(4)),
+        SequenceInfo(seq=([5, 6, 7, 8, 9], [2, 3, 4, 5, 6], [0, 1, 2, 3]),
+                     n_frames=10,
+                     order=[2, 2, 1, 1, 1, 0, 0, 0, 0, 0]),
+        SequenceInfo(seq=([0, 1, 2],) * 3,
+                     n_frames=3,
+                     order=[2, 2, 2]),
+        SequenceInfo(seq=([0, 1, 2, 3,], [3, 4], [4, 5, 6, 7]),
+                     n_frames=8,
+                     order=[0, 0, 0, 1, 2, 2, 2, 2]),
+        SequenceInfo(seq=([5, 6, 7, 8, 9], [2, 3, 4, 5, 6], [0, 1, 2, 3]),
+                     n_frames=10,
+                     order=[2, 2, 1, 1, 1, 0, 0, 0, 0, 0]),
+        SequenceInfo(seq=[range(0, 6), range(2, 5), range(2, 5), range(2, 5), range(3, 8)],
+                     n_frames=8,
+                     order=[0, 0, 2, 4, 4, 4, 4, 4]),
+    ])
+    def test_order(self, seq_info, tmpdir, fmt):
         folder = str(tmpdir)
-        utop, fnames = build_trajectories(folder, sequences=sequences, fmt=fmt)
+        utop, fnames = build_trajectories(folder, sequences=seq_info.seq, fmt=fmt)
         u = mda.Universe(utop._topology, fnames, continuous=True)
-        assert u.trajectory.n_frames == n_frames
+        assert u.trajectory.n_frames == seq_info.n_frames
         for i, ts in enumerate(u.trajectory):
             assert_almost_equal(i, ts.time, decimal=4)
+            # check we have used the right trajectory
+            assert seq_info.order[i] == int(ts.positions[0, 0])
 
     def test_start_frames(self, tmpdir):
         folder = str(tmpdir)
