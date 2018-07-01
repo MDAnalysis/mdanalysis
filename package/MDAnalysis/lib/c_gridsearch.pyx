@@ -1,22 +1,28 @@
-# -*- coding: utf-8; Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-#  Copyright (C) 2013-2016  Sébastien Buchoux <sebastien.buchoux@gmail.com>
+# MDAnalysis --- https://www.mdanalysis.org
 #
-#    This file is part of FATSLiM.
+# Copyright (C) 2013-2018  Sébastien Buchoux <sebastien.buchoux@gmail.com>
+# Copyright (c) 2018 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
-#    FATSLiM is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+# Released under the GNU Public Licence, v3 or any higher version
 #
-#    FATSLiM is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+# Please cite your use of MDAnalysis in published work:
 #
-#    You should have received a copy of the GNU General Public License
-#    along with FATSLiM.  If not, see <http://www.gnu.org/licenses/>.
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+#
+
 #cython: cdivision=True
 #cython: boundscheck=False
 
