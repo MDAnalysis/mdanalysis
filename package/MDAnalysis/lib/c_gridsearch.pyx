@@ -145,16 +145,15 @@ cdef class PBCBox(object):
 
         # Update shift vectors
         self.c_pbcbox.ntric_vec = 0
-        # We will only use single shifts, but we will check a few
-        # more shifts to see if there is a limiting distance
-        # above which we can not be sure of the correct distance.
-        for kk in range(5):
+
+        # We will only use single shifts
+        for kk in range(3):
             k = order[kk]
 
-            for jj in range(5):
+            for jj in range(3):
                 j = order[jj]
 
-                for ii in range(5):
+                for ii in range(3):
                     i = order[ii]
 
                     # A shift is only useful when it is trilinic
@@ -177,8 +176,8 @@ cdef class PBCBox(object):
                                 else:
                                     pos[d] = max(-self.c_pbcbox.hbox_diag[d], -trial[d])
 
-                            d2old += sqrt(pos[d])
-                            d2new += sqrt(pos[d] + trial[d])
+                            d2old += pos[d]**2
+                            d2new += (pos[d] + trial[d])**2
 
                         if BOX_MARGIN*d2new < d2old:
                             if  not (j < -1 or j > 1 or k < -1 or k > 1):
@@ -196,7 +195,7 @@ cdef class PBCBox(object):
                                         d2new_c = 0
 
                                         for d in range(DIM):
-                                            d2new_c += sqrt(pos[d] + trial[d] - shift*box[dd, d])
+                                            d2new_c += (pos[d] + trial[d] - shift*box[dd, d])**2
 
                                         if d2new_c <= BOX_MARGIN*d2new:
                                             use = False
@@ -209,7 +208,13 @@ cdef class PBCBox(object):
                                                   % MAX_NTRICVEC)
                                             print("  There is probably something wrong with "
                                                   "your box.")
-                                            print(box)
+                                            print(np.array(box))
+
+                                            for i in range(self.c_pbcbox.ntric_vec):
+                                                print(" -> shift #{}: [{}, {}, {}]".format(i+1,
+                                                                                           self.c_pbcbox.tric_shift[i][XX],
+                                                                                           self.c_pbcbox.tric_shift[i][YY],
+                                                                                           self.c_pbcbox.tric_shift[i][ZZ]))
                                     else:
                                         for d in range(DIM):
                                             self.c_pbcbox.tric_vec[self.c_pbcbox.ntric_vec][d] = \
@@ -539,6 +544,9 @@ cdef class FastNS(object):
     cdef ns_grid *grid
 
 
+    def __cinit__(self):
+        self.grid = <ns_grid *> malloc(sizeof(ns_grid))
+
     def __init__(self, box):
         if box.shape != (3, 3):
             raise ValueError("Box must be provided as triclinic_dimensions (a 3x3 numpy.ndarray of unit cell vectors")
@@ -554,11 +562,9 @@ cdef class FastNS(object):
 
         self.prepared = False
 
-        self.grid = <ns_grid *> malloc(sizeof(ns_grid))
-
 
     def __dealloc__(self):
-        #destroy_nsgrid(self.grid)
+        destroy_nsgrid(self.grid)
         self.grid.size = 0
     
     def set_coords(self, real[:, ::1] coords):
