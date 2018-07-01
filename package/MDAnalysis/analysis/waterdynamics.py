@@ -1200,8 +1200,8 @@ class SurvivalProbability(object):
       frame  where analysis begins
     tf : int
       frame where analysis ends
-    dtmax : int
-      Maximum dt size, `dtmax` < `tf` or it will crash.
+    tau_max : int
+      Maximum dt size, `tau_max` must be < `tf`
 
 
     .. versionadded:: 0.11.0
@@ -1215,10 +1215,9 @@ class SurvivalProbability(object):
         self.tf = tf
         self.tau_max = tau_max
 
-
     def run(self):
         """
-        Analyze trajectory and produce timeseries of the survival probability.
+        Computes and returns the survival probability timeseries
         """
         
         # select all survivors to an array of sets
@@ -1230,22 +1229,18 @@ class SurvivalProbability(object):
             print("ERROR: Cannot select fewer frames than dtmax")
             return
 
-        timeseries = []
-        for tau in list(range(1, self.tau_max + 1)):
-            deltaP = []
-            for t in range(len(selected) - tau):
+        timeseries = [[] for tau in list(range(1, self.tau_max + 1))]
+        for t in range(len(selected)):
+            for tau in list(range(1, self.tau_max + 1)):
+                if tau + t > len(selected) - 1:
+                    break
 
-                Nt = float(len(selected[t]))
+                Nt = len(selected[t])
 
                 if Nt == 0:
                     continue
 
-                Ntau = len(set.intersection(*selected[t:t+tau]))
-
-                # store survival probability at each t
-                deltaP.append(Ntau / Nt)
-
-            # store mean survival probability for each tau
-            timeseries.append(np.mean(np.asarray(deltaP)))
-        return timeseries
+                Ntau = len(set.intersection(*selected[t:t + tau]))
+                timeseries[tau - 1].append( Ntau / float(Nt) )
+        return [np.mean(tau_timeseries) for tau_timeseries in timeseries]
 
