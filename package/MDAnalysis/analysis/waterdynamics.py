@@ -1238,7 +1238,7 @@ class SurvivalProbability(object):
                 Nt = len(selected[t])
 
                 if Nt == 0:
-                    continue
+                    break
 
                 Ntau = len(set.intersection(*selected[t:t + tau]))
                 timeseries[tau - 1].append( Ntau / float(Nt) )
