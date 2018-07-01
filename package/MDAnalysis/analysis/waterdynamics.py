@@ -1229,18 +1229,18 @@ class SurvivalProbability(object):
             print("ERROR: Cannot select fewer frames than dtmax")
             return
 
-        timeseries = [[] for tau in list(range(1, self.tau_max + 1))]
+        tau_timeseries = [[] for _ in list(range(1, self.tau_max + 1))]
         for t in range(len(selected)):
+            Nt = len(selected[t])
+
+            if Nt == 0:
+                continue
+
             for tau in list(range(1, self.tau_max + 1)):
                 if tau + t > len(selected) - 1:
                     break
 
-                Nt = len(selected[t])
-
-                if Nt == 0:
-                    break
-
                 Ntau = len(set.intersection(*selected[t:t + tau]))
-                timeseries[tau - 1].append( Ntau / float(Nt) )
-        return [np.mean(tau_timeseries) for tau_timeseries in timeseries]
+                tau_timeseries[tau - 1].append( Ntau / float(Nt) )
+        return [np.mean(tau_timeseries) for tau_timeseries in tau_timeseries]
 
