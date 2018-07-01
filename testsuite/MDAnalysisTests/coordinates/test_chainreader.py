@@ -268,7 +268,7 @@ class TestChainReaderContinuous(object):
                      order=[2, 2, 1, 1, 1, 0, 0, 0, 0, 0]),
         SequenceInfo(seq=[range(0, 6), range(2, 5), range(2, 5), range(2, 5), range(3, 8)],
                      n_frames=8,
-                     order=[0, 0, 2, 4, 4, 4, 4, 4]),
+                     order=[0, 0, 3, 4, 4, 4, 4, 4]),
     ])
     def test_order(self, seq_info, tmpdir, fmt):
         folder = str(tmpdir)
@@ -333,13 +333,17 @@ class TestChainReaderContinuous(object):
         with pytest.raises(NotImplementedError):
             mda.Universe(PSF, [DCD, DCD], continuous=True)
 
+
 @pytest.mark.parametrize('l, ref', ([((0, 3), (3, 3), (4, 7)), (0, 1, 2)],
                                     [((0, 9), (0, 4)), (0, 1)],
                                     [((0, 3), (2, 2), (3, 3), (2, 6), (5, 9)), (0, 1, 3, 2, 4)],
-                                    [((0, 2), (4, 9), (0, 4), (7, 9)), (0, 2, 1, 3)]))
+                                    [((0, 2), (4, 9), (0, 4), (7, 9)), (0, 2, 1, 3)],
+                                    [((0, 5), (2, 4), (2, 4), (2, 4), (3, 7)), (0, 3, 4)]
+                                    ))
 def test_multilevel_arg_sort(l, ref):
     indices = mda.coordinates.chain.multi_level_argsort(l)
     assert_array_equal(indices, ref)
+
 
 @pytest.mark.parametrize('l, ref', ([((0, 4), (3, 6), (6, 9)), (0, 1, 2)],
                                     [((0, 3), (3, 4), (4, 7)), (0, 1, 2)],
@@ -349,7 +353,13 @@ def test_multilevel_arg_sort(l, ref):
                                     [((0, 3), (0, 3)), (1,)],
                                     [((1, 3), (0, 4)), (0,)],
                                     [((0, 3), ), (0, )],
-                                    [((0, 3), (5, 9)), (0, 1)]))
+                                    [((0, 3), (5, 9)), (0, 1)],
+                                    [((0, 3), (0, 3), (5, 9)), (1, 2)],
+                                    [((0, 3), (0, 3), (0, 3), (5, 9)), (2, 3)],
+                                    [((0, 5), (2, 4), (2, 4), (2, 4), (3, 7)), (0, 4)],
+                                    [((0, 3), (2, 4), (2, 4), (2, 4), (3, 7)), (0, 3, 4)],
+                                    [((0, 3), (2, 4), (4, 7), (4, 7), (4, 7), (6, 9)), (0, 1, 4, 5)],
+                                    ))
 def test_filter_times(l, ref):
     indices = mda.coordinates.chain.filter_times(l, dt=1)
     assert_array_equal(indices, ref)
