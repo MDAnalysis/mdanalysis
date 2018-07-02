@@ -25,7 +25,7 @@ Trajectory translation --- :mod:`MDAnalysis.transformations.translate`
 ======================================================================
 
 Translate the coordinates of a given trajectory by a given vector.
-The vector can either be user defined, using the function `translate`
+The vector can either be user defined, using the function :func:`translate`
 or defined by centering an AtomGroup in the unit cell using the function
 `center_in_box`
     
@@ -56,13 +56,13 @@ def translate(vector):
     -------
     :class:`~MDAnalysis.coordinates.base.Timestep` object
     
-    """       
+    """
+    if len(vector)>2:
+        vector = np.float32(vector)
+    else:
+        raise ValueError("{} vector is too short".format(vector))
     def wrapped(ts):
-        if len(vector)>2:
-            v = np.float32(vector)
-            ts.positions += v
-        else:
-            raise ValueError("{} vector is too short".format(vector))
+        ts.positions += vector
         
         return ts
     
@@ -72,8 +72,8 @@ def center_in_box(ag, center='geometry', point=None, pbc=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
-    is centered on the unit cell. The unit cell dimensions are taken from the input Timestep object or
-    can be defined using the `box` argument.
+    is centered on the unit cell. The unit cell dimensions are taken from the input Timestep object.
+    If a point is given, the center of the atomgroup will be translated to this point instead. 
     
     Example
     -------
@@ -93,7 +93,7 @@ def center_in_box(ag, center='geometry', point=None, pbc=False):
     point: array-like, optional
         overrides the unit cell center - the coordinates of the Timestep are translated so
         that the center of mass/geometry of the given AtomGroup is aligned to this position
-        instead. Defined as an array of size 3. Example: [1, 2, 3]
+        instead. Defined as an array of size 3.
     pbc: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry. Default is `False`, no changes
@@ -127,7 +127,7 @@ def center_in_box(ag, center='geometry', point=None, pbc=False):
         if point is None:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
         else:
-            boxcenter = np.float32(point)
+            boxcenter = point
     
         ag_center = center_method()
 
@@ -137,5 +137,4 @@ def center_in_box(ag, center='geometry', point=None, pbc=False):
         return ts
     
     return wrapped
-        
-            
+    

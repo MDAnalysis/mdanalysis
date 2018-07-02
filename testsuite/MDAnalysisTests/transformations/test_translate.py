@@ -33,51 +33,59 @@ from MDAnalysisTests import make_Universe
 @pytest.fixture()
 def translate_universes():
     # create the Universe objects for the tests
+    # this universe has no masses and some tests need it as such
     reference = make_Universe(trajectory=True)
     transformed = make_Universe(['masses'], trajectory=True)
     transformed.trajectory.ts.dimensions = np.array([372., 373., 374., 90, 90, 90])
     return reference, transformed
 
 def test_translate_coords(translate_universes):
-    ref_u = translate_universes[0]
-    trans_u = translate_universes[1]
+    ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts
     vector = np.float32([1, 2, 3])
     ref.positions += vector
     trans = translate(vector)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
-def test_translate_vector(translate_universes):
-    # what happens if the vector argument is smaller than 3?
+@pytest.mark.parametrize('vector', (
+    [0, 1],
+    [0, 1, 2, 3, 4],
+    np.array([0, 1]),
+    np.array([0, 1, 2, 3, 4]),
+    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+    np.array([[0], [1], [2]]))
+)
+def test_translate_vector(translate_universes, vector):
+    # what happens if the vector argument is of wrong size?
     ts = translate_universes[0].trajectory.ts
-    vector = [0, 1]
-    with pytest.raises(ValueError):
-        translate(vector)(ts)
-    # what happens if the vector argument is bigger than 3?
-    vector = [0, 1, 2, 3]
     with pytest.raises(ValueError):
         translate(vector)(ts)
 
 def test_center_in_box_bad_ag(translate_universes):
-    # this universe as a box size zero
+    # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
-    ag = translate_universes[0].residues[0].atoms
     # what happens if something other than an AtomGroup is given?
     bad_ag = 1
     with pytest.raises(ValueError): 
         center_in_box(bad_ag)(ts)
 
-def test_center_in_box_bad_point(translate_universes):
-    # this universe as a box size zero
+@pytest.mark.parametrize('point', (
+    [0, 1],
+    [0, 1, 2, 3, 4],
+    np.array([0, 1]),
+    np.array([0, 1, 2, 3, 4]),
+    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+    np.array([[0], [1], [2]]))
+)
+def test_center_in_box_bad_point(translate_universes, point):
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # what if the box is in the wrong format?
-    bad_point = [1]
     with pytest.raises(ValueError): 
-        center_in_box(ag, point=bad_point)(ts)
+        center_in_box(ag, point=point)(ts)
     
 def test_center_in_box_bad_pbc(translate_universes):    
-    # this universe as a box size zero
+    # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # is pbc passed to the center methods?
@@ -86,7 +94,7 @@ def test_center_in_box_bad_pbc(translate_universes):
         center_in_box(ag, pbc=True)(ts)
 
 def test_center_in_box_bad_center(translate_universes):
-    # this universe as a box size zero
+    # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # what if a wrong center type name is passed?
@@ -95,7 +103,7 @@ def test_center_in_box_bad_center(translate_universes):
         center_in_box(ag, center=bad_center)(ts)
     
 def test_center_in_box_no_masses(translate_universes):   
-    # this universe as a box size zero
+    # this universe has no masses
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # if the universe has no masses and `mass` is passed as the center arg
@@ -105,8 +113,7 @@ def test_center_in_box_no_masses(translate_universes):
 
 def test_center_in_box_coords_no_options(translate_universes):
     # what happens when we center the coordinates arround the center of geometry of a residue?
-    ref_u = translate_universes[0]
-    trans_u = translate_universes[1]
+    ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts
     ref_center = np.float32([6, 7, 8])
     box_center = np.float32([186., 186.5, 187.])
@@ -118,9 +125,8 @@ def test_center_in_box_coords_no_options(translate_universes):
 def test_center_in_box_coords_with_pbc(translate_universes):
     # what happens when we center the coordinates arround the center of geometry of a residue?
     # using pbc into account for center of geometry calculation
-    ref_u = translate_universes[0]
+    ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts
-    trans_u = translate_universes[1]
     trans_u.dimensions = [363., 364., 365., 90., 90., 90.]
     ag = trans_u.residues[24].atoms
     box_center = np.float32([181.5, 182., 182.5])
@@ -131,9 +137,8 @@ def test_center_in_box_coords_with_pbc(translate_universes):
 
 def test_center_in_box_coords_with_mass(translate_universes):   
     # using masses for calculating the center of the atomgroup
-    ref_u = translate_universes[0]
+    ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts
-    trans_u = translate_universes[1]
     ag = trans_u.residues[24].atoms
     box_center = np.float32([186., 186.5, 187.])
     ref_center = ag.center_of_mass()
@@ -143,9 +148,8 @@ def test_center_in_box_coords_with_mass(translate_universes):
 
 def test_center_in_box_coords_with_box(translate_universes):   
     # using masses for calculating the center of the atomgroup
-    ref_u = translate_universes[0]
+    ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts
-    trans_u = translate_universes[1]
     ag = trans_u.residues[0].atoms
     newpoint = [1000, 1000, 1000]
     box_center = np.float32(newpoint)
@@ -157,9 +161,8 @@ def test_center_in_box_coords_with_box(translate_universes):
 def test_center_in_box_coords_all_options(translate_universes):
     # what happens when we center the coordinates arround the center of geometry of a residue?
     # using pbc into account for center of geometry calculation
-    ref_u = translate_universes[0]
+    ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts
-    trans_u = translate_universes[1]
     ag = trans_u.residues[24].atoms
     newpoint = [1000, 1000, 1000]
     box_center = np.float32(newpoint)
