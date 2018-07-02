@@ -27,7 +27,7 @@ Trajectory translation --- :mod:`MDAnalysis.transformations.translate`
 Translate the coordinates of a given trajectory by a given vector.
 The vector can either be user defined, using the function :func:`translate`
 or defined by centering an AtomGroup in the unit cell using the function
-`center_in_box`
+:func:`center_in_box`
     
 """
 from __future__ import absolute_import, division
