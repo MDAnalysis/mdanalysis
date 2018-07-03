@@ -1265,7 +1265,7 @@ class SurvivalProbability(object):
                 continue
 
             for tau in tau_timeseries:
-                if t + tau > len(selected) - 1 - 1:
+                if t + tau > len(selected):
                     break
 
                 Ntau = len(set.intersection(*selected[t:t + tau + 1]))
