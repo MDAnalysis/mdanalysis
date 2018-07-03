@@ -73,9 +73,13 @@ points = (np.random.uniform(low=0, high=1.0,
                         size=(100, 3))*(boxes_1[0][:3])).astype(np.float32)
 
 
-@pytest.mark.parametrize('box, query , method',
-                         itertools.product(boxes_1, query_1, method_1))
+@pytest.mark.parametrize('box', boxes_1)
+@pytest.mark.parametrize('query', query_1)
+@pytest.mark.parametrize('method', method_1)
 def test_capped_distance_checkbrute(box, query, method):
+    np.random.seed(90003)
+    points = (np.random.uniform(low=0, high=1.0,
+                        size=(100, 3))*(boxes_1[0][:3])).astype(np.float32)
     max_cutoff = 0.3
     # capped distance should be able to handle array of vectors
     # as well as single vectors.

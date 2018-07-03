@@ -1,4 +1,4 @@
- # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
@@ -485,15 +485,14 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None, box
     Returns
     -------
     Function object based on the rules and specified method
-    
     Currently implemented methods are
     bruteforce : returns ``_bruteforce_capped``
     PKDtree : return ``_pkdtree_capped`
 
     """
     methods = {'bruteforce': _bruteforce_capped,
-            'pkdtree':_pkdtree_capped}
-    
+            'pkdtree': _pkdtree_capped}
+
     if method is not None:
         return methods[method]
 
@@ -510,7 +509,9 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None, box
             else:
                 size = box.max(axis=0) - box.min(axis=0)
 
-        if np.any(size < 10.0*max_cutoff) and len(reference) > 100000 and len(configuration) > 100000:
+        if (np.any(size < 10.0*max_cutoff) and
+                   len(reference) > 100000 and
+                   len(configuration) > 100000):
             return methods['bruteforce']
         else:
             return methods['pkdtree']
