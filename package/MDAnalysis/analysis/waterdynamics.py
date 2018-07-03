@@ -1210,22 +1210,40 @@ class SurvivalProbability(object):
 
     """
 
-    def __init__(self, universe, selection, t0=0, tf=-1, tau_max=20):
+    def __init__(self, universe, selection, t0=0, tf=-1, tau_max=20, verbose=False):
+        """
+        FIXME - definition explaining each argument
+        tf is inclusive
+
+        Return:
+        taus, sp_timeseries
+
+        Special:
+        :param universe:
+        :param selection:
+        :param t0: First frame to be analysed
+        :param tf: Last frame to be analysed (must be below the max number of frames)
+        :param tau_max: The last tau to be calculated (inclusive), starts from 1
+        :param verbose: If True, will highlight the starting point, ending point, progress
+        """
         self.universe = universe
         self.selection = selection
         self.t0 = t0
         if tf == -1:
-            self.tf = len(universe.trajectory)
-        else:
+            self.tf = len(universe.trajectory) - 1
+        elif tf <= len(universe.trajectory):
             self.tf = tf
+        else:
+            raise ValueError("tf cannot be bigger than the number of frames in the simulation")
         self.tau_max = tau_max
+        self.verbose = verbose
 
         if tf - t0 <= self.tau_max:
-            raise ValueError("ERROR: Cannot select fewer frames than tau_max + 1")
+            raise ValueError("cannot select fewer frames than tau_max + 1")
 
-        """
-        FIXME - definition explaining each argument
-        """
+    def print(self, *args):
+        if self.verbose:
+            print(args)
 
     def run(self):
         """
@@ -1243,10 +1261,11 @@ class SurvivalProbability(object):
             Nt = len(selected[t])
 
             if Nt == 0:
+                self.print("At t=", t, "the selection did not find any molecule. Moving on to the next frame")
                 continue
 
             for tau in tau_timeseries:
-                if t + tau > len(selected) - 1:
+                if t + tau > len(selected) - 1 - 1:
                     break
 
                 Ntau = len(set.intersection(*selected[t:t + tau + 1]))
