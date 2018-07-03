@@ -412,6 +412,8 @@ Classes
 
 """
 from __future__ import print_function, division, absolute_import
+
+from numpy.core.multiarray import ndarray
 from six.moves import range, zip_longest
 
 import numpy as np
@@ -1229,18 +1231,21 @@ class SurvivalProbability(object):
             print("ERROR: Cannot select fewer frames than dtmax")
             return
 
-        tau_timeseries = [[] for _ in list(range(1, self.tau_max + 1))]
+        tau_timeseries = np.arange(1, tau_max + 1)
+        sp_timeseries = [[] for _ in range(self.tau_max)]
+
         for t in range(len(selected)):
             Nt = len(selected[t])
 
             if Nt == 0:
                 continue
 
-            for tau in list(range(1, self.tau_max + 1)):
-                if tau + t > len(selected) - 1:
+            for tau in tau_timeseries:
+                if t + tau > len(selected):
                     break
 
                 Ntau = len(set.intersection(*selected[t:t + tau]))
-                tau_timeseries[tau - 1].append( Ntau / float(Nt) )
-        return [np.mean(tau_timeseries) for tau_timeseries in tau_timeseries]
+                sp_timeseries[tau - 1].append(Ntau / float(Nt) )
+
+        return np.asarray(np.mean(sp) for sp in sp_timeseries), tau_timeseries
 
