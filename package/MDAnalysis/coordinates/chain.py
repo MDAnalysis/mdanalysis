@@ -121,23 +121,19 @@ def filter_times(times, dt):
 
     # more then 2 unique time entries
 
-    # special case first times are equal
-    if not np.allclose(times[0][0], times[1][0]):
-        used_idx = [0, ]
-        offset = 1
-    else:
-        used_idx = [1, ]
-        offset = 2
+    used_idx = [0, ]
 
-    for i, (first, middle, last) in enumerate(zip(times[:-2], times[1:-1], times[2:])):
-        if not np.allclose(middle[1] - middle[0], dt):
+    for i, (first, middle, last) in enumerate(zip(times[:-2], times[1:-1], times[2:]), start=1):
+        if np.allclose(first[0], middle[0]):
+            used_idx[-1] = i
+        elif not np.allclose(middle[1] - middle[0], dt):
             if (middle[0] <= first[1]) and (last[0] <= middle[1]):
-                used_idx.append(i + offset)
+                used_idx.append(i)
         elif (middle[0] <= first[1]):
-            used_idx.append(i + offset)
+            used_idx.append(i)
 
     # take care of first special case
-    if offset == 1 and (times[-2][1] <= times[-1][1]):
+    if times[-2][1] <= times[-1][1]:
         used_idx.append(len(times) - 1)
 
     return used_idx
@@ -156,9 +152,16 @@ class ChainReader(base.ProtoReader):
     colum represents the time and the trajectory segments overlap. With the
     continuous chainreader only the frames marked with a + will be read.
 
-    part01:  ++++--
-    part02:      ++++++-
-    part03:            ++++++++
+    ::
+
+        part01:  ++++--
+        part02:      ++++++-
+        part03:            ++++++++
+
+    .. warning::
+
+        The order in which trajectories can change what frames are used with
+        the continuous option.
 
     The default chainreader will read all frames. The continuous option is
     currently only supported for XTC and TRR files.
