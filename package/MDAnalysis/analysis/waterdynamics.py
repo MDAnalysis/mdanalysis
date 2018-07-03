@@ -1210,30 +1210,35 @@ class SurvivalProbability(object):
 
     """
 
-    def __init__(self, universe, selection, t0, tf, tau_max):
+    def __init__(self, universe, selection, t0=0, tf=-1, tau_max=20):
         self.universe = universe
         self.selection = selection
         self.t0 = t0
-        self.tf = tf
+        if tf == -1:
+            self.tf = len(universe.trajectory)
+        else:
+            self.tf = tf
         self.tau_max = tau_max
+
+        if tf - t0 <= self.tau_max:
+            raise ValueError("ERROR: Cannot select fewer frames than tau_max + 1")
+
+        """
+        FIXME - definition explaining each argument
+        """
 
     def run(self):
         """
         Computes and returns the survival probability timeseries
         """
         
-        # select all survivors to an array of sets
+        # load all frames to an array of sets
         selected = []
         for _ in self.universe.trajectory[self.t0:self.tf]:
             selected.append(set(self.universe.select_atoms(self.selection)))
 
-        if len(selected) < self.tau_max:
-            print("ERROR: Cannot select fewer frames than dtmax")
-            return
-
         tau_timeseries = np.arange(1, self.tau_max + 1)
         sp_timeseries = [[] for _ in range(self.tau_max)]
-
         for t in range(len(selected)):
             Nt = len(selected[t])
 
@@ -1241,11 +1246,14 @@ class SurvivalProbability(object):
                 continue
 
             for tau in tau_timeseries:
-                if t + tau > len(selected):
+                if t + tau > len(selected) - 1:
                     break
 
                 Ntau = len(set.intersection(*selected[t:t + tau + 1]))
                 sp_timeseries[tau - 1].append(Ntau / float(Nt) )
+
+        # user can investigate the distribution and sample size
+        self.sp_timeseries = sp_timeseries
 
         return tau_timeseries, [np.mean(sp) for sp in sp_timeseries]
 
