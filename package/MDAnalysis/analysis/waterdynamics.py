@@ -1231,7 +1231,7 @@ class SurvivalProbability(object):
             print("ERROR: Cannot select fewer frames than dtmax")
             return
 
-        tau_timeseries = np.arange(1, tau_max + 1)
+        tau_timeseries = np.arange(1, self.tau_max + 1)
         sp_timeseries = [[] for _ in range(self.tau_max)]
 
         for t in range(len(selected)):
@@ -1244,8 +1244,8 @@ class SurvivalProbability(object):
                 if t + tau > len(selected):
                     break
 
-                Ntau = len(set.intersection(*selected[t:t + tau]))
+                Ntau = len(set.intersection(*selected[t:t + tau + 1]))
                 sp_timeseries[tau - 1].append(Ntau / float(Nt) )
 
-        return np.asarray(np.mean(sp) for sp in sp_timeseries), tau_timeseries
+        return tau_timeseries, [np.mean(sp) for sp in sp_timeseries]
 

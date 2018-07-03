@@ -91,17 +91,18 @@ def test_MeanSquareDisplacement_zeroMolecules(universe):
 
 def test_SurvivalProbability(universe_prot):
     sp = waterdynamics.SurvivalProbability(universe_prot, SELECTION3, 0, 10, 4)
-    timeseries = sp.run()
+    taus, timeseries = sp.run()
+    print (timeseries)
     assert_almost_equal(timeseries, [1.0, 0.354, 0.267, 0.242], decimal=3)
 
 
 def test_SurvivalProbability_t0Ignored(universe_prot):
     sp = waterdynamics.SurvivalProbability(universe_prot, SELECTION3, 3, 10, 4)
-    timeseries = sp.run()
+    taus, timeseries = sp.run()
     assert_almost_equal(timeseries, [1.0, 0.391, 0.292, 0.261], decimal=3)
 
 
 def test_SurvivalProbability_zeroMolecules(universe):
     sp_zero = waterdynamics.SurvivalProbability(universe, SELECTION2, 0, 6, 3)
-    timeseries = sp_zero.run()
+    taus, timeseries = sp_zero.run()
     assert np.isnan(timeseries[1])
