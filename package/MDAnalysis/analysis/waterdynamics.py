@@ -1236,14 +1236,11 @@ class SurvivalProbability(object):
             if Nt == 0:
                 continue
 
-            survivors = set(selected[t])
-
             for tau in list(range(1, self.tau_max + 1)):
                 if tau + t > len(selected) - 1:
                     break
 
-                survivors = survivors.intersection(set(selected[t + tau]))
-                Ntau = len(survivors)
+                Ntau = len(set.intersection(*selected[t:t + tau]))
                 tau_timeseries[tau - 1].append( Ntau / float(Nt) )
         return [np.mean(tau_timeseries) for tau_timeseries in tau_timeseries]
 
