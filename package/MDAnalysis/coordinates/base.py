@@ -1533,14 +1533,6 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
                 frame = np.asarray(frame, dtype=np.bool)
                 # Convert bool array to int array
                 frame = np.arange(len(self))[frame]
-
-            #def listiter(frames):
-            #    for f in frames:
-            #        if not isinstance(f, numbers.Integral):
-            #            raise TypeError("Frames indices must be integers")
-            #        yield self._read_frame_with_aux(apply_limits(f))
-            #
-            #return listiter(frame)
             return FrameIteratorIndices(self, frame)
         elif isinstance(frame, slice):
             start, stop, step = self.check_slice_indices(
