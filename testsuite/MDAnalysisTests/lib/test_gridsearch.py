@@ -67,7 +67,7 @@ def run_search(universe, ref_id):
     searcher.set_coords(coords)
     searcher.prepare()
 
-    results_grid = searcher.search(np.array([ref_pos, ]), return_ids=True)[0][0]
+    results_grid = searcher.search(np.array([ref_pos, ]), return_ids=True)[0]
     results_grid.sort()
 
     return results_pkdtree, results_grid
