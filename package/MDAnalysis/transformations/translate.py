@@ -68,7 +68,7 @@ def translate(vector):
     
     return wrapped
 
-def center_in_box(ag, center='geometry', point=None, pbc=False):
+def center_in_box(ag, center='geometry', point=None, wrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -94,7 +94,7 @@ def center_in_box(ag, center='geometry', point=None, pbc=False):
         overrides the unit cell center - the coordinates of the Timestep are translated so
         that the center of mass/geometry of the given AtomGroup is aligned to this position
         instead. Defined as an array of size 3.
-    pbc: bool, optional
+    wrap: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry. Default is `False`, no changes
         to the atom coordinates are done before calculating the center of the AtomGroup. 
@@ -105,7 +105,7 @@ def center_in_box(ag, center='geometry', point=None, pbc=False):
     
     """
     
-    pbc_arg = pbc
+    pbc_arg = wrap
     if point:
         point = np.asarray(point, np.float32)
         if point.shape != (3, ) and point.shape != (1, 3):

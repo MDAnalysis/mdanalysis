@@ -60,6 +60,16 @@ def test_translate_vector(translate_universes, vector):
     ts = translate_universes[0].trajectory.ts
     with pytest.raises(ValueError):
         translate(vector)(ts)
+        
+def test_translate_transformations_api(translate_universes):
+    # test if the translate transformation works when using the 
+    # on-the-fly transformations API
+    ref_u, trans_u = translate_universes
+    ref = ref_u.trajectory.ts
+    vector = np.float32([1, 2, 3])
+    ref.positions += vector
+    trans_u.trajectory.add_transformations(translate(vector))
+    assert_array_almost_equal(trans_u.trajectory.ts.positions, ref.positions, decimal=6)
 
 def test_center_in_box_bad_ag(translate_universes):
     # this universe has a box size zero
@@ -91,7 +101,7 @@ def test_center_in_box_bad_pbc(translate_universes):
     # is pbc passed to the center methods?
     # if yes it should raise an exception for boxes that are zero in size
     with pytest.raises(ValueError): 
-        center_in_box(ag, pbc=True)(ts)
+        center_in_box(ag, wrap=True)(ts)
 
 def test_center_in_box_bad_center(translate_universes):
     # this universe has a box size zero
@@ -132,7 +142,7 @@ def test_center_in_box_coords_with_pbc(translate_universes):
     box_center = np.float32([181.5, 182., 182.5])
     ref_center = np.float32([75.6, 75.8, 76.])
     ref.positions += box_center - ref_center
-    trans = center_in_box(ag, pbc=True)(trans_u.trajectory.ts)
+    trans = center_in_box(ag, wrap=True)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 def test_center_in_box_coords_with_mass(translate_universes):   
@@ -168,5 +178,17 @@ def test_center_in_box_coords_all_options(translate_universes):
     box_center = np.float32(newpoint)
     ref_center = ag.center_of_mass(pbc=True)
     ref.positions += box_center - ref_center
-    trans = center_in_box(ag, center='mass', pbc=True, point=newpoint)(trans_u.trajectory.ts)
+    trans = center_in_box(ag, center='mass', wrap=True, point=newpoint)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
+    
+def test_center_transformations_api(translate_universes):
+    # test if the translate transformation works when using the 
+    # on-the-fly transformations API
+    ref_u, trans_u = translate_universes
+    ref = ref_u.trajectory.ts
+    ref_center = np.float32([6, 7, 8])
+    box_center = np.float32([186., 186.5, 187.])
+    ref.positions += box_center - ref_center
+    ag = trans_u.residues[0].atoms
+    trans_u.trajectory.add_transformations(center_in_box(ag))
+    assert_array_almost_equal(trans_u.trajectory.ts.positions, ref.positions, decimal=6)
