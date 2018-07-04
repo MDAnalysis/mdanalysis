@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>7.1. Translations — MDAnalysis.transformations.translate &#8212; MDAnalysis 0.18.1-dev documentation</title>
+    <title>7.1. Trajectory translation — MDAnalysis.transformations.translate &#8212; MDAnalysis 0.18.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -47,38 +47,12 @@
 
           <div class="body" role="main">
             
-  <span class="target" id="module-MDAnalysis.transformations.translate"></span><div class="section" id="translations-mdanalysis-transformations-translate">
-<h1>7.1. Translations — <a class="reference internal" href="#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.transformations.translate</span></code></a><a class="headerlink" href="#translations-mdanalysis-transformations-translate" title="Permalink to this headline">¶</a></h1>
-<p>Translate the coordinates of a given trajectory by a given vector.</p>
-<dl class="function">
-<dt id="MDAnalysis.transformations.translate.translate">
-<code class="descclassname">MDAnalysis.transformations.translate.</code><code class="descname">translate</code><span class="sig-paren">(</span><em>vector</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.translate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Translates the coordinates of a given <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a>
-instance by a given vector.</p>
-<p class="rubric">Example</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])(</span><span class="n">ts</span><span class="p">)</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>vector</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – coordinates of the vector to which the coordinates will be translated</li>
-<li><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a>) – frame that will be transformed</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> object</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+  <span class="target" id="module-MDAnalysis.transformations.translate"></span><div class="section" id="trajectory-translation-mdanalysis-transformations-translate">
+<h1>7.1. Trajectory translation — <a class="reference internal" href="#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.transformations.translate</span></code></a><a class="headerlink" href="#trajectory-translation-mdanalysis-transformations-translate" title="Permalink to this headline">¶</a></h1>
+<p>Translate the coordinates of a given trajectory by a given vector.
+The vector can either be user defined, using the function <code class="xref py py-func docutils literal"><span class="pre">translate()</span></code>
+or defined by centering an AtomGroup in the unit cell using the function
+<code class="xref py py-func docutils literal"><span class="pre">center_in_box()</span></code></p>
 </div>
 
 
@@ -118,7 +92,7 @@ instance by a given vector.</p>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">7.1. Translations — <code class="docutils literal"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7.1. Trajectory translation — <code class="docutils literal"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
