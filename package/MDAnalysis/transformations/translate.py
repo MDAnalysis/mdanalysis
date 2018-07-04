@@ -36,7 +36,6 @@ import numpy as np
 from functools import partial
 
 from ..lib.mdamath import triclinic_vectors
-from ..core.groups import AtomGroup
 
 def translate(vector):
     """
@@ -61,12 +60,14 @@ def translate(vector):
         vector = np.float32(vector)
     else:
         raise ValueError("{} vector is too short".format(vector))
+    
     def wrapped(ts):
         ts.positions += vector
         
         return ts
     
     return wrapped
+
 
 def center_in_box(ag, center='geometry', point=None, wrap=False):
     """

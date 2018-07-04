@@ -30,6 +30,7 @@ import MDAnalysis as mda
 from MDAnalysis.transformations import translate, center_in_box
 from MDAnalysisTests import make_Universe
 
+
 @pytest.fixture()
 def translate_universes():
     # create the Universe objects for the tests
@@ -37,7 +38,9 @@ def translate_universes():
     reference = make_Universe(trajectory=True)
     transformed = make_Universe(['masses'], trajectory=True)
     transformed.trajectory.ts.dimensions = np.array([372., 373., 374., 90, 90, 90])
+    
     return reference, transformed
+
 
 def test_translate_coords(translate_universes):
     ref_u, trans_u = translate_universes
@@ -46,6 +49,7 @@ def test_translate_coords(translate_universes):
     ref.positions += vector
     trans = translate(vector)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
+
 
 @pytest.mark.parametrize('vector', (
     [0, 1],
@@ -60,7 +64,8 @@ def test_translate_vector(translate_universes, vector):
     ts = translate_universes[0].trajectory.ts
     with pytest.raises(ValueError):
         translate(vector)(ts)
-        
+
+      
 def test_translate_transformations_api(translate_universes):
     # test if the translate transformation works when using the 
     # on-the-fly transformations API
@@ -71,6 +76,7 @@ def test_translate_transformations_api(translate_universes):
     trans_u.trajectory.add_transformations(translate(vector))
     assert_array_almost_equal(trans_u.trajectory.ts.positions, ref.positions, decimal=6)
 
+
 def test_center_in_box_bad_ag(translate_universes):
     # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
@@ -78,6 +84,7 @@ def test_center_in_box_bad_ag(translate_universes):
     bad_ag = 1
     with pytest.raises(ValueError): 
         center_in_box(bad_ag)(ts)
+
 
 @pytest.mark.parametrize('point', (
     [0, 1],
@@ -93,7 +100,8 @@ def test_center_in_box_bad_point(translate_universes, point):
     # what if the box is in the wrong format?
     with pytest.raises(ValueError): 
         center_in_box(ag, point=point)(ts)
-    
+
+   
 def test_center_in_box_bad_pbc(translate_universes):    
     # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
@@ -103,6 +111,7 @@ def test_center_in_box_bad_pbc(translate_universes):
     with pytest.raises(ValueError): 
         center_in_box(ag, wrap=True)(ts)
 
+
 def test_center_in_box_bad_center(translate_universes):
     # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
@@ -111,7 +120,8 @@ def test_center_in_box_bad_center(translate_universes):
     bad_center = " "
     with pytest.raises(ValueError): 
         center_in_box(ag, center=bad_center)(ts)
-    
+
+
 def test_center_in_box_no_masses(translate_universes):   
     # this universe has no masses
     ts = translate_universes[0].trajectory.ts
@@ -120,6 +130,7 @@ def test_center_in_box_no_masses(translate_universes):
     bad_center = "mass"
     with pytest.raises(AttributeError): 
         center_in_box(ag, center=bad_center)(ts)
+
 
 def test_center_in_box_coords_no_options(translate_universes):
     # what happens when we center the coordinates arround the center of geometry of a residue?
@@ -131,6 +142,7 @@ def test_center_in_box_coords_no_options(translate_universes):
     ag = trans_u.residues[0].atoms
     trans = center_in_box(ag)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
+
 
 def test_center_in_box_coords_with_pbc(translate_universes):
     # what happens when we center the coordinates arround the center of geometry of a residue?
@@ -145,6 +157,7 @@ def test_center_in_box_coords_with_pbc(translate_universes):
     trans = center_in_box(ag, wrap=True)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
+
 def test_center_in_box_coords_with_mass(translate_universes):   
     # using masses for calculating the center of the atomgroup
     ref_u, trans_u = translate_universes
@@ -155,6 +168,7 @@ def test_center_in_box_coords_with_mass(translate_universes):
     ref.positions += box_center - ref_center
     trans = center_in_box(ag, center="mass")(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
+
 
 def test_center_in_box_coords_with_box(translate_universes):   
     # using masses for calculating the center of the atomgroup
@@ -168,6 +182,7 @@ def test_center_in_box_coords_with_box(translate_universes):
     trans = center_in_box(ag, point=newpoint)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
+
 def test_center_in_box_coords_all_options(translate_universes):
     # what happens when we center the coordinates arround the center of geometry of a residue?
     # using pbc into account for center of geometry calculation
@@ -180,7 +195,8 @@ def test_center_in_box_coords_all_options(translate_universes):
     ref.positions += box_center - ref_center
     trans = center_in_box(ag, center='mass', wrap=True, point=newpoint)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
-    
+
+
 def test_center_transformations_api(translate_universes):
     # test if the translate transformation works when using the 
     # on-the-fly transformations API
