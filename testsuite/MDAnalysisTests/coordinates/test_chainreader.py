@@ -266,7 +266,9 @@ class TestChainReaderContinuous(object):
         SequenceInfo(seq=([5, 6, 7, 8, 9], [2, 3, 4, 5, 6], [0, 1, 2, 3]),
                      n_frames=10,
                      order=[2, 2, 1, 1, 1, 0, 0, 0, 0, 0]),
-        SequenceInfo(seq=[range(0, 6), range(2, 5), range(2, 5), range(2, 5), range(3, 8)],
+        SequenceInfo(seq=[list(range(0, 6)), list(range(2, 5)),
+                          list(range(2, 5)), list(range(2, 5)),
+                          list(range(3, 8))],
                      n_frames=8,
                      order=[0, 0, 3, 4, 4, 4, 4, 4]),
     ])
