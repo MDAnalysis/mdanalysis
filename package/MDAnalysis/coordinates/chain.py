@@ -147,10 +147,18 @@ class ChainReader(base.ProtoReader):
     typically do not need to use the :class:`ChainReader` explicitly.
 
     Chainreader can also handle a continuous trajectory split over several
-    files. To use this passe the 'continuous == True' keyword argument. An
-    example take the following trajectory that is split into three parts. The
-    colum represents the time and the trajectory segments overlap. With the
-    continuous chainreader only the frames marked with a + will be read.
+    files. To use this pass the 'continuous == True' keyword argument. Setting
+    continuous=True will make the reader choose frames from the set of
+    trajectories in such a way that the trajectory appears to be as continuous
+    in time as possible, i.e. that time is strictly monotonically increasing.
+    This means that there will be no duplicate time frames and no jumps
+    backwards in time. However, there can be gaps in time (e.g., multiple time
+    steps can appear to be missing). Ultimately, it is the user's
+    responsibility to ensure that the input trajectories can be virtually
+    stitched together in a meaningful manner. An example take the following
+    trajectory that is split into three parts. The colum represents the time
+    and the trajectory segments overlap. With the continuous chainreader only
+    the frames marked with a + will be read.
 
     ::
 
