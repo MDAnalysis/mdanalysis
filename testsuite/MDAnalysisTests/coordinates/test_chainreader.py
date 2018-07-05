@@ -27,7 +27,7 @@ import os
 
 import pytest
 
-from numpy.testing import (assert_equal, assert_almost_equal, assert_array_almost_equal, assert_array_equal)
+from numpy.testing import (assert_equal, assert_almost_equal)
 
 import MDAnalysis as mda
 from MDAnalysis.transformations import translate
@@ -344,7 +344,7 @@ class TestChainReaderContinuous(object):
                                     ))
 def test_multilevel_arg_sort(l, ref):
     indices = mda.coordinates.chain.multi_level_argsort(l)
-    assert_array_equal(indices, ref)
+    assert_equal(indices, ref)
 
 
 @pytest.mark.parametrize('l, ref', ([((0, 4), (3, 6), (6, 9)), (0, 1, 2)],
@@ -365,4 +365,4 @@ def test_multilevel_arg_sort(l, ref):
                                     ))
 def test_filter_times(l, ref):
     indices = mda.coordinates.chain.filter_times(l, dt=1)
-    assert_array_equal(indices, ref)
+    assert_equal(indices, ref)
