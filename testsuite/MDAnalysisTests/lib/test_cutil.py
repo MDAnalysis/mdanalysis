@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -19,43 +19,23 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
-"""
-Dummy coordinate reader
-=======================
-
-
-Classes
--------
-
-.. autoclass:: DummyReader
-   :members:
-
-
-"""
 from __future__ import absolute_import
 
-
+import pytest
 import numpy as np
+from numpy.testing import assert_equal
 
-from .base import SingleFrameReaderBase
+from MDAnalysis.lib._cutil import unique_int_1d
 
 
-class DummyReader(SingleFrameReaderBase):
-    """Basic Reader which does not read from any file
-
-    .. versionadded:: 0.17.0
-    """
-    format = 'dummy'
-
-    def __init__(self, n_atoms=None, velocities=False, forces=False):
-        self.n_atoms = n_atoms
-        self.filename = 'DummyReader'
-        self.n_frames = 1
-        self._read_first_frame(velocities, forces)
-        self._transformations = []
-
-    def _read_first_frame(self, velocities=False, forces=False):
-        ts = self.ts = self._Timestep(self.n_atoms, positions=True,
-                                      velocities=velocities, forces=forces)
-        return ts
+@pytest.mark.parametrize('values', (
+    [],  # empty array
+    [1, 1, 1, 1, ],  # all identical
+    [2, 3, 5, 7, ],  # all different, monotonic
+    [5, 2, 7, 3, ],  # all different, non-monotonic
+    [1, 2, 2, 4, 4, 6, ],  # duplicates, monotonic
+    [1, 2, 2, 6, 4, 4, ],  # duplicates, non-monotonic
+))
+def test_unique_int_1d(values):
+    array = np.array(values, dtype=int)
+    assert_equal(unique_int_1d(array), np.unique(array))

@@ -389,6 +389,10 @@ class TestCythonFunctions(object):
         return a, b, c, d
 
     @staticmethod
+    def convert_position_dtype(a, b, c, d, dtype):
+        return a.astype(dtype), b.astype(dtype), c.astype(dtype), d.astype(dtype)
+
+    @staticmethod
     @pytest.fixture()
     def wrongtype():
         # declared as float64 and should raise TypeError
@@ -402,8 +406,9 @@ class TestCythonFunctions(object):
         return np.array([[0., 0., 0.], [3., 3., 3.]],
                         dtype=np.float32)
 
-    def test_bonds(self, positions, box, backend):
-        a, b, c, d = positions
+    @pytest.mark.parametrize('dtype', (np.float32, np.float64))
+    def test_bonds(self, positions, box, backend, dtype):
+        a, b, c, d = self.convert_position_dtype(*positions, dtype=dtype)
         dists = MDAnalysis.lib.distances.calc_bonds(a, b,
                                                     backend=backend)
         assert_equal(len(dists), 4, err_msg="calc_bonds results have wrong length")
@@ -422,23 +427,6 @@ class TestCythonFunctions(object):
                             err_msg="PBC check #2 w/o box")  # lengths in all directions
         assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
                             err_msg="PBC check #w with box")
-
-    #Bad input checking
-    def test_bonds_wrongtype(self, positions, wrongtype, wronglength, backend):
-        a, b, c, d = positions
-
-        with pytest.raises(TypeError):
-            MDAnalysis.lib.distances.calc_bonds(a, wrongtype, backend=backend)
-        with pytest.raises(TypeError):
-            MDAnalysis.lib.distances.calc_bonds(wrongtype, b, backend=backend)
-
-        with pytest.raises(ValueError):
-            MDAnalysis.lib.distances.calc_bonds(a, wronglength, backend=backend)
-
-        with pytest.raises(ValueError):
-            MDAnalysis.lib.distances.calc_bonds(wronglength, b, backend=
-            backend)
-
 
     def test_bonds_badbox(self, positions, backend):
         a, b, c, d = positions
@@ -469,8 +457,9 @@ class TestCythonFunctions(object):
         reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
         assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
 
-    def test_angles(self, positions, backend):
-        a, b, c, d = positions
+    @pytest.mark.parametrize('dtype', (np.float32, np.float64))
+    def test_angles(self, positions, backend, dtype):
+        a, b, c, d = self.convert_position_dtype(*positions, dtype=dtype)
         angles = MDAnalysis.lib.distances.calc_angles(a, b, c,
                                                       backend=backend)
         # Check calculated values
@@ -484,36 +473,6 @@ class TestCythonFunctions(object):
         assert_almost_equal(angles[3], 0.098174833, self.prec,
                             err_msg="Small angle failed in calc_angles")
 
-    # Check data type checks
-    def test_angles_wrongtype(self, positions, wrongtype, wronglength, backend):
-        a, b, c, d = positions
-        with pytest.raises(TypeError):
-            MDAnalysis.lib.distances.calc_angles(
-                a, wrongtype, c, backend=backend)
-
-        with pytest.raises(TypeError):
-            MDAnalysis.lib.distances.calc_angles()
-            wrongtype, b, c, backend = backend
-
-        with pytest.raises(TypeError):
-            MDAnalysis.lib.distances.calc_angles(
-                a, b, wrongtype, backend=backend)
-
-        with pytest.raises(ValueError):
-            MDAnalysis.lib.distances.calc_angles(
-                a, wronglength, c,
-                backend=backend)  # try inputting arrays of different length
-
-        with pytest.raises(ValueError):
-            MDAnalysis.lib.distances.calc_angles(
-                wronglength, b, c,
-                backend=backend)
-
-        with pytest.raises(ValueError):
-            MDAnalysis.lib.distances.calc_angles(
-                a, b, wronglength,
-                backend=backend)
-
     def test_angles_bad_result(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)
@@ -521,8 +480,9 @@ class TestCythonFunctions(object):
             MDAnalysis.lib.distances.calc_angles(
                 a, b, c, result=badresult, backend=backend)  # Bad result array
 
-    def test_dihedrals(self, positions, backend):
-        a, b, c, d = positions
+    @pytest.mark.parametrize('dtype', (np.float32, np.float64))
+    def test_dihedrals(self, positions, backend, dtype):
+        a, b, c, d = self.convert_position_dtype(*positions, dtype=dtype)
         dihedrals = MDAnalysis.lib.distances.calc_dihedrals(a, b,
                                                             c, d,
                                                             backend=backend)
@@ -533,29 +493,6 @@ class TestCythonFunctions(object):
         assert_almost_equal(dihedrals[2], np.pi, self.prec, err_msg="180 degree dihedral failed")
         assert_almost_equal(dihedrals[3], -0.50714064, self.prec,
                             err_msg="arbitrary dihedral angle failed")
-
-    # Check data type checks
-    def test_dihedrals_wrongtype(self, positions, wrongtype, backend):
-        a, b, c, d = positions
-        with pytest.raises(TypeError):
-            MDAnalysis.lib.distances.calc_dihedrals(
-                a, wrongtype, c, d,
-                backend=backend)  # try inputting float64 values
-
-        with pytest.raises(TypeError):
-            MDAnalysis.lib.distances.calc_dihedrals(
-                wrongtype, b, c, d,
-                backend=backend)
-
-        with pytest.raises(TypeError):
-            MDAnalysis.lib.distances.calc_dihedrals(
-                a, b, wrongtype, d,
-                backend=backend)
-
-        with pytest.raises(TypeError):
-            MDAnalysis.lib.distances.calc_dihedrals(
-                a, b, c, wrongtype,
-                backend=backend)
 
     def test_dihedrals_wronglength(self, positions, wronglength, backend):
         a, b, c, d = positions

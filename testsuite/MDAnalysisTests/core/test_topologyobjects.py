@@ -163,14 +163,14 @@ class TestTopologyObjects(object):
         # we edit the coordinates, so make our own universe
         u = mda.Universe(PSF, DCD)
         angle = u.atoms[210].angles[0]
-        coords = np.array([[ 83.37363434,  65.01402283,  35.03564835],
-                           [ 82.28535461,  59.99816513,  34.94399261],
-                           [ 81.19387817,  54.97631073,  34.85218048]],
+        coords = np.array([[1, 1, 1],
+                           [2, 1, 1],
+                           [3, 1, 1]],
                           dtype=np.float32)
 
         angle.atoms.positions = coords
 
-        assert_almost_equal(angle.value(), -180.0, self.precision)
+        assert_almost_equal(angle.value(), 180.0, self.precision)
 
     # Dihedral class check
     def test_dihedral(self, PSFDCD):

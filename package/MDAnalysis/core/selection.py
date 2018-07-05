@@ -51,6 +51,7 @@ from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
 
 from MDAnalysis.lib.pkdtree import PeriodicKDTree
+from MDAnalysis.lib.util import unique_int_1d
 from MDAnalysis.core import flags
 from ..lib import distances
 from ..exceptions import SelectionError, NoDataError
@@ -219,7 +220,7 @@ class ByResSelection(UnarySelection):
 
     def apply(self, group):
         res = self.sel.apply(group)
-        unique_res = np.unique(res.resids)
+        unique_res = unique_int_1d(res.resids)
         mask = np.in1d(group.resids, unique_res)
 
         return group[mask].unique
@@ -290,7 +291,9 @@ class AroundSelection(DistanceSelection):
             for atom in sel.positions:
                 kdtree.search(atom, self.cutoff)
                 found_indices.append(kdtree.get_indices())
-            unique_idx = np.unique(np.concatenate(found_indices))
+            unique_idx = unique_int_1d(
+                np.concatenate(found_indices).astype(np.int64)
+            )
 
         else:
             kdtree = PeriodicKDTree(box, bucket_size=10)

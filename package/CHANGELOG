@@ -19,7 +19,9 @@ The rules for this file:
   * 0.18.1
 
 Enhancements
-  * Added a rotation coordinate transformation
+
+  * Added a rotation coordinate transformation (PR #1937)
+  * Added a box centering trajectory transformation (PR #1946)
   * Added a on-the-fly trajectory transformations API and a coordinate translation
   	function (Issue #786)
   * Added various duecredit stubs
@@ -32,6 +34,16 @@ Enhancements
   * Added boolean property *Group.isunique (PR #1922)
   * Added *Group.copy() methods returning an identical copy of the respective
     group (PR #1922)
+  * Use a faster function to deduplicate indices (PR #1951)
+  * Calculations in *Group.center() are performed in double precision (#PR1936)
+  * Functions in lib.distances accept coordinate arrays of arbitrary dtype
+    (PR #1936)
+  * Added calc_distance, calc_angle and calc_dihedral to lib.distances
+    (Issue #1262 #1938)
+  * Added pbc kwarg to Bond/Angle/Dihedral/Improper object value method,
+    default True. (Issue #1938)
+  * ChainReader can correctly handle continuous trajectories split into multiple files,
+    generated with gromacs -noappend (PR #1728)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)

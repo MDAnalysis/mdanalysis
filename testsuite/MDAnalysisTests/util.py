@@ -40,6 +40,7 @@ import importlib
 import mock
 import os
 import warnings
+import pytest
 
 from numpy.testing import assert_warns
 
@@ -168,6 +169,18 @@ def assert_nowarns(warning_class, *args, **kwargs):
         # There was a warning even though we do not want to see one.
         raise AssertionError("function {0} raises warning of class {1}".format(
             func.__name__, warning_class.__name__))
+
+
+@contextmanager
+def no_warning(warning_class):
+    """contextmanager to check that no warning was raised"""
+    with warnings.catch_warnings(record=True) as record:
+        warnings.simplefilter('always')
+        yield
+    if len(record) != 0:
+        raise AssertionError("Raised warning of class {}".format(
+            warning_class.__name__))
+
 
 class _NoDeprecatedCallContext(object):
 	# modified version of similar pytest class object that checks for
