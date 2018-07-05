@@ -147,16 +147,16 @@ class ChainReader(base.ProtoReader):
     typically do not need to use the :class:`ChainReader` explicitly.
 
     Chainreader can also handle a continuous trajectory split over several
-    files. To use this pass the 'continuous == True' keyword argument. Setting
-    continuous=True will make the reader choose frames from the set of
-    trajectories in such a way that the trajectory appears to be as continuous
-    in time as possible, i.e. that time is strictly monotonically increasing.
-    This means that there will be no duplicate time frames and no jumps
-    backwards in time. However, there can be gaps in time (e.g., multiple time
-    steps can appear to be missing). Ultimately, it is the user's
+    files. To use this pass the ``continuous == True`` keyword argument.
+    Setting ``continuous=True`` will make the reader choose frames from the set
+    of trajectories in such a way that the trajectory appears to be as
+    continuous in time as possible, i.e. that time is strictly monotonically
+    increasing. This means that there will be no duplicate time frames and no
+    jumps backwards in time. However, there can be gaps in time (e.g., multiple
+    time steps can appear to be missing). Ultimately, it is the user's
     responsibility to ensure that the input trajectories can be virtually
-    stitched together in a meaningful manner. An example take the following
-    trajectory that is split into three parts. The colum represents the time
+    stitched together in a meaningful manner. As an example take the following
+    trajectory that is split into three parts. The column represents the time
     and the trajectory segments overlap. With the continuous chainreader only
     the frames marked with a + will be read.
 
@@ -168,8 +168,8 @@ class ChainReader(base.ProtoReader):
 
     .. warning::
 
-        The order in which trajectories can change what frames are used with
-        the continuous option.
+        The order in which trajectories are given to the chainreader can change
+        what frames are used with the continuous option.
 
     The default chainreader will read all frames. The continuous option is
     currently only supported for XTC and TRR files.
@@ -188,7 +188,7 @@ class ChainReader(base.ProtoReader):
        :attr:`time` now reports the time summed over each trajectory's
        frames and individual :attr:`dt`.
     .. versionchanged:: 0.19.0
-       added continuous trajectory option
+       added ``continuous`` trajectory option
 
     """
     format = 'CHAIN'
@@ -273,12 +273,15 @@ class ChainReader(base.ProtoReader):
         if continuous:
             filetypes = np.unique([r.format for r in self.readers])
             if not len(filetypes) == 1:
-                raise ValueError("Continuous only supported when all files "
-                                 "are using the same format. found {}".format(filetypes))
+                raise ValueError("ChainReader: continuous=true only supported"
+                                 " when all files are using the same format. "
+                                 "found {}".format(filetypes))
             if np.any(np.array(n_frames) == 1):
-                raise RuntimeError("Need at least two frames in every trajectory")
+                raise RuntimeError("ChainReader: Need at least two frames in "
+                                   "every trajectory with continuous=True")
             if filetypes[0] not in ['XTC', 'TRR']:
-                raise NotImplementedError("continuous only supported for xtc and trr format")
+                raise NotImplementedError("ChainReader: continuous=True only "
+                                          "supported for xtc and trr format")
 
             # TODO: allow floating point precision in dt check
             dt = self._get_same('dt')
@@ -327,7 +330,7 @@ class ChainReader(base.ProtoReader):
                 # check for interleaving
                 r1[1]
                 if r1_start_time < start_time < r1.time:
-                    raise RuntimeError("Interleaving not supported.")
+                    raise RuntimeError("ChainReader: Interleaving not supported with continuous=True.")
 
                 # find end where trajectory was restarted from
                 for ts in r1[::-1]:
