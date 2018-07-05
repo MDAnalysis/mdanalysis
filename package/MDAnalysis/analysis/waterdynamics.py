@@ -1199,47 +1199,39 @@ class SurvivalProbability(object):
       define the region/zone where to analyze, e.g.: "selection_a" and "zone"
       (see `SP-examples`_ )
     t0 : int
-      frame  where analysis begins
+      Zero-based index of the first frame to be analysed
     tf : int
-      frame where analysis ends
+      Zero-based index of the last frame to be analysed (inclusive)
     tau_max : int
-      Maximum dt size, `tau_max` must be < `tf`
+      Survival probability is calculated for the range :math:`1 <= \tau <= tau_max`
+    verbose : Boolean
+      If True, prints progress and comments to the console.
 
+    Returns
+    -------
+      tau_timeseries : list
+        tau from 1 to tau_max
+      sp_timeseries : list
+        survival probability for each value of `tau`
 
     .. versionadded:: 0.11.0
 
     """
 
     def __init__(self, universe, selection, t0=0, tf=-1, tau_max=20, verbose=False):
-        """
-        FIXME - definition explaining each argument
-        tf is inclusive
 
-        Return:
-        taus, sp_timeseries
+        if tf >= len(universe.trajectory):
+            raise ValueError("\"end\" must be smaller than the number of frames in the trajectory.")
 
-        Special:
-        :param universe:
-        :param selection:
-        :param t0: First frame to be analysed
-        :param tf: Last frame to be analysed (must be below the max number of frames)
-        :param tau_max: The last tau to be calculated (inclusive), starts from 1
-        :param verbose: If True, will highlight the starting point, ending point, progress
-        """
         self.universe = universe
         self.selection = selection
         self.t0 = t0
-        if tf == -1:
-            self.tf = len(universe.trajectory) - 1
-        elif tf <= len(universe.trajectory):
-            self.tf = tf
-        else:
-            raise ValueError("tf cannot be bigger than the number of frames in the simulation")
+        self.tf = len(universe.trajectory[:tf]) + 1
         self.tau_max = tau_max
         self.verbose = verbose
 
-        if tf - t0 <= self.tau_max:
-            raise ValueError("cannot select fewer frames than tau_max + 1")
+        if self.tau_max > self.tf - self.t0:
+            raise ValueError("Too few frames selected for given tau_max.")
 
     def print(self, *args):
         if self.verbose:
@@ -1253,15 +1245,16 @@ class SurvivalProbability(object):
         # load all frames to an array of sets
         selected = []
         for _ in self.universe.trajectory[self.t0:self.tf]:
-            selected.append(set(self.universe.select_atoms(self.selection)))
+            selected.append(set(self.universe.select_atoms(self.selection).ids))
 
-        tau_timeseries = np.arange(1, self.tau_max + 1)
+        tau_timeseries = list(range(1, self.tau_max + 1))
         sp_timeseries = [[] for _ in range(self.tau_max)]
+
         for t in range(len(selected)):
             Nt = len(selected[t])
 
             if Nt == 0:
-                self.print("At t=", t, "the selection did not find any molecule. Moving on to the next frame")
+                self.print("At frame {} the selection did not find any molecule. Moving on to the next frame".format(t))
                 continue
 
             for tau in tau_timeseries:
