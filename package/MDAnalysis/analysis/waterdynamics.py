@@ -1226,7 +1226,7 @@ class SurvivalProbability(object):
         self.universe = universe
         self.selection = selection
         self.t0 = t0
-        self.tf = len(universe.trajectory[:tf]) + 1
+        self.tf = len(list(universe.trajectory[:tf])) + 1
         self.tau_max = tau_max
         self.verbose = verbose
 
