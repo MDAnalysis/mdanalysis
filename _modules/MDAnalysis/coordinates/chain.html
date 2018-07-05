@@ -104,12 +104,123 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">core</span>
 
 
+<span class="k">def</span> <span class="nf">multi_level_argsort</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return indices to sort a multi value tuple. Sorting is done on the first</span>
+<span class="sd">    value of the tuple.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    l : list</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    indices</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; multi_level_argsort(((0, 2), (4, 9), (0, 4), (7, 9)))</span>
+<span class="sd">    [0, 2, 1, 3]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">el</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">l</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])]</span>
+
+
+<span class="k">def</span> <span class="nf">filter_times</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given a list of start and end times this function filters out any duplicate</span>
+<span class="sd">    time steps preferring the last tuple.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    times : list</span>
+<span class="sd">        sorted list of times</span>
+<span class="sd">    dt : float</span>
+<span class="sd">        timestep between two frames</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list:</span>
+<span class="sd">        indices of times to be used with overlaps removed</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; filter_times(((0, 3), (0, 3)))</span>
+<span class="sd">    [1, ]</span>
+<span class="sd">    &gt;&gt;&gt; filter_times(((0, 3), (0, 4)))</span>
+<span class="sd">    [1, ]</span>
+<span class="sd">    &gt;&gt;&gt; filter_times(((0, 3), (3, 4)))</span>
+<span class="sd">    [0, 1]</span>
+<span class="sd">    &gt;&gt;&gt; filter_times(((0, 3), (2, 5), (4, 9)))</span>
+<span class="sd">    [1, 2, 3]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Special cases</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">]</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">]</span>
+
+    <span class="c1"># more then 2 unique time entries</span>
+
+    <span class="n">used_idx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">middle</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">times</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">times</span><span class="p">[</span><span class="mi">2</span><span class="p">:]),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">first</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">middle</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">used_idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">middle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">middle</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dt</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">middle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">first</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">last</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">middle</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">used_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">middle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">first</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">used_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="c1"># take care of first special case</span>
+    <span class="k">if</span> <span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">used_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">used_idx</span>
+
+
 <div class="viewcode-block" id="ChainReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader">[docs]</a><span class="k">class</span> <span class="nc">ChainReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ProtoReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reader that concatenates multiple trajectories on the fly.</span>
 
 <span class="sd">    The :class:`ChainReader` is used by MDAnalysis internally to</span>
 <span class="sd">    represent multiple trajectories as one virtual trajectory. Users</span>
 <span class="sd">    typically do not need to use the :class:`ChainReader` explicitly.</span>
+
+<span class="sd">    Chainreader can also handle a continuous trajectory split over several</span>
+<span class="sd">    files. To use this pass the ``continuous == True`` keyword argument.</span>
+<span class="sd">    Setting ``continuous=True`` will make the reader choose frames from the set</span>
+<span class="sd">    of trajectories in such a way that the trajectory appears to be as</span>
+<span class="sd">    continuous in time as possible, i.e. that time is strictly monotonically</span>
+<span class="sd">    increasing. This means that there will be no duplicate time frames and no</span>
+<span class="sd">    jumps backwards in time. However, there can be gaps in time (e.g., multiple</span>
+<span class="sd">    time steps can appear to be missing). Ultimately, it is the user&#39;s</span>
+<span class="sd">    responsibility to ensure that the input trajectories can be virtually</span>
+<span class="sd">    stitched together in a meaningful manner. As an example take the following</span>
+<span class="sd">    trajectory that is split into three parts. The column represents the time</span>
+<span class="sd">    and the trajectory segments overlap. With the continuous chainreader only</span>
+<span class="sd">    the frames marked with a + will be read.</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        part01:  ++++--</span>
+<span class="sd">        part02:      ++++++-</span>
+<span class="sd">        part03:            ++++++++</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        The order in which trajectories are given to the chainreader can change</span>
+<span class="sd">        what frames are used with the continuous option.</span>
+
+<span class="sd">    The default chainreader will read all frames. The continuous option is</span>
+<span class="sd">    currently only supported for XTC and TRR files.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -124,77 +235,80 @@
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       :attr:`time` now reports the time summed over each trajectory&#39;s</span>
 <span class="sd">       frames and individual :attr:`dt`.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       added ``continuous`` trajectory option</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;CHAIN&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filenames</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set up the chain reader.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        filenames : str or list or sequence</span>
-<span class="sd">           file name or list of file names; the reader will open all file names</span>
-<span class="sd">           and provide frames in the order of trajectories from the list. Each</span>
-<span class="sd">           trajectory must contain the same number of atoms in the same order</span>
-<span class="sd">           (i.e. they all must belong to the same topology). The trajectory</span>
-<span class="sd">           format is deduced from the extension of each file name.</span>
+<span class="sd">            file name or list of file names; the reader will open all file names</span>
+<span class="sd">            and provide frames in the order of trajectories from the list. Each</span>
+<span class="sd">            trajectory must contain the same number of atoms in the same order</span>
+<span class="sd">            (i.e. they all must belong to the same topology). The trajectory</span>
+<span class="sd">            format is deduced from the extension of each file name.</span>
 
-<span class="sd">           Extension: `filenames` are either a single file name or list of file</span>
-<span class="sd">           names in either plain file names format or ``(filename, format)``</span>
-<span class="sd">           tuple combination. This allows explicit setting of the format for</span>
-<span class="sd">           each individual trajectory file.</span>
+<span class="sd">            Extension: `filenames` are either a single file name or list of file</span>
+<span class="sd">            names in either plain file names format or ``(filename, format)``</span>
+<span class="sd">            tuple combination. This allows explicit setting of the format for</span>
+<span class="sd">            each individual trajectory file.</span>
 <span class="sd">        skip : int (optional)</span>
-<span class="sd">           skip step (also passed on to the individual trajectory readers);</span>
-<span class="sd">           must be same for all trajectories</span>
+<span class="sd">            skip step (also passed on to the individual trajectory readers);</span>
+<span class="sd">            must be same for all trajectories</span>
 <span class="sd">        dt : float (optional)</span>
-<span class="sd">          Passed to individual trajectory readers to enforce a common time</span>
-<span class="sd">          difference between frames, in MDAnalysis time units. If not set, each</span>
-<span class="sd">          reader&#39;s `dt` will be used (either inferred from the trajectory</span>
-<span class="sd">          files, or set to the reader&#39;s default) when reporting frame times;</span>
-<span class="sd">          note that this might lead an inconsistent time difference between</span>
-<span class="sd">          frames.</span>
+<span class="sd">            Passed to individual trajectory readers to enforce a common time</span>
+<span class="sd">            difference between frames, in MDAnalysis time units. If not set, each</span>
+<span class="sd">            reader&#39;s `dt` will be used (either inferred from the trajectory</span>
+<span class="sd">            files, or set to the reader&#39;s default) when reporting frame times;</span>
+<span class="sd">            note that this might lead an inconsistent time difference between</span>
+<span class="sd">            frames.</span>
+<span class="sd">        continuous : bool (optional)</span>
+<span class="sd">            treat all trajectories as one single long trajectory. Adds several</span>
+<span class="sd">            checks; all trajectories have the same dt, they contain at least 2</span>
+<span class="sd">            frames, and they are all of the same file-type. Not implemented for</span>
+<span class="sd">            all trajectory formats! This can be used to analyze GROMACS</span>
+<span class="sd">            simulations without concatenating them prior to analysis.</span>
 <span class="sd">        **kwargs : dict (optional)</span>
-<span class="sd">          all other keyword arguments are passed on to each trajectory reader</span>
-<span class="sd">          unchanged</span>
-
-
-<span class="sd">        .. versionchanged:: 0.8</span>
-<span class="sd">           The ``delta`` keyword was added.</span>
-<span class="sd">        .. versionchanged:: 0.13</span>
-<span class="sd">           The ``delta`` keyword was deprecated in favor of using ``dt``.</span>
+<span class="sd">            all other keyword arguments are passed on to each trajectory reader</span>
+<span class="sd">            unchanged</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ChainReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
+        <span class="n">filenames</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
+        <span class="c1"># Override here because single frame readers handle this argument as a</span>
+        <span class="c1"># kwarg to a timestep which behaves differently if dt is present or not.</span>
+        <span class="k">if</span> <span class="n">dt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readers</span> <span class="o">=</span> <span class="p">[</span><span class="n">core</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="n">fn</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">])</span>
         <span class="c1"># pointer to &quot;active&quot; trajectory index into self.readers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__active_reader_index</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="n">skip</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_same</span><span class="p">(</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">)</span>
-        <span class="c1">#self.fixed = self._get_same(&#39;fixed&#39;)</span>
 
         <span class="c1"># Translation between virtual frames and frames in individual</span>
-        <span class="c1"># trajectories.</span>
-        <span class="c1"># Assumes that individual trajectories i contain frames that can</span>
-        <span class="c1"># be addressed with an index 0 &lt;= f &lt; n_frames[i]</span>
+        <span class="c1"># trajectories. Assumes that individual trajectories i contain frames</span>
+        <span class="c1"># that can be addressed with an index 0 &lt;= f &lt; n_frames[i]</span>
 
-        <span class="c1"># Build a map of frames: ordered list of starting virtual</span>
-        <span class="c1"># frames; the index i into this list corresponds to the index</span>
-        <span class="c1"># into self.readers</span>
+        <span class="c1"># Build a map of frames: ordered list of starting virtual frames; the</span>
+        <span class="c1"># index i into this list corresponds to the index into self.readers</span>
         <span class="c1">#</span>
         <span class="c1"># For virtual frame 0 &lt;= k &lt; sum(n_frames) find corresponding</span>
-        <span class="c1"># trajectory i and local frame f (i.e. readers[i][f] will</span>
-        <span class="c1"># correspond to ChainReader[k]).</span>
-
+        <span class="c1"># trajectory i and local frame f (i.e. readers[i][f] will correspond to</span>
+        <span class="c1"># ChainReader[k]).</span>
         <span class="c1"># build map &#39;start_frames&#39;, which is used by _get_local_frame()</span>
         <span class="n">n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;n_frames&#39;</span><span class="p">)</span>
         <span class="c1"># [0]: frames are 0-indexed internally</span>
         <span class="c1"># (see Timestep.check_slice_indices())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__start_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">n_frames</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">n_frames</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">))</span>
@@ -202,6 +316,82 @@
 
         <span class="c1">#: source for trajectories frame (fakes trajectory)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__chained_trajectories_iter</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># calculate new start_frames to have a time continuous trajectory.</span>
+        <span class="k">if</span> <span class="n">continuous</span><span class="p">:</span>
+            <span class="n">filetypes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">format</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">filetypes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ChainReader: continuous=true only supported&quot;</span>
+                                 <span class="s2">&quot; when all files are using the same format. &quot;</span>
+                                 <span class="s2">&quot;found </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filetypes</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ChainReader: Need at least two frames in &quot;</span>
+                                   <span class="s2">&quot;every trajectory with continuous=True&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">filetypes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;XTC&#39;</span><span class="p">,</span> <span class="s1">&#39;TRR&#39;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;ChainReader: continuous=True only &quot;</span>
+                                          <span class="s2">&quot;supported for xtc and trr format&quot;</span><span class="p">)</span>
+
+            <span class="c1"># TODO: allow floating point precision in dt check</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_same</span><span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">)</span>
+            <span class="n">n_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;n_frames&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span>
+
+            <span class="c1"># the sorting needs to happen on two levels. The first major level</span>
+            <span class="c1"># is by start times and the second is by end times.</span>
+            <span class="c1"># The second level of sorting is needed for cases like:</span>
+            <span class="c1"># [0 1 2 3 4 5 6 7 8 9] [0 1 2 4]</span>
+            <span class="c1"># to</span>
+            <span class="c1"># [0 1 2 4] [0 1 2 3 4 5 6 7 8 9]</span>
+            <span class="c1"># after that sort the chain reader will work</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">:</span>
+                <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+                <span class="n">r</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+                <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
+            <span class="c1"># sort step</span>
+            <span class="n">sort_idx</span> <span class="o">=</span> <span class="n">multi_level_argsort</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">readers</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sort_idx</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span> <span class="o">*</span> <span class="n">n_frames</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
+
+            <span class="c1"># filter step: remove indices if we have complete overlap</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">used_idx</span> <span class="o">=</span> <span class="n">filter_times</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">times</span><span class="p">)[</span><span class="n">sort_idx</span><span class="p">],</span> <span class="n">dt</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">readers</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">used_idx</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">[</span><span class="n">used_idx</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="p">[</span><span class="n">used_idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_frames</span><span class="p">[</span><span class="n">used_idx</span><span class="p">]</span>
+
+            <span class="c1"># rebuild lookup table</span>
+            <span class="n">sf</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">]</span>
+            <span class="n">n_frames</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+                <span class="n">r2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">r1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">r1_start_time</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">time</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">r2</span><span class="o">.</span><span class="n">time</span>
+                <span class="n">r1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">r1</span><span class="o">.</span><span class="n">time</span> <span class="o">&lt;</span> <span class="n">start_time</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Missing frame in continuous chain&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+
+                <span class="c1"># check for interleaving</span>
+                <span class="n">r1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">r1_start_time</span> <span class="o">&lt;</span> <span class="n">start_time</span> <span class="o">&lt;</span> <span class="n">r1</span><span class="o">.</span><span class="n">time</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ChainReader: Interleaving not supported with continuous=True.&quot;</span><span class="p">)</span>
+
+                <span class="c1"># find end where trajectory was restarted from</span>
+                <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">r1</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">&lt;</span> <span class="n">start_time</span><span class="p">:</span>
+                        <span class="k">break</span>
+                <span class="n">sf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">n_frames</span> <span class="o">+=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="n">n_frames</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">n_frames</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_start_frames</span> <span class="o">=</span> <span class="n">sf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="n">n_frames</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sf</span> <span class="o">=</span> <span class="n">sf</span>
 
         <span class="c1"># make sure that iteration always yields frame 0</span>
         <span class="c1"># rewind() also sets self.ts</span>
@@ -222,8 +412,11 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        (i, f) : tuple</span>
-<span class="sd">            **local frame** tuple</span>
+<span class="sd">        i : int</span>
+<span class="sd">            trajectory</span>
+<span class="sd">        f : int</span>
+<span class="sd">            frame in trajectory i</span>
+
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -239,11 +432,11 @@
         <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Virtual (chained) frames must be &gt;= 0&quot;</span><span class="p">)</span>
         <span class="c1"># trajectory index i</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__start_frames</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_frames</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Cannot find trajectory for virtual frame </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
         <span class="c1"># local frame index f in trajectory i (frame indices are 0-based)</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__start_frames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_frames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span></div>
 
     <span class="c1"># methods that can change with the current reader</span>
@@ -347,8 +540,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">values</span> <span class="o">==</span> <span class="n">value</span><span class="p">):</span>
-            <span class="n">bad_traj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_filename</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">])[</span><span class="n">values</span> <span class="o">!=</span> <span class="n">value</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="n">bad_traj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">)[</span><span class="n">values</span> <span class="o">!=</span> <span class="n">value</span><span class="p">]</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The following trajectories do not have the correct </span><span class="si">{0}</span><span class="s2"> &quot;</span>
                              <span class="s2">&quot; (</span><span class="si">{1}</span><span class="s2">):</span><span class="se">\n</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">bad_traj</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">value</span></div>
@@ -395,14 +588,12 @@
 <div class="viewcode-block" id="ChainReader._chained_iterator"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._chained_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">_chained_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterator that presents itself as a chained trajectory.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rewind</span><span class="p">()</span>  <span class="c1"># must rewind all readers</span>
-        <span class="n">readers</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">frame</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">readers</span><span class="p">):</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span>  <span class="c1"># fake continuous frames, 0-based</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span>
-            <span class="c1"># make sure that the active reader is in sync</span>
-            <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>  <span class="c1"># uses 0-based frames!</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__activate_reader</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-            <span class="k">yield</span> <span class="n">ts</span></div>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">):</span>
+            <span class="n">j</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_frame</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__activate_reader</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_reader</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span></div>
 
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__chained_trajectories_iter</span><span class="p">)</span>
@@ -431,43 +622,37 @@
         <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__chained_trajectories_iter</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">ts</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;retrieve the actual filename of the list element&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="n">filename</span>
-
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&lt;</span><span class="si">{clsname}</span><span class="s2"> </span><span class="si">{fname}</span><span class="s2"> with </span><span class="si">{nframes}</span><span class="s2"> frames of </span><span class="si">{natoms}</span><span class="s2"> atoms&gt;&quot;</span>
                 <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">clsname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                    <span class="n">fname</span><span class="o">=</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_filename</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
-                           <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">],</span>
+                    <span class="n">fname</span><span class="o">=</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">],</span>
                     <span class="n">nframes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
                     <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
 
 <div class="viewcode-block" id="ChainReader.add_transformations"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.add_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Add all transformations to be applied to the trajectory.</span>
-<span class="sd">        </span>
+
 <span class="sd">        This function take as list of transformations as an argument. These</span>
 <span class="sd">        transformations are functions that will be called by the Reader and given</span>
 <span class="sd">        a :class:`Timestep` object as argument, which will be transformed and returned</span>
 <span class="sd">        to the Reader.</span>
-<span class="sd">        The transformations can be part of the :mod:`~MDAnalysis.transformations` </span>
-<span class="sd">        module, or created by the user, and are stored as a list `transformations`. </span>
+<span class="sd">        The transformations can be part of the :mod:`~MDAnalysis.transformations`</span>
+<span class="sd">        module, or created by the user, and are stored as a list `transformations`.</span>
 <span class="sd">        This list can only be modified once, and further calls of this function will</span>
 <span class="sd">        raise an exception.</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. code-block:: python</span>
-<span class="sd">                         </span>
+
 <span class="sd">          u = MDAnalysis.Universe(topology, coordinates)</span>
 <span class="sd">          workflow = [some_transform, another_transform, this_transform]</span>
 <span class="sd">          u.trajectory.add_transformations(*workflow)</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        transform_list : list</span>
 <span class="sd">            list of all the transformations that will be applied to the coordinates</span>
-<span class="sd">            </span>
+
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :mod:`MDAnalysis.transformations`</span>
@@ -476,7 +661,7 @@
         <span class="c1">#to avoid unintended behaviour where the coordinates of each frame are transformed</span>
         <span class="c1">#multiple times when iterating over the trajectory.</span>
         <span class="c1">#In this method, the trajectory is modified all at once and once only.</span>
-        
+
         <span class="nb">super</span><span class="p">(</span><span class="n">ChainReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transformations</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transformations</span><span class="p">)</span></div>
@@ -485,7 +670,7 @@
         <span class="sd">&quot;&quot;&quot; Applies the transformations to the timestep.&quot;&quot;&quot;</span>
         <span class="c1"># Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`</span>
         <span class="c1"># to avoid applying the same transformations multiple times on each frame</span>
-        
+
         <span class="k">return</span> <span class="n">ts</span></div>
 </pre></div>
 

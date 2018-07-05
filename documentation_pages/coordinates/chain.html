@@ -55,11 +55,36 @@ trajectories as one virtual trajectory. Users typically do not need to use the
 interest to developers.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.chain.ChainReader">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.chain.</code><code class="descname">ChainReader</code><span class="sig-paren">(</span><em>filenames</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/chain.html#ChainReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.chain.ChainReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.chain.</code><code class="descname">ChainReader</code><span class="sig-paren">(</span><em>filenames</em>, <em>skip=1</em>, <em>dt=None</em>, <em>continuous=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/chain.html#ChainReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.chain.ChainReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reader that concatenates multiple trajectories on the fly.</p>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal"><span class="pre">ChainReader</span></code></a> is used by MDAnalysis internally to
 represent multiple trajectories as one virtual trajectory. Users
 typically do not need to use the <a class="reference internal" href="#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal"><span class="pre">ChainReader</span></code></a> explicitly.</p>
+<p>Chainreader can also handle a continuous trajectory split over several
+files. To use this pass the <code class="docutils literal"><span class="pre">continuous</span> <span class="pre">==</span> <span class="pre">True</span></code> keyword argument.
+Setting <code class="docutils literal"><span class="pre">continuous=True</span></code> will make the reader choose frames from the set
+of trajectories in such a way that the trajectory appears to be as
+continuous in time as possible, i.e. that time is strictly monotonically
+increasing. This means that there will be no duplicate time frames and no
+jumps backwards in time. However, there can be gaps in time (e.g., multiple
+time steps can appear to be missing). Ultimately, it is the user’s
+responsibility to ensure that the input trajectories can be virtually
+stitched together in a meaningful manner. As an example take the following
+trajectory that is split into three parts. The column represents the time
+and the trajectory segments overlap. With the continuous chainreader only
+the frames marked with a + will be read.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">part01</span><span class="p">:</span>  <span class="o">++++--</span>
+<span class="n">part02</span><span class="p">:</span>      <span class="o">++++++-</span>
+<span class="n">part03</span><span class="p">:</span>            <span class="o">++++++++</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The order in which trajectories are given to the chainreader can change
+what frames are used with the continuous option.</p>
+</div>
+<p>The default chainreader will read all frames. The continuous option is
+currently only supported for XTC and TRR files.</p>
 <p class="rubric">Notes</p>
 <p>The trajectory API attributes exist but most of them only reflect the first
 trajectory in the list; <code class="xref py py-attr docutils literal"><span class="pre">ChainReader.n_frames</span></code>,
@@ -71,6 +96,9 @@ set, though</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.13.0: </span><a class="reference internal" href="#MDAnalysis.coordinates.chain.ChainReader.time" title="MDAnalysis.coordinates.chain.ChainReader.time"><code class="xref py py-attr docutils literal"><span class="pre">time</span></code></a> now reports the time summed over each trajectory’s
 frames and individual <code class="xref py py-attr docutils literal"><span class="pre">dt</span></code>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>added <code class="docutils literal"><span class="pre">continuous</span></code> trajectory option</p>
 </div>
 <p>Set up the chain reader.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -96,6 +124,11 @@ reader’s <cite>dt</cite> will be used (either inferred from the trajectory
 files, or set to the reader’s default) when reporting frame times;
 note that this might lead an inconsistent time difference between
 frames.</li>
+<li><strong>continuous</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – treat all trajectories as one single long trajectory. Adds several
+checks; all trajectories have the same dt, they contain at least 2
+frames, and they are all of the same file-type. Not implemented for
+all trajectory formats! This can be used to analyze GROMACS
+simulations without concatenating them prior to analysis.</li>
 <li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a><em> (</em><em>optional</em><em>)</em>) – all other keyword arguments are passed on to each trajectory reader
 unchanged</li>
 </ul>
@@ -103,12 +136,6 @@ unchanged</li>
 </tr>
 </tbody>
 </table>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8: </span>The <code class="docutils literal"><span class="pre">delta</span></code> keyword was added.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.13: </span>The <code class="docutils literal"><span class="pre">delta</span></code> keyword was deprecated in favor of using <code class="docutils literal"><span class="pre">dt</span></code>.</p>
-</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.chain.ChainReader._get_local_frame">
 <code class="descname">_get_local_frame</code><span class="sig-paren">(</span><em>k</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/chain.html#ChainReader._get_local_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.chain.ChainReader._get_local_frame" title="Permalink to this definition">¶</a></dt>
@@ -122,11 +149,13 @@ index <em>i</em> and frame index <em>f</em>.</p>
 <p>Frames are internally treated as 0-based indices into the trajectory.</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>(i, f)</strong> – <strong>local frame</strong> tuple</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>i</strong> (<em>int</em>) – trajectory</li>
+<li><strong>f</strong> (<em>int</em>) – frame in trajectory i</li>
+</ul>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body">IndexError for <cite>k&lt;0</cite> or <cite>i&lt;0</cite>.</td>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">IndexError for <cite>k&lt;0</cite> or <cite>i&lt;0</cite>.</td>
 </tr>
 </tbody>
 </table>
