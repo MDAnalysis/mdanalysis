@@ -130,6 +130,7 @@ __all__ = [
     "waterPSF","waterDCD","rmsfArray",
     "HoomdXMLdata",
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
+    "fullerene",  # for make_whole, a nice friendly C60 with bonds
     "Plength",
     "COORDINATES_XYZ",
     "COORDINATES_XYZ_BZ2",
@@ -395,6 +396,7 @@ rmsfArray = resource_filename(__name__, 'data/adk_oplsaa_CA_rmsf.npy')
 HoomdXMLdata = resource_filename(__name__, 'data/C12x64.xml.bz2')
 
 Make_Whole = resource_filename(__name__, 'data/make_whole.gro')
+fullerene = resource_filename(__name__, 'data/fullerene.pdb.gz')
 
 Plength = resource_filename(__name__, 'data/plength.gro')
 Martini_membrane_gro = resource_filename(__name__, 'data/martini_dppc_chol_bilayer.gro')

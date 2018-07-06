@@ -39,7 +39,7 @@ from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError, DuplicateWarning
 
 
-from MDAnalysisTests.datafiles import Make_Whole
+from MDAnalysisTests.datafiles import Make_Whole, TPR, GRO, fullerene
 
 
 def convert_aa_code_long_data():
@@ -239,6 +239,8 @@ class TestMakeWhole(object):
     +-----------+
     """
 
+    prec = 5
+
     @pytest.fixture()
     def universe(self):
         universe = mda.Universe(Make_Whole)
@@ -258,22 +260,8 @@ class TestMakeWhole(object):
         with pytest.raises(NoDataError):
             mdamath.make_whole(ag)
 
-    def test_not_orthogonal(self, universe, ag):
-        # Not an orthogonal unit cell
-
-        universe.dimensions = [10., 10., 10., 80., 80., 80]
-        with pytest.raises(ValueError):
-            mdamath.make_whole(ag)
-
     def test_zero_box_size(self, universe, ag):
         universe.dimensions = [0., 0., 0., 90., 90., 90.]
-        with pytest.raises(ValueError):
-            mdamath.make_whole(ag)
-
-    def test_too_small_box_size(self, universe, ag):
-        # Set the z dimensions to 0.5, which is small compared to the
-        # bonds (1-2)
-        universe.dimensions = [100.0, 100.0, 0.5, 90., 90., 90.]
         with pytest.raises(ValueError):
             mdamath.make_whole(ag)
 
@@ -287,15 +275,6 @@ class TestMakeWhole(object):
         with pytest.raises(ValueError):
             mdamath.make_whole(universe.atoms)
 
-    def test_walk_1(self, universe, ag):
-        # self.ag is contiguous
-        assert mdamath._is_contiguous(ag, universe.residues[0].atoms[0])
-
-    def test_walk_2(self, universe):
-        # u.atoms isnt all contiguous
-        assert not mdamath._is_contiguous(universe.atoms,
-                                          universe.residues[0].atoms[0])
-
     def test_solve_1(self, universe, ag):
         # regular usage of function
 
@@ -305,13 +284,13 @@ class TestMakeWhole(object):
 
         assert_array_almost_equal(universe.atoms[:4].positions, refpos)
         assert_array_almost_equal(universe.atoms[4].position,
-                                  np.array([110.0, 50.0, 0.0]))
+                                  np.array([110.0, 50.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[5].position,
-                                  np.array([110.0, 60.0, 0.0]))
+                                  np.array([110.0, 60.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[6].position,
-                                  np.array([110.0, 40.0, 0.0]))
+                                  np.array([110.0, 40.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[7].position,
-                                  np.array([120.0, 50.0, 0.0]))
+                                  np.array([120.0, 50.0, 0.0]), decimal=self.prec)
 
     def test_solve_2(self, universe, ag):
         # use but specify the center atom
@@ -322,13 +301,13 @@ class TestMakeWhole(object):
 
         assert_array_almost_equal(universe.atoms[4:8].positions, refpos)
         assert_array_almost_equal(universe.atoms[0].position,
-                                  np.array([-20.0, 50.0, 0.0]))
+                                  np.array([-20.0, 50.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[1].position,
-                                  np.array([-10.0, 50.0, 0.0]))
+                                  np.array([-10.0, 50.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[2].position,
-                                  np.array([-10.0, 60.0, 0.0]))
+                                  np.array([-10.0, 60.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[3].position,
-                                  np.array([-10.0, 40.0, 0.0]))
+                                  np.array([-10.0, 40.0, 0.0]), decimal=self.prec)
 
     def test_solve_3(self, universe):
         # put in a chunk that doesn't need any work
@@ -364,6 +343,31 @@ class TestMakeWhole(object):
         with pytest.raises(ValueError):
             mdamath.make_whole(universe.atoms)
 
+    def test_make_whole_triclinic(self):
+        u = mda.Universe(TPR, GRO)
+        thing = u.select_atoms('not resname SOL NA+')
+        mdamath.make_whole(thing)
+
+        blengths = thing.bonds.values()
+
+        assert blengths.max() < 2.0
+
+    def test_make_whole_fullerene(self):
+        # lots of circular bonds as a nice pathological case
+        u = mda.Universe(fullerene)
+
+        bbox = u.atoms.bbox()
+        u.dimensions[:3] = bbox[1] - bbox[0]
+        u.dimensions[3:] = 90.0
+
+        blengths = u.atoms.bonds.values()
+        # kaboom
+        u.atoms[::2].translate([u.dimensions[0], -2 * u.dimensions[1], 0.0])
+        u.atoms[1::2].translate([0.0, 7 * u.dimensions[1], -5 * u.dimensions[2]])
+
+        mdamath.make_whole(u.atoms)
+
+        assert_array_almost_equal(u.atoms.bonds.values(), blengths, decimal=self.prec)
 
 class Class_with_Caches(object):
     def __init__(self):
