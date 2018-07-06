@@ -197,9 +197,9 @@ triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.m
 
 <dl class="function">
 <dt id="MDAnalysis.lib.mdamath.make_whole">
-<code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">make_whole</code><span class="sig-paren">(</span><em>atomgroup</em>, <em>reference_atom=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#make_whole"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.make_whole" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">make_whole</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.mdamath.make_whole" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move all atoms in a single molecule so that bonds don’t split over images</p>
-<p>Atoms are modified in place.</p>
+<p>Atom positions are modified in place.</p>
 <p>This function is most useful when atoms have been packed into the primary
 unit cell, causing breaks mid molecule, with the molecule then appearing
 on either side of the unit cell. This is problematic for operations
@@ -239,13 +239,9 @@ caused by the atomgroup not being a single fragment.
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Only orthogonal boxes are currently supported.</p>
-</div>
 <p class="rubric">Example</p>
 <p>Make fragments whole:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.util.mdamath</span> <span class="k">import</span> <span class="n">make_whole</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.mdamath</span> <span class="k">import</span> <span class="n">make_whole</span>
 
 <span class="c1"># This algorithm requires bonds, these can be guessed!</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="o">......</span><span class="p">,</span> <span class="n">guess_bonds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -321,80 +317,6 @@ triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.m
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt>
-<code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">make_whole</code><span class="sig-paren">(</span><em>atomgroup</em>, <em>reference_atom=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#make_whole"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Move all atoms in a single molecule so that bonds don’t split over images</p>
-<p>Atoms are modified in place.</p>
-<p>This function is most useful when atoms have been packed into the primary
-unit cell, causing breaks mid molecule, with the molecule then appearing
-on either side of the unit cell. This is problematic for operations
-such as calculating the center of mass of the molecule.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>+-----------+     +-----------+
-|           |     |           |
-| 6       3 |     |         3 | 6
-| !       ! |     |         ! | !
-|-5-8   1-2-| -&gt;  |       1-2-|-5-8
-| !       ! |     |         ! | !
-| 7       4 |     |         4 | 7
-|           |     |           |
-+-----------+     +-----------+
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> to work with.
-The positions of this are modified in place.  All these atoms
-must belong in the same molecule or fragment.</li>
-<li><strong>reference_atom</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>) – The atom around which all other atoms will be moved.
-Defaults to atom 0 in the atomgroup.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><code class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></code> – There are no bonds present.
-(See <code class="xref py py-func docutils literal"><span class="pre">guess_bonds()</span></code>)</li>
-<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – The algorithm fails to work.  This is usually
-caused by the atomgroup not being a single fragment.
-(ie the molecule can’t be traversed by following bonds)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Only orthogonal boxes are currently supported.</p>
-</div>
-<p class="rubric">Example</p>
-<p>Make fragments whole:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.util.mdamath</span> <span class="k">import</span> <span class="n">make_whole</span>
-
-<span class="c1"># This algorithm requires bonds, these can be guessed!</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="o">......</span><span class="p">,</span> <span class="n">guess_bonds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># MDAnalysis can split molecules into their fragments</span>
-<span class="c1"># based on bonding information.</span>
-<span class="c1"># Note that this function will only handle a single fragment</span>
-<span class="c1"># at a time, necessitating a loop.</span>
-<span class="k">for</span> <span class="n">frag</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">fragments</span><span class="p">:</span>
-  <span class="n">make_whole</span><span class="p">(</span><span class="n">frag</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Alternatively, to keep a single atom in place as the anchor:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># This will mean that atomgroup[10] will NOT get moved,</span>
-<span class="c1"># and all other atoms will move (if necessary).</span>
-<span class="n">make_whole</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">reference_atom</span><span class="o">=</span><span class="n">atomgroup</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
-</pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.11.0.</span></p>
 </div>
 </dd></dl>
 
