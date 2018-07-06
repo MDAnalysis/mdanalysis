@@ -35,9 +35,8 @@ import numpy as np
 from functools import partial
 
 from ..lib.transformations import rotation_matrix
-from ..core.groups import AtomGroup
 
-def rotateby(angle, direction, point=None, center="geometry", pbc=False, ag=None):
+def rotateby(angle, direction, point=None, center="geometry", wrap=False, ag=None):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by 
     the user, combining the direction vector and a point. This point can be the center
@@ -75,7 +74,7 @@ def rotateby(angle, direction, point=None, center="geometry", pbc=False, ag=None
     center: str, optional
         used to choose the method of centering on the given atom group. Can be 'geometry'
         or 'mass'
-    pbc: bool, optional
+    wrap: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry. Default is `False`, no changes
         to the atom coordinates are done before calculating the center of the AtomGroup. 
@@ -93,7 +92,7 @@ def rotateby(angle, direction, point=None, center="geometry", pbc=False, ag=None
     after rotating the trajectory.
 
     '''
-    pbc_arg = pbc
+    pbc_arg = wrap
     angle = np.deg2rad(angle)
     if point:
         point = np.asarray(point, np.float32)
