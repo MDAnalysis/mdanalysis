@@ -98,7 +98,7 @@ cdef intset difference(intset a, intset b):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def make_whole(atomgroup, reference_atom=None):
+def make_whole(atomgroup, reference_atom=None, inplace=True):
     """Move all atoms in a single molecule so that bonds don't split over images
 
     Atom positions are modified in place.
@@ -125,9 +125,12 @@ def make_whole(atomgroup, reference_atom=None):
         The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
         The positions of this are modified in place.  All these atoms
         must belong in the same molecule or fragment.
-    reference_atom : :class:`~MDAnalysis.core.groups.Atom`
+    reference_atom : :class:`~MDAnalysis.core.groups.Atom`, optional
         The atom around which all other atoms will be moved.
         Defaults to atom 0 in the atomgroup.
+    inplace : bool, optional
+        if True, directly modify the Atom's coordinates, if False the
+        unwrapped coordinates are instead returned [``True``]
 
     Raises
     ------
@@ -165,6 +168,10 @@ def make_whole(atomgroup, reference_atom=None):
 
 
     .. versionadded:: 0.11.0
+    .. versionchanged:: 0.18.1
+       Added support for triclinic boxes
+       Rewrote in Cython (better performance)
+       Added inplace keyword
     """
     cdef intset refpoints, todo, done
     cdef int i, nloops, ref, atom, other, natoms

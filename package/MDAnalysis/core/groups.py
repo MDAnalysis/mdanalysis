@@ -1168,8 +1168,10 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.18.1
         """
+        atomgroup = self.atoms.unique
+
         if compound.lower() == 'group':
-            objects = [atomgroup.atoms]
+            objects = [atomgroup]
         elif compound.lower() == 'residues':
             objects = atomgroup.residues
         elif compound.lower() == 'segments':
@@ -1182,13 +1184,13 @@ class GroupBase(_MutableBase):
                              "or 'fragments'".format(compound))
 
         for o in objects:
-            make_whole(o)
+            make_whole(o.atoms)
 
         if center is None:
             tri_box = mdamath.triclinic_vectors(u.dimensions)
             center = np.diag(tri_box) / 2.0
 
-        object_centers = np.vstack([o.center_of_mass(pbc=False) for o in objects])
+        object_centers = np.vstack([o.center_of_geometry(pbc=False) for o in objects])
 
         if box is None:
             box = self.dimensions
