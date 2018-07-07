@@ -103,7 +103,7 @@ from numpy.lib.utils import deprecate
 
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
-from ..lib.util import cached, warn_if_not_unique, unique_int_1d
+from ..lib.util import cached, warn_if_not_unique, unique_int_1d, make_whole
 from ..lib import distances
 from ..lib import transformations
 from ..selections import get_writer as get_selection_writer_for
@@ -1137,6 +1137,69 @@ class GroupBase(_MutableBase):
                 ag.universe.trajectory.ts.positions[unique_ix] = packed_coords
                 return ag.universe.trajectory.ts.positions[unique_ix[restore_mask]]
             return packed_coords[restore_mask]
+
+    def unwrap(self, compound='group', center=None, box=None):
+        """Move coordinates to prevent bonds being split over periodic boundaries
+
+        This is the inverse transformation to packing atoms into the primary unit
+        cell. It should therefore stop bonds being "broken" over the periodic
+        boundaries in the system.
+
+        This method requires the Universe to have information about bonding.  This
+        can be guessed using the :meth:`guess_bonds` method if necessary.
+
+        Parameters
+        ----------
+        compound : str, optional {'group', 'residues', 'segments', 'fragments'}
+            which level of topology to keep together [``fragment``]
+        center : numpy.ndarray, optional
+            position to try and center unwrapped molecules around.  If given
+            then for each group unwrapped, the COM of the atoms will be as close
+            as possible to this point.  Defaults to center of primary unit cell.
+        box : array_like
+            Box dimensions, can be either orthogonal or triclinic information.
+            Cell dimensions must be in an identical to format to those returned
+            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+            ``[lx, ly, lz, alpha, beta, gamma]``. If ``None``, uses these
+            timestep dimensions.
+
+        # TODO the function isn't actually here, merge the _cutil in to make docs work
+        .. seealso:: :func:`MDAnalysis.lib.util.make_whole`
+
+        .. versionadded:: 0.18.1
+        """
+        if compound.lower() == 'group':
+            objects = [atomgroup.atoms]
+        elif compound.lower() == 'residues':
+            objects = atomgroup.residues
+        elif compound.lower() == 'segments':
+            objects = atomgroup.segments
+        elif compound.lower() == 'fragments':
+            objects = atomgroup.fragments
+        else:
+            raise ValueError("Unrecognized compound definition: {0}"
+                             "Please use one of 'group' 'residues' 'segments'"
+                             "or 'fragments'".format(compound))
+
+        for o in objects:
+            make_whole(o)
+
+        if center is None:
+            tri_box = mdamath.triclinic_vectors(u.dimensions)
+            center = np.diag(tri_box) / 2.0
+
+        object_centers = np.vstack([o.center_of_mass(pbc=False) for o in objects])
+
+        if box is None:
+            box = self.dimensions
+
+        dests = distances.apply_PBC(object_centers, box=box)
+        shifts = dests - object_centers
+
+        for o, s in zip(objects, shifts):
+            # Save some needless shifts
+            if not all(s == 0.0):
+                o.atoms.translate(s)
 
     def wrap(self, compound="atoms", center="com", box=None):
         """Shift the contents of this group back into the unit cell.
