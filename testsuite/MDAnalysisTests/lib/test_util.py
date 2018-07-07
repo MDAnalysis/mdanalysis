@@ -26,6 +26,8 @@ from six.moves import range, StringIO
 import pytest
 import os
 import warnings
+import re
+import textwrap
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
@@ -1283,7 +1285,7 @@ class TestWarnIfNotUnique(object):
         @warn_if_not_unique
         def func(group):
             pass
-            
+
         class dummy(object):
             pass
 
@@ -1303,3 +1305,80 @@ class TestWarnIfNotUnique(object):
                 func(atoms)
                 assert not w.list
             assert len(record) == 0
+
+@pytest.mark.parametrize("old_name", (None, "MDAnalysis.Universe"))
+@pytest.mark.parametrize("new_name", (None, "Multiverse"))
+@pytest.mark.parametrize("remove", (None, "99.0.0", 2099))
+@pytest.mark.parametrize("message", (None, "use the new stuff"))
+def test_deprecate(old_name, new_name, remove, message, release="2.7.1"):
+    def AlternateUniverse(anything):
+        # important: first line needs to be """\ so that textwrap.dedent()
+        # works
+        """\
+        AlternateUniverse provides a true view of the Universe.
+
+        Parameters
+        ----------
+        anything : object
+
+        Returns
+        -------
+        truth
+
+        """
+        return True
+
+    oldfunc = util.deprecate(AlternateUniverse, old_name=old_name,
+                             new_name=new_name,
+                             release=release, remove=remove,
+                             message=message)
+    with pytest.warns(DeprecationWarning, match_expr="`.+` is deprecated"):
+        oldfunc(42)
+
+    doc = oldfunc.__doc__
+    name = old_name if old_name else AlternateUniverse.__name__
+
+    deprecation_line_1 = ".. deprecated:: {0}".format(release)
+    assert re.search(deprecation_line_1, doc)
+
+    if message:
+        deprecation_line_2 = message
+    else:
+        if new_name is None:
+            default_message = "`{0}` is deprecated!".format(name)
+        else:
+            default_message = "`{0}` is deprecated, use `{1}` instead!".format(
+                name, new_name)
+        deprecation_line_2 = default_message
+    assert re.search(deprecation_line_2, doc)
+
+    if remove:
+        deprecation_line_3 = "`{0}` will be removed in release {1}".format(
+            name,  remove)
+        assert re.search(deprecation_line_3, doc)
+
+    # check that the old docs are still present
+    assert re.search(textwrap.dedent(AlternateUniverse.__doc__), doc)
+
+
+def test_deprecate_missing_release_ValueError():
+    with pytest.raises(ValueError):
+        util.deprecate(mda.Universe)
+
+def test_set_function_name(name="bar"):
+    def foo():
+        pass
+    util._set_function_name(foo, name)
+    assert foo.__name__ == name
+
+@pytest.mark.parametrize("text",
+                         ("",
+                          "one line text",
+                          "  one line with leading space",
+                          "multiline\n\n   with some\n   leading space",
+                          "   multiline\n\n   with all\n   leading space"))
+def test_dedent_docstring(text):
+    doc = util.dedent_docstring(text)
+    for line in doc.splitlines():
+        assert line == line.lstrip()
+
