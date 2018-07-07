@@ -167,20 +167,6 @@ and <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomG
 <p>Note that KD-tree based distance selections always ignore this flag. (For
 details see the docs for the ‘use_KDTree_routines’ flag.)</p>
 </div></blockquote>
-<p><strong>speed_unit</strong> = <em>‘Angstrom/ps’</em></p>
-<blockquote>
-<div><p>Base unit for speed (in particular velocities in trajectories)</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;speed_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-</div></blockquote>
-<p><strong>force_unit</strong> = <em>‘kJ/(mol*Angstrom)’</em></p>
-<blockquote>
-<div><p>Base unit for forces (in particular forces in trajectories)</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;force_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-</div></blockquote>
 <p><strong>convert_lengths</strong> = <em>True</em></p>
 <blockquote>
 <div><p>Determine if trajectory reader and writer converts length units between native and MDAnalysis default.</p>
@@ -206,6 +192,20 @@ presented as read from the trajectories.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">Do not change, only Angstrom fully supported.</p>
+</div>
+</div></blockquote>
+<p><strong>force_unit</strong> = <em>‘kJ/(mol*Angstrom)’</em></p>
+<blockquote>
+<div><p>Base unit for forces (in particular forces in trajectories)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;force_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>speed_unit</strong> = <em>‘Angstrom/ps’</em></p>
+<blockquote>
+<div><p>Base unit for speed (in particular velocities in trajectories)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;speed_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
 </div>
 </div></blockquote>
 </dd></dl>
