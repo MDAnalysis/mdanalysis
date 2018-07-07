@@ -32,13 +32,9 @@ DEF XX = 0
 DEF YY = 1
 DEF ZZ = 2
 
-DEF RET_ALLOCATIONERROR = 2
-DEF RET_OK = 1
-DEF RET_ERROR = 0
 DEF EPSILON = 1e-5
 
 DEF NEIGHBORHOOD_ALLOCATION_INCREMENT = 50
-DEF GRID_ALLOCATION_INCREMENT = 50
 
 DEF BOX_MARGIN=1.0010
 DEF MAX_NTRICVEC=12
@@ -288,77 +284,6 @@ cdef struct ns_grid:
     ns_int *nbeads
     ns_int **beadids
 
-cdef ns_int populate_grid(ns_grid *grid,
-                       real[:,::1] coords) nogil:
-    cdef ns_int ncoords = coords.shape[0]
-    cdef bint ret_val
-
-    ret_val = populate_grid_array(grid,
-                                  <rvec *> &coords[0, 0],
-                                  ncoords)
-
-    return ret_val
-
-cdef ns_int populate_grid_array(ns_grid *grid,
-                             rvec *coords,
-                             ns_int ncoords) nogil:
-    cdef ns_int i, cellindex = -1
-    cdef ns_int grid_size = grid.size
-    cdef ns_int *allocated_size = NULL
-
-    if grid_size != grid.ncells[XX] * grid.ncells[YY] * grid.ncells[ZZ]: # Grid not initialized
-        return RET_ERROR
-
-
-    # Allocate memory
-    grid.nbeads = <ns_int *> malloc(sizeof(ns_int) * grid_size)
-    if grid.nbeads == NULL:
-        return RET_ALLOCATIONERROR
-
-    allocated_size = <ns_int *> malloc(sizeof(ns_int) * grid_size)
-    if allocated_size == NULL:
-        # No need to free grid.nbeads as it will be freed by destroy_nsgrid
-        return RET_ALLOCATIONERROR
-
-    for i in range(grid_size):
-        grid.nbeads[i] = 0
-        allocated_size[i] = GRID_ALLOCATION_INCREMENT
-
-    grid.beadids = <ns_int **> malloc(sizeof(ns_int *) * grid_size)
-    if grid.beadids == NULL:
-        return RET_ALLOCATIONERROR
-
-    for i in range(grid_size):
-        grid.beadids[i] = <ns_int *> malloc(sizeof(ns_int) * allocated_size[i])
-        if grid.beadids[i] == NULL:
-            return RET_ALLOCATIONERROR
-
-    # Get cell indices for coords
-    for i in range(ncoords):
-        cellindex = <ns_int> (coords[i][ZZ] / grid.cellsize[ZZ]) * (grid.ncells[XX] * grid.ncells[YY]) +\
-                    <ns_int> (coords[i][YY] / grid.cellsize[YY]) * grid.ncells[XX] + \
-                    <ns_int> (coords[i][XX] / grid.cellsize[XX])
-
-        grid.beadids[cellindex][grid.nbeads[cellindex]] = i
-        grid.nbeads[cellindex] += 1
-
-        if grid.nbeads[cellindex] >= allocated_size[cellindex]:
-            allocated_size[cellindex] += GRID_ALLOCATION_INCREMENT
-            grid.beadids[cellindex] = <ns_int *> realloc(<void *> grid.beadids[cellindex], sizeof(ns_int) * allocated_size[cellindex])
-    free(allocated_size)
-    return RET_OK
-
-cdef void destroy_nsgrid(ns_grid *grid) nogil:
-    cdef ns_int i
-    if grid.nbeads != NULL:
-        free(grid.nbeads)
-
-    for i in range(grid.size):
-        if grid.beadids[i] != NULL:
-            free(grid.beadids[i])
-    free(grid.beadids)
-
-
 cdef ns_neighborhood_holder *create_neighborhood_holder() nogil:
     cdef ns_neighborhood_holder *holder
 
@@ -517,7 +442,6 @@ cdef ns_neighborhood_holder *ns_core(real[:, ::1] refcoords,
 # Python interface
 cdef class FastNS(object):
     cdef PBCBox box
-    cdef readonly int nthreads
     cdef readonly real[:, ::1] coords
     cdef real[:, ::1] coords_bbox
     cdef readonly real cutoff
@@ -530,8 +454,6 @@ cdef class FastNS(object):
 
         self.box = PBCBox(box)
 
-        self.nthreads = 1
-
         self.coords = None
         self.coords_bbox = None
 
@@ -543,7 +465,15 @@ cdef class FastNS(object):
 
 
     def __dealloc__(self):
-        destroy_nsgrid(&self.grid)
+        cdef ns_int i
+        if self.grid.nbeads != NULL:
+            free(self.grid.nbeads)
+
+        for i in range(self.grid.size):
+            if self.grid.beadids[i] != NULL:
+                free(self.grid.beadids[i])
+        free(self.grid.beadids)
+
         self.grid.size = 0
     
     def set_coords(self, real[:, ::1] coords):
@@ -562,8 +492,11 @@ cdef class FastNS(object):
 
 
     def prepare(self, force=False):
-        cdef ns_int i, retcode
-        cdef bint initialization_ok
+        cdef ns_int i, cellindex = -1
+        cdef ns_int *allocated_size = NULL
+        cdef ns_int ncoords = self.coords.shape[0]
+        cdef ns_int allocation_guess
+        cdef rvec *coords = <rvec *>  &self.coords_bbox[0, 0]
 
         if self.prepared and not force:
             print("NS already prepared, nothing to do!")
@@ -575,7 +508,6 @@ cdef class FastNS(object):
             raise ValueError("Cutoff must be set before NS preparation!")
 
         with nogil:
-            initialization_ok = False
 
             # Initializing grid
             for i in range(DIM):
@@ -583,17 +515,61 @@ cdef class FastNS(object):
                 if self.grid.ncells[i] == 0:
                     self.grid.ncells[i] = 1
                 self.grid.cellsize[i] = self.box.c_pbcbox.box[i][i] / self.grid.ncells[i]
-
             self.grid.size = self.grid.ncells[XX] * self.grid.ncells[YY] * self.grid.ncells[ZZ]
 
-            # Populating grid
-            retcode = populate_grid(&self.grid, self.coords_bbox)
-        if retcode == RET_OK:
-            self.prepared = True
-        elif retcode == RET_ALLOCATIONERROR:
-            raise MemoryError("Could not allocate memory to initialize NS grid")
-        else:
-            raise RuntimeError("Could not initialize NS grid")
+            # This is just a guess on how much memory we might for each grid cell:
+            # we just assume an average bead density and we take four times this density just to be safe
+            allocation_guess = <ns_int> (4 * (ncoords / self.grid.size + 1))
+
+            # Allocate memory for the grid
+            self.grid.nbeads = <ns_int *> malloc(sizeof(ns_int) * self.grid.size)
+            if self.grid.nbeads == NULL:
+                with gil:
+                    raise MemoryError("Could not allocate memory for NS grid")
+
+            # Allocate memory from temporary allocation counter
+            allocated_size = <ns_int *> malloc(sizeof(ns_int) * self.grid.size)
+            if allocated_size == NULL:
+                # No need to free grid.nbeads as it will be freed by destroy_nsgrid called by  __dealloc___
+                with gil:
+                    raise MemoryError("Could not allocate memory for allocation buffer")
+
+            # Pre-allocate some memory for grid cells
+            for i in range(self.grid.size):
+                self.grid.nbeads[i] = 0
+                allocated_size[i] = allocation_guess
+
+            self.grid.beadids = <ns_int **> malloc(sizeof(ns_int *) * self.grid.size)
+            if self.grid.beadids == NULL:
+                with gil:
+                    raise MemoryError("Could not allocate memory for grid cells")
+
+            for i in range(self.grid.size):
+                self.grid.beadids[i] = <ns_int *> malloc(sizeof(ns_int) * allocated_size[i])
+                if self.grid.beadids[i] == NULL:
+                    with gil:
+                        raise MemoryError("Could not allocate memory for grid cell")
+
+            # Populate grid cells using the coordinates (ie do the heavy work)
+            for i in range(ncoords):
+                cellindex = <ns_int> (coords[i][ZZ] / self.grid.cellsize[ZZ]) * (self.grid.ncells[XX] * self.grid.ncells[YY]) +\
+                            <ns_int> (coords[i][YY] / self.grid.cellsize[YY]) * self.grid.ncells[XX] + \
+                            <ns_int> (coords[i][XX] / self.grid.cellsize[XX])
+
+                self.grid.beadids[cellindex][self.grid.nbeads[cellindex]] = i
+                self.grid.nbeads[cellindex] += 1
+
+                # We need to allocate more memory (simply double the amount of memory as
+                # 1. it should barely be needed
+                # 2. the size should stay fairly reasonable
+                if self.grid.nbeads[cellindex] >= allocated_size[cellindex]:
+                    allocated_size[cellindex] *= 2
+                    self.grid.beadids[cellindex] = <ns_int *> realloc(<void *> self.grid.beadids[cellindex], sizeof(ns_int) * allocated_size[cellindex])
+
+            # Now we can free the allocation buffer
+            free(allocated_size)
+
+        self.prepared = True
 
 
     def search(self, real[:, ::1]search_coords, return_ids=False):
