@@ -720,3 +720,15 @@ def test_cross_universe_eq():
     u2 = mda.Universe(PSF)
 
     assert not (u1.bonds[0] == u2.bonds[0])
+
+def test_zero_size_TG_indices():
+    u = mda.Universe.empty(10)
+
+    u.add_TopologyAttr('bonds', values=[(1, 2), (2, 3)])
+
+    ag = u.atoms[[0]]
+
+    idx = ag.bonds.to_indices()
+
+    assert idx.shape == (0, 3)
+    assert idx.dtype == np.int32

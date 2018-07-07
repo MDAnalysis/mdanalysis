@@ -59,6 +59,8 @@ Fixes
     pack_into_box() (Issue #1911)
   * Fixed format of MODEL number in PDB file writing (Issue #1950)
   * PDBWriter now properly sets start value
+  * Zero length TopologyGroup now return proper shape array via to_indices
+    (Issue #1974)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)
