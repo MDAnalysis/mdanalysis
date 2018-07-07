@@ -92,7 +92,7 @@ e.g. giving a workflow as a keyword argument when defining the universe:
 
 from __future__ import absolute_import
 
-from .translate import translate, center_in_box
+from .translate import translate, center_in_box, center_in_plane, center_in_axis
 
 
 

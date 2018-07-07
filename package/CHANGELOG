@@ -19,6 +19,7 @@ The rules for this file:
   * 0.18.1
 
 Enhancements
+  * Added box/axis/plane centering trajectory transformations
   * Added a box centering trajectory transformation (PR #1946)
   * Added a on-the-fly trajectory transformations API and a coordinate translation
   	function (Issue #786)
