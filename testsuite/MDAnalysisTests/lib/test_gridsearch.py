@@ -24,14 +24,13 @@ from __future__ import print_function, absolute_import
 
 import pytest
 
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 
 import MDAnalysis as mda
 from MDAnalysis.lib import grid
 from MDAnalysis.lib.pkdtree import PeriodicKDTree
 
-from MDAnalysis.lib.mdamath import triclinic_vectors
 
 from MDAnalysisTests.datafiles import GRO
 
@@ -42,12 +41,32 @@ def universe():
     return u
 
 
+
+@pytest.fixture
+def grid_results():
+    u = mda.Universe(GRO)
+    cutoff = 2
+    ref_pos = u.atoms.positions[13937]
+    return run_grid_search(u, ref_pos, cutoff)
+
+
+def run_grid_search(u, ref_pos, cutoff):
+    coords = u.atoms.positions
+
+    # Run grid search
+    searcher = grid.FastNS(u)
+    searcher.set_cutoff(cutoff)
+    searcher.set_coords(coords)
+    searcher.prepare()
+
+    return searcher.search(ref_pos)
+
+
+
 def run_search(universe, ref_id):
     cutoff = 3
-
     coords = universe.atoms.positions
     ref_pos = coords[ref_id]
-    triclinic_box = triclinic_vectors(universe.dimensions)
 
 
     # Run pkdtree search
@@ -61,13 +80,8 @@ def run_search(universe, ref_id):
     results_pkdtree.sort()
 
     # Run grid search
-
-    searcher = grid.FastNS(triclinic_box)
-    searcher.set_cutoff(cutoff)
-    searcher.set_coords(coords)
-    searcher.prepare()
-
-    results_grid = searcher.search(np.array([ref_pos, ]), return_ids=True)[0]
+    results_grid = run_grid_search(universe, ref_pos, cutoff)
+    results_grid = results_grid.get_indices()[0]
     results_grid.sort()
 
     return results_pkdtree, results_grid
@@ -86,4 +100,47 @@ def test_gridsearch_PBC(universe):
 
     ref_id = 13937
     results_pkdtree, results_grid = run_search(universe, ref_id)
+
     assert_equal(results_pkdtree, results_grid)
+
+
+def test_gridsearch_arraycoord(universe):
+    """Check the NS routine accepts a single bead coordinate as well as array of coordinates"""
+    cutoff = 2
+    ref_pos = universe.atoms.positions[:5]
+
+    results = [
+        np.array([2, 1, 4, 3]),
+        np.array([2, 0, 3]),
+        np.array([0, 1, 3]),
+        np.array([    2,     0,     1, 38341]),
+        np.array([ 6,  0,  5, 17])
+    ]
+
+    results_grid = run_grid_search(universe, ref_pos, cutoff).get_indices()
+
+    assert_equal(results_grid, results)
+
+
+def test_gridsearch_search_coordinates(grid_results):
+    """Check the NS routine can return coordinates instead of ids"""
+
+    results = np.array(
+        [
+            [40.32, 34.25, 55.9],
+            [0.61, 76.33, -0.56],
+            [0.48999998, 75.9, 0.19999999],
+            [-0.11, 76.19, 0.77]
+        ])
+
+    assert_allclose(grid_results.get_coordinates()[0], results)
+
+
+def test_gridsearch_search_distances(grid_results):
+    """Check the NS routine can return PBC distances from neighbors"""
+    results = np.array([0.096, 0.096, 0.015, 0.179]) * 10  # These distances were obtained using gmx distance
+    results.sort()
+
+    rounded_results = np.round(grid_results.get_distances()[0], 2)
+
+    assert_allclose(sorted(rounded_results), results)
