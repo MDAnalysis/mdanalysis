@@ -2531,7 +2531,7 @@ class AtomGroup(GroupBase):
         return topologyobjects.ImproperDihedral(self.ix, self.universe)
 
     def write(self, filename=None, file_format="PDB",
-              filenamefmt="{trjname}_{frame}", **kwargs):
+              filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
         """Write `AtomGroup` to a file.
 
         The output can either be a coordinate file or a selection, depending on
@@ -2554,19 +2554,46 @@ class AtomGroup(GroupBase):
             ``"conect"``: write only the CONECT records defined in the original
             file. ``"all"``: write out all bonds, both the original defined and
             those guessed by MDAnalysis. ``None``: do not write out bonds.
-            Default os ``"conect"``.
+            Default is ``"conect"``.
+        frames:
+            An ensemble of frames to write. The ensemble can be an list or
+            array of frame indices, a mask of booleans, an instance of
+            :class:`slice`, or an indexed trajectory. By default, 'frames' is
+            set to ``None`` and only the current frame is written.
 
 
         .. versionchanged:: 0.9.0 Merged with write_selection. This method can
             now write both selections out.
+        .. versionchanged:: 0.19.0
+            Can write multiframe trajectories with the 'frames' argument.
         """
         # check that AtomGroup actually has any atoms (Issue #434)
         if len(self.atoms) == 0:
             raise IndexError("Cannot write an AtomGroup with 0 atoms")
 
         trj = self.universe.trajectory  # unified trajectory API
+        if frames is None:
+            trj_frames = trj[::]
+        else:
+            try:
+                test_trajectory = frames.trajectory
+            except AttributeError:
+                trj_frames = trj[frames]
+            else:
+                if test_trajectory is not trj:
+                    raise ValueError(
+                        'The trajectory of {} provided to the frames keyword '
+                        'attribute is different from the trajectory of the '
+                        'AtomGroup.'.format(frames)
+                    )
+                trj_frames = frames
+            if len(trj_frames) > 1 and kwargs.get("multiframe") == False:
+                raise ValueError(
+                    'Cannot explicitely set "multiframe" to False and request '
+                    'more than 1 frame with the "frames" keyword argument.'
+                ) 
 
-        if trj.n_frames == 1:
+        if len(trj_frames) == 1:
             kwargs.setdefault("multiframe", False)
 
         if filename is None:
@@ -2590,23 +2617,29 @@ class AtomGroup(GroupBase):
 
             writer = get_writer_for(filename, format=format, multiframe=multiframe)
             #MDAnalysis.coordinates.writer(filename, **kwargs)
-            coords = True
         except (ValueError, TypeError):
-            coords = False
+            pass
+        else:
+            with writer(filename, n_atoms=self.n_atoms, **kwargs) as w:
+                if frames is None:
+                    w.write(self.atoms)
+                else:
+                    for _ in trj_frames:
+                        w.write(self.atoms)
+            return
 
         try:
             # here `file_format` is only used as default,
             # anything pulled off `filename` will be used preferentially
             writer = get_selection_writer_for(filename, file_format)
-            selection = True
         except (TypeError, NotImplementedError):
-            selection = False
-
-        if not (coords or selection):
-            raise ValueError("No writer found for format: {}".format(filename))
+            pass
         else:
             with writer(filename, n_atoms=self.n_atoms, **kwargs) as w:
                 w.write(self.atoms)
+            return
+
+        raise ValueError("No writer found for format: {}".format(filename))
 
 
 class ResidueGroup(GroupBase):

@@ -1450,6 +1450,11 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         """
         return self.ts.time
 
+    @property
+    def trajectory(self):
+        # Makes a reader effectively commpatible with a FrameIteratorBase
+        return self
+
     def Writer(self, filename, **kwargs):
         """A trajectory writer with the same properties as this trajectory."""
         raise NotImplementedError(
