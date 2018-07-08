@@ -25,6 +25,15 @@
 
 #cython: cdivision=True
 #cython: boundscheck=False
+#cython: initializedcheck=False
+
+"""
+Neighbor search library --- :mod:`MDAnalysis.lib.grid`
+======================================================
+
+This Neighbor search library is a serialized Cython port of the NS grid search implemented in GROMACS.
+"""
+
 
 # Preprocessor DEFs
 DEF DIM = 3
@@ -40,6 +49,7 @@ DEF BOX_MARGIN=1.0010
 DEF MAX_NTRICVEC=12
 
 from libc.stdlib cimport malloc, realloc, free
+from libc.math cimport sqrt
 
 import numpy as np
 cimport numpy as np
@@ -248,16 +258,21 @@ cdef class PBCBox(object):
                 for j in range (i, -1, -1):
                     dx[j] += self.c_pbcbox.box[i][j]
 
+    cdef real fast_distance2(self, rvec a, rvec b) nogil:
+        cdef rvec dx
+        self.fast_pbc_dx(a, b, dx)
+        return rvec_norm2(dx)
+
+    cdef real fast_distance(self, rvec a, rvec b) nogil:
+        return sqrt(self.fast_distance2(a,b))
+
     cdef real[:, ::1]fast_put_atoms_in_bbox(self, real[:,::1] coords) nogil:
         cdef ns_int i, m, d, natoms, wd = 0
         cdef real[:,::1] bbox_coords
 
         natoms = coords.shape[0]
         with gil:
-            if natoms == 0:
-                bbox_coords = np.empty((0, DIM))
-            else:
-                bbox_coords = coords.copy()
+            bbox_coords = coords.copy()
 
         for i in range(natoms):
             for m in range(DIM - 1, -1, -1):
@@ -270,6 +285,8 @@ cdef class PBCBox(object):
         return bbox_coords
 
     def put_atoms_in_bbox(self, real[:,::1] coords):
+        if coords.shape[0] == 0:
+            return np.zeros((0, DIM), dtype=np.float32)
         return np.asarray(self.fast_put_atoms_in_bbox(coords))
 
 ########################################################################################################################
@@ -439,6 +456,167 @@ cdef ns_neighborhood_holder *ns_core(real[:, ::1] refcoords,
 
     return holder
 
+cdef class NSResults(object):
+    """
+    Class used to store results returned by `MDAnalysis.lib.grid.FastNS.search`
+    """
+    cdef PBCBox box
+    cdef readonly real cutoff
+    cdef real[:, ::1] grid_coords
+    cdef real[:, ::1] ref_coords
+    cdef ns_int **nids
+    cdef ns_int *nsizes
+    cdef ns_int size
+    cdef list indices
+    cdef list coordinates
+    cdef list distances
+
+    def __init__(self, PBCBox box, real cutoff):
+        self.box = box
+        self.cutoff = cutoff
+
+        self.size = 0
+        self.nids = NULL
+        self.nsizes = NULL
+
+        self.grid_coords = None
+        self.ref_coords = None
+
+        self.indices = None
+        self.coordinates = None
+        self.distances = None
+
+
+    cdef populate(self, ns_neighborhood_holder *holder, grid_coords, ref_coords):
+        cdef ns_int nid, i
+        cdef ns_neighborhood *neighborhood
+
+        self.grid_coords = grid_coords.copy()
+        self.ref_coords = ref_coords.copy()
+
+        # Allocate memory
+        self.nsizes = <ns_int *> malloc(sizeof(ns_int) * holder.size)
+        if self.nsizes == NULL:
+            raise MemoryError("Could not allocate memory for NSResults")
+
+        self.nids = <ns_int **> malloc(sizeof(ns_int *) * holder.size)
+        if self.nids == NULL:
+            raise MemoryError("Could not allocate memory for NSResults")
+
+        for nid in range(holder.size):
+            neighborhood = holder.neighborhoods[nid]
+
+            self.nsizes[nid] = neighborhood.size
+
+            self.nids[nid] = <ns_int *> malloc(sizeof(ns_int *) * neighborhood.size)
+            if self.nids[nid] == NULL:
+                raise MemoryError("Could not allocate memory for NSResults")
+
+        with nogil:
+            for nid in range(holder.size):
+                neighborhood = holder.neighborhoods[nid]
+
+                for i in range(neighborhood.size):
+                    self.nids[nid][i] = neighborhood.beadids[i]
+
+        self.size = holder.size
+
+    def __dealloc__(self):
+        if self.nids != NULL:
+            for i in range(self.size):
+                if self.nids[i] != NULL:
+                    free(self.nids[i])
+            free(self.nids)
+
+        if self.nsizes != NULL:
+            free(self.nsizes)
+
+
+    def get_indices(self):
+        """
+        Return Neighbors indices.
+
+        :return: list of indices
+        """
+        cdef ns_int i, nid, size
+
+        if self.indices is None:
+            indices = []
+
+            for nid in range(self.size):
+                size = self.nsizes[nid]
+
+                tmp_incides = np.empty((size), dtype=np.int)
+
+                for i in range(size):
+                    tmp_incides[i] = self.nids[nid][i]
+
+                indices.append(tmp_incides)
+
+            self.indices = indices
+
+        return self.indices
+
+
+    def get_coordinates(self):
+        """
+        Return coordinates of neighbors.
+
+        :return: list of coordinates
+        """
+        cdef ns_int i, nid, size, beadid
+
+        if self.coordinates is None:
+            coordinates = []
+
+            for nid in range(self.size):
+                size = self.nsizes[nid]
+
+                tmp_values = np.empty((size, DIM), dtype=np.float32)
+
+                for i in range(size):
+                    beadid = self.nids[nid][i]
+                    tmp_values[i] = self.grid_coords[beadid]
+
+                coordinates.append(tmp_values)
+
+            self.coordinates = coordinates
+
+        return self.coordinates
+
+
+    def get_distances(self):
+        """
+        Return coordinates of neighbors.
+
+        :return: list of distances
+        """
+        cdef ns_int i, nid, size, j, beadid
+        cdef rvec ref, other, dx
+        cdef real dist
+
+        if self.distances is None:
+            distances = []
+
+            for nid in range(self.size):
+                size = self.nsizes[nid]
+
+                tmp_values = np.empty((size), dtype=np.float32)
+                ref = <rvec> &self.ref_coords[nid, 0]
+
+                for i in range(size):
+                    beadid = self.nids[nid][i]
+                    other = <rvec> &self.grid_coords[beadid, 0]
+
+                    tmp_values[i] = self.box.fast_distance(ref, other)
+
+                distances.append(tmp_values)
+
+            self.distances = distances
+
+        return self.distances
+
+
 # Python interface
 cdef class FastNS(object):
     cdef PBCBox box
@@ -448,7 +626,14 @@ cdef class FastNS(object):
     cdef bint prepared
     cdef ns_grid grid
 
-    def __init__(self, box):
+    def __init__(self, u):
+        import MDAnalysis as mda
+        from MDAnalysis.lib.mdamath import triclinic_vectors
+
+        if not isinstance(u, mda.Universe):
+            raise TypeError("FastNS class must be initialized with a valid MDAnalysis.Universe instance")
+        box = triclinic_vectors(u.dimensions)
+
         if box.shape != (3, 3):
             raise ValueError("Box must be provided as triclinic_dimensions (a 3x3 numpy.ndarray of unit cell vectors")
 
@@ -466,6 +651,7 @@ cdef class FastNS(object):
 
     def __dealloc__(self):
         cdef ns_int i
+        # Deallocate NS grid
         if self.grid.nbeads != NULL:
             free(self.grid.nbeads)
 
@@ -475,7 +661,8 @@ cdef class FastNS(object):
         free(self.grid.beadids)
 
         self.grid.size = 0
-    
+
+
     def set_coords(self, real[:, ::1] coords):
         self.coords = coords
 
@@ -568,12 +755,12 @@ cdef class FastNS(object):
 
             # Now we can free the allocation buffer
             free(allocated_size)
-
         self.prepared = True
 
 
-    def search(self, real[:, ::1]search_coords, return_ids=False):
+    def search(self, search_coords):
         cdef real[:, ::1] search_coords_bbox
+        cdef real[:, ::1] search_coords_view
         cdef ns_int nid, i, j
         cdef ns_neighborhood_holder *holder
         cdef ns_neighborhood *neighborhood
@@ -581,9 +768,18 @@ cdef class FastNS(object):
         if not self.prepared:
             self.prepare()
 
+        # Check the shape of search_coords as a array of 3D coords if needed
+        shape = search_coords.shape
+        if len(shape) == 1:
+            if not shape[0] == 3:
+                raise ValueError("Coordinates must be 3D")
+            else:
+                search_coords_view = np.array([search_coords,], dtype=np.float32)
+        else:
+            search_coords_view = search_coords
 
         # Make sure atoms are inside the brick-shaped box
-        search_coords_bbox = self.box.fast_put_atoms_in_bbox(search_coords)
+        search_coords_bbox = self.box.fast_put_atoms_in_bbox(search_coords_view)
 
         with nogil:
             holder = ns_core(search_coords_bbox, self.coords_bbox, &self.grid, self.box, self.cutoff)
@@ -591,24 +787,11 @@ cdef class FastNS(object):
         if holder == NULL:
             raise MemoryError("Could not allocate memory to run NS core")
 
-        neighbors = []
-        for nid in range(holder.size):
-            neighborhood = holder.neighborhoods[nid]
 
-            if return_ids:
-                neighborhood_py = np.empty(neighborhood.size, dtype=np.int64)
+        results = NSResults(self.box, self.cutoff)
+        results.populate(holder, self.coords, search_coords_view)
 
-                for i in range(neighborhood.size):
-                    neighborhood_py[i] = neighborhood.beadids[i]
-            else:
-                neighborhood_py = np.empty((neighborhood.size, DIM), dtype=np.float32)
-                for i in range(neighborhood.size):
-                    for j in range(DIM):
-                        neighborhood_py[i,j] = self.coords[neighborhood.beadids[i], j]
-                    
-            neighbors.append(neighborhood_py)
-
-        # Free Memory
+        # Free memory allocated to holder
         free_neighborhood_holder(holder)
 
-        return neighbors
+        return results
