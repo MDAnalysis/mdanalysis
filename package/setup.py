@@ -339,6 +339,12 @@ def extensions(config):
                         include_dirs=include_dirs,
                         define_macros=define_macros,
                         extra_compile_args=extra_compile_args)
+    cutil = MDAExtension('MDAnalysis.lib._cutil',
+                         sources=['MDAnalysis/lib/_cutil' + source_suffix],
+                         include_dirs=include_dirs,
+                         define_macros=define_macros,
+                         extra_compile_args=extra_compile_args)
+
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
                                 sources=['MDAnalysis/analysis/encore/cutils' + source_suffix],
@@ -368,7 +374,7 @@ def extensions(config):
                              extra_link_args=parallel_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred, grid]
+                ap_clustering, spe_dimred, cutil, grid]
 
     cython_generated = []
     if use_cython:

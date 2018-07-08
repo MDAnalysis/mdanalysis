@@ -32,6 +32,7 @@ from __future__ import absolute_import
 import numpy as np
 from Bio.KDTree import KDTree
 from MDAnalysis.lib.pkdtree import PeriodicKDTree
+from MDAnalysis.lib.util import unique_int_1d
 
 from MDAnalysis.core.groups import AtomGroup, Atom
 
@@ -94,7 +95,9 @@ class AtomNeighborSearch(object):
         for pos in positions:
             self.kdtree.search(pos, radius)
             indices.append(self.kdtree.get_indices())
-        unique_idx = np.unique([i for l in indices for i in l]).astype(np.int64)
+        unique_idx = unique_int_1d(
+            np.array([i for l in indices for i in l], dtype=np.int64)
+        )
         return self._index2level(unique_idx, level)
 
     def _index2level(self, indices, level):
