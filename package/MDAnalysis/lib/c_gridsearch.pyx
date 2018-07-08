@@ -462,14 +462,24 @@ cdef class NSResults(object):
     """
     cdef PBCBox box
     cdef readonly real cutoff
-    cdef real[:, ::1] grid_coords
-    cdef real[:, ::1] ref_coords
+    cdef np.ndarray grid_coords
+    cdef np.ndarray ref_coords
     cdef ns_int **nids
     cdef ns_int *nsizes
     cdef ns_int size
     cdef list indices
     cdef list coordinates
     cdef list distances
+
+    def __dealloc__(self):
+        if self.nids != NULL:
+            for i in range(self.size):
+                if self.nids[i] != NULL:
+                    free(self.nids[i])
+            free(self.nids)
+
+        if self.nsizes != NULL:
+            free(self.nsizes)
 
     def __init__(self, PBCBox box, real cutoff):
         self.box = box
@@ -491,8 +501,8 @@ cdef class NSResults(object):
         cdef ns_int nid, i
         cdef ns_neighborhood *neighborhood
 
-        self.grid_coords = grid_coords.copy()
-        self.ref_coords = ref_coords.copy()
+        self.grid_coords = np.asarray(grid_coords)
+        self.ref_coords = np.asarray(ref_coords)
 
         # Allocate memory
         self.nsizes = <ns_int *> malloc(sizeof(ns_int) * holder.size)
@@ -520,17 +530,6 @@ cdef class NSResults(object):
                     self.nids[nid][i] = neighborhood.beadids[i]
 
         self.size = holder.size
-
-    def __dealloc__(self):
-        if self.nids != NULL:
-            for i in range(self.size):
-                if self.nids[i] != NULL:
-                    free(self.nids[i])
-            free(self.nids)
-
-        if self.nsizes != NULL:
-            free(self.nsizes)
-
 
     def get_indices(self):
         """
@@ -594,6 +593,8 @@ cdef class NSResults(object):
         cdef ns_int i, nid, size, j, beadid
         cdef rvec ref, other, dx
         cdef real dist
+        cdef real[:, ::1] ref_coords = self.ref_coords
+        cdef real[:, ::1] grid_coords = self.grid_coords
 
         if self.distances is None:
             distances = []
@@ -602,11 +603,11 @@ cdef class NSResults(object):
                 size = self.nsizes[nid]
 
                 tmp_values = np.empty((size), dtype=np.float32)
-                ref = <rvec> &self.ref_coords[nid, 0]
+                ref = <rvec> &ref_coords[nid, 0]
 
                 for i in range(size):
                     beadid = self.nids[nid][i]
-                    other = <rvec> &self.grid_coords[beadid, 0]
+                    other = <rvec> &grid_coords[beadid, 0]
 
                     tmp_values[i] = self.box.fast_distance(ref, other)
 
@@ -786,7 +787,6 @@ cdef class FastNS(object):
 
         if holder == NULL:
             raise MemoryError("Could not allocate memory to run NS core")
-
 
         results = NSResults(self.box, self.cutoff)
         results.populate(holder, self.coords, search_coords_view)
