@@ -183,3 +183,20 @@ def test_PDB_no_resid():
     assert len(u.residues) == 1
     # should have default resid of 1
     assert u.residues[0].resid == 1
+
+PDB_hex = """\
+REMARK For testing reading of hex atom numbers
+REMARK This has MODELs then hex atom numbers entries
+CRYST1   80.000   80.017   80.017  90.00  90.00  90.00 P 1           1
+MODEL        1
+HETATM    1  H     2 L 400      20.168  00.034  40.428
+HETATM4A05D  H     2 L 400      40.168  50.034  40.428
+HETATM4A05E  H     2 L 400      30.453  60.495  50.132
+HETATM4A05F  H     2 L 400      20.576  40.354  60.483
+HETATM4A060  H     2 L 400      10.208  30.067  70.045
+END
+"""
+
+def test_PDB_hex():
+    u = mda.Universe(StringIO(PDB_hex), format='PDB')
+    assert len(u.atoms) == 5
