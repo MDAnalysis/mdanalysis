@@ -13,6 +13,15 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+07/09/18 arm61
+
+  * 0.18.1
+
+Fixes
+
+  * Introduced compatibility for packmol (and hopefully generally) for pbd files with
+    greater than 100 000 atoms (Issue #1897)
+
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
          VOD555, davidercruz, jbarnoud
 
