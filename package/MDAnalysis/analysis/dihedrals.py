@@ -1,3 +1,17 @@
+from six.moves import zip
+from six import string_types
+import numpy as np
+import logging
+import warnings
+
+
+import MDAnalysis.lib.qcprot as qcp
+from MDAnalysis.analysis.base import AnalysisBase
+from MDAnalysis.exceptions import SelectionError, NoDataError
+from MDAnalysis.lib.log import ProgressMeter, _set_verbose
+from MDAnalysis.lib.util import asiterable, iterable, get_weights
+
+
 def dihedral_calc(atomgroups):
     """Calculates phi and psi angles for a list of AtomGroups over trajectory.
 
