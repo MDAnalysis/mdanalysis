@@ -248,6 +248,19 @@ class TestMakeWhole(object):
         universe.add_TopologyAttr(Bonds(bondlist))
         return universe
 
+    def test_single_atom_no_bonds(self):
+        # Call make_whole on single atom with no bonds, shouldn't move
+        u = mda.Universe(Make_Whole)
+        # Atom0 is isolated
+        bondlist = [(1, 2), (1, 3), (1, 4), (4, 5), (4, 6), (4, 7)]
+        u.add_TopologyAttr(Bonds(bondlist))
+
+        ag = u.atoms[[0]]
+        refpos = ag.positions.copy()
+        mdamath.make_whole(ag)
+
+        assert_array_almost_equal(ag.positions, refpos)
+
     @staticmethod
     @pytest.fixture()
     def ag(universe):
