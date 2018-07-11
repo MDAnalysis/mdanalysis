@@ -46,7 +46,13 @@ def translate(vector):
     
     Example
     -------
-        ts = MDAnalysis.transformations.translate([1,2,3])(ts)    
+    
+    Translate the coordinates of the system by the [1, 2, 3] vector
+    
+    ..code-block:: python
+
+        transform = MDAnalysis.transformations.translate([1,2,3])
+        u.trajectory.add_transformations(transform)
     
     Parameters
     ----------
@@ -55,7 +61,7 @@ def translate(vector):
         
     Returns
     -------
-    :class:`~MDAnalysis.coordinates.base.Timestep` object
+    `~MDAnalysis.coordinates.base.Timestep`
     
     """
     if len(vector)>2:
@@ -81,10 +87,14 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
     Example
     -------
     
+    Translate the center of mass of of the second residue of the universe u to the center of the unit 
+    cell:
+    
     .. code-block:: python
     
         ag = u.residues[1].atoms
-        ts = MDAnalysis.transformations.center(ag,center='mass')(ts)
+        transform = MDAnalysis.transformations.center(ag,center='mass')
+        u.trajectory.add_transformations(transform)
     
     Parameters
     ----------
@@ -104,7 +114,7 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
     
     Returns
     -------
-    :class:`~MDAnalysis.coordinates.base.Timestep` object
+    `~MDAnalysis.coordinates.base.Timestep`
     
     """
     
@@ -142,7 +152,7 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
     return wrapped
 
     
-def center_in_plane(ag, plane, coordinate=0, origin=None, center='geometry', wrap=False):
+def center_in_plane(ag, plane, coordinate=0, origin=[0,0,0], center='geometry', wrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -151,10 +161,13 @@ def center_in_plane(ag, plane, coordinate=0, origin=None, center='geometry', wra
     Example
     -------
     
+    Translate the center of mass of the second residue of the universe u to the center of the x=1 plane:
+
     .. code-block:: python
     
         ag = u.residues[1].atoms
-        ts = MDAnalysis.transformations.center_in_plane(ag,'x', 1, center='mass')(ts)
+        transform = MDAnalysis.transformations.center_in_plane(ag,'x', 1, center='mass')
+        u.trajectory.add_transformations(transform)
     
     Parameters
     ----------
@@ -181,11 +194,12 @@ def center_in_plane(ag, plane, coordinate=0, origin=None, center='geometry', wra
     
     Returns
     -------
-    :class:`~MDAnalysis.coordinates.base.Timestep` object
+    `~MDAnalysis.coordinates.base.Timestep`
     
     """
     
-    if isinstance(plane, string_types):
+    pbc_arg = wrap
+    if plane is not None:
         if plane not in ('x', 'y', 'z'):
             raise ValueError('{} is not a valid plane'.format(plane))
     if not isinstance(coordinate, Number):
@@ -198,9 +212,18 @@ def center_in_plane(ag, plane, coordinate=0, origin=None, center='geometry', wra
             origin = np.asarray(origin, np.float32)
             if origin.shape != (3, ) and origin.shape != (1, 3):
                 raise ValueError('{} is not a valid origin'.format(origin))
-    else:
-        origin = np.asarray([0, 0, 0], np.float32)
-
+    try:
+        if center == 'geometry':
+            center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
+        elif center == 'mass':
+            center_method = partial(ag.center_of_mass, pbc=pbc_arg)
+        else:
+            raise ValueError('{} is not a valid argument for center'.format(center))
+    except AttributeError:
+        if center == 'mass':
+            raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
+        else:
+            raise ValueError('{} is not an AtomGroup object'.format(ag))
     def wrapped(ts):
         boxcenter = ts.triclinic_dimensions.sum(axis=0) / 2.0
         if isinstance(origin, string_types) and origin == 'center':
@@ -216,14 +239,15 @@ def center_in_plane(ag, plane, coordinate=0, origin=None, center='geometry', wra
         if plane == 'z':
             shift = _origin[2]+coordinate
             position = [boxcenter[0], boxcenter[1], shift]
-        ts = center_in_box(ag, center=center, point=position, wrap=wrap)(ts)
+        vector = np.asarray(position, np.float32) - center_method()
+        ts.positions += vector
         
         return ts
     
     return wrapped
 
 
-def center_in_axis(ag, axis, origin=None, center='geometry', wrap=False):
+def center_in_axis(ag, axis, origin=[0,0,0], center='geometry', wrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -263,7 +287,7 @@ def center_in_axis(ag, axis, origin=None, center='geometry', wrap=False):
     
     """
     pbc_arg = wrap
-    if isinstance(axis, string_types):
+    if axis is not None:
         if axis not in ('x', 'y', 'z'):
             raise ValueError('{} is not a valid axis'.format(axis))
     if origin is not None:
