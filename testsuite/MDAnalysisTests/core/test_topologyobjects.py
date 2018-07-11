@@ -740,7 +740,7 @@ def test_zero_size_TG_indices_angles():
 
     ag = u.atoms[[0]]
 
-    idx = ag.bonds.to_indices()
+    idx = ag.angles.to_indices()
 
     assert idx.shape == (0, 3)
     assert idx.dtype == np.int32
