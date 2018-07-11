@@ -20,8 +20,8 @@ The rules for this file:
 
 Enhancements
 
-  * Added capped_distance function for automatic selection of 
-    distance evaluation method (PR #1941)
+  * Added lib.distances.capped_distance function to quickly calculate all distances
+    up to a given maximum distance (PR #1941)
   * Added a rotation coordinate transformation (PR #1937)
   * Added a box centering trajectory transformation (PR #1946)
   * Added a on-the-fly trajectory transformations API and a coordinate translation
