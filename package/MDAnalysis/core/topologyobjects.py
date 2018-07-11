@@ -522,8 +522,6 @@ class TopologyGroup(object):
        Empty TopologyGroup now returns correctly shaped empty array via
        indices property and to_indices()
     """
-    _allowed_types = {'bond', 'angle', 'dihedral', 'improper'}
-
     def __init__(self, bondidx, universe, btype=None, type=None, guessed=None,
                  order=None):
         if btype is None:
@@ -533,11 +531,11 @@ class TopologyGroup(object):
             self.btype = {2: 'bond',
                           3: 'angle',
                           4: 'dihedral'}[len(bondidx[0])]
-        elif btype in self._allowed_types:
+        elif btype in _BTYPE_TO_SHAPE:
             self.btype = btype
         else:
-            raise ValueError("Unsupported btype, use one of {}"
-                             "".format(self._allowed_types))
+            raise ValueError("Unsupported btype, use one of '{}'"
+                             "".format(', '.join(_BTYPE_TO_SHAPE)))
 
         nbonds = len(bondidx)
         # remove duplicate bonds
