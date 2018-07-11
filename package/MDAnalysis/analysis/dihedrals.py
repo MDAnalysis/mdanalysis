@@ -1,18 +1,7 @@
-from six.moves import zip
-from six import string_types
-import numpy as np
-import logging
-import warnings
-
-
-import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
-from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.log import ProgressMeter, _set_verbose
-from MDAnalysis.lib.util import asiterable, iterable, get_weights
-
-
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 def dihedral_calc(atomgroups):
     """Calculates phi and psi angles for a list of AtomGroups over trajectory.
@@ -36,10 +25,32 @@ def dihedral_calc(atomgroups):
 
 
 class Ramachandran(AnalysisBase):
-    """
+    """Calculate phi and psi dihedral angles of specified residues.
+
+    Note
+    ----
+    Run the analysis with :meth:`Ramachandran.run()`, which stores the results
+    in the array :attr:`Ramachandran.angles`. A basic plot can be obtained
+    with :meth: `Ramachandran.run().plot()`.   
+
     """
     def __init__(self, atomgroup, **kwargs):
-        r"""
+        r"""Parameters
+        ----------
+        atomgroup : Atomgroup
+            atoms for residues for which phi and psi are calculated
+        start : int (optional)
+            starting frame, default None becomes 0.
+        stop : int (optional)
+            Frame index to stop analysis. Default: None becomes
+            n_frames. Iteration stops *before* this frame number,
+            which means that the trajectory would be read until the end.
+        step : int (optional)
+            step between frames, default None becomes 1.
+        verbose : bool (optional)
+             Show detailed progress of the calculation if set to ``True``; the
+             default is ``False``.
+
         """
         super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
