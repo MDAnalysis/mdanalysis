@@ -61,7 +61,7 @@ def translate(vector):
         
     Returns
     -------
-    `~MDAnalysis.coordinates.base.Timestep`
+    MDAnalysis.coordinates.base.Timestep
     
     """
     if len(vector)>2:
@@ -114,7 +114,7 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
     
     Returns
     -------
-    `~MDAnalysis.coordinates.base.Timestep`
+    MDAnalysis.coordinates.base.Timestep
     
     """
     
@@ -194,7 +194,7 @@ def center_in_plane(ag, plane, coordinate=0, origin=[0,0,0], center='geometry', 
     
     Returns
     -------
-    `~MDAnalysis.coordinates.base.Timestep`
+    MDAnalysis.coordinates.base.Timestep
     
     """
     
@@ -256,10 +256,14 @@ def center_in_axis(ag, axis, origin=[0,0,0], center='geometry', wrap=False):
     Example
     -------
     
+    Translate the center of mass of of the second residue of the universe u to the center of the line 
+    parallel to the x axis that passes through the [0, 0, 1] point:
+    
     .. code-block:: python
     
         ag = u.residues[1].atoms
-        ts = MDAnalysis.transformations.center_in_axis(ag,'x', [0,0,1], center='mass')(ts)
+        transform = MDAnalysis.transformations.center_in_axis(ag,'x', [0,0,1], center='mass')
+        u.trajectory.add_transformation(transform)
     
     Parameters
     ----------
@@ -283,7 +287,7 @@ def center_in_axis(ag, axis, origin=[0,0,0], center='geometry', wrap=False):
     
     Returns
     -------
-    :class:`~MDAnalysis.coordinates.base.Timestep` object
+    MDAnalysis.coordinates.base.Timestep
     
     """
     pbc_arg = wrap

@@ -65,7 +65,15 @@ def test_translate_vector(translate_universes, vector):
     with pytest.raises(ValueError):
         translate(vector)(ts)
 
-      
+
+def test_translate_coords_dtype(translate_universes):
+    # is the dtype of the coordinates correct? 
+    trans_u = translate_universes[1]
+    vector = np.float32([1, 2, 3])
+    trans = translate(vector)(trans_u.trajectory.ts)
+    assert(trans.positions.dtype == np.float32)
+
+
 def test_translate_transformations_api(translate_universes):
     # test if the translate transformation works when using the 
     # on-the-fly transformations API
@@ -131,6 +139,14 @@ def test_center_in_box_no_masses(translate_universes):
     with pytest.raises(AttributeError): 
         center_in_box(ag, center=bad_center)(ts)
 
+
+def test_center_in_box_coords_dtype(translate_universes):
+    # is the dtype of the coordinates correct? 
+    trans_u = translate_universes[1]
+    ag = trans_u.residues[0].atoms
+    trans = center_in_box(ag)(trans_u.trajectory.ts)
+    assert(trans.positions.dtype == np.float32)
+    
 
 def test_center_in_box_coords_no_options(translate_universes):
     # what happens when we center the coordinates arround the center of geometry of a residue?
@@ -254,6 +270,14 @@ def test_center_in_axis_no_masses(translate_universes):
     axis = 'x'
     with pytest.raises(AttributeError): 
         center_in_axis(ag, axis, center=bad_center)(ts)
+
+def test_center_in_axis_coords_dtype(translate_universes):
+    # is the dtype of the coordinates correct? 
+    trans_u = translate_universes[1]
+    axis = 'x'
+    ag = trans_u.residues[0].atoms
+    trans = center_in_axis(ag, axis)(trans_u.trajectory.ts)
+    assert(trans.positions.dtype == np.float32)
 
 
 def test_center_in_axis_coords_no_options(translate_universes):
@@ -417,7 +441,15 @@ def test_center_in_planes_no_masses(translate_universes):
     with pytest.raises(AttributeError): 
         center_in_plane(ag, plane, center=bad_center)(ts)
 
-
+def test_center_in_plane_coords_dtype(translate_universes):
+    # is the dtype of the coordinates correct? 
+    trans_u = translate_universes[1]
+    plane = 'x'
+    ag = trans_u.residues[0].atoms
+    trans = center_in_plane(ag, plane)(trans_u.trajectory.ts)
+    assert(trans.positions.dtype == np.float32)
+    
+    
 def test_center_in_plane_coords_no_options(translate_universes):
     # what happens when we center the coordinates arround the center of geometry of a residue?
     ref_u, trans_u = translate_universes
