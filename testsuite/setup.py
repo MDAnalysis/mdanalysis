@@ -170,7 +170,7 @@ if __name__ == '__main__':
           download_url='https://github.com/MDAnalysis/mdanalysis/releases',
           project_urls={'Documentation': 'https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests',
                         'CI Tests': 'https://travis-ci.org/MDAnalysis/mdanalysis',
-                        'CI Coverage': 'https://coveralls.io/r/MDAnalysis/mdanalysis?branch=develop',
+                        'CI Coverage': 'https://codecov.io/gh/MDAnalysis/mdanalysis',
                         'Developer Group': 'https://groups.google.com/forum/#!forum/mdnalysis-devel',
                         'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
