@@ -514,6 +514,9 @@
         <span class="k">return</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span> <span class="ow">or</span> <span class="n">other</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span></div>
 
 
+<span class="n">_BTYPE_TO_SHAPE</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bond&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;dihedral&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;improper&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+
+
 <div class="viewcode-block" id="TopologyGroup"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup">[docs]</a><span class="k">class</span> <span class="nc">TopologyGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;A container for a groups of bonds.</span>
@@ -563,9 +566,10 @@
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Added `values` method to return the size of each object in this group</span>
 <span class="sd">       Deprecated selectBonds method in favour of select_bonds</span>
+<span class="sd">    .. versionchanged:: 0.18.1</span>
+<span class="sd">       Empty TopologyGroup now returns correctly shaped empty array via</span>
+<span class="sd">       indices property and to_indices()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_allowed_types</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bond&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="s1">&#39;dihedral&#39;</span><span class="p">,</span> <span class="s1">&#39;improper&#39;</span><span class="p">}</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bondidx</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">btype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">btype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -575,11 +579,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">btype</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;bond&#39;</span><span class="p">,</span>
                           <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;angle&#39;</span><span class="p">,</span>
                           <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;dihedral&#39;</span><span class="p">}[</span><span class="nb">len</span><span class="p">(</span><span class="n">bondidx</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
-        <span class="k">elif</span> <span class="n">btype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_types</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">btype</span> <span class="ow">in</span> <span class="n">_BTYPE_TO_SHAPE</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">btype</span> <span class="o">=</span> <span class="n">btype</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported btype, use one of </span><span class="si">{}</span><span class="s2">&quot;</span>
-                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_allowed_types</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported btype, use one of &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span>
+                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_BTYPE_TO_SHAPE</span><span class="p">)))</span>
 
         <span class="n">nbonds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bondidx</span><span class="p">)</span>
         <span class="c1"># remove duplicate bonds</span>
@@ -593,12 +597,6 @@
             <span class="n">guessed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">guessed</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">nbonds</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">nbonds</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">nbonds</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-
-        <span class="c1"># TODO: why has this been defined?</span>
-        <span class="n">split_index</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bond&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                       <span class="s1">&#39;angle&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                       <span class="s1">&#39;dihedral&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                       <span class="s1">&#39;improper&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">btype</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">nbonds</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">uniq</span><span class="p">,</span> <span class="n">uniq_idx</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">unique_rows</span><span class="p">(</span><span class="n">bondidx</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -703,7 +701,12 @@
 <span class="sd">        --------</span>
 <span class="sd">        to_indices : function that just returns `indices`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bix</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="c1"># empty TG</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">_BTYPE_TO_SHAPE</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">btype</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bix</span>
 
 <div class="viewcode-block" id="TopologyGroup.to_indices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.to_indices">[docs]</a>    <span class="k">def</span> <span class="nf">to_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a data structure with atom indices describing the bonds.</span>
@@ -855,10 +858,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="n">nvert</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bond&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                     <span class="s1">&#39;angle&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                     <span class="s1">&#39;dihedral&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                     <span class="s1">&#39;improper&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">btype</span><span class="p">]</span>
+            <span class="n">nvert</span> <span class="o">=</span> <span class="n">_BTYPE_TO_SHAPE</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">btype</span><span class="p">]</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;TopologyGroup of </span><span class="si">{}</span><span class="s2">s only has </span><span class="si">{}</span><span class="s2"> vertical AtomGroups&quot;</span>
                              <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btype</span><span class="p">,</span> <span class="n">nvert</span><span class="p">))</span>
 
@@ -868,10 +868,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="n">nvert</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bond&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                     <span class="s1">&#39;angle&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                     <span class="s1">&#39;dihedral&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                     <span class="s1">&#39;improper&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">btype</span><span class="p">]</span>
+            <span class="n">nvert</span> <span class="o">=</span> <span class="n">_BTYPE_TO_SHAPE</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">btype</span><span class="p">]</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;TopologyGroup of </span><span class="si">{}</span><span class="s2">s only has </span><span class="si">{}</span><span class="s2"> vertical AtomGroups&quot;</span>
                              <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btype</span><span class="p">,</span> <span class="n">nvert</span><span class="p">))</span>
 
