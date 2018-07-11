@@ -31,16 +31,16 @@ env:
     - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
-    - PIP_DEPENDENCIES="duecredit sphinx-sitemap"
+    - PIP_DEPENDENCIES="duecredit"
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
 
   matrix:
-    # Run a coverage test
+    # Run a coverage test for 3.5 and 2.7
     - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=3.6
+    - PYTHON_VERSION=3.6 
     - PYTHON_VERSION=3.4
-    - PYTHON_VERSION=2.7
+    - PYTHON_VERSION=2.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - NUMPY_VERSION=1.10.4
     - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
@@ -53,6 +53,7 @@ matrix:
            BUILD_DOCS=true
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
            INSTALL_HOLE="false"
+	   PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx-sitemap"
 
     - env: NAME="Lint"
            PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
