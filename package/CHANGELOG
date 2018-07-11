@@ -19,6 +19,9 @@ The rules for this file:
   * 0.18.1
 
 Enhancements
+
+  * Added a rotation coordinate transformation (PR #1937)
+  * Added a box centering trajectory transformation (PR #1946)
   * Added a on-the-fly trajectory transformations API and a coordinate translation
   	function (Issue #786)
   * Added various duecredit stubs
@@ -39,6 +42,9 @@ Enhancements
     (Issue #1262 #1938)
   * Added pbc kwarg to Bond/Angle/Dihedral/Improper object value method,
     default True. (Issue #1938)
+  * ChainReader can correctly handle continuous trajectories split into multiple files,
+    generated with gromacs -noappend (PR #1728)
+  * MDAnalysis.lib.mdamath now supports triclinic boxes and rewrote in Cython (PR #1965)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)

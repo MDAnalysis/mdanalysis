@@ -310,25 +310,25 @@ static void _calc_self_distance_array_triclinic(coordinate* ref, int numref,
 void _coord_transform(float coords[][3], int numCoords, float box[][3])
 {
   int i, j, k;
-  float new[3];
+  float newpos[3];
   // Matrix multiplication inCoords * box = outCoords
   // Multiplication done in place using temp array 'new'
   // Used to transform coordinates to/from S/R space in trilinic boxes
 #ifdef PARALLEL
-#pragma omp parallel for private(i, j, k, new) shared(coords)
+#pragma omp parallel for private(i, j, k, newpos) shared(coords)
 #endif
   for (i=0; i < numCoords; i++){
-    new[0] = 0.0;
-    new[1] = 0.0;
-    new[2] = 0.0;
+    newpos[0] = 0.0;
+    newpos[1] = 0.0;
+    newpos[2] = 0.0;
     for (j=0; j<3; j++){
       for (k=0; k<3; k++){
-        new[j] += coords[i][k] * box[k][j];
+        newpos[j] += coords[i][k] * box[k][j];
       }
     }
-    coords[i][0] = new[0];
-    coords[i][1] = new[1];
-    coords[i][2] = new[2];
+    coords[i][0] = newpos[0];
+    coords[i][1] = newpos[1];
+    coords[i][2] = newpos[2];
   }
 }
 

@@ -53,6 +53,7 @@ class DummyReader(SingleFrameReaderBase):
         self.filename = 'DummyReader'
         self.n_frames = 1
         self._read_first_frame(velocities, forces)
+        self._transformations = []
 
     def _read_first_frame(self, velocities=False, forces=False):
         ts = self.ts = self._Timestep(self.n_atoms, positions=True,
