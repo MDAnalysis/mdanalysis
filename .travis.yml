@@ -21,14 +21,14 @@ env:
     # Set default python version to avoid repetition later
     - PYTHON_VERSION=3.5
     - BUILD_DOCS=false
-    - COVERALLS=false
+    - CODECOV=false
     - PYTEST_FLAGS="--disable-pytest-warnings --numprocesses 2 --durations=50"
     - PYTEST_LIST="testsuite/MDAnalysisTests"
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
-    - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython joblib matplotlib scipy griddataformats hypothesis gsd"
-    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn coveralls"
+    - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython joblib matplotlib scipy griddataformats hypothesis gsd codecov"
+    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - PIP_DEPENDENCIES="duecredit sphinx-sitemap"
@@ -37,7 +37,7 @@ env:
 
   matrix:
     # Run a coverage test
-    - COVERALLS="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.6
     - PYTHON_VERSION=3.4
     - PYTHON_VERSION=2.7
@@ -104,8 +104,8 @@ script:
 
 after_success:
   - |
-    if [[ $COVERALLS == 'true' ]]; then \
-      coveralls; \
+    if [[ $CODECOV == 'true' ]]; then \
+      codecov; \
     fi
   # can't use test here since this leads to travis fails even though the build passes
   - if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] && [[ ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} ]]; then
