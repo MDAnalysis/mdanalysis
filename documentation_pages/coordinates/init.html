@@ -585,7 +585,7 @@ deal with missing methods gracefully.</p>
 <dd>number of frames in trajectory</dd>
 <dt><code class="docutils literal"><span class="pre">__getitem__(arg)</span></code></dt>
 <dd><p class="first">advance to time step <cite>arg</cite> = <cite>frame</cite> and return <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code>; or if <cite>arg</cite> is a
-slice, then return an iterator over that part of the trajectory.</p>
+slice, then return an iterable over that part of the trajectory.</p>
 <p>The first functionality allows one to randomly access frames in the
 trajectory:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">314</span><span class="p">]</span>
@@ -604,17 +604,22 @@ trajectory:</p>
 </div>
 <p>The last example starts reading the trajectory at frame 1000 and
 reads every 100th frame until the end.</p>
+<p>A sequence of indices or a mask of booleans can also be provided to index
+a trajectory.</p>
 <p>The performance of the <code class="docutils literal"><span class="pre">__getitem__()</span></code> method depends on the underlying
 trajectory reader and if it can implement random access to frames. In many
 cases this is not easily (or reliably) implementable and thus one is
 restricted to sequential iteration.</p>
-<p class="last">If the Reader is not able to provide random access to frames then it
+<p>If the Reader is not able to provide random access to frames then it
 should raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> on indexing. It is possible to partially
 implement <code class="docutils literal"><span class="pre">__getitem__</span></code> (as done on
 <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.ProtoReader.__getitem__</span></code> where slicing the
 full trajectory is equivalent to
 <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.ProtoReader.__iter__</span></code> (which is always
 implemented) and other slices raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a>.</p>
+<p class="last">When indexed with a slice, a sequence of indices, or a mask of booleans,
+the return value is an instance of <code class="xref py py-class docutils literal"><span class="pre">FrameIteratorSliced</span></code> or
+<code class="xref py py-class docutils literal"><span class="pre">FrameIteratorIndices</span></code>.</p>
 </dd>
 <dt><code class="docutils literal"><span class="pre">parse_n_atoms(filename,</span> <span class="pre">**kwargs)</span></code></dt>
 <dd>Provide the number of atoms in the trajectory file, allowing the Reader

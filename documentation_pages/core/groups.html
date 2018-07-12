@@ -1753,27 +1753,42 @@ information from the current
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>filename=None</em>, <em>file_format='PDB'</em>, <em>filenamefmt='{trjname}_{frame}'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>filename=None</em>, <em>file_format='PDB'</em>, <em>filenamefmt='{trjname}_{frame}'</em>, <em>frames=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write <cite>AtomGroup</cite> to a file.</p>
 <p>The output can either be a coordinate file or a selection, depending on
-the <cite>format</cite>. Only single-frame coordinate files are supported. If you
-need to write out a trajectory, see <code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates</span></code>.</p>
+the format.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;selection.ndx&#39;</span><span class="p">)</span>  <span class="c1"># Write a gromacs index file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;coordinates.pdb&#39;</span><span class="p">)</span>  <span class="c1"># Write the current frame as PDB</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Write the trajectory in XTC format</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;trajectory.xtc&#39;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Write every other frame of the trajectory in PBD format</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;trajectory.pdb&#39;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – <code class="docutils literal"><span class="pre">None</span></code>: create TRJNAME_FRAME.FORMAT from filenamefmt [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>file_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
-Jmol (spt); case-insensitive and can also be supplied as the
-filename extension [PDB]</li>
+<li><strong>file_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The name or extension of a coordinate, trajectory, or selection
+file format such as PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs
+(ndx) CHARMM (str) or Jmol (spt); case-insensitive [PDB]</li>
 <li><strong>filenamefmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – format string for default filename; use substitution tokens
 ‘trjname’ and ‘frame’ [“%(trjname)s_%(frame)d”]</li>
 <li><strong>bonds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – how to handle bond information, especially relevant for PDBs.
 <code class="docutils literal"><span class="pre">&quot;conect&quot;</span></code>: write only the CONECT records defined in the original
 file. <code class="docutils literal"><span class="pre">&quot;all&quot;</span></code>: write out all bonds, both the original defined and
 those guessed by MDAnalysis. <code class="docutils literal"><span class="pre">None</span></code>: do not write out bonds.
-Default os <code class="docutils literal"><span class="pre">&quot;conect&quot;</span></code>.</li>
+Default is <code class="docutils literal"><span class="pre">&quot;conect&quot;</span></code>.</li>
+<li><strong>frames</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.7)"><em>slice</em></a><em> or </em><em>FrameIteratorBase</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – An ensemble of frames to write. The ensemble can be an list or
+array of frame indices, a mask of booleans, an instance of
+<a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">slice</span></code></a>, or the value returned when a trajectory is indexed.
+By default, <cite>frames</cite> is set to <code class="docutils literal"><span class="pre">None</span></code> and only the current frame
+is written. If <cite>frames</cite> is set to “all”, then all the frame from
+trajectory are written.</li>
 </ul>
 </td>
 </tr>
@@ -1782,6 +1797,9 @@ Default os <code class="docutils literal"><span class="pre">&quot;conect&quot;</
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.9.0: </span>Merged with write_selection. This method can
 now write both selections out.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Can write multiframe trajectories with the ‘frames’ argument.</p>
 </div>
 </dd></dl>
 

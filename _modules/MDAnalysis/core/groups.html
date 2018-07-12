@@ -2579,21 +2579,31 @@
         <span class="k">return</span> <span class="n">topologyobjects</span><span class="o">.</span><span class="n">ImproperDihedral</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AtomGroup.write"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;PDB&quot;</span><span class="p">,</span>
-              <span class="n">filenamefmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{trjname}</span><span class="s2">_</span><span class="si">{frame}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+              <span class="n">filenamefmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{trjname}</span><span class="s2">_</span><span class="si">{frame}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write `AtomGroup` to a file.</span>
 
 <span class="sd">        The output can either be a coordinate file or a selection, depending on</span>
-<span class="sd">        the `format`. Only single-frame coordinate files are supported. If you</span>
-<span class="sd">        need to write out a trajectory, see :mod:`MDAnalysis.coordinates`.</span>
+<span class="sd">        the format. </span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; ag = u.atoms</span>
+<span class="sd">        &gt;&gt;&gt; ag.write(&#39;selection.ndx&#39;)  # Write a gromacs index file</span>
+<span class="sd">        &gt;&gt;&gt; ag.write(&#39;coordinates.pdb&#39;)  # Write the current frame as PDB</span>
+<span class="sd">        &gt;&gt;&gt; # Write the trajectory in XTC format</span>
+<span class="sd">        &gt;&gt;&gt; ag.write(&#39;trajectory.xtc&#39;, frames=&#39;all&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; # Write every other frame of the trajectory in PBD format</span>
+<span class="sd">        &gt;&gt;&gt; ag.write(&#39;trajectory.pdb&#39;, frames=u.trajectory[::2])</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        filename : str, optional</span>
 <span class="sd">            ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]</span>
 <span class="sd">        file_format : str, optional</span>
-<span class="sd">            PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)</span>
-<span class="sd">            Jmol (spt); case-insensitive and can also be supplied as the</span>
-<span class="sd">            filename extension [PDB]</span>
+<span class="sd">            The name or extension of a coordinate, trajectory, or selection</span>
+<span class="sd">            file format such as PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs</span>
+<span class="sd">            (ndx) CHARMM (str) or Jmol (spt); case-insensitive [PDB]</span>
 <span class="sd">        filenamefmt : str, optional</span>
 <span class="sd">            format string for default filename; use substitution tokens</span>
 <span class="sd">            &#39;trjname&#39; and &#39;frame&#39; [&quot;%(trjname)s_%(frame)d&quot;]</span>
@@ -2602,25 +2612,71 @@
 <span class="sd">            ``&quot;conect&quot;``: write only the CONECT records defined in the original</span>
 <span class="sd">            file. ``&quot;all&quot;``: write out all bonds, both the original defined and</span>
 <span class="sd">            those guessed by MDAnalysis. ``None``: do not write out bonds.</span>
-<span class="sd">            Default os ``&quot;conect&quot;``.</span>
+<span class="sd">            Default is ``&quot;conect&quot;``.</span>
+<span class="sd">        frames: array-like or slice or FrameIteratorBase or str, optional</span>
+<span class="sd">            An ensemble of frames to write. The ensemble can be an list or</span>
+<span class="sd">            array of frame indices, a mask of booleans, an instance of</span>
+<span class="sd">            :class:`slice`, or the value returned when a trajectory is indexed.</span>
+<span class="sd">            By default, `frames` is set to ``None`` and only the current frame</span>
+<span class="sd">            is written. If `frames` is set to &quot;all&quot;, then all the frame from</span>
+<span class="sd">            trajectory are written.</span>
 
 
 <span class="sd">        .. versionchanged:: 0.9.0 Merged with write_selection. This method can</span>
 <span class="sd">            now write both selections out.</span>
+<span class="sd">        .. versionchanged:: 0.19.0</span>
+<span class="sd">            Can write multiframe trajectories with the &#39;frames&#39; argument.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Add a &#39;verbose&#39; option alongside &#39;frames&#39;.</span>
+
         <span class="c1"># check that AtomGroup actually has any atoms (Issue #434)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Cannot write an AtomGroup with 0 atoms&quot;</span><span class="p">)</span>
 
         <span class="n">trj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span>  <span class="c1"># unified trajectory API</span>
-
-        <span class="k">if</span> <span class="n">trj</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;multiframe&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">frames</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="n">trj_frames</span> <span class="o">=</span> <span class="n">trj</span><span class="p">[::]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
+            <span class="c1"># We accept everything that indexes a trajectory and returns a</span>
+            <span class="c1"># subset of it. Though, numbers return a Timestep instead.</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The &quot;frames&quot; argument cannot be a number.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">test_trajectory</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">trajectory</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">trj_frames</span> <span class="o">=</span> <span class="n">trj</span><span class="p">[</span><span class="n">frames</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">test_trajectory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">trj</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s1">&#39;The trajectory of </span><span class="si">{}</span><span class="s1"> provided to the frames keyword &#39;</span>
+                        <span class="s1">&#39;attribute is different from the trajectory of the &#39;</span>
+                        <span class="s1">&#39;AtomGroup.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="n">trj_frames</span> <span class="o">=</span> <span class="n">frames</span>
 
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">trjname</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">trj</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">filenamefmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">trjname</span><span class="o">=</span><span class="n">trjname</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">trj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="n">file_format</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Some writer behave differently when they are given a &quot;multiframe&quot;</span>
+        <span class="c1"># argument. It is the case of the PDB writer tht writes models when</span>
+        <span class="c1"># &quot;multiframe&quot; is True.</span>
+        <span class="c1"># We want to honor what the user provided with the argument if</span>
+        <span class="c1"># provided explicitly. If not, then we need to figure out if we write</span>
+        <span class="c1"># multiple frames or not.</span>
+        <span class="n">multiframe</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;multiframe&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">trj_frames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">multiframe</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Cannot explicitely set &quot;multiframe&quot; to False and request &#39;</span>
+                <span class="s1">&#39;more than 1 frame with the &quot;frames&quot; keyword argument.&#39;</span>
+            <span class="p">)</span> 
+        <span class="k">elif</span> <span class="n">multiframe</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># By default we only write the current frame.</span>
+                <span class="n">multiframe</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">multiframe</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trj_frames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
 
         <span class="c1"># From the following blocks, one must pass.</span>
         <span class="c1"># Both can&#39;t pass as the extensions don&#39;t overlap.</span>
@@ -2634,27 +2690,34 @@
             <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span> <span class="ow">or</span> <span class="n">file_format</span>
             <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
 
-            <span class="n">multiframe</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;multiframe&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
             <span class="n">writer</span> <span class="o">=</span> <span class="n">get_writer_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="n">multiframe</span><span class="p">)</span>
-            <span class="c1">#MDAnalysis.coordinates.writer(filename, **kwargs)</span>
-            <span class="n">coords</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-            <span class="n">coords</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">current_frame</span> <span class="o">=</span> <span class="n">trj</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">trj_frames</span><span class="p">:</span>
+                            <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+                    <span class="k">finally</span><span class="p">:</span>
+                        <span class="n">trj</span><span class="p">[</span><span class="n">current_frame</span><span class="p">]</span>
+            <span class="k">return</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># here `file_format` is only used as default,</span>
             <span class="c1"># anything pulled off `filename` will be used preferentially</span>
             <span class="n">writer</span> <span class="o">=</span> <span class="n">get_selection_writer_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">file_format</span><span class="p">)</span>
-            <span class="n">selection</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">NotImplementedError</span><span class="p">):</span>
-            <span class="n">selection</span> <span class="o">=</span> <span class="kc">False</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">coords</span> <span class="ow">or</span> <span class="n">selection</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No writer found for format: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+            <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
-                <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span></div></div>
+                <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No writer found for format: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div></div>
 
 
 <div class="viewcode-block" id="ResidueGroup"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup">[docs]</a><span class="k">class</span> <span class="nc">ResidueGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
