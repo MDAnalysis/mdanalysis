@@ -170,7 +170,9 @@ class TestMultiFrameReader(_Multi):
         (1, 5, -1),  # Stop less than start
         (-100, None, None),
         (100, None, None),  # Outside of range of trajectory
-        (-2, 10, -2)
+        (-2, 10, -2),
+        (0, 0, 1),  # empty
+        (10, 1, 2), # empty
     ])
     def test_slice(self, start, stop, step, reader):
         """Compare the slice applied to trajectory, to slice of list"""
@@ -226,6 +228,8 @@ class TestMultiFrameReader(_Multi):
         slice(10, 0, -1),
         slice(2, 7, 2),
         slice(7, 2, -2),
+        slice(7, 2, 1),  # empty
+        slice(0, 0, 1),  # empty
     ])
     def test_getitem_len(self, sl, reader):
         traj_iterable = reader[sl]
@@ -233,6 +237,12 @@ class TestMultiFrameReader(_Multi):
             sl = np.array(sl)
         ref = self.reference[sl]
         assert len(traj_iterable) == len(ref)
+
+    @pytest.mark.parametrize('iter_type', (list, np.array))
+    def test_getitem_len_empty(self, reader, iter_type):
+        # Indexing a numpy array with an empty array tends to break.
+        traj_iterable = reader[iter_type([])]
+        assert len(traj_iterable) == 0
 
     # All the sl1 slice must be 5 frames long so that the sl2 can be a mask
     @pytest.mark.parametrize('sl1', [
@@ -271,6 +281,7 @@ class TestMultiFrameReader(_Multi):
         [True, False, ] * 5,
         slice(None, None, 2),
         slice(None, None, -2),
+        slice(None, None, None),
     ])
     @pytest.mark.parametrize('idx2', [0, 2, 4, -1, -2, -4])
     def test_double_getitem_int(self, sl1, idx2, reader):

@@ -935,7 +935,7 @@ class FrameIteratorSliced(FrameIteratorBase):
     
     def __iter__(self):
         for i in range(self.start, self.stop, self.step):
-            yield self.trajectory._read_frame_with_aux(i)
+            yield self.trajectory[i]
         self.trajectory.rewind()
 
     def __getitem__(self, frame):
@@ -1528,7 +1528,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             frame = self._apply_limits(frame)
             return self._read_frame_with_aux(frame)
         elif isinstance(frame, (list, np.ndarray)):
-            if isinstance(frame[0], (bool, np.bool_)):
+            if len(frame) != 0 and isinstance(frame[0], (bool, np.bool_)):
                 # Avoid having list of bools
                 frame = np.asarray(frame, dtype=np.bool)
                 # Convert bool array to int array
