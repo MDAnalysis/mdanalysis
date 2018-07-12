@@ -184,16 +184,17 @@
 
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">zip</span>
 <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">string_types</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-
 
 <span class="kn">import</span> <span class="nn">MDAnalysis.lib.qcprot</span> <span class="k">as</span> <span class="nn">qcp</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="k">import</span> <span class="n">AnalysisBase</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="k">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span><span class="p">,</span> <span class="n">_set_verbose</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">get_weights</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">get_weights</span><span class="p">,</span> <span class="n">deprecate</span>
 
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.rmsd&#39;</span><span class="p">)</span>
@@ -373,6 +374,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
                  <span class="n">groupselections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;rmsd.dat&quot;</span><span class="p">,</span>
                  <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">ref_frame</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># DEPRECATION: remove filename kwarg in 1.0</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        atomgroup : AtomGroup or Universe</span>
@@ -427,6 +429,10 @@
 <span class="sd">            step between frames, default ``None`` becomes 1.</span>
 <span class="sd">        filename : str (optional)</span>
 <span class="sd">            write RMSD into file with :meth:`RMSD.save`</span>
+
+<span class="sd">            .. deprecated:; 0.19.0</span>
+<span class="sd">               `filename` will be removed together with :meth:`save` in 1.0.</span>
+
 <span class="sd">        weights : {&quot;mass&quot;, ``None``} or array_like (optional)</span>
 <span class="sd">             choose weights. With ``&quot;mass&quot;`` uses masses as weights; with ``None``</span>
 <span class="sd">             weigh each atom equally. If a float array of the same length as</span>
@@ -508,6 +514,8 @@
 <span class="sd">        .. versionchanged:: 0.17.0</span>
 <span class="sd">           removed deprecated `mass_weighted` keyword; `groupselections`</span>
 <span class="sd">           are *not* rotationally superimposed any more.</span>
+<span class="sd">        .. deprecated:: 0.19.0</span>
+<span class="sd">           `filename` will be removed in 1.0</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RMSD</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span>
@@ -521,7 +529,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tol_mass</span> <span class="o">=</span> <span class="n">tol_mass</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_frame</span> <span class="o">=</span> <span class="n">ref_frame</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>   <span class="c1"># DEPRECATED in 0.19.0, remove in 1.0.0</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])</span>
@@ -693,7 +701,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pm</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 
-<div class="viewcode-block" id="RMSD.save"><a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSD.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+               <span class="n">message</span><span class="o">=</span><span class="s2">&quot;You can instead use &quot;</span>
+               <span class="s2">&quot;``np.savetxt(filename, RMSD.rmsd)``.&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save RMSD from :attr:`RMSD.rmsd` to text file *filename*.</span>
 
 <span class="sd">        Parameters</span>
@@ -701,6 +712,7 @@
 <span class="sd">        filename : str (optional)</span>
 <span class="sd">            if no filename is given the default provided to the constructor is</span>
 <span class="sd">            used.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -708,7 +720,7 @@
                 <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;rmsd has not been calculated yet&quot;</span><span class="p">)</span>
             <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wrote RMSD timeseries  to file </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">filename</span></div></div>
+        <span class="k">return</span> <span class="n">filename</span></div>
 
 
 <div class="viewcode-block" id="RMSF"><a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSF">[docs]</a><span class="k">class</span> <span class="nc">RMSF</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>

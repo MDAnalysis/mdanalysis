@@ -270,7 +270,8 @@ implemented.</p>
 n_frames. Iteration stops <em>before</em> this frame number,
 which means that the trajectory would be read until the end.</li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – step between frames, default <code class="docutils literal"><span class="pre">None</span></code> becomes 1.</li>
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – write RMSD into file with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.save" title="MDAnalysis.analysis.rms.RMSD.save"><code class="xref py py-meth docutils literal"><span class="pre">RMSD.save()</span></code></a></li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>write RMSD into file with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.save" title="MDAnalysis.analysis.rms.RMSD.save"><code class="xref py py-meth docutils literal"><span class="pre">RMSD.save()</span></code></a></p>
+</li>
 <li><strong>weights</strong> ({“mass”, <code class="docutils literal"><span class="pre">None</span></code>} or array_like (optional)) – choose weights. With <code class="docutils literal"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal"><span class="pre">None</span></code>
 weigh each atom equally. If a float array of the same length as
 <cite>atomgroup</cite> is provided, use each element of the <cite>array_like</cite> as a
@@ -344,6 +345,9 @@ correct for comparison). If masses should not be checked, just set
 <p><span class="versionmodified">Changed in version 0.17.0: </span>removed deprecated <cite>mass_weighted</cite> keyword; <cite>groupselections</cite>
 are <em>not</em> rotationally superimposed any more.</p>
 </div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.19.0: </span><cite>filename</cite> will be removed in 1.0</p>
+</div>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rms.RMSD.rmsd">
 <code class="descname">rmsd</code><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="Permalink to this definition">¶</a></dt>
@@ -359,8 +363,9 @@ array with content <code class="docutils literal"><span class="pre">[[frame,</sp
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.rms.RMSD.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save RMSD from <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></code></a> to text file <em>filename</em>.</p>
+<code class="descname">save</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.save" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>save</cite> is deprecated!</p>
+<p>Save RMSD from <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></code></a> to text file <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -370,6 +375,10 @@ used.</td>
 </tr>
 </tbody>
 </table>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can instead use <code class="docutils literal"><span class="pre">np.savetxt(filename,</span> <span class="pre">RMSD.rmsd)</span></code>.
+<cite>save</cite> will be removed in release 1.0.0.</p>
+</div>
 </dd></dl>
 
 </dd></dl>

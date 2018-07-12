@@ -152,7 +152,7 @@ indicates comments that are not part of the output.):</p>
 <p>Using the <a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.generate_table"><code class="xref py py-meth docutils literal"><span class="pre">WaterBridgeAnalysis.generate_table()</span></code></a> method one can reformat
 the results as a flat “normalised” table that is easier to import into a
 database or dataframe for further processing.
-<a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.save_table" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.save_table"><code class="xref py py-meth docutils literal"><span class="pre">WaterBridgeAnalysis.save_table()</span></code></a> saves the table to a pickled file. The
+<code class="xref py py-meth docutils literal"><span class="pre">WaterBridgeAnalysis.save_table()</span></code> saves the table to a pickled file. The
 table itself is a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></code></a>.</p>
 </div>
 <div class="section" id="detection-of-water-bridges">
@@ -475,28 +475,6 @@ setting <cite>debug</cite> toggles the debug status for
 <dt><a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.generate_table"><code class="xref py py-meth docutils literal"><span class="pre">WaterBridgeAnalysis.generate_table()</span></code></a></dt>
 <dd>processing the data into a different format.</dd>
 </dl>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.save_table">
-<code class="descname">save_table</code><span class="sig-paren">(</span><em>filename='wbridge_table.pickle'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/wbridge_analysis.html#WaterBridgeAnalysis.save_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.save_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves <a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.table" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.table"><code class="xref py py-attr docutils literal"><span class="pre">table</span></code></a> to a pickled file.</p>
-<p>If <a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.table" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.table"><code class="xref py py-attr docutils literal"><span class="pre">table</span></code></a> does not exist yet,
-<a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.generate_table"><code class="xref py py-meth docutils literal"><span class="pre">generate_table()</span></code></a> is called first.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – path to the filename</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Example</p>
-<p>Load with</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cPickle</span>
-<span class="n">table</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-</pre></div>
 </div>
 </dd></dl>
 

@@ -252,7 +252,7 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="k">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="k">as</span> <span class="nn">rms</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.coordinates.memory</span> <span class="k">import</span> <span class="n">MemoryReader</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">get_weights</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">get_weights</span><span class="p">,</span> <span class="n">deprecate</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">AnalysisBase</span>
 
@@ -727,7 +727,10 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
 
+    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rmsdfile</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;save rmsd as a numpy array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># these are the values of the new rmsd between the aligned trajectory</span>
         <span class="c1"># and reference structure</span>
         <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">rmsdfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span><span class="p">)</span>

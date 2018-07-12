@@ -55,14 +55,13 @@ fixed volume cells (thus for simulations in canonical NVT ensemble).</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.lineardensity.LinearDensity">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.lineardensity.</code><code class="descname">LinearDensity</code><span class="sig-paren">(</span><em>selection</em>, <em>grouping='atoms'</em>, <em>binsize=0.25</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#LinearDensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Linear density profile
-LinearDensity(selection, grouping=’atoms’, binsize=0.25)</p>
+<dd><p>Linear density profile</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – Any atomgroup</li>
+<li><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – any atomgroup</li>
 <li><strong>grouping</strong> (<em>str {'atoms'</em><em>, </em><em>'residues'</em><em>, </em><em>'segments'</em><em>, </em><em>'fragments'}</em>) – Density profiles will be computed on the center of geometry
 of a selected group of atoms [‘atoms’]</li>
 <li><strong>binsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Bin width in Angstrom used to build linear density
@@ -78,6 +77,15 @@ default is <code class="docutils literal"><span class="pre">False</span></code>.
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.lineardensity.LinearDensity.results">
+<code class="descname">results</code><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dict</em> – Keys ‘x’, ‘y’, and ‘z’ for the three directions. Under these
+keys, find ‘pos’, ‘pos_std’ (mass-weighted density and
+standard deviation), ‘char’, ‘char_std’ (charge density and
+its standard deviation), ‘slice_volume’ (volume of bin).</p>
+</dd></dl>
+
 <p class="rubric">Example</p>
 <p>First create a LinearDensity object by supplying a selection,
 then use the <code class="xref py py-meth docutils literal"><span class="pre">run()</span></code> method:</p>
@@ -85,21 +93,15 @@ then use the <code class="xref py py-meth docutils literal"><span class="pre">ru
 <span class="n">ldens</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Density profiles can be written to file through the <cite>save</cite> method:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ldens</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;mydensprof&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;txt&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>which will output the density profiles in a file named
-<cite>&lt;trajectory_filename&gt;.mydensprof_&lt;grouping&gt;.ldens</cite>.
-Results can be saved in npz format by specifying <cite>form=’npz’</cite></p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.14.0.</span></p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.lineardensity.LinearDensity.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>description=''</em>, <em>form='txt'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#LinearDensity.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save density profile to file
-Allows to save the density profile to either a ASCII txt file or a
+<code class="descname">save</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.save" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>save</cite> is deprecated!</p>
+<p>Save density profile to file</p>
+<p>Allows to save the density profile to either a ASCII txt file or a
 binary numpy npz file. Output file has extension ‘ldens’ and begins
 with the name of the trajectory file.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -123,6 +125,10 @@ written to file as follows:</p>
 </div>
 <p>which will output the linear density profiles in a file named
 <cite>&lt;trajectory_filename&gt;.mydensprof_&lt;grouping&gt;.ldens</cite>.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.19.0: </span>Instead save the <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results" title="MDAnalysis.analysis.lineardensity.LinearDensity.results"><code class="xref py py-attr docutils literal"><span class="pre">results</span></code></a> dictionary directly in your favorite format (pickle, json, hdf5, …).
+<cite>save</cite> will be removed in release 1.0.0.</p>
+</div>
 </dd></dl>
 
 </dd></dl>

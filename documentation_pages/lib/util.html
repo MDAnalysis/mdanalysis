@@ -855,6 +855,126 @@ decorator:</p>
 </div>
 </dd></dl>
 
+</div>
+<div class="section" id="code-management">
+<h2>12.2.8.8. Code management<a class="headerlink" href="#code-management" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.lib.util.deprecate">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">deprecate</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#deprecate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.deprecate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issues a DeprecationWarning, adds warning to <cite>old_name</cite>’s
+docstring, rebinds <code class="docutils literal"><span class="pre">old_name.__name__</span></code> and returns the new
+function object.</p>
+<p>This function may also be used as a decorator.</p>
+<p>It adds a restructured text <code class="docutils literal"><span class="pre">..</span> <span class="pre">deprecated::</span> <span class="pre">release</span></code> block with
+the sphinx deprecated role to the end of the docs. The <cite>message</cite>
+is added under the deprecation block and contains the <cite>release</cite> in
+which the function was deprecated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>func</strong> (<a class="reference internal" href="../analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="MDAnalysis.analysis.encore.utils.ParallelCalculation.function"><em>function</em></a>) – The function to be deprecated.</li>
+<li><strong>old_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the function to be deprecated. Default is None, in
+which case the name of <cite>func</cite> is used.</li>
+<li><strong>new_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The new name for the function. Default is None, in which case the
+deprecation message is that <cite>old_name</cite> is deprecated. If given, the
+deprecation message is that <cite>old_name</cite> is deprecated and <cite>new_name</cite>
+should be used instead.</li>
+<li><strong>release</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Release in which the function was deprecated. This is given as
+a keyword argument for technical reasons but is required; a
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> is raised if it is missing.</li>
+<li><strong>remove</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Release for which removal of the feature is planned.</li>
+<li><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Additional explanation of the deprecation.  Displayed in the
+docstring after the warning.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>old_func</strong> – The deprecated function.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="../analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="MDAnalysis.analysis.encore.utils.ParallelCalculation.function">function</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>When <a class="reference internal" href="#MDAnalysis.lib.util.deprecate" title="MDAnalysis.lib.util.deprecate"><code class="xref py py-func docutils literal"><span class="pre">deprecate()</span></code></a> is used as a function as in the following
+example,</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">oldfunc</span> <span class="o">=</span> <span class="n">deprecate</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Do it yourself instead.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>then <code class="docutils literal"><span class="pre">oldfunc</span></code> will return a value after printing
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#DeprecationWarning" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">DeprecationWarning</span></code></a>; <code class="docutils literal"><span class="pre">func</span></code> is still available as it was
+before.</p>
+<p>When used as a decorator, <code class="docutils literal"><span class="pre">func</span></code> will be changed and issue the
+warning and contain the deprecation note in the do string.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+           <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Do it yourself instead.&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">func</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Just pass&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The resulting doc string (<code class="docutils literal"><span class="pre">help(func)</span></code>) will look like:</p>
+<div class="highlight-reST"><div class="highlight"><pre><span></span><span class="nv">`func`</span> is deprecated!
+
+Just pass.
+
+<span class="p">..</span> <span class="ow">deprecated</span><span class="p">::</span> 0.19.0
+   Do it yourself instead.
+   <span class="nv">`func`</span> will be removed in 1.0.
+</pre></div>
+</div>
+<p>(It is possible but confusing to change the name of <code class="docutils literal"><span class="pre">func</span></code> with
+the decorator so it is not recommended to use the <cite>new_func</cite>
+keyword argument with the decorator.)</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.19.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.lib.util._Deprecate">
+<em class="property">class </em><code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">_Deprecate</code><span class="sig-paren">(</span><em>old_name=None</em>, <em>new_name=None</em>, <em>release=None</em>, <em>remove=None</em>, <em>message=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#_Deprecate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util._Deprecate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator class to deprecate old functions.</p>
+<p>Refer to <cite>deprecate</cite> for details.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.util.deprecate" title="MDAnalysis.lib.util.deprecate"><code class="xref py py-class docutils literal"><span class="pre">deprecate</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.19.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.util.dedent_docstring">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">dedent_docstring</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#dedent_docstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.dedent_docstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dedent typical python doc string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string, typically something like <code class="docutils literal"><span class="pre">func.__doc__</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">string with the leading common whitespace removed from each
+line</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://docs.python.org/3/library/textwrap.html#textwrap.dedent" title="(in Python v3.7)"><code class="xref py py-func docutils literal"><span class="pre">textwrap.dedent()</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.19.0.</span></p>
+</div>
+</dd></dl>
+
 <p class="rubric">Footnotes</p>
 <table class="docutils footnote" frame="void" id="namedstreamclose" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -933,6 +1053,7 @@ close it.</td></tr>
 <li class="toctree-l4"><a class="reference internal" href="#data-manipulation-and-handling">12.2.8.5. Data manipulation and handling</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#strings">12.2.8.6. Strings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#class-decorators">12.2.8.7. Class decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#code-management">12.2.8.8. Code management</a></li>
 </ul>
 </li>
 </ul>

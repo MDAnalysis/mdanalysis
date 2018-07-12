@@ -131,9 +131,8 @@
 
 <span class="sd">Using the :meth:`HydrogenBondAnalysis.generate_table` method one can reformat</span>
 <span class="sd">the results as a flat &quot;normalised&quot; table that is easier to import into a</span>
-<span class="sd">database or dataframe for further processing.</span>
-<span class="sd">:meth:`HydrogenBondAnalysis.save_table` saves the table to a pickled file. The</span>
-<span class="sd">table itself is a :class:`numpy.recarray`.</span>
+<span class="sd">database or dataframe for further processing. The table itself is a</span>
+<span class="sd">:class:`numpy.recarray`.</span>
 
 <span class="sd">.. _Detection-of-hydrogen-bonds:</span>
 
@@ -368,15 +367,17 @@
 <span class="kn">import</span> <span class="nn">six</span>
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">cPickle</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="n">MissingDataWarning</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span><span class="p">,</span> <span class="n">_set_verbose</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.NeighborSearch</span> <span class="k">import</span> <span class="n">AtomNeighborSearch</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="k">import</span> <span class="n">distances</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">deprecate</span>
 
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.hbonds&#39;</span><span class="p">)</span>
@@ -1216,7 +1217,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;HBond: Stored results as table with </span><span class="si">%(num_records)d</span><span class="s2"> entries.&quot;</span><span class="p">,</span> <span class="nb">vars</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="HydrogenBondAnalysis.save_table"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_analysis.html#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.save_table">[docs]</a>    <span class="k">def</span> <span class="nf">save_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;hbond_table.pickle&quot;</span><span class="p">):</span>
+    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+               <span class="n">message</span><span class="o">=</span><span class="s2">&quot;You can instead use ``np.save(filename, &quot;</span>
+               <span class="s2">&quot;HydrogendBondAnalysis.table)``.&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">save_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;hbond_table.pickle&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Saves :attr:`~HydrogenBondAnalysis.table` to a pickled file.</span>
 
 <span class="sd">        If :attr:`~HydrogenBondAnalysis.table` does not exist yet,</span>
@@ -1238,7 +1242,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">generate_table</span><span class="p">()</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">cPickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span></div>
+            <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">cPickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_has_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">has_timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeseries</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>

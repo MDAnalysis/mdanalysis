@@ -163,6 +163,9 @@ used.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="classes">
+<h2>4.3.2.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.hbonds.hbond_autocorrel.</code><code class="descname">HydrogenBondAutoCorrel</code><span class="sig-paren">(</span><em>universe</em>, <em>hydrogens=None</em>, <em>acceptors=None</em>, <em>donors=None</em>, <em>bond_type=None</em>, <em>exclusions=None</em>, <em>angle_crit=130.0</em>, <em>dist_crit=3.0</em>, <em>sample_time=100</em>, <em>time_cut=None</em>, <em>nruns=1</em>, <em>nsamples=50</em>, <em>pbc=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_autocorrel.html#HydrogenBondAutoCorrel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel" title="Permalink to this definition">¶</a></dt>
@@ -214,6 +217,26 @@ to use [1]</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.save_results">
+<code class="descname">save_results</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.save_results" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>save_results</cite> is deprecated!</p>
+<p>Saves the results to a numpy zipped array (.npz, see np.savez)</p>
+<p>This can be loaded using np.load(filename)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The desired filename [hbond_autocorrel]</td>
+</tr>
+</tbody>
+</table>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can instead use <code class="docutils literal"><span class="pre">np.savez(filename,</span> <span class="pre">time=HydrogenBondAutoCorrel.solution['time'],</span> <span class="pre">results=HydrogenBondAutoCorrel.solution['results'])</span></code>.
+<cite>save_results</cite> will be removed in release 1.0.0.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve">
 <code class="descname">solve</code><span class="sig-paren">(</span><em>p_guess=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_autocorrel.html#HydrogenBondAutoCorrel.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit results to an multi exponential decay and integrate to find
@@ -251,21 +274,6 @@ is saved into the solution dict</p>
 <li><em>ier</em></li>
 </ul>
 </div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.save_results">
-<code class="descname">save_results</code><span class="sig-paren">(</span><em>filename='hbond_autocorrel'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_autocorrel.html#HydrogenBondAutoCorrel.save_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.save_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the results to a numpy zipped array (.npz, see np.savez)</p>
-<p>This can be loaded using np.load(filename)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The desired filename [hbond_autocorrel]</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </dd></dl>
@@ -315,6 +323,7 @@ is saved into the solution dict</p>
 <li class="toctree-l4"><a class="reference internal" href="#description">4.3.2.1. Description</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#input">4.3.2.2. Input</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#output">4.3.2.3. Output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes">4.3.2.4. Classes</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html">4.3.3. Water Bridge analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a></li>

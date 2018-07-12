@@ -116,9 +116,8 @@ indicates comments that are not part of the output.):</p>
 </div>
 <p>Using the <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.generate_table"><code class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></code></a> method one can reformat
 the results as a flat “normalised” table that is easier to import into a
-database or dataframe for further processing.
-<a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.save_table" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.save_table"><code class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.save_table()</span></code></a> saves the table to a pickled file. The
-table itself is a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></code></a>.</p>
+database or dataframe for further processing. The table itself is a
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></code></a>.</p>
 </div>
 <div class="section" id="detection-of-hydrogen-bonds">
 <span id="id1"></span><h2>4.3.1.2. Detection of hydrogen bonds<a class="headerlink" href="#detection-of-hydrogen-bonds" title="Permalink to this headline">¶</a></h2>
@@ -708,7 +707,7 @@ and added <em>kwargs</em> so that it can be used instead of
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('SG', 'OG', 'ND1', 'SD', 'OD2', 'OC2', 'OD1', 'NE2', 'OE2', 'OG1', 'OH', 'OC1', 'OW', 'O', 'OE1', 'OH2'), 'GLYCAM06': ('NT', 'OS', 'OH', 'OY', 'N', 'O', 'OW', 'SM', 'O2'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OE1', 'ND1', 'OH2', 'OD2', 'OD1', 'NE2', 'OG1', 'O', 'OC2', 'SD', 'OC1', 'SG', 'OW', 'OE2', 'OG', 'OH'), 'GLYCAM06': ('O2', 'SM', 'O', 'NT', 'OW', 'OY', 'OS', 'N', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -716,7 +715,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('SG', 'OG', 'ND1', 'NH1', 'NZ', 'NE2', 'NE', 'OG1', 'OH', 'N', 'ND2', 'NH2', 'OW', 'NE1', 'OH2'), 'GLYCAM06': ('OH', 'N', 'N3', 'OW', 'NT'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('ND1', 'OH2', 'NE2', 'OH', 'OG1', 'NE', 'ND2', 'SG', 'OW', 'NH2', 'N', 'OG', 'NE1', 'NH1', 'NZ'), 'GLYCAM06': ('N', 'OH', 'OW', 'N3', 'NT'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
@@ -845,8 +844,9 @@ argument <cite>debug</cite>.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.save_table">
-<code class="descname">save_table</code><span class="sig-paren">(</span><em>filename='hbond_table.pickle'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_analysis.html#HydrogenBondAnalysis.save_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.save_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table"><code class="xref py py-attr docutils literal"><span class="pre">table</span></code></a> to a pickled file.</p>
+<code class="descname">save_table</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.save_table" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>save_table</cite> is deprecated!</p>
+<p>Saves <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table"><code class="xref py py-attr docutils literal"><span class="pre">table</span></code></a> to a pickled file.</p>
 <p>If <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table"><code class="xref py py-attr docutils literal"><span class="pre">table</span></code></a> does not exist yet,
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.generate_table"><code class="xref py py-meth docutils literal"><span class="pre">generate_table()</span></code></a> is called first.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -862,6 +862,10 @@ argument <cite>debug</cite>.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cPickle</span>
 <span class="n">table</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 </pre></div>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can instead use <code class="docutils literal"><span class="pre">np.save(filename,</span> <span class="pre">HydrogendBondAnalysis.table)</span></code>.
+<cite>save_table</cite> will be removed in release 1.0.0.</p>
 </div>
 </dd></dl>
 

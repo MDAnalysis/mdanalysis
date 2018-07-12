@@ -596,12 +596,17 @@ maximum value for the z axis</a>.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLE.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>filename='hole.pickle'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.profiles" title="MDAnalysis.analysis.hole.HOLE.profiles"><code class="xref py py-attr docutils literal"><span class="pre">profiles</span></code></a> as a Python pickle file <em>filename</em>.</p>
+<code class="descname">save</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.save" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>save</cite> is deprecated!</p>
+<p>Save <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.profiles" title="MDAnalysis.analysis.hole.HOLE.profiles"><code class="xref py py-attr docutils literal"><span class="pre">profiles</span></code></a> as a Python pickle file <em>filename</em>.</p>
 <p>Load profiles dictionary with</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cPickle</span>
 <span class="n">profiles</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 </pre></div>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can instead use <code class="docutils literal"><span class="pre">cPickle.dump(HOLE.profiles,</span> <span class="pre">open(filename,</span> <span class="pre">'wb'))</span></code>.
+<cite>save</cite> will be removed in release 1.0.0.</p>
 </div>
 </dd></dl>
 
@@ -795,12 +800,17 @@ analyse part of the trajectory.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLEtraj.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>filename='hole.pickle'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLEtraj.profiles" title="MDAnalysis.analysis.hole.HOLEtraj.profiles"><code class="xref py py-attr docutils literal"><span class="pre">profiles</span></code></a> as a Python pickle file <em>filename</em>.</p>
+<code class="descname">save</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.save" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>save</cite> is deprecated!</p>
+<p>Save <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLEtraj.profiles" title="MDAnalysis.analysis.hole.HOLEtraj.profiles"><code class="xref py py-attr docutils literal"><span class="pre">profiles</span></code></a> as a Python pickle file <em>filename</em>.</p>
 <p>Load profiles dictionary with</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cPickle</span>
 <span class="n">profiles</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 </pre></div>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can instead use <code class="docutils literal"><span class="pre">cPickle.dump(HOLE.profiles,</span> <span class="pre">open(filename,</span> <span class="pre">'wb'))</span></code>.
+<cite>save</cite> will be removed in release 1.0.0.</p>
 </div>
 </dd></dl>
 

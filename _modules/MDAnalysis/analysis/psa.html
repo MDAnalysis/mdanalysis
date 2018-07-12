@@ -264,19 +264,19 @@
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span><span class="p">,</span> <span class="n">cPickle</span>
 <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">string_types</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numbers</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">spatial</span><span class="p">,</span> <span class="n">cluster</span>
 <span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="k">import</span> <span class="n">directed_hausdorff</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">numbers</span>
-
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.analysis.align</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="n">NoDataError</span>
-
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">deprecate</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.psa&#39;</span><span class="p">)</span>
@@ -1554,14 +1554,27 @@
 <span class="sd">        store : bool</span>
 <span class="sd">             if ``True`` then writes :attr:`PSAnalysis.D` to text and</span>
 <span class="sd">             compressed npz (numpy) files [``True``]</span>
+
+<span class="sd">             .. deprecated:: 0.19.0</span>
+<span class="sd">                `store` will be removed together with :meth:`save_results` in 1.0.0.</span>
+
 <span class="sd">        filename : str</span>
 <span class="sd">             string, filename to save :attr:`PSAnalysis.D`</span>
+
+<span class="sd">             .. deprecated:: 0.19.0</span>
+<span class="sd">                `filename` will be removed together with :meth:`save_results` in 1.0.0.</span>
+
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">metric</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;metric&#39;</span><span class="p">,</span> <span class="s1">&#39;hausdorff&#39;</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">stop</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;stop&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;step&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># DEPRECATED 0.19.0: remove in 1.0</span>
+        <span class="k">if</span> <span class="s1">&#39;store&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;PSAnalysis.run(): &#39;store&#39; was deprecated in 0.19.0 &quot;</span>
+                          <span class="s2">&quot;and will be removed in 1.0&quot;</span><span class="p">,</span>
+                          <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="n">store</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
@@ -1579,6 +1592,11 @@
                 <span class="n">D</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">D</span>
         <span class="k">if</span> <span class="n">store</span><span class="p">:</span>
+            <span class="c1"># DEPRECATED 0.19.0: remove in 1.0</span>
+            <span class="k">if</span> <span class="s1">&#39;filename&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;PSAnalysis.run(): &#39;filename&#39; was deprecated in &quot;</span>
+                              <span class="s2">&quot;0.19.0 and will be removed in 1.0&quot;</span><span class="p">,</span>
+                              <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
                 <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;custom_metric&#39;</span>
@@ -1642,8 +1660,10 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_HP</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">get_hausdorff_pair</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">D</span></div>
 
-
-<div class="viewcode-block" id="PSAnalysis.save_result"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.save_result">[docs]</a>    <span class="k">def</span> <span class="nf">save_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+               <span class="n">message</span><span class="o">=</span><span class="s2">&quot;You can save the distance matrix :attr:`D` to a numpy &quot;</span>
+               <span class="s2">&quot;file with ``np.save(filename, PSAnalysis.D)``.&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">save_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save distance matrix :attr:`PSAnalysis.D` to a numpy compressed npz</span>
 <span class="sd">        file and text file.</span>
 
@@ -1670,7 +1690,7 @@
         <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">outfile</span> <span class="o">+</span> <span class="s1">&#39;.dat&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wrote distance matrix to file </span><span class="si">%r</span><span class="s2">.npz&quot;</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wrote distance matrix to file </span><span class="si">%r</span><span class="s2">.dat&quot;</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">filename</span></div>
+        <span class="k">return</span> <span class="n">filename</span>
 
 
 <div class="viewcode-block" id="PSAnalysis.save_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.save_paths">[docs]</a>    <span class="k">def</span> <span class="nf">save_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

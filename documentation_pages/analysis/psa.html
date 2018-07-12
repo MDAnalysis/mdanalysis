@@ -1396,9 +1396,17 @@ same call signature as <a class="reference internal" href="#MDAnalysis.analysis.
 <code class="docutils literal"><span class="pre">trajectory[start:stop:step]</span></code> [<code class="docutils literal"><span class="pre">None</span></code>]</li>
 <li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – </li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – </li>
-<li><strong>store</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – if <code class="docutils literal"><span class="pre">True</span></code> then writes <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal"><span class="pre">PSAnalysis.D</span></code></a> to text and
-compressed npz (numpy) files [<code class="docutils literal"><span class="pre">True</span></code>]</li>
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string, filename to save <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal"><span class="pre">PSAnalysis.D</span></code></a></li>
+<li><strong>store</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – <p>if <code class="docutils literal"><span class="pre">True</span></code> then writes <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal"><span class="pre">PSAnalysis.D</span></code></a> to text and
+compressed npz (numpy) files [<code class="docutils literal"><span class="pre">True</span></code>]</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.19.0: </span><cite>store</cite> will be removed together with <code class="xref py py-meth docutils literal"><span class="pre">save_results()</span></code> in 1.0.0.</p>
+</div>
+</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – <p>string, filename to save <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal"><span class="pre">PSAnalysis.D</span></code></a></p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.19.0: </span><cite>filename</cite> will be removed together with <code class="xref py py-meth docutils literal"><span class="pre">save_results()</span></code> in 1.0.0.</p>
+</div>
+</li>
 </ul>
 </td>
 </tr>
@@ -1463,8 +1471,9 @@ specified by <code class="xref py py-attr docutils literal"><span class="pre">PS
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.psa.PSAnalysis.save_result">
-<code class="descname">save_result</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#PSAnalysis.save_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.save_result" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save distance matrix <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal"><span class="pre">PSAnalysis.D</span></code></a> to a numpy compressed npz
+<code class="descname">save_result</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.save_result" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>save_result</cite> is deprecated!</p>
+<p>Save distance matrix <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal"><span class="pre">PSAnalysis.D</span></code></a> to a numpy compressed npz
 file and text file.</p>
 <p>The data are saved with <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.savez_compressed.html#numpy.savez_compressed" title="(in NumPy v1.14)"><code class="xref py py-func docutils literal"><span class="pre">numpy.savez_compressed()</span></code></a> and
 <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.savetxt.html#numpy.savetxt" title="(in NumPy v1.14)"><code class="xref py py-func docutils literal"><span class="pre">numpy.savetxt()</span></code></a> in the directory specified by
@@ -1481,6 +1490,10 @@ file and text file.</p>
 </tr>
 </tbody>
 </table>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can save the distance matrix <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal"><span class="pre">D</span></code></a> to a numpy file with <code class="docutils literal"><span class="pre">np.save(filename,</span> <span class="pre">PSAnalysis.D)</span></code>.
+<cite>save_result</cite> will be removed in release 1.0.0.</p>
+</div>
 </dd></dl>
 
 </dd></dl>

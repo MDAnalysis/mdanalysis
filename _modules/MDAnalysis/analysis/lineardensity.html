@@ -78,19 +78,19 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
 
 <span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">path</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="k">import</span> <span class="n">AnalysisBase</span>
-
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">deprecate</span>
 
 <div class="viewcode-block" id="LinearDensity"><a class="viewcode-back" href="../../../documentation_pages/analysis/lineardensity.html#MDAnalysis.analysis.lineardensity.LinearDensity">[docs]</a><span class="k">class</span> <span class="nc">LinearDensity</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Linear density profile</span>
-<span class="sd">    LinearDensity(selection, grouping=&#39;atoms&#39;, binsize=0.25)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    selection : AtomGroup</span>
-<span class="sd">      Any atomgroup</span>
+<span class="sd">          any atomgroup</span>
 <span class="sd">    grouping : str {&#39;atoms&#39;, &#39;residues&#39;, &#39;segments&#39;, &#39;fragments&#39;}</span>
 <span class="sd">          Density profiles will be computed on the center of geometry</span>
 <span class="sd">          of a selected group of atoms [&#39;atoms&#39;]</span>
@@ -108,6 +108,13 @@
 <span class="sd">          Show detailed progress of the calculation if set to ``True``; the</span>
 <span class="sd">          default is ``False``.</span>
 
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results : dict</span>
+<span class="sd">          Keys &#39;x&#39;, &#39;y&#39;, and &#39;z&#39; for the three directions. Under these</span>
+<span class="sd">          keys, find &#39;pos&#39;, &#39;pos_std&#39; (mass-weighted density and</span>
+<span class="sd">          standard deviation), &#39;char&#39;, &#39;char_std&#39; (charge density and</span>
+<span class="sd">          its standard deviation), &#39;slice_volume&#39; (volume of bin).</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -117,15 +124,9 @@
 <span class="sd">      ldens = LinearDensity(selection)</span>
 <span class="sd">      ldens.run()</span>
 
-<span class="sd">    Density profiles can be written to file through the `save` method::</span>
-
-<span class="sd">      ldens.save(description=&#39;mydensprof&#39;, form=&#39;txt&#39;)</span>
-
-<span class="sd">    which will output the density profiles in a file named</span>
-<span class="sd">    `&lt;trajectory_filename&gt;.mydensprof_&lt;grouping&gt;.ldens`.</span>
-<span class="sd">    Results can be saved in npz format by specifying `form=&#39;npz&#39;`</span>
 
 <span class="sd">    .. versionadded:: 0.14.0</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">grouping</span><span class="o">=</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -238,8 +239,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos_std&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice volume&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char_std&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice volume&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span>
 
-<div class="viewcode-block" id="LinearDensity.save"><a class="viewcode-back" href="../../../documentation_pages/analysis/lineardensity.html#MDAnalysis.analysis.lineardensity.LinearDensity.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;txt&#39;</span><span class="p">):</span>
+    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+               <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Instead save the :attr:`results` dictionary directly in &quot;</span>
+               <span class="s2">&quot;your favorite format (pickle, json, hdf5, ...).&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;txt&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save density profile to file</span>
+
 <span class="sd">        Allows to save the density profile to either a ASCII txt file or a</span>
 <span class="sd">        binary numpy npz file. Output file has extension &#39;ldens&#39; and begins</span>
 <span class="sd">        with the name of the trajectory file.</span>
@@ -262,6 +267,7 @@
 <span class="sd">        which will output the linear density profiles in a file named</span>
 <span class="sd">        `&lt;trajectory_filename&gt;.mydensprof_&lt;grouping&gt;.ldens`.</span>
 
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Take root of trajectory filename for output file naming</span>
         <span class="n">trajname</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span>
@@ -275,9 +281,10 @@
         <span class="k">elif</span> <span class="n">form</span> <span class="ow">is</span> <span class="s1">&#39;npz&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_savez</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;form argument must be either txt or npz&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;form argument must be either txt or npz&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_savetxt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="c1"># DEPRECATED: remove in 1.0.0</span>
         <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">),</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">)</span>
 
         <span class="c1"># Create list of results which will be output</span>
@@ -301,6 +308,7 @@
                    <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_savez</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="c1"># DEPRECATED: remove in 1.0.0</span>
         <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">),</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">)</span>
         <span class="n">dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bins&#39;</span><span class="p">:</span> <span class="n">bins</span><span class="p">}</span>
 
