@@ -112,26 +112,18 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
     assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
 
 
-npoints_2 = (1, 6000, 200000)
-
-cutoff_2 = (0.02, 0.2)
-
-methods = (
-           '_bruteforce_capped',
-           '_bruteforce_capped',
-           '_pkdtree_capped',
-           '_pkdtree_capped',
-           '_pkdtree_capped',
-           '_bruteforce_capped',
-           )
-
-
-@pytest.mark.parametrize('ncm', zip(itertools.product(npoints_2, cutoff_2), methods))
-def test_method_selection(ncm):
+@pytest.mark.parametrize('npoints,cutoff,meth',
+                         [(1, 0.02, '_bruteforce_capped'),
+                          (1, 0.2, '_bruteforce_capped'),
+                          (6000, 0.02, '_pkdtree_capped'),
+                          (6000, 0.2, '_pkdtree_capped'),
+                          (200000, 0.02, '_pkdtree_capped'),
+                          (200000, 0.2, '_bruteforce_capped')])
+def test_method_selection(npoints, cutoff, meth):
     np.random.seed(90003)
     box = np.array([1, 1, 1, 90, 90, 90], dtype=np.float32)
     points = (np.random.uniform(low=0, high=1.0,
-                        size=(ncm[0][0], 3))*(box[:3])).astype(np.float32)
+                        size=(npoints, 3)) * (box[:3])).astype(np.float32)
     if box is not None:
         boxtype = mda.lib.distances._box_check(box)
         # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
@@ -140,8 +132,8 @@ def test_method_selection(ncm):
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
     method = mda.lib.distances._determine_method(points, points,
-                                                 ncm[0][1], box=box)
-    assert_equal(method.__name__, ncm[1])
+                                                 cutoff, box=box)
+    assert_equal(method.__name__, meth)
 
 
 # different boxlengths to shift a coordinate
