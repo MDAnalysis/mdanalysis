@@ -2531,21 +2531,31 @@ class AtomGroup(GroupBase):
         return topologyobjects.ImproperDihedral(self.ix, self.universe)
 
     def write(self, filename=None, file_format="PDB",
-              filenamefmt="{trjname}_{frame}", **kwargs):
+              filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
         """Write `AtomGroup` to a file.
 
         The output can either be a coordinate file or a selection, depending on
-        the `format`. Only single-frame coordinate files are supported. If you
-        need to write out a trajectory, see :mod:`MDAnalysis.coordinates`.
+        the format. 
+
+        Examples
+        --------
+
+        >>> ag = u.atoms
+        >>> ag.write('selection.ndx')  # Write a gromacs index file
+        >>> ag.write('coordinates.pdb')  # Write the current frame as PDB
+        >>> # Write the trajectory in XTC format
+        >>> ag.write('trajectory.xtc', frames='all')
+        >>> # Write every other frame of the trajectory in PBD format
+        >>> ag.write('trajectory.pdb', frames=u.trajectory[::2])
 
         Parameters
         ----------
         filename : str, optional
             ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
         file_format : str, optional
-            PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
-            Jmol (spt); case-insensitive and can also be supplied as the
-            filename extension [PDB]
+            The name or extension of a coordinate, trajectory, or selection
+            file format such as PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs
+            (ndx) CHARMM (str) or Jmol (spt); case-insensitive [PDB]
         filenamefmt : str, optional
             format string for default filename; use substitution tokens
             'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
@@ -2554,25 +2564,71 @@ class AtomGroup(GroupBase):
             ``"conect"``: write only the CONECT records defined in the original
             file. ``"all"``: write out all bonds, both the original defined and
             those guessed by MDAnalysis. ``None``: do not write out bonds.
-            Default os ``"conect"``.
+            Default is ``"conect"``.
+        frames: array-like or slice or FrameIteratorBase or str, optional
+            An ensemble of frames to write. The ensemble can be an list or
+            array of frame indices, a mask of booleans, an instance of
+            :class:`slice`, or the value returned when a trajectory is indexed.
+            By default, `frames` is set to ``None`` and only the current frame
+            is written. If `frames` is set to "all", then all the frame from
+            trajectory are written.
 
 
         .. versionchanged:: 0.9.0 Merged with write_selection. This method can
             now write both selections out.
+        .. versionchanged:: 0.19.0
+            Can write multiframe trajectories with the 'frames' argument.
         """
+        # TODO: Add a 'verbose' option alongside 'frames'.
+
         # check that AtomGroup actually has any atoms (Issue #434)
         if len(self.atoms) == 0:
             raise IndexError("Cannot write an AtomGroup with 0 atoms")
 
         trj = self.universe.trajectory  # unified trajectory API
-
-        if trj.n_frames == 1:
-            kwargs.setdefault("multiframe", False)
+        if frames is None or frames == 'all':
+            trj_frames = trj[::]
+        elif isinstance(frames, numbers.Integral):
+            # We accept everything that indexes a trajectory and returns a
+            # subset of it. Though, numbers return a Timestep instead.
+            raise TypeError('The "frames" argument cannot be a number.')
+        else:
+            try:
+                test_trajectory = frames.trajectory
+            except AttributeError:
+                trj_frames = trj[frames]
+            else:
+                if test_trajectory is not trj:
+                    raise ValueError(
+                        'The trajectory of {} provided to the frames keyword '
+                        'attribute is different from the trajectory of the '
+                        'AtomGroup.'.format(frames)
+                    )
+                trj_frames = frames
 
         if filename is None:
             trjname, ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt.format(trjname=trjname, frame=trj.frame)
         filename = util.filename(filename, ext=file_format.lower(), keep=True)
+
+        # Some writer behave differently when they are given a "multiframe"
+        # argument. It is the case of the PDB writer tht writes models when
+        # "multiframe" is True.
+        # We want to honor what the user provided with the argument if
+        # provided explicitly. If not, then we need to figure out if we write
+        # multiple frames or not.
+        multiframe = kwargs.pop('multiframe', None)
+        if len(trj_frames) > 1 and multiframe == False:
+            raise ValueError(
+                'Cannot explicitely set "multiframe" to False and request '
+                'more than 1 frame with the "frames" keyword argument.'
+            ) 
+        elif multiframe is None:
+            if frames is None:
+                # By default we only write the current frame.
+                multiframe = False
+            else:
+                multiframe = len(trj_frames) > 1
 
         # From the following blocks, one must pass.
         # Both can't pass as the extensions don't overlap.
@@ -2586,27 +2642,34 @@ class AtomGroup(GroupBase):
             format = format or file_format
             format = format.strip().upper()
 
-            multiframe = kwargs.pop('multiframe', None)
-
             writer = get_writer_for(filename, format=format, multiframe=multiframe)
-            #MDAnalysis.coordinates.writer(filename, **kwargs)
-            coords = True
         except (ValueError, TypeError):
-            coords = False
+            pass
+        else:
+            with writer(filename, n_atoms=self.n_atoms, **kwargs) as w:
+                if frames is None:
+                    w.write(self.atoms)
+                else:
+                    current_frame = trj.ts.frame
+                    try:
+                        for _ in trj_frames:
+                            w.write(self.atoms)
+                    finally:
+                        trj[current_frame]
+            return
 
         try:
             # here `file_format` is only used as default,
             # anything pulled off `filename` will be used preferentially
             writer = get_selection_writer_for(filename, file_format)
-            selection = True
         except (TypeError, NotImplementedError):
-            selection = False
-
-        if not (coords or selection):
-            raise ValueError("No writer found for format: {}".format(filename))
+            pass
         else:
             with writer(filename, n_atoms=self.n_atoms, **kwargs) as w:
                 w.write(self.atoms)
+            return
+
+        raise ValueError("No writer found for format: {}".format(filename))
 
 
 class ResidueGroup(GroupBase):

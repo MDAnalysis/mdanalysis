@@ -502,7 +502,7 @@ deal with missing methods gracefully.
 
  ``__getitem__(arg)``
      advance to time step `arg` = `frame` and return :class:`Timestep`; or if `arg` is a
-     slice, then return an iterator over that part of the trajectory.
+     slice, then return an iterable over that part of the trajectory.
 
      The first functionality allows one to randomly access frames in the
      trajectory::
@@ -524,6 +524,9 @@ deal with missing methods gracefully.
      The last example starts reading the trajectory at frame 1000 and
      reads every 100th frame until the end.
 
+     A sequence of indices or a mask of booleans can also be provided to index
+     a trajectory.
+
      The performance of the ``__getitem__()`` method depends on the underlying
      trajectory reader and if it can implement random access to frames. In many
      cases this is not easily (or reliably) implementable and thus one is
@@ -536,6 +539,10 @@ deal with missing methods gracefully.
      full trajectory is equivalent to
      :class:`MDAnalysis.coordinates.base.ProtoReader.__iter__` (which is always
      implemented) and other slices raise :exc:`TypeError`.
+
+     When indexed with a slice, a sequence of indices, or a mask of booleans,
+     the return value is an instance of :class:`FrameIteratorSliced` or
+     :class:`FrameIteratorIndices`.
 
  ``parse_n_atoms(filename, **kwargs)``
      Provide the number of atoms in the trajectory file, allowing the Reader
