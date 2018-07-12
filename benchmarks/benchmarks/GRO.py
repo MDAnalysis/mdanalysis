@@ -7,14 +7,14 @@ from MDAnalysisTests.datafiles import GRO
 import MDAnalysis as mda
 
 class GROReadBench(object):
-
     def time_read_GRO_coordinates(self):
         """Benchmark reading of standard testsuite GRO file."""
         GROReader(GRO)
 
     def time_parse_GRO_file(self):
-        with GROParser(GRO) as p:
-            top = p.parse()
+        """Time to create topology from GRO file"""
+        p = GROParser(GRO)
+        top = p.parse()
 
     def time_create_GRO_universe(self):
         """Time to create MDA Universe of GRO"""
