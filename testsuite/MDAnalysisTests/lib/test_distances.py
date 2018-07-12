@@ -68,10 +68,14 @@ query_1 = (np.array([0.1, 0.1, 0.1], dtype=np.float32),
 
 method_1 = ('bruteforce', 'pkdtree')
 
+min_cutoff_1 = (None, 0.1)
+
+
 @pytest.mark.parametrize('box', boxes_1)
 @pytest.mark.parametrize('query', query_1)
 @pytest.mark.parametrize('method', method_1)
-def test_capped_distance_checkbrute(box, query, method):
+@pytest.mark.parametrize('min_cutoff', min_cutoff_1)
+def test_capped_distance_checkbrute(box, query, method, min_cutoff):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
                         size=(100, 3))*(boxes_1[0][:3])).astype(np.float32)
@@ -81,15 +85,19 @@ def test_capped_distance_checkbrute(box, query, method):
     pairs, dist = mda.lib.distances.capped_distance(query,
                                                     points,
                                                     max_cutoff,
+                                                    min_cutoff=min_cutoff,
                                                     box=box,
                                                     method=method)
     if(query.shape[0] == 3):
-        distances = mda.lib.distances.distance_array(query[None, :],
+        query = query.reshape((1, 3))
+
+    distances = mda.lib.distances.distance_array(query,
                                                      points, box=box)
-    else:
-        distances = mda.lib.distances.distance_array(query,
-                                                     points, box=box)
-    indices = np.where(distances < max_cutoff)
+
+    if min_cutoff is None:
+        min_cutoff = 0.
+
+    indices = np.where((distances < max_cutoff) & (distances > min_cutoff))
 
     assert_equal(pairs[:, 1], indices[1])
 
