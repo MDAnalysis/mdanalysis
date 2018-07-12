@@ -29,7 +29,7 @@ import itertools
 
 import MDAnalysis as mda
 
-from MDAnalysis.lib.mdamath import triclinic_vectors
+from MDAnalysis.lib.mdamath import triclinic_vectors, triclinic_box
 
 @pytest.mark.parametrize('coord_dtype', (np.float32, np.float64))
 def test_transform_StoR_pass(coord_dtype):
@@ -63,8 +63,9 @@ boxes_1 = (np.array([1, 2, 3, 90, 90, 90], dtype=np.float32),  # ortho
            np.array([[0.5, 0.9, 1.9],  # tri_vecs_bad
                      [2.0, 0.4, 0.1],
                      [0.0, 0.6, 0.5]], dtype=np.float32),
-           None, # Non Periodic
+           None,  # Non Periodic
            )
+
 
 query_1 = (np.array([0.1, 0.1, 0.1], dtype=np.float32),
            np.array([[0.1, 0.1, 0.1],
@@ -73,6 +74,7 @@ query_1 = (np.array([0.1, 0.1, 0.1], dtype=np.float32),
 method_1 = ('bruteforce', 'pkdtree')
 
 min_cutoff_1 = (None, 0.1)
+
 
 @pytest.mark.parametrize('npoints', npoints_1)
 @pytest.mark.parametrize('box', boxes_1)
@@ -96,7 +98,7 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
         found_pairs = pairs[:, 1]
     else:
         found_pairs = list()
-        
+
     if(query.shape[0] == 3):
         query = query.reshape((1, 3))
 
@@ -106,8 +108,40 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
     if min_cutoff is None:
         min_cutoff = 0.
     indices = np.where((distances < max_cutoff) & (distances > min_cutoff))
-    
-    assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1],axis=0))
+
+    assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
+
+
+npoints_2 = (1, 6000, 200000)
+
+cutoff_2 = (0.02, 0.2)
+
+methods = (
+           '_bruteforce_capped',
+           '_bruteforce_capped',
+           '_pkdtree_capped',
+           '_pkdtree_capped',
+           '_pkdtree_capped',
+           '_bruteforce_capped',
+           )
+
+
+@pytest.mark.parametrize('ncm', zip(itertools.product(npoints_2, cutoff_2), methods))
+def test_method_selection(ncm):
+    np.random.seed(90003)
+    box = np.array([1, 1, 1, 90, 90, 90], dtype=np.float32)
+    points = (np.random.uniform(low=0, high=1.0,
+                        size=(ncm[0][0], 3))*(box[:3])).astype(np.float32)
+    if box is not None:
+        boxtype = mda.lib.distances._box_check(box)
+        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        if (boxtype == 'tri_box'):
+            box = triclinic_vectors(box)
+        if (boxtype == 'tri_vecs_bad'):
+            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+    method = mda.lib.distances._determine_method(points, points,
+                                                 ncm[0][1], box=box)
+    assert_equal(method.__name__, ncm[1])
 
 
 # different boxlengths to shift a coordinate
