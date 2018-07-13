@@ -77,7 +77,7 @@ def translate(vector):
     return wrapped
 
 
-def center_in_box(ag, center='geometry', point=None, wrap=False):
+def center_in_box(ag, center_of='geometry', point=None, wrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -93,14 +93,14 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
     .. code-block:: python
     
         ag = u.residues[1].atoms
-        transform = MDAnalysis.transformations.center(ag,center='mass')
+        transform = MDAnalysis.transformations.center(ag, center_of='mass')
         u.trajectory.add_transformations(transform)
     
     Parameters
     ----------
     ag: AtomGroup
         atom group to be centered on the unit cell.
-    center: str, optional
+    center_of: str, optional
         used to choose the method of centering on the given atom group. Can be 'geometry'
         or 'mass'
     point: array-like, optional
@@ -124,14 +124,14 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
         if point.shape != (3, ) and point.shape != (1, 3):
             raise ValueError('{} is not a valid point'.format(point))
     try:
-        if center == 'geometry':
+        if center_of == 'geometry':
             center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
-        elif center == 'mass':
+        elif center_of == 'mass':
             center_method = partial(ag.center_of_mass, pbc=pbc_arg)
         else:
-            raise ValueError('{} is not a valid argument for center'.format(center))
+            raise ValueError('{} is not a valid argument for "center_of"'.format(center_of))
     except AttributeError:
-        if center == 'mass':
+        if center_of == 'mass':
             raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
         else:
             raise ValueError('{} is not an AtomGroup object'.format(ag))
@@ -152,21 +152,22 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
     return wrapped
 
     
-def center_in_plane(ag, plane, coordinate=0, origin=[0,0,0], center='geometry', wrap=False):
+def center_in_plane(ag, plane, d=0, center_from="center", center_of='geometry', wrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
-    is centered on a plane. This plane can only be parallel to the x, y or z planes. 
+    is centered on a plane. This plane can only be parallel to the yz, xz or xy planes. 
     
     Example
     -------
     
-    Translate the center of mass of the second residue of the universe u to the center of the x=1 plane:
+    Translate the center of mass of the second residue of the universe u to the center of the
+    x=1 plane:
 
     .. code-block:: python
     
         ag = u.residues[1].atoms
-        transform = MDAnalysis.transformations.center_in_plane(ag,'x', 1, center='mass')
+        transform = MDAnalysis.transformations.center_in_plane(ag, yz, 1, center_of='mass')
         u.trajectory.add_transformations(transform)
     
     Parameters
@@ -176,15 +177,16 @@ def center_in_plane(ag, plane, coordinate=0, origin=[0,0,0], center='geometry', 
     plane: str
         used to define the plane on which the given AtomGroup will be centered. Defined as
         a string or an array-like of the plane and the value of its translation. Suported 
-        planes are x, y and z.
-    coordinate: scalar
-        the coordinate on which the plane is defined ( 1 for the plane x=1, for example).
-        Default is 0.
-    origin: array-like or str
-        coordinate on which the axes are centered. Can be an array of three coordinates or
-        `center` to shift the origin to the center of the unit cell. Default is `None` 
-        which sets [0, 0, 0] as the origin of the axes.
-    center: str, optional
+        planes are yz, xz and xy planes.
+    d: scalar
+        point where the plane crosses its perpendicular axis. This value is the constant d
+        on the general plane equation ax + by + cz +d = 0 for the yz, xz and xy planes.
+        Default is 0 (zero).
+    center_from: array-like or str
+        coordinate from which the axes are centered. Can be an array of three coordinate 
+        values or `center` which centers the AtomGroup coordinates on the center of the 
+        unit cell. Default is `center`.
+    center_of: str, optional
         used to choose the method of centering on the given atom group. Can be 'geometry'
         or 'mass'
     wrap: bool, optional
@@ -200,44 +202,45 @@ def center_in_plane(ag, plane, coordinate=0, origin=[0,0,0], center='geometry', 
     
     pbc_arg = wrap
     if plane is not None:
-        if plane not in ('x', 'y', 'z'):
+        if plane not in ('xy', 'yz', 'xz'):
             raise ValueError('{} is not a valid plane'.format(plane))
-    if not isinstance(coordinate, Number):
-        raise ValueError('{} is not a valid coordinate number'.format(coordinate))
-    if origin is not None:
-        if isinstance(origin, string_types):
-            if not origin == 'center':
-                raise ValueError('{}is not a valid origin'.format(origin))
+    if not isinstance(d, Number):
+        raise ValueError('{} is not a valid value for d'.format(d))
+    if center_from is not None:
+        if isinstance(center_from, string_types):
+            if not center_from == 'center':
+                raise ValueError('{} is not a valid "center_from"'.format(center_from))
         else:
-            origin = np.asarray(origin, np.float32)
-            if origin.shape != (3, ) and origin.shape != (1, 3):
-                raise ValueError('{} is not a valid origin'.format(origin))
+            center_from = np.asarray(center_from, np.float32)
+            if center_from.shape != (3, ) and center_from.shape != (1, 3):
+                raise ValueError('{} is not a valid "center_from"'.format(center_from))
     try:
-        if center == 'geometry':
+        if center_of == 'geometry':
             center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
-        elif center == 'mass':
+        elif center_of == 'mass':
             center_method = partial(ag.center_of_mass, pbc=pbc_arg)
         else:
-            raise ValueError('{} is not a valid argument for center'.format(center))
+            raise ValueError('{} is not a valid argument for "center_of"'.format(center_of))
     except AttributeError:
-        if center == 'mass':
+        if center_of == 'mass':
             raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
         else:
             raise ValueError('{} is not an AtomGroup object'.format(ag))
+
     def wrapped(ts):
         boxcenter = ts.triclinic_dimensions.sum(axis=0) / 2.0
-        if isinstance(origin, string_types) and origin == 'center':
+        if isinstance(center_from, string_types) and center_from == 'center':
             _origin = boxcenter
         else:
-            _origin = origin
-        if plane == 'x':
-            shift = _origin[0]+coordinate
+            _origin = center_from
+        if plane == 'yz':
+            shift = _origin[0]+d
             position = [shift, boxcenter[1], boxcenter[2]]
-        if plane == 'y':
-            shift = _origin[1]+coordinate
+        if plane == 'xz':
+            shift = _origin[1]+d
             position = [boxcenter[0], shift, boxcenter[2]]
-        if plane == 'z':
-            shift = _origin[2]+coordinate
+        if plane == 'xy':
+            shift = _origin[2]+d
             position = [boxcenter[0], boxcenter[1], shift]
         vector = np.asarray(position, np.float32) - center_method()
         ts.positions += vector
@@ -247,7 +250,7 @@ def center_in_plane(ag, plane, coordinate=0, origin=[0,0,0], center='geometry', 
     return wrapped
 
 
-def center_in_axis(ag, axis, origin=[0,0,0], center='geometry', wrap=False):
+def center_in_axis(ag, axis, center_from="center", center_of='geometry', wrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -262,7 +265,7 @@ def center_in_axis(ag, axis, origin=[0,0,0], center='geometry', wrap=False):
     .. code-block:: python
     
         ag = u.residues[1].atoms
-        transform = MDAnalysis.transformations.center_in_axis(ag,'x', [0,0,1], center='mass')
+        transform = MDAnalysis.transformations.center_in_axis(ag, 'x', [0,0,1], center_of='mass')
         u.trajectory.add_transformation(transform)
     
     Parameters
@@ -273,11 +276,11 @@ def center_in_axis(ag, axis, origin=[0,0,0], center='geometry', wrap=False):
         used to define the plane on which the given AtomGroup will be centered. Defined as
         a string or an array-like of the plane and the value of its translation. Suported 
         planes are x, y and z.
-    origin: array-like or str
+    center_from: array-like or str
         coordinate on which the axes are centered. Can be an array of three coordinates or
         `center` to shift the origin to the center of the unit cell. Default is `None` 
         which sets [0, 0, 0] as the origin of the axis. 
-    center: str, optional
+    center_of: str, optional
         used to choose the method of centering on the given atom group. Can be 'geometry'
         or 'mass'
     wrap: bool, optional
@@ -294,34 +297,32 @@ def center_in_axis(ag, axis, origin=[0,0,0], center='geometry', wrap=False):
     if axis is not None:
         if axis not in ('x', 'y', 'z'):
             raise ValueError('{} is not a valid axis'.format(axis))
-    if origin is not None:
-        if isinstance(origin, string_types):
-            if not origin == 'center':
-                raise ValueError('{}is not a valid origin'.format(origin))
+    if center_from is not None:
+        if isinstance(center_from, string_types):
+            if not center_from == 'center':
+                raise ValueError('{} is not a valid "center_from"'.format(center_from))
         else:
-            origin = np.asarray(origin, np.float32)
-            if origin.shape != (3, ) and origin.shape != (1, 3):
-                raise ValueError('{} is not a valid origin'.format(origin))
-    else:
-        origin = np.asarray([0, 0, 0], np.float32)
+            center_from = np.asarray(center_from, np.float32)
+            if center_from.shape != (3, ) and center_from.shape != (1, 3):
+                raise ValueError('{} is not a valid "center_from"'.format(center_from))
     try:
-        if center == 'geometry':
+        if center_of == 'geometry':
             center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
-        elif center == 'mass':
+        elif center_of == 'mass':
             center_method = partial(ag.center_of_mass, pbc=pbc_arg)
         else:
-            raise ValueError('{} is not a valid argument for center'.format(center))
+            raise ValueError('{} is not a valid argument for "center_of"'.format(center_of))
     except AttributeError:
-        if center == 'mass':
+        if center_of == 'mass':
             raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
         else:
             raise ValueError('{} is not an AtomGroup object'.format(ag))
     
     def wrapped(ts):
-        if isinstance(origin, string_types) and origin == 'center':
+        if isinstance(center_from, string_types) and center_from == 'center':
             _origin = ts.triclinic_dimensions.sum(axis=0) / 2.0
         else:
-            _origin = origin
+            _origin = center_from
         ag_center = center_method()
         if axis == 'x':
             center = np.asarray([ag_center[0], _origin[1], _origin[2]], np.float32)
