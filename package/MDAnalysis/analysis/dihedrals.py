@@ -54,8 +54,16 @@ class Ramachandran(AnalysisBase):
 
     def _prepare(self):
         self.residues = self.atomgroup.residues
-        self.phi_atoms = [residue.phi_selection() for residue in self.residues]
-        self.psi_atoms = [residue.psi_selection() for residue in self.residues]
+        res_min = np.min(self.atomgroup.universe.select_atoms("protein").resids)
+        res_max = np.max(self.atomgroup.universe.select_atoms("protein").resids)
+        if any([(resid < res_min) or (resid > res_max) for resid in self.residues.resids]):
+            raise IndexError("Selection outside of protein")
+        elif any([resid == (res_min or res_max) for resid in self.residues.resids]):
+            raise IndexError("Cannot determine phi and psi angles for the first or last residues")
+        else:
+            self.phi_atoms = [residue.phi_selection() for residue in self.residues]
+            self.psi_atoms = [residue.psi_selection() for residue in self.residues]
+
         self.angles = []
 
     def _single_frame(self):
