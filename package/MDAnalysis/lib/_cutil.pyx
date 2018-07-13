@@ -166,7 +166,7 @@ def make_whole(atomgroup, reference_atom=None):
     .. versionadded:: 0.11.0
     """
     cdef intset agset, refpoints, todo, done
-    cdef int i, nloops, ref, atom, other
+    cdef int i, nloops, ref, atom, other, first
     cdef intmap bonding
     cdef int[:, :] bonds
     cdef float[:, :] oldpos, newpos
@@ -176,8 +176,9 @@ def make_whole(atomgroup, reference_atom=None):
     cdef float inverse_box[3]
     cdef double vec[3]
 
+    first = atomgroup[0].index
     if reference_atom is None:
-        ref = atomgroup[0].index
+        ref = first
     else:
         # Sanity check
         if not reference_atom in atomgroup:
@@ -228,7 +229,7 @@ def make_whole(atomgroup, reference_atom=None):
     # initially we have one starting atom whose position we trust
     refpoints.insert(ref)
     for i in range(3):
-        newpos[ref, i] = oldpos[ref, i]
+        newpos[ref - first, i] = oldpos[ref - first, i]
 
     nloops = 0
     while refpoints.size() < agset.size() and nloops < agset.size():
@@ -244,7 +245,7 @@ def make_whole(atomgroup, reference_atom=None):
                     continue
                 # Draw vector from atom to other
                 for i in range(3):
-                    vec[i] = oldpos[other, i] - oldpos[atom, i]
+                    vec[i] = oldpos[other - first, i] - oldpos[atom - first, i]
                 # Apply periodic boundary conditions to this vector
                 if ortho:
                     minimum_image(&vec[0], &box[0], &inverse_box[0])
@@ -252,7 +253,7 @@ def make_whole(atomgroup, reference_atom=None):
                     minimum_image_triclinic(&vec[0], <coordinate*>&tri_box[0])
                 # Then define position of other based on this vector
                 for i in range(3):
-                    newpos[other, i] = newpos[atom, i] + vec[i]
+                    newpos[other - first, i] = newpos[atom - first, i] + vec[i]
 
                 # This other atom can now be used as a reference point
                 refpoints.insert(other)
