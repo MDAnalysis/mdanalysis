@@ -30,7 +30,7 @@ Hydrogen bond autocorrelation --- :mod:`MDAnalysis.analysis.hbonds.hbond_autocor
 .. versionadded:: 0.9.0
 
 Description
----------------
+-----------
 
 Calculates the time autocorrelation function, :math:`C_x(t)`, for the hydrogen
 bonds in the selections passed to it.  The population of hydrogen bonds at a
@@ -142,18 +142,17 @@ Examples
   plt.show()
 
 
+Classes
+-------
+
 .. autoclass:: HydrogenBondAutoCorrel
-
-   .. automethod:: run
-
-   .. automethod:: solve
-
-   .. automethod:: save_results
+   :members:
 
 
 """
 from __future__ import division, absolute_import
 from six.moves import zip
+
 import numpy as np
 import scipy.optimize
 
@@ -161,6 +160,7 @@ import warnings
 
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.distances import distance_array, calc_angles, calc_bonds
+from MDAnalysis.lib.util import deprecate
 
 from MDAnalysis.due import due, Doi
 due.cite(Doi("10.1063/1.4922445"),
@@ -403,6 +403,10 @@ class HydrogenBondAutoCorrel(object):
 
         return results
 
+    @deprecate(release="0.19.0", remove="1.0.0",
+               message="You can instead use "
+               "``np.savez(filename, time=HydrogenBondAutoCorrel.solution['time'], "
+               "results=HydrogenBondAutoCorrel.solution['results'])``.")
     def save_results(self, filename='hbond_autocorrel'):
         """Saves the results to a numpy zipped array (.npz, see np.savez)
 
@@ -412,6 +416,7 @@ class HydrogenBondAutoCorrel(object):
         ----------
         filename : str, optional
             The desired filename [hbond_autocorrel]
+
         """
         if self.solution['results'] is not None:
             np.savez(filename, time=self.solution['time'],

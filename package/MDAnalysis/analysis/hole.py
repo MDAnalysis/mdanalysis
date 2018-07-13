@@ -275,8 +275,8 @@ import matplotlib.pyplot as plt
 
 from MDAnalysis import Universe
 from MDAnalysis.exceptions import ApplicationError
-from MDAnalysis.lib.util import which, realpath, asiterable
-from MDAnalysis.lib.util import FORTRANReader
+from MDAnalysis.lib.util import (which, realpath, asiterable,
+                                 FORTRANReader, deprecate)
 
 from ..due import due, Doi
 
@@ -388,6 +388,9 @@ def seq2str(v):
 class BaseHOLE(object):
     """Baseclass for HOLE analysis, providing plotting and utility functions"""
 
+    @deprecate(release="0.19.0", remove="1.0.0",
+               message="You can instead use "
+               "``cPickle.dump(HOLE.profiles, open(filename, 'wb'))``.")
     def save(self, filename="hole.pickle"):
         """Save :attr:`profiles` as a Python pickle file *filename*.
 
@@ -395,6 +398,7 @@ class BaseHOLE(object):
 
            import cPickle
            profiles = cPickle.load(open(filename))
+
 
         """
 

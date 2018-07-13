@@ -59,6 +59,10 @@ class AmazingMultiFrameReader(ReaderBase):
             return self.ts
 
     def _read_frame(self, frame):
+        if frame < 0:
+            frame = self.n_frames + frame
+        if not (0 <= frame < self.n_frames):
+            raise IOError
         self.ts.frame = frame
 
         return self.ts
@@ -149,6 +153,8 @@ class TestMultiFrameReader(_Multi):
         (2, 5, None),  # start & end
         (None, None, 2),  # set skip
         (None, None, -1),  # backwards skip
+        (None, -1, -1),
+        (10, 0, -1),
         (0, 10, 1),
         (0, 10, 2),
         (None, 20, None),  # end beyond real end
@@ -164,7 +170,9 @@ class TestMultiFrameReader(_Multi):
         (1, 5, -1),  # Stop less than start
         (-100, None, None),
         (100, None, None),  # Outside of range of trajectory
-        (-2, 10, -2)
+        (-2, 10, -2),
+        (0, 0, 1),  # empty
+        (10, 1, 2), # empty
     ])
     def test_slice(self, start, stop, step, reader):
         """Compare the slice applied to trajectory, to slice of list"""
@@ -187,7 +195,6 @@ class TestMultiFrameReader(_Multi):
         with pytest.raises(TypeError):
             sl()
 
-
     @pytest.mark.parametrize('slice_cls', [list, np.array])
     @pytest.mark.parametrize('sl', [
         [0, 1, 4, 5],
@@ -207,6 +214,85 @@ class TestMultiFrameReader(_Multi):
 
         assert_equal(res, ref)
 
+    @pytest.mark.parametrize('sl', [
+        [0, 1, 2, 3],  # ordered list of indices without duplicates
+        [1, 3, 4, 2, 9],  # disordered list of indices without duplicates
+        [0, 1, 1, 2, 2, 2],  # ordered list with duplicates
+        [-1, -2, 3, -1, 0],  # disordered list with duplicates
+        [True, ] * 10,
+        [False, ] * 10,
+        [True, False, ] * 5,
+        slice(None, None, None),
+        slice(0, 10, 1),
+        slice(None, None, -1),
+        slice(10, 0, -1),
+        slice(2, 7, 2),
+        slice(7, 2, -2),
+        slice(7, 2, 1),  # empty
+        slice(0, 0, 1),  # empty
+    ])
+    def test_getitem_len(self, sl, reader):
+        traj_iterable = reader[sl]
+        if not isinstance(sl, slice):
+            sl = np.array(sl)
+        ref = self.reference[sl]
+        assert len(traj_iterable) == len(ref)
+
+    @pytest.mark.parametrize('iter_type', (list, np.array))
+    def test_getitem_len_empty(self, reader, iter_type):
+        # Indexing a numpy array with an empty array tends to break.
+        traj_iterable = reader[iter_type([])]
+        assert len(traj_iterable) == 0
+
+    # All the sl1 slice must be 5 frames long so that the sl2 can be a mask
+    @pytest.mark.parametrize('sl1', [
+        [0, 1, 2, 3, 4],
+        [1, 1, 1, 1, 1],
+        [True, False, ] * 5,
+        slice(None, None, 2),
+        slice(None, None, -2),
+    ])
+    @pytest.mark.parametrize('sl2', [
+        [0, -1, 2],
+        [-1,-1, -1],
+        [True, False, True, True, False],
+        np.array([True, False, True, True, False]),
+        slice(None, None, None),
+        slice(None, 3, None),
+        slice(4, 0, -1),
+    ])
+    def test_double_getitem(self, sl1, sl2, reader):
+        traj_iterable = reader[sl1][sl2]
+        # Old versions of numpy do not behave the same when indexing with a
+        # list or with an array.
+        if not isinstance(sl1, slice):
+            sl1 = np.asarray(sl1)
+        if not isinstance(sl2, slice):
+            sl2 = np.asarray(sl2)
+        print(sl1, sl2, type(sl1), type(sl2))
+        ref = self.reference[sl1][sl2]
+        res = [ts.frame for ts in traj_iterable]
+        assert_equal(res, ref)
+        assert len(traj_iterable) == len(ref)
+
+    @pytest.mark.parametrize('sl1', [
+        [0, 1, 2, 3, 4],
+        [1, 1, 1, 1, 1],
+        [True, False, ] * 5,
+        slice(None, None, 2),
+        slice(None, None, -2),
+        slice(None, None, None),
+    ])
+    @pytest.mark.parametrize('idx2', [0, 2, 4, -1, -2, -4])
+    def test_double_getitem_int(self, sl1, idx2, reader):
+        ts = reader[sl1][idx2]
+        # Old versions of numpy do not behave the same when indexing with a
+        # list or with an array.
+        if not isinstance(sl1, slice):
+            sl1 = np.asarray(sl1)
+        ref = self.reference[sl1][idx2]
+        assert ts.frame == ref
+
     def test_list_TE(self, reader):
         def sl():
             return list(reader[[0, 'a', 5, 6]])
@@ -214,13 +300,25 @@ class TestMultiFrameReader(_Multi):
         with pytest.raises(TypeError):
             sl()
 
-
     def test_array_TE(self, reader):
         def sl():
             return list(reader[np.array([1.2, 3.4, 5.6])])
 
         with pytest.raises(TypeError):
             sl()
+
+    @pytest.mark.parametrize('sl1', [
+        [0, 1, 2, 3, 4],
+        [1, 1, 1, 1, 1],
+        [True, False, ] * 5,
+        slice(None, None, 2),
+        slice(None, None, -2),
+    ])
+    @pytest.mark.parametrize('idx2', [5, -6])
+    def test_getitem_IE(self, sl1, idx2, reader):
+        partial_reader = reader[sl1]
+        with pytest.raises(IndexError):
+            partial_reader[idx2]
 
 
 class _Single(_TestReader):

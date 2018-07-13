@@ -204,7 +204,7 @@ import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
-from MDAnalysis.lib.util import get_weights
+from MDAnalysis.lib.util import get_weights, deprecate
 
 from .base import AnalysisBase
 
@@ -679,7 +679,10 @@ class AlignTraj(AnalysisBase):
         if not self._verbose:
             logging.disable(logging.NOTSET)
 
+    @deprecate(release="0.19.0", remove="1.0")
     def save(self, rmsdfile):
+        """save rmsd as a numpy array
+        """
         # these are the values of the new rmsd between the aligned trajectory
         # and reference structure
         np.savetxt(rmsdfile, self.rmsd)
