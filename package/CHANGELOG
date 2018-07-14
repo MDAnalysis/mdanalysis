@@ -20,6 +20,7 @@ The rules for this file:
 
 Enhancements
 
+  * Added augment functionality to handle periodic boundary conditions (PR #1977) 
   * Added lib.distances.capped_distance function to quickly calculate all distances
     up to a given maximum distance (PR #1941)
   * Added a rotation coordinate transformation (PR #1937)
