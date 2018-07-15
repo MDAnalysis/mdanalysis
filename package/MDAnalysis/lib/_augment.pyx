@@ -22,38 +22,74 @@
 #
 
 import cython
-import numpy
-cimport numpy
+import numpy as np
+from .mdamath import triclinic_vectors
 
 from libcpp.vector cimport vector
 from libc.math cimport sqrt
 
-__all__ = ['augment', 'undo_augment']
+__all__ = ['augment_coordinates', 'undo_augment']
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def augment(float[:, ::1] coordinates, float[:, ::1] dm, float r):
-    """Calculate augmented coordinate set
+def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
+    """Calculates the relevant images of particles which are within a
+    distance 'r' from the box walls
+
+    Only the relevant images are generated i.e. for every set of
+    coordinates close to the box boundary,
+    corresponding images which are close to the opposite face and
+    outside the central cell are generated. If the particle
+    is close to more than one box walls,
+    images along the diagonals are also generated ::
+
+
+                       |  x               x
+    +---------------+  |    +---------------+
+    |               |  |    |               |
+    |               |  |    |               |
+    |               |  |    |               |
+    |             o |  |  x |             o |
+    +---------------+  |    +---------------+
+                       |
 
     Parameters
     ----------
     coordinates : array
       Input coordinate array to generate duplicate images
-    dm : array
-      Real space box vectors in a matrix with shape (3, 3)
-      Vectors `[[a], [b], [c]]` are box vectors
+      in the vicinity of the central cell. All the coordinates
+      must be within the primary unit cell.
+    box : array
+      Box dimension of shape (6, ). The dimensions must be
+      provided in the same format as returned
+      by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+      ``[lx, ly, lz, alpha, beta, gamma]``
     r : float
       thickness of cutoff region for duplicate image generation
 
     Returns
     -------
     output : array
-      coordinates of duplicates generated due to periodic boundary conditions
+      coordinates of duplicate(augmented) particles
     indices : array
       original indices of the augmented coordinates
+      A map which translates the indices of augmented particles
+      to their original particle index such that
+      ``indices[augmentedindex] = originalindex``
+
+    Note
+    ----
+    Output doesnot return coordinates from the initial array.
+    Use `np.concatenate(coordinates, output)` to merge particle
+    coordinates as well as their images.
+
+    .. SeeAlso:: :func:'MDAnalysis.lib._augment.undo_augment'
+
+    .. versionadded:: 0.19.0
     """
     cdef bint lo_x, hi_x, lo_y, hi_y, lo_z, hi_z
-    cdef int i, j, p, N
+    cdef int i, j, N
     cdef float norm
     cdef float shiftX[3]
     cdef float shiftY[3]
@@ -61,7 +97,11 @@ def augment(float[:, ::1] coordinates, float[:, ::1] dm, float r):
     cdef float coord[3]
     cdef float end[3]
     cdef float other[3]
-    cdef float[:, ::1] reciprocal = numpy.zeros((3, 3), dtype=numpy.float32)
+    cdef float[:, ::1] dm = np.zeros((3, 3), dtype=np.float32)
+    cdef float[:, ::1] reciprocal = np.zeros((3, 3), dtype=np.float32)
+
+    dm = triclinic_vectors(box)
+
     for i in range(3):
         shiftX[i] = dm[0, i]
         shiftY[i] = dm[1, i]
@@ -82,7 +122,7 @@ def augment(float[:, ::1] coordinates, float[:, ::1] dm, float r):
     cdef vector[float] output
     cdef vector[int] indices
 
-    for i in range(0, N):
+    for i in range(N):
         for j in range(3):
             coord[j] = coordinates[i, j]
             other[j] = end[j] - coordinates[i, j]
@@ -230,13 +270,13 @@ def augment(float[:, ::1] coordinates, float[:, ::1] dm, float r):
                 output.push_back(coord[j] - shiftZ[j])
             indices.push_back(i)
     n = indices.size()
-    return numpy.asarray(output, dtype=numpy.float32).reshape(n, 3), numpy.asarray(indices, dtype=numpy.int32)
+    return np.asarray(output, dtype=np.float32).reshape(n, 3), np.asarray(indices, dtype=np.int32)
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cdef float _dot(float * a, float * b):
-    """Return dot product of two sequences in range."""
+    """Return dot product of two 3d vectors"""
     cdef ssize_t n
     cdef float sum1
 
@@ -250,8 +290,7 @@ cdef float _dot(float * a, float * b):
 @cython.wraparound(False)
 cdef void _cross(float * a, float * b, float * result):
     """
-    Calculates the cross product between vectors
-    given by pointers a and b
+    Calculates the cross product between 3d vectors
 
     Note
     ----
@@ -277,31 +316,38 @@ cdef float _norm(float * a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def undo_augment(int[:] results, int[:] translation, int nreal):
-    """Translate augmented indices back to originals
+    """Translate augmented indices back to original indices
 
     Parameters
     ----------
     results : ndarray of ints
       indices of coordinates, including "augmented" indices
     translation : ndarray of ints
-      original indices of augmented coordinates
+      Map to link the augmented indices to the original particle indices
+      such that ``translation[augmentedindex] = originalindex``
     nreal : int
-      number of real coordinates, ie values in results equal or larger
+      number of real coordinates, i.e. values in results equal or larger
       than this need to be translated to their real counterpart
 
     Returns
     -------
     results : ndarray of ints
+      modified input results with all the augmented indices
+      translated to their corresponding initial original indices
 
     Note
     ----
-    Modifies the results array
+    Modifies the results array in place
 
+    .. SeeAlso:: :func:'MDAnalysis.lib._augment.augment_coordinates'
+
+    .. versionadded:: 0.19.0
     """
     cdef int N
+    cdef ssize_t i
     N = results.shape[0]
 
     for i in range(N):
         if results[i] >= nreal:
             results[i] = translation[results[i] - nreal]
-    return results
+    return np.asarray(results, dtype=np.int)

@@ -26,9 +26,8 @@ import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
 from itertools import product
 
-from MDAnalysis.lib._augment import augment, undo_augment
+from MDAnalysis.lib._augment import augment_coordinates, undo_augment
 from MDAnalysis.lib.distances import apply_PBC, transform_StoR
-from MDAnalysis.lib.mdamath import triclinic_vectors
 
 boxes = ([10, 10, 10, 90, 90, 90],  # ortho
          [10, 10, 10, 45, 60, 90])  # tri_box
@@ -44,8 +43,9 @@ queries = ([0.1, 0.5, 0.5],  # box face
            [0.1, -0.1, 1.1],  # box vertex
            [2.1, -3.1, 0.1],  # box vertex
            [[0.1, 0.5, 0.5],
-            [0.5, -0.1, 0.5]] #Multiple vectors
+            [0.5, -0.1, 0.5]]  # Multiple vectors
            )
+
 
 # Images for the previous query vectors, here in fractional coordinates.
 images = (([1.1, 0.5, 0.5],),
@@ -74,8 +74,7 @@ def test_augment(b, qres):
     if q.shape == (3, ):
         q = q.reshape((1, 3))
     q = apply_PBC(q, b)
-    dm = triclinic_vectors(b)
-    aug, mapping = augment(q, dm, radius)
+    aug, mapping = augment_coordinates(q, b, radius)
     if aug.size > 0:
         aug = np.sort(aug, axis=0)
     else:
@@ -95,8 +94,7 @@ def test_undoaugment(b, qres):
     if q.shape == (3, ):
         q = q.reshape((1, 3))
     q = apply_PBC(q, b)
-    dm = triclinic_vectors(b)
-    aug, mapping = augment(q, dm, radius)
+    aug, mapping = augment_coordinates(q, b, radius)
     for idx, val in enumerate(aug):
         imageid = np.asarray([len(q) + idx], dtype=np.int32)
         assert_equal(mapping[idx], undo_augment(imageid, mapping, len(q))[0])
