@@ -144,7 +144,72 @@ def test_find_images(b, qcs):
     found_images = np.sort(tree.find_images(q_wrapped, radius), axis=0)
     assert_almost_equal(found_images, cs, decimal=6)
 
+#
+# Testing for neighbor finding
+#
 
+# Find neighbors for a given query vector, here in fractional coordinates.
+queries_2 = ([0.5, 0.5, 0.5],  # case box center
+             [0, 1, 0.07],  # box face
+             [0.1, 0.1, 0.5],  # box edge
+             [0.1, 0.1, 0.1],  # box vertex
+             ([-1.9, 4.2, 0.2], [2.1, -3.1, 0.1])  # multiple queries
+            )
+# Expected neighbors of queries_2 in the orthogonal box case, here in
+# fractional coordinates.
+n_ortho = (([0.5, 0.5, 0.5],),
+           ([1.1, -1.1, 1.1], ),
+           (),
+           ([0.11, 0.11, 0.11], ),
+           ([0.2, 0.2, 0.2], [0.11, 0.11, 0.11], [2.1, 2.1, 0.3],
+               [1.1, -1.1, 1.1])
+           )
+# Expected neighbors for previous queries in the trigonal box case
+n_tric = (([0.5, 0.5, 0.5],),
+          ([1.1, -1.1, 1.1], ),
+          (),
+          ([0.11, 0.11, 0.11], ),
+          ([0.2, 0.2, 0.2], [2.1, 2.1, 0.3], [1.1, -1.1, 1.1])
+          )
+
+# Combinations of boxes, query points, and expected neighbors.
+doublets = list()
+for b, n in zip(boxes_2, (n_ortho, n_tric)):
+    doublets.extend(list(product([b], zip(queries_2, n))))
+
+
+@pytest.mark.parametrize('b, qns', doublets)
+def test_search(b, qns):
+    """
+    Test finding neighbors for a given query vector and type of box.
+    Parameters
+    ----------
+    b : list
+        MDAnalysis dimensions like list
+    qns : tuple
+        a query point and a list of expected neighbors.
+    """
+    b = np.array(b, dtype=np.float32)
+    q = transform_StoR(np.array(qns[0], dtype=np.float32), b)
+    # Setting up the periodic tree
+    tree = PeriodicKDTree(b)
+    coords = transform_StoR(f_dataset, b)
+    tree.set_coords(coords)  # Input real space coordinates
+    # Carry out the search and retrieve results
+    tree.search(q, radius)
+    indices = tree.get_indices()
+    if indices:
+        found_neighbors = np.sort(coords[indices], axis=0)
+    else:
+        found_neighbors = list()
+    if qns[1]:
+        expected_neighbors = transform_StoR(np.array(qns[1],dtype=np.float32), b)
+        expected_neighbors = np.sort(expected_neighbors, axis=0)
+    else:
+        expected_neighbors = list()
+    assert_equal(found_neighbors, expected_neighbors)
+
+# Test Periodic cKDTree
 @pytest.mark.parametrize('b, cut, result', (
                          (None, 1.0,
                           'Donot provide cutoff distance'
@@ -204,7 +269,7 @@ def test_searchfail():
                          ([10, 10, 10, 90, 90, 90], [2.1, -3.1, 0.1], [2, 3, 4]),
                          ([10, 10, 10, 45, 60, 90], [2.1, -3.1, 0.1], [2, 3])
                          ))
-def test_search(b, q, result):
+def test_ckd_search(b, q, result):
     b = np.array(b, dtype=np.float32)
     q = transform_StoR(np.array(q, dtype=np.float32), b)
     cutoff = 3.0
@@ -226,7 +291,7 @@ def test_search(b, q, result):
                                                      [2, 4],
                                                      [2, 3]])
                          ))
-def test_searchpairs(b, result):
+def test_ckd_searchpairs(b, result):
     b = np.array(b, dtype=np.float32)
     cutoff = 3.0
     coords = transform_StoR(f_dataset, b)
