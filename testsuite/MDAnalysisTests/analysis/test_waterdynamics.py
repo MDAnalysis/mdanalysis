@@ -105,9 +105,14 @@ def test_SurvivalProbability_t0Ignored(universe_prot):
 
 
 def test_SurvivalProbability_zeroMolecules(universe):
-    sp_zero = waterdynamics.SurvivalProbability(universe, SELECTION2, 0, 6, 3)
-    taus, timeseries = sp_zero.run()
-    assert np.isnan(timeseries[1])
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        select_atoms_mock.return_value = returned_mock_atom_group = Mock()
+        # fake atom IDs - always the same
+        returned_mock_atom_group.ids = []
+
+        sp = waterdynamics.SurvivalProbability(universe, "", 0, 6, 3)
+        taus, timeseries = sp.run()
+        assert all(np.isnan(timeseries))
 
 
 def test_SurvivalProbability_alwaysPresent(universe):
@@ -118,4 +123,4 @@ def test_SurvivalProbability_alwaysPresent(universe):
 
         sp = waterdynamics.SurvivalProbability(universe, "", 0, 6, 3)
         taus, timeseries = sp.run()
-        assert np.array_equal(timeseries, [1.0, 1.0, 1.0])
+        assert all(np.equal(timeseries, 1))
