@@ -149,9 +149,3 @@ def test_xtc_striding(tmpdir):
             MDAnalysis.analysis.helanal.helanal_trajectory(
                 u, selection="name CA", finish=5
             )
-
-    #with assert_raises(FinishTimeException):
-    #    try:
-    #        MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
-    #   except IndexError:
-    #       self.fail("IndexError consistent with Issue 188.")

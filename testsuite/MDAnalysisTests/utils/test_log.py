@@ -183,4 +183,3 @@ class TestSetVerbose(object):
     ])
     def test_warnings__set_verbose(self, verbose, quiet):
         pytest.deprecated_call(_set_verbose, verbose=verbose, quiet=quiet)
-

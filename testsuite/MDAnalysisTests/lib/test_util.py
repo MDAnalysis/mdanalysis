@@ -1401,4 +1401,3 @@ def test_dedent_docstring(text):
     doc = util.dedent_docstring(text)
     for line in doc.splitlines():
         assert line == line.lstrip()
-

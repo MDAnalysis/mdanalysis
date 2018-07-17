@@ -203,4 +203,3 @@ class TestCopyUniverse(object):
 
         assert new.atoms[0].name == previous
         assert refUniverse.atoms[0].name == 'newname'
-        

@@ -57,4 +57,3 @@ class TestINPCRDReader(object):
     def test_universe_restrt(self):
         u = mda.Universe(XYZ_five, INPCRD, format='RESTRT')
         self._check_ts(u.trajectory.ts)
-
