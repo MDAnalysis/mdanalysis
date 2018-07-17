@@ -57,7 +57,7 @@ matrix:
 
     - env: NAME="Lint"
            PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
-           MAIN_CMD="pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests"
+           MAIN_CMD="pylint --rcfile=$PYLINTRC package/MDAnalysis && pylint --rcfile=$PYLINTRC testsuite/MDAnalysisTests"
            SETUP_CMD=""
            BUILD_CMD=""
            CONDA_DEPENDENCIES=""
@@ -76,6 +76,7 @@ matrix:
 
   allow_failures:
     - env: NUMPY_VERSION=dev EVENT_TYPE="cron"
+    - env: NAME="Lint"
 
 before_install:
   # Workaround for Travis CI macOS bug (https://github.com/travis-ci/travis-ci/issues/6307)
