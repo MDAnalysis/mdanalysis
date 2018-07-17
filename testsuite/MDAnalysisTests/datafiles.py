@@ -415,5 +415,8 @@ ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz'
 
 GSD = resource_filename(__name__, 'data/example.gsd')
 
+DihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_dihedrals.npy')
+GLYDihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_GLY_dihedrals.npy')
+
 # This should be the last line: clean up namespace
 del resource_filename
