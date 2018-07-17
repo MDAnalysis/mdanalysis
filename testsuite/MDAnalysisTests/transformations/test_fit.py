@@ -26,7 +26,7 @@ import pytest
 from numpy.testing import assert_array_almost_equal
 
 from MDAnalysisTests import make_Universe
-from MDAnalysis.transformations.fit import alignto, fit_translation
+from MDAnalysis.transformations.fit import alignto, fit_translation, fit_rot_trans
 
 
 @pytest.fixture()
@@ -137,4 +137,11 @@ def test_fit_translation_transformations_api(test_universe):
     ref_u = test_universe[1]
     transform = fit_translation(test_u, ref_u)
     test_u.trajectory.add_transformations(transform)
+    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=6)
+    
+
+def test_fit_rot_trans_coords(test_universe):
+    test_u = test_universe[0]
+    ref_u = test_universe[1]
+    fit_rot_trans(test_u, ref_u, weights="mass")(test_u.trajectory.ts)
     assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=6)
