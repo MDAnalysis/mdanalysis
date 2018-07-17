@@ -165,8 +165,9 @@ def make_whole(atomgroup, reference_atom=None):
 
     .. versionadded:: 0.11.0
     """
-    cdef intset agset, refpoints, todo, done
-    cdef int i, nloops, ref, atom, other
+    cdef intset refpoints, todo, done
+    cdef int i, nloops, ref, atom, other, natoms
+    cdef cmap[int, int] ix_to_rel
     cdef intmap bonding
     cdef int[:, :] bonds
     cdef float[:, :] oldpos, newpos
@@ -175,14 +176,21 @@ def make_whole(atomgroup, reference_atom=None):
     cdef float tri_box[3][3]
     cdef float inverse_box[3]
     cdef double vec[3]
+    cdef ssize_t[:] ix_view
+
+    # map of global indices to local indices
+    ix_view = atomgroup.ix[:]
+    natoms = atomgroup.ix.shape[0]
+    for i in range(natoms):
+        ix_to_rel[ix_view[i]] = i
 
     if reference_atom is None:
-        ref = atomgroup[0].index
+        ref = 0
     else:
         # Sanity check
         if not reference_atom in atomgroup:
             raise ValueError("Reference atom not in atomgroup")
-        ref = reference_atom.index
+        ref = ix_to_rel[reference_atom.ix]
 
     box = atomgroup.dimensions
 
@@ -203,10 +211,6 @@ def make_whole(atomgroup, reference_atom=None):
         from .mdamath import triclinic_vectors
         tri_box = triclinic_vectors(box)
 
-    # set of indices in AtomGroup
-    agset = intset()
-    for i in atomgroup.indices.astype(np.int32):
-        agset.insert(i)
     # C++ dict of bonds
     try:
         bonds = atomgroup.bonds.to_indices()
@@ -216,26 +220,30 @@ def make_whole(atomgroup, reference_atom=None):
         atom = bonds[i, 0]
         other = bonds[i, 1]
         # only add bonds if both atoms are in atoms set
-        if agset.count(atom) and agset.count(other):
+        if ix_to_rel.count(atom) and ix_to_rel.count(other):
+            atom = ix_to_rel[atom]
+            other = ix_to_rel[other]
+
             bonding[atom].insert(other)
             bonding[other].insert(atom)
 
     oldpos = atomgroup.positions
     newpos = np.zeros((oldpos.shape[0], 3), dtype=np.float32)
 
-    done = intset()  # Who have I already done?
     refpoints = intset()  # Who is safe to use as reference point?
-    # initially we have one starting atom whose position we trust
+    done = intset()  # Who have I already searched around?
+    # initially we have one starting atom whose position is in correct image
     refpoints.insert(ref)
     for i in range(3):
         newpos[ref, i] = oldpos[ref, i]
 
     nloops = 0
-    while refpoints.size() < agset.size() and nloops < agset.size():
+    while refpoints.size() < natoms and nloops < natoms:
+        # count iterations to prevent infinite loop here
         nloops += 1
 
         # We want to iterate over atoms that are good to use as reference
-        # points, but haven't been done yet.
+        # points, but haven't been searched yet.
         todo = difference(refpoints, done)
         for atom in todo:
             for other in bonding[atom]:
@@ -244,7 +252,7 @@ def make_whole(atomgroup, reference_atom=None):
                     continue
                 # Draw vector from atom to other
                 for i in range(3):
-                    vec[i] = oldpos[other, i] - oldpos[atom, i]
+                    vec[i] = oldpos[other, i] - newpos[atom, i]
                 # Apply periodic boundary conditions to this vector
                 if ortho:
                     minimum_image(&vec[0], &box[0], &inverse_box[0])
@@ -258,7 +266,7 @@ def make_whole(atomgroup, reference_atom=None):
                 refpoints.insert(other)
             done.insert(atom)
 
-    if refpoints.size() < agset.size():
+    if refpoints.size() < natoms:
         raise ValueError("AtomGroup was not contiguous from bonds, process failed")
     else:
         atomgroup.positions = newpos
