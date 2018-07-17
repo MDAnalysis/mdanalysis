@@ -20,57 +20,61 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 
 from __future__ import absolute_import
-from six.moves import zip
 import pytest
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
-from itertools import product
 
 from MDAnalysis.lib._augment import augment_coordinates, undo_augment
 from MDAnalysis.lib.distances import apply_PBC, transform_StoR
 
-boxes = ([10, 10, 10, 90, 90, 90],  # ortho
-         [10, 10, 10, 45, 60, 90])  # tri_box
-
 # Find images for several query points,
-# here in fractional coordinates using augment
-queries = ([0.1, 0.5, 0.5],  # box face
-           [0.5, 0.5, 0.5],  # box center
-           [0.5, -0.1, 0.5],  # box face
-           [0.1, 0.1, 0.5],  # box edge
-           [0.5, -0.1, 1.1],  # box edge
-           [0.1, 0.1, 0.1],  # box vertex
-           [0.1, -0.1, 1.1],  # box vertex
-           [2.1, -3.1, 0.1],  # box vertex
-           [[0.1, 0.5, 0.5],
-            [0.5, -0.1, 0.5]]  # Multiple vectors
-           )
+# here in fractional coordinates
+# Every element of qres tuple is (query, images)
+qres = (
+       ([0.1, 0.5, 0.5], [[1.1, 0.5, 0.5]]),     # box face
+       ([0.5, 0.5, 0.5], []),                    # box center
+       ([0.5, -0.1, 0.5], [[0.5, -0.1, 0.5]]),   # box face
+       ([0.1, 0.1, 0.5], [[1.1, 0.1, 0.5],
+                          [0.1, 1.1, 0.5],
+                          [1.1, 1.1, 0.5]]),     # box edge
+       ([0.5, -0.1, 1.1], [[0.5, -0.1, 0.1],
+                           [0.5, 0.9, 1.1],
+                           [0.5, -0.1, 1.1]]),   # box edge
+       ([0.1, 0.1, 0.1], [[1.1, 0.1, 0.1],
+                          [0.1, 1.1, 0.1],
+                          [0.1, 0.1, 1.1],
+                          [0.1, 1.1, 1.1],
+                          [1.1, 1.1, 0.1],
+                          [1.1, 0.1, 1.1],
+                          [1.1, 1.1, 1.1]]),     # box vertex
+       ([0.1, -0.1, 1.1], [[1.1, 0.9, 0.1],
+                           [0.1, -0.1, 0.1],
+                           [0.1, 0.9, 1.1],
+                           [0.1, -0.1, 1.1],
+                           [1.1, -0.1, 0.1],
+                           [1.1, 0.9, 1.1],
+                           [1.1, -0.1, 1.1]]),   # box vertex
+       ([2.1, -3.1, 0.1], [[1.1, 0.9, 0.1],
+                           [0.1, -0.1, 0.1],
+                           [0.1, 0.9, 1.1],
+                           [0.1, -0.1, 1.1],
+                           [1.1, -0.1, 0.1],
+                           [1.1, 0.9, 1.1],
+                           [1.1, -0.1, 1.1]]),   # box vertex
+       ([[0.1, 0.5, 0.5],
+         [0.5, -0.1, 0.5]], [[1.1, 0.5, 0.5],
+                             [0.5, -0.1, 0.5]])  # multiple queries
+       )
 
 
-# Images for the previous query vectors, here in fractional coordinates.
-images = (([1.1, 0.5, 0.5],),
-          (),
-          ([0.5, -0.1, 0.5],),
-          ([1.1, 0.1, 0.5], [0.1, 1.1, 0.5], [1.1, 1.1, 0.5]),
-          ([0.5, -0.1, 0.1], [0.5, 0.9, 1.1], [0.5, -0.1, 1.1]),
-          ([1.1, 0.1, 0.1], [0.1, 1.1, 0.1], [0.1, 0.1, 1.1],
-           [0.1, 1.1, 1.1], [1.1, 1.1, 0.1], [1.1, 0.1, 1.1],
-           [1.1, 1.1, 1.1]),
-          ([1.1, 0.9, 0.1], [0.1, -0.1, 0.1], [0.1, 0.9, 1.1],
-           [0.1, -0.1, 1.1], [1.1, -0.1, 0.1], [1.1, 0.9, 1.1],
-           [1.1, -0.1, 1.1]),
-          ([1.1, 0.9, 0.1], [0.1, -0.1, 0.1], [0.1, 0.9, 1.1],
-           [0.1, -0.1, 1.1], [1.1, -0.1, 0.1], [1.1, 0.9, 1.1],
-           [1.1, -0.1, 1.1]),
-          ([1.1, 0.5, 0.5], [0.5, -0.1, 0.5]))
-
-radius = 1.5
-
-
-@pytest.mark.parametrize('b, qres', product(boxes, zip(queries, images)))
-def test_augment(b, qres):
-    b = np.array(b, dtype=np.float32)
-    q = transform_StoR(np.array(qres[0], dtype=np.float32), b)
+@pytest.mark.parametrize('b', (
+                         np.array([10, 10, 10, 90, 90, 90], dtype=np.float32),
+                         np.array([10, 10, 10, 45, 60, 90], dtype=np.float32)
+                         ))
+@pytest.mark.parametrize('q, res', qres)
+def test_augment(b, q, res):
+    radius = 1.5
+    q = transform_StoR(np.array(q, dtype=np.float32), b)
     if q.shape == (3, ):
         q = q.reshape((1, 3))
     q = apply_PBC(q, b)
@@ -79,7 +83,7 @@ def test_augment(b, qres):
         aug = np.sort(aug, axis=0)
     else:
         aug = list()
-    cs = transform_StoR(np.array(qres[1], dtype=np.float32), b)
+    cs = transform_StoR(np.array(res, dtype=np.float32), b)
     if cs.size > 0:
         cs = np.sort(cs, axis=0)
     else:
@@ -87,9 +91,13 @@ def test_augment(b, qres):
     assert_almost_equal(aug, cs, decimal=5)
 
 
-@pytest.mark.parametrize('b, qres', product(boxes, zip(queries, images)))
+@pytest.mark.parametrize('b', (
+                         np.array([10, 10, 10, 90, 90, 90], dtype=np.float32),
+                         np.array([10, 10, 10, 45, 60, 90], dtype=np.float32)
+                         ))
+@pytest.mark.parametrize('qres', qres)
 def test_undoaugment(b, qres):
-    b = np.array(b, dtype=np.float32)
+    radius = 1.5
     q = transform_StoR(np.array(qres[0], dtype=np.float32), b)
     if q.shape == (3, ):
         q = q.reshape((1, 3))

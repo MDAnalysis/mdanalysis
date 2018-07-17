@@ -356,7 +356,6 @@ def extensions(config):
     aug = MDAExtension('MDAnalysis.lib._augment',
                          sources=['MDAnalysis/lib/_augment' + source_suffix],
                          language='c++',
-                         libraries=mathlib,
                          include_dirs=include_dirs,
                          define_macros=define_macros,
                          extra_compile_args=cpp_extra_compile_args)

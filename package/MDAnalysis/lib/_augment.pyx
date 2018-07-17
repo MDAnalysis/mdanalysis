@@ -97,25 +97,25 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
     cdef float coord[3]
     cdef float end[3]
     cdef float other[3]
-    cdef float[:, ::1] dm = np.zeros((3, 3), dtype=np.float32)
-    cdef float[:, ::1] reciprocal = np.zeros((3, 3), dtype=np.float32)
+    cdef float dm[3][3]
+    cdef float reciprocal[3][3]
 
     dm = triclinic_vectors(box)
 
     for i in range(3):
-        shiftX[i] = dm[0, i]
-        shiftY[i] = dm[1, i]
-        shiftZ[i] = dm[2, i]
-        end[i] = dm[0, i] + dm[1, i] + dm[2, i]
+        shiftX[i] = dm[0][i]
+        shiftY[i] = dm[1][i]
+        shiftZ[i] = dm[2][i]
+        end[i] = dm[0][i] + dm[1][i] + dm[2][i]
     # Calculate reciprocal vectors
-    _cross(&dm[1, 0], &dm[2, 0], &reciprocal[0, 0])
-    _cross(&dm[2, 0], &dm[0, 0], &reciprocal[1, 0])
-    _cross(&dm[0, 0], &dm[1, 0], &reciprocal[2, 0])
+    _cross(&dm[1][0], &dm[2][0], &reciprocal[0][0])
+    _cross(&dm[2][0], &dm[0][0], &reciprocal[1][0])
+    _cross(&dm[0][0], &dm[1][0], &reciprocal[2][0])
     # Normalize
     for i in range(3):
-        norm = _norm(&reciprocal[i, 0])
+        norm = _norm(&reciprocal[i][0])
         for j in range(3):
-            reciprocal[i, j] = reciprocal[i, j]/norm
+            reciprocal[i][j] = reciprocal[i][j]/norm
 
     N = coordinates.shape[0]
 
@@ -127,12 +127,12 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
             coord[j] = coordinates[i, j]
             other[j] = end[j] - coordinates[i, j]
         # identify the condition
-        lo_x = _dot(&coord[0], &reciprocal[0, 0]) <= r
-        hi_x = _dot(&other[0], &reciprocal[0, 0]) <= r
-        lo_y = _dot(&coord[0], &reciprocal[1, 0]) <= r
-        hi_y = _dot(&other[0], &reciprocal[1, 0]) <= r
-        lo_z = _dot(&coord[0], &reciprocal[2, 0]) <= r
-        hi_z = _dot(&other[0], &reciprocal[2, 0]) <= r
+        lo_x = _dot(&coord[0], &reciprocal[0][0]) <= r
+        hi_x = _dot(&other[0], &reciprocal[0][0]) <= r
+        lo_y = _dot(&coord[0], &reciprocal[1][0]) <= r
+        hi_y = _dot(&other[0], &reciprocal[1][0]) <= r
+        lo_z = _dot(&coord[0], &reciprocal[2][0]) <= r
+        hi_z = _dot(&other[0], &reciprocal[2][0]) <= r
 
         if lo_x:
             # if X, face piece
