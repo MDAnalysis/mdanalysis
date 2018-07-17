@@ -128,12 +128,15 @@ class Test_density_from_Universe(object):
                       {'meandensity': 0.016764271713091212, },
                   'static_sliced':
                       {'meandensity': 0.016764270747693617, },
+                  'static_defined':
+                      {'meandensity': 0.0025000000000000005, },
                   'dynamic':
                       {'meandensity': 0.0012063418843728784, },
                   'notwithin':
                       {'meandensity': 0.015535385132107926, },
                   }
     cutoffs = {'notwithin': 4.0, }
+    gridcenters = {'static_defined': np.array([56.0,45.0,35.0])}
     precision = 5
     outfile = 'density.dx'
 
@@ -191,6 +194,18 @@ class Test_density_from_Universe(object):
             self.references['notwithin']['meandensity'],
             soluteselection=self.selections['solute'],
             cutoff=self.cutoffs['notwithin'],
+            universe=universe,
+            tmpdir=tmpdir
+        )
+
+    def test_density_from_Universe_userdefn(self, universe, tmpdir):
+        self.check_density_from_Universe(
+            self.selections['static'],
+            self.references['static_defined']['meandensity'],
+            gridcenter=self.gridcenters['static_defined'],
+            xdim=10.0,
+            ydim=10.0,
+            zdim=10.0,
             universe=universe,
             tmpdir=tmpdir
         )
