@@ -22,12 +22,14 @@
 from __future__ import print_function, absolute_import
 import MDAnalysis
 from MDAnalysis.analysis import waterdynamics
-import pytest
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysisTests.datafiles import PDB, XTC
 
+import pytest
 import numpy as np
+from mock import patch
+from mock import Mock
 from numpy.testing import assert_almost_equal
 
 SELECTION1 = "byres name OH2"
@@ -106,3 +108,14 @@ def test_SurvivalProbability_zeroMolecules(universe):
     sp_zero = waterdynamics.SurvivalProbability(universe, SELECTION2, 0, 6, 3)
     taus, timeseries = sp_zero.run()
     assert np.isnan(timeseries[1])
+
+
+def test_SurvivalProbability_alwaysPresent(universe):
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        select_atoms_mock.return_value = returned_mock_atom_group = Mock()
+        # fake atom IDs - always the same
+        returned_mock_atom_group.ids = [7, 8, 1, 9]
+
+        sp = waterdynamics.SurvivalProbability(universe, "", 0, 6, 3)
+        taus, timeseries = sp.run()
+        assert np.array_equal(timeseries, [1.0, 1.0, 1.0])
