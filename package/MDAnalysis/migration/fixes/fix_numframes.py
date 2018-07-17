@@ -23,4 +23,3 @@ class FixNumframes(BaseFix):
         args = [pytree.Node(syms.trailer, [Dot(), Name(method_name)])]
         new = pytree.Node(syms.power, args)
         return new
-

@@ -16,4 +16,3 @@ class NewDihedral(NewParent, Torsion): pass
 #Improper_Torsion -> ImproperDihedral
 class NewImproperdihedral(Improper_Torsion):
     pass
-
