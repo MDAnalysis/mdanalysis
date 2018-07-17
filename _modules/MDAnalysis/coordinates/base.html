@@ -1606,7 +1606,7 @@
 
     <span class="k">def</span> <span class="nf">_read_frame_with_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Move to *frame*, updating ts with trajectory, transformations and auxiliary data.&quot;&quot;&quot;</span>
-        <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>  <span class="c1"># pylint: disable=assignment-from-no-return</span>
         <span class="k">for</span> <span class="n">aux</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux_list</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">aux</span><span class="p">]</span><span class="o">.</span><span class="n">update_ts</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
             
@@ -2370,7 +2370,6 @@
         <span class="c1"># to avoid applying the same transformations multiple times on each frame</span>
         
         <span class="k">return</span> <span class="n">ts</span></div>
-
 </pre></div>
 
           </div>

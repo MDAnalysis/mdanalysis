@@ -516,11 +516,8 @@
                     <span class="n">tri_dims</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">triclinic_dimensions</span>
 
                 <span class="c1"># full output</span>
-                <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span>
-                    <span class="n">tri_dims</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">output_gro</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;box_triclinic&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-                <span class="p">)</span></div></div>
+                <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">tri_dims</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">output_gro</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;box_triclinic&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">))</span></div></div>
 </pre></div>
 
           </div>
