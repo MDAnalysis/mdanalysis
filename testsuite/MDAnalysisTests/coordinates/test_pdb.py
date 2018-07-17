@@ -149,117 +149,113 @@ class TestExtendedPDBReader(_SingleFrameReader):
         assert_equal(u[4].resid, 10000, "can't read a five digit resid")
 
 
-class TestPDBWriter(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small)
-        self.universe2 = mda.Universe(PSF, DCD)
-        # 3 decimals in PDB spec
-        # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
-        self.prec = 3
-        ext = ".pdb"
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/primitive-pdb-writer' + ext
-        self.u_no_resnames = make_Universe(['names', 'resids'],
-                                           trajectory=True)
-        self.u_no_resids = make_Universe(['names', 'resnames'],
-                                         trajectory=True)
-        self.u_no_names = make_Universe(['resids', 'resnames'],
-                                        trajectory=True)
+class TestPDBWriter(object):
+    # 3 decimals in PDB spec
+    # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+    prec = 3
+    ext = ".pdb"
 
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.universe, self.universe2
-        del self.u_no_resnames, self.u_no_resids, self.u_no_names
-        del self.tmpdir
+    @pytest.fixture
+    def universe(self):
+        return mda.Universe(PSF, PDB_small)
 
-    def test_writer(self):
+    @pytest.fixture
+    def universe2(self):
+        return mda.Universe(PSF, DCD)
+
+    @pytest.fixture
+    def outfile(self, tmpdir):
+        return str(tmpdir.mkdir("PDBWriter").join('primitive-pdb-writer' + self.ext))
+
+    @pytest.fixture
+    def u_no_resnames(self):
+        return make_Universe(['names', 'resids'], trajectory=True)
+
+    @pytest.fixture
+    def u_no_resids(self):
+        return make_Universe(['names', 'resnames'], trajectory=True)
+
+    @pytest.fixture
+    def u_no_names(self):
+        return make_Universe(['resids', 'resnames'], trajectory=True)
+
+
+    def test_writer(self, universe, outfile):
         "Test writing from a single frame PDB file to a PDB file." ""
-        self.universe.atoms.write(self.outfile)
-        u = mda.Universe(PSF, self.outfile)
+        universe.atoms.write(outfile)
+        u = mda.Universe(PSF, outfile)
         assert_almost_equal(u.atoms.positions,
-                            self.universe.atoms.positions, self.prec,
+                            universe.atoms.positions, self.prec,
                             err_msg="Writing PDB file with PDBWriter "
                                     "does not reproduce original coordinates")
 
-
-    def test_writer_no_resnames(self):
-        self.u_no_resnames.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        expected = np.array(['UNK'] * self.u_no_resnames.atoms.n_atoms)
+    def test_writer_no_resnames(self, u_no_resnames, outfile):
+        u_no_resnames.atoms.write(outfile)
+        u = mda.Universe(outfile)
+        expected = np.array(['UNK'] * u_no_resnames.atoms.n_atoms)
         assert_equal(u.atoms.resnames, expected)
 
-
-    def test_writer_no_resids(self):
-        self.u_no_resids.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
+    def test_writer_no_resids(self, u_no_resids, outfile):
+        u_no_resids.atoms.write(outfile)
+        u = mda.Universe(outfile)
         expected = np.ones((25,))
         assert_equal(u.residues.resids, expected)
 
-
-    def test_writer_no_atom_names(self):
-        self.u_no_names.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        expected = np.array(['X'] * self.u_no_names.atoms.n_atoms)
+    def test_writer_no_atom_names(self, u_no_names, outfile):
+        u_no_names.atoms.write(outfile)
+        u = mda.Universe(outfile)
+        expected = np.array(['X'] * u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.names, expected)
 
-
-    def test_writer_no_altlocs(self):
-        self.u_no_names.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        expected = np.array([''] * self.u_no_names.atoms.n_atoms)
+    def test_writer_no_altlocs(self, u_no_names, outfile):
+        u_no_names.atoms.write(outfile)
+        u = mda.Universe(outfile)
+        expected = np.array([''] * u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.altLocs, expected)
 
-
-    def test_writer_no_icodes(self):
-        self.u_no_names.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        expected = np.array([''] * self.u_no_names.atoms.n_atoms)
+    def test_writer_no_icodes(self, u_no_names, outfile):
+        u_no_names.atoms.write(outfile)
+        u = mda.Universe(outfile)
+        expected = np.array([''] * u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.icodes, expected)
 
-
-    def test_writer_no_segids(self):
-        self.u_no_names.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        expected = np.array(['SYSTEM'] * self.u_no_names.atoms.n_atoms)
+    def test_writer_no_segids(self, u_no_names, outfile):
+        u_no_names.atoms.write(outfile)
+        u = mda.Universe(outfile)
+        expected = np.array(['SYSTEM'] * u_no_names.atoms.n_atoms)
         assert_equal([atom.segid for atom in u.atoms], expected)
 
-
-    def test_writer_no_occupancies(self):
-        self.u_no_names.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        expected = np.ones(self.u_no_names.atoms.n_atoms)
+    def test_writer_no_occupancies(self, u_no_names, outfile):
+        u_no_names.atoms.write(outfile)
+        u = mda.Universe(outfile)
+        expected = np.ones(u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.occupancies, expected)
 
-
-    def test_writer_no_tempfactors(self):
-        self.u_no_names.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        expected = np.zeros(self.u_no_names.atoms.n_atoms)
+    def test_writer_no_tempfactors(self, u_no_names, outfile):
+        u_no_names.atoms.write(outfile)
+        u = mda.Universe(outfile)
+        expected = np.zeros(u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.tempfactors, expected)
 
-    def test_write_single_frame_Writer(self):
+    def test_write_single_frame_Writer(self, universe2, outfile):
         """Test writing a single frame from a DCD trajectory to a PDB using
         MDAnalysis.Writer (Issue 105)"""
-        u = self.universe2
-        W = mda.Writer(self.outfile)
+        u = universe2
         u.trajectory[50]
-        W.write(u.select_atoms('all'))
-        W.close()
-        u2 = mda.Universe(self.outfile)
+        with  mda.Writer(outfile) as W:
+            W.write(u.select_atoms('all'))
+        u2 = mda.Universe(outfile)
         assert_equal(u2.trajectory.n_frames,
                      1,
                      err_msg="The number of frames should be 1.")
 
-    def test_write_single_frame_AtomGroup(self):
+    def test_write_single_frame_AtomGroup(self, universe2, outfile):
         """Test writing a single frame from a DCD trajectory to a PDB using
         AtomGroup.write() (Issue 105)"""
-        u = self.universe2
+        u = universe2
         u.trajectory[50]
-        u.atoms.write(self.outfile)
-        u2 = mda.Universe(PSF, self.outfile)
+        u.atoms.write(outfile)
+        u2 = mda.Universe(PSF, outfile)
         assert_equal(u2.trajectory.n_frames,
                      1,
                      err_msg="Output PDB should only contain a single frame")
@@ -268,39 +264,35 @@ class TestPDBWriter(TestCase):
                                                "agree with original coordinates from frame %d" %
                                                u.trajectory.frame)
 
-    def test_check_coordinate_limits_min(self):
+    def test_check_coordinate_limits_min(self, universe, outfile):
         """Test that illegal PDB coordinates (x <= -999.9995 A) are caught
         with ValueError (Issue 57)"""
-        # modify coordinates so we need our own copy or we could mess up
-        # parallel tests
-        u = mda.Universe(PSF, PDB_small)
+        # modify coordinates (universe needs to be a per-function fixture)
+        u = universe
         u.atoms[2000].position = [0, -999.9995, 22.8]
         with pytest.raises(ValueError):
-            u.atoms.write(self.outfile)
+            u.atoms.write(outfile)
 
-    def test_check_coordinate_limits_max(self):
+    def test_check_coordinate_limits_max(self, universe, outfile):
         """Test that illegal PDB coordinates (x > 9999.9995 A) are caught
         with ValueError (Issue 57)"""
-        # modify coordinates so we need our own copy or we could mess up
-        # parallel tests
-        u = mda.Universe(PSF, PDB_small)
+        # modify coordinates (universe needs to be a per-function fixture)
+        u = universe
         # OB: 9999.99951 is not caught by '<=' ?!?
         u.atoms[1000].position = [90.889, 9999.9996, 12.2]
         with pytest.raises(ValueError):
-            u.atoms.write(self.outfile)
-        del u
+            u.atoms.write(outfile)
 
-    def test_check_header_title_multiframe(self):
+    def test_check_HEADER_TITLE_multiframe(self, universe2, outfile):
         """Check whether HEADER and TITLE are written just once in a multi-
         frame PDB file (Issue 741)"""
-        u = mda.Universe(PSF, DCD)
-        pdb = mda.Writer(self.outfile, multiframe=True)
+        u = universe2
         protein = u.select_atoms("protein and name CA")
-        for ts in u.trajectory[:5]:
-            pdb.write(protein)
-        pdb.close()
+        with mda.Writer(outfile, multiframe=True) as pdb:
+            for ts in u.trajectory[:5]:
+                pdb.write(protein)
 
-        with open(self.outfile) as f:
+        with open(outfile) as f:
             got_header = 0
             got_title = 0
             for line in f:
@@ -310,6 +302,35 @@ class TestPDBWriter(TestCase):
                 elif line.startswith('TITLE'):
                     got_title += 1
                     assert got_title <= 1, "There should be only one TITLE."
+
+    @pytest.mark.parametrize("startframe,maxframes",
+                             [(0, 12), (9997, 12)])
+    def test_check_MODEL_multiframe(self, universe2, outfile, startframe, maxframes):
+        """Check whether MODEL number is in the right column (Issue #1950)"""
+        u = universe2
+        protein = u.select_atoms("protein and name CA")
+        with mda.Writer(outfile, multiframe=True, start=startframe) as pdb:
+            for ts in u.trajectory[:maxframes]:
+                pdb.write(protein)
+
+        def get_MODEL_lines(filename):
+            with open(filename) as pdb:
+                for line in pdb:
+                    if line.startswith("MODEL"):
+                        yield line
+
+        MODEL_lines = list(get_MODEL_lines(outfile))
+
+        assert len(MODEL_lines) == maxframes
+        for model, line in enumerate(MODEL_lines, start=startframe+1):
+            # test that only the right-most 4 digits are stored (rest must be space)
+            # line[10:14] == '9999' or '   1'
+
+            # test appearance with white space
+            assert line[5:14] == "{0:>9d}".format(int(str(model)[-4:]))
+
+            # test number (only last 4 digits)
+            assert int(line[10:14]) == model % 10000
 
 
 class TestMultiPDBReader(TestCase):

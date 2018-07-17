@@ -14,11 +14,16 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
-         VOD555, davidercruz
+         VOD555, davidercruz, jbarnoud, ayushsuhane
 
   * 0.18.1
 
 Enhancements
+
+  * Added lib.distances.capped_distance function to quickly calculate all distances
+    up to a given maximum distance (PR #1941)
+  * Added a rotation coordinate transformation (PR #1937)
+  * Added a box centering trajectory transformation (PR #1946)
   * Added a on-the-fly trajectory transformations API and a coordinate translation
   	function (Issue #786)
   * Added various duecredit stubs
@@ -31,6 +36,18 @@ Enhancements
   * Added boolean property *Group.isunique (PR #1922)
   * Added *Group.copy() methods returning an identical copy of the respective
     group (PR #1922)
+  * Use a faster function to deduplicate indices (PR #1951)
+  * Calculations in *Group.center() are performed in double precision (#PR1936)
+  * Functions in lib.distances accept coordinate arrays of arbitrary dtype
+    (PR #1936)
+  * Added calc_distance, calc_angle and calc_dihedral to lib.distances
+    (Issue #1262 #1938)
+  * Added pbc kwarg to Bond/Angle/Dihedral/Improper object value method,
+    default True. (Issue #1938)
+  * ChainReader can correctly handle continuous trajectories split into multiple files,
+    generated with gromacs -noappend (PR #1728)
+  * MDAnalysis.lib.mdamath now supports triclinic boxes and rewrote in Cython (PR #1965)
+  * AtomGroup.write can write a trajectory of selected frames (Issue #1037)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
@@ -43,6 +60,10 @@ Fixes
   * Groups passed to select_atoms() are now type checked (Issue #1852)
   * Fixed inconsistent handling of groups with/without duplicates in
     pack_into_box() (Issue #1911)
+  * Fixed format of MODEL number in PDB file writing (Issue #1950)
+  * PDBWriter now properly sets start value
+  * Zero length TopologyGroup now return proper shape array via to_indices
+    (Issue #1974)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)
@@ -53,6 +74,14 @@ Changes
     duplicates. Otherwise, the group itself is returned. Repeated access of
     *Group.unique will always return the same object unless the group is
     updated or modified. (PR #1922)
+  * The TPR parser reads SETTLE constraints as bonds. (Issue #1949)
+  * Indexing a trajectory with a slice or an array now returns an iterable
+    (Issue #1894)
+
+Deprecations
+  * almost all "save()", "save_results()", "save_table()" methods in
+    analysis classes were deprecated and will be removed in 1.0 (Issue
+    #1972 and #1745)
 
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,

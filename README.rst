@@ -102,17 +102,17 @@ to find uncovered code.
    :target: https://www.mdanalysis.org/mdanalysis/
 
 .. |build| image:: https://travis-ci.org/MDAnalysis/mdanalysis.svg?branch=develop
-    :alt: Build Status
-    :target: https://travis-ci.org/MDAnalysis/mdanalysis
+   :alt: Build Status
+   :target: https://travis-ci.org/MDAnalysis/mdanalysis
 
-.. |cov|   image:: https://coveralls.io/repos/MDAnalysis/mdanalysis/badge.svg?branch=develop
-    :alt: Coverage Status
-    :target: https://coveralls.io/r/MDAnalysis/mdanalysis?branch=develop
+.. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
+   :alt: Coverage Status
+   :target: https://codecov.io/gh/MDAnalysis/mdanalysis
 
 .. |anaconda| image:: https://anaconda.org/conda-forge/mdanalysis/badges/version.svg
-    :alt: Anaconda
-    :target: https://anaconda.org/conda-forge/mdanalysis
+   :alt: Anaconda
+   :target: https://anaconda.org/conda-forge/mdanalysis
 
 .. |mybinder| image:: https://mybinder.org/badge.svg
-    :alt: My Binder
-    :target: https://mybinder.org/v2/gh/MDAnalysis/binder-notebook/master
+   :alt: My Binder
+   :target: https://mybinder.org/v2/gh/MDAnalysis/binder-notebook/master

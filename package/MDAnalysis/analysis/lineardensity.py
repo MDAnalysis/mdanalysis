@@ -30,19 +30,19 @@ fixed volume cells (thus for simulations in canonical NVT ensemble).
 from __future__ import division, absolute_import
 
 import os.path as path
+
 import numpy as np
 
 from MDAnalysis.analysis.base import AnalysisBase
-
+from MDAnalysis.lib.util import deprecate
 
 class LinearDensity(AnalysisBase):
     """Linear density profile
-    LinearDensity(selection, grouping='atoms', binsize=0.25)
 
     Parameters
     ----------
     selection : AtomGroup
-      Any atomgroup
+          any atomgroup
     grouping : str {'atoms', 'residues', 'segments', 'fragments'}
           Density profiles will be computed on the center of geometry
           of a selected group of atoms ['atoms']
@@ -60,6 +60,13 @@ class LinearDensity(AnalysisBase):
           Show detailed progress of the calculation if set to ``True``; the
           default is ``False``.
 
+    Attributes
+    ----------
+    results : dict
+          Keys 'x', 'y', and 'z' for the three directions. Under these
+          keys, find 'pos', 'pos_std' (mass-weighted density and
+          standard deviation), 'char', 'char_std' (charge density and
+          its standard deviation), 'slice_volume' (volume of bin).
 
     Example
     -------
@@ -69,15 +76,9 @@ class LinearDensity(AnalysisBase):
       ldens = LinearDensity(selection)
       ldens.run()
 
-    Density profiles can be written to file through the `save` method::
-
-      ldens.save(description='mydensprof', form='txt')
-
-    which will output the density profiles in a file named
-    `<trajectory_filename>.mydensprof_<grouping>.ldens`.
-    Results can be saved in npz format by specifying `form='npz'`
 
     .. versionadded:: 0.14.0
+
     """
 
     def __init__(self, selection, grouping='atoms', binsize=0.25, **kwargs):
@@ -190,8 +191,12 @@ class LinearDensity(AnalysisBase):
             self.results[dim]['pos_std'] /= self.results[dim]['slice volume'] * k
             self.results[dim]['char_std'] /= self.results[dim]['slice volume'] * k
 
+    @deprecate(release="0.19.0", remove="1.0.0",
+               message="Instead save the :attr:`results` dictionary directly in "
+               "your favorite format (pickle, json, hdf5, ...).")
     def save(self, description='', form='txt'):
         """Save density profile to file
+
         Allows to save the density profile to either a ASCII txt file or a
         binary numpy npz file. Output file has extension 'ldens' and begins
         with the name of the trajectory file.
@@ -214,6 +219,7 @@ class LinearDensity(AnalysisBase):
         which will output the linear density profiles in a file named
         `<trajectory_filename>.mydensprof_<grouping>.ldens`.
 
+
         """
         # Take root of trajectory filename for output file naming
         trajname = path.splitext(path.basename(
@@ -230,6 +236,7 @@ class LinearDensity(AnalysisBase):
             raise ValueError('form argument must be either txt or npz')
 
     def _savetxt(self, filename):
+        # DEPRECATED: remove in 1.0.0
         bins = np.linspace(0.0, max(self.dimensions), num=self.nbins)
 
         # Create list of results which will be output
@@ -253,6 +260,7 @@ class LinearDensity(AnalysisBase):
                    header=header)
 
     def _savez(self, filename):
+        # DEPRECATED: remove in 1.0.0
         bins = np.linspace(0.0, max(self.dimensions), num=self.nbins)
         dictionary = {'bins': bins}
 

@@ -41,12 +41,12 @@ Help is also available through the mailing list at https://groups.google.com/gro
 .. badges
    
 .. |build| image:: https://travis-ci.org/MDAnalysis/mdanalysis.svg?branch=develop
-    :alt: Build Status
-    :target: https://travis-ci.org/MDAnalysis/mdanalysis
+   :alt: Build Status
+   :target: https://travis-ci.org/MDAnalysis/mdanalysis
 
-.. |cov|   image:: https://coveralls.io/repos/MDAnalysis/mdanalysis/badge.svg?branch=develop
-    :alt: Coverage Status
-    :target: https://coveralls.io/r/MDAnalysis/mdanalysis?branch=develop
+.. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
+   :alt: Coverage Status
+   :target: https://codecov.io/gh/MDAnalysis/mdanalysis	     
 
 .. |devdocs| image:: https://img.shields.io/badge/docs-development-yellow.svg
    :alt: Documentation (development version)

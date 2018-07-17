@@ -136,16 +136,17 @@ from __future__ import division, absolute_import
 
 from six.moves import zip
 from six import string_types
+
 import numpy as np
+
 import logging
 import warnings
-
 
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
-from MDAnalysis.lib.util import asiterable, iterable, get_weights
+from MDAnalysis.lib.util import asiterable, iterable, get_weights, deprecate
 
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
@@ -325,6 +326,7 @@ class RMSD(AnalysisBase):
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, filename="rmsd.dat",
                  weights=None, tol_mass=0.1, ref_frame=0, **kwargs):
+        # DEPRECATION: remove filename kwarg in 1.0
         r"""Parameters
         ----------
         atomgroup : AtomGroup or Universe
@@ -379,6 +381,10 @@ class RMSD(AnalysisBase):
             step between frames, default ``None`` becomes 1.
         filename : str (optional)
             write RMSD into file with :meth:`RMSD.save`
+
+            .. deprecated:; 0.19.0
+               `filename` will be removed together with :meth:`save` in 1.0.
+
         weights : {"mass", ``None``} or array_like (optional)
              choose weights. With ``"mass"`` uses masses as weights; with ``None``
              weigh each atom equally. If a float array of the same length as
@@ -460,6 +466,8 @@ class RMSD(AnalysisBase):
         .. versionchanged:: 0.17.0
            removed deprecated `mass_weighted` keyword; `groupselections`
            are *not* rotationally superimposed any more.
+        .. deprecated:: 0.19.0
+           `filename` will be removed in 1.0
 
         """
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
@@ -473,7 +481,7 @@ class RMSD(AnalysisBase):
         self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
-        self.filename = filename
+        self.filename = filename   # DEPRECATED in 0.19.0, remove in 1.0.0
 
         self.ref_atoms = self.reference.select_atoms(*select['reference'])
         self.mobile_atoms = self.atomgroup.select_atoms(*select['mobile'])
@@ -645,6 +653,9 @@ class RMSD(AnalysisBase):
 
         self._pm.rmsd = self.rmsd[self._frame_index, 2]
 
+    @deprecate(release="0.19.0", remove="1.0.0",
+               message="You can instead use "
+               "``np.savetxt(filename, RMSD.rmsd)``.")
     def save(self, filename=None):
         """Save RMSD from :attr:`RMSD.rmsd` to text file *filename*.
 
@@ -653,6 +664,7 @@ class RMSD(AnalysisBase):
         filename : str (optional)
             if no filename is given the default provided to the constructor is
             used.
+
         """
         filename = filename or self.filename
         if filename is not None:

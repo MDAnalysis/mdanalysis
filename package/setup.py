@@ -51,6 +51,7 @@ import sys
 import shutil
 import tempfile
 import warnings
+import platform
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
@@ -255,6 +256,12 @@ def extensions(config):
     if arch:
         extra_compile_args.append('-march={}'.format(arch))
 
+    cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
+    cpp_extra_compile_args.append('-std=c++11')
+    # needed to specify c++ runtime library on OSX
+    if platform.system() == 'Darwin':
+        cpp_extra_compile_args.append('-stdlib=libc++')
+
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
     largefile_macros = [
@@ -339,6 +346,14 @@ def extensions(config):
                         include_dirs=include_dirs,
                         define_macros=define_macros,
                         extra_compile_args=extra_compile_args)
+    cutil = MDAExtension('MDAnalysis.lib._cutil',
+                         sources=['MDAnalysis/lib/_cutil' + source_suffix],
+                         language='c++',
+                         libraries=mathlib,
+                         include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                         define_macros=define_macros,
+                         extra_compile_args=cpp_extra_compile_args)
+
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
                                 sources=['MDAnalysis/analysis/encore/cutils' + source_suffix],
@@ -361,7 +376,7 @@ def extensions(config):
                               extra_compile_args=extra_compile_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred]
+                ap_clustering, spe_dimred, cutil]
 
     cython_generated = []
     if use_cython:

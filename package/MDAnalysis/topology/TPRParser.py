@@ -76,7 +76,7 @@ Bonded interactions available in Gromacs are described in table 5.5 of the
   tabulated potential with exclusion/connection (type 8),
   tabulated potential without exclusion/connection (type 9), constraints with
   exclusion/connection (type 1), constraints without exclusion/connection (type
-  2)
+  2), SETTLE constraints
 * angles: regular angles (type 1), G96 angles (type 2), cross bond-bond
   (type3), cross-bond-angle (type 4), Urey-Bradley (type 5), quartic angles
   (type 6), restricted bending potential (type 10), tabulated angles (type 8)

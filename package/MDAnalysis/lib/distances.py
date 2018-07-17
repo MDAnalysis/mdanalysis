@@ -72,6 +72,7 @@ from numpy.lib.utils import deprecate
 from .mdamath import triclinic_vectors, triclinic_box
 
 
+
 # hack to select backend with backend=<backend> kwarg. Note that
 # the cython parallel code (prange) in parallel.distances is
 # independent from the OpenMP code
@@ -227,27 +228,29 @@ def distance_array(reference, configuration, box=None, result=None, backend="ser
 
     Parameters
     ----------
-    reference : numpy.array of numpy.float32
-        Reference coordinate array.
-    configuration : numpy.array of numpy.float32
-        Configuration coordinate array.
-    box : numpy.array or None
+    reference : numpy.ndarray
+        Reference coordinate array of shape ``(n, 3)`` (``dtype`` is arbitrary,
+        will be converted to ``dtype=numpy.float32`` internally)
+    configuration : numpy.ndarray
+        Configuration coordinate array of shape ``(m, 3)`` (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
+    box : numpy.ndarray or None
         Dimensions of the cell; if provided, the minimum image convention is
         applied. The dimensions must be provided in the same format as returned
         by by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,
         ly, lz, alpha, beta, gamma]``.
-    result : numpy.array of numpy.float64, optional
+    result : numpy.ndarray(dtype=numpy.float64), optional
         Preallocated result array which must have the
         shape ``(len(ref), len(conf))`` and ``dtype=numpy.float64``.
         Avoids creating the array which saves time when the function
         is called repeatedly. [``None``]
-    backend
+    backend : str
         Select the type of acceleration; "serial" is always available. Other
         possibilities are "OpenMP" (OpenMP).
 
     Returns
     -------
-    d : numpy.array
+    d : numpy.ndarray
         ``(len(reference),len(configuration))`` numpy array with the distances
         ``d[i,j]`` between reference coordinates `i` and configuration
         coordinates `j`.
@@ -260,9 +263,11 @@ def distance_array(reference, configuration, box=None, result=None, backend="ser
 
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    ref = reference.copy('C')
-    conf = configuration.copy('C')
+    ref = reference.astype(np.float32, order='C', copy=True)
+    conf = configuration.astype(np.float32, order='C', copy=True)
 
     _check_array(conf, 'conf')
     _check_array(ref, 'ref')
@@ -313,25 +318,25 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
 
     Parameters
     ----------
-    reference : array
-        Reference coordinate array with ``N=len(ref)`` coordinates.
-    box : array or None
+    reference : numpy.ndarray
+        Reference coordinate array with ``N=len(ref)`` coordinates (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
+    box : numpy.ndarray or None
         Dimensions of the cell; if provided, the minimum image convention is
         applied. The dimensions must be provided in the same format as returned
         by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,
         ly, lz, alpha, beta, gamma]``.
-    result : array, optional
-        Preallocated result array which must have the shape
-        ``(N*(N-1)/2,)`` and dtype ``numpy.float64``. Avoids creating
-        the array which saves time when the function is called
-        repeatedly. [``None``]
-    backend
+    result : numpy.ndarray(dtype=numpy.float64), optional
+        Preallocated result array which must have the shape ``(N*(N-1)/2,)`` and
+        dtype ``numpy.float64``. Avoids creating the array which saves time when
+        the function is called repeatedly. [``None``]
+    backend : str
         Select the type of acceleration; "serial" is always available. Other
         possibilities are "OpenMP" (OpenMP).
 
     Returns
     -------
-    d : array
+    d : numpy.ndarray
         ``N*(N-1)/2`` numpy 1D array with the distances dist[i,j] between ref
         coordinates i and j at position d[k]. Loop through d:
 
@@ -345,13 +350,15 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
     Note
     ----
     This method is slower than it could be because internally we need to make
-    copies of the coordinate arrays.
+    copies of the coordinate array.
 
 
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    ref = reference.copy('C')
+    ref = reference.astype(np.float32, order='C', copy=True)
 
     _check_array(ref, 'ref')
 
@@ -390,6 +397,215 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
     return distances
 
 
+def capped_distance(reference, configuration, max_cutoff, min_cutoff=None, box=None, method=None):
+    """Calculates the pairs and distance within a specified distance
+
+    If a *box* is supplied, then a minimum image convention is used
+    to evaluate the distances.
+
+    An automatic guessing of optimized method to calculate the distances is
+    included in the function. An optional keyword for the method is also
+    provided. Users can override the method with this functionality.
+    Currently pkdtree and bruteforce are implemented.
+
+
+    Parameters
+    -----------
+    reference : array
+        reference coordinates array with shape ``reference.shape = (3,)``
+        or ``reference.shape = (len(reference), 3)``
+    configuration : array
+        Configuration coordinate array with shape ``reference.shape = (3,)``
+        or ``reference.shape = (len(reference), 3)``
+    max_cutoff : float
+        Maximum cutoff distance between the reference and configuration
+    min_cutoff : (optional) float
+        Minimum cutoff distance between reference and configuration [None]
+    box : (optional) array or None
+        The dimensions, if provided, must be provided in the same
+        The unitcell dimesions for this system format as returned
+        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        ``[lx,ly, lz, alpha, beta, gamma]``. Minimum image convention
+        is applied if the box is provided [None]
+    method : (optional) 'bruteforce' or 'pkdtree' or 'None'
+        Keyword to override the automatic guessing of method built-in
+        in the function [None]
+
+    Returns
+    -------
+    pairs : array
+        Pair of indices, one from each reference and configuration such that
+        distance between them is  within the ``max_cutoff`` and ``min_cutoff``
+        pairs[i,j] contains the indices i from reference coordinates, and
+        j from configuration
+    distances : array
+        Distances corresponding to each pair of indices.
+        d[k] corresponding to the pairs[i,j] gives the distance between
+        i-th and j-th coordinate in reference and configuration respectively
+
+        .. code-block:: python
+
+            pairs, distances = capped_distances(reference, coordinates, max_cutoff)
+            for indx, [a,b] in enumerate(pairs):
+                coord1 = reference[a]
+                coord2 = configuration[b]
+                distance = distances[indx]
+
+    Note
+    -----
+    Currently only supports brute force and Periodic KDtree
+
+    .. SeeAlso:: :func:'MDAnalysis.lib.distances.distance_array'
+    .. SeeAlso:: :func:'MDAnalysis.lib.pkdtree.PeriodicKDTree'
+
+    """
+
+    if box is not None:
+        boxtype = _box_check(box)
+        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        if (boxtype == 'tri_box'):
+            box = triclinic_vectors(box)
+        if (boxtype == 'tri_vecs_bad'):
+            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+    method = _determine_method(reference, configuration,
+                                   max_cutoff, min_cutoff=min_cutoff,
+                                   box=box, method=method)
+    pairs, dist = method(reference, configuration, max_cutoff,
+                         min_cutoff=min_cutoff, box=box)
+
+    return np.asarray(pairs), np.asarray(dist)
+
+
+def _determine_method(reference, configuration, max_cutoff, min_cutoff=None, box=None, method=None):
+    """
+    Switch between different methods based on the the optimized time.
+    All the rules to select the method based on the input can be
+    incorporated here.
+
+    Returns
+    -------
+    Function object based on the rules and specified method
+    Currently implemented methods are
+    bruteforce : returns ``_bruteforce_capped``
+    PKDtree : return ``_pkdtree_capped`
+
+    """
+    methods = {'bruteforce': _bruteforce_capped,
+            'pkdtree': _pkdtree_capped}
+
+    if method is not None:
+        return methods[method]
+
+    if len(reference) > 5000 and len(configuration) > 5000:
+        if box is None and reference.shape[0] != 3 and configuration.shape[0] != 3:
+            min_dim = np.array([reference.min(axis=0),
+                               configuration.min(axis=0)])
+            max_dim = np.array([reference.max(axis=0),
+                               configuration.max(axis=0)])
+            size = max_dim.max(axis=0) - min_dim.min(axis=0)
+        elif box is not None:
+            if box.shape[0] == 6:
+                size = box[:3]
+            else:
+                size = box.max(axis=0) - box.min(axis=0)
+
+        if (np.any(size < 10.0*max_cutoff) and
+                   len(reference) > 100000 and
+                   len(configuration) > 100000):
+            return methods['bruteforce']
+        else:
+            return methods['pkdtree']
+    return methods['bruteforce']
+
+
+def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None, box=None):
+    """
+    Using naive distance calulations, returns a list
+    containing the indices with one from each
+    reference and configuration arrays, such that the distance between
+    them is less than the specified cutoff distance
+    """
+    pairs, distance = [], []
+
+    reference = np.asarray(reference, dtype=np.float32)
+    configuration = np.asarray(configuration, dtype=np.float32)
+
+    if reference.shape == (3, ):
+        reference = reference[None, :]
+    if configuration.shape == (3, ):
+        configuration = configuration[None, :]
+
+    _check_array(reference, 'reference')
+    _check_array(configuration, 'configuration')
+
+    for i, coords in enumerate(reference):
+        dist = distance_array(coords[None, :], configuration, box=box)[0]
+        if min_cutoff is not None:
+            idx = np.where((dist <= max_cutoff) & (dist > min_cutoff))[0]
+        else:
+            idx = np.where((dist <= max_cutoff))[0]
+        for j in idx:
+            pairs.append((i, j))
+            distance.append(dist[j])
+    return pairs, distance
+
+
+def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None, box=None):
+    """ Capped Distance evaluations using KDtree.
+
+    Uses minimum image convention if *box* is specified
+
+    Returns:
+    --------
+    pairs : list
+        List of atom indices which are within the specified cutoff distance.
+        pairs `(i, j)` corresponds to i-th particle in reference and
+        j-th particle in configuration
+    distance : list
+        Distance between two atoms corresponding to the (i, j) indices
+        in pairs.
+
+    """
+    from .pkdtree import PeriodicKDTree
+    from Bio.KDTree import KDTree
+
+    pairs, distances = [], []
+
+    reference = np.asarray(reference, dtype=np.float32)
+    configuration = np.asarray(configuration, dtype=np.float32)
+
+    if reference.shape == (3, ):
+        reference = reference[None, :]
+    if configuration.shape == (3, ):
+        configuration = configuration[None, :]
+
+    _check_array(reference, 'reference')
+    _check_array(configuration, 'configuration')
+
+    # Build The KDTree
+    if box is not None:
+        kdtree = PeriodicKDTree(box, bucket_size=10)
+    else:
+        kdtree = KDTree(dim=3, bucket_size=10)
+
+    kdtree.set_coords(configuration)
+    # Search for every query point
+    for idx, centers in enumerate(reference):
+        kdtree.search(centers, max_cutoff)
+        indices = kdtree.get_indices()
+        dist = distance_array(centers.reshape((1, 3)),
+                              configuration[indices], box=box)[0]
+        if min_cutoff is not None:
+            mask = np.where(dist > min_cutoff)[0]
+            dist = dist[mask]
+            indices = [indices[mask[i]] for i in range(len(mask))]
+        if len(indices) != 0:
+            for num, j in enumerate(indices):
+                pairs.append((idx, j))
+                distances.append(dist[num])
+    return pairs, distances
+
+
 def transform_RtoS(inputcoords, box, backend="serial"):
     """Transform an array of coordinates from real space to S space (aka lambda space)
 
@@ -400,13 +616,14 @@ def transform_RtoS(inputcoords, box, backend="serial"):
     Parameters
     ----------
     inputcoords : array
-        A (3,) coordinate or (n x 3) array of coordinates, type ``np.float32``.
+        A (3,) coordinate or (n x 3) array of coordinates (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
     box : array
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
         by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,
         ly, lz, alpha, beta, gamma]``.
-    backend
+    backend : str, optional
         Select the type of acceleration; "serial" is always available. Other
         possibilities are "OpenMP" (OpenMP).
 
@@ -415,10 +632,13 @@ def transform_RtoS(inputcoords, box, backend="serial"):
     outcoords : array
         A n x 3 array of fractional coordiantes.
 
+
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    coords = inputcoords.copy('C')
+    coords = inputcoords.astype(np.float32, order='C', copy=True)
 
     is_1d = False  # True if only one vector coordinate
     if len(coords.shape) == 1:
@@ -459,27 +679,29 @@ def transform_StoR(inputcoords, box, backend="serial"):
     Parameters
     ----------
     inputcoords : array
-        A (3,) coordinate or (n x 3) array of coordinates, type ``np.float32``.
+        A (3,) coordinate or (n x 3) array of coordinates (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
     box : array
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
         by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,
         ly, lz, alpha, beta, gamma]``.
-    backend
+    backend : str, optional
         Select the type of acceleration; "serial" is always available. Other
         possibilities are "OpenMP" (OpenMP).
 
     Returns
     -------
     outcoords : array
-        A n x 3 array of fracional coordiantes.
+        A n x 3 array of fractional coordiantes.
 
 
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    _check_array_dtype(inputcoords, 'S')
-    coords = inputcoords.copy('C')
+    coords = inputcoords.astype(np.float32, order='C', copy=True)
 
     is_1d = False  # True if only one vector coordinate
     if len(coords.shape) == 1:
@@ -527,9 +749,11 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     Parameters
     ----------
     coords1 : array
-        An array of coordinates for one half of the bond.
+        An array of coordinates for one half of the bond (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
     coords2 : array
-        An array of coordinates for the other half of bond
+        An array of coordinates for the other half of bond (``dtype`` is
+        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
     box : array
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
@@ -539,7 +763,7 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
         Preallocated result array which must be same length as coord
         arrays and ``dtype=numpy.float64``. Avoids creating the
         array which saves time when the function is called repeatedly. [None]
-    backend
+    backend : str
         Select the type of acceleration; "serial" is always available. Other
         possibilities are "OpenMP" (OpenMP).
 
@@ -552,9 +776,11 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     .. versionadded:: 0.8
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    atom1 = coords1.copy('C')
-    atom2 = coords2.copy('C')
+    atom1 = coords1.astype(np.float32, order='C', copy=True)
+    atom2 = coords2.astype(np.float32, order='C', copy=True)
 
     _check_array(atom1, 'atom1')
     _check_array(atom2, 'atom2')
@@ -611,29 +837,32 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="seria
 
     Parameters
     ----------
-    coords1 : array
-        Coordinate array of one side of angles.
-    coords2 : array
-        Coordinate array of apex of angles.
-    coords3 : array
-        Coordinate array of other side of angles.
-    box : array
+    coords1 : numpy.ndarray
+        Coordinate array of one side of angles (``dtype`` is arbitrary, will be
+        converted to ``dtype=numpy.float32`` internally)
+    coords2 : numpy.ndarray
+        Coordinate array of apex of angles (``dtype`` is arbitrary, will be
+        converted to ``dtype=numpy.float32`` internally)
+    coords3 : numpy.ndarray
+        Coordinate array of other side of angles (``dtype`` is arbitrary, will be
+        converted to ``dtype=numpy.float32`` internally)
+    box : numpy.ndarray, optional
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
         by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,
         ly, lz, alpha, beta, gamma]``.
-    result : array, optional
+    result : numpy.ndarray, optional
         Preallocated result array which must be same length as coord
         arrays and ``dtype=numpy.float64``. Avoids creating the
         array which saves time when the function is called repeatedly. [None]
-    backend
+    backend : str
         Select the type of acceleration; "serial" is always available. Other
         possibilities are "OpenMP" (OpenMP).
 
     Returns
     -------
-    angles : array
-        A numpy.array of angles in radians.
+    angles : numpy.ndarray
+        An array of angles in radians.
 
 
     .. versionadded:: 0.8
@@ -641,10 +870,12 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="seria
        Added optional box argument to account for periodic boundaries in calculation
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    atom1 = coords1.copy('C')
-    atom2 = coords2.copy('C')
-    atom3 = coords3.copy('C')
+    atom1 = coords1.astype(np.float32, order='C', copy=True)
+    atom2 = coords2.astype(np.float32, order='C', copy=True)
+    atom3 = coords3.astype(np.float32, order='C', copy=True)
     numatom = atom1.shape[0]
 
     _check_array(atom1, 'coords1')
@@ -711,13 +942,17 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     Parameters
     ----------
     coords1 : array
-        Coordinate array of 1st atom in dihedrals.
+        Coordinate array of 1st atom in dihedrals (``dtype`` is arbitrary, will
+        be converted to ``dtype=numpy.float32`` internally)
     coords2 : array
-        Coordinate array of 2nd atom in dihedrals.
+        Coordinate array of 2nd atom in dihedrals (``dtype`` is arbitrary, will
+        be converted to ``dtype=numpy.float32`` internally)
     coords3 : array
-        Coordinate array of 3rd atom in dihedrals.
+        Coordinate array of 3rd atom in dihedrals (``dtype`` is arbitrary, will
+        be converted to ``dtype=numpy.float32`` internally)
     coords4 : array
-        Coordinate array of 4th atom in dihedrals.
+        Coordinate array of 4th atom in dihedrals (``dtype`` is arbitrary, will
+        be converted to ``dtype=numpy.float32`` internally)
     box : array
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
@@ -727,7 +962,7 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
         Preallocated result array which must be same length as coord
         arrays and ``dtype=numpy.float64``. Avoids creating the
         array which saves time when the function is called repeatedly. [None]
-    backend
+    backend : str
         Select the type of acceleration; "serial" is always available. Other
         possibilities are "OpenMP" (OpenMP).
 
@@ -744,11 +979,13 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
        Renamed from calc_torsions to calc_dihedrals
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    atom1 = coords1.copy('C')
-    atom2 = coords2.copy('C')
-    atom3 = coords3.copy('C')
-    atom4 = coords4.copy('C')
+    atom1 = coords1.astype(np.float32, order='C', copy=True)
+    atom2 = coords2.astype(np.float32, order='C', copy=True)
+    atom3 = coords3.astype(np.float32, order='C', copy=True)
+    atom4 = coords4.astype(np.float32, order='C', copy=True)
 
     _check_array(atom1, 'atom1')
     _check_array(atom2, 'atom2')
@@ -796,21 +1033,22 @@ def apply_PBC(incoords, box, backend="serial"):
 
     Parameters
     ----------
-    coords : array
-        Coordinate array (of type numpy.float32).
+    incoords : numpy.ndarray
+        Coordinate array of shape ``(n, 3)`` (``dtype`` is arbitrary, will be
+        converted to ``dtype=numpy.float32`` internally)
     box : array
         The unitcell dimesions for this system; can be either orthogonal or
         triclinic information. The dimensions must be provided in the same
         format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx, ly, lz,
         alpha, beta, gamma]``.
-    backend
-        Select the type of acceleration; "serial" is always available. Other
-        possibilities are "OpenMP" (OpenMP).
+    backend : str
+        Select the type of acceleration; ``"serial"`` is always available. Other
+        possibilities are ``"OpenMP"`` (OpenMP).
 
     Returns
     -------
-    newcoords : array
+    newcoords : numpy.ndarray(dtype=numpy.float32)
         Coordinates that are now all within the primary unit cell, as defined
         by box.
 
@@ -818,8 +1056,10 @@ def apply_PBC(incoords, box, backend="serial"):
     .. versionadded:: 0.8
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
+    .. versionchanged:: 0.19.0
+       Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    coords = incoords.copy('C')
+    coords = incoords.astype(np.float32, order='C', copy=True)
 
     _check_array(coords, 'coords')
 
@@ -850,3 +1090,53 @@ def apply_PBC(incoords, box, backend="serial"):
                backend=backend)
 
     return coords
+
+
+def calc_distance(a, b, box=None):
+    """Distance between a and b
+
+    Parameters
+    ----------
+    a, b : numpy.ndarray
+        single coordinate vectors
+    box : numpy.ndarray, optional
+        simulation box, if given periodic boundary conditions will be applied
+
+
+    .. versionadded:: 0.18.1
+    """
+    return calc_bonds(a[None, :], b[None, :], box=box)[0]
+
+
+def calc_angle(a, b, c, box=None):
+    """Angle (in degrees) between a, b and c, where b is apex of angle
+
+    Parameters
+    ----------
+    a, b, c : numpy.ndarray
+        single coordinate vectors
+    box : numpy.ndarray
+        simulation box if given periodic boundary conditions will be applied to
+        the vectors between atoms
+
+
+    .. versionadded:: 0.18.1
+    """
+    return np.rad2deg(calc_angles(a[None, :], b[None, :], c[None, :], box=box)[0])
+
+
+def calc_dihedral(a, b, c, d, box=None):
+    """Dihedral angle (in degrees) between planes (a, b, c) and (b, c, d)
+
+    Parameters
+    ----------
+    a, b, c, d : numpy.ndarray
+        single coordinate vectors
+    box : numpy.ndarray, optional
+        simulation box, if given periodic boundary conditions will be applied
+
+
+    .. versionadded:: 0.18.1
+    """
+    return np.rad2deg(
+        calc_dihedrals(a[None, :], b[None, :], c[None, :], d[None, :], box)[0])

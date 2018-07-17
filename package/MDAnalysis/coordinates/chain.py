@@ -56,12 +56,123 @@ from . import base
 from . import core
 
 
+def multi_level_argsort(l):
+    """Return indices to sort a multi value tuple. Sorting is done on the first
+    value of the tuple.
+
+
+    Parameters
+    ----------
+    l : list
+
+    Returns
+    -------
+    indices
+
+    Example
+    -------
+    >>> multi_level_argsort(((0, 2), (4, 9), (0, 4), (7, 9)))
+    [0, 2, 1, 3]
+
+    """
+    return [el[0] for el in sorted(enumerate(l), key=lambda x: x[1][0])]
+
+
+def filter_times(times, dt):
+    """Given a list of start and end times this function filters out any duplicate
+    time steps preferring the last tuple.
+
+    Parameters
+    ----------
+    times : list
+        sorted list of times
+    dt : float
+        timestep between two frames
+
+    Returns
+    -------
+    list:
+        indices of times to be used with overlaps removed
+
+    Example
+    -------
+    >>> filter_times(((0, 3), (0, 3)))
+    [1, ]
+    >>> filter_times(((0, 3), (0, 4)))
+    [1, ]
+    >>> filter_times(((0, 3), (3, 4)))
+    [0, 1]
+    >>> filter_times(((0, 3), (2, 5), (4, 9)))
+    [1, 2, 3]
+
+    """
+    # Special cases
+    if len(times) == 1:
+        return [0, ]
+    elif len(times) == 2:
+        if times[0][0] < times[1][0]:
+            return [0, 1]
+        elif np.allclose(times[0][0], times[1][0]):
+            return [1, ]
+        else:
+            return [0, ]
+    if np.unique(times).size == 2:
+        return [len(times) - 1, ]
+
+    # more then 2 unique time entries
+
+    used_idx = [0, ]
+
+    for i, (first, middle, last) in enumerate(zip(times[:-2], times[1:-1], times[2:]), start=1):
+        if np.allclose(first[0], middle[0]):
+            used_idx[-1] = i
+        elif not np.allclose(middle[1] - middle[0], dt):
+            if (middle[0] <= first[1]) and (last[0] <= middle[1]):
+                used_idx.append(i)
+        elif (middle[0] <= first[1]):
+            used_idx.append(i)
+
+    # take care of first special case
+    if times[-2][1] <= times[-1][1]:
+        used_idx.append(len(times) - 1)
+
+    return used_idx
+
+
 class ChainReader(base.ProtoReader):
     """Reader that concatenates multiple trajectories on the fly.
 
     The :class:`ChainReader` is used by MDAnalysis internally to
     represent multiple trajectories as one virtual trajectory. Users
     typically do not need to use the :class:`ChainReader` explicitly.
+
+    Chainreader can also handle a continuous trajectory split over several
+    files. To use this pass the ``continuous == True`` keyword argument.
+    Setting ``continuous=True`` will make the reader choose frames from the set
+    of trajectories in such a way that the trajectory appears to be as
+    continuous in time as possible, i.e. that time is strictly monotonically
+    increasing. This means that there will be no duplicate time frames and no
+    jumps backwards in time. However, there can be gaps in time (e.g., multiple
+    time steps can appear to be missing). Ultimately, it is the user's
+    responsibility to ensure that the input trajectories can be virtually
+    stitched together in a meaningful manner. As an example take the following
+    trajectory that is split into three parts. The column represents the time
+    and the trajectory segments overlap. With the continuous chainreader only
+    the frames marked with a + will be read.
+
+    ::
+
+        part01:  ++++--
+        part02:      ++++++-
+        part03:            ++++++++
+
+    .. warning::
+
+        The order in which trajectories are given to the chainreader can change
+        what frames are used with the continuous option.
+
+    The default chainreader will read all frames. The continuous option is
+    currently only supported for XTC and TRR files.
 
     Notes
     -----
@@ -76,77 +187,80 @@ class ChainReader(base.ProtoReader):
     .. versionchanged:: 0.13.0
        :attr:`time` now reports the time summed over each trajectory's
        frames and individual :attr:`dt`.
+    .. versionchanged:: 0.19.0
+       added ``continuous`` trajectory option
 
     """
     format = 'CHAIN'
 
-    def __init__(self, filenames, **kwargs):
+    def __init__(self, filenames, skip=1, dt=None, continuous=False, **kwargs):
         """Set up the chain reader.
 
         Parameters
         ----------
         filenames : str or list or sequence
-           file name or list of file names; the reader will open all file names
-           and provide frames in the order of trajectories from the list. Each
-           trajectory must contain the same number of atoms in the same order
-           (i.e. they all must belong to the same topology). The trajectory
-           format is deduced from the extension of each file name.
+            file name or list of file names; the reader will open all file names
+            and provide frames in the order of trajectories from the list. Each
+            trajectory must contain the same number of atoms in the same order
+            (i.e. they all must belong to the same topology). The trajectory
+            format is deduced from the extension of each file name.
 
-           Extension: `filenames` are either a single file name or list of file
-           names in either plain file names format or ``(filename, format)``
-           tuple combination. This allows explicit setting of the format for
-           each individual trajectory file.
+            Extension: `filenames` are either a single file name or list of file
+            names in either plain file names format or ``(filename, format)``
+            tuple combination. This allows explicit setting of the format for
+            each individual trajectory file.
         skip : int (optional)
-           skip step (also passed on to the individual trajectory readers);
-           must be same for all trajectories
+            skip step (also passed on to the individual trajectory readers);
+            must be same for all trajectories
         dt : float (optional)
-          Passed to individual trajectory readers to enforce a common time
-          difference between frames, in MDAnalysis time units. If not set, each
-          reader's `dt` will be used (either inferred from the trajectory
-          files, or set to the reader's default) when reporting frame times;
-          note that this might lead an inconsistent time difference between
-          frames.
+            Passed to individual trajectory readers to enforce a common time
+            difference between frames, in MDAnalysis time units. If not set, each
+            reader's `dt` will be used (either inferred from the trajectory
+            files, or set to the reader's default) when reporting frame times;
+            note that this might lead an inconsistent time difference between
+            frames.
+        continuous : bool (optional)
+            treat all trajectories as one single long trajectory. Adds several
+            checks; all trajectories have the same dt, they contain at least 2
+            frames, and they are all of the same file-type. Not implemented for
+            all trajectory formats! This can be used to analyze GROMACS
+            simulations without concatenating them prior to analysis.
         **kwargs : dict (optional)
-          all other keyword arguments are passed on to each trajectory reader
-          unchanged
-
-
-        .. versionchanged:: 0.8
-           The ``delta`` keyword was added.
-        .. versionchanged:: 0.13
-           The ``delta`` keyword was deprecated in favor of using ``dt``.
+            all other keyword arguments are passed on to each trajectory reader
+            unchanged
 
         """
         super(ChainReader, self).__init__()
 
-        self.filenames = asiterable(filenames)
+        filenames = asiterable(filenames)
+        # Override here because single frame readers handle this argument as a
+        # kwarg to a timestep which behaves differently if dt is present or not.
+        if dt is not None:
+            kwargs['dt'] = dt
         self.readers = [core.reader(filename, **kwargs)
-                        for filename in self.filenames]
+                        for filename in filenames]
+        self.filenames = np.array([fn[0] if isinstance(fn, tuple) else fn for fn in filenames])
         # pointer to "active" trajectory index into self.readers
         self.__active_reader_index = 0
 
-        self.skip = kwargs.get('skip', 1)
+        self.skip = skip
         self.n_atoms = self._get_same('n_atoms')
-        #self.fixed = self._get_same('fixed')
 
         # Translation between virtual frames and frames in individual
-        # trajectories.
-        # Assumes that individual trajectories i contain frames that can
-        # be addressed with an index 0 <= f < n_frames[i]
+        # trajectories. Assumes that individual trajectories i contain frames
+        # that can be addressed with an index 0 <= f < n_frames[i]
 
-        # Build a map of frames: ordered list of starting virtual
-        # frames; the index i into this list corresponds to the index
-        # into self.readers
+        # Build a map of frames: ordered list of starting virtual frames; the
+        # index i into this list corresponds to the index into self.readers
         #
         # For virtual frame 0 <= k < sum(n_frames) find corresponding
-        # trajectory i and local frame f (i.e. readers[i][f] will
-        # correspond to ChainReader[k]).
-
+        # trajectory i and local frame f (i.e. readers[i][f] will correspond to
+        # ChainReader[k]).
         # build map 'start_frames', which is used by _get_local_frame()
         n_frames = self._get('n_frames')
         # [0]: frames are 0-indexed internally
         # (see Timestep.check_slice_indices())
-        self.__start_frames = np.cumsum([0] + n_frames)
+        self._start_frames = np.cumsum([0] + n_frames)
 
         self.n_frames = np.sum(n_frames)
         self.dts = np.array(self._get('dt'))
@@ -154,6 +268,82 @@ class ChainReader(base.ProtoReader):
 
         #: source for trajectories frame (fakes trajectory)
         self.__chained_trajectories_iter = None
+
+        # calculate new start_frames to have a time continuous trajectory.
+        if continuous:
+            filetypes = np.unique([r.format for r in self.readers])
+            if not len(filetypes) == 1:
+                raise ValueError("ChainReader: continuous=true only supported"
+                                 " when all files are using the same format. "
+                                 "found {}".format(filetypes))
+            if np.any(np.array(n_frames) == 1):
+                raise RuntimeError("ChainReader: Need at least two frames in "
+                                   "every trajectory with continuous=True")
+            if filetypes[0] not in ['XTC', 'TRR']:
+                raise NotImplementedError("ChainReader: continuous=True only "
+                                          "supported for xtc and trr format")
+
+            # TODO: allow floating point precision in dt check
+            dt = self._get_same('dt')
+            n_frames = np.asarray(self._get('n_frames'))
+            self.dts = np.ones(self.dts.shape) * dt
+
+            # the sorting needs to happen on two levels. The first major level
+            # is by start times and the second is by end times.
+            # The second level of sorting is needed for cases like:
+            # [0 1 2 3 4 5 6 7 8 9] [0 1 2 4]
+            # to
+            # [0 1 2 4] [0 1 2 3 4 5 6 7 8 9]
+            # after that sort the chain reader will work
+            times = []
+            for r in self.readers:
+                r[0]
+                start = r.ts.time
+                r[-1]
+                end = r.ts.time
+                times.append((start, end))
+            # sort step
+            sort_idx = multi_level_argsort(times)
+            self.readers = [self.readers[i] for i in sort_idx]
+            self.filenames = self.filenames[sort_idx]
+            self.total_times = self.dts * n_frames[sort_idx]
+
+            # filter step: remove indices if we have complete overlap
+            if len(self.readers) > 1:
+                used_idx = filter_times(np.array(times)[sort_idx], dt)
+
+                self.readers = [self.readers[i] for i in used_idx]
+                self.filenames = self.filenames[used_idx]
+                self.total_times = self.dts[used_idx] * n_frames[used_idx]
+
+            # rebuild lookup table
+            sf = [0, ]
+            n_frames = 0
+            for r1, r2 in zip(self.readers[:-1], self.readers[1:]):
+                r2[0], r1[0]
+                r1_start_time = r1.time
+                start_time = r2.time
+                r1[-1]
+                if r1.time < start_time:
+                    warnings.warn("Missing frame in continuous chain", UserWarning)
+
+                # check for interleaving
+                r1[1]
+                if r1_start_time < start_time < r1.time:
+                    raise RuntimeError("ChainReader: Interleaving not supported with continuous=True.")
+
+                # find end where trajectory was restarted from
+                for ts in r1[::-1]:
+                    if ts.time < start_time:
+                        break
+                sf.append(sf[-1] + ts.frame + 1)
+                n_frames += ts.frame + 1
+
+            n_frames += self.readers[-1].n_frames
+
+            self._start_frames = sf
+            self.n_frames = n_frames
+            self._sf = sf
 
         # make sure that iteration always yields frame 0
         # rewind() also sets self.ts
@@ -174,8 +364,11 @@ class ChainReader(base.ProtoReader):
 
         Returns
         -------
-        (i, f) : tuple
-            **local frame** tuple
+        i : int
+            trajectory
+        f : int
+            frame in trajectory i
+
 
         Raises
         ------
@@ -191,11 +384,11 @@ class ChainReader(base.ProtoReader):
         if k < 0:
             raise IndexError("Virtual (chained) frames must be >= 0")
         # trajectory index i
-        i = bisect.bisect_right(self.__start_frames, k) - 1
+        i = bisect.bisect_right(self._start_frames, k) - 1
         if i < 0:
             raise IndexError("Cannot find trajectory for virtual frame {0:d}".format(k))
         # local frame index f in trajectory i (frame indices are 0-based)
-        f = k - self.__start_frames[i]
+        f = k - self._start_frames[i]
         return i, f
 
     # methods that can change with the current reader
@@ -299,8 +492,8 @@ class ChainReader(base.ProtoReader):
         """
         values = np.array(self._get(attr))
         value = values[0]
-        if not np.all(values == value):
-            bad_traj = np.array([self._get_filename(fn) for fn in self.filenames])[values != value]
+        if not np.allclose(values, value):
+            bad_traj = np.array(self.filenames)[values != value]
             raise ValueError("The following trajectories do not have the correct {0} "
                              " ({1}):\n{2}".format(attr, value, bad_traj))
         return value
@@ -347,14 +540,12 @@ class ChainReader(base.ProtoReader):
     def _chained_iterator(self):
         """Iterator that presents itself as a chained trajectory."""
         self._rewind()  # must rewind all readers
-        readers = itertools.chain(*self.readers)
-        for frame, ts in enumerate(readers):
-            ts.frame = frame  # fake continuous frames, 0-based
-            self.ts = ts
-            # make sure that the active reader is in sync
-            i, f = self._get_local_frame(frame)  # uses 0-based frames!
-            self.__activate_reader(i)
-            yield ts
+        for i in range(self.n_frames):
+            j, f = self._get_local_frame(i)
+            self.__activate_reader(j)
+            self.ts = self.active_reader[f]
+            self.ts.frame = i
+            yield self.ts
 
     def _read_next_timestep(self, ts=None):
         self.ts = next(self.__chained_trajectories_iter)
@@ -383,43 +574,37 @@ class ChainReader(base.ProtoReader):
         for ts in self.__chained_trajectories_iter:
             yield ts
 
-    @staticmethod
-    def _get_filename(filename):
-        """retrieve the actual filename of the list element"""
-        return filename[0] if isinstance(filename, tuple) else filename
-
     def __repr__(self):
         return ("<{clsname} {fname} with {nframes} frames of {natoms} atoms>"
                 "".format(
                     clsname=self.__class__.__name__,
-                    fname=[os.path.basename(self._get_filename(fn))
-                           for fn in self.filenames],
+                    fname=[os.path.basename(fn) for fn in self.filenames],
                     nframes=self.n_frames,
                     natoms=self.n_atoms))
 
     def add_transformations(self, *transformations):
         """ Add all transformations to be applied to the trajectory.
-        
+
         This function take as list of transformations as an argument. These
         transformations are functions that will be called by the Reader and given
         a :class:`Timestep` object as argument, which will be transformed and returned
         to the Reader.
-        The transformations can be part of the :mod:`~MDAnalysis.transformations` 
-        module, or created by the user, and are stored as a list `transformations`. 
+        The transformations can be part of the :mod:`~MDAnalysis.transformations`
+        module, or created by the user, and are stored as a list `transformations`.
         This list can only be modified once, and further calls of this function will
         raise an exception.
-        
+
         .. code-block:: python
-                         
+
           u = MDAnalysis.Universe(topology, coordinates)
           workflow = [some_transform, another_transform, this_transform]
           u.trajectory.add_transformations(*workflow)
-        
+
         Parameters
         ----------
         transform_list : list
             list of all the transformations that will be applied to the coordinates
-            
+
         See Also
         --------
         :mod:`MDAnalysis.transformations`
@@ -428,7 +613,7 @@ class ChainReader(base.ProtoReader):
         #to avoid unintended behaviour where the coordinates of each frame are transformed
         #multiple times when iterating over the trajectory.
         #In this method, the trajectory is modified all at once and once only.
-        
+
         super(ChainReader, self).add_transformations(*transformations)
         for r in self.readers:
             r.add_transformations(*transformations)
@@ -437,5 +622,5 @@ class ChainReader(base.ProtoReader):
         """ Applies the transformations to the timestep."""
         # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
         # to avoid applying the same transformations multiple times on each frame
-        
+
         return ts

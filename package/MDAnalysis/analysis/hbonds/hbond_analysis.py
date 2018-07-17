@@ -83,9 +83,8 @@ indicates comments that are not part of the output.)::
 
 Using the :meth:`HydrogenBondAnalysis.generate_table` method one can reformat
 the results as a flat "normalised" table that is easier to import into a
-database or dataframe for further processing.
-:meth:`HydrogenBondAnalysis.save_table` saves the table to a pickled file. The
-table itself is a :class:`numpy.recarray`.
+database or dataframe for further processing. The table itself is a
+:class:`numpy.recarray`.
 
 .. _Detection-of-hydrogen-bonds:
 
@@ -320,15 +319,17 @@ from __future__ import division, absolute_import
 import six
 from six.moves import range, zip, map, cPickle
 
-from collections import defaultdict
-import numpy as np
 import warnings
 import logging
+from collections import defaultdict
+
+import numpy as np
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
-from MDAnalysis.lib.distances import calc_bonds, calc_angles
+from MDAnalysis.lib import distances
+from MDAnalysis.lib.util import deprecate
 
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
@@ -806,7 +807,7 @@ class HydrogenBondAnalysis(object):
             hydrogens = [
                 a for a in self.u.atoms[atom.index + 1:atom.index + 4]
                 if (a.name.startswith(('H', '1H', '2H', '3H')) and
-                    self.calc_eucl_distance(atom, a, box) < self.r_cov[atom.name[0]])
+                    distances.calc_distance(atom.position, a.position, box) < self.r_cov[atom.name[0]])
                 ]
         except IndexError:
             hydrogens = []  # weird corner case that atom is the last one in universe
@@ -992,9 +993,10 @@ class HydrogenBondAnalysis(object):
                     for h in donor_h_set:
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
-                            angle = self.calc_angle(d, h, a, box=box)
+                            angle = distances.calc_angle(d.position, h.position,
+                                                         a.position, box=box)
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = self.calc_eucl_distance(donor_atom, a, box)
+                            dist = distances.calc_distance(donor_atom.position, a.position, box)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
                                     "S1-D: {0!s} <-> S2-A: {1!s} {2:f} A, {3:f} DEG".format(h.index, a.index, dist, angle))
@@ -1017,9 +1019,10 @@ class HydrogenBondAnalysis(object):
                                     (h.index, a.index) in already_found or
                                     (a.index, h.index) in already_found):
                                 continue
-                            angle = self.calc_angle(d, h, a, box=box)
+                            angle = distances.calc_angle(d.position, h.position,
+                                                         a.position, box=box)
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = self.calc_eucl_distance(donor_atom, a, box)
+                            dist = distances.calc_distance(donor_atom.position, a.position, box)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
                                     "S1-A: {0!s} <-> S2-D: {1!s} {2:f} A, {3:f} DEG".format(a.index, h.index, dist, angle))
@@ -1033,21 +1036,6 @@ class HydrogenBondAnalysis(object):
 
         logger.info("HBond analysis: complete; timeseries  %s.timeseries",
                     self.__class__.__name__)
-
-    @staticmethod
-    def calc_angle(d, h, a, box=None):
-        """Calculate the angle (in degrees) between two atoms with H at apex."""
-        v1= d.position
-        v2= h.position
-        v3= a.position
-        angle= calc_angles(v1[None, :], v2[None, :], v3[None, :], box=box)
-    
-        return np.rad2deg(angle[0])
-
-    @staticmethod
-    def calc_eucl_distance(a1, a2, box=None):
-        """Calculate the Euclidean distance between two atoms. """
-        return calc_bonds(a1.position[None, :], a2.position[None, :], box=box)[0]
 
     @property
     def timeseries(self):
@@ -1181,6 +1169,9 @@ class HydrogenBondAnalysis(object):
         self.table = out.view(np.recarray)
         logger.debug("HBond: Stored results as table with %(num_records)d entries.", vars())
 
+    @deprecate(release="0.19.0", remove="1.0.0",
+               message="You can instead use ``np.save(filename, "
+               "HydrogendBondAnalysis.table)``.")
     def save_table(self, filename="hbond_table.pickle"):
         """Saves :attr:`~HydrogenBondAnalysis.table` to a pickled file.
 

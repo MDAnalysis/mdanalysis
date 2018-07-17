@@ -191,19 +191,17 @@ class Bond(TopologyObject):
         else:
             raise ValueError("Unrecognised Atom")
 
-    def length(self, pbc=False):
+    def length(self, pbc=True):
         """Length of the bond.
 
         .. versionchanged:: 0.11.0
            Added pbc keyword
+        .. versionchanged:: 0.18.1
+           Changed default of pbc to True
         """
-        if pbc:
-            box = self.universe.dimensions
-            return distances.self_distance_array(
-                np.array([self[0].position, self[1].position]),
-                box=box)[0]
-        else:
-            return mdamath.norm(self[0].position - self[1].position)
+        box = self.universe.dimensions if pbc else None
+
+        return distances.calc_distance(self[0].position, self[1].position, box)
 
     value = length
 
@@ -220,7 +218,7 @@ class Angle(TopologyObject):
     """
     btype = 'angle'
 
-    def angle(self):
+    def angle(self, pbc=True):
         """Returns the angle in degrees of this Angle.
 
         Angle between atoms 0 and 2 with apex at 1::
@@ -238,10 +236,13 @@ class Angle(TopologyObject):
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.17.0
            Fixed angles close to 180 giving NaN
+        .. versionchanged:: 0.18.1
+           Added pbc keyword, default True
         """
-        a = self[0].position - self[1].position
-        b = self[2].position - self[1].position
-        return np.rad2deg(mdamath.angle(a, b))
+        box = self.universe.dimensions if pbc else None
+
+        return distances.calc_angle(
+            self[0].position, self[1].position, self[2].position, box)
 
     value = angle
 
@@ -265,7 +266,7 @@ class Dihedral(TopologyObject):
     # http://cbio.bmt.tue.nl/pumma/uploads/Theory/dihedral.png
     btype = 'dihedral'
 
-    def dihedral(self):
+    def dihedral(self, pbc=True):
         """Calculate the dihedral angle in degrees.
 
         Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
@@ -284,12 +285,14 @@ class Dihedral(TopologyObject):
         4 decimals (and is only tested to 3 decimals).
 
         .. versionadded:: 0.9.0
+        .. versionchanged:: 0.18.1
+           Added pbc keyword, default True
         """
+        box = self.universe.dimensions if pbc else None
         A, B, C, D = self.atoms
-        ab = A.position - B.position
-        bc = B.position - C.position
-        cd = C.position - D.position
-        return np.rad2deg(mdamath.dihedral(ab, bc, cd))
+
+        return distances.calc_dihedral(
+            A.position, B.position, C.position, D.position, box)
 
     value = dihedral
 
@@ -463,6 +466,9 @@ class TopologyDict(object):
         return other in self.dict or other[::-1] in self.dict
 
 
+_BTYPE_TO_SHAPE = {'bond': 2, 'angle': 3, 'dihedral': 4, 'improper': 4}
+
+
 class TopologyGroup(object):
 
     """A container for a groups of bonds.
@@ -512,9 +518,10 @@ class TopologyGroup(object):
     .. versionchanged:: 0.11.0
        Added `values` method to return the size of each object in this group
        Deprecated selectBonds method in favour of select_bonds
+    .. versionchanged:: 0.18.1
+       Empty TopologyGroup now returns correctly shaped empty array via
+       indices property and to_indices()
     """
-    _allowed_types = {'bond', 'angle', 'dihedral', 'improper'}
-
     def __init__(self, bondidx, universe, btype=None, type=None, guessed=None,
                  order=None):
         if btype is None:
@@ -524,11 +531,11 @@ class TopologyGroup(object):
             self.btype = {2: 'bond',
                           3: 'angle',
                           4: 'dihedral'}[len(bondidx[0])]
-        elif btype in self._allowed_types:
+        elif btype in _BTYPE_TO_SHAPE:
             self.btype = btype
         else:
-            raise ValueError("Unsupported btype, use one of {}"
-                             "".format(self._allowed_types))
+            raise ValueError("Unsupported btype, use one of '{}'"
+                             "".format(', '.join(_BTYPE_TO_SHAPE)))
 
         nbonds = len(bondidx)
         # remove duplicate bonds
@@ -542,12 +549,6 @@ class TopologyGroup(object):
             guessed = np.asarray(guessed, dtype=np.bool).reshape(nbonds, 1)
         if order is None:
             order = np.repeat(None, nbonds).reshape(nbonds, 1)
-
-        # TODO: why has this been defined?
-        split_index = {'bond': 2,
-                       'angle': 3,
-                       'dihedral': 4,
-                       'improper': 4}[self.btype]
 
         if nbonds > 0:
             uniq, uniq_idx = util.unique_rows(bondidx, return_index=True)
@@ -652,7 +653,12 @@ class TopologyGroup(object):
         --------
         to_indices : function that just returns `indices`
         """
-        return self._bix
+        if not self:
+            # empty TG
+            shape = _BTYPE_TO_SHAPE[self.btype]
+            return np.zeros((0, shape), dtype=np.int32)
+        else:
+            return self._bix
 
     def to_indices(self):
         """Return a data structure with atom indices describing the bonds.
@@ -804,10 +810,7 @@ class TopologyGroup(object):
         try:
             return self._ags[2]
         except IndexError:
-            nvert = {'bond': 2,
-                     'angle': 3,
-                     'dihedral': 4,
-                     'improper': 4}[self.btype]
+            nvert = _BTYPE_TO_SHAPE[self.btype]
             raise IndexError("TopologyGroup of {}s only has {} vertical AtomGroups"
                              "".format(self.btype, nvert))
 
@@ -817,10 +820,7 @@ class TopologyGroup(object):
         try:
             return self._ags[3]
         except IndexError:
-            nvert = {'bond': 2,
-                     'angle': 3,
-                     'dihedral': 4,
-                     'improper': 4}[self.btype]
+            nvert = _BTYPE_TO_SHAPE[self.btype]
             raise IndexError("TopologyGroup of {}s only has {} vertical AtomGroups"
                              "".format(self.btype, nvert))
 
