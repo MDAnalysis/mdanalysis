@@ -563,7 +563,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             are passed through as they are.
     padding : float (optional)
             increase histogram dimensions by padding (on top of initial box size)
-            in Angstroem. Note: Padding is ignored when setting a user defined grid [2.0]
+            in Angstroem. Padding is ignored when setting a user defined grid. [2.0]
     soluteselection : str (optional)
             MDAnalysis selection for the solute, e.g. "protein" [``None``]
     cutoff : float (optional)
@@ -586,8 +586,8 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
            Show status update every `interval` frame [1]
     parameters : dict (optional)
             `dict` with some special parameters for :class:`Density` (see docs)
-    gridcenter : np.array float (option)
-            User defined grid center (x,y,z: numpy array float 32) in Angstroem 
+    gridcenter : np.array float (optional)
+            User defined grid center (x,y,z: numpy array float 32) in Angstroem [None]
     xdim : float (optional - ignored if gridcenter is None)
             User defined x dimension edge in Angstroem [2.0]
     ydim : float (optional - ignored if gridcenter is None)
@@ -639,7 +639,28 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     (Using the special case for the bulk with `soluteselection` and `cutoff`
     improves performance over the simple `update_selection` approach.)
 
-    If you are interested in setting a grid box
+    If you are interested in explicitly setting a grid box of a given edge size
+    and origin, you can use the gridcenter and x/y/zdim arguments. For example
+    to plot the density of waters within 3 Å of a ligand (in this case the ligand
+    has been assigned the residue name "LIG") in a cubic grid with 20 Å edges
+    which is centered on the centre of mass (COM) of the ligand::
+
+      # Create a selection based on the ligand
+      ligand_selection = universe.select_atoms("resname LIG")
+
+      # Extract the COM of the ligand
+      ligand_COM = ligand_selection.center_of_mass()
+
+      # Generate a density of waters on a cubic grid centered on the ligand COM
+      # In this case, we update the water selection as shown above.
+      water_density = density_from_Universe(universe, delta=1.0,
+                                            atomselection='name OW around 3 resname LIG',
+                                            update_selection=True,
+                                            gridcenter=COM,
+                                            xdim=20.0, ydim=20.0, zdim=20.0)
+
+     (It should be noted that the `padding` keyword is not used when a user
+      defined grid is assigned).
 
     .. versionchanged:: 0.13.0
        *update_selection* and *quiet* keywords added
@@ -691,7 +712,9 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         # check if the defined box might be too small for the selection
         smin = np.min(coord, axis=0) 
         smax = np.max(coord, axis=0)
-        # Then call the user grid function and overwrite smin/smax
+        # Then call the user grid function and overwrite smin/sma
+        # Note: a helper function is used here so that it can be reused in
+        # the density_from_PDB function (amongst other future functions).
         smin, smax = _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax)
     else:
         smin = np.min(coord, axis=0) - padding
