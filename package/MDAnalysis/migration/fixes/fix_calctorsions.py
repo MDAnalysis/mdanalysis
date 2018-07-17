@@ -30,4 +30,3 @@ class FixCalctorsions(BaseFix):
         elif 'import_name' in results.keys():
             import_name = results['import_name']
             import_name.replace(Name(' calc_dihedrals'))
-

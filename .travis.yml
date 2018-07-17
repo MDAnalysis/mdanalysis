@@ -57,7 +57,7 @@ matrix:
 
     - env: NAME="Lint"
            PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
-           MAIN_CMD="pylint --rcfile=$PYLINTRC package/MDAnalysis && pylint --rcfile=$PYLINTRC testsuite/MDAnalysisTests"
+           MAIN_CMD="pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests"
            SETUP_CMD=""
            BUILD_CMD=""
            CONDA_DEPENDENCIES=""

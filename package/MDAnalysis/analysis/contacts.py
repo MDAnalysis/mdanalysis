@@ -510,4 +510,3 @@ def q1q2(u, selection='all', radius=4.5,
                     radius=radius, method=radius_cut_q,
                     start=start, stop=stop, step=step,
                     kwargs={'radius': radius})
-

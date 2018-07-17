@@ -53,5 +53,3 @@ class SelectionWriter(base.SelectionWriterBase):
 
     def _write_head(self, out, **kwargs):
         out.write("[ {name!s} ]\n".format(**kwargs))
-
-

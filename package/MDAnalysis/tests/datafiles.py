@@ -50,4 +50,3 @@ except ImportError:
     print("and download and install the `MDAnalysisTests-x.y.z.tar.gz'")
     print("that matches your MDAnalysis release.")
     raise ImportError("MDAnalysisTests package not installed.")
-

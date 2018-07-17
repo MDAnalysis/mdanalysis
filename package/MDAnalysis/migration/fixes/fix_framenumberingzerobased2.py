@@ -36,4 +36,3 @@ class FixFramenumberingzerobased2(BaseFix):
         except KeyError:
             node.set_prefix(comment_string + node.prefix)
             node.changed()
-

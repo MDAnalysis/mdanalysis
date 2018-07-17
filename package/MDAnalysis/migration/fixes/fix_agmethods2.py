@@ -32,4 +32,3 @@ class FixAgmethods2(BaseFix):
         args = head + [pytree.Node(syms.trailer, [Dot(), Name(method_name, prefix = method.prefix), Dot(), Name('value'), LParen(), RParen()])]
         new = pytree.Node(syms.power, args)
         return new
-

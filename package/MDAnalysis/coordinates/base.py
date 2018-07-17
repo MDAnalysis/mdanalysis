@@ -1558,7 +1558,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
     def _read_frame_with_aux(self, frame):
         """Move to *frame*, updating ts with trajectory, transformations and auxiliary data."""
-        ts = self._read_frame(frame)
+        ts = self._read_frame(frame)  # pylint: disable=assignment-from-no-return
         for aux in self.aux_list:
             ts = self._auxs[aux].update_ts(ts)
             
@@ -2322,4 +2322,3 @@ class SingleFrameReaderBase(ProtoReader):
         # to avoid applying the same transformations multiple times on each frame
         
         return ts
-
