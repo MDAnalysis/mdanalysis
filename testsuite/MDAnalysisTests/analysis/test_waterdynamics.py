@@ -34,17 +34,11 @@ from numpy.testing import assert_almost_equal
 
 SELECTION1 = "byres name OH2"
 SELECTION2 = "byres name P1"
-SELECTION3 = "around 4 (resid 151 and name OE1)"
 
 
 @pytest.fixture(scope='module')
 def universe():
     return MDAnalysis.Universe(waterPSF, waterDCD)
-
-
-@pytest.fixture(scope='module')
-def universe_prot():
-    return MDAnalysis.Universe(PDB, XTC)
 
 
 def test_HydrogenBondLifetimes(universe):
@@ -91,13 +85,16 @@ def test_MeanSquareDisplacement_zeroMolecules(universe):
     assert_almost_equal(msd_zero.timeseries[1], 0.0)
 
 
-def test_SurvivalProbability_t0Ignored(universe_prot):
-    sp = waterdynamics.SurvivalProbability(universe_prot, SELECTION3, 3, 9, 4)
-    taus, timeseries = sp.run()
-    assert_almost_equal(timeseries, [0.37 , 0.282, 0.258, 0.252], decimal=3)
+def test_SurvivalProbability_t0Ignored(universe):
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        ids = [(0, ), (0, ), (7, 6, 5), (6, 5, 4), (5, 4, 3), (4, 3, 2), (3, 2, 1)]
+        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
+        sp = waterdynamics.SurvivalProbability(universe, "", 2, 6, 3)
+        taus, timeseries = sp.run()
+        assert_almost_equal(timeseries, [2 / 3.0, 1 / 3.0, 0])
 
 
-def test_SurvivalProbability_checkMockGen(universe):
+def test_SurvivalProbability_definedTaus(universe):
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
         ids = [(9, 8, 7), (8, 7, 6), (7, 6, 5), (6, 5, 4), (5, 4, 3), (4, 3, 2), (3, 2, 1)]
         select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
