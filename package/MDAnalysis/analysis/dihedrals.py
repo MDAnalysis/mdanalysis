@@ -34,6 +34,11 @@ class Ramachandran(AnalysisBase):
     in the array :attr:`Ramachandran.angles`. A axes object can be obtained
     with :meth: `Ramachandran.run().plot()`.
 
+    If the residue selection is beyond the scope of the protein, then an error
+    will be raised. If the residue selection includes the first or last residue
+    then a warning will be raised, and the final array of angles will not
+    include those residues.
+
     """
     def __init__(self, atomgroup, **kwargs):
         r"""Parameters
@@ -57,7 +62,7 @@ class Ramachandran(AnalysisBase):
         self.residues = self.atomgroup.residues
         res_min = np.min(self.atomgroup.universe.select_atoms("protein").residues)
         res_max = np.max(self.atomgroup.universe.select_atoms("protein").residues)
-        if any([residue > res_max for residue in self.residues]):
+        if any([(residue < res_min or residue > res_max) for residue in self.residues]):
             raise IndexError("Selection exceeds protein length")
         elif any([residue == (res_min or res_max) for residue in self.residues]):
             warnings.warn("Cannot determine phi and psi angles for the first or last residues")
