@@ -85,10 +85,10 @@ def test_MeanSquareDisplacement_zeroMolecules(universe):
     assert_almost_equal(msd_zero.timeseries[1], 0.0)
 
 
-def test_SurvivalProbability_t0Ignored(universe):
+def test_SurvivalProbability_t0tf(universe):
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
-        ids = [(0, ), (0, ), (7, 6, 5), (6, 5, 4), (5, 4, 3), (4, 3, 2), (3, 2, 1)]
-        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
+        ids = [(0, ), (0, ), (7, 6, 5), (6, 5, 4), (5, 4, 3), (4, 3, 2), (3, 2, 1), (0, )]
+        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop(2))   # atom IDs fed set by set
         sp = waterdynamics.SurvivalProbability(universe, "", 2, 6, 3)
         taus, timeseries = sp.run()
         assert_almost_equal(timeseries, [2 / 3.0, 1 / 3.0, 0])
