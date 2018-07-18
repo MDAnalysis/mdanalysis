@@ -23,9 +23,9 @@
 #
 #
 
-#cython: cdivision=True
-#cython: boundscheck=False
-#cython: initializedcheck=False
+# cython: cdivision=True
+# cython: boundscheck=False
+# cython: initializedcheck=False
 
 """
 Neighbor search library --- :mod:`MDAnalysis.lib.grid`
@@ -92,7 +92,6 @@ cdef void rvec_clear(rvec a) nogil:
     a[XX]=0.0
     a[YY]=0.0
     a[ZZ]=0.0
-
 
 cdef struct cPBCBox_t:
     matrix     box
