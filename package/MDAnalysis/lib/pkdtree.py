@@ -425,6 +425,6 @@ class Periodic_cKDTree(object):
             pairs = np.sort(pairs, axis=1)
             unique_pairs = [tuple(x) for x in pairs]
             unique_pairs = sorted(set(unique_pairs),
-                                  key=lambda x: unique_pairs.index(x))
+                                  key=lambda x: x[0])
             pairs = np.asarray(unique_pairs, dtype=np.int64)
         return pairs
