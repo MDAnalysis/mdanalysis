@@ -24,6 +24,7 @@
 import cython
 import numpy as np
 from .mdamath import triclinic_vectors
+cimport numpy as np
 
 from libcpp.vector cimport vector
 from libc.math cimport sqrt
@@ -37,22 +38,29 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
     """Calculates the relevant images of particles which are within a
     distance 'r' from the box walls
 
-    Only the relevant images are generated i.e. for every set of
-    coordinates close to the box boundary,
-    corresponding images which are close to the opposite face and
-    outside the central cell are generated. If the particle
-    is close to more than one box walls,
-    images along the diagonals are also generated ::
+    The algorithm works by generating explicit periodic images of
+    interior atoms. For every atom position, its distance from
+    box walls is evaluated. The distance from any respective
+    box face is calculated using a dot product of plane normal and
+    position vector of the atom. If the distance is less than a
+    specified cutoff distance, relevant periodic images are generated
+    using the box translation vectors. For instance, an atom close to
+    `XY` plane containing origin will generate a periodic image
+    outside the central cell and close to the opposite `XY` plane
+    of the box. Similarly, if the particle is close to more than
+    one box walls, images along the diagonals are also generated ::
 
 
-                       |  x               x
-    +---------------+  |    +---------------+
-    |               |  |    |               |
-    |               |  |    |               |
-    |               |  |    |               |
-    |             o |  |  x |             o |
-    +---------------+  |    +---------------+
-                       |
+                           |  x               x
+        +---------------+  |    +---------------+
+        |               |  |    |               |
+        |               |  |    |               |
+        |               |  |    |               |
+        |             o |  |  x |             o |
+        +---------------+  |    +---------------+
+                           |
+
+
 
     Parameters
     ----------
@@ -84,7 +92,10 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
     Use `np.concatenate(coordinates, output)` to merge particle
     coordinates as well as their images.
 
-    .. SeeAlso:: :func:'MDAnalysis.lib._augment.undo_augment'
+    See Also
+    --------
+    MDAnalysis.lib._augment.undo_augment
+
 
     .. versionadded:: 0.19.0
     """
@@ -270,7 +281,7 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
                 output.push_back(coord[j] - shiftZ[j])
             indices.push_back(i)
     n = indices.size()
-    return np.asarray(output, dtype=np.float32).reshape(n, 3), np.asarray(indices, dtype=np.int32)
+    return np.asarray(output, dtype=np.float32).reshape(n, 3), np.asarray(indices, dtype=np.int64)
 
 
 @cython.boundscheck(False)
@@ -315,7 +326,7 @@ cdef float _norm(float * a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def undo_augment(int[:] results, int[:] translation, int nreal):
+def undo_augment(np.int64_t[:] results, np.int64_t[:] translation, int nreal):
     """Translate augmented indices back to original indices
 
     Parameters
@@ -339,7 +350,10 @@ def undo_augment(int[:] results, int[:] translation, int nreal):
     ----
     Modifies the results array in place
 
-    .. SeeAlso:: :func:'MDAnalysis.lib._augment.augment_coordinates'
+    See Also
+    --------
+    'MDAnalysis.lib._augment.augment_coordinates'
+
 
     .. versionadded:: 0.19.0
     """
@@ -350,4 +364,4 @@ def undo_augment(int[:] results, int[:] translation, int nreal):
     for i in range(N):
         if results[i] >= nreal:
             results[i] = translation[results[i] - nreal]
-    return np.asarray(results, dtype=np.int)
+    return np.asarray(results, dtype=np.int64)
