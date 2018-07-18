@@ -23,14 +23,12 @@
 from __future__ import print_function, absolute_import
 
 import pytest
-from numpy.testing import assert_equal, assert_allclose
+from numpy.testing import assert_equal
 import numpy as np
 
 import MDAnalysis as mda
-from MDAnalysis.lib import nsgrid
-from MDAnalysis.lib.pkdtree import PeriodicKDTree
-
 from MDAnalysisTests.datafiles import GRO
+from MDAnalysis.lib import nsgrid
 
 
 @pytest.fixture
@@ -43,7 +41,7 @@ def run_grid_search(u, ids, cutoff=3):
     coords = u.atoms.positions
 
     # Run grid search
-    searcher = grid.FastNS(u, cutoff, coords, debug=True)
+    searcher = nsgrid.FastNS(u, cutoff, coords, debug=True)
 
     return searcher.search(ids, debug=False)
 
