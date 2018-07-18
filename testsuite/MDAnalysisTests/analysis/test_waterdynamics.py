@@ -91,25 +91,25 @@ def test_MeanSquareDisplacement_zeroMolecules(universe):
     assert_almost_equal(msd_zero.timeseries[1], 0.0)
 
 
-def test_SurvivalProbability(universe_prot):
-    sp = waterdynamics.SurvivalProbability(universe_prot, SELECTION3, 0, 10, 4)
-    taus, timeseries = sp.run()
-    print (timeseries)
-    assert_almost_equal(timeseries, [1.0, 0.354, 0.267, 0.242], decimal=3)
-
-
 def test_SurvivalProbability_t0Ignored(universe_prot):
-    sp = waterdynamics.SurvivalProbability(universe_prot, SELECTION3, 3, 10, 4)
+    sp = waterdynamics.SurvivalProbability(universe_prot, SELECTION3, 3, 9, 4)
     taus, timeseries = sp.run()
-    assert_almost_equal(timeseries, [1.0, 0.391, 0.292, 0.261], decimal=3)
+    assert_almost_equal(timeseries, [0.37 , 0.282, 0.258, 0.252], decimal=3)
+
+
+def test_SurvivalProbability_checkMockGen(universe):
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        ids = [(9, 8, 7), (8, 7, 6), (7, 6, 5), (6, 5, 4), (5, 4, 3), (4, 3, 2), (3, 2, 1)]
+        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
+        sp = waterdynamics.SurvivalProbability(universe, "", 0, 6, 3)
+        taus, timeseries = sp.run()
+        assert_almost_equal(timeseries, [2 / 3.0, 1 / 3.0, 0])
 
 
 def test_SurvivalProbability_zeroMolecules(universe):
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
-        select_atoms_mock.return_value = returned_mock_atom_group = Mock()
-        # fake atom IDs - always the same
-        returned_mock_atom_group.ids = []
-
+        # no atom IDs found
+        select_atoms_mock.return_value = Mock(ids=[])
         sp = waterdynamics.SurvivalProbability(universe, "", 0, 6, 3)
         taus, timeseries = sp.run()
         assert all(np.isnan(timeseries))
@@ -117,9 +117,8 @@ def test_SurvivalProbability_zeroMolecules(universe):
 
 def test_SurvivalProbability_alwaysPresent(universe):
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
-        select_atoms_mock.return_value = returned_mock_atom_group = Mock()
-        # fake atom IDs - always the same
-        returned_mock_atom_group.ids = [7, 8, 1, 9]
+        # always the same atom IDs found
+        select_atoms_mock.return_value = Mock(ids=[7, 8, 1, 9])
 
         sp = waterdynamics.SurvivalProbability(universe, "", 0, 6, 3)
         taus, timeseries = sp.run()
