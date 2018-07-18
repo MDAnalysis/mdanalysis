@@ -383,7 +383,7 @@ def extensions(config):
                              extra_link_args=parallel_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred, cutil]
+                ap_clustering, spe_dimred, cutil, grid]
 
     cython_generated = []
     if use_cython:
