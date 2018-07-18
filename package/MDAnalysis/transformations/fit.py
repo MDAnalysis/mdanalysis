@@ -211,20 +211,30 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
             raise ValueError('{} is not a valid plane'.format(plane))
         axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
         plane = axes[plane]
-    reference, ag = align.get_matching_atoms(reference.atoms, ag.atoms)
-    weights = align.get_weights(reference.atoms, weights)
-    ref_com = reference.atoms.center(weights)
-    ref_coordinates = reference.atoms.positions - ref_com   
+    try:
+        if ag.atoms.n_residues != reference.atoms.n_residues:
+            raise ValueError("{} and {} have mismatched number of residues".format(ag,reference))
+    except AttributeError:
+        raise AttributeError("{} or {} is not valid Universe/AtomGroup".format(ag,reference))
+    ref, mobile = align.get_matching_atoms(reference.atoms, ag.atoms)
+    try:
+        weights = align.get_weights(ref.atoms, weights=weights)
+    except (ValueError, TypeError):
+        raise TypeError("weights must be {'mass', None} or an iterable of the "
+                        "same size as the atomgroup.")
+    ref_com = ref.center(weights)
+    ref_coordinates = ref.atoms.positions - ref_com   
     def wrapped(ts):
-        mobile_com = ag.atoms.center(weights)
-        mobile_coordinates = ts.positions - mobile_com
+        mobile_com = mobile.atoms.center(weights)
+        mobile_coordinates = mobile.atoms.positions - mobile_com
         rotation, dump = align.rotation_matrix(mobile_coordinates, ref_coordinates, weights=weights)
         if plane:
             euler_angs = euler_from_matrix(rotation, axes='sxyz')
             euler_angs[plane] = 0
             rotation = euler_matrix(euler_angs[0], euler_angs[1], euler_angs[2], axes='sxyz')
-        ts.positions = ts.positions + (ref_com - mobile_com)
-        ts.positions = np.dot(ts.positions, rotation)
+        ts.positions = ts.positions - mobile_com
+        ts.positions = np.dot(ts.positions, rotation.T)
+        ts.positions = ts.positions + ref_com
         
         return ts
     
