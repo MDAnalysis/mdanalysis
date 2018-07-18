@@ -81,8 +81,8 @@ def test_pbc_distances():
         pbcbox.dx(a, bad)
 
     assert_equal(pbcbox.dx(a, b), dx)
-    assert pbcbox.distance(a, b) == np.sqrt(np.sum(dx*dx))
-    assert pbcbox.distance2(a, b) == np.sum(dx*dx)
+    assert_allclose(pbcbox.distance(a, b), np.sqrt(np.sum(dx*dx)), atol=1e-5)
+    assert_allclose(pbcbox.distance2(a, b), np.sum(dx*dx), atol=1e-5)
 
 
 def test_pbc_put_in_bbox():
