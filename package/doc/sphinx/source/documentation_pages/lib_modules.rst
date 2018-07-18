@@ -36,7 +36,7 @@ functions whereas mathematical functions are to be found in
 :mod:`MDAnalysis.lib.NeighborSearch` contains classes to do neighbor
 searches with MDAnalysis objects.
 
-:mod:`MDAnalysis.lib.grid` contains a fast implementation of grid neighbor search.
+:mod:`MDAnalysis.lib.nsgrid` contains a fast implementation of grid neighbor search.
 
 List of modules
 ---------------
@@ -51,7 +51,7 @@ List of modules
    ./lib/transformations
    ./lib/qcprot
    ./lib/util
-   ./lib/grid
+   ./lib/nsgrid
 
 Low level file formats
 ----------------------
