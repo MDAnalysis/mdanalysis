@@ -43,19 +43,14 @@ DEF ZZ = 2
 
 DEF EPSILON = 1e-5
 
-DEF NEIGHBORHOOD_ALLOCATION_INCREMENT = 50
-
 DEF BOX_MARGIN=1.0010
 DEF MAX_NTRICVEC=12
 
-from libc.stdlib cimport malloc, realloc, free
+# Used to handle memory allocation
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-
 from libc.math cimport sqrt
-
 import numpy as np
 cimport numpy as np
-cimport cython
 
 ctypedef np.int_t ns_int
 ctypedef np.float32_t real
@@ -64,27 +59,8 @@ ctypedef ns_int ivec[DIM]
 ctypedef ns_int ipair[2]
 ctypedef real matrix[DIM][DIM]
 
-cdef struct ns_grid:
-    ns_int beadpercell
-    ns_int size
-    ns_int[DIM] ncells
-    real[DIM] cellsize
-    ns_int *nbeads # size
-    ns_int *beadids # size * beadpercell
-    ns_int *cellids # size
 
-cdef struct ns_neighborhood:
-    real cutoff
-    ns_int allocated_size
-    ns_int size
-    ns_int *beadids
-
-cdef struct ns_neighborhood_holder:
-    ns_int size
-    ns_neighborhood **neighborhoods
-
-# Useful stuff
-
+# Useful Functions
 cdef real rvec_norm2(const rvec a) nogil:
     return a[XX]*a[XX]+a[YY]*a[YY]+a[ZZ]*a[ZZ]
 
@@ -93,6 +69,11 @@ cdef void rvec_clear(rvec a) nogil:
     a[YY]=0.0
     a[ZZ]=0.0
 
+########################################################################################################################
+#
+# Utility class to handle PBC
+#
+########################################################################################################################
 cdef struct cPBCBox_t:
     matrix     box
     rvec       fbox_diag
@@ -186,15 +167,10 @@ cdef class PBCBox(object):
 
                             # Choose the vector within the brick around 0,0,0 that
                             # will become the shortest due to shift try.
-
-                            if d == DIM:
-                                trial[d] = 0
-                                pos[d] = 0
+                            if trial[d] < 0:
+                                pos[d] = min(self.c_pbcbox.hbox_diag[d], -trial[d])
                             else:
-                                if trial[d] < 0:
-                                    pos[d] = min(self.c_pbcbox.hbox_diag[d], -trial[d])
-                                else:
-                                    pos[d] = max(-self.c_pbcbox.hbox_diag[d], -trial[d])
+                                pos[d] = max(-self.c_pbcbox.hbox_diag[d], -trial[d])
 
                             d2old += pos[d]**2
                             d2new += (pos[d] + trial[d])**2
@@ -270,13 +246,33 @@ cdef class PBCBox(object):
                 for j in range (i, -1, -1):
                     dx[j] += self.c_pbcbox.box[i][j]
 
+    def dx(self, real[:] a, real[:] b):
+        cdef rvec dx
+        if a.shape[0] != DIM or b.shape[0] != DIM:
+            raise ValueError("Not 3 D coordinates")
+
+        self.fast_pbc_dx(&a[XX], &b[XX], dx)
+
+        return np.array([dx[XX], dx[YY], dx[ZZ]], dtype=np.float32)
+
+
     cdef real fast_distance2(self, rvec a, rvec b) nogil:
         cdef rvec dx
         self.fast_pbc_dx(a, b, dx)
         return rvec_norm2(dx)
 
+    def distance2(self, real[:] a, real[:] b):
+        if a.shape[0] != DIM or b.shape[0] != DIM:
+            raise ValueError("Not 3 D coordinates")
+        return self.fast_distance2(&a[XX], &b[XX])
+
     cdef real fast_distance(self, rvec a, rvec b) nogil:
         return sqrt(self.fast_distance2(a,b))
+
+    def distance(self, real[:] a, real[:] b):
+        if a.shape[0] != DIM or b.shape[0] != DIM:
+            raise ValueError("Not 3 D coordinates")
+        return self.fast_distance(&a[XX], &b[XX])
 
     cdef real[:, ::1]fast_put_atoms_in_bbox(self, real[:,::1] coords) nogil:
         cdef ns_int i, m, d, natoms, wd = 0
@@ -305,341 +301,20 @@ cdef class PBCBox(object):
         return bbox_coords
 
     def put_atoms_in_bbox(self, real[:,::1] coords):
-        if coords.shape[0] == 0:
-            return np.zeros((0, DIM), dtype=np.float32)
         return np.asarray(self.fast_put_atoms_in_bbox(coords))
+
 
 ########################################################################################################################
 #
 # Neighbor Search Stuff
 #
 ########################################################################################################################
-
-cdef ns_neighborhood_holder *create_neighborhood_holder() nogil:
-    cdef ns_neighborhood_holder *holder
-
-    holder = <ns_neighborhood_holder *> malloc(sizeof(ns_neighborhood_holder))
-    holder.size = 0
-    holder.neighborhoods = NULL
-
-    return holder
-
-cdef void free_neighborhood_holder(ns_neighborhood_holder *holder) nogil:
-    cdef ns_int i
-
-    if holder == NULL:
-        return
-
-    for i in range(holder.size):
-        if holder.neighborhoods[i].beadids != NULL:
-            free(holder.neighborhoods[i].beadids)
-        free(holder.neighborhoods[i])
-
-    if holder.neighborhoods != NULL:
-        free(holder.neighborhoods)
-    free(holder)
-
-cdef ns_neighborhood *retrieve_neighborhood(rvec current_coords, real[:, ::1]neighborcoords, ns_grid *grid, PBCBox box, real cutoff2) nogil:
-    cdef ns_int d, m
-    cdef ns_int xi, yi, zi, bid, i_bead
-    cdef real d2
-    cdef rvec shifted_coord, dx, neighbor_coord, corrected_coords
-
-    cdef bint already_checked[27]
-    cdef bint skip
-    cdef ns_int nchecked = 0, icheck
-    cdef ns_int cell_index
-    cdef ns_int cell_offset
-
-    cdef ns_neighborhood *neighborhood = <ns_neighborhood *> malloc(sizeof(ns_neighborhood)) 
-    if neighborhood == NULL:
-        return NULL
-
-    neighborhood.size = 0
-    neighborhood.allocated_size = NEIGHBORHOOD_ALLOCATION_INCREMENT
-    neighborhood.beadids = <ns_int *> malloc(NEIGHBORHOOD_ALLOCATION_INCREMENT * sizeof(ns_int))
-
-    if neighborhood.beadids == NULL:
-        free(neighborhood)
-        return NULL
-
-    for zi in range(3):
-        for yi in range(3):
-            for xi in range(3):
-                # Calculate and/or reinitialize shifted coordinates
-                shifted_coord[XX] = current_coords[XX] + (xi - 1) * grid.cellsize[XX]
-                shifted_coord[YY] = current_coords[YY] + (yi - 1) * grid.cellsize[YY]
-                shifted_coord[ZZ] = current_coords[ZZ] + (zi - 1) * grid.cellsize[ZZ]
-
-                # Make sure the shifted coordinates is inside the brick-shaped box
-                for m in range(DIM - 1, -1, -1):
-
-                    while shifted_coord[m] < 0:
-                        for d in range(m+1):
-                            shifted_coord[d] += box.c_pbcbox.box[m][d]
-
-
-                    while shifted_coord[m] >= box.c_pbcbox.box[m][m]:
-                        for d in range(m+1):
-                            shifted_coord[d] -= box.c_pbcbox.box[m][d]
-
-                # Get the cell index corresponding to the coord
-                cell_index = <ns_int> (shifted_coord[ZZ] / grid.cellsize[ZZ]) * (grid.ncells[XX] * grid.ncells[YY]) +\
-                             <ns_int> (shifted_coord[YY] / grid.cellsize[YY]) * grid.ncells[XX] + \
-                             <ns_int> (shifted_coord[XX] / grid.cellsize[XX])
-
-                # Just a safeguard
-                #if cell_index >= grid.size:
-                #    continue
-
-                # Check the cell index was not already selected
-                #skip = False
-                #for icheck in range(nchecked):
-                #    if already_checked[icheck] == cell_index:
-                #        skip = True
-                #        break
-                #if skip:
-                #    continue
-
-                # Search for neighbors inside this cell
-                for i_bead in range(grid.nbeads[cell_index]):
-                    cell_offset = cell_index * grid.beadpercell + i_bead
-
-                    bid = grid.beadids[cell_offset]
-
-                    box.fast_pbc_dx(current_coords, &neighborcoords[bid, XX], dx)
-
-                    d2 = rvec_norm2(dx)
-
-                    if d2 < cutoff2:
-                        if d2 < EPSILON: # Don't add the current bead as its own neighbor!
-                            continue
-
-                        # Update neighbor lists
-                        neighborhood.beadids[neighborhood.size] = bid
-                        neighborhood.size += 1
-                        
-                        if neighborhood.size >= neighborhood.allocated_size:
-                            neighborhood.allocated_size += NEIGHBORHOOD_ALLOCATION_INCREMENT
-                            neighborhood.beadids = <ns_int *> realloc(<void*> neighborhood.beadids, neighborhood.allocated_size * sizeof(ns_int))
-
-                            if neighborhood.beadids == NULL:
-                                free(neighborhood)
-                                return NULL
-
-                # Register the cell as checked
-                #already_checked[nchecked] = cell_index
-                #nchecked += 1
-
-    return neighborhood
-
-
-cdef ns_neighborhood_holder *ns_core(real[:, ::1] refcoords,
-                                     real[:, ::1] neighborcoords,
-                                     ns_grid *grid,
-                                     PBCBox box,
-                                     real cutoff) nogil:
-    cdef ns_int coordid, i, j
-    cdef ns_int ncoords = refcoords.shape[0]
-    cdef ns_int ncoords_neighbors = neighborcoords.shape[0]
-    cdef real cutoff2 = cutoff * cutoff
-    cdef ns_neighborhood_holder *holder
-
-    cdef ns_int *neighbor_buf
-    cdef ns_int buf_size, ibuf
-
-    holder = create_neighborhood_holder()
-    if holder == NULL:
-        return NULL
-
-    holder.neighborhoods = <ns_neighborhood **> malloc(sizeof(ns_neighborhood *) * ncoords)
-    if holder.neighborhoods == NULL:
-        free_neighborhood_holder(holder)
-        return NULL
-
-    # Here starts the real core and the iteration over coordinates
-    for coordid in range(ncoords):
-        holder.neighborhoods[coordid] = retrieve_neighborhood(&refcoords[coordid, XX],
-                                                              neighborcoords,
-                                                              grid,
-                                                              box,
-                                                              cutoff2)
-        if holder.neighborhoods[coordid] == NULL:
-            free_neighborhood_holder(holder)
-            return NULL
-
-        holder.neighborhoods[coordid].cutoff = cutoff
-        holder.size += 1
-
-    return holder
-
-cdef class NSResultsOld(object):
-    """
-    Class used to store results returned by `MDAnalysis.lib.grid.FastNS.search`
-    """
-    cdef PBCBox box
-    cdef readonly real cutoff
-    cdef np.ndarray grid_coords
-    cdef np.ndarray ref_coords
-    cdef ns_int **nids
-    cdef ns_int *nsizes
-    cdef ns_int size
-    cdef list indices
-    cdef list coordinates
-    cdef list distances
-
-    def __dealloc__(self):
-        if self.nids != NULL:
-            for i in range(self.size):
-                if self.nids[i] != NULL:
-                    free(self.nids[i])
-            free(self.nids)
-
-        if self.nsizes != NULL:
-            free(self.nsizes)
-
-    def __init__(self, PBCBox box, real cutoff):
-        self.box = box
-        self.cutoff = cutoff
-
-        self.size = 0
-        self.nids = NULL
-        self.nsizes = NULL
-
-        self.grid_coords = None
-        self.ref_coords = None
-
-        self.indices = None
-        self.coordinates = None
-        self.distances = None
-
-
-    cdef populate(self, ns_neighborhood_holder *holder, grid_coords, ref_coords):
-        cdef ns_int nid, i
-        cdef ns_neighborhood *neighborhood
-
-        self.grid_coords = np.asarray(grid_coords)
-        self.ref_coords = np.asarray(ref_coords)
-
-        # Allocate memory
-        self.nsizes = <ns_int *> malloc(sizeof(ns_int) * holder.size)
-        if self.nsizes == NULL:
-            raise MemoryError("Could not allocate memory for NSResults")
-
-        self.nids = <ns_int **> malloc(sizeof(ns_int *) * holder.size)
-        if self.nids == NULL:
-            raise MemoryError("Could not allocate memory for NSResults")
-
-        for nid in range(holder.size):
-            neighborhood = holder.neighborhoods[nid]
-
-            self.nsizes[nid] = neighborhood.size
-
-            self.nids[nid] = <ns_int *> malloc(sizeof(ns_int *) * neighborhood.size)
-            if self.nids[nid] == NULL:
-                raise MemoryError("Could not allocate memory for NSResults")
-
-        with nogil:
-            for nid in range(holder.size):
-                neighborhood = holder.neighborhoods[nid]
-
-                for i in range(neighborhood.size):
-                    self.nids[nid][i] = neighborhood.beadids[i]
-
-        self.size = holder.size
-
-    def get_indices(self):
-        """
-        Return Neighbors indices.
-
-        :return: list of indices
-        """
-        cdef ns_int i, nid, size
-
-        if self.indices is None:
-            indices = []
-
-            for nid in range(self.size):
-                size = self.nsizes[nid]
-
-                tmp_incides = np.empty((size), dtype=np.int)
-
-                for i in range(size):
-                    tmp_incides[i] = self.nids[nid][i]
-
-                indices.append(tmp_incides)
-
-            self.indices = indices
-
-        return self.indices
-
-
-    def get_coordinates(self):
-        """
-        Return coordinates of neighbors.
-
-        :return: list of coordinates
-        """
-        cdef ns_int i, nid, size, beadid
-
-        if self.coordinates is None:
-            coordinates = []
-
-            for nid in range(self.size):
-                size = self.nsizes[nid]
-
-                tmp_values = np.empty((size, DIM), dtype=np.float32)
-
-                for i in range(size):
-                    beadid = self.nids[nid][i]
-                    tmp_values[i] = self.grid_coords[beadid]
-
-                coordinates.append(tmp_values)
-
-            self.coordinates = coordinates
-
-        return self.coordinates
-
-
-    def get_distances(self):
-        """
-        Return coordinates of neighbors.
-
-        :return: list of distances
-        """
-        cdef ns_int i, nid, size, j, beadid
-        cdef rvec ref, other, dx
-        cdef real dist
-        cdef real[:, ::1] ref_coords = self.ref_coords
-        cdef real[:, ::1] grid_coords = self.grid_coords
-
-        if self.distances is None:
-            distances = []
-
-            for nid in range(self.size):
-                size = self.nsizes[nid]
-
-                tmp_values = np.empty((size), dtype=np.float32)
-                ref = <rvec> &ref_coords[nid, 0]
-
-                for i in range(size):
-                    beadid = self.nids[nid][i]
-                    other = <rvec> &grid_coords[beadid, 0]
-
-                    tmp_values[i] = self.box.fast_distance(ref, other)
-
-                distances.append(tmp_values)
-
-            self.distances = distances
-
-        return self.distances
-
 cdef class NSResults(object):
     cdef readonly real cutoff
     cdef ns_int npairs
     cdef bint debug
 
-    cdef real[:, ::1] grid_coords # shape: size, DIM
+    cdef real[:, ::1] coords # shape: size, DIM
     cdef ns_int[:] search_ids
 
     cdef ns_int allocation_size
@@ -651,12 +326,13 @@ cdef class NSResults(object):
     cdef list distances_buffer
     cdef np.ndarray pairs_buffer
     cdef np.ndarray pair_distances_buffer
+    cdef np.ndarray pair_coordinates_buffer
 
-    def __init__(self, real cutoff, real[:, ::1]grid_coords,ns_int[:] search_ids, debug=False):
+    def __init__(self, real cutoff, real[:, ::1]coords, ns_int[:] search_ids, debug=False):
 
         self.debug = debug
         self.cutoff = cutoff
-        self.grid_coords = grid_coords
+        self.coords = coords
         self.search_ids = search_ids
 
         # Preallocate memory
@@ -674,7 +350,7 @@ cdef class NSResults(object):
         self.coordinates_buffer = None
         self.distances_buffer = None
         self.pairs_buffer = None
-        self.pair_distances_buffer = None
+        self.pair_coordinates_buffer = None
 
     def __dealloc__(self):
         PyMem_Free(self.pairs)
@@ -745,12 +421,25 @@ cdef class NSResults(object):
 
     def get_pair_distances(self):
         cdef ns_int i
-        if self.pair_distances_buffer is None:
-            self.pair_distances_buffer = np.empty(self.npairs, dtype=np.float32)
+        if self.pair_coordinates_buffer is None:
+            self.pair_coordinates_buffer = np.empty(self.npairs, dtype=np.float32)
             for i in range(self.npairs):
-                self.pair_distances_buffer[i] = self.pair_distances2[i]
-            self.pair_distances_buffer = np.sqrt(self.pair_distances_buffer)
-        return self.pair_distances_buffer
+                self.pair_coordinates_buffer[i] = self.pair_distances2[i]
+            self.pair_coordinates_buffer = np.sqrt(self.pair_coordinates_buffer)
+        return self.pair_coordinates_buffer
+
+    def get_pair_coordinates(self):
+        cdef ns_int i, j, bead_i, bead_j
+        if self.pair_coordinates_buffer is None:
+            self.pair_coordinates_buffer = np.empty((self.npairs, 2, DIM), dtype=np.float32)
+            for i in range(self.npairs):
+                bead_i = self.pairs[i][0]
+                bead_j = self.pairs[i][1]
+
+                for j in range(DIM):
+                    self.pair_coordinates_buffer[i, 0, j] = self.coords[bead_i, j]
+                    self.pair_coordinates_buffer[i, 1, j] = self.coords[bead_j, j]
+        return self.pair_coordinates_buffer
 
     cdef create_buffers(self):
         cdef ns_int i, beadid_i, beadid_j
@@ -767,8 +456,8 @@ cdef class NSResults(object):
             beadid_j = self.pairs[i][1]
 
             dist2 = self.pair_distances2[i]
-            coord_i = self.grid_coords[beadid_i]
-            coord_j = self.grid_coords[beadid_j]
+            coord_i = self.coords[beadid_i]
+            coord_j = self.coords[beadid_j]
 
             indices_buffer[beadid_i].append(beadid_j)
             indices_buffer[beadid_j].append(beadid_i)
@@ -933,12 +622,10 @@ cdef class NSGrid(object):
         PyMem_Free(beadcounts)
 
 
-
-# Python interface
 cdef class FastNS(object):
     cdef bint debug
     cdef PBCBox box
-    cdef readonly real[:, ::1] coords
+    cdef real[:, ::1] coords
     cdef real[:, ::1] coords_bbox
     cdef readonly real cutoff
     cdef bint prepared
@@ -954,9 +641,6 @@ cdef class FastNS(object):
             raise TypeError("FastNS class must be initialized with a valid MDAnalysis.Universe instance")
         box = triclinic_vectors(u.dimensions)
 
-        if box.shape != (3, 3):
-            raise ValueError("Box must be provided as triclinic_dimensions (a 3x3 numpy.ndarray of unit cell vectors")
-
         self.box = PBCBox(box)
 
 
@@ -967,18 +651,14 @@ cdef class FastNS(object):
 
         self.coords_bbox =  self.box.fast_put_atoms_in_bbox(coords)
 
-        if not prepare:
-            return
-
-        if self.cutoff < 0:
+        if cutoff < 0:
             raise ValueError("Cutoff must be positive!")
-        if self.cutoff * self.cutoff > self.box.c_pbcbox.max_cutoff2:
+        if cutoff * cutoff > self.box.c_pbcbox.max_cutoff2:
             raise ValueError("Cutoff greater than maximum cutoff ({:.3f}) given the PBC")
         self.cutoff = cutoff
 
         self.grid = NSGrid(self.coords_bbox.shape[0], cutoff, self.box, max_gridsize, debug=debug)
         self.prepared = False
-
         if prepare:
             self.prepare()
 
@@ -991,7 +671,7 @@ cdef class FastNS(object):
 
         self.prepared = True
 
-    def search(self, search_ids=None, bint debug=False):
+    def search(self, search_ids=None):
         cdef ns_int i, j, size_search
         cdef ns_int d, m
         cdef NSResults results
@@ -1012,11 +692,11 @@ cdef class FastNS(object):
 
         cdef ns_int nchecked = 0
 
-
-
         cdef real cutoff2 = self.cutoff * self.cutoff
         cdef ns_int[:] checked
         cdef ns_int npairs = 0
+
+        #cdef bint debug=False
 
 
         if not self.prepared:
@@ -1034,12 +714,12 @@ cdef class FastNS(object):
 
         checked = np.zeros(size, dtype=np.int)
 
-        results = NSResults(self.cutoff, self.coords_bbox, search_ids, self.debug)
+        results = NSResults(self.cutoff, self.coords, search_ids, self.debug)
 
         cdef bint memory_error = False
 
-        if self.debug and debug:
-            print("FastNS: Debug flag is set to True for FastNS.search()")
+        # if self.debug and debug:
+        #     print("FastNS: Debug flag is set to True for FastNS.search()")
 
         with nogil:
             for i in range(size_search):
@@ -1050,13 +730,13 @@ cdef class FastNS(object):
                 cellindex = self.grid.cellids[current_beadid]
                 self.grid.cellid2cellxyz(cellindex, cellxyz)
 
-                if self.debug and debug:
-                    with gil:
-                        print("FastNS: Checking neighbors for bead #{} ({:.3f},{:.3f},{:.3f})->rect({:.3f},{:.3f},{:.3f}) - cell[{},{},{}]:" .format(
-                            current_beadid,
-                            self.coords[current_beadid, XX], self.coords[current_beadid, YY], self.coords[current_beadid, ZZ],
-                            self.coords_bbox[current_beadid, XX], self.coords_bbox[current_beadid, YY], self.coords_bbox[current_beadid, ZZ],
-                            cellxyz[XX], cellxyz[YY], cellxyz[ZZ]))
+                # if self.debug and debug:
+                #     with gil:
+                #         print("FastNS: Checking neighbors for bead #{} ({:.3f},{:.3f},{:.3f})->rect({:.3f},{:.3f},{:.3f}) - cell[{},{},{}]:" .format(
+                #             current_beadid,
+                #             self.coords[current_beadid, XX], self.coords[current_beadid, YY], self.coords[current_beadid, ZZ],
+                #             self.coords_bbox[current_beadid, XX], self.coords_bbox[current_beadid, YY], self.coords_bbox[current_beadid, ZZ],
+                #             cellxyz[XX], cellxyz[YY], cellxyz[ZZ]))
 
 
                 for xi in range(DIM):
@@ -1067,25 +747,25 @@ cdef class FastNS(object):
                         # If box is not triclinic (ie rect), when can already check if the shift can be skipped (ie cutoff inside the cell)
                         if xi == 0:
                             if self.coords_bbox[current_beadid, XX] - self.cutoff > self.grid.cellsize[XX] * cellxyz[XX]:
-                                if self.debug and debug:
-                                    with gil:
-                                        print("FastNS:   -> Bead X={:.3f}, Cell X={:.3f}, cutoff={:.3f} -> -X shift ignored".format(
-                                            self.coords_bbox[current_beadid, XX],
-                                            self.grid.cellsize[XX] * cellxyz[XX],
-                                            self.cutoff
-                                        ))
+                                # if self.debug and debug:
+                                #     with gil:
+                                #         print("FastNS:   -> Bead X={:.3f}, Cell X={:.3f}, cutoff={:.3f} -> -X shift ignored".format(
+                                #             self.coords_bbox[current_beadid, XX],
+                                #             self.grid.cellsize[XX] * cellxyz[XX],
+                                #             self.cutoff
+                                #         ))
                                 continue
 
                         if xi == 2:
                             if self.coords_bbox[current_beadid, XX] + self.cutoff < self.grid.cellsize[XX] * (cellxyz[XX] + 1):
-                                if self.debug and debug:
-                                    with gil:
-                                        print(
-                                            "FastNS:   -> Bead X={:.3f}, Next cell X={:.3f}, cutoff={:.3f} -> +X shift ignored".format(
-                                                self.coords_bbox[current_beadid, XX],
-                                                self.grid.cellsize[XX] * (cellxyz[XX] + 1),
-                                                self.cutoff
-                                            ))
+                                # if self.debug and debug:
+                                #     with gil:
+                                #         print(
+                                #             "FastNS:   -> Bead X={:.3f}, Next cell X={:.3f}, cutoff={:.3f} -> +X shift ignored".format(
+                                #                 self.coords_bbox[current_beadid, XX],
+                                #                 self.grid.cellsize[XX] * (cellxyz[XX] + 1),
+                                #                 self.cutoff
+                                #             ))
                                 continue
 
                     for yi in range(DIM):
@@ -1095,24 +775,24 @@ cdef class FastNS(object):
                         if not self.box.is_triclinic:
                             if yi == 0:
                                 if self.coords_bbox[current_beadid, YY] - self.cutoff > self.grid.cellsize[YY] * cellxyz[YY]:
-                                    if self.debug and debug:
-                                        with gil:
-                                            print("FastNS:   -> Bead Y={:.3f}, Cell Y={:.3f}, cutoff={:.3f} -> -Y shift is ignored".format(
-                                                self.coords_bbox[current_beadid, YY],
-                                                self.grid.cellsize[YY] * cellxyz[YY],
-                                                self.cutoff,
-                                            ))
+                                    # if self.debug and debug:
+                                    #     with gil:
+                                    #         print("FastNS:   -> Bead Y={:.3f}, Cell Y={:.3f}, cutoff={:.3f} -> -Y shift is ignored".format(
+                                    #             self.coords_bbox[current_beadid, YY],
+                                    #             self.grid.cellsize[YY] * cellxyz[YY],
+                                    #             self.cutoff,
+                                    #         ))
                                     continue
 
                             if yi == 2:
                                 if self.coords_bbox[current_beadid, YY] + self.cutoff < self.grid.cellsize[YY] * (cellxyz[YY] + 1):
-                                    if self.debug and debug:
-                                        with gil:
-                                            print("FastNS:   -> Bead Y={:.3f}, Next cell Y={:.3f}, cutoff={:.3f} -> +Y shift is ignored".format(
-                                                self.coords_bbox[current_beadid, YY],
-                                                self.grid.cellsize[YY] * (cellxyz[YY] +1),
-                                                self.cutoff,
-                                            ))
+                                    # if self.debug and debug:
+                                    #     with gil:
+                                    #         print("FastNS:   -> Bead Y={:.3f}, Next cell Y={:.3f}, cutoff={:.3f} -> +Y shift is ignored".format(
+                                    #             self.coords_bbox[current_beadid, YY],
+                                    #             self.grid.cellsize[YY] * (cellxyz[YY] +1),
+                                    #             self.cutoff,
+                                    #         ))
                                     continue
 
 
@@ -1121,17 +801,17 @@ cdef class FastNS(object):
                                 if zi == 0:
                                     if self.coords_bbox[current_beadid, ZZ] - self.cutoff > self.grid.cellsize[ZZ] * cellxyz[ZZ]:
                                         if self.coords_bbox[current_beadid, ZZ] - self.cutoff > 0:
-                                            if self.debug and debug:
-                                                with gil:
-                                                    print("FastNS:   -> Bead Z={:.3f}, Cell Z={:.3f}, cutoff={:.3f} -> -Z shift is ignored".format(self.coords_bbox[current_beadid, ZZ], self.grid.cellsize[ZZ] * cellxyz[ZZ], self.cutoff))
+                                            # if self.debug and debug:
+                                            #     with gil:
+                                            #         print("FastNS:   -> Bead Z={:.3f}, Cell Z={:.3f}, cutoff={:.3f} -> -Z shift is ignored".format(self.coords_bbox[current_beadid, ZZ], self.grid.cellsize[ZZ] * cellxyz[ZZ], self.cutoff))
                                             continue
 
                                 if zi == 2:
                                     if self.coords_bbox[current_beadid, ZZ] + self.cutoff < self.grid.cellsize[ZZ] * (cellxyz[ZZ] + 1):
                                         if self.coords_bbox[current_beadid, ZZ] + self.cutoff < self.box.c_pbcbox.box[ZZ][ZZ]:
-                                            if self.debug and debug:
-                                                with gil:
-                                                    print("FastNS:   -> Bead Z={:.3f}, Next cell Z={:.3f}, cutoff={:.3f} -> +Z shift is ignored".format(self.coords_bbox[current_beadid, ZZ], self.grid.cellsize[XX] * (cellxyz[ZZ] + 1), self.cutoff))
+                                            # if self.debug and debug:
+                                            #     with gil:
+                                            #         print("FastNS:   -> Bead Z={:.3f}, Next cell Z={:.3f}, cutoff={:.3f} -> +Z shift is ignored".format(self.coords_bbox[current_beadid, ZZ], self.grid.cellsize[XX] * (cellxyz[ZZ] + 1), self.cutoff))
                                             continue
 
                             # Calculate and/or reinitialize shifted coordinates
@@ -1169,29 +849,29 @@ cdef class FastNS(object):
                             cellindex_probe = self.grid.coord2cellid(probe)
 
                             if cellindex == cellindex_probe and xi != 1 and yi != 1 and zi != 1:
-                                if self.debug and debug:
-                                    with gil:
-                                        print("FastNS:   Grid shift [{}][{}][{}]: Cutoff is inside current cell -> This shift is ignored".format(
-                                            xi - 1,
-                                            yi -1,
-                                            zi -1
-                                        ))
+                                # if self.debug and debug:
+                                #     with gil:
+                                #         print("FastNS:   Grid shift [{}][{}][{}]: Cutoff is inside current cell -> This shift is ignored".format(
+                                #             xi - 1,
+                                #             yi -1,
+                                #             zi -1
+                                #         ))
                                 continue
 
-                            if self.debug and debug:
-                                self.grid.cellid2cellxyz(cellindex_adjacent, debug_cellxyz)
-                                with gil:
-                                    dist_shift = self.box.fast_distance(&self.coords[current_beadid, XX], shifted_coord)
-                                    grid_shift = np.array([(xi - 1) * self.grid.cellsize[XX],
-                                                           (yi - 1) * self.grid.cellsize[YY],
-                                                           (zi - 1) * self.grid.cellsize[ZZ]])
-                                    print("FastNS:   -> Checking cell#{} ({},{},{}) for neighbors (dshift={:.3f}, grid_shift=({:.3f},{:.3f},{:.3f}->{:.3f})".format(
-                                        cellindex,
-                                        debug_cellxyz[XX], debug_cellxyz[YY], debug_cellxyz[ZZ],
-                                        dist_shift,
-                                        grid_shift[XX], grid_shift[YY], grid_shift[ZZ],
-                                        np.sqrt(np.sum(grid_shift**2))
-                                    ))
+                            # if self.debug and debug:
+                            #     self.grid.cellid2cellxyz(cellindex_adjacent, debug_cellxyz)
+                            #     with gil:
+                            #         dist_shift = self.box.fast_distance(&self.coords[current_beadid, XX], shifted_coord)
+                            #         grid_shift = np.array([(xi - 1) * self.grid.cellsize[XX],
+                            #                                (yi - 1) * self.grid.cellsize[YY],
+                            #                                (zi - 1) * self.grid.cellsize[ZZ]])
+                            #         print("FastNS:   -> Checking cell#{} ({},{},{}) for neighbors (dshift={:.3f}, grid_shift=({:.3f},{:.3f},{:.3f}->{:.3f})".format(
+                            #             cellindex,
+                            #             debug_cellxyz[XX], debug_cellxyz[YY], debug_cellxyz[ZZ],
+                            #             dist_shift,
+                            #             grid_shift[XX], grid_shift[YY], grid_shift[ZZ],
+                            #             np.sqrt(np.sum(grid_shift**2))
+                            #         ))
 
 
                             for j in range(self.grid.nbeads[cellindex_adjacent]):
@@ -1223,12 +903,12 @@ cdef class FastNS(object):
                                     if d2 < EPSILON:
                                         continue
 
-                                    if self.debug and debug:
-                                        self.grid.cellid2cellxyz(cellindex, debug_cellxyz)
-                                        with gil:
-                                            self.box.fast_pbc_dx(&self.coords[current_beadid, XX], &self.coords[bid, XX], dx)
-                                            dx_py = np.array([dx[XX], dx[YY], dx[ZZ]])
-                                            print("FastNS:       \_ Neighbor found:  bead#{} (cell[{},{},{}]) -> dx={} -> d={:.3f}".format(bid, debug_cellxyz[XX], debug_cellxyz[YY], debug_cellxyz[ZZ], dx_py, np.sqrt(d2)))
+                                    # if self.debug and debug:
+                                    #     self.grid.cellid2cellxyz(cellindex, debug_cellxyz)
+                                    #     with gil:
+                                    #         self.box.fast_pbc_dx(&self.coords[current_beadid, XX], &self.coords[bid, XX], dx)
+                                    #         dx_py = np.array([dx[XX], dx[YY], dx[ZZ]])
+                                    #         print("FastNS:       \_ Neighbor found:  bead#{} (cell[{},{},{}]) -> dx={} -> d={:.3f}".format(bid, debug_cellxyz[XX], debug_cellxyz[YY], debug_cellxyz[ZZ], dx_py, np.sqrt(d2)))
                                     if results.add_neighbors(current_beadid, bid, d2) == 0:
                                         memory_error = True
                                         break
@@ -1259,184 +939,5 @@ cdef class FastNS(object):
             #         np.sqrt(np.sum(dx_py**2)),
             #         self.box.fast_distance(&self.coords[ref_bead, XX], &self.coords[bid, XX]) <= self.cutoff,
             #      ))
-
-        return results
-
-
-# Python interface
-cdef class FastNSOld(object):
-    cdef PBCBox box
-    cdef readonly real[:, ::1] coords
-    cdef real[:, ::1] coords_bbox
-    cdef readonly real cutoff
-    cdef bint prepared
-    cdef ns_grid grid
-
-    def __init__(self, u):
-        import MDAnalysis as mda
-        from MDAnalysis.lib.mdamath import triclinic_vectors
-
-        if not isinstance(u, mda.Universe):
-            raise TypeError("FastNS class must be initialized with a valid MDAnalysis.Universe instance")
-        box = triclinic_vectors(u.dimensions)
-
-        if box.shape != (3, 3):
-            raise ValueError("Box must be provided as triclinic_dimensions (a 3x3 numpy.ndarray of unit cell vectors")
-
-        self.box = PBCBox(box)
-
-        self.coords = None
-        self.coords_bbox = None
-
-        self.cutoff = -1
-
-        self.prepared = False
-
-        self.grid.size = 0
-
-
-    def __dealloc__(self):
-        cdef ns_int i
-
-        # Deallocate NS grid
-        if self.grid.nbeads != NULL:
-            free(self.grid.nbeads)
-
-        if self.grid.beadids != NULL:
-            free(self.grid.beadids)
-
-        if self.grid.cellids != NULL:
-            free(self.grid.cellids)
-
-        self.grid.size = 0
-
-
-    def set_coords(self, real[:, ::1] coords):
-        self.coords = coords
-
-        # Make sure atoms are inside the brick-shaped box
-        self.coords_bbox = self.box.fast_put_atoms_in_bbox(coords)
-
-        self.prepared = False
-
-
-    def set_cutoff(self, real cutoff):
-        self.cutoff = cutoff
-
-        self.prepared = False
-
-
-    def prepare(self, force=False):
-        cdef ns_int i, cellindex = -1
-        cdef ns_int ncoords = self.coords.shape[0]
-        cdef rvec *coords = <rvec *>  &self.coords_bbox[0, 0]
-
-        cdef ns_int *beadcounts = NULL
-
-        if self.prepared and not force:
-            print("NS already prepared, nothing to do!")
-
-        if self.coords is None:
-            raise ValueError("Coordinates must be set before NS preparation!")
-
-        if self.cutoff < 0:
-            raise ValueError("Cutoff must be set before NS preparation!")
-
-        with nogil:
-
-            # Initializing grid
-            for i in range(DIM):
-                self.grid.ncells[i] = <ns_int> (self.box.c_pbcbox.box[i][i] / self.cutoff)
-                if self.grid.ncells[i] == 0:
-                    self.grid.ncells[i] = 1
-                self.grid.cellsize[i] = self.box.c_pbcbox.box[i][i] / self.grid.ncells[i]
-            self.grid.size = self.grid.ncells[XX] * self.grid.ncells[YY] * self.grid.ncells[ZZ]
-
-            # Allocate memory for temporary buffers
-            self.grid.cellids = <ns_int *> malloc(sizeof(ns_int) * ncoords)
-            if self.grid.cellids ==  NULL:
-                with gil:
-                    raise MemoryError("Could not allocate memory for cell ids")
-
-            beadcounts = <ns_int *> malloc(sizeof(ns_int) * self.grid.size)
-            if beadcounts == NULL:
-                with gil:
-                    raise MemoryError("Could not allocate memory for bead count buffer")
-
-            self.grid.nbeads = <ns_int *> malloc(sizeof(ns_int) * self.grid.size)
-            if self.grid.nbeads == NULL:
-                with gil:
-                    raise MemoryError("Could not allocate memory for NS grid")
-
-            # Initialize buffers
-            for i in range(self.grid.size):
-                self.grid.nbeads[i] = 0
-                beadcounts[i] = 0
-
-
-            # First loop: find cellindex for each bead
-            for i in range(ncoords):
-                cellindex = <ns_int> (coords[i][ZZ] / self.grid.cellsize[ZZ]) * (self.grid.ncells[XX] * self.grid.ncells[YY]) +\
-                            <ns_int> (coords[i][YY] / self.grid.cellsize[YY]) * self.grid.ncells[XX] + \
-                            <ns_int> (coords[i][XX] / self.grid.cellsize[XX])
-
-                self.grid.nbeads[cellindex] += 1
-                self.grid.cellids[i] = cellindex
-
-                if self.grid.nbeads[cellindex] > self.grid.beadpercell:
-                    self.grid.beadpercell = self.grid.nbeads[cellindex]
-
-            # Allocate memory and set offsets
-            self.grid.beadids = <ns_int *> malloc(sizeof(ns_int) * self.grid.size * self.grid.beadpercell)
-            if self.grid.beadids == NULL:
-                with gil:
-                    raise MemoryError("Could not allocate memory for NS grid bead ids")
-
-            # Second loop: fill grid
-            for i in range(ncoords):
-                cellindex = self.grid.cellids[i]
-                self.grid.beadids[cellindex * self.grid.beadpercell + beadcounts[cellindex]] = i
-                beadcounts[cellindex] += 1
-
-            # Now we can free the allocation buffer
-            free(beadcounts)
-
-        self.prepared = True
-
-
-    def search(self, search_coords):
-        cdef real[:, ::1] search_coords_bbox
-        cdef real[:, ::1] search_coords_view
-        cdef ns_int nid, i, j
-        cdef ns_neighborhood_holder *holder
-        cdef ns_neighborhood *neighborhood
-
-        if not self.prepared:
-            self.prepare()
-
-        # Check the shape of search_coords as a array of 3D coords if needed
-        shape = search_coords.shape
-        if len(shape) == 1:
-            if not shape[0] == 3:
-                raise ValueError("Coordinates must be 3D")
-            else:
-                search_coords_view = np.array([search_coords,], dtype=np.float32)
-        else:
-            search_coords_view = search_coords
-
-        # Make sure atoms are inside the brick-shaped box
-        search_coords_bbox = self.box.fast_put_atoms_in_bbox(search_coords_view)
-
-        with nogil:
-            holder = ns_core(search_coords_bbox, self.coords_bbox, &self.grid, self.box, self.cutoff)
-
-        if holder == NULL:
-            raise MemoryError("Could not allocate memory to run NS core")
-
-        results = NSResultsOld(self.box, self.cutoff)
-        results.populate(holder, self.coords, search_coords_view)
-
-        # Free memory allocated to holder
-        free_neighborhood_holder(holder)
 
         return results
