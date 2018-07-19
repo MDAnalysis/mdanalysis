@@ -24,6 +24,7 @@
 import cython
 import numpy as np
 cimport numpy as np
+from libc.math cimport sqrt
 
 from MDAnalysis import NoDataError
 
@@ -262,3 +263,43 @@ def make_whole(atomgroup, reference_atom=None):
         raise ValueError("AtomGroup was not contiguous from bonds, process failed")
     else:
         atomgroup.positions = newpos
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cdef float _dot(float * a, float * b):
+    """Return dot product of two 3d vectors"""
+    cdef ssize_t n
+    cdef float sum1
+
+    sum1 = 0.0
+    for n in range(3):
+        sum1 += a[n] * b[n]
+    return sum1
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cdef void _cross(float * a, float * b, float * result):
+    """
+    Calculates the cross product between 3d vectors
+
+    Note
+    ----
+    Modifies the result array
+    """
+
+    result[0] = a[1]*b[2] - a[2]*b[1]
+    result[1] = - a[0]*b[2] + a[2]*b[0]
+    result[2] = a[0]*b[1] - a[1]*b[0]
+
+cdef float _norm(float * a):
+    """
+    Calculates the magnitude of the vector
+    """
+    cdef float result
+    cdef ssize_t n
+    result = 0.0
+    for n in range(3):
+        result += a[n]*a[n]
+    return sqrt(result)

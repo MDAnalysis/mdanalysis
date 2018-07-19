@@ -25,9 +25,11 @@ import cython
 import numpy as np
 from .mdamath import triclinic_vectors
 cimport numpy as np
+cimport _cutil
+from _cutil cimport _dot ,_norm, _cross
 
 from libcpp.vector cimport vector
-from libc.math cimport sqrt
+
 
 __all__ = ['augment_coordinates', 'undo_augment']
 
@@ -35,19 +37,23 @@ __all__ = ['augment_coordinates', 'undo_augment']
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
-    """Calculates the relevant images of particles which are within a
+    r"""Calculates the relevant images of particles which are within a
     distance 'r' from the box walls
 
     The algorithm works by generating explicit periodic images of
-    interior atoms. For every atom position, its distance from
-    box walls is evaluated. The distance from any respective
-    box face is calculated using a dot product of plane normal and
-    position vector of the atom. If the distance is less than a
+    interior atoms residing close to any of the six box walls. 
+    The steps involved in generating images involves
+    evaluation of reciprocal vectors for the given box vectors 
+    followed by calculation of projection distance of atom along the 
+    reciprocal vectors. If the distance is less than a
     specified cutoff distance, relevant periodic images are generated
-    using the box translation vectors. For instance, an atom close to
-    `XY` plane containing origin will generate a periodic image
+    using box translation vectors i.e. ``l[a] + m[b] + n[c]``, where 
+    ``[l, m, n]`` are the neighbouring cell indices relative to the central cell, 
+    and ``[a, b, c]`` are the box vectors. For instance, an atom close to
+    ``XY`` plane containing origin will generate a periodic image
     outside the central cell and close to the opposite `XY` plane
-    of the box. Similarly, if the particle is close to more than
+    of the box i.e. at ``0[a] + 0[b] + 1[c]``. 
+    Similarly, if the particle is close to more than
     one box walls, images along the diagonals are also generated ::
 
 
@@ -67,21 +73,21 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
     coordinates : array
       Input coordinate array to generate duplicate images
       in the vicinity of the central cell. All the coordinates
-      must be within the primary unit cell.
+      must be within the primary unit cell. (dtype = numpy.float32)
     box : array
       Box dimension of shape (6, ). The dimensions must be
       provided in the same format as returned
       by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
-      ``[lx, ly, lz, alpha, beta, gamma]``
+      ``[lx, ly, lz, alpha, beta, gamma]`` (dtype = numpy.float32)
     r : float
       thickness of cutoff region for duplicate image generation
 
     Returns
     -------
     output : array
-      coordinates of duplicate(augmented) particles
+      coordinates of duplicate(augmented) particles (dtype = numpy.float32)
     indices : array
-      original indices of the augmented coordinates
+      original indices of the augmented coordinates (dtype = numpy.int64)
       A map which translates the indices of augmented particles
       to their original particle index such that
       ``indices[augmentedindex] = originalindex``
@@ -89,8 +95,14 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
     Note
     ----
     Output doesnot return coordinates from the initial array.
-    Use `np.concatenate(coordinates, output)` to merge particle
-    coordinates as well as their images.
+    To merge the particles with their respective images, following operation
+    needs to be superseded after generating the images:
+    
+    .. code-block:: python
+
+            images, mapping = augment_coordinates(coordinates, box, max_cutoff)
+            all_coords = np.concatenate([coordinates, images])
+
 
     See Also
     --------
@@ -286,65 +298,28 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cdef float _dot(float * a, float * b):
-    """Return dot product of two 3d vectors"""
-    cdef ssize_t n
-    cdef float sum1
-
-    sum1 = 0.0
-    for n in range(3):
-        sum1 += a[n] * b[n]
-    return sum1
-
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cdef void _cross(float * a, float * b, float * result):
-    """
-    Calculates the cross product between 3d vectors
-
-    Note
-    ----
-    Modifies the result array
-    """
-
-    result[0] = a[1]*b[2] - a[2]*b[1]
-    result[1] = - a[0]*b[2] + a[2]*b[0]
-    result[2] = a[0]*b[1] - a[1]*b[0]
-
-cdef float _norm(float * a):
-    """
-    Calculates the magnitude of the vector
-    """
-    cdef float result
-    cdef ssize_t n
-    result = 0.0
-    for n in range(3):
-        result += a[n]*a[n]
-    return sqrt(result)
-
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def undo_augment(np.int64_t[:] results, np.int64_t[:] translation, int nreal):
     """Translate augmented indices back to original indices
 
     Parameters
     ----------
-    results : ndarray of ints
-      indices of coordinates, including "augmented" indices
-    translation : ndarray of ints
+    results : numpy.ndarray
+      indices of coordinates, including "augmented" indices (dtype = numpy.int64)
+    translation : numpy.ndarray
       Map to link the augmented indices to the original particle indices
       such that ``translation[augmentedindex] = originalindex``
+      (dtype = numpy.int64)
     nreal : int
       number of real coordinates, i.e. values in results equal or larger
       than this need to be translated to their real counterpart
 
+
     Returns
     -------
-    results : ndarray of ints
+    results : numpy.ndarray
       modified input results with all the augmented indices
       translated to their corresponding initial original indices
+      (dtype = numpy.int64)
 
     Note
     ----
