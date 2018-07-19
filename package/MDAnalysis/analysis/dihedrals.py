@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import warnings
 
+import MDAnalysis as mda
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.lib.distances import calc_dihedrals
 
