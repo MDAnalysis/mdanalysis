@@ -3,26 +3,7 @@ import matplotlib.pyplot as plt
 import warnings
 
 from MDAnalysis.analysis.base import AnalysisBase
-
-def dihedral_calc(atomgroups):
-    """Calculates phi and psi angles for a list of AtomGroups over trajectory.
-
-    Parameters
-    ----------
-    atomgroups : list of AtomGroups
-        must be a list of one or more AtomGroups containing 5 atoms in the
-        correct order (i.e. C-N-CA-C-N)
-
-    Returns
-    -------
-    angles : numpy.ndarray
-        An array of time steps which contain (phi,psi) for all AtomGroups.
-    """
-
-    dihedrals = [atomgroup.dihedral for atomgroup in atomgroups]
-    angles = [dih.value() for dih in dihedrals]
-
-    return angles
+from MDAnalysis.lib.distances import calc_dihedrals
 
 
 class Ramachandran(AnalysisBase):
@@ -57,32 +38,43 @@ class Ramachandran(AnalysisBase):
         """
         super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
+        residues = self.atomgroup.residues
+        protein = self.atomgroup.universe.select_atoms("protein").residues
+
+        if not residues.issubset(protein):
+            raise IndexError("Found atoms outside of protein. Only atoms "
+                             "inside of a 'protein' selection can be used to "
+                             "calculate dihedrals.")
+        elif not residues.isdisjoint(protein[[0, -1]]):
+            warnings.warn("Cannot determine phi and psi angles for the first "
+                          "or last residues")
+            residues = residues.difference(protein[[0, -1]])
+
+        phi_sel = [res.phi_selection() for res in residues]
+        psi_sel = [res.psi_selection() for res in residues]
+        self.ag1 = mda.AtomGroup([atoms[0] for atoms in phi_sel])
+        self.ag2 = mda.AtomGroup([atoms[1] for atoms in phi_sel])
+        self.ag3 = mda.AtomGroup([atoms[2] for atoms in phi_sel])
+        self.ag4 = mda.AtomGroup([atoms[3] for atoms in phi_sel])
+        self.ag5 = mda.AtomGroup([atoms[3] for atoms in psi_sel])
 
     def _prepare(self):
-        self.residues = self.atomgroup.residues
-        res_min = np.min(self.atomgroup.universe.select_atoms("protein").residues)
-        res_max = np.max(self.atomgroup.universe.select_atoms("protein").residues)
-        if any([(residue < res_min or residue > res_max) for residue in self.residues]):
-            raise IndexError("Selection exceeds protein length")
-        elif any([residue == (res_min or res_max) for residue in self.residues]):
-            warnings.warn("Cannot determine phi and psi angles for the first or last residues")
-
-        self.phi_atoms = [residue.phi_selection() for residue in self.residues
-                          if res_min < residue < res_max]
-        self.psi_atoms = [residue.psi_selection() for residue in self.residues
-                          if res_min < residue < res_max]
-
         self.angles = []
 
     def _single_frame(self):
-        self.phi_angles = dihedral_calc(self.phi_atoms)
-        self.psi_angles = dihedral_calc(self.psi_atoms)
-        self.angles.append((self.phi_angles,self.psi_angles))
+        phi_angles = calc_dihedrals(self.ag1.positions, self.ag2.positions,
+                                    self.ag3.positions, self.ag4.positions,
+                                    box=self.ag1.dimensions)
+        psi_angles = calc_dihedrals(self.ag2.positions, self.ag3.positions,
+                                    self.ag4.positions, self.ag5.positions,
+                                    box=self.ag1.dimensions)
+        phi_psi = zip(phi_angles, psi_angles)
+        self.angles.append(phi_psi)
 
     def _conclude(self):
-        self.angles = np.array(self.angles)
+        self.angles = np.rad2deg(np.array(self.angles))
 
-    def plot(self, ax=None, color='k', marker='s', title=None):
+    def plot(self, ax=None, **kwargs):
         """Plots data into standard ramachandran plot. Each time step in
         self.angles is plotted onto the same graph.
 
@@ -91,13 +83,6 @@ class Ramachandran(AnalysisBase):
         ax : :class:`matplotlib.axes.Axes`
               If no `ax` is supplied or set to ``None`` then the plot will
               be added to the current active axes.
-        color : string, optional
-              Color used for markers in the plot; the default color is 'black'.
-        marker : string, optional
-               Marker used in plot; the default marker is 'square'.
-        title : string, optional
-              Title of axes object; the default `None` leaves plot without a
-              title.
 
         Returns
         -------
@@ -110,12 +95,7 @@ class Ramachandran(AnalysisBase):
         ax.axis([-180,180,-180,180])
         ax.axhline(0, color='k', lw=1)
         ax.axvline(0, color='k', lw=1)
-        ax.set_xticks(range(-180,181,60))
-        ax.set_yticks(range(-180,181,60))
-        ax.set_xlabel(r"$\phi$ (deg)")
-        ax.set_ylabel(r"$\psi$ (deg)")
-        if title is not None:
-            ax.set_title(title)
-        for angles in self.angles:
-            ax.plot(angles[0],angles[1], color=color,
-                    marker=marker, linestyle='')
+        ax.set(xticks=range(-180,181,60), yticks=range(-180,181,60),
+               xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
+        a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
+        ax.scatter(a[:,0], a[:,1])
