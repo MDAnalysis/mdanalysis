@@ -61,6 +61,8 @@ Functions
 .. autofunction:: apply_PBC(coordinates, box [, backend])
 .. autofunction:: transform_RtoS(coordinates, box [, backend])
 .. autofunction:: transform_StoR(coordinates, box [,backend])
+.. autofunction:: MDAnalysis.lib._augment.augment_coordinates(coordinates, box, radius)
+.. autofunction:: MDAnalysis.lib._augment.undo_augment(indices, translation, nreal)
 
 """
 from __future__ import division, absolute_import
@@ -70,6 +72,7 @@ import numpy as np
 from numpy.lib.utils import deprecate
 
 from .mdamath import triclinic_vectors, triclinic_box
+from ._augment import augment_coordinates, undo_augment
 
 
 
