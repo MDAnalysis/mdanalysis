@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import warnings
+import six 
+from six.moves import zip
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.base import AnalysisBase
@@ -74,6 +76,7 @@ class Ramachandran(AnalysisBase):
 
     def _conclude(self):
         self.angles = np.rad2deg(np.array(self.angles))
+
 
     def plot(self, ax=None, **kwargs):
         """Plots data into standard ramachandran plot. Each time step in
