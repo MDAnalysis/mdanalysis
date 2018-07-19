@@ -109,6 +109,8 @@
 <span class="sd">.. autofunction:: apply_PBC(coordinates, box [, backend])</span>
 <span class="sd">.. autofunction:: transform_RtoS(coordinates, box [, backend])</span>
 <span class="sd">.. autofunction:: transform_StoR(coordinates, box [,backend])</span>
+<span class="sd">.. autofunction:: MDAnalysis.lib._augment.augment_coordinates(coordinates, box, radius)</span>
+<span class="sd">.. autofunction:: MDAnalysis.lib._augment.undo_augment(indices, translation, nreal)</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
@@ -118,6 +120,7 @@
 <span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="k">import</span> <span class="n">deprecate</span>
 
 <span class="kn">from</span> <span class="nn">.mdamath</span> <span class="k">import</span> <span class="n">triclinic_vectors</span><span class="p">,</span> <span class="n">triclinic_box</span>
+<span class="kn">from</span> <span class="nn">._augment</span> <span class="k">import</span> <span class="n">augment_coordinates</span><span class="p">,</span> <span class="n">undo_augment</span>
 
 
 
