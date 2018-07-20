@@ -56,20 +56,17 @@ the test data files::
    r = u.select_atoms("protein")    # selection of residues
 
    from MDAnalysis.analysis.dihedrals import Ramachandran
-   R = Ramachandran(r)
-   R.run()
+   R = Ramachandran(r).run()
 
    import matplotlib.pyplot as plt
-   fig = plt.figure(figsize(5,5))
-   ax = fig.add_subplot(111)
+   fig, ax = plt.subplots(figsize=plt.figaspect(1))
    ax.set_title("Ramachandran Plot (AdK)")
    R.plot(ax=ax, color='k', marker='s')
 
 Alternatively, if you wanted to plot the data yourself, the angles themselves
 can be accessed using :meth:`Ramachandran.angles`::
 
-   fig = plt.figure(figsize(5, 5))
-   ax = fig.add_subplot(111)
+   fig, ax = plt.subplots(figsize=plt.figaspect(1))
    ax.axis([-180,180,-180,180])
    ax.axhline(0, color='k', lw=1)
    ax.axvline(0, color='k', lw=1)
@@ -88,7 +85,7 @@ Analysis Class
    .. attribute:: angles
 
        Contains the time series of the phi and psi angles for each residue as
-       an N×3 :class:`numpy.ndarray` array with content
+       an N×2 :class:`numpy.ndarray` array with content
        ``[[phi, psi], [...], ...]``.
 
 """
@@ -198,3 +195,4 @@ class Ramachandran(AnalysisBase):
                xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
         a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
         ax.scatter(a[:,0], a[:,1], **kwargs)
+        return ax
