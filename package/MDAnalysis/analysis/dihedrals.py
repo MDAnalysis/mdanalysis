@@ -1,3 +1,97 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- https://www.mdanalysis.org
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+"""
+Dihedral and Ramachandran analysis --- :mod:`MDAnalysis.analysis.dihedrals`
+===========================================================================
+
+:Author: Henry Mull
+:Year: 2018
+:Copyright: GNU Public License v2
+
+.. versionadded:: 0.18.1
+
+This module calculates the dihedral angles phi and psi in degrees for a given
+list of residues (or atoms corresponding to the residues). This can be done for
+selected frames or whole trajectories.
+
+A list of time steps that contain phi and psi angles for each residue is
+generated, and a basic Ramachandran plot can be generated using the attribute
+:meth:`Ramachandran.plot`. This plot is best used as a reference, but it also
+allows for user customization.
+
+
+See Also
+--------
+:mod:`MDAnalysis.lib.distances.calc_diherals`
+
+
+Example application
+-------------------
+This example will show how to calculate the phi and psi angles of adenylate
+kinase and generate a basic Ramachandran plot. The trajectory is included with
+the test data files::
+
+   import MDAnalysis as mda
+   from MDAnalysisTests.datafiles import GRO, XTC
+   u = mda.Universe(GRO, XTC)
+   r = u.select_atoms("protein")    # selection of residues
+
+   from MDAnalysis.analysis.dihedrals import Ramachandran
+   R = Ramachandran(r)
+   R.run()
+
+   import matplotlib.pyplot as plt
+   fig = plt.figure(figsize(5,5))
+   ax = fig.add_subplot(111)
+   ax.set_title("Ramachandran Plot (AdK)")
+   R.plot(ax=ax, color='k', marker='s')
+
+Alternatively, if you wanted to plot the data yourself, the angles themselves
+can be accessed using :meth:`Ramachandran.angles`::
+
+   fig = plt.figure(figsize(5, 5))
+   ax = fig.add_subplot(111)
+   ax.axis([-180,180,-180,180])
+   ax.axhline(0, color='k', lw=1)
+   ax.axvline(0, color='k', lw=1)
+   ax.set(xticks=range(-180,181,60), yticks=range(-180,181,60),
+          xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
+   for ts in R.angles:
+       ax.scatter(ts[:,0], ts[:,1], color='k', marker='s')
+
+Analysis Class
+--------------
+
+.. autoclass:: Ramachandran
+   :members:
+   :inherited-members:
+
+   .. attribute:: angles
+
+       Contains the time series of the phi and psi angles for each residue as
+       an N×3 :class:`numpy.ndarray` array with content
+       ``[[phi, psi], [...], ...]``.
+
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 import warnings
@@ -10,33 +104,34 @@ from MDAnalysis.lib.distances import calc_dihedrals
 
 
 class Ramachandran(AnalysisBase):
-    """Calculate phi and psi dihedral angles of specified residues.
+    r"""Calculate phi and psi dihedral angles of specified residues.
+
+    Phi and psi angles wil be calculated for each residue in `atomgroup` for
+    each time step in the trajectory. A ReisdueGroup is generated from
+    `atomgroup` which is compared to the protein to determine if it is a
+    legitimate selection.
 
     Note
     ----
-    Run the analysis with :meth:`Ramachandran.run()`, which stores the results
-    in the array :attr:`Ramachandran.angles`. A axes object can be obtained
-    with :meth: `Ramachandran.run().plot()`.
-
     If the residue selection is beyond the scope of the protein, then an error
     will be raised. If the residue selection includes the first or last residue
-    then a warning will be raised, and the final array of angles will not
-    include those residues.
+    then a warning will be raised and they will be removed from the list of
+    residues, but the analysis will still run.
+
+    Run the analysis with :meth:`Ramachandran.run()`, whcih stores the results in the
+    array :attr:`Ramachandran.angles`
 
     """
     def __init__(self, atomgroup, **kwargs):
-        r"""Parameters
+        """Parameters
         ----------
-        atomgroup : Atomgroup
+        atomgroup : AtomGroup or ResidueGroup
             atoms for residues for which phi and psi are calculated
-        start : int, optional
-            starting frame, default None becomes 0.
-        stop : int, optional
-            Frame index to stop analysis. Default: None becomes
-            n_frames. Iteration stops *before* this frame number,
-            which means that the trajectory would be read until the end.
-        step : int, optional
-            step between frames, default None becomes 1.
+
+        Raises
+        ------
+        ValueError
+             If the selection of residues is not contained within the protein
 
         """
         super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
@@ -45,7 +140,7 @@ class Ramachandran(AnalysisBase):
         protein = self.atomgroup.universe.select_atoms("protein").residues
 
         if not residues.issubset(protein):
-            raise IndexError("Found atoms outside of protein. Only atoms "
+            raise ValueError("Found atoms outside of protein. Only atoms "
                              "inside of a 'protein' selection can be used to "
                              "calculate dihedrals.")
         elif not residues.isdisjoint(protein[[0, -1]]):
@@ -90,7 +185,7 @@ class Ramachandran(AnalysisBase):
 
         Returns
         -------
-        ax : :class:`~matplotlib.axes.Axes`
+        ax : :class:`matplotlib.axes.Axes`
              Axes with the plot, either `ax` or the current axes.
 
         """
@@ -102,4 +197,4 @@ class Ramachandran(AnalysisBase):
         ax.set(xticks=range(-180,181,60), yticks=range(-180,181,60),
                xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
         a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
-        ax.scatter(a[:,0], a[:,1])
+        ax.scatter(a[:,0], a[:,1], **kwargs)
