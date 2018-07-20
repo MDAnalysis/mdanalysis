@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import warnings
-import six 
+import six
 from six.moves import zip
 
 import MDAnalysis as mda
@@ -71,7 +71,7 @@ class Ramachandran(AnalysisBase):
         psi_angles = calc_dihedrals(self.ag2.positions, self.ag3.positions,
                                     self.ag4.positions, self.ag5.positions,
                                     box=self.ag1.dimensions)
-        phi_psi = zip(phi_angles, psi_angles)
+        phi_psi = [(phi, psi) for phi, psi in zip(phi_angles, psi_angles)]
         self.angles.append(phi_psi)
 
     def _conclude(self):
