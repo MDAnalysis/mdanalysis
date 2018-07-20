@@ -42,7 +42,7 @@ from MDAnalysis.lib.distances import _box_check, _check_array, apply_PBC
 from MDAnalysis.lib.mdamath import norm, triclinic_vectors, triclinic_box
 
 __all__ = [
-    'PeriodicKDTree',
+    'PeriodicKDTree', 'Periodic_cKDTree'
 ]
 
 
@@ -254,6 +254,7 @@ class Periodic_cKDTree(object):
     """
     def __init__(self, box=None, leafsize=10):
         """
+
         Parameters
         ----------
         box : array-like or ``None``, optional, default ``None``
@@ -261,11 +262,12 @@ class Periodic_cKDTree(object):
           :attr:`MDAnalysis.trajectory.base.Timestep.dimensions` when
           periodic boundary conditions should be taken into account for
           the calculation of contacts.
-        leafsize : int
+        leafsize : int (optional)
           Number of entries in leafs of the KDTree. If you suffer poor
           performance you can play around with this number. Increasing the
           `leafsize` will speed up the construction of the KDTree but
           slow down the search.
+
         """
         self.leafsize = leafsize
         self.dim = 3  # 3D systems
@@ -288,7 +290,7 @@ class Periodic_cKDTree(object):
         duplicate particle coordinates.
 
         For non-periodic calculations, cutoff should not be provided
-        but the parameter is required for periodic calculations.
+        the parameter is only required for periodic calculations.
 
         Parameters
         ----------
@@ -302,15 +304,25 @@ class Periodic_cKDTree(object):
           within ``cutoff`` distance from either of the box boundary
           will be generated.
 
-        .. seealso:: :func:`MDAnalysis.lib._augment.augment_coordinates`
+
+        See Also
+        --------
+        MDAnalysis.lib._augment.augment_coordinates
+
+
         """
-        # if already built
+
+        # Check if already built
         if self._built:
             raise RuntimeError('Tree is already built. If need to change the cutoff radius'
                 'Run tree.set_cutoff(cutoff)')
         # If no cutoff distance is provided but PBC aware
         if self.periodic and (cutoff is None):
             raise RuntimeError('Provide a cutoff distance with tree.set_coords(...)')
+
+        # set coords dtype to float32
+        # augment coordinates will work only with float32
+        coords = np.asarray(coords, dtype=np.float32)
 
         if self.periodic:
             self.cutoff = cutoff
@@ -377,7 +389,7 @@ class Periodic_cKDTree(object):
                                                       radius))
             self._indices = np.array(list(
                                      itertools.chain.from_iterable(indices)),
-                                     dtype=np.int32)
+                                     dtype=np.int64)
             if self._indices.size > 0:
                 self._indices = undo_augment(self._indices,
                                              self.mapping,
@@ -389,7 +401,6 @@ class Periodic_cKDTree(object):
             self._indices = np.array(list(
                                      itertools.chain.from_iterable(indices)),
                                      dtype=np.int)
-        self._indices = np.asarray(self._indices, dtype=np.int64)
         self._indices = np.asarray(unique_int_1d(self._indices))
         return self._indices
 
@@ -411,10 +422,10 @@ class Periodic_cKDTree(object):
 
         if self.periodic:
             if self.cutoff < radius:
-                raise RuntimeError('Set cutoff greater than the radius.'
-                                   'Use tree.set_cutoff(...)')
+                raise RuntimeError('Set cutoff greater or equal to the radius.'
+                                   ' Use tree.set_cutoff(...)')
 
-        pairs = np.array(list(self.ckdt.query_pairs(radius)), dtype=np.int32)
+        pairs = np.array(list(self.ckdt.query_pairs(radius)), dtype=np.int64)
         if self.periodic:
             if len(pairs) > 1:
                 pairs[:, 0] = undo_augment(pairs[:, 0], self.mapping,
