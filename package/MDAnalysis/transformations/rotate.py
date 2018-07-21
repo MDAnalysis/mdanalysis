@@ -119,8 +119,11 @@ def rotateby(angle, direction, point=None, center="geometry", wrap=False, ag=Non
             position = center_method()
         else:
             position = point
-        rotation = rotation_matrix(angle, direction, position)[:3, :3]
+        matrix = rotation_matrix(angle, direction, position)
+        rotation = matrix[:3, :3]
+        translation = matrix[:3, 3]
         ts.positions= np.dot(ts.positions, rotation)
+        ts.positions += translation
         
         return ts
     

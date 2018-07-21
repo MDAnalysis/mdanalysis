@@ -70,8 +70,10 @@ def test_rotateby_custom_position(rotate_universes):
     vector = [1,0,0]
     pos = [0,0,0]
     angle = 90
-    matrix = rotation_matrix(np.deg2rad(angle), vector, pos)[:3, :3]
-    ref.positions = np.dot(ref.positions, matrix)
+    matrix = rotation_matrix(np.deg2rad(angle), vector, pos)
+    rotation = matrix[:3, :3]
+    translation = matrix[:3, 3]
+    ref.positions = np.dot(ref.positions, rotation) + translation
     transformed = rotateby(angle, vector, point=pos)(trans)
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
@@ -85,8 +87,10 @@ def test_rotateby_atomgroup_cog_nopbc(rotate_universes):
     center_pos = [6,7,8]
     vector = [1,0,0]
     angle = 90
-    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)[:3, :3]
-    ref.positions = np.dot(ref.positions, matrix)
+    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
+    rotation = matrix[:3, :3]
+    translation = matrix[:3, 3]
+    ref.positions = np.dot(ref.positions, rotation) + translation
     selection = trans_u.residues[0].atoms
     transformed = rotateby(angle, vector, ag=selection, center='geometry')(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
@@ -102,8 +106,10 @@ def test_rotateby_atomgroup_com_nopbc(rotate_universes):
     angle = 90
     selection = trans_u.residues[0].atoms
     center_pos = selection.center_of_mass()
-    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)[:3, :3]
-    ref.positions = np.dot(ref.positions, matrix)
+    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
+    rotation = matrix[:3, :3]
+    translation = matrix[:3, 3]
+    ref.positions = np.dot(ref.positions, rotation) + translation
     transformed = rotateby(angle, vector, ag=selection, center='mass')(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
@@ -118,8 +124,10 @@ def test_rotateby_atomgroup_cog_pbc(rotate_universes):
     angle = 90
     selection = trans_u.residues[0].atoms
     center_pos = selection.center_of_geometry(pbc=True)
-    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)[:3, :3]
-    ref.positions = np.dot(ref.positions, matrix)
+    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
+    rotation = matrix[:3, :3]
+    translation = matrix[:3, 3]
+    ref.positions = np.dot(ref.positions, rotation) + translation
     transformed = rotateby(angle, vector, ag=selection, center='geometry', wrap=True)(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
@@ -134,8 +142,10 @@ def test_rotateby_atomgroup_com_pbc(rotate_universes):
     angle = 90
     selection = trans_u.residues[0].atoms
     center_pos = selection.center_of_mass(pbc=True)
-    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)[:3, :3]
-    ref.positions = np.dot(ref.positions, matrix)
+    matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
+    rotation = matrix[:3, :3]
+    translation = matrix[:3, 3]
+    ref.positions = np.dot(ref.positions, rotation) + translation
     transformed = rotateby(angle, vector, ag=selection, center='mass', wrap=True)(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
