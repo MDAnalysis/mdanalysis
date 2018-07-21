@@ -506,12 +506,7 @@ cdef class NSGrid(object):
     cdef fill_grid(self, real[:, ::1] coords):
         cdef ns_int i, cellindex = -1
         cdef ns_int ncoords = coords.shape[0]
-        cdef ns_int *beadcounts = NULL
-
-        # Allocate memory
-        beadcounts = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.size)
-        if not beadcounts:
-            raise MemoryError("Could not allocate memory for bead count buffer ({} bits requested)".format(sizeof(ns_int) * self.size))
+        cdef ns_int[:] beadcounts = np.empty(self.size, dtype=np.int)
 
         with nogil:
             # Initialize buffers
@@ -528,12 +523,12 @@ cdef class NSGrid(object):
                 if self.nbeads[cellindex] > self.nbeads_per_cell:
                     self.nbeads_per_cell = self.nbeads[cellindex]
 
-            # Allocate memory
-            with gil:
-                self.beadids = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.size * self.nbeads_per_cell) #np.empty((self.size, nbeads_max), dtype=np.int)
-                if not self.beadids:
-                    raise MemoryError("Could not allocate memory for NSGrid.beadids ({} bits requested)".format(sizeof(ns_int) * self.size * self.nbeads_per_cell))
+        # Allocate memory
+        self.beadids = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.size * self.nbeads_per_cell) #np.empty((self.size, nbeads_max), dtype=np.int)
+        if not self.beadids:
+            raise MemoryError("Could not allocate memory for NSGrid.beadids ({} bits requested)".format(sizeof(ns_int) * self.size * self.nbeads_per_cell))
 
+        with nogil:
             # Second loop: fill grid
             for i in range(ncoords):
 
@@ -542,8 +537,6 @@ cdef class NSGrid(object):
                 self.beadids[cellindex * self.nbeads_per_cell + beadcounts[cellindex]] = i
                 beadcounts[cellindex] += 1
 
-        # Now we can free the allocation buffer
-        PyMem_Free(beadcounts)
 
 
 cdef class FastNS(object):
