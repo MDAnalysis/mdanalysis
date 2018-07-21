@@ -221,11 +221,9 @@ cdef class PBCBox(object):
         return np.asarray(self.fast_put_atoms_in_bbox(coords))
 
 
-########################################################################################################################
-#
-# Neighbor Search Stuff
-#
-########################################################################################################################
+#########################
+# Neighbor Search Stuff #
+#########################
 cdef class NSResults(object):
     cdef readonly real cutoff
     cdef ns_int npairs
@@ -246,7 +244,6 @@ cdef class NSResults(object):
     cdef np.ndarray pair_coordinates_buffer
 
     def __init__(self, real cutoff, real[:, ::1]coords, ns_int[:] search_ids, debug=False):
-
         self.debug = debug
         self.cutoff = cutoff
         self.coords = coords
@@ -254,12 +251,19 @@ cdef class NSResults(object):
 
         # Preallocate memory
         self.allocation_size = search_ids.shape[0] + 1
-        self.pairs = <ipair *> PyMem_Malloc(sizeof(ipair) * self.allocation_size)
-        if not self.pairs:
-            MemoryError("Could not allocate memory for NSResults.pairs ({} bits requested)".format(sizeof(ipair) * self.allocation_size))
-        self.pair_distances2 = <real *> PyMem_Malloc(sizeof(real) * self.allocation_size)
-        if not self.pair_distances2:
-            raise MemoryError("Could not allocate memory for NSResults.pair_distances2 ({} bits requested)".format(sizeof(real) * self.allocation_size))
+        if not self.pairs and not self.pair_distances2:
+            self.pairs = <ipair *> PyMem_Malloc(sizeof(ipair) * self.allocation_size)
+            if not self.pairs:
+                MemoryError("Could not allocate memory for NSResults.pairs "
+                            "({} bits requested)".format(sizeof(ipair) * self.allocation_size))
+            self.pair_distances2 = <real *> PyMem_Malloc(sizeof(real) * self.allocation_size)
+            if not self.pair_distances2:
+                raise MemoryError("Could not allocate memory for NSResults.pair_distances2 "
+                                  "({} bits requested)".format(sizeof(real) * self.allocation_size))
+        else:
+            if self.resize(self.allocation_size + <ns_int> (self.allocation_size * 0.5 + 1)) == 0:
+                raise MemoryError("foo")
+
         self.npairs = 0
 
         # Buffer
