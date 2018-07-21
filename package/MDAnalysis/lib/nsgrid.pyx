@@ -69,20 +69,15 @@ cdef void rvec_clear(rvec a) nogil:
     a[YY]=0.0
     a[ZZ]=0.0
 
-########################################################################################################################
-#
-# Utility class to handle PBC
-#
-########################################################################################################################
+###############################
+# Utility class to handle PBC #
+###############################
 cdef struct cPBCBox_t:
     matrix     box
     rvec       fbox_diag
     rvec       hbox_diag
     rvec       mhbox_diag
     real       max_cutoff2
-    ns_int        ntric_vec
-    ns_int[DIM]   tric_shift[MAX_NTRICVEC]
-    real[DIM]  tric_vec[MAX_NTRICVEC]
 
 
 # Class to handle PBC calculations
@@ -141,90 +136,12 @@ cdef class PBCBox(object):
             tmp += box[ZZ, YY]
 
         min_ss = min(box[XX, XX], min(tmp, box[ZZ, ZZ]))
-
         self.c_pbcbox.max_cutoff2 = min(min_hv2, min_ss * min_ss)
-
-        # Update shift vectors
-        self.c_pbcbox.ntric_vec = 0
-
-        # We will only use single shifts
-        for kk in range(3):
-            k = order[kk]
-
-            for jj in range(3):
-                j = order[jj]
-
-                for ii in range(3):
-                    i = order[ii]
-
-                    # A shift is only useful when it is trilinic
-                    if j != 0 or k != 0:
-                        d2old = 0
-                        d2new = 0
-
-                        for d in range(DIM):
-                            trial[d] = i*box[XX, d] + j*box[YY, d] + k*box[ZZ, d]
-
-                            # Choose the vector within the brick around 0,0,0 that
-                            # will become the shortest due to shift try.
-                            if trial[d] < 0:
-                                pos[d] = min(self.c_pbcbox.hbox_diag[d], -trial[d])
-                            else:
-                                pos[d] = max(-self.c_pbcbox.hbox_diag[d], -trial[d])
-
-                            d2old += pos[d]**2
-                            d2new += (pos[d] + trial[d])**2
-
-                        if BOX_MARGIN*d2new < d2old:
-                            if  not (j < -1 or j > 1 or k < -1 or k > 1):
-                                use = True
-
-                                for dd in range(DIM):
-                                    if dd == 0:
-                                        shift = i
-                                    elif dd == 1:
-                                        shift = j
-                                    else:
-                                        shift = k
-
-                                    if shift:
-                                        d2new_c = 0
-
-                                        for d in range(DIM):
-                                            d2new_c += (pos[d] + trial[d] - shift*box[dd, d])**2
-
-                                        if d2new_c <= BOX_MARGIN*d2new:
-                                            use = False
-
-                                if use: # Accept this shift vector.
-                                    if self.c_pbcbox.ntric_vec >= MAX_NTRICVEC:
-                                        with gil:
-                                            print("\nWARNING: Found more than %d triclinic "
-                                                  "correction vectors, ignoring some."
-                                                  % MAX_NTRICVEC)
-                                            print("  There is probably something wrong with "
-                                                  "your box.")
-                                            print(np.array(box))
-
-                                            for i in range(self.c_pbcbox.ntric_vec):
-                                                print(" -> shift #{}: [{}, {}, {}]".format(i+1,
-                                                                                           self.c_pbcbox.tric_shift[i][XX],
-                                                                                           self.c_pbcbox.tric_shift[i][YY],
-                                                                                           self.c_pbcbox.tric_shift[i][ZZ]))
-                                    else:
-                                        for d in range(DIM):
-                                            self.c_pbcbox.tric_vec[self.c_pbcbox.ntric_vec][d] = \
-                                                trial[d]
-                                        self.c_pbcbox.tric_shift[self.c_pbcbox.ntric_vec][XX] = i
-                                        self.c_pbcbox.tric_shift[self.c_pbcbox.ntric_vec][YY] = j
-                                        self.c_pbcbox.tric_shift[self.c_pbcbox.ntric_vec][ZZ] = k
-                                        self.c_pbcbox.ntric_vec += 1
-
 
     def update(self, real[:,::1] box):
         if box.shape[0] != DIM or box.shape[1] != DIM:
-            raise ValueError("Box must be a %i x %i matrix. (shape: %i x %i)" %
-                             (DIM, DIM, box.shape[0], box.shape[1]))
+            raise ValueError("Box must be a {} x {} matrix. Got: {} x {})".format(
+                DIM, DIM, box.shape[0], box.shape[1]))
         if (box[XX, XX] == 0) or (box[YY, YY] == 0) or (box[ZZ, ZZ] == 0):
             raise ValueError("Box does not correspond to PBC=xyz")
         self.fast_update(box)
