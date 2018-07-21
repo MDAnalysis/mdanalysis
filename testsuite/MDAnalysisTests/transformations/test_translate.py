@@ -222,7 +222,7 @@ def test_center_in_axis_bad_ag(translate_universes):
         center_in_axis(bad_ag, axis)(ts)
 
 
-@pytest.mark.parametrize('center_from', (
+@pytest.mark.parametrize('center_to', (
     [0, 1],
     [0, 1, 2, 3, 4],
     np.array([0, 1]),
@@ -230,13 +230,13 @@ def test_center_in_axis_bad_ag(translate_universes):
     np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
     np.array([[0], [1], [2]]))
 )
-def test_center_in_axis_bad_center_from(translate_universes, center_from):
+def test_center_in_axis_bad_center_to(translate_universes, center_to):
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # what if the box is in the wrong format?
     axis = 'x'
     with pytest.raises(ValueError): 
-        center_in_axis(ag, axis, center_from=center_from)(ts)
+        center_in_axis(ag, axis, center_to=center_to)(ts)
 
    
 def test_center_in_axis_bad_pbc(translate_universes):    
@@ -286,10 +286,10 @@ def test_center_in_axis_coords_no_options(translate_universes):
     ref = ref_u.trajectory.ts
     ag = trans_u.residues[0].atoms
     box_center = np.float32([186., 186.5, 187.])
-    center_from = box_center
+    center_to = box_center
     ref_center = np.float32([6, 7, 8])
     axis = 'x'
-    axis_point = np.float32([ref_center[0], center_from[1], center_from[2]])
+    axis_point = np.float32([ref_center[0], center_to[1], center_to[2]])
     ref.positions += axis_point - ref_center
     trans = center_in_axis(ag, axis)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
@@ -303,10 +303,10 @@ def test_center_in_axis_coords_with_pbc(translate_universes):
     trans_u.dimensions = [363., 364., 365., 90., 90., 90.]
     ag = trans_u.residues[24].atoms
     box_center = np.float32([181.5, 182., 182.5])
-    center_from = box_center
+    center_to = box_center
     ref_center = ag.center_of_geometry(pbc=True)
     axis = 'x'
-    axis_point = np.float32([ref_center[0], center_from[1], center_from[2]])
+    axis_point = np.float32([ref_center[0], center_to[1], center_to[2]])
     ref.positions += axis_point - ref_center
     trans = center_in_axis(ag, axis, wrap=True)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
@@ -319,25 +319,25 @@ def test_center_in_axis_coords_with_mass(translate_universes):
     ag = trans_u.residues[24].atoms
     ref_center = ag.center_of_mass()
     box_center = np.float32([186., 186.5, 187.])
-    center_from = box_center
+    center_to = box_center
     axis = 'x'
-    axis_point = np.float32([ref_center[0], center_from[1], center_from[2]])
+    axis_point = np.float32([ref_center[0], center_to[1], center_to[2]])
     ref.positions += axis_point - ref_center
     trans = center_in_axis(ag, axis, center_of="mass")(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
-def test_center_in_axis_coords_with_coord_center_from(translate_universes):   
-    # what happens when we use a custom coordinate as center_from point?
+def test_center_in_axis_coords_with_coord_center_to(translate_universes):   
+    # what happens when we use a custom coordinate as center_to point?
     ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts
     ag = trans_u.residues[0].atoms
-    center_from = [1000, 1000, 1000]
+    center_to = [1000, 1000, 1000]
     ref_center = np.float32([6, 7, 8])
     axis = 'x'
-    axis_point = np.float32([ref_center[0], center_from[1], center_from[2]])
+    axis_point = np.float32([ref_center[0], center_to[1], center_to[2]])
     ref.positions += axis_point - ref_center
-    trans = center_in_axis(ag, axis, center_from=center_from)(trans_u.trajectory.ts)
+    trans = center_in_axis(ag, axis, center_to=center_to)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
@@ -352,7 +352,7 @@ def test_center_in_axis_coords_all_options(translate_universes):
     axis = 'x'
     axis_point = np.float32([ref_center[0], neworigin[1], neworigin[2]])
     ref.positions += axis_point - ref_center
-    trans = center_in_axis(ag, axis, center_of='mass', wrap=True, center_from=neworigin)(trans_u.trajectory.ts)
+    trans = center_in_axis(ag, axis, center_of='mass', wrap=True, center_to=neworigin)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
@@ -366,7 +366,7 @@ def test_center_in_plane_bad_ag(translate_universes):
         center_in_plane(bad_ag, plane)(ts)
 
 
-@pytest.mark.parametrize('center_from', (
+@pytest.mark.parametrize('center_to', (
     [0, 1],
     [0, 1, 2, 3, 4],
     np.array([0, 1]),
@@ -374,30 +374,13 @@ def test_center_in_plane_bad_ag(translate_universes):
     np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
     np.array([[0], [1], [2]]))
 )
-def test_center_in_plane_bad_center_from(translate_universes, center_from):
+def test_center_in_plane_bad_center_to(translate_universes, center_to):
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # what if the box is in the wrong format?
     plane = 'yz'
     with pytest.raises(ValueError): 
-        center_in_plane(ag, plane, center_from=center_from)(ts)
-
-
-@pytest.mark.parametrize('d', (
-    [0, 1],
-    [0, 1, 2, 3, 4],
-    np.array([0, 1]),
-    np.array([0, 1, 2, 3, 4]),
-    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
-    np.array([[0], [1], [2]]))
-)
-def test_center_in_plane_bad_d(translate_universes, d):
-    ts = translate_universes[0].trajectory.ts
-    ag = translate_universes[0].residues[0].atoms
-    # what if the box is in the wrong format?
-    plane = 'yz'
-    with pytest.raises(ValueError): 
-        center_in_plane(ag, plane, d=d)(ts)
+        center_in_plane(ag, plane, center_to=center_to)(ts)
 
    
 def test_center_in_plane_bad_pbc(translate_universes):    
@@ -455,21 +438,6 @@ def test_center_in_plane_coords_no_options(translate_universes):
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
-def test_center_in_plane_coords_with_d(translate_universes):
-    # what happens when we center the coordinates arround the center of geometry of a residue?
-    ref_u, trans_u = translate_universes
-    ref = ref_u.trajectory.ts
-    ref_center = np.float32([6, 7, 8])
-    box_center = np.float32([186., 186.5, 187.])
-    d = 10
-    plane = 'yz'
-    plane_point = np.float32([box_center[0]+d, box_center[1], box_center[2]])
-    ref.positions += plane_point - ref_center
-    ag = trans_u.residues[0].atoms
-    trans = center_in_plane(ag, plane, d=d)(trans_u.trajectory.ts)
-    assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
-
-
 def test_center_in_plane_coords_with_pbc(translate_universes):
     # what happens when we center the coordinates arround the center of geometry of a residue?
     # using pbc into account for center of geometry calculation
@@ -500,18 +468,18 @@ def test_center_in_plane_coords_with_mass(translate_universes):
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
-def test_center_in_plane_coords_with_coord_center_from(translate_universes):   
-    # what happens when we use a custom coordinate as center_from point?
+def test_center_in_plane_coords_with_coord_center_to(translate_universes):   
+    # what happens when we use a custom coordinate as center_to point?
     ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts
     ag = trans_u.residues[0].atoms
-    center_from = [1000, 1000, 1000]
+    center_to = [1000, 1000, 1000]
     box_center = np.float32([186., 186.5, 187.])
     ref_center = np.float32([6, 7, 8])
     plane = 'yz'
-    plane_point = np.float32([center_from[0], box_center[1], box_center[2]])
+    plane_point = np.float32([center_to[0], box_center[1], box_center[2]])
     ref.positions += plane_point - ref_center
-    trans = center_in_plane(ag, plane, center_from=center_from)(trans_u.trajectory.ts)
+    trans = center_in_plane(ag, plane, center_to=center_to)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
@@ -524,12 +492,11 @@ def test_center_in_plane_coords_all_options(translate_universes):
     trans_u.dimensions = [363., 364., 365., 90., 90., 90.]
     box_center = np.float32([181.5, 182., 182.5])
     neworigin = [1000, 1000, 1000]
-    d = 100
     ref_center = ag.center_of_mass(pbc=True)
     plane = 'yz'
-    plane_point = np.float32([neworigin[0]+d, box_center[1], box_center[2]])
+    plane_point = np.float32([neworigin[0], box_center[1], box_center[2]])
     ref.positions += plane_point - ref_center
-    trans = center_in_plane(ag, plane, d=d, center_from=neworigin, center_of='mass', wrap=True)(trans_u.trajectory.ts)
+    trans = center_in_plane(ag, plane, center_to=neworigin, center_of='mass', wrap=True)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
@@ -552,9 +519,9 @@ def test_center_in_axis_transformations_api(translate_universes):
     ref = ref_u.trajectory.ts
     ref_center = np.float32([6, 7, 8])
     box_center = np.float32([186., 186.5, 187.])
-    center_from = box_center
+    center_to = box_center
     axis = 'x'
-    axis_point = np.float32([ref_center[0], center_from[1], center_from[2]])
+    axis_point = np.float32([ref_center[0], center_to[1], center_to[2]])
     ref.positions += axis_point - ref_center
     ag = trans_u.residues[0].atoms
     trans_u.trajectory.add_transformations(center_in_axis(ag, axis))
