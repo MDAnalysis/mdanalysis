@@ -36,7 +36,7 @@ from functools import partial
 
 from ..lib.transformations import rotation_matrix
 
-def rotateby(angle, direction, point=None, center="geometry", wrap=False, ag=None):
+def rotateby(angle, direction, point=None, center_of="geometry", wrap=False, ag=None):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by 
     the user, combining the direction vector and a point. This point can be the center
@@ -71,7 +71,7 @@ def rotateby(angle, direction, point=None, center="geometry", wrap=False, ag=Non
     ag: AtomGroup, optional
         use this to define the center of mass or geometry as the point from where the
         rotation axis will be defined
-    center: str, optional
+    center_of: str, optional
         used to choose the method of centering on the given atom group. Can be 'geometry'
         or 'mass'
     wrap: bool, optional
@@ -100,14 +100,14 @@ def rotateby(angle, direction, point=None, center="geometry", wrap=False, ag=Non
             raise ValueError('{} is not a valid point'.format(point))
     elif ag:
         try:
-            if center == 'geometry':
+            if center_of == 'geometry':
                 center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
-            elif center == 'mass':
+            elif center_of == 'mass':
                 center_method = partial(ag.center_of_mass, pbc=pbc_arg)
             else:
-                raise ValueError('{} is not a valid argument for center'.format(center))
+                raise ValueError('{} is not a valid argument for center'.format(center_of))
         except AttributeError:
-            if center == 'mass':
+            if center_of == 'mass':
                 raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
             else:
                 raise ValueError('{} is not an AtomGroup object'.format(ag))
@@ -120,7 +120,7 @@ def rotateby(angle, direction, point=None, center="geometry", wrap=False, ag=Non
         else:
             position = point
         matrix = rotation_matrix(angle, direction, position)
-        rotation = matrix[:3, :3]
+        rotation = matrix[:3, :3].T
         translation = matrix[:3, 3]
         ts.positions= np.dot(ts.positions, rotation)
         ts.positions += translation

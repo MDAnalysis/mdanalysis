@@ -71,9 +71,7 @@ def test_rotateby_custom_position(rotate_universes):
     pos = [0,0,0]
     angle = 90
     matrix = rotation_matrix(np.deg2rad(angle), vector, pos)
-    rotation = matrix[:3, :3]
-    translation = matrix[:3, 3]
-    ref.positions = np.dot(ref.positions, rotation) + translation
+    ref_u.atoms.transform(matrix)
     transformed = rotateby(angle, vector, point=pos)(trans)
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
@@ -88,11 +86,9 @@ def test_rotateby_atomgroup_cog_nopbc(rotate_universes):
     vector = [1,0,0]
     angle = 90
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
-    rotation = matrix[:3, :3]
-    translation = matrix[:3, 3]
-    ref.positions = np.dot(ref.positions, rotation) + translation
+    ref_u.atoms.transform(matrix)
     selection = trans_u.residues[0].atoms
-    transformed = rotateby(angle, vector, ag=selection, center='geometry')(trans) 
+    transformed = rotateby(angle, vector, ag=selection, center_of='geometry')(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 def test_rotateby_atomgroup_com_nopbc(rotate_universes):
@@ -107,10 +103,8 @@ def test_rotateby_atomgroup_com_nopbc(rotate_universes):
     selection = trans_u.residues[0].atoms
     center_pos = selection.center_of_mass()
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
-    rotation = matrix[:3, :3]
-    translation = matrix[:3, 3]
-    ref.positions = np.dot(ref.positions, rotation) + translation
-    transformed = rotateby(angle, vector, ag=selection, center='mass')(trans) 
+    ref_u.atoms.transform(matrix)
+    transformed = rotateby(angle, vector, ag=selection, center_of='mass')(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
 def test_rotateby_atomgroup_cog_pbc(rotate_universes):
@@ -125,10 +119,8 @@ def test_rotateby_atomgroup_cog_pbc(rotate_universes):
     selection = trans_u.residues[0].atoms
     center_pos = selection.center_of_geometry(pbc=True)
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
-    rotation = matrix[:3, :3]
-    translation = matrix[:3, 3]
-    ref.positions = np.dot(ref.positions, rotation) + translation
-    transformed = rotateby(angle, vector, ag=selection, center='geometry', wrap=True)(trans) 
+    ref_u.atoms.transform(matrix)
+    transformed = rotateby(angle, vector, ag=selection, center_of='geometry', wrap=True)(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 def test_rotateby_atomgroup_com_pbc(rotate_universes):
@@ -143,10 +135,8 @@ def test_rotateby_atomgroup_com_pbc(rotate_universes):
     selection = trans_u.residues[0].atoms
     center_pos = selection.center_of_mass(pbc=True)
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
-    rotation = matrix[:3, :3]
-    translation = matrix[:3, 3]
-    ref.positions = np.dot(ref.positions, rotation) + translation
-    transformed = rotateby(angle, vector, ag=selection, center='mass', wrap=True)(trans) 
+    ref_u.atoms.transform(matrix)
+    transformed = rotateby(angle, vector, ag=selection, center_of='mass', wrap=True)(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
 def test_rotateby_bad_ag(rotate_universes):
@@ -190,7 +180,7 @@ def test_rotateby_bad_center(rotate_universes):
     vector = [0, 0, 1]
     bad_center = " "
     with pytest.raises(ValueError): 
-        rotateby(angle, vector, ag = ag, center=bad_center)(ts)
+        rotateby(angle, vector, ag = ag, center_of=bad_center)(ts)
     
 def test_rotateby_no_masses(rotate_universes):   
     # this universe as a box size zero
@@ -201,7 +191,7 @@ def test_rotateby_no_masses(rotate_universes):
     vector = [0, 0, 1]
     bad_center = "mass"
     with pytest.raises(AttributeError): 
-        rotateby(angle, vector, ag = ag, center=bad_center)(ts)
+        rotateby(angle, vector, ag = ag, center_of=bad_center)(ts)
 
 def test_rotateby_no_args(rotate_universes):
     # this universe as a box size zero
