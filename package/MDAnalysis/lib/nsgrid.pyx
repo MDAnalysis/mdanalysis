@@ -615,13 +615,10 @@ cdef class FastNS(object):
         cdef rvec shifted_coord, probe, dx
 
         cdef ns_int nchecked = 0
+        cdef ns_int[:] checked = np.zeros(size, dtype=np.int)
 
         cdef real cutoff2 = self.cutoff * self.cutoff
-        cdef ns_int[:] checked
         cdef ns_int npairs = 0
-
-        #cdef bint debug=False
-
 
         if not self.prepared:
             self.prepare()
@@ -636,134 +633,44 @@ cdef class FastNS(object):
         search_ids_view = search_ids
         size_search = search_ids.shape[0]
 
-        checked = np.zeros(size, dtype=np.int)
-
         results = NSResults(self.cutoff, self.coords, search_ids, self.debug)
 
         cdef bint memory_error = False
-
-        # if self.debug and debug:
-        #     print("FastNS: Debug flag is set to True for FastNS.search()")
 
         with nogil:
             for i in range(size_search):
                 if memory_error:
                     break
                 current_beadid = search_ids_view[i]
-
                 cellindex = self.grid.cellids[current_beadid]
                 self.grid.cellid2cellxyz(cellindex, cellxyz)
-
-                # if self.debug and debug:
-                #     with gil:
-                #         print("FastNS: Checking neighbors for bead #{} ({:.3f},{:.3f},{:.3f})->rect({:.3f},{:.3f},{:.3f}) - cell[{},{},{}]:" .format(
-                #             current_beadid,
-                #             self.coords[current_beadid, XX], self.coords[current_beadid, YY], self.coords[current_beadid, ZZ],
-                #             self.coords_bbox[current_beadid, XX], self.coords_bbox[current_beadid, YY], self.coords_bbox[current_beadid, ZZ],
-                #             cellxyz[XX], cellxyz[YY], cellxyz[ZZ]))
-
-
                 for xi in range(DIM):
                     if memory_error:
                         break
-
-                    if not self.box.is_triclinic:
-                        # If box is not triclinic (ie rect), when can already check if the shift can be skipped (ie cutoff inside the cell)
-                        if xi == 0:
-                            if self.coords_bbox[current_beadid, XX] - self.cutoff > self.grid.cellsize[XX] * cellxyz[XX]:
-                                # if self.debug and debug:
-                                #     with gil:
-                                #         print("FastNS:   -> Bead X={:.3f}, Cell X={:.3f}, cutoff={:.3f} -> -X shift ignored".format(
-                                #             self.coords_bbox[current_beadid, XX],
-                                #             self.grid.cellsize[XX] * cellxyz[XX],
-                                #             self.cutoff
-                                #         ))
-                                continue
-
-                        if xi == 2:
-                            if self.coords_bbox[current_beadid, XX] + self.cutoff < self.grid.cellsize[XX] * (cellxyz[XX] + 1):
-                                # if self.debug and debug:
-                                #     with gil:
-                                #         print(
-                                #             "FastNS:   -> Bead X={:.3f}, Next cell X={:.3f}, cutoff={:.3f} -> +X shift ignored".format(
-                                #                 self.coords_bbox[current_beadid, XX],
-                                #                 self.grid.cellsize[XX] * (cellxyz[XX] + 1),
-                                #                 self.cutoff
-                                #             ))
-                                continue
-
                     for yi in range(DIM):
                         if memory_error:
                             break
-
-                        if not self.box.is_triclinic:
-                            if yi == 0:
-                                if self.coords_bbox[current_beadid, YY] - self.cutoff > self.grid.cellsize[YY] * cellxyz[YY]:
-                                    # if self.debug and debug:
-                                    #     with gil:
-                                    #         print("FastNS:   -> Bead Y={:.3f}, Cell Y={:.3f}, cutoff={:.3f} -> -Y shift is ignored".format(
-                                    #             self.coords_bbox[current_beadid, YY],
-                                    #             self.grid.cellsize[YY] * cellxyz[YY],
-                                    #             self.cutoff,
-                                    #         ))
-                                    continue
-
-                            if yi == 2:
-                                if self.coords_bbox[current_beadid, YY] + self.cutoff < self.grid.cellsize[YY] * (cellxyz[YY] + 1):
-                                    # if self.debug and debug:
-                                    #     with gil:
-                                    #         print("FastNS:   -> Bead Y={:.3f}, Next cell Y={:.3f}, cutoff={:.3f} -> +Y shift is ignored".format(
-                                    #             self.coords_bbox[current_beadid, YY],
-                                    #             self.grid.cellsize[YY] * (cellxyz[YY] +1),
-                                    #             self.cutoff,
-                                    #         ))
-                                    continue
-
-
                         for zi in range(DIM):
-                            if not self.box.is_triclinic:
-                                if zi == 0:
-                                    if self.coords_bbox[current_beadid, ZZ] - self.cutoff > self.grid.cellsize[ZZ] * cellxyz[ZZ]:
-                                        if self.coords_bbox[current_beadid, ZZ] - self.cutoff > 0:
-                                            # if self.debug and debug:
-                                            #     with gil:
-                                            #         print("FastNS:   -> Bead Z={:.3f}, Cell Z={:.3f}, cutoff={:.3f} -> -Z shift is ignored".format(self.coords_bbox[current_beadid, ZZ], self.grid.cellsize[ZZ] * cellxyz[ZZ], self.cutoff))
-                                            continue
-
-                                if zi == 2:
-                                    if self.coords_bbox[current_beadid, ZZ] + self.cutoff < self.grid.cellsize[ZZ] * (cellxyz[ZZ] + 1):
-                                        if self.coords_bbox[current_beadid, ZZ] + self.cutoff < self.box.c_pbcbox.box[ZZ][ZZ]:
-                                            # if self.debug and debug:
-                                            #     with gil:
-                                            #         print("FastNS:   -> Bead Z={:.3f}, Next cell Z={:.3f}, cutoff={:.3f} -> +Z shift is ignored".format(self.coords_bbox[current_beadid, ZZ], self.grid.cellsize[XX] * (cellxyz[ZZ] + 1), self.cutoff))
-                                            continue
-
+                            if memory_error:
+                                break
                             # Calculate and/or reinitialize shifted coordinates
                             shifted_coord[XX] = self.coords[current_beadid, XX] + (xi - 1) * self.grid.cellsize[XX]
                             shifted_coord[YY] = self.coords[current_beadid, YY] + (yi - 1) * self.grid.cellsize[YY]
                             shifted_coord[ZZ] = self.coords[current_beadid, ZZ] + (zi - 1) * self.grid.cellsize[ZZ]
-
                             probe[XX] = self.coords[current_beadid, XX] + (xi - 1) * self.cutoff
                             probe[YY] = self.coords[current_beadid, YY] + (yi - 1) * self.cutoff
                             probe[ZZ] = self.coords[current_beadid, ZZ] + (zi - 1) * self.cutoff
-
                             # Make sure the shifted coordinates is inside the brick-shaped box
                             for m in range(DIM - 1, -1, -1):
-
                                 while shifted_coord[m] < 0:
                                     for d in range(m+1):
                                         shifted_coord[d] += self.box.c_pbcbox.box[m][d]
-
-
                                 while shifted_coord[m] >= self.box.c_pbcbox.box[m][m]:
                                     for d in range(m+1):
                                         shifted_coord[d] -= self.box.c_pbcbox.box[m][d]
-
                                 while probe[m] < 0:
                                     for d in range(m+1):
                                         probe[d] += self.box.c_pbcbox.box[m][d]
-
-
                                 while probe[m] >= self.box.c_pbcbox.box[m][m]:
                                     for d in range(m+1):
                                         probe[d] -= self.box.c_pbcbox.box[m][d]
@@ -772,58 +679,12 @@ cdef class FastNS(object):
                             cellindex_adjacent = self.grid.coord2cellid(shifted_coord)
                             cellindex_probe = self.grid.coord2cellid(probe)
 
-                            if cellindex == cellindex_probe and xi != 1 and yi != 1 and zi != 1:
-                                # if self.debug and debug:
-                                #     with gil:
-                                #         print("FastNS:   Grid shift [{}][{}][{}]: Cutoff is inside current cell -> This shift is ignored".format(
-                                #             xi - 1,
-                                #             yi -1,
-                                #             zi -1
-                                #         ))
-                                continue
-
-                            # if self.debug and debug:
-                            #     self.grid.cellid2cellxyz(cellindex_adjacent, debug_cellxyz)
-                            #     with gil:
-                            #         dist_shift = self.box.fast_distance(&self.coords[current_beadid, XX], shifted_coord)
-                            #         grid_shift = np.array([(xi - 1) * self.grid.cellsize[XX],
-                            #                                (yi - 1) * self.grid.cellsize[YY],
-                            #                                (zi - 1) * self.grid.cellsize[ZZ]])
-                            #         print("FastNS:   -> Checking cell#{} ({},{},{}) for neighbors (dshift={:.3f}, grid_shift=({:.3f},{:.3f},{:.3f}->{:.3f})".format(
-                            #             cellindex,
-                            #             debug_cellxyz[XX], debug_cellxyz[YY], debug_cellxyz[ZZ],
-                            #             dist_shift,
-                            #             grid_shift[XX], grid_shift[YY], grid_shift[ZZ],
-                            #             np.sqrt(np.sum(grid_shift**2))
-                            #         ))
-
-
                             for j in range(self.grid.nbeads[cellindex_adjacent]):
                                 bid = self.grid.beadids[cellindex_adjacent * self.grid.nbeads_per_cell + j]
-
                                 if checked[bid] != 0:
                                     continue
-
                                 d2 = self.box.fast_distance2(&self.coords_bbox[current_beadid, XX], &self.coords_bbox[bid, XX])
-
-                                # if self.debug:
-                                #     self.grid.cellid2cellxyz(cellindex, debug_cellxyz)
-                                #     with gil:
-                                #         print(
-                                #             "Beads #{} (cell[{},{},{}]-coords[{:.3f},{:.3f},{:.3f}]) and #{} (cell[{},{},{}]-coords[{:.3f},{:.3f},{:.3f}]) are tested (d2={:.3f})".format(
-                                #                 current_beadid,
-                                #                 cellxyz[XX], cellxyz[YY], cellxyz[ZZ],
-                                #                 self.coords_bbox[current_beadid, XX],
-                                #                 self.coords_bbox[current_beadid, YY],
-                                #                 self.coords_bbox[current_beadid, ZZ],
-                                #                 bid,
-                                #                 debug_cellxyz[XX], debug_cellxyz[YY], debug_cellxyz[ZZ],
-                                #                 self.coords_bbox[bid, XX], self.coords_bbox[bid, YY],
-                                #                 self.coords_bbox[bid, ZZ],
-                                #                 d2))
-
                                 if d2 < cutoff2:
-
                                     if d2 < EPSILON:
                                         continue
                                     elif results.add_neighbors(current_beadid, bid, d2) != OK:
@@ -831,30 +692,6 @@ cdef class FastNS(object):
                                         break
                                     npairs += 1
                 checked[current_beadid] = 1
-
         if memory_error:
             raise MemoryError("Could not allocate memory to store NS results")
-
-
-        if self.debug:
-            print("Total number of pairs={}".format(npairs))
-
-            # ref_bead = 13937
-            # beads = np.array([4398, 4401, 13939, 13940, 13941, 17987, 23518, 23519, 23521, 23734, 47451]) - 1
-            # for bid in beads:
-            #     self.box.fast_pbc_dx(&self.coords[ref_bead, XX], &self.coords[bid, XX], dx)
-            #     dx_py = np.array([dx[XX], dx[YY], dx[ZZ]])
-            #     self.box.fast_pbc_dx(&self.coords_bbox[ref_bead, XX], &self.coords_bbox[bid, XX], dx)
-            #     rect_dx_py = np.array([dx[XX], dx[YY], dx[ZZ]])
-            #     self.grid.cellid2cellxyz(self.grid.coord2cellid(&self.coords_bbox[bid, XX]), cellxyz)
-            #     print("Bead #{} ({:.3f},{:.3f},{:.3f})->rect({:.3f},{:.3f},{:.3f}) - cell[{},{},{}]: dx=[{:.3f},{:.3f},{:.3f}] -> dist: {:.3f} ({})".format(
-            #         bid,
-            #         self.coords[bid, XX], self.coords[bid, YY], self.coords[bid,ZZ],
-            #         self.coords_bbox[bid, XX], self.coords_bbox[bid, YY], self.coords_bbox[bid,ZZ],
-            #         cellxyz[XX], cellxyz[YY], cellxyz[ZZ],
-            #         dx[XX], dx[YY], dx[ZZ],
-            #         np.sqrt(np.sum(dx_py**2)),
-            #         self.box.fast_distance(&self.coords[ref_bead, XX], &self.coords[bid, XX]) <= self.cutoff,
-            #      ))
-
         return results
