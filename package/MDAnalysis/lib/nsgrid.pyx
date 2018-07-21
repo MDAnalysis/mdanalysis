@@ -46,6 +46,9 @@ DEF EPSILON = 1e-5
 DEF BOX_MARGIN=1.0010
 DEF MAX_NTRICVEC=12
 
+DEF OK=0
+DEF ERROR=1
+
 # Used to handle memory allocation
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from libc.math cimport sqrt
@@ -261,7 +264,7 @@ cdef class NSResults(object):
                 raise MemoryError("Could not allocate memory for NSResults.pair_distances2 "
                                   "({} bits requested)".format(sizeof(real) * self.allocation_size))
         else:
-            if self.resize(self.allocation_size + <ns_int> (self.allocation_size * 0.5 + 1)) == 0:
+            if self.resize(self.allocation_size) != OK:
                 raise MemoryError("foo")
 
         self.npairs = 0
@@ -278,13 +281,13 @@ cdef class NSResults(object):
         PyMem_Free(self.pair_distances2)
 
     cdef int add_neighbors(self, ns_int beadid_i, ns_int beadid_j, real distance2) nogil:
-        # Important: If this function returns 0, it means that memory allocation failed
+        # Important: If this function returns ERROR, it means that memory allocation failed
 
         # Reallocate memory if needed
         if self.npairs >= self.allocation_size:
             # We need to reallocate memory
-            if self.resize(self.allocation_size + <ns_int> (self.allocation_size * 0.5 + 1)) == 0:
-                return 0
+            if self.resize(self.allocation_size + <ns_int> (self.allocation_size * 0.5 + 1)) != OK:
+                return ERROR
 
         # Actually store pair and distance squared
         if beadid_i < beadid_j:
@@ -296,20 +299,20 @@ cdef class NSResults(object):
         self.pair_distances2[self.npairs] = distance2
         self.npairs += 1
 
-        return self.npairs
+        return OK
 
     cdef int resize(self, ns_int new_size) nogil:
         # Important: If this function returns 0, it means that memory allocation failed
 
         if new_size < self.npairs:
             # Silently ignored the request
-            return 1
+            return OK
 
         if self.allocation_size >= new_size:
             if self.debug:
                 with gil:
                     print("NSresults: Reallocation requested but not needed ({} requested but {} already allocated)".format(new_size, self.allocation_size))
-            return 1
+            return OK
 
         self.allocation_size = new_size
 
@@ -323,12 +326,12 @@ cdef class NSResults(object):
             self.pair_distances2 = <real *> PyMem_Realloc(self.pair_distances2, sizeof(real) * self.allocation_size)
 
         if not self.pairs:
-            return 0
+            return ERROR
 
         if not self.pair_distances2:
-            return 0
+            return ERROR
 
-        return 1
+        return OK
 
     def get_pairs(self):
         cdef ns_int i
@@ -823,14 +826,7 @@ cdef class FastNS(object):
 
                                     if d2 < EPSILON:
                                         continue
-
-                                    # if self.debug and debug:
-                                    #     self.grid.cellid2cellxyz(cellindex, debug_cellxyz)
-                                    #     with gil:
-                                    #         self.box.fast_pbc_dx(&self.coords[current_beadid, XX], &self.coords[bid, XX], dx)
-                                    #         dx_py = np.array([dx[XX], dx[YY], dx[ZZ]])
-                                    #         print("FastNS:       \_ Neighbor found:  bead#{} (cell[{},{},{}]) -> dx={} -> d={:.3f}".format(bid, debug_cellxyz[XX], debug_cellxyz[YY], debug_cellxyz[ZZ], dx_py, np.sqrt(d2)))
-                                    if results.add_neighbors(current_beadid, bid, d2) == 0:
+                                    elif results.add_neighbors(current_beadid, bid, d2) != OK:
                                         memory_error = True
                                         break
                                     npairs += 1
