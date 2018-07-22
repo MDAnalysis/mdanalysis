@@ -37,20 +37,26 @@ from functools import partial
 from ..lib.transformations import rotation_matrix
 from ..lib.util import get_weights
 
-def rotateby(angle, direction, point=None, weights=None, wrap=False, ag=None):
+def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by 
     the user, combining the direction vector and a point. This point can be the center
     of geometry or the center of mass of a user defined AtomGroup, or a list defining custom
-    coordinates. 
-    e.g. rotate the coordinates by 90 degrees on a x axis centered on a given atom group:
+    coordinates.
+    
+    Examples
+    --------
+    
+    e.g. rotate the coordinates by 90 degrees on a axis formed by the [0,0,1] vector and 
+    the center of geometry of a given AtomGroup:
     
     .. code-block:: python
     
         ts = u.trajectory.ts
         angle = 90
         ag = u.atoms()
-        rotated = MDAnalysis.transformations.rotate(angle, ag)(ts)
+        d = [0,0,1]
+        rotated = MDAnalysis.transformations.rotate(angle, direction=d, ag=ag)(ts)
     
     e.g. rotate the coordinates by a custom axis:
     
@@ -60,7 +66,7 @@ def rotateby(angle, direction, point=None, weights=None, wrap=False, ag=None):
         angle = 90
         p = [1,2,3]
         d = [0,0,1]
-        rotated = MDAnalysis.transformations.rotate(angle, point=point, direction=d)(ts) 
+        rotated = MDAnalysis.transformations.rotate(angle, direction=d, point=point)(ts) 
     
     Parameters
     ----------
@@ -97,10 +103,18 @@ def rotateby(angle, direction, point=None, weights=None, wrap=False, ag=None):
 
     '''
     angle = np.deg2rad(angle)
+    try:
+        direction = np.asarray(direction, np.float32)
+        if direction.shape != (3, ) and direction.shape != (1, 3):
+            raise ValueError('{} is not a valid direction'.format(direction))
+        direction = direction.reshape(3, )
+    except ValueError:
+        raise ValueError('{} is not a valid direction'.format(direction))
     if point:
         point = np.asarray(point, np.float32)
         if point.shape != (3, ) and point.shape != (1, 3):
             raise ValueError('{} is not a valid point'.format(point))
+        point = point.reshape(3, )
     elif ag:
         try:
             atoms = ag.atoms
