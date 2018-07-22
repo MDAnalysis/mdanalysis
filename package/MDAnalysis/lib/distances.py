@@ -565,8 +565,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None, box=N
         Distance between two atoms corresponding to the (i, j) indices
         in pairs.
     """
-    from .pkdtree import Periodic_cKDTree
-    from Bio.KDTree import KDTree
+    from .pkdtree import PeriodicKDTree
 
     pairs, distances = [], []
 
@@ -581,7 +580,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None, box=N
     _check_array(reference, 'reference')
     _check_array(configuration, 'configuration')
 
-    kdtree = Periodic_cKDTree(box=box)
+    kdtree = PeriodicKDTree(box=box)
     cut = max_cutoff if box is not None else None
     kdtree.set_coords(configuration, cutoff=cut)
     # Search for every query point

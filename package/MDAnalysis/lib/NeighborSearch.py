@@ -30,11 +30,11 @@ This module contains classes that allow neighbor searches directly with
 from __future__ import absolute_import
 
 import numpy as np
-from Bio.KDTree import KDTree
-from MDAnalysis.lib.pkdtree import Periodic_cKDTree
+from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.lib.util import unique_int_1d
 
 from MDAnalysis.core.groups import AtomGroup, Atom
+
 
 class AtomNeighborSearch(object):
     """This class can be used to find all atoms/residues/segments within the
@@ -65,7 +65,7 @@ class AtomNeighborSearch(object):
         self.atom_group = atom_group
         self._u = atom_group.universe
         self._box = box
-        self.kdtree = Periodic_cKDTree(box=box, leafsize=bucket_size)
+        self.kdtree = PeriodicKDTree(box=box, leafsize=bucket_size)
 
     def search(self, atoms, radius, level='A'):
         """
@@ -87,7 +87,6 @@ class AtomNeighborSearch(object):
         else:
             positions = atoms.positions
 
-        
         # check if already built
         if self.kdtree._built:
             if self._box is not None:
