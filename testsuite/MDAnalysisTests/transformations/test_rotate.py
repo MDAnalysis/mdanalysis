@@ -88,7 +88,7 @@ def test_rotateby_atomgroup_cog_nopbc(rotate_universes):
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
     ref_u.atoms.transform(matrix)
     selection = trans_u.residues[0].atoms
-    transformed = rotateby(angle, vector, ag=selection, center_of='geometry')(trans) 
+    transformed = rotateby(angle, vector, ag=selection, weights=None)(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 def test_rotateby_atomgroup_com_nopbc(rotate_universes):
@@ -104,7 +104,7 @@ def test_rotateby_atomgroup_com_nopbc(rotate_universes):
     center_pos = selection.center_of_mass()
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
     ref_u.atoms.transform(matrix)
-    transformed = rotateby(angle, vector, ag=selection, center_of='mass')(trans) 
+    transformed = rotateby(angle, vector, ag=selection, weights='mass')(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
 def test_rotateby_atomgroup_cog_pbc(rotate_universes):
@@ -120,7 +120,7 @@ def test_rotateby_atomgroup_cog_pbc(rotate_universes):
     center_pos = selection.center_of_geometry(pbc=True)
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
     ref_u.atoms.transform(matrix)
-    transformed = rotateby(angle, vector, ag=selection, center_of='geometry', wrap=True)(trans) 
+    transformed = rotateby(angle, vector, ag=selection, weights=None, wrap=True)(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 def test_rotateby_atomgroup_com_pbc(rotate_universes):
@@ -136,7 +136,7 @@ def test_rotateby_atomgroup_com_pbc(rotate_universes):
     center_pos = selection.center_of_mass(pbc=True)
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
     ref_u.atoms.transform(matrix)
-    transformed = rotateby(angle, vector, ag=selection, center_of='mass', wrap=True)(trans) 
+    transformed = rotateby(angle, vector, ag=selection, weights='mass', wrap=True)(trans) 
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
     
 def test_rotateby_bad_ag(rotate_universes):
@@ -147,7 +147,7 @@ def test_rotateby_bad_ag(rotate_universes):
     angle = 90
     vector = [0, 0, 1]
     bad_ag = 1
-    with pytest.raises(ValueError): 
+    with pytest.raises(AttributeError): 
         rotateby(angle, vector, ag = bad_ag)(ts)
 
 def test_rotateby_bad_position(rotate_universes):
@@ -180,7 +180,7 @@ def test_rotateby_bad_center(rotate_universes):
     vector = [0, 0, 1]
     bad_center = " "
     with pytest.raises(ValueError): 
-        rotateby(angle, vector, ag = ag, center_of=bad_center)(ts)
+        rotateby(angle, vector, ag = ag, weights=bad_center)(ts)
     
 def test_rotateby_no_masses(rotate_universes):   
     # this universe as a box size zero
@@ -190,8 +190,8 @@ def test_rotateby_no_masses(rotate_universes):
     angle = 90
     vector = [0, 0, 1]
     bad_center = "mass"
-    with pytest.raises(AttributeError): 
-        rotateby(angle, vector, ag = ag, center_of=bad_center)(ts)
+    with pytest.raises(ValueError): 
+        rotateby(angle, vector, ag = ag, weights=bad_center)(ts)
 
 def test_rotateby_no_args(rotate_universes):
     # this universe as a box size zero

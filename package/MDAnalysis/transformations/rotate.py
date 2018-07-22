@@ -35,8 +35,9 @@ import numpy as np
 from functools import partial
 
 from ..lib.transformations import rotation_matrix
+from ..lib.util import get_weights
 
-def rotateby(angle, direction, point=None, center_of="geometry", wrap=False, ag=None):
+def rotateby(angle, direction, point=None, weights=None, wrap=False, ag=None):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by 
     the user, combining the direction vector and a point. This point can be the center
@@ -69,11 +70,14 @@ def rotateby(angle, direction, point=None, center_of="geometry", wrap=False, ag=
         vector that will define the direction of a custom axis of rotation from the
         provided point.
     ag: AtomGroup, optional
-        use this to define the center of mass or geometry as the point from where the
-        rotation axis will be defined
-    center_of: str, optional
-        used to choose the method of centering on the given atom group. Can be 'geometry'
-        or 'mass'
+        use the eighted center of an AtomGroup as the point from where the rotation axis
+        will be defined
+    weights: {"mass", ``None``} or array_like, optional
+        define the weights of the atoms when calculating the center of the AtomGroup.
+        With ``"mass"`` uses masses as weights; with ``None`` weigh each atom equally.
+        If a float array of the same length as `ag` is provided, use each element of
+        the `array_like` as a weight for the corresponding atom in `ag`. Default is 
+        None.
     wrap: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry. Default is `False`, no changes
@@ -92,7 +96,6 @@ def rotateby(angle, direction, point=None, center_of="geometry", wrap=False, ag=
     after rotating the trajectory.
 
     '''
-    pbc_arg = wrap
     angle = np.deg2rad(angle)
     if point:
         point = np.asarray(point, np.float32)
@@ -100,17 +103,14 @@ def rotateby(angle, direction, point=None, center_of="geometry", wrap=False, ag=
             raise ValueError('{} is not a valid point'.format(point))
     elif ag:
         try:
-            if center_of == 'geometry':
-                center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
-            elif center_of == 'mass':
-                center_method = partial(ag.center_of_mass, pbc=pbc_arg)
-            else:
-                raise ValueError('{} is not a valid argument for center'.format(center_of))
+            weights = get_weights(ag.atoms, weights=weights)
+        except (ValueError, TypeError):
+            raise ValueError("weights must be {'mass', None} or an iterable of the "
+                            "same size as the atomgroup.")
+        try:
+            center_method = partial(ag.atoms.center, weights, pbc=wrap)    
         except AttributeError:
-            if center_of == 'mass':
-                raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
-            else:
-                raise ValueError('{} is not an AtomGroup object'.format(ag))
+            raise ValueError('{} is not an AtomGroup object'.format(ag))
     else:
         raise ValueError('A point or an AtomGroup must be specified')
     
