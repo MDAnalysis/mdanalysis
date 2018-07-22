@@ -103,14 +103,16 @@ def rotateby(angle, direction, point=None, weights=None, wrap=False, ag=None):
             raise ValueError('{} is not a valid point'.format(point))
     elif ag:
         try:
-            weights = get_weights(ag.atoms, weights=weights)
-        except (ValueError, TypeError):
-            raise ValueError("weights must be {'mass', None} or an iterable of the "
-                            "same size as the atomgroup.")
-        try:
-            center_method = partial(ag.atoms.center, weights, pbc=wrap)    
+            atoms = ag.atoms
         except AttributeError:
             raise ValueError('{} is not an AtomGroup object'.format(ag))
+        else:
+            try:
+                weights = get_weights(atoms, weights=weights)
+            except (ValueError, TypeError):
+                raise TypeError("weights must be {'mass', None} or an iterable of the "
+                                "same size as the atomgroup.")
+        center_method = partial(atoms.center, weights, pbc=wrap)
     else:
         raise ValueError('A point or an AtomGroup must be specified')
     

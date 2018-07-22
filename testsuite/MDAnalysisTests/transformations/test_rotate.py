@@ -147,7 +147,7 @@ def test_rotateby_bad_ag(rotate_universes):
     angle = 90
     vector = [0, 0, 1]
     bad_ag = 1
-    with pytest.raises(AttributeError): 
+    with pytest.raises(ValueError): 
         rotateby(angle, vector, ag = bad_ag)(ts)
 
 def test_rotateby_bad_position(rotate_universes):
@@ -189,7 +189,7 @@ def test_rotateby_bad_weights(rotate_universes, weights):
     angle = 90
     vector = [0, 0, 1]
     bad_weights = " "
-    with pytest.raises(ValueError): 
+    with pytest.raises(TypeError): 
         rotateby(angle, vector, ag = ag, weights=bad_weights)(ts)
     
 def test_rotateby_no_masses(rotate_universes):   
@@ -200,7 +200,7 @@ def test_rotateby_no_masses(rotate_universes):
     angle = 90
     vector = [0, 0, 1]
     bad_center = "mass"
-    with pytest.raises(ValueError): 
+    with pytest.raises(TypeError): 
         rotateby(angle, vector, ag = ag, weights=bad_center)(ts)
 
 def test_rotateby_no_args(rotate_universes):
