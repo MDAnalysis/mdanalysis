@@ -127,6 +127,8 @@ def center_in_box(ag, weights=None, center_to=None, wrap=False):
         center_to = np.asarray(center_to, np.float32)
         if center_to.shape != (3, ) and center_to.shape != (1, 3):
             raise ValueError('{} is not a valid point'.format(center_to))
+        else: 
+            center_to = center_to.reshape(3, )
     try:
         weights = get_weights(ag.atoms, weights=weights)
     except (ValueError, TypeError):
@@ -284,12 +286,10 @@ def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False):
     MDAnalysis.coordinates.base.Timestep
     
     """
-    pbc_arg = wrap
-    if axis is not None:
-        if axis not in ('x', 'y', 'z'):
-            raise ValueError('{} is not a valid axis'.format(axis))
-        axes = {'x' : 0, 'y': 1, 'z' : 2}
-        axis = axes[axis]
+    if axis not in ('x', 'y', 'z'):
+        raise ValueError('{} is not a valid axis'.format(axis))
+    axes = {'x' : 0, 'y': 1, 'z' : 2}
+    axis = axes[axis]
     if center_to is not None:
         if isinstance(center_to, string_types):
             if not center_to == 'center':
