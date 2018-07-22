@@ -90,11 +90,11 @@ def test_center_in_box_bad_ag(translate_universes):
     ts = translate_universes[0].trajectory.ts
     # what happens if something other than an AtomGroup is given?
     bad_ag = 1
-    with pytest.raises(ValueError): 
+    with pytest.raises(AttributeError): 
         center_in_box(bad_ag)(ts)
 
 
-@pytest.mark.parametrize('point', (
+@pytest.mark.parametrize('center_to', (
     [0, 1],
     [0, 1, 2, 3, 4],
     np.array([0, 1]),
@@ -102,12 +102,13 @@ def test_center_in_box_bad_ag(translate_universes):
     np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
     np.array([[0], [1], [2]]))
 )
-def test_center_in_box_bad_point(translate_universes, point):
+def test_center_in_box_bad_center_to(translate_universes, center_to):
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
+    bad_center_to = center_to
     # what if the box is in the wrong format?
     with pytest.raises(ValueError): 
-        center_in_box(ag, point=point)(ts)
+        center_in_box(ag, center_to=bad_center_to)(ts)
 
    
 def test_center_in_box_bad_pbc(translate_universes):    
@@ -120,14 +121,23 @@ def test_center_in_box_bad_pbc(translate_universes):
         center_in_box(ag, wrap=True)(ts)
 
 
-def test_center_in_box_bad_center(translate_universes):
+@pytest.mark.parametrize('weights', (
+    " ",
+    "totallynotmasses",
+    123456789,
+    [0, 1, 2, 3, 4],
+    np.array([0, 1]),
+    np.array([0, 1, 2, 3, 4]),
+    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]))
+)
+def test_center_in_box_bad_weights(translate_universes, weights):
     # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # what if a wrong center type name is passed?
-    bad_center = " "
-    with pytest.raises(ValueError): 
-        center_in_box(ag, center_of=bad_center)(ts)
+    bad_weights = " "
+    with pytest.raises(TypeError): 
+        center_in_box(ag, weights=bad_weights)(ts)
 
 
 def test_center_in_box_no_masses(translate_universes):   
@@ -136,7 +146,7 @@ def test_center_in_box_no_masses(translate_universes):
     ag = translate_universes[0].residues[0].atoms
     # if the universe has no masses and `mass` is passed as the center arg
     bad_center = "mass"
-    with pytest.raises(AttributeError): 
+    with pytest.raises(TypeError): 
         center_in_box(ag, center_of=bad_center)(ts)
 
 
@@ -182,7 +192,7 @@ def test_center_in_box_coords_with_mass(translate_universes):
     box_center = np.float32([186., 186.5, 187.])
     ref_center = ag.center_of_mass()
     ref.positions += box_center - ref_center
-    trans = center_in_box(ag, center_of="mass")(trans_u.trajectory.ts)
+    trans = center_in_box(ag, weights="mass")(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
@@ -195,7 +205,7 @@ def test_center_in_box_coords_with_box(translate_universes):
     box_center = np.float32(newpoint)
     ref_center = np.float32([6, 7, 8])
     ref.positions += box_center - ref_center
-    trans = center_in_box(ag, point=newpoint)(trans_u.trajectory.ts)
+    trans = center_in_box(ag, center_to=newpoint)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
@@ -209,7 +219,7 @@ def test_center_in_box_coords_all_options(translate_universes):
     box_center = np.float32(newpoint)
     ref_center = ag.center_of_mass(pbc=True)
     ref.positions += box_center - ref_center
-    trans = center_in_box(ag, center_of='mass', wrap=True, point=newpoint)(trans_u.trajectory.ts)
+    trans = center_in_box(ag, weights='mass', wrap=True, center_to=newpoint)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 def test_center_in_axis_bad_ag(translate_universes):
@@ -218,7 +228,7 @@ def test_center_in_axis_bad_ag(translate_universes):
     # what happens if something other than an AtomGroup is given?
     bad_ag = 1
     axis = 'x'
-    with pytest.raises(ValueError): 
+    with pytest.raises(AttributeError): 
         center_in_axis(bad_ag, axis)(ts)
 
 
@@ -250,15 +260,24 @@ def test_center_in_axis_bad_pbc(translate_universes):
         center_in_axis(ag,axis, wrap=True)(ts)
 
 
-def test_center_in_axis_bad_center_of(translate_universes):
+@pytest.mark.parametrize('weights', (
+    " ",
+    "totallynotmasses",
+    123456789,
+    [0, 1, 2, 3, 4],
+    np.array([0, 1]),
+    np.array([0, 1, 2, 3, 4]),
+    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]))
+)
+def test_center_in_axis_bad_weights(translate_universes, weights):
     # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # what if a wrong center type name is passed?
-    bad_center = " "
+    bad_weights = " "
     axis = 'x'
-    with pytest.raises(ValueError):
-        center_in_axis(ag, axis, center_of=bad_center)(ts)
+    with pytest.raises(TypeError):
+        center_in_axis(ag, axis, weights=bad_weights)(ts)
 
 
 def test_center_in_axis_no_masses(translate_universes):   
@@ -266,10 +285,10 @@ def test_center_in_axis_no_masses(translate_universes):
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # if the universe has no masses and `mass` is passed as the center arg
-    bad_center = "mass"
+    bad_weights = "mass"
     axis = 'x'
-    with pytest.raises(AttributeError): 
-        center_in_axis(ag, axis, center_of=bad_center)(ts)
+    with pytest.raises(TypeError): 
+        center_in_axis(ag, axis, weights=bad_weights)(ts)
 
 def test_center_in_axis_coords_dtype(translate_universes):
     # is the dtype of the coordinates correct? 
@@ -323,7 +342,7 @@ def test_center_in_axis_coords_with_mass(translate_universes):
     axis = 'x'
     axis_point = np.float32([ref_center[0], center_to[1], center_to[2]])
     ref.positions += axis_point - ref_center
-    trans = center_in_axis(ag, axis, center_of="mass")(trans_u.trajectory.ts)
+    trans = center_in_axis(ag, axis, weights="mass")(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
@@ -352,7 +371,7 @@ def test_center_in_axis_coords_all_options(translate_universes):
     axis = 'x'
     axis_point = np.float32([ref_center[0], neworigin[1], neworigin[2]])
     ref.positions += axis_point - ref_center
-    trans = center_in_axis(ag, axis, center_of='mass', wrap=True, center_to=neworigin)(trans_u.trajectory.ts)
+    trans = center_in_axis(ag, axis, weights='mass', wrap=True, center_to=neworigin)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
@@ -362,7 +381,7 @@ def test_center_in_plane_bad_ag(translate_universes):
     # what happens if something other than an AtomGroup is given?
     bad_ag = 1
     plane = 'yz'
-    with pytest.raises(ValueError): 
+    with pytest.raises(AttributeError): 
         center_in_plane(bad_ag, plane)(ts)
 
 
@@ -394,15 +413,15 @@ def test_center_in_plane_bad_pbc(translate_universes):
         center_in_plane(ag, plane, wrap=True)(ts)
 
 
-def test_center_in_plane_bad_center_of(translate_universes):
+def test_center_in_plane_bad_weights(translate_universes):
     # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # what if a wrong center type name is passed?
-    bad_center = " "
+    bad_weights = " "
     plane = 'yz'
-    with pytest.raises(ValueError):
-        center_in_plane(ag, plane, center_of=bad_center)(ts)
+    with pytest.raises(TypeError):
+        center_in_plane(ag, plane, weights=bad_weights)(ts)
 
 
 def test_center_in_planes_no_masses(translate_universes):   
@@ -410,10 +429,10 @@ def test_center_in_planes_no_masses(translate_universes):
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # if the universe has no masses and `mass` is passed as the center arg
-    bad_center = "mass"
+    weights = "mass"
     plane = 'yz'
-    with pytest.raises(AttributeError): 
-        center_in_plane(ag, plane, center_of=bad_center)(ts)
+    with pytest.raises(TypeError): 
+        center_in_plane(ag, plane, weights=weights)(ts)
 
 def test_center_in_plane_coords_dtype(translate_universes):
     # is the dtype of the coordinates correct? 
@@ -432,7 +451,7 @@ def test_center_in_plane_coords_no_options(translate_universes):
     box_center = np.float32([186., 186.5, 187.])
     ref_center = np.float32([6, 7, 8])
     plane = 'yz'
-    plane_point = box_center
+    plane_point = np.asarray([box_center[0], ref_center[1], ref_center[2]], np.float32)
     ref.positions += plane_point - ref_center
     trans = center_in_plane(ag, plane)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
@@ -448,7 +467,7 @@ def test_center_in_plane_coords_with_pbc(translate_universes):
     ag = trans_u.residues[24].atoms
     ref_center = ag.center_of_geometry(pbc=True)
     plane = 'yz'
-    plane_point = box_center
+    plane_point = np.asarray([box_center[0], ref_center[1], ref_center[2]], np.float32)
     ref.positions += plane_point - ref_center
     trans = center_in_plane(ag, plane, wrap=True)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
@@ -462,9 +481,9 @@ def test_center_in_plane_coords_with_mass(translate_universes):
     box_center = np.float32([186., 186.5, 187.])
     ref_center = ag.center_of_mass()
     plane = 'yz'
-    plane_point = box_center
+    plane_point = np.asarray([box_center[0], ref_center[1], ref_center[2]], np.float32)
     ref.positions += plane_point - ref_center
-    trans = center_in_plane(ag, plane, center_of="mass")(trans_u.trajectory.ts)
+    trans = center_in_plane(ag, plane, weights="mass")(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
@@ -477,7 +496,7 @@ def test_center_in_plane_coords_with_coord_center_to(translate_universes):
     box_center = np.float32([186., 186.5, 187.])
     ref_center = np.float32([6, 7, 8])
     plane = 'yz'
-    plane_point = np.float32([center_to[0], box_center[1], box_center[2]])
+    plane_point = np.float32([center_to[0], ref_center[1], ref_center[2]])
     ref.positions += plane_point - ref_center
     trans = center_in_plane(ag, plane, center_to=center_to)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
@@ -491,12 +510,12 @@ def test_center_in_plane_coords_all_options(translate_universes):
     ag = trans_u.residues[24].atoms
     trans_u.dimensions = [363., 364., 365., 90., 90., 90.]
     box_center = np.float32([181.5, 182., 182.5])
-    neworigin = [1000, 1000, 1000]
+    center_to = [1000, 1000, 1000]
     ref_center = ag.center_of_mass(pbc=True)
     plane = 'yz'
-    plane_point = np.float32([neworigin[0], box_center[1], box_center[2]])
+    plane_point = np.float32([center_to[0], ref_center[1], ref_center[2]])
     ref.positions += plane_point - ref_center
-    trans = center_in_plane(ag, plane, center_to=neworigin, center_of='mass', wrap=True)(trans_u.trajectory.ts)
+    trans = center_in_plane(ag, plane, center_to=center_to, weights='mass', wrap=True)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
@@ -535,7 +554,7 @@ def test_center_in_plane_transformations_api(translate_universes):
     ref_center = np.float32([6, 7, 8])
     box_center = np.float32([186., 186.5, 187.])
     plane = 'yz'
-    plane_point = box_center
+    plane_point = np.asarray([box_center[0], ref_center[1], ref_center[2]], np.float32)
     ref.positions += plane_point - ref_center
     ag = trans_u.residues[0].atoms
     trans_u.trajectory.add_transformations(center_in_plane(ag, plane))

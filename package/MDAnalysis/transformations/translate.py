@@ -38,6 +38,7 @@ from six import string_types
 from functools import partial
 
 from ..lib.mdamath import triclinic_vectors
+from ..lib.util import get_weights
 
 def translate(vector):
     """
@@ -51,7 +52,7 @@ def translate(vector):
     
     ..code-block:: python
 
-        transform = MDAnalysis.transformations.translate([1,2,3])
+        transform = mda.transformations.translate([1,2,3])
         u.trajectory.add_transformations(transform)
     
     Parameters
@@ -77,7 +78,7 @@ def translate(vector):
     return wrapped
 
 
-def center_in_box(ag, center_of='geometry', point=None, wrap=False):
+def center_in_box(ag, weights=None, center_to=None, wrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -93,16 +94,19 @@ def center_in_box(ag, center_of='geometry', point=None, wrap=False):
     .. code-block:: python
     
         ag = u.residues[1].atoms
-        transform = MDAnalysis.transformations.center(ag, center_of='mass')
+        transform = mda.transformations.center(ag, center_of='mass')
         u.trajectory.add_transformations(transform)
     
     Parameters
     ----------
     ag: AtomGroup
         atom group to be centered on the unit cell.
-    center_of: str, optional
-        used to choose the method of centering on the given atom group. Can be 'geometry'
-        or 'mass'
+    weights: {"mass", ``None``} or array_like, optional
+        define the weights of the atoms when calculating the center of the AtomGroup.
+        With ``"mass"`` uses masses as weights; with ``None`` weigh each atom equally.
+        If a float array of the same length as `ag` is provided, use each element of
+        the `array_like` as a weight for the corresponding atom in `ag`. Default is 
+        None.
     point: array-like, optional
         overrides the unit cell center - the coordinates of the Timestep are translated so
         that the center of mass/geometry of the given AtomGroup is aligned to this position
@@ -119,28 +123,25 @@ def center_in_box(ag, center_of='geometry', point=None, wrap=False):
     """
     
     pbc_arg = wrap
-    if point:
-        point = np.asarray(point, np.float32)
-        if point.shape != (3, ) and point.shape != (1, 3):
-            raise ValueError('{} is not a valid point'.format(point))
+    if center_to:
+        center_to = np.asarray(center_to, np.float32)
+        if center_to.shape != (3, ) and center_to.shape != (1, 3):
+            raise ValueError('{} is not a valid point'.format(center_to))
     try:
-        if center_of == 'geometry':
-            center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
-        elif center_of == 'mass':
-            center_method = partial(ag.center_of_mass, pbc=pbc_arg)
-        else:
-            raise ValueError('{} is not a valid argument for "center_of"'.format(center_of))
+        weights = get_weights(ag.atoms, weights=weights)
+    except (ValueError, TypeError):
+        raise TypeError("weights must be {'mass', None} or an iterable of the "
+                        "same size as the atomgroup.")
+    try:
+        center_method = partial(ag.atoms.center, weights, pbc=wrap)    
     except AttributeError:
-        if center_of == 'mass':
-            raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
-        else:
-            raise ValueError('{} is not an AtomGroup object'.format(ag))
+        raise ValueError('{} is not an AtomGroup object'.format(ag))
   
     def wrapped(ts):
-        if point is None:
+        if center_to is None:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
         else:
-            boxcenter = point
+            boxcenter = center_to
     
         ag_center = center_method()
 
@@ -152,7 +153,7 @@ def center_in_box(ag, center_of='geometry', point=None, wrap=False):
     return wrapped
 
     
-def center_in_plane(ag, plane, center_to="center", center_of='geometry', wrap=False):
+def center_in_plane(ag, plane, center_to="center", weights=None, wrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -167,7 +168,7 @@ def center_in_plane(ag, plane, center_to="center", center_of='geometry', wrap=Fa
     .. code-block:: python
     
         ag = u.residues[1].atoms
-        transform = MDAnalysis.transformations.center_in_plane(ag, xy, center_of='mass')
+        transform = mda.transformations.center_in_plane(ag, xy, weights='mass')
         u.trajectory.add_transformations(transform)
     
     Parameters
@@ -178,12 +179,15 @@ def center_in_plane(ag, plane, center_to="center", center_of='geometry', wrap=Fa
         used to define the plane on which the given AtomGroup will be centered. Suported
         planes are yz, xz and xy planes.
     center_to: array-like or str
-        coordinate from which the axes are centered. Can be an array of three coordinate 
+        coordinates to which the axes are centered. Can be an array of three coordinate 
         values or `center` which centers the AtomGroup coordinates on the center of the 
         unit cell. Default is `center`.
-    center_of: str, optional
-        used to choose the method of centering on the given atom group. Can be 'geometry'
-        or 'mass'
+    weights: {"mass", ``None``} or array_like, optional
+        define the weights of the atoms when calculating the center of the AtomGroup.
+        With ``"mass"`` uses masses as weights; with ``None`` weigh each atom equally.
+        If a float array of the same length as `ag` is provided, use each element of
+        the `array_like` as a weight for the corresponding atom in `ag`. Default is 
+        None.
     wrap: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry. Default is `False`, no changes
@@ -194,13 +198,10 @@ def center_in_plane(ag, plane, center_to="center", center_of='geometry', wrap=Fa
     MDAnalysis.coordinates.base.Timestep
     
     """
-    
-    pbc_arg = wrap
-    if plane is not None:
-        if plane not in ('xy', 'yz', 'xz'):
-            raise ValueError('{} is not a valid plane'.format(plane))
-        axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
-        plane = axes[plane]
+    if plane not in ('xy', 'yz', 'xz'):
+        raise ValueError('{} is not a valid plane'.format(plane))
+    axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
+    plane = axes[plane]
     if center_to is not None:
         if isinstance(center_to, string_types):
             if not center_to == 'center':
@@ -209,25 +210,26 @@ def center_in_plane(ag, plane, center_to="center", center_of='geometry', wrap=Fa
             center_to = np.asarray(center_to, np.float32)
             if center_to.shape != (3, ) and center_to.shape != (1, 3):
                 raise ValueError('{} is not a valid "center_to"'.format(center_to))
+            else:
+                center_to = center_to.reshape(3, )
     try:
-        if center_of == 'geometry':
-            center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
-        elif center_of == 'mass':
-            center_method = partial(ag.center_of_mass, pbc=pbc_arg)
-        else:
-            raise ValueError('{} is not a valid argument for "center_of"'.format(center_of))
+        weights = get_weights(ag.atoms, weights=weights)
+    except (ValueError, TypeError):
+        raise TypeError("weights must be {'mass', None} or an iterable of the "
+                        "same size as the atomgroup.")
+    try:
+        center_method = partial(ag.atoms.center, weights, pbc=wrap)    
     except AttributeError:
-        if center_of == 'mass':
-            raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
-        else:
-            raise ValueError('{} is not an AtomGroup object'.format(ag))
+        raise ValueError('{} is not an AtomGroup object'.format(ag))
 
     def wrapped(ts):
         boxcenter = ts.triclinic_dimensions.sum(axis=0) / 2.0
-        position = boxcenter
-        if center_to != 'center':
+        if center_to == 'center':
+            _origin = boxcenter
+        else:
             _origin = center_to
-            position[plane] = _origin[plane]
+        position = center_method()
+        position[plane] = _origin[plane]
         vector = np.asarray(position, np.float32) - center_method()
         ts.positions += vector
         
@@ -236,7 +238,7 @@ def center_in_plane(ag, plane, center_to="center", center_of='geometry', wrap=Fa
     return wrapped
 
 
-def center_in_axis(ag, axis, center_to="center", center_of='geometry', wrap=False):
+def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -251,7 +253,7 @@ def center_in_axis(ag, axis, center_to="center", center_of='geometry', wrap=Fals
     .. code-block:: python
     
         ag = u.residues[1].atoms
-        transform = MDAnalysis.transformations.center_in_axis(ag, 'x', [0,0,1], center_of='mass')
+        transform = mda.transformations.center_in_axis(ag, 'x', [0,0,1], center_of='mass')
         u.trajectory.add_transformation(transform)
     
     Parameters
@@ -266,9 +268,12 @@ def center_in_axis(ag, axis, center_to="center", center_of='geometry', wrap=Fals
         coordinate on which the axes are centered. Can be an array of three coordinates or
         `center` to shift the origin to the center of the unit cell. Default is `None` 
         which sets [0, 0, 0] as the origin of the axis. 
-    center_of: str, optional
-        used to choose the method of centering on the given atom group. Can be 'geometry'
-        or 'mass'
+    weights: {"mass", ``None``} or array_like, optional
+        define the weights of the atoms when calculating the center of the AtomGroup.
+        With ``"mass"`` uses masses as weights; with ``None`` weigh each atom equally.
+        If a float array of the same length as `ag` is provided, use each element of
+        the `array_like` as a weight for the corresponding atom in `ag`. Default is 
+        None.
     wrap: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry. Default is `False`, no changes
@@ -293,21 +298,20 @@ def center_in_axis(ag, axis, center_to="center", center_of='geometry', wrap=Fals
             center_to = np.asarray(center_to, np.float32)
             if center_to.shape != (3, ) and center_to.shape != (1, 3):
                 raise ValueError('{} is not a valid "center_to"'.format(center_to))
+            else:
+                center_to = center_to.reshape(3, )
     try:
-        if center_of == 'geometry':
-            center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
-        elif center_of == 'mass':
-            center_method = partial(ag.center_of_mass, pbc=pbc_arg)
-        else:
-            raise ValueError('{} is not a valid argument for "center_of"'.format(center_of))
+        weights = get_weights(ag.atoms, weights=weights)
+    except (ValueError, TypeError):
+        raise TypeError("weights must be {'mass', None} or an iterable of the "
+                        "same size as the atomgroup.")
+    try:
+        center_method = partial(ag.atoms.center, weights, pbc=wrap)    
     except AttributeError:
-        if center_of == 'mass':
-            raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
-        else:
-            raise ValueError('{} is not an AtomGroup object'.format(ag))
+        raise ValueError('{} is not an AtomGroup object'.format(ag))
     
     def wrapped(ts):
-        if isinstance(center_to, string_types) and center_to == 'center':
+        if center_to == 'center':
             _origin = ts.triclinic_dimensions.sum(axis=0) / 2.0
         else:
             _origin = center_to
