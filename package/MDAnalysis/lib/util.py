@@ -2047,5 +2047,3 @@ def dedent_docstring(text):
 
     # treat first line as special (typically no leading whitespace!) which messes up dedent
     return lines[0].lstrip() + "\n" + textwrap.dedent("\n".join(lines[1:]))
-
-

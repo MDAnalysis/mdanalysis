@@ -29,4 +29,3 @@ __all__ = [
     'ClusteringMethod.AffinityPropagationNative'
     'ClusteringMethod.AffinityPropagation'
     'ClusteringMethod.DBSCAN']
-

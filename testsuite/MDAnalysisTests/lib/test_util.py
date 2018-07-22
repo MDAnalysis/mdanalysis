@@ -41,7 +41,9 @@ from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError, DuplicateWarning
 
 
-from MDAnalysisTests.datafiles import Make_Whole, TPR, GRO, fullerene
+from MDAnalysisTests.datafiles import (
+    Make_Whole, TPR, GRO, fullerene, two_water_gro,
+)
 
 
 def convert_aa_code_long_data():
@@ -263,6 +265,16 @@ class TestMakeWhole(object):
 
         assert_array_almost_equal(ag.positions, refpos)
 
+    def test_scrambled_ag(self, universe):
+        # if order of atomgroup is mixed
+        ag = universe.atoms[[1, 3, 2, 4, 0, 6, 5, 7]]
+
+        mdamath.make_whole(ag)
+
+        # artificial system which uses 1nm bonds, so
+        # largest bond should be 20A
+        assert ag.bonds.values().max() < 20.1
+
     @staticmethod
     @pytest.fixture()
     def ag(universe):
@@ -383,6 +395,14 @@ class TestMakeWhole(object):
         mdamath.make_whole(u.atoms)
 
         assert_array_almost_equal(u.atoms.bonds.values(), blengths, decimal=self.prec)
+
+    def test_make_whole_multiple_molecules(self):
+        u = mda.Universe(two_water_gro, guess_bonds=True)
+
+        for f in u.atoms.fragments:
+            mdamath.make_whole(f)
+
+        assert u.atoms.bonds.values().max() < 2.0
 
 class Class_with_Caches(object):
     def __init__(self):
@@ -1381,4 +1401,3 @@ def test_dedent_docstring(text):
     doc = util.dedent_docstring(text)
     for line in doc.splitlines():
         assert line == line.lstrip()
-

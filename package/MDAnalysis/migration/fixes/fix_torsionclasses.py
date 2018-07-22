@@ -49,6 +49,3 @@ class FixTorsionclasses(fix_metaclass.FixMetaclass):
                 child.value = 'Dihedral'
             if child.value == 'Improper_Torsion':
                 child.value = 'ImproperDihedral'
-
-
-        
