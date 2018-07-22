@@ -363,4 +363,3 @@ def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing,
     standard_deviation_of_displacement = np.std(displacement_array)
 
     return (dx_array, dy_array, average_displacement, standard_deviation_of_displacement)
-
