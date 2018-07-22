@@ -90,7 +90,7 @@ def test_center_in_box_bad_ag(translate_universes):
     ts = translate_universes[0].trajectory.ts
     # what happens if something other than an AtomGroup is given?
     bad_ag = 1
-    with pytest.raises(AttributeError): 
+    with pytest.raises(ValueError): 
         center_in_box(bad_ag)(ts)
 
 
@@ -228,7 +228,7 @@ def test_center_in_axis_bad_ag(translate_universes):
     # what happens if something other than an AtomGroup is given?
     bad_ag = 1
     axis = 'x'
-    with pytest.raises(AttributeError): 
+    with pytest.raises(ValueError): 
         center_in_axis(bad_ag, axis)(ts)
 
 
@@ -238,7 +238,10 @@ def test_center_in_axis_bad_ag(translate_universes):
     np.array([0, 1]),
     np.array([0, 1, 2, 3, 4]),
     np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
-    np.array([[0], [1], [2]]))
+    np.array([[0], [1], [2]]),
+    b'center',
+    'thisisnotacenter',
+    1)
 )
 def test_center_in_axis_bad_center_to(translate_universes, center_to):
     ts = translate_universes[0].trajectory.ts
@@ -247,6 +250,24 @@ def test_center_in_axis_bad_center_to(translate_universes, center_to):
     axis = 'x'
     with pytest.raises(ValueError): 
         center_in_axis(ag, axis, center_to=center_to)(ts)
+
+
+@pytest.mark.parametrize('axis', (
+    1,
+    [0, 1],
+    [0, 1, 2, 3, 4],
+    np.array([0, 1]),
+    "xyz",
+    "notanaxis",
+    b'x')
+)
+def test_center_in_axis_bad_axis(translate_universes, axis):
+    ts = translate_universes[0].trajectory.ts
+    ag = translate_universes[0].residues[0].atoms
+    # what if the box is in the wrong format?
+    bad_axis = axis
+    with pytest.raises(ValueError): 
+        center_in_axis(ag, bad_axis)(ts)
 
    
 def test_center_in_axis_bad_pbc(translate_universes):    
@@ -381,7 +402,7 @@ def test_center_in_plane_bad_ag(translate_universes):
     # what happens if something other than an AtomGroup is given?
     bad_ag = 1
     plane = 'yz'
-    with pytest.raises(AttributeError): 
+    with pytest.raises(ValueError):
         center_in_plane(bad_ag, plane)(ts)
 
 
@@ -391,7 +412,10 @@ def test_center_in_plane_bad_ag(translate_universes):
     np.array([0, 1]),
     np.array([0, 1, 2, 3, 4]),
     np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
-    np.array([[0], [1], [2]]))
+    np.array([[0], [1], [2]]),
+    b'center',
+    'thisisnotacenter',
+    1)
 )
 def test_center_in_plane_bad_center_to(translate_universes, center_to):
     ts = translate_universes[0].trajectory.ts
@@ -400,6 +424,24 @@ def test_center_in_plane_bad_center_to(translate_universes, center_to):
     plane = 'yz'
     with pytest.raises(ValueError): 
         center_in_plane(ag, plane, center_to=center_to)(ts)
+
+
+@pytest.mark.parametrize('plane', (
+    1,
+    [0, 1],
+    [0, 1, 2, 3, 4],
+    np.array([0, 1]),
+    "xyz",
+    "notaplane",
+    b'xy')
+)
+def test_center_in_plane_bad_plane(translate_universes, plane):
+    ts = translate_universes[0].trajectory.ts
+    ag = translate_universes[0].residues[0].atoms
+    # what if the box is in the wrong format?
+    bad_plane = plane
+    with pytest.raises(ValueError): 
+        center_in_plane(ag, bad_plane)(ts)
 
    
 def test_center_in_plane_bad_pbc(translate_universes):    

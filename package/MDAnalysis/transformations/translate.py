@@ -130,14 +130,16 @@ def center_in_box(ag, weights=None, center_to=None, wrap=False):
         else: 
             center_to = center_to.reshape(3, )
     try:
-        weights = get_weights(ag.atoms, weights=weights)
-    except (ValueError, TypeError):
-        raise TypeError("weights must be {'mass', None} or an iterable of the "
-                        "same size as the atomgroup.")
-    try:
-        center_method = partial(ag.atoms.center, weights, pbc=wrap)    
+        atoms = ag.atoms
     except AttributeError:
         raise ValueError('{} is not an AtomGroup object'.format(ag))
+    else:
+        try:
+            weights = get_weights(atoms, weights=weights)
+        except (ValueError, TypeError):
+            raise TypeError("weights must be {'mass', None} or an iterable of the "
+                        "same size as the atomgroup.")
+    center_method = partial(atoms.center, weights, pbc=wrap)    
   
     def wrapped(ts):
         if center_to is None:
@@ -200,10 +202,11 @@ def center_in_plane(ag, plane, center_to="center", weights=None, wrap=False):
     MDAnalysis.coordinates.base.Timestep
     
     """
-    if plane not in ('xy', 'yz', 'xz'):
+    try:
+        axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
+        plane = axes[plane]
+    except (KeyError, TypeError):
         raise ValueError('{} is not a valid plane'.format(plane))
-    axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
-    plane = axes[plane]
     if center_to is not None:
         if isinstance(center_to, string_types):
             if not center_to == 'center':
@@ -215,14 +218,16 @@ def center_in_plane(ag, plane, center_to="center", weights=None, wrap=False):
             else:
                 center_to = center_to.reshape(3, )
     try:
-        weights = get_weights(ag.atoms, weights=weights)
-    except (ValueError, TypeError):
-        raise TypeError("weights must be {'mass', None} or an iterable of the "
-                        "same size as the atomgroup.")
-    try:
-        center_method = partial(ag.atoms.center, weights, pbc=wrap)    
+        atoms = ag.atoms
     except AttributeError:
         raise ValueError('{} is not an AtomGroup object'.format(ag))
+    else:
+        try:
+            weights = get_weights(atoms, weights=weights)
+        except (ValueError, TypeError):
+            raise TypeError("weights must be {'mass', None} or an iterable of the "
+                        "same size as the atomgroup.")
+    center_method = partial(atoms.center, weights, pbc=wrap)    
 
     def wrapped(ts):
         boxcenter = ts.triclinic_dimensions.sum(axis=0) / 2.0
@@ -286,29 +291,34 @@ def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False):
     MDAnalysis.coordinates.base.Timestep
     
     """
-    if axis not in ('x', 'y', 'z'):
+    try:
+        axes = {'x' : 0, 'y': 1, 'z' : 2}
+        axis = axes[axis]
+    except (KeyError, TypeError):
         raise ValueError('{} is not a valid axis'.format(axis))
-    axes = {'x' : 0, 'y': 1, 'z' : 2}
-    axis = axes[axis]
     if center_to is not None:
         if isinstance(center_to, string_types):
-            if not center_to == 'center':
+            if center_to != 'center':
                 raise ValueError('{} is not a valid "center_to"'.format(center_to))
         else:
-            center_to = np.asarray(center_to, np.float32)
-            if center_to.shape != (3, ) and center_to.shape != (1, 3):
-                raise ValueError('{} is not a valid "center_to"'.format(center_to))
-            else:
+            try:
+                center_to = np.asarray(center_to, np.float32)
+                if center_to.shape != (3, ) and center_to.shape != (1, 3):
+                    raise ValueError('{} is not a valid "center_to"'.format(center_to))
                 center_to = center_to.reshape(3, )
+            except ValueError:
+                raise ValueError('{} is not a valid "center_to"'.format(center_to))
     try:
-        weights = get_weights(ag.atoms, weights=weights)
-    except (ValueError, TypeError):
-        raise TypeError("weights must be {'mass', None} or an iterable of the "
-                        "same size as the atomgroup.")
-    try:
-        center_method = partial(ag.atoms.center, weights, pbc=wrap)    
+        atoms = ag.atoms
     except AttributeError:
         raise ValueError('{} is not an AtomGroup object'.format(ag))
+    else:
+        try:
+            weights = get_weights(atoms, weights=weights)
+        except (ValueError, TypeError):
+            raise TypeError("weights must be {'mass', None} or an iterable of the "
+                        "same size as the atomgroup.")
+    center_method = partial(ag.atoms.center, weights, pbc=wrap)  
     
     def wrapped(ts):
         if center_to == 'center':
