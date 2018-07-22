@@ -106,6 +106,38 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
 
     assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
 
+@pytest.mark.parametrize('npoints', npoints_1)
+@pytest.mark.parametrize('box', boxes_1)
+@pytest.mark.parametrize('method', method_1)
+@pytest.mark.parametrize('min_cutoff', min_cutoff_1)
+def test_capped_distance_equal(npoints, box, method, min_cutoff):
+    np.random.seed(90003)
+    points = (np.random.uniform(low=0, high=1.0,
+                        size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
+    max_cutoff = 0.1
+    pairs, distance = mda.lib.distances.capped_distance(points,
+                                                    points,
+                                                    max_cutoff,
+                                                    min_cutoff=min_cutoff,
+                                                    box=box,
+                                                    method=method,
+                                                    equal=True)
+    found_pairs, found_distance = [], []
+
+    for i, coord in enumerate(points):
+        dist = mda.lib.distances.distance_array(coord[None, :],
+                                                     points[i+1:],
+                                                     box=box)
+        if min_cutoff is not None:
+            idx = np.where((dist <= max_cutoff) & (dist > min_cutoff))[0]
+        else:
+            idx = np.where((dist <=max_cutoff))[0]
+        for other_idx in idx:
+            j = other_idx + 1 + i
+            found_pairs.append((i, j))
+            found_distance.append(dist[other_idx])
+    assert_equal(len(pairs), len(found_pairs))
+
 
 @pytest.mark.parametrize('npoints,cutoff,meth',
                          [(1, 0.02, '_bruteforce_capped'),
