@@ -296,18 +296,17 @@ def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False):
         axis = axes[axis]
     except (KeyError, TypeError):
         raise ValueError('{} is not a valid axis'.format(axis))
-    if center_to is not None:
-        if isinstance(center_to, string_types):
-            if center_to != 'center':
+    if isinstance(center_to, string_types):
+        if center_to != 'center':
+            raise ValueError('{} is not a valid "center_to"'.format(center_to))
+    else:
+        try:
+            center_to = np.asarray(center_to, np.float32)
+            if center_to.shape != (3, ) and center_to.shape != (1, 3):
                 raise ValueError('{} is not a valid "center_to"'.format(center_to))
-        else:
-            try:
-                center_to = np.asarray(center_to, np.float32)
-                if center_to.shape != (3, ) and center_to.shape != (1, 3):
-                    raise ValueError('{} is not a valid "center_to"'.format(center_to))
-                center_to = center_to.reshape(3, )
-            except ValueError:
-                raise ValueError('{} is not a valid "center_to"'.format(center_to))
+            center_to = center_to.reshape(3, )
+        except ValueError:
+            raise ValueError('{} is not a valid "center_to"'.format(center_to))
     try:
         atoms = ag.atoms
     except AttributeError:
@@ -317,7 +316,7 @@ def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False):
             weights = get_weights(atoms, weights=weights)
         except (ValueError, TypeError):
             raise TypeError("weights must be {'mass', None} or an iterable of the "
-                        "same size as the atomgroup.")
+                            "same size as the atomgroup.")
     center_method = partial(ag.atoms.center, weights, pbc=wrap)  
     
     def wrapped(ts):
