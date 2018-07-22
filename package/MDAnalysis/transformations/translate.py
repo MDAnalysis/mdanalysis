@@ -207,16 +207,16 @@ def center_in_plane(ag, plane, center_to="center", weights=None, wrap=False):
         plane = axes[plane]
     except (KeyError, TypeError):
         raise ValueError('{} is not a valid plane'.format(plane))
-    if center_to is not None:
-        if isinstance(center_to, string_types):
-            if not center_to == 'center':
-                raise ValueError('{} is not a valid "center_to"'.format(center_to))
+    
+    if isinstance(center_to, string_types):
+        if not center_to == 'center':
+            raise ValueError('{} is not a valid "center_to"'.format(center_to))
+    else:
+        center_to = np.asarray(center_to, np.float32)
+        if center_to.shape != (3, ) and center_to.shape != (1, 3):
+            raise ValueError('{} is not a valid "center_to"'.format(center_to))
         else:
-            center_to = np.asarray(center_to, np.float32)
-            if center_to.shape != (3, ) and center_to.shape != (1, 3):
-                raise ValueError('{} is not a valid "center_to"'.format(center_to))
-            else:
-                center_to = center_to.reshape(3, )
+            center_to = center_to.reshape(3, )
     try:
         atoms = ag.atoms
     except AttributeError:

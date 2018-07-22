@@ -85,11 +85,21 @@ def test_translate_transformations_api(translate_universes):
     assert_array_almost_equal(trans_u.trajectory.ts.positions, ref.positions, decimal=6)
 
 
-def test_center_in_box_bad_ag(translate_universes):
+@pytest.mark.parametrize('ag', (
+    [0, 1],
+    [0, 1, 2, 3, 4],
+    np.array([0, 1]),
+    np.array([0, 1, 2, 3, 4]),
+    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+    np.array([[0], [1], [2]]),
+    'thisisnotanag',
+    1)
+)
+def test_center_in_box_bad_ag(translate_universes, ag):
     # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
     # what happens if something other than an AtomGroup is given?
-    bad_ag = 1
+    bad_ag = ag
     with pytest.raises(ValueError): 
         center_in_box(bad_ag)(ts)
 
@@ -100,7 +110,9 @@ def test_center_in_box_bad_ag(translate_universes):
     np.array([0, 1]),
     np.array([0, 1, 2, 3, 4]),
     np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
-    np.array([[0], [1], [2]]))
+    np.array([[0], [1], [2]]),
+    'thisisnotacenter',
+    1)
 )
 def test_center_in_box_bad_center_to(translate_universes, center_to):
     ts = translate_universes[0].trajectory.ts
@@ -222,11 +234,22 @@ def test_center_in_box_coords_all_options(translate_universes):
     trans = center_in_box(ag, weights='mass', wrap=True, center_to=newpoint)(trans_u.trajectory.ts)
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
-def test_center_in_axis_bad_ag(translate_universes):
+
+@pytest.mark.parametrize('ag', (
+    [0, 1],
+    [0, 1, 2, 3, 4],
+    np.array([0, 1]),
+    np.array([0, 1, 2, 3, 4]),
+    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+    np.array([[0], [1], [2]]),
+    'thisisnotanag',
+    1)
+)
+def test_center_in_axis_bad_ag(translate_universes, ag):
     # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
     # what happens if something other than an AtomGroup is given?
-    bad_ag = 1
+    bad_ag = ag
     axis = 'x'
     with pytest.raises(ValueError): 
         center_in_axis(bad_ag, axis)(ts)
@@ -239,7 +262,6 @@ def test_center_in_axis_bad_ag(translate_universes):
     np.array([0, 1, 2, 3, 4]),
     np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
     np.array([[0], [1], [2]]),
-    b'center',
     'thisisnotacenter',
     1)
 )
@@ -258,8 +280,7 @@ def test_center_in_axis_bad_center_to(translate_universes, center_to):
     [0, 1, 2, 3, 4],
     np.array([0, 1]),
     "xyz",
-    "notanaxis",
-    b'x')
+    "notanaxis")
 )
 def test_center_in_axis_bad_axis(translate_universes, axis):
     ts = translate_universes[0].trajectory.ts
@@ -396,11 +417,21 @@ def test_center_in_axis_coords_all_options(translate_universes):
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
-def test_center_in_plane_bad_ag(translate_universes):
+@pytest.mark.parametrize('ag', (
+    [0, 1],
+    [0, 1, 2, 3, 4],
+    np.array([0, 1]),
+    np.array([0, 1, 2, 3, 4]),
+    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+    np.array([[0], [1], [2]]),
+    'thisisnotanag',
+    1)
+)
+def test_center_in_plane_bad_ag(translate_universes, ag):
     # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
     # what happens if something other than an AtomGroup is given?
-    bad_ag = 1
+    bad_ag = ag
     plane = 'yz'
     with pytest.raises(ValueError):
         center_in_plane(bad_ag, plane)(ts)
@@ -413,7 +444,6 @@ def test_center_in_plane_bad_ag(translate_universes):
     np.array([0, 1, 2, 3, 4]),
     np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
     np.array([[0], [1], [2]]),
-    b'center',
     'thisisnotacenter',
     1)
 )
@@ -432,8 +462,7 @@ def test_center_in_plane_bad_center_to(translate_universes, center_to):
     [0, 1, 2, 3, 4],
     np.array([0, 1]),
     "xyz",
-    "notaplane",
-    b'xy')
+    "notaplane")
 )
 def test_center_in_plane_bad_plane(translate_universes, plane):
     ts = translate_universes[0].trajectory.ts
