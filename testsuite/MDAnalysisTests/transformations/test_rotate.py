@@ -171,16 +171,26 @@ def test_rotateby_bad_pbc(rotate_universes):
     with pytest.raises(ValueError): 
         rotateby(angle, vector, ag = ag, wrap=True)(ts)
 
-def test_rotateby_bad_center(rotate_universes):
+
+@pytest.mark.parametrize('weights', (
+    " ",
+    "totallynotmasses",
+    123456789,
+    [0, 1, 2, 3, 4],
+    np.array([0, 1]),
+    np.array([0, 1, 2, 3, 4]),
+    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]))
+)
+def test_rotateby_bad_weights(rotate_universes, weights):
     # this universe as a box size zero
     ts = rotate_universes[0].trajectory.ts
     ag = rotate_universes[0].residues[0].atoms
     # what if a wrong center type name is passed?
     angle = 90
     vector = [0, 0, 1]
-    bad_center = " "
+    bad_weights = " "
     with pytest.raises(ValueError): 
-        rotateby(angle, vector, ag = ag, weights=bad_center)(ts)
+        rotateby(angle, vector, ag = ag, weights=bad_weights)(ts)
     
 def test_rotateby_no_masses(rotate_universes):   
     # this universe as a box size zero
