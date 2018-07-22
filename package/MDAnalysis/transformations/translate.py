@@ -207,16 +207,14 @@ def center_in_plane(ag, plane, center_to="center", weights=None, wrap=False):
         plane = axes[plane]
     except (KeyError, TypeError):
         raise ValueError('{} is not a valid plane'.format(plane))
-    
-    if isinstance(center_to, string_types):
-        if not center_to == 'center':
-            raise ValueError('{} is not a valid "center_to"'.format(center_to))
-    else:
-        center_to = np.asarray(center_to, np.float32)
-        if center_to.shape != (3, ) and center_to.shape != (1, 3):
-            raise ValueError('{} is not a valid "center_to"'.format(center_to))
-        else:
+    try:
+        if center_to != "center":
+            center_to = np.asarray(center_to, np.float32)
+            if center_to.shape != (3, ) and center_to.shape != (1, 3):
+                raise ValueError('{} is not a valid "center_to"'.format(center_to))
             center_to = center_to.reshape(3, )
+    except ValueError:
+        raise ValueError('{} is not a valid "center_to"'.format(center_to))
     try:
         atoms = ag.atoms
     except AttributeError:
@@ -296,17 +294,14 @@ def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False):
         axis = axes[axis]
     except (KeyError, TypeError):
         raise ValueError('{} is not a valid axis'.format(axis))
-    if isinstance(center_to, string_types):
-        if center_to != 'center':
-            raise ValueError('{} is not a valid "center_to"'.format(center_to))
-    else:
-        try:
+    try:
+        if center_to != "center":
             center_to = np.asarray(center_to, np.float32)
             if center_to.shape != (3, ) and center_to.shape != (1, 3):
                 raise ValueError('{} is not a valid "center_to"'.format(center_to))
             center_to = center_to.reshape(3, )
-        except ValueError:
-            raise ValueError('{} is not a valid "center_to"'.format(center_to))
+    except ValueError:
+        raise ValueError('{} is not a valid "center_to"'.format(center_to))
     try:
         atoms = ag.atoms
     except AttributeError:
