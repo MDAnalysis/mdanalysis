@@ -404,6 +404,15 @@ class Periodic_cKDTree(object):
         self._indices = np.asarray(unique_int_1d(self._indices))
         return self._indices
 
+    def get_indices(self):
+        """
+        Returns
+        ------
+        indices : list
+          neighbors for the last query points and search radius
+        """
+        return self._indices
+
     def search_pairs(self, radius):
         """Search all the pairs within a specified radius
 

@@ -31,7 +31,7 @@ from __future__ import absolute_import
 
 import numpy as np
 from Bio.KDTree import KDTree
-from MDAnalysis.lib.pkdtree import PeriodicKDTree
+from MDAnalysis.lib.pkdtree import Periodic_cKDTree
 from MDAnalysis.lib.util import unique_int_1d
 
 from MDAnalysis.core.groups import AtomGroup, Atom
@@ -65,11 +65,7 @@ class AtomNeighborSearch(object):
         self.atom_group = atom_group
         self._u = atom_group.universe
         self._box = box
-        if box is None:
-            self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
-        else:
-            self.kdtree = PeriodicKDTree(box, bucket_size=bucket_size)
-        self.kdtree.set_coords(atom_group.positions)
+        self.kdtree = Periodic_cKDTree(box=box, leafsize=bucket_size)
 
     def search(self, atoms, radius, level='A'):
         """
@@ -90,6 +86,16 @@ class AtomNeighborSearch(object):
             positions = atoms.position.reshape(1, 3)
         else:
             positions = atoms.positions
+
+        
+        # check if already built
+        if self.kdtree._built:
+            if self._box is not None:
+                if self.kdtree.cutoff < radius:
+                    self.kdtree.set_cutoff(radius)
+        else:
+            cutoff = radius if self._box is not None else None
+            self.kdtree.set_coords(self.atom_group.positions, cutoff=cutoff)
 
         indices = []
         for pos in positions:

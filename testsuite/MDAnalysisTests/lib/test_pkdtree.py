@@ -328,8 +328,6 @@ def test_ckd_searchpairs(b, radius, result):
             indices = tree.search_pairs(radius)
     else:
         indices = tree.search_pairs(radius)
-        if indices.size > 0:
-            indices = indices[np.argsort(indices, axis=0)[:, 0]]
         assert_equal(indices, result)
 
 

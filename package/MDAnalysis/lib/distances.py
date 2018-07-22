@@ -462,24 +462,22 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None, box=N
     .. SeeAlso:: :func:'MDAnalysis.lib.pkdtree.PeriodicKDTree'
 
     """
-
     if box is not None:
-        boxtype = _box_check(box)
-        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-        if (boxtype == 'tri_box'):
-            box = triclinic_vectors(box)
-        if (boxtype == 'tri_vecs_bad'):
-            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+        if box.shape[0] != 6:
+            raise ValueError('Box Argument is of incompatible type. The dimension'
+                         'should be either None or '
+                         'of the type [lx, ly, lz, alpha, beta, gamma]')
     method = _determine_method(reference, configuration,
-                                   max_cutoff, min_cutoff=min_cutoff,
-                                   box=box, method=method)
+                               max_cutoff, min_cutoff=min_cutoff,
+                               box=box, method=method)
     pairs, dist = method(reference, configuration, max_cutoff,
                          min_cutoff=min_cutoff, box=box)
 
     return np.asarray(pairs), np.asarray(dist)
 
 
-def _determine_method(reference, configuration, max_cutoff, min_cutoff=None, box=None, method=None):
+def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
+                      box=None, method=None):
     """
     Switch between different methods based on the the optimized time.
     All the rules to select the method based on the input can be
@@ -507,10 +505,11 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None, box
                                configuration.max(axis=0)])
             size = max_dim.max(axis=0) - min_dim.min(axis=0)
         elif box is not None:
-            if box.shape[0] == 6:
+            if np.allclose(box[3:], 90):
                 size = box[:3]
             else:
-                size = box.max(axis=0) - box.min(axis=0)
+                tribox = triclinic_vectors(box)
+                size = tribox.max(axis=0) - tribox.min(axis=0)
 
         if (np.any(size < 10.0*max_cutoff) and
                    len(reference) > 100000 and
@@ -555,9 +554,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None, bo
 
 def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None, box=None):
     """ Capped Distance evaluations using KDtree.
-
     Uses minimum image convention if *box* is specified
-
     Returns:
     --------
     pairs : list
@@ -567,9 +564,8 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None, box=N
     distance : list
         Distance between two atoms corresponding to the (i, j) indices
         in pairs.
-
     """
-    from .pkdtree import PeriodicKDTree
+    from .pkdtree import Periodic_cKDTree
     from Bio.KDTree import KDTree
 
     pairs, distances = [], []
@@ -585,13 +581,9 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None, box=N
     _check_array(reference, 'reference')
     _check_array(configuration, 'configuration')
 
-    # Build The KDTree
-    if box is not None:
-        kdtree = PeriodicKDTree(box, bucket_size=10)
-    else:
-        kdtree = KDTree(dim=3, bucket_size=10)
-
-    kdtree.set_coords(configuration)
+    kdtree = Periodic_cKDTree(box=box)
+    cut = max_cutoff if box is not None else None
+    kdtree.set_coords(configuration, cutoff=cut)
     # Search for every query point
     for idx, centers in enumerate(reference):
         kdtree.search(centers, max_cutoff)
