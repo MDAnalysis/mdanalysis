@@ -641,7 +641,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
 
     If you are interested in explicitly setting a grid box of a given edge size
     and origin, you can use the gridcenter and x/y/zdim arguments. For example
-    to plot the density of waters within 3 Å of a ligand (in this case the ligand
+    to plot the density of waters within 5 Å of a ligand (in this case the ligand
     has been assigned the residue name "LIG") in a cubic grid with 20 Å edges
     which is centered on the centre of mass (COM) of the ligand::
 
@@ -654,7 +654,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       # Generate a density of waters on a cubic grid centered on the ligand COM
       # In this case, we update the water selection as shown above.
       water_density = density_from_Universe(universe, delta=1.0,
-                                            atomselection='name OW around 3 resname LIG',
+                                            atomselection='name OW around 5 resname LIG',
                                             update_selection=True,
                                             gridcenter=COM,
                                             xdim=20.0, ydim=20.0, zdim=20.0)
