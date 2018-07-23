@@ -53,6 +53,8 @@ Changes
     duplicates. Otherwise, the group itself is returned. Repeated access of
     *Group.unique will always return the same object unless the group is
     updated or modified. (PR #1922)
+  * SurvivalProbability does not dilute SP anymore when the reference frame (t0)
+    cannot find any molecules in the first place. (PR #1995)
 
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
