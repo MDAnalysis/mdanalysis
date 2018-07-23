@@ -166,15 +166,15 @@ class PDBParser(TopologyReaderBase):
 
                 record_types.append(line[:6].strip())
                 try:
+                    serial = int(line[6:11])
+                except:
                     try:
-                        serial = int(line[6:11])
-                    except:
                         serial = int(line[6:11], 36)
-                except ValueError:
-                    # serial can become '***' when they get too high
-                    self._wrapped_serials = True
-                    serial = last_wrapped_serial
-                    last_wrapped_serial += 1
+                    except ValueError:
+                        # serial can become '***' when they get too high
+                        self._wrapped_serials = True
+                        serial = last_wrapped_serial
+                        last_wrapped_serial += 1
                 finally:
                     serials.append(serial)
 
