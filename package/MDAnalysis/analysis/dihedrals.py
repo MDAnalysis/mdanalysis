@@ -34,22 +34,22 @@ list of residues (or atoms corresponding to the residues). This can be done for
 selected frames or whole trajectories.
 
 A list of time steps that contain phi and psi angles for each residue is
-generated, and a basic Ramachandran plot can be generated using the attribute
-:meth:`Ramachandran.plot`. This plot is best used as a reference, but it also
+generated, and a basic Ramachandran plot can be generated using the method
+:meth:`Ramachandran.plot()`. This plot is best used as a reference, but it also
 allows for user customization.
 
 
 See Also
 --------
-:mod:`MDAnalysis.lib.distances`
-   contains functions to calculate dihedral angles from atom positions
+:func:`MDAnalysis.lib.distances.calc_dihedrals()`
+   function to calculate dihedral angles from atom positions
 
 
 Example application
 -------------------
 This example will show how to calculate the phi and psi angles of adenylate
-kinase and generate a basic Ramachandran plot. The trajectory is included with
-the test data files::
+kinase (AdK) and generate a basic Ramachandran plot. The trajectory is included
+within the test data files::
 
    import MDAnalysis as mda
    from MDAnalysisTests.datafiles import GRO, XTC
@@ -65,7 +65,7 @@ the test data files::
    R.plot(ax=ax, color='k', marker='s')
 
 Alternatively, if you wanted to plot the data yourself, the angles themselves
-can be accessed using :meth:`Ramachandran.angles`::
+can be accessed using :attr:`Ramachandran.angles`::
 
    fig, ax = plt.subplots(figsize=plt.figaspect(1))
    ax.axis([-180,180,-180,180])
@@ -86,7 +86,7 @@ Analysis Class
    .. attribute:: angles
 
        Contains the time steps of the phi and psi angles for each residue as
-       an n_frames×n_residuesx2 :class:`numpy.ndarray` array with content
+       an n_frames×n_residues×2 :class:`numpy.ndarray` with content
        ``[[[phi, psi], [residue 2], ...], [time step 2], ...]``.
 
 """
@@ -104,22 +104,19 @@ from MDAnalysis.lib.distances import calc_dihedrals
 
 
 class Ramachandran(AnalysisBase):
-    r"""Calculate phi and psi dihedral angles of specified residues.
+    """Calculate phi and psi dihedral angles of selected residues.
 
-    Phi and psi angles wil be calculated for each residue in `atomgroup` for
-    each time step in the trajectory. A ReisdueGroup is generated from
-    `atomgroup` which is compared to the protein to determine if it is a
-    legitimate selection.
+    Phi and psi angles will be calculated for each residue corresponding to
+    `atomgroup` for each time step in the trajectory. A :class:`ResidueGroup`
+    is generated from `atomgroup` which is compared to the protein to determine
+    if it is a legitimate selection.
 
     Note
     ----
     If the residue selection is beyond the scope of the protein, then an error
-    will be raised. If the residue selection includes the first or last residue
+    will be raised. If the residue selection includes the first or last residue,
     then a warning will be raised and they will be removed from the list of
     residues, but the analysis will still run.
-
-    Run the analysis with :meth:`Ramachandran.run()`, whcih stores the results in the
-    array :attr:`Ramachandran.angles`
 
     """
     def __init__(self, atomgroup, **kwargs):
@@ -175,7 +172,7 @@ class Ramachandran(AnalysisBase):
 
     def plot(self, ax=None, **kwargs):
         """Plots data into standard ramachandran plot. Each time step in
-        self.angles is plotted onto the same graph.
+        :attr:`Ramachandran.angles` is plotted onto the same graph.
 
         Parameters
         ----------
