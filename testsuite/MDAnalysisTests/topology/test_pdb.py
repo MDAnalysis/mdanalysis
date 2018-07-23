@@ -190,13 +190,18 @@ REMARK This has MODELs then hex atom numbers entries
 CRYST1   80.000   80.017   80.017  90.00  90.00  90.00 P 1           1
 MODEL        1
 HETATM    1  H     2 L 400      20.168  00.034  40.428
-HETATM4A05D  H     2 L 400      40.168  50.034  40.428
-HETATM4A05E  H     2 L 400      30.453  60.495  50.132
-HETATM4A05F  H     2 L 400      20.576  40.354  60.483
-HETATM4A060  H     2 L 400      10.208  30.067  70.045
+HETATMA0000  H     2 L 400      40.168  50.034  40.428
+HETATMA0001  H     2 L 400      30.453  60.495  50.132
+HETATMA0002  H     2 L 400      20.576  40.354  60.483
+HETATMA0003  H     2 L 400      10.208  30.067  70.045
 END
 """
 
 def test_PDB_hex():
     u = mda.Universe(StringIO(PDB_hex), format='PDB')
     assert len(u.atoms) == 5
+    assert u.atoms[0].id == 1
+    assert u.atoms[1].id == 100000
+    assert u.atoms[2].id == 100001
+    assert u.atoms[3].id == 100002
+    assert u.atoms[4].id == 100003

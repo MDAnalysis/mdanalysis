@@ -65,8 +65,7 @@ Fixes
     pack_into_box() (Issue #1911)
   * Fixed format of MODEL number in PDB file writing (Issue #1950)
   * PDBWriter now properly sets start value
-  * Introduced compatibility for packmol (and hopefully generally) for pbd files with
-    greater than 100 000 atoms (Issue #1897)
+  * Introduced compatibility for pbd files hybrid36 format encoding (Issue #1897)
   * Zero length TopologyGroup now return proper shape array via to_indices
     (Issue #1974)
 

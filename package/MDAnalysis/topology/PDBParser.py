@@ -87,6 +87,44 @@ def float_or_default(val, default):
     except ValueError:
         return default
 
+digits_upper = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+digits_lower = digits_upper.lower()
+digits_upper_values = dict([pair for pair in zip(digits_upper, range(36))])
+digits_lower_values = dict([pair for pair in zip(digits_lower, range(36))])
+
+def decode_pure(digits_values, s):
+    "decodes the string s using the digit, value associations for each character"
+    result = 0
+    n = len(digits_values)
+    for c in s:
+        result *= n
+        result += digits_values[c]
+    return result
+
+def hy36decode(width, s):
+    "decodes base-10/upper-case base-36/lower-case base-36 hybrid"
+    if (len(s) == width):
+        f = s[0]
+        if (f == "-" or f == " " or f.isdigit()):
+            try:
+                return int(s)
+            except ValueError:
+                pass
+            if (s == " " * width): return 0
+        elif (f in digits_upper_values):
+            try:
+                return decode_pure(
+                    digits_values=digits_upper_values, s=s) - 10 * 36 ** (width - 1) + 10 ** width
+            except KeyError:
+                pass
+        elif (f in digits_lower_values):
+            try:
+                return decode_pure(
+                    digits_values=digits_lower_values, s=s) + 16 * 36 ** (width - 1) + 10 ** width
+            except KeyError:
+                pass
+    raise ValueError("invalid number literal.")
+
 
 class PDBParser(TopologyReaderBase):
     """Parser that obtains a list of atoms from a standard PDB file.
@@ -169,7 +207,7 @@ class PDBParser(TopologyReaderBase):
                     serial = int(line[6:11])
                 except:
                     try:
-                        serial = int(line[6:11], 36)
+                        serial = hy36decode(5, line[6:11])
                     except ValueError:
                         # serial can become '***' when they get too high
                         self._wrapped_serials = True
