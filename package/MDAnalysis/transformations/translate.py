@@ -33,8 +33,6 @@ or defined by centering an AtomGroup in the unit cell using the function
 from __future__ import absolute_import, division
 
 import numpy as np
-from numbers import Number
-from six import string_types
 from functools import partial
 
 from ..lib.mdamath import triclinic_vectors
