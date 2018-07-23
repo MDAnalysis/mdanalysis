@@ -194,7 +194,8 @@ class XDRBaseReader(base.ReaderBase):
         if not (ctime_ok and size_ok and n_atoms_ok):
             warnings.warn("Reload offsets from trajectory\n "
                           "ctime or size or n_atoms did not match")
-            self._read_offsets(store=True)
+#            self._read_offsets(store=True)
+# This line creates race condition when several processes are going to read from the same XTC file.
         else:
             self._xdr.set_offsets(data['offsets'])
 
