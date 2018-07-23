@@ -41,7 +41,8 @@ allows for user customization.
 
 See Also
 --------
-:mod:`MDAnalysis.lib.distances.calc_diherals`
+:mod:`MDAnalysis.lib.distances`
+   contains functions to calculate dihedral angles from atom positions
 
 
 Example application
@@ -84,16 +85,18 @@ Analysis Class
 
    .. attribute:: angles
 
-       Contains the time series of the phi and psi angles for each residue as
-       an N×2 :class:`numpy.ndarray` array with content
-       ``[[phi, psi], [...], ...]``.
+       Contains the time steps of the phi and psi angles for each residue as
+       an n_frames×n_residuesx2 :class:`numpy.ndarray` array with content
+       ``[[[phi, psi], [residue 2], ...], [time step 2], ...]``.
 
 """
+from __future__ import absolute_import
+from six.moves import zip, range
+
 import numpy as np
 import matplotlib.pyplot as plt
+
 import warnings
-import six
-from six.moves import zip
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.base import AnalysisBase
