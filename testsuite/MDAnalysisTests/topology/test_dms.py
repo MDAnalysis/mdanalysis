@@ -56,4 +56,3 @@ class TestDMSParser(ParserBase):
 
         s3 = u.select_atoms("resname ALA")
         assert len(s3) == 190
-
