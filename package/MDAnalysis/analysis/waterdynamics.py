@@ -1268,4 +1268,3 @@ class SurvivalProbability(object):
         self.sp_timeseries = sp_timeseries
 
         return tau_timeseries, [np.mean(sp) for sp in sp_timeseries]
-
