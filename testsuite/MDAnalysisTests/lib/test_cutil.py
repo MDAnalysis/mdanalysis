@@ -37,5 +37,5 @@ from MDAnalysis.lib._cutil import unique_int_1d
     [1, 2, 2, 6, 4, 4, ],  # duplicates, non-monotonic
 ))
 def test_unique_int_1d(values):
-    array = np.array(values, dtype=int)
+    array = np.array(values, dtype=np.int64)
     assert_equal(unique_int_1d(array), np.unique(array))
