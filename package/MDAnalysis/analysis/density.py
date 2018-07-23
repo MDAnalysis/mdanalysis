@@ -515,18 +515,21 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     #Copy grid to umin and umax and then set the min/max to half the edge values
     umin = np.copy(gridcenter)
     umax = np.copy(gridcenter)
-    umin[0] -= xdim/2
-    umin[1] -= ydim/2
-    umin[2] -= zdim/2
-    umax[0] += xdim/2
-    umax[1] += ydim/2
-    umax[2] += zdim/2
+
+    #set x dimension
+    umin[0] -= xdim/2.0
+    umax[0] += xdim/2.0
+    #set y dimension
+    umin[1] -= ydim/2.0
+    umax[1] += ydim/2.0
+    #set z dimension
+    umin[2] -= zdim/2.0
+    umax[2] += zdim/2.0
 
     # Here we test if coords of selection fall outside of the defined grid
-    # if this happens, we through a warning to tell users they may want to
-    # resize their grids
+    # if this happens, we warn users they may want to resize their grids
     if any(smin < umin) or any(smax > umax):
-        msg = "Atom selection does not fit grid -- you may want to define a larger box"
+        msg = "Atom selection does not fit grid --- you may want to define a larger box"
         logger.warning(msg)
     
     #Return umin and umax
@@ -587,13 +590,13 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     parameters : dict (optional)
             `dict` with some special parameters for :class:`Density` (see docs)
     gridcenter : np.array float (optional)
-            User defined grid center (x,y,z: numpy array float 32) in Angstroem [None]
+            User defined grid box center (x,y,z: numpy array float 32) in Angstroem [None]
     xdim : float (optional - ignored if gridcenter is None)
-            User defined x dimension edge in Angstroem [2.0]
+            User defined x dimension box edge in Angstroem [2.0]
     ydim : float (optional - ignored if gridcenter is None)
-            User defined y dimension edge in Angstroem [2.0]
+            User defined y dimension box edge in Angstroem [2.0]
     zdim : float (optional - ignored if gridcenter is None)
-            User defined z dimension edge in Angstroem [2.0]
+            User defined z dimension box edge in Angstroem [2.0]
 
     Returns
     -------
@@ -652,7 +655,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       ligand_COM = ligand_selection.center_of_mass()
 
       # Generate a density of waters on a cubic grid centered on the ligand COM
-      # In this case, we update the water selection as shown above.
+      # In this case, we update the atom selection as shown above.
       water_density = density_from_Universe(universe, delta=1.0,
                                             atomselection='name OW around 5 resname LIG',
                                             update_selection=True,
@@ -699,24 +702,22 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         warnings.warn(msg)
         logger.warning(msg)
 
-    # Make the box bigger to avoid as much as possible 'outlier'. This
-    # is important if the sites are defined at a high density: in this
-    # case the bulk regions don't have to be close to 1 * n0 but can
-    # be less. It's much more difficult to deal with outliers.  The
-    # ideal solution would use images: implement 'looking across the
-    # periodic boundaries' but that gets complicate when the box
-    # rotates due to RMS fitting.
-
     if gridcenter is not None:
         # We first generate a copy of smin/smax from the coords to
         # check if the defined box might be too small for the selection
         smin = np.min(coord, axis=0) 
         smax = np.max(coord, axis=0)
         # Then call the user grid function and overwrite smin/sma
-        # Note: a helper function is used here so that it can be reused in
-        # the density_from_PDB function (amongst other future functions).
+        # Note: a helper function is used here so that it may be reused.
         smin, smax = _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax)
     else:
+        # Make the box bigger to avoid as much as possible 'outlier'. This
+        # is important if the sites are defined at a high density: in this
+        # case the bulk regions don't have to be close to 1 * n0 but can
+        # be less. It's much more difficult to deal with outliers.  The
+        # ideal solution would use images: implement 'looking across the
+        # periodic boundaries' but that gets complicate when the box
+        # rotates due to RMS fitting.
         smin = np.min(coord, axis=0) - padding
         smax = np.max(coord, axis=0) + padding
 
