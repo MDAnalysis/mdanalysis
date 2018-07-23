@@ -26,6 +26,8 @@ from six.moves import range, StringIO
 import pytest
 import os
 import warnings
+import re
+import textwrap
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
@@ -39,7 +41,9 @@ from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError, DuplicateWarning
 
 
-from MDAnalysisTests.datafiles import Make_Whole, TPR, GRO, fullerene
+from MDAnalysisTests.datafiles import (
+    Make_Whole, TPR, GRO, fullerene, two_water_gro,
+)
 
 
 def convert_aa_code_long_data():
@@ -248,6 +252,29 @@ class TestMakeWhole(object):
         universe.add_TopologyAttr(Bonds(bondlist))
         return universe
 
+    def test_single_atom_no_bonds(self):
+        # Call make_whole on single atom with no bonds, shouldn't move
+        u = mda.Universe(Make_Whole)
+        # Atom0 is isolated
+        bondlist = [(1, 2), (1, 3), (1, 4), (4, 5), (4, 6), (4, 7)]
+        u.add_TopologyAttr(Bonds(bondlist))
+
+        ag = u.atoms[[0]]
+        refpos = ag.positions.copy()
+        mdamath.make_whole(ag)
+
+        assert_array_almost_equal(ag.positions, refpos)
+
+    def test_scrambled_ag(self, universe):
+        # if order of atomgroup is mixed
+        ag = universe.atoms[[1, 3, 2, 4, 0, 6, 5, 7]]
+
+        mdamath.make_whole(ag)
+
+        # artificial system which uses 1nm bonds, so
+        # largest bond should be 20A
+        assert ag.bonds.values().max() < 20.1
+
     @staticmethod
     @pytest.fixture()
     def ag(universe):
@@ -368,6 +395,14 @@ class TestMakeWhole(object):
         mdamath.make_whole(u.atoms)
 
         assert_array_almost_equal(u.atoms.bonds.values(), blengths, decimal=self.prec)
+
+    def test_make_whole_multiple_molecules(self):
+        u = mda.Universe(two_water_gro, guess_bonds=True)
+
+        for f in u.atoms.fragments:
+            mdamath.make_whole(f)
+
+        assert u.atoms.bonds.values().max() < 2.0
 
 class Class_with_Caches(object):
     def __init__(self):
@@ -1270,7 +1305,7 @@ class TestWarnIfNotUnique(object):
         @warn_if_not_unique
         def func(group):
             pass
-            
+
         class dummy(object):
             pass
 
@@ -1290,3 +1325,79 @@ class TestWarnIfNotUnique(object):
                 func(atoms)
                 assert not w.list
             assert len(record) == 0
+
+@pytest.mark.parametrize("old_name", (None, "MDAnalysis.Universe"))
+@pytest.mark.parametrize("new_name", (None, "Multiverse"))
+@pytest.mark.parametrize("remove", (None, "99.0.0", 2099))
+@pytest.mark.parametrize("message", (None, "use the new stuff"))
+def test_deprecate(old_name, new_name, remove, message, release="2.7.1"):
+    def AlternateUniverse(anything):
+        # important: first line needs to be """\ so that textwrap.dedent()
+        # works
+        """\
+        AlternateUniverse provides a true view of the Universe.
+
+        Parameters
+        ----------
+        anything : object
+
+        Returns
+        -------
+        truth
+
+        """
+        return True
+
+    oldfunc = util.deprecate(AlternateUniverse, old_name=old_name,
+                             new_name=new_name,
+                             release=release, remove=remove,
+                             message=message)
+    with pytest.warns(DeprecationWarning, match_expr="`.+` is deprecated"):
+        oldfunc(42)
+
+    doc = oldfunc.__doc__
+    name = old_name if old_name else AlternateUniverse.__name__
+
+    deprecation_line_1 = ".. deprecated:: {0}".format(release)
+    assert re.search(deprecation_line_1, doc)
+
+    if message:
+        deprecation_line_2 = message
+    else:
+        if new_name is None:
+            default_message = "`{0}` is deprecated!".format(name)
+        else:
+            default_message = "`{0}` is deprecated, use `{1}` instead!".format(
+                name, new_name)
+        deprecation_line_2 = default_message
+    assert re.search(deprecation_line_2, doc)
+
+    if remove:
+        deprecation_line_3 = "`{0}` will be removed in release {1}".format(
+            name,  remove)
+        assert re.search(deprecation_line_3, doc)
+
+    # check that the old docs are still present
+    assert re.search(textwrap.dedent(AlternateUniverse.__doc__), doc)
+
+
+def test_deprecate_missing_release_ValueError():
+    with pytest.raises(ValueError):
+        util.deprecate(mda.Universe)
+
+def test_set_function_name(name="bar"):
+    def foo():
+        pass
+    util._set_function_name(foo, name)
+    assert foo.__name__ == name
+
+@pytest.mark.parametrize("text",
+                         ("",
+                          "one line text",
+                          "  one line with leading space",
+                          "multiline\n\n   with some\n   leading space",
+                          "   multiline\n\n   with all\n   leading space"))
+def test_dedent_docstring(text):
+    doc = util.dedent_docstring(text)
+    for line in doc.splitlines():
+        assert line == line.lstrip()

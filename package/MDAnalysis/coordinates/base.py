@@ -859,6 +859,205 @@ class Timestep(object):
         del self.data['time']
 
 
+class FrameIteratorBase(object):
+    """
+    Base iterable over the frames of a trajectory.
+
+    A frame iterable has a length that can be accessed with the :func:`len`
+    function, and can be indexed similarly to a full trajectory. When indexed,
+    indices are resolved relative to the iterable and not relative to the
+    trajectory.
+
+    Parameters
+    ----------
+    trajectory: ProtoReader
+        The trajectory over which to iterate.
+
+    .. versionadded:: 0.19.0
+
+    """
+    def __init__(self, trajectory):
+        self._trajectory = trajectory
+
+    def __len__(self):
+        raise NotImplementedError()
+
+    @staticmethod
+    def _avoid_bool_list(frames):
+        if isinstance(frames, list) and frames and isinstance(frames[0], bool):
+            return np.array(frames, dtype=bool)
+        return frames
+
+    @property
+    def trajectory(self):
+        return self._trajectory
+
+
+class FrameIteratorSliced(FrameIteratorBase):
+    """
+    Iterable over the frames of a trajectory on the basis of a slice.
+
+    Parameters
+    ----------
+    trajectory: ProtoReader
+        The trajectory over which to iterate.
+    frames: slice
+        A slice to select the frames of interest.
+
+    See Also
+    --------
+    FrameIteratorBase
+
+    .. versionadded:: 0.19.0
+
+    """
+    def __init__(self, trajectory, frames):
+        # It would be easier to store directly a range object, as it would
+        # store its parameters in a single place, calculate its length, and
+        # take care of most the indexing. Though, doing so is not compatible
+        # with python 2 where xrange (or range with six) is only an iterator.
+        super(FrameIteratorSliced, self).__init__(trajectory)
+        self._start, self._stop, self._step = trajectory.check_slice_indices(
+            frames.start, frames.stop, frames.step,
+        )
+
+    def __len__(self):
+        start, stop, step = self.start, self.stop, self.step
+        if (step > 0 and start < stop):
+            # We go from a lesser number to a larger one.
+            return int(1 + (stop - 1 - start) // step)
+        elif (step < 0 and start > stop):
+            # We count backward from a larger number to a lesser one.
+            return int(1 + (start - 1 - stop) // (-step))
+        else:
+            # The range is empty.
+            return 0
+    
+    def __iter__(self):
+        for i in range(self.start, self.stop, self.step):
+            yield self.trajectory[i]
+        self.trajectory.rewind()
+
+    def __getitem__(self, frame):
+        if isinstance(frame, numbers.Integral):
+            length = len(self)
+            if not -length < frame < length:
+                raise IndexError('Index {} is out of range of the range of length {}.'
+                                 .format(frame, length))
+            if frame < 0:
+                frame = len(self) + frame
+            frame = self.start + frame * self.step
+            return self.trajectory._read_frame_with_aux(frame)
+        elif isinstance(frame, slice):
+            start = self.start + (frame.start or 0) * self.step
+            if frame.stop is None:
+                stop = self.stop
+            else:
+                stop = self.start + (frame.stop or 0) * self.step
+            step = (frame.step or 1) * self.step
+
+            if step > 0:
+                start = max(0, start)
+            else:
+                stop = max(0, stop)
+            
+            new_slice = slice(start, stop, step)
+            return FrameIteratorSliced(self.trajectory, new_slice)
+        else:
+            # Indexing with a lists of bools does not behave the same in all
+            # version of numpy.
+            frame = self._avoid_bool_list(frame)
+            frames = np.array(list(range(self.start, self.stop, self.step)))[frame]
+            return FrameIteratorIndices(self.trajectory, frames)
+
+    @property
+    def start(self):
+        return self._start
+
+    @property
+    def stop(self):
+        return self._stop
+
+    @property
+    def step(self):
+        return self._step
+
+
+class FrameIteratorAll(FrameIteratorBase):
+    """
+    Iterable over all the frames of a trajectory.
+
+    Parameters
+    ----------
+    trajectory: ProtoReader
+        The trajectory over which to iterate.
+
+    See Also
+    --------
+    FrameIteratorBase
+
+    .. versionadded:: 0.19.0
+
+    """
+    def __init__(self, trajectory):
+        super(FrameIteratorAll, self).__init__(trajectory)
+
+    def __len__(self):
+        return self.trajectory.n_frames
+
+    def __iter__(self):
+        return iter(self.trajectory)
+
+    def __getitem__(self, frame):
+        return self.trajectory[frame]
+
+
+class FrameIteratorIndices(FrameIteratorBase):
+    """
+    Iterable over the frames of a trajectory listed in a sequence of indices.
+
+    Parameters
+    ----------
+    trajectory: ProtoReader
+        The trajectory over which to iterate.
+    frames: sequence
+        A sequence of indices.
+
+    See Also
+    --------
+    FrameIteratorBase
+    """
+    def __init__(self, trajectory, frames):
+        super(FrameIteratorIndices, self).__init__(trajectory)
+        self._frames = []
+        for frame in frames:
+            if not isinstance(frame, numbers.Integral):
+                raise TypeError("Frames indices must be integers.")
+            frame = trajectory._apply_limits(frame)
+            self._frames.append(frame)
+        self._frames = tuple(self._frames)
+
+    def __len__(self):
+        return len(self.frames)
+
+    def __iter__(self):
+        for frame in self.frames:
+            yield self.trajectory._read_frame_with_aux(frame)
+
+    def __getitem__(self, frame):
+        if isinstance(frame, numbers.Integral):
+            frame = self.frames[frame]
+            return self.trajectory._read_frame_with_aux(frame)
+        else:
+            frame = self._avoid_bool_list(frame)
+            frames = np.array(self.frames)[frame]
+            return FrameIteratorIndices(self.trajectory, frames)
+
+    @property
+    def frames(self):
+        return self._frames
+
+
 class IOBase(object):
     """Base class bundling common functionality for trajectory I/O.
 
@@ -1251,6 +1450,11 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         """
         return self.ts.time
 
+    @property
+    def trajectory(self):
+        # Makes a reader effectively commpatible with a FrameIteratorBase
+        return self
+
     def Writer(self, filename, **kwargs):
         """A trajectory writer with the same properties as this trajectory."""
         raise NotImplementedError(
@@ -1299,6 +1503,14 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         """
         pass
 
+    def _apply_limits(self, frame):
+        if frame < 0:
+            frame += len(self)
+        if frame < 0 or frame >= len(self):
+            raise IndexError("Index {} exceeds length of trajectory ({})."
+                             "".format(frame, len(self)))
+        return frame
+
     def __getitem__(self, frame):
         """Return the Timestep corresponding to *frame*.
 
@@ -1312,39 +1524,23 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         ----
         *frame* is a 0-based frame index.
         """
-
-        def apply_limits(frame):
-            if frame < 0:
-                frame += len(self)
-            if frame < 0 or frame >= len(self):
-                raise IndexError("Index {} exceeds length of trajectory ({})."
-                                 "".format(frame, len(self)))
-            return frame
-
         if isinstance(frame, numbers.Integral):
-            frame = apply_limits(frame)
+            frame = self._apply_limits(frame)
             return self._read_frame_with_aux(frame)
         elif isinstance(frame, (list, np.ndarray)):
-            if isinstance(frame[0], (bool, np.bool_)):
+            if len(frame) != 0 and isinstance(frame[0], (bool, np.bool_)):
                 # Avoid having list of bools
                 frame = np.asarray(frame, dtype=np.bool)
                 # Convert bool array to int array
                 frame = np.arange(len(self))[frame]
-
-            def listiter(frames):
-                for f in frames:
-                    if not isinstance(f, numbers.Integral):
-                        raise TypeError("Frames indices must be integers")
-                    yield self._read_frame_with_aux(apply_limits(f))
-
-            return listiter(frame)
+            return FrameIteratorIndices(self, frame)
         elif isinstance(frame, slice):
             start, stop, step = self.check_slice_indices(
                 frame.start, frame.stop, frame.step)
             if start == 0 and stop == len(self) and step == 1:
-                return self.__iter__()
+                return FrameIteratorAll(self)
             else:
-                return self._sliced_iter(start, stop, step)
+                return FrameIteratorSliced(self, frame)
         else:
             raise TypeError("Trajectories must be an indexed using an integer,"
                             " slice or list of indices")
@@ -1362,7 +1558,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
     def _read_frame_with_aux(self, frame):
         """Move to *frame*, updating ts with trajectory, transformations and auxiliary data."""
-        ts = self._read_frame(frame)
+        ts = self._read_frame(frame)  # pylint: disable=assignment-from-no-return
         for aux in self.aux_list:
             ts = self._auxs[aux].update_ts(ts)
             
@@ -1464,7 +1660,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         if start < 0:
             start = 0
 
-        if step < 0 and start > nframes:
+        if step < 0 and start >= nframes:
             start = nframes - 1
 
         if stop is None:
@@ -2126,4 +2322,3 @@ class SingleFrameReaderBase(ProtoReader):
         # to avoid applying the same transformations multiple times on each frame
         
         return ts
-

@@ -208,13 +208,12 @@ import warnings
 import bz2
 
 import numpy as np
-from numpy.lib.utils import deprecate
 
 import logging
 
 import MDAnalysis
 import MDAnalysis.lib.distances
-from MDAnalysis.lib.util import openany
+from MDAnalysis.lib.util import openany, deprecate
 from MDAnalysis.analysis.distances import distance_array
 from MDAnalysis.core.groups import AtomGroup
 from .base import AnalysisBase
@@ -454,6 +453,7 @@ class Contacts(AnalysisBase):
     def _conclude(self):
         self.timeseries = np.array(self.timeseries, dtype=float)
 
+    @deprecate(release="0.19.0", remove="1.0.0")
     def save(self, outfile):
         """save contacts timeseries
 
@@ -510,4 +510,3 @@ def q1q2(u, selection='all', radius=4.5,
                     radius=radius, method=radius_cut_q,
                     start=start, stop=stop, step=step,
                     kwargs={'radius': radius})
-

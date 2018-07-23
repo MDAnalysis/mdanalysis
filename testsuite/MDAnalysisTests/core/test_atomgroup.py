@@ -30,6 +30,7 @@ import numpy as np
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
+    assert_array_almost_equal,
 )
 
 import MDAnalysis as mda
@@ -111,7 +112,7 @@ class TestAtomGroupWriting(object):
             name = path.splitext(path.basename(DCD))[0]
             assert_equal(files[0], "{}_0.pdb".format(name))
 
-    def test_raises(self, u, tmpdir):
+    def test_raises_unknown_format(self, u, tmpdir):
         with tmpdir.as_cwd():
             with pytest.raises(ValueError):
                 u.atoms.write('useless.format123')
@@ -119,6 +120,83 @@ class TestAtomGroupWriting(object):
     def test_write_coordinates(self, u, tmpdir):
         with tmpdir.as_cwd():
             u.atoms.write("test.xtc")
+
+    @pytest.mark.parametrize('frames', (
+        [4],
+        [2, 3, 3, 1],
+        slice(2, 6, 1),
+    ))
+    def test_write_frames(self, u, tmpdir, frames):
+        destination = str(tmpdir / 'test.dcd')
+        selection = u.trajectory[frames]
+        ref_positions = np.stack([ts.positions for ts in selection])
+        u.atoms.write(destination, frames=frames)
+
+        u_new = mda.Universe(destination)
+        new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+
+        assert_array_almost_equal(new_positions, ref_positions)
+
+    @pytest.mark.parametrize('frames', (
+        [4],
+        [2, 3, 3, 1],
+        slice(2, 6, 1),
+    ))
+    def test_write_frame_iterator(self, u, tmpdir, frames):
+        destination = str(tmpdir / 'test.dcd')
+        selection = u.trajectory[frames]
+        ref_positions = np.stack([ts.positions for ts in selection])
+        u.atoms.write(destination, frames=selection)
+
+        u_new = mda.Universe(destination)
+        new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+
+        assert_array_almost_equal(new_positions, ref_positions)
+
+    @pytest.mark.parametrize('extension', ('xtc', 'dcd', 'pdb', 'xyz'))
+    def test_write_frame_none(self, u, tmpdir, extension):
+        destination = str(tmpdir / 'test.' + extension)
+        u.atoms.write(destination, frames=None)
+        u_new = mda.Universe(destination)
+        new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+        # Most format only save 3 decimals; XTC even has only 2.
+        assert_array_almost_equal(
+            u.atoms.positions[None, ...], new_positions, decimal=2
+        )
+
+    def test_write_frames_all(self, u, tmpdir):
+        destination = str(tmpdir / 'test.dcd')
+        u.atoms.write(destination, frames='all')
+        u_new = mda.Universe(destination)
+        ref_positions = np.stack([ts.positions for ts in u.trajectory])
+        new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+        assert_array_almost_equal(new_positions, ref_positions)
+
+    @pytest.mark.parametrize('frames', ('invalid', 8, True, False, 3.2))
+    def test_write_frames_invalid(self, u, tmpdir, frames):
+        destination = str(tmpdir / 'test.dcd')
+        with pytest.raises(TypeError):
+            u.atoms.write(destination, frames=frames)
+
+    def test_incompatible_arguments(self, u, tmpdir):
+        destination = str(tmpdir / 'test.dcd')
+        with pytest.raises(ValueError):
+            u.atoms.write(destination, frames=[0, 1, 2], multiframe=False)
+
+    def test_incompatible_trajectories(self, tmpdir):
+        destination = str(tmpdir / 'test.dcd')
+        u1 = make_Universe(trajectory=True)
+        u2 = make_Universe(trajectory=True)
+        destination = str(tmpdir / 'test.dcd')
+        with pytest.raises(ValueError):
+            u1.atoms.write(destination, frames=u2.trajectory)
+
+    def test_write_no_traj_move(self, u, tmpdir):
+        destination = str(tmpdir / 'test.dcd')
+        u.trajectory[10]
+        u.atoms.write(destination, frames=[1, 2, 3])
+        assert u.trajectory.ts.frame == 10
+
 
     def test_write_selection(self, u, tmpdir):
         with tmpdir.as_cwd():

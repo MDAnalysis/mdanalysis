@@ -138,6 +138,14 @@ Class decorators
 
 .. autofunction:: cached
 
+
+Code management
+---------------
+
+.. autofunction:: deprecate
+.. autoclass:: _Deprecate
+.. autofunction:: dedent_docstring
+
 .. Rubric:: Footnotes
 
 .. [#NamedStreamClose] The reason why :meth:`NamedStream.close` does
@@ -171,10 +179,13 @@ import re
 import io
 import warnings
 import collections
+import functools
 from functools import wraps
+import textwrap
+
 import mmtf
 import numpy as np
-import functools
+
 from numpy.testing import assert_equal
 import inspect
 
@@ -1804,3 +1815,235 @@ def warn_if_not_unique(groupmethod):
             warn_if_not_unique.warned = False
         return result
     return wrapper
+
+
+#------------------------------------------------------------------
+#
+# our own deprecate function, derived from numpy (see
+# https://github.com/MDAnalysis/mdanalysis/pull/1763#issuecomment-403231136)
+#
+# From numpy/lib/utils.py 1.14.5 (used under the BSD 3-clause licence,
+# https://www.numpy.org/license.html#license) and modified
+
+def _set_function_name(func, name):
+    func.__name__ = name
+    return func
+
+class _Deprecate(object):
+    """
+    Decorator class to deprecate old functions.
+
+    Refer to `deprecate` for details.
+
+    See Also
+    --------
+    deprecate
+
+
+    .. versionadded:: 0.19.0
+    """
+
+    def __init__(self, old_name=None, new_name=None,
+                 release=None, remove=None, message=None):
+        self.old_name = old_name
+        self.new_name = new_name
+        if release is None:
+            raise ValueError("deprecate: provide release in which "
+                             "feature was deprecated.")
+        self.release = str(release)
+        self.remove = str(remove) if remove is not None else remove
+        self.message = message
+
+    def __call__(self, func, *args, **kwargs):
+        """
+        Decorator call.  Refer to ``decorate``.
+
+        """
+        old_name = self.old_name
+        new_name = self.new_name
+        message = self.message
+        release = self.release
+        remove = self.remove
+
+        if old_name is None:
+            try:
+                old_name = func.__name__
+            except AttributeError:
+                old_name = func.__name__
+        if new_name is None:
+            depdoc = "`{0}` is deprecated!".format(old_name)
+        else:
+            depdoc = "`{0}` is deprecated, use `{1}` instead!".format(
+                old_name, new_name)
+
+        warn_message = depdoc
+
+        remove_text = ""
+        if remove is not None:
+            remove_text = "`{0}` will be removed in release {1}.".format(
+                old_name, remove)
+            warn_message += "\n" + remove_text
+        if message is not None:
+            warn_message += "\n" + message
+
+        def newfunc(*args, **kwds):
+            """This function is deprecated."""
+            warnings.warn(warn_message, DeprecationWarning, stacklevel=2)
+            return func(*args, **kwds)
+
+        newfunc = _set_function_name(newfunc, old_name)
+
+        # Build the doc string
+        # First line: func is deprecated, use newfunc instead!
+        # Normal docs follows.
+        # Last: .. deprecated::
+
+        # make sure that we do not mess up indentation, otherwise sphinx
+        # docs do not build properly
+        try:
+            doc = dedent_docstring(func.__doc__)
+        except TypeError:
+            doc = ""
+
+        deprecation_text = dedent_docstring("""\n\n
+        .. deprecated:: {0}
+           {1}
+           {2}
+        """.format(release,
+                   message if message else depdoc,
+                   remove_text))
+
+        doc = "{0}\n\n{1}\n{2}\n".format(depdoc, doc, deprecation_text)
+
+        newfunc.__doc__ = doc
+        try:
+            d = func.__dict__
+        except AttributeError:
+            pass
+        else:
+            newfunc.__dict__.update(d)
+        return newfunc
+
+def deprecate(*args, **kwargs):
+    """Issues a DeprecationWarning, adds warning to `old_name`'s
+    docstring, rebinds ``old_name.__name__`` and returns the new
+    function object.
+
+    This function may also be used as a decorator.
+
+    It adds a restructured text ``.. deprecated:: release`` block with
+    the sphinx deprecated role to the end of the docs. The `message`
+    is added under the deprecation block and contains the `release` in
+    which the function was deprecated.
+
+    Parameters
+    ----------
+    func : function
+        The function to be deprecated.
+    old_name : str, optional
+        The name of the function to be deprecated. Default is None, in
+        which case the name of `func` is used.
+    new_name : str, optional
+        The new name for the function. Default is None, in which case the
+        deprecation message is that `old_name` is deprecated. If given, the
+        deprecation message is that `old_name` is deprecated and `new_name`
+        should be used instead.
+    release : str
+        Release in which the function was deprecated. This is given as
+        a keyword argument for technical reasons but is required; a
+        :exc:`ValueError` is raised if it is missing.
+    remove : str, optional
+        Release for which removal of the feature is planned.
+    message : str, optional
+        Additional explanation of the deprecation.  Displayed in the
+        docstring after the warning.
+
+    Returns
+    -------
+    old_func : function
+        The deprecated function.
+
+    Examples
+    --------
+    When :func:`deprecate` is used as a function as in the following
+    example,
+
+    .. code-block:: python
+
+       oldfunc = deprecate(func, release="0.19.0", remove="1.0",
+                           message="Do it yourself instead.")
+
+    then ``oldfunc`` will return a value after printing
+    :exc:`DeprecationWarning`; ``func`` is still available as it was
+    before.
+
+    When used as a decorator, ``func`` will be changed and issue the
+    warning and contain the deprecation note in the do string.
+
+    .. code-block:: python
+
+       @deprecate(release="0.19.0", remove="1.0",
+                  message="Do it yourself instead.")
+       def func():
+           \"\"\"Just pass\"\"\"
+           pass
+
+    The resulting doc string (``help(func)``) will look like:
+
+    .. code-block:: reST
+
+       `func` is deprecated!
+
+       Just pass.
+
+       .. deprecated:: 0.19.0
+          Do it yourself instead.
+          `func` will be removed in 1.0.
+
+    (It is possible but confusing to change the name of ``func`` with
+    the decorator so it is not recommended to use the `new_func`
+    keyword argument with the decorator.)
+
+    .. versionadded:: 0.19.0
+
+    """
+    # Deprecate may be run as a function or as a decorator
+    # If run as a function, we initialise the decorator class
+    # and execute its __call__ method.
+
+    if args:
+        fn = args[0]
+        args = args[1:]
+        return _Deprecate(*args, **kwargs)(fn)
+    else:
+        return _Deprecate(*args, **kwargs)
+#
+#------------------------------------------------------------------
+
+def dedent_docstring(text):
+    """Dedent typical python doc string.
+
+    Parameters
+    ----------
+    text : str
+        string, typically something like ``func.__doc__``.
+
+    Returns
+    -------
+    str
+        string with the leading common whitespace removed from each
+        line
+
+    See Also
+    --------
+    textwrap.dedent
+
+
+    .. versionadded:: 0.19.0
+    """
+    lines = text.splitlines()
+    if len(lines) < 2:
+        return text.lstrip()
+
+    # treat first line as special (typically no leading whitespace!) which messes up dedent
+    return lines[0].lstrip() + "\n" + textwrap.dedent("\n".join(lines[1:]))

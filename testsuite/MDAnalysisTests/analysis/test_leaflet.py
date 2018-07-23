@@ -68,4 +68,3 @@ def test_optimize_cutoff(universe, lipid_heads):
     cutoff, N = optimize_cutoff(universe, lipid_heads, pbc=True)
     assert N == 2
     assert_almost_equal(cutoff, 10.5, decimal=4)
-

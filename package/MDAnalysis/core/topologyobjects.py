@@ -466,6 +466,9 @@ class TopologyDict(object):
         return other in self.dict or other[::-1] in self.dict
 
 
+_BTYPE_TO_SHAPE = {'bond': 2, 'angle': 3, 'dihedral': 4, 'improper': 4}
+
+
 class TopologyGroup(object):
 
     """A container for a groups of bonds.
@@ -515,9 +518,10 @@ class TopologyGroup(object):
     .. versionchanged:: 0.11.0
        Added `values` method to return the size of each object in this group
        Deprecated selectBonds method in favour of select_bonds
+    .. versionchanged:: 0.18.1
+       Empty TopologyGroup now returns correctly shaped empty array via
+       indices property and to_indices()
     """
-    _allowed_types = {'bond', 'angle', 'dihedral', 'improper'}
-
     def __init__(self, bondidx, universe, btype=None, type=None, guessed=None,
                  order=None):
         if btype is None:
@@ -527,11 +531,11 @@ class TopologyGroup(object):
             self.btype = {2: 'bond',
                           3: 'angle',
                           4: 'dihedral'}[len(bondidx[0])]
-        elif btype in self._allowed_types:
+        elif btype in _BTYPE_TO_SHAPE:
             self.btype = btype
         else:
-            raise ValueError("Unsupported btype, use one of {}"
-                             "".format(self._allowed_types))
+            raise ValueError("Unsupported btype, use one of '{}'"
+                             "".format(', '.join(_BTYPE_TO_SHAPE)))
 
         nbonds = len(bondidx)
         # remove duplicate bonds
@@ -545,12 +549,6 @@ class TopologyGroup(object):
             guessed = np.asarray(guessed, dtype=np.bool).reshape(nbonds, 1)
         if order is None:
             order = np.repeat(None, nbonds).reshape(nbonds, 1)
-
-        # TODO: why has this been defined?
-        split_index = {'bond': 2,
-                       'angle': 3,
-                       'dihedral': 4,
-                       'improper': 4}[self.btype]
 
         if nbonds > 0:
             uniq, uniq_idx = util.unique_rows(bondidx, return_index=True)
@@ -655,7 +653,12 @@ class TopologyGroup(object):
         --------
         to_indices : function that just returns `indices`
         """
-        return self._bix
+        if not self:
+            # empty TG
+            shape = _BTYPE_TO_SHAPE[self.btype]
+            return np.zeros((0, shape), dtype=np.int32)
+        else:
+            return self._bix
 
     def to_indices(self):
         """Return a data structure with atom indices describing the bonds.
@@ -807,10 +810,7 @@ class TopologyGroup(object):
         try:
             return self._ags[2]
         except IndexError:
-            nvert = {'bond': 2,
-                     'angle': 3,
-                     'dihedral': 4,
-                     'improper': 4}[self.btype]
+            nvert = _BTYPE_TO_SHAPE[self.btype]
             raise IndexError("TopologyGroup of {}s only has {} vertical AtomGroups"
                              "".format(self.btype, nvert))
 
@@ -820,10 +820,7 @@ class TopologyGroup(object):
         try:
             return self._ags[3]
         except IndexError:
-            nvert = {'bond': 2,
-                     'angle': 3,
-                     'dihedral': 4,
-                     'improper': 4}[self.btype]
+            nvert = _BTYPE_TO_SHAPE[self.btype]
             raise IndexError("TopologyGroup of {}s only has {} vertical AtomGroups"
                              "".format(self.btype, nvert))
 

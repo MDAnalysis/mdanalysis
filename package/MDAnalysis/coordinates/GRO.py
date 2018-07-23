@@ -468,8 +468,5 @@ class GROWriter(base.WriterBase):
                     tri_dims = obj.triclinic_dimensions
 
                 # full output
-                box = self.convert_pos_to_native(
-                    tri_dims.flatten(), inplace=False)
-                output_gro.write(self.fmt['box_triclinic'].format(
-                    box=box)
-                )
+                box = self.convert_pos_to_native(tri_dims.flatten(), inplace=False)
+                output_gro.write(self.fmt['box_triclinic'].format(box=box))

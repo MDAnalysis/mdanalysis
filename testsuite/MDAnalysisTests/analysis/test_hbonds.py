@@ -396,4 +396,3 @@ class TestHydrogenBondAnalysisTIP3P(object):
         # https://github.com/MDAnalysis/mdanalysis/issues/801)
         for name, ref in reference_table.items():
             assert_array_equal(h.table.field(name), ref, err_msg="resname for {0} do not match (Issue #801)")
-

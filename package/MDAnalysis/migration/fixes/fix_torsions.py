@@ -28,4 +28,3 @@ class FixTorsions(BaseFix):
         args = head + [pytree.Node(syms.trailer, [Dot(), Name(method_name, prefix = method.prefix)])]
         new = pytree.Node(syms.power, args)
         return new
-
