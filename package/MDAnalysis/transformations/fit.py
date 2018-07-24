@@ -37,56 +37,8 @@ from ..analysis import align
 from ..lib.util import get_weights
 from ..lib.transformations import euler_from_matrix, euler_matrix
 
-def alignto(ag, reference, weights=None):
-    
-    """Perform a spatial superposition by minimizing the RMSD.
 
-    Spatially align the group of atoms `ag` to `reference` by
-    doing a RMSD fit on `select` atoms.
-
-    A detailed description on the way the fitting is performed can be found in
-    :func:`MDAnalysis.analysis.align.alignto`
-    
-    Example
-    -------
-    
-    ..code-block::python
-    
-        ag = u.select_atoms("protein")
-        ref = mda.Universe("reference.pdb")
-        transform = MDAnalysis.transformations.alignto(ag, ref, wheights="mass")
-        u.trajectory.add_transformations(transform)
-
-    Parameters
-    ----------
-    ag : Universe or AtomGroup
-       structure to be aligned, a
-       :class:`~MDAnalysis.core.groups.AtomGroup` or a whole
-       :class:`~MDAnalysis.core.universe.Universe`
-    reference : Universe or AtomGroup
-       reference structure, a :class:`~MDAnalysis.core.groups.AtomGroup`
-       or a whole :class:`~MDAnalysis.core.universe.Universe`
-    weights : {"mass", ``None``} or array_like, optional
-       choose weights. With ``"mass"`` uses masses as weights; with ``None``
-       weigh each atom equally. If a float array of the same length as
-       `ag` is provided, use each element of the `array_like` as a
-       weight for the corresponding atom in `mobile`.
-
-    Returns
-    -------
-    MDAnalysis.coordinates.base.Timestep
-    
-    """
-    
-    def wrapped(ts):
-        align.alignto(ag, reference, weights=weights)
-        
-        return ts
-
-    return wrapped
-
-
-def fit_translation(ag, reference, plane=None, center_of="geometry"):
+def fit_translation(ag, reference, plane=None, weights=None):
 
     """Translates a given AtomGroup so that its center of geometry/mass matches 
     the respective center of the given reference. A plane can be given by the
@@ -102,7 +54,7 @@ def fit_translation(ag, reference, plane=None, center_of="geometry"):
     
         ag = u.select_atoms("protein")
         ref = mda.Universe("reference.pdb")
-        transform = MDAnalysis.transformations.fit_translation(ag, ref, plane="xy", center_of="mass")
+        transform = mda.transformations.fit_translation(ag, ref, plane="xy", center_of="mass")
         u.trajectory.add_transformations(transform)
     
     Parameters
@@ -117,9 +69,11 @@ def fit_translation(ag, reference, plane=None, center_of="geometry"):
     plane: str, optional
         used to define the plane on which the translations will be removed. Defined as a 
         string of the plane. Suported planes are yz, xz and xy planes.
-    center_of: str, optional
-        used to choose the method of centering on the given atom group. Can be 'geometry'
-        or 'mass'. Default is "geometry".
+    weights : {"mass", ``None``} or array_like, optional
+       choose weights. With ``"mass"`` uses masses as weights; with ``None``
+       weigh each atom equally. If a float array of the same length as
+       `ag` is provided, use each element of the `array_like` as a
+       weight for the corresponding atom in `ag`.
     
     Returns
     -------
@@ -127,31 +81,29 @@ def fit_translation(ag, reference, plane=None, center_of="geometry"):
     """
     
     if plane is not None:
-        if plane not in ('xy', 'yz', 'xz'):
-            raise ValueError('{} is not a valid plane'.format(plane))
         axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
-        plane = axes[plane]
+        try:
+            plane = axes[plane]
+        except (TypeError, KeyError):
+            raise ValueError('{} is not a valid plane'.format(plane))
     try:
-        if center_of == 'geometry':
-            ref_center = partial(reference.atoms.center_of_geometry)
-            ag_center = partial(ag.atoms.center_of_geometry)
-        elif center_of == 'mass':
-            ref_center = partial(reference.atoms.center_of_mass)
-            ag_center = partial(ag.atoms.center_of_mass)
-        else:
-            raise ValueError('{} is not a valid argument for "center_of"'.format(center_of))
+        if ag.atoms.n_residues != reference.atoms.n_residues:
+            raise ValueError("{} and {} have mismatched number of residues".format(ag,reference))
     except AttributeError:
-        if center_of == 'mass':
-            raise AttributeError('Either {} or {} is not an Universe/AtomGroup object with masses'.format(ag, reference))
-        else:
-            raise ValueError('Either {} or {} is not an Universe/AtomGroup object'.format(ag, reference))
+        raise AttributeError("{} or {} is not valid Universe/AtomGroup".format(ag,reference))
+    ref, mobile = align.get_matching_atoms(reference.atoms, ag.atoms)
+    try:
+        weights = align.get_weights(ref.atoms, weights=weights)
+    except (ValueError, TypeError):
+        raise ValueError("weights must be {'mass', None} or an iterable of the "
+                        "same size as the atomgroup.")
     
-    reference = np.asarray(ref_center(), np.float32)
+    ref_com = np.asarray(ref.center(weights), np.float32)
 
     def wrapped(ts):
-        center = np.asarray(ag_center(), np.float32)
-        vector = reference - center
-        if plane:
+        mobile_com = np.asarray(mobile.atoms.center(weights), np.float32)
+        vector = ref_com - mobile_com
+        if plane is not None:
             vector[plane] = 0
         ts.positions += vector
         
@@ -181,7 +133,7 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
     
         ag = u.select_atoms("protein")
         ref = mda.Universe("reference.pdb")
-        transform = MDAnalysis.transformations.fit_rot_trans(ag, ref, plane="xy", weights="mass")
+        transform = mda.transformations.fit_rot_trans(ag, ref, plane="xy", weights="mass")
         u.trajectory.add_transformations(transform)
     
     Parameter
@@ -194,23 +146,24 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
        reference structure, a :class:`~MDAnalysis.core.groups.AtomGroup` or a whole 
        :class:`~MDAnalysis.core.universe.Universe`
     plane: str, optional
-        used to define the plane on which the translations will be removed. Defined as a 
-        string of the plane. Suported planes are "yz", "xz" and "xy" planes.
+        used to define the plane on which the rotations and translations will be removed. 
+        Defined as a string of the plane. Suported planes are "yz", "xz" and "xy" planes.
     weights : {"mass", ``None``} or array_like, optional
        choose weights. With ``"mass"`` uses masses as weights; with ``None``
        weigh each atom equally. If a float array of the same length as
        `ag` is provided, use each element of the `array_like` as a
-       weight for the corresponding atom in `mobile`.
+       weight for the corresponding atom in `ag`.
        
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
     """
     if plane is not None:
-        if plane not in ('xy', 'yz', 'xz'):
-            raise ValueError('{} is not a valid plane'.format(plane))
         axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
-        plane = axes[plane]
+        try:
+            plane = axes[plane]
+        except (TypeError, KeyError):
+            raise ValueError('{} is not a valid plane'.format(plane))
     try:
         if ag.atoms.n_residues != reference.atoms.n_residues:
             raise ValueError("{} and {} have mismatched number of residues".format(ag,reference))
@@ -220,21 +173,27 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
     try:
         weights = align.get_weights(ref.atoms, weights=weights)
     except (ValueError, TypeError):
-        raise TypeError("weights must be {'mass', None} or an iterable of the "
+        raise ValueError("weights must be {'mass', None} or an iterable of the "
                         "same size as the atomgroup.")
     ref_com = ref.center(weights)
-    ref_coordinates = ref.atoms.positions - ref_com   
+    ref_coordinates = ref.atoms.positions - ref_com
+    
     def wrapped(ts):
         mobile_com = mobile.atoms.center(weights)
         mobile_coordinates = mobile.atoms.positions - mobile_com
         rotation, dump = align.rotation_matrix(mobile_coordinates, ref_coordinates, weights=weights)
-        if plane:
-            euler_angs = euler_from_matrix(rotation, axes='sxyz')
-            euler_angs[plane] = 0
-            rotation = euler_matrix(euler_angs[0], euler_angs[1], euler_angs[2], axes='sxyz')
+        vector = ref_com
+        if plane is not None:
+            matrix = np.r_[rotation, np.zeros(3).reshape(1,3)]
+            matrix = np.c_[matrix, np.zeros(4)]
+            euler_angs = np.asarray(euler_from_matrix(matrix, axes='sxyz'), np.float32)
+            for i in range(0, euler_angs.size):
+                euler_angs[i] = ( euler_angs[plane] if i == plane else 0)
+            rotation = euler_matrix(euler_angs[0], euler_angs[1], euler_angs[2], axes='sxyz')[:3, :3]
+            vector[plane] = mobile_com[plane]
         ts.positions = ts.positions - mobile_com
         ts.positions = np.dot(ts.positions, rotation.T)
-        ts.positions = ts.positions + ref_com
+        ts.positions = ts.positions + vector
         
         return ts
     
