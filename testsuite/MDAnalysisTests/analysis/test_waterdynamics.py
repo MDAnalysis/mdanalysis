@@ -89,8 +89,8 @@ def test_SurvivalProbability_t0tf(universe):
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
         ids = [(0, ), (0, ), (7, 6, 5), (6, 5, 4), (5, 4, 3), (4, 3, 2), (3, 2, 1), (0, )]
         select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop(2))   # atom IDs fed set by set
-        sp = waterdynamics.SurvivalProbability(universe, "", 2, 6, 3)
-        taus, timeseries = sp.run()
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        taus, timeseries = sp.run(tau_max=3, start=2, stop=6)
         assert_almost_equal(timeseries, [2 / 3.0, 1 / 3.0, 0])
 
 
@@ -98,8 +98,8 @@ def test_SurvivalProbability_definedTaus(universe):
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
         ids = [(9, 8, 7), (8, 7, 6), (7, 6, 5), (6, 5, 4), (5, 4, 3), (4, 3, 2), (3, 2, 1)]
         select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
-        sp = waterdynamics.SurvivalProbability(universe, "", 0, 6, 3)
-        taus, timeseries = sp.run()
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        taus, timeseries = sp.run(tau_max=3, start=0, stop=6)
         assert_almost_equal(timeseries, [2 / 3.0, 1 / 3.0, 0])
 
 
@@ -107,16 +107,16 @@ def test_SurvivalProbability_zeroMolecules(universe):
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
         # no atom IDs found
         select_atoms_mock.return_value = Mock(ids=[])
-        sp = waterdynamics.SurvivalProbability(universe, "", 0, 6, 3)
-        taus, timeseries = sp.run()
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        taus, timeseries = sp.run(tau_max=3, start=3, stop=6)
         assert all(np.isnan(timeseries))
 
 
 def test_SurvivalProbability_alwaysPresent(universe):
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
         # always the same atom IDs found
-        select_atoms_mock.return_value = Mock(ids=[7, 8, 1, 9])
+        select_atoms_mock.return_value = Mock(ids=[7, 8])
 
-        sp = waterdynamics.SurvivalProbability(universe, "", 0, 6, 3)
-        taus, timeseries = sp.run()
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        taus, timeseries = sp.run(tau_max=3, start=0, stop=6)
         assert all(np.equal(timeseries, 1))
