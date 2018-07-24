@@ -33,8 +33,9 @@ import itertools
 import numpy as np
 from scipy.spatial import cKDTree
 
-from MDAnalysis.lib._cutil import unique_int_1d
-from MDAnalysis.lib._augment import augment_coordinates, undo_augment
+from ._cutil import unique_int_1d
+from ._augment import augment_coordinates, undo_augment
+from .util import unique_rows
 
 from MDAnalysis.lib.distances import apply_PBC
 
@@ -79,12 +80,23 @@ class PeriodicKDTree(object):
         self.leafsize = leafsize
         self.dim = 3  # 3D systems
         self.box = box
-        self.periodic = False
-        if box is not None:
-            self.periodic = True
-        self._indices = list()
+        self._pbc = False
+        if self.box is not None:
+            self._pbc = True
         self._built = False
         self.cutoff = None
+
+    @property
+    def pbc(self):
+      return self._pbc
+
+    @pbc.setter
+    def pbc(self, value):
+        self._pbc = value
+
+    @pbc.getter
+    def pbc(self):
+        return self._pbc
 
     def set_coords(self, coords, cutoff=None):
         """Constructs KDTree from the coordinates
@@ -125,7 +137,7 @@ class PeriodicKDTree(object):
                                'If need to change the cutoff radius'
                                'Run tree.set_cutoff(cutoff)')
         # If no cutoff distance is provided but PBC aware
-        if self.periodic and (cutoff is None):
+        if self.pbc and (cutoff is None):
             raise RuntimeError('Provide a cutoff distance'
                                ' with tree.set_coords(...)')
 
@@ -133,7 +145,7 @@ class PeriodicKDTree(object):
         # augment coordinates will work only with float32
         coords = np.asarray(coords, dtype=np.float32)
 
-        if self.periodic:
+        if self.pbc:
             self.cutoff = cutoff
             # Bring the coordinates in the central cell
             self.coords = apply_PBC(coords, self.box)
@@ -157,7 +169,7 @@ class PeriodicKDTree(object):
         """Change the cutoff to rebuild the tree"""
         if not self._built:
             raise RuntimeError('Unbuilt tree. Run tree.set_coords(...)')
-        if self.periodic:
+        if self.pbc:
             if self.cutoff < cutoff:
                 self.cutoff = cutoff
                 self._built = False
@@ -190,7 +202,7 @@ class PeriodicKDTree(object):
             centers = centers.reshape((1, self.dim))
 
         self._indices = set()  # clear previous search
-        if self.periodic:
+        if self.pbc:
             if self.cutoff < radius:
                 raise RuntimeError('Set cutoff greater or equal to the radius.'
                                    ' Use tree.set_cutoff(...)')
@@ -240,22 +252,18 @@ class PeriodicKDTree(object):
         if not self._built:
             raise RuntimeError(' Unbuilt Tree. Run tree.set_coords(...)')
 
-        if self.periodic:
+        if self.pbc:
             if self.cutoff < radius:
                 raise RuntimeError('Set cutoff greater or equal to the radius.'
                                    ' Use tree.set_cutoff(...)')
 
         pairs = np.array(list(self.ckdt.query_pairs(radius)), dtype=np.int64)
-        if self.periodic:
+        if self.pbc:
             if len(pairs) > 1:
                 pairs[:, 0] = undo_augment(pairs[:, 0], self.mapping,
                                            len(self.coords))
                 pairs[:, 1] = undo_augment(pairs[:, 1], self.mapping,
                                            len(self.coords))
         if pairs.size > 0:
-            pairs = np.sort(pairs, axis=1)
-            unique_pairs = [tuple(x) for x in pairs]
-            unique_pairs = sorted(set(unique_pairs),
-                                  key=lambda x: x[0])
-            pairs = np.asarray(unique_pairs, dtype=np.int64)
+            pairs = unique_rows(pairs)
         return pairs
