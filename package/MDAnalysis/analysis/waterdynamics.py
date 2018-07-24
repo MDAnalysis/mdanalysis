@@ -283,23 +283,22 @@ the zone, on the other hand, a fast decay means a short permanence time::
 
   import MDAnalysis
   from MDAnalysis.analysis.waterdynamics import SurvivalProbability as SP
+  import matplotlib.pyplot as plt
 
-  u = MDAnalysis.Universe(pdb, trajectory)
+  universe = MDAnalysis.Universe(pdb, trajectory)
   selection = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26 or resid 34 or resid 80) "
-  SP_analysis = SP(universe, selection, 0, 100, 20)
-  SP_analysis.run()
-  #now we print data ready to graph. The graph
-  #represents SP vs t
-  time = 0
-  for sp in SP_analysis.timeseries:
-        print("{time} {sp}".format(time=time, sp=sp))
-        time += 1
+  sp = SP(universe, selection, verbose=True)
+  taus, sp_timeseries = sp.run(start=0, stop=100, tau_max=20)
 
-  #Plot
-  plt.xlabel('time')
+  # print in console
+  for tau, sp in zip(taus, sp_timeseries):
+        print("{time} {sp}".format(time=tau, sp=sp))
+
+  # plot
+  plt.xlabel('Time')
   plt.ylabel('SP')
   plt.title('Survival Probability')
-  plt.plot(range(0,time),MSD_analysis.timeseries)
+  plt.plot(taus, sp_timeseries)
   plt.show()
 
 
@@ -376,16 +375,13 @@ represents a MSD value in its respective window timestep. Data is stored in
 SurvivalProbability
 ~~~~~~~~~~~~~~~~~~~
 
-Survival Probability (SP) data is returned in a list, which each element
-represents a SP value in its respective window timestep. Data is stored in
-:attr:`SurvivalProbability.timeseries`::
+Survival Probability (SP) returns two lists: a list of taus and a list of their corresponding mean survival
+probabilities. Additionally, a list :attr:`SurvivalProbability.sp_timeseries` is provided which contains
+a list of SPs for each tau. This provides the number of datapoints gathered and the distribution.
 
-    results = [
-         # SP values order by window timestep
-            <SP_t0>, <SP_t1>, ...
-     ]
+    results = [ tau1, tau2, ..., tau_n ], [ sp_tau1, sp_tau2, ..., sp_tau_n]
 
-
+Additionally, for each
 
 Classes
 --------
@@ -413,7 +409,6 @@ Classes
 """
 from __future__ import print_function, division, absolute_import
 
-from numpy.core.multiarray import ndarray
 from six.moves import range, zip_longest
 
 import numpy as np
@@ -1187,7 +1182,8 @@ class SurvivalProbability(object):
         P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}
 
     where :math:`T` is the maximum time of simulation, :math:`\tau` is the
-    timestep and :math:`N` the number of particles in certain time.
+    timestep, :math:`N(t)` the number of particles at time t, and
+    :math:`N(t, t+\tau)` is the number of particles at every frame from t to `\tau`.
 
 
     Parameters
@@ -1196,73 +1192,81 @@ class SurvivalProbability(object):
       Universe object
     selection : str
       Selection string; any selection is allowed. With this selection you
-      define the region/zone where to analyze, e.g.: "selection_a" and "zone"
-      (see `SP-examples`_ )
-    t0 : int
-      Zero-based index of the first frame to be analysed
-    tf : int
-      Zero-based index of the last frame to be analysed (inclusive)
-    tau_max : int
-      Survival probability is calculated for the range :math:`1 <= \tau <= tau_max`
+      define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resname LIPID)"
+      and "resname ION and around 10 (resid 20)" (see `SP-examples`_ )
     verbose : Boolean
       If True, prints progress and comments to the console.
-
-    Returns
-    -------
-      tau_timeseries : list
-        tau from 1 to tau_max
-      sp_timeseries : list
-        survival probability for each value of `tau`
 
     .. versionadded:: 0.11.0
 
     """
 
-    def __init__(self, universe, selection, t0=0, tf=-1, tau_max=20, verbose=False):
-
-        if tf >= len(universe.trajectory):
-            raise ValueError("\"end\" must be smaller than the number of frames in the trajectory.")
-
+    def __init__(self, universe, selection, verbose=False):
         self.universe = universe
         self.selection = selection
-        self.t0 = t0
-        self.tf = len(list(universe.trajectory[:tf])) + 1
-        self.tau_max = tau_max
         self.verbose = verbose
-
-        if self.tau_max > self.tf - self.t0:
-            raise ValueError("Too few frames selected for given tau_max.")
 
     def print(self, *args):
         if self.verbose:
             print(args)
 
-    def run(self):
+    def run(self, tau_max, start=0, stop=-1, step=1):
         """
         Computes and returns the survival probability timeseries
+
+        Parameters
+        ----------
+        start : int
+            Zero-based index of the first frame to be analysed
+        stop : int
+            Zero-based index of the last frame to be analysed (inclusive)
+        step : int
+            Jump every `step`'th frame
+        tau_max : int
+            Survival probability is calculated for the range :math:`1 <= \tau <= tau_max`
+
+        Returns
+        -------
+        tau_timeseries : list
+            tau from 1 to tau_max
+        sp_timeseries : list
+            survival probability for each value of `tau`
         """
-        
+
+        if stop >= len(self.universe.trajectory):
+            raise ValueError("\"stop\" must be smaller than the number of frames in the trajectory.")
+
+        if stop == -1:
+            stop = self.universe.trajectory[-1].frame + 1
+        else:
+            stop = stop + 1
+
+        if tau_max > (stop - start):
+            raise ValueError("Too few frames selected for given tau_max.")
+
         # load all frames to an array of sets
-        selected = []
-        for _ in self.universe.trajectory[self.t0:self.tf]:
-            selected.append(set(self.universe.select_atoms(self.selection).ids))
+        selected_ids = []
+        for ts in self.universe.trajectory[start:stop]:
+            self.print("Loading frame:", ts)
+            selected_ids.append(set(self.universe.select_atoms(self.selection).ids))
 
-        tau_timeseries = list(range(1, self.tau_max + 1))
-        sp_timeseries = [[] for _ in range(self.tau_max)]
+        tau_timeseries = np.arange(1, tau_max + 1)
+        sp_timeseries = [[] for _ in range(tau_max)]
 
-        for t in range(len(selected)):
-            Nt = len(selected[t])
+        for t in range(0, len(selected_ids), step):
+            Nt = len(selected_ids[t])
 
             if Nt == 0:
                 self.print("At frame {} the selection did not find any molecule. Moving on to the next frame".format(t))
                 continue
 
             for tau in tau_timeseries:
-                if t + tau >= len(selected):
+                if t + tau >= len(selected_ids):
                     break
 
-                Ntau = len(set.intersection(*selected[t:t + tau + 1]))
-                sp_timeseries[tau - 1].append(Ntau / float(Nt) )
+                # ids that survive from t to t + tau and at every frame in between
+                Ntau = len(set.intersection(*selected_ids[t:t + tau + 1]))
+                sp_timeseries[tau - 1].append(Ntau / float(Nt))
 
         # user can investigate the distribution and sample size
         self.sp_timeseries = sp_timeseries
