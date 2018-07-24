@@ -1206,11 +1206,13 @@ class SurvivalProbability(object):
         self.selection = selection
         self.verbose = verbose
 
-    def print(self, *args):
+    def print(self, verbose, *args):
         if self.verbose:
             print(args)
+        elif verbose:
+            print(args)
 
-    def run(self, tau_max, start=0, stop=-1, step=1):
+    def run(self, tau_max, start=0, stop=-1, step=1, verbose=False):
         """
         Computes and returns the survival probability timeseries
 
@@ -1224,6 +1226,8 @@ class SurvivalProbability(object):
             Jump every `step`'th frame
         tau_max : int
             Survival probability is calculated for the range :math:`1 <= \tau <= tau_max`
+        verbose : Boolean
+            Overwrite the constructor's verbosity
 
         Returns
         -------
@@ -1247,7 +1251,7 @@ class SurvivalProbability(object):
         # load all frames to an array of sets
         selected_ids = []
         for ts in self.universe.trajectory[start:stop]:
-            self.print("Loading frame:", ts)
+            self.print(verbose, "Loading frame:", ts)
             selected_ids.append(set(self.universe.select_atoms(self.selection).ids))
 
         tau_timeseries = np.arange(1, tau_max + 1)
@@ -1257,7 +1261,8 @@ class SurvivalProbability(object):
             Nt = len(selected_ids[t])
 
             if Nt == 0:
-                self.print("At frame {} the selection did not find any molecule. Moving on to the next frame".format(t))
+                self.print(verbose,
+                           "At frame {} the selection did not find any molecule. Moving on to the next frame".format(t))
                 continue
 
             for tau in tau_timeseries:
