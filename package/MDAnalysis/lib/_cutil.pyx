@@ -305,9 +305,9 @@ cdef float _norm(float * a):
     """
     Calculates the magnitude of the vector
     """
-    cdef float result
-    cdef ssize_t n
-    result = 0.0
-    for n in range(3):
-        result += a[n]*a[n]
-    return sqrt(result)
+    return sqrt(norm2(a))
+
+
+cdef float norm2(float* a):
+    """Square of norm"""
+    return a[0] * a[0] + a[1] * a[1] + a[2] * a[2]
