@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
-         VOD555, davidercruz, jbarnoud, ayushsuhane
+         VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull
 
   * 0.18.1
 
@@ -51,6 +51,7 @@ Enhancements
     generated with gromacs -noappend (PR #1728)
   * MDAnalysis.lib.mdamath now supports triclinic boxes and rewrote in Cython (PR #1965)
   * AtomGroup.write can write a trajectory of selected frames (Issue #1037)
+  * Added dihedrals.py with Ramachandran class to analysis module 
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
