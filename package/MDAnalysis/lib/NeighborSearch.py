@@ -88,13 +88,9 @@ class AtomNeighborSearch(object):
             positions = atoms.positions
 
         # check if already built
-        if self.kdtree._built:
-            if self._box is not None:
-                if self.kdtree.cutoff < radius:
-                    self.kdtree.set_cutoff(radius)
-        else:
-            cutoff = radius if self._box is not None else None
-            self.kdtree.set_coords(self.atom_group.positions, cutoff=cutoff)
+        
+        cutoff = radius if self._box is not None else None
+        self.kdtree.set_coords(self.atom_group.positions, cutoff=cutoff)
 
         indices = []
         for pos in positions:
