@@ -28,7 +28,7 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="4.8.1. Generating densities from trajectories — MDAnalysis.analysis.density" href="density.html" />
+    <link rel="next" title="4.7.4. Dihedral and Ramachandran analysis — MDAnalysis.analysis.dihedrals" href="dihedrals.html" />
     <link rel="prev" title="4.7.2. HELANAL — analysis of protein helices" href="helanal.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -283,6 +283,7 @@ method:</p>
 <li class="toctree-l4"><a class="reference internal" href="#site-specific-radial-distribution-function">4.7.3.2. Site-specific radial distribution function</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="dihedrals.html">4.7.4. Dihedral and Ramachandran analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
@@ -310,7 +311,7 @@ method:</p>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../analysis_modules.html">4. Analysis modules</a><ul>
       <li>Previous: <a href="helanal.html" title="previous chapter">4.7.2. HELANAL — analysis of protein helices</a></li>
-      <li>Next: <a href="density.html" title="next chapter">4.8.1. Generating densities from trajectories — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
+      <li>Next: <a href="dihedrals.html" title="next chapter">4.7.4. Dihedral and Ramachandran analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -330,7 +331,7 @@ method:</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>

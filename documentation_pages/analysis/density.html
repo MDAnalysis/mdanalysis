@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="4.8.2. Linear Density — MDAnalysis.analysis.lineardensity" href="lineardensity.html" />
-    <link rel="prev" title="4.7.3. Radial Distribution Functions — MDAnalysis.analysis.rdf" href="rdf.html" />
+    <link rel="prev" title="4.7.4. Dihedral and Ramachandran analysis — MDAnalysis.analysis.dihedrals" href="dihedrals.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -287,7 +287,7 @@ can be used in downstream processing).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>grid</strong> (<em>array_like</em>) – histogram or density, typically a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></li>
+<li><strong>grid</strong> (<em>array_like</em>) – histogram or density, typically a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></li>
 <li><strong>edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – list of arrays, the lower and upper bin edges along the axes</li>
 <li><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – <p>dictionary of class parameters; saved with
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><code class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></code></a>. The following keys are meaningful to
@@ -331,7 +331,7 @@ stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.
 <dt id="MDAnalysis.analysis.density.Density.edges">
 <code class="descname">edges</code><a class="headerlink" href="#MDAnalysis.analysis.density.Density.edges" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>list of 1d-arrays</em> – The boundaries of each cell in <cite>grid</cite> along all axes (equivalent
-to what <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.14)"><code class="xref py py-func docutils literal"><span class="pre">numpy.histogramdd()</span></code></a> returns).</p>
+to what <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.15)"><code class="xref py py-func docutils literal"><span class="pre">numpy.histogramdd()</span></code></a> returns).</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -372,7 +372,7 @@ ensure that the DX file is written in a format suitable for <a class="reference 
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><code class="xref py py-meth docutils literal"><span class="pre">Density.make_density()</span></code></a> method converts the grid to a physical density. For
 a probability density, divide it by <code class="xref py py-meth docutils literal"><span class="pre">Density.grid.sum()</span></code> or use <code class="docutils literal"><span class="pre">normed=True</span></code>
-right away in <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.14)"><code class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></code></a>.</p>
+right away in <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.15)"><code class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></code></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must
 set <code class="docutils literal"><span class="pre">isDensity=True</span></code> because there is no reliable way to detect if
@@ -896,7 +896,7 @@ calculation.</td></tr>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../analysis_modules.html">4. Analysis modules</a><ul>
-      <li>Previous: <a href="rdf.html" title="previous chapter">4.7.3. Radial Distribution Functions — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
+      <li>Previous: <a href="dihedrals.html" title="previous chapter">4.7.4. Dihedral and Ramachandran analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
       <li>Next: <a href="lineardensity.html" title="next chapter">4.8.2. Linear Density — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a></li>
   </ul></li>
   </ul></li>
@@ -917,7 +917,7 @@ calculation.</td></tr>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>

@@ -1,0 +1,336 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>MDAnalysis.analysis.dihedrals &#8212; MDAnalysis 0.18.1-dev documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.18.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.18.1-dev documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for MDAnalysis.analysis.dihedrals</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Dihedral and Ramachandran analysis --- :mod:`MDAnalysis.analysis.dihedrals`</span>
+<span class="sd">===========================================================================</span>
+
+<span class="sd">:Author: Henry Mull</span>
+<span class="sd">:Year: 2018</span>
+<span class="sd">:Copyright: GNU Public License v2</span>
+
+<span class="sd">.. versionadded:: 0.18.1</span>
+
+<span class="sd">This module calculates the dihedral angles phi and psi in degrees for a given</span>
+<span class="sd">list of residues (or atoms corresponding to the residues). This can be done for</span>
+<span class="sd">selected frames or whole trajectories.</span>
+
+<span class="sd">A list of time steps that contain phi and psi angles for each residue is</span>
+<span class="sd">generated, and a basic Ramachandran plot can be generated using the method</span>
+<span class="sd">:meth:`Ramachandran.plot()`. This plot is best used as a reference, but it also</span>
+<span class="sd">allows for user customization.</span>
+
+
+<span class="sd">See Also</span>
+<span class="sd">--------</span>
+<span class="sd">:func:`MDAnalysis.lib.distances.calc_dihedrals()`</span>
+<span class="sd">   function to calculate dihedral angles from atom positions</span>
+
+
+<span class="sd">Example application</span>
+<span class="sd">-------------------</span>
+<span class="sd">This example will show how to calculate the phi and psi angles of adenylate</span>
+<span class="sd">kinase (AdK) and generate a basic Ramachandran plot. The trajectory is included</span>
+<span class="sd">within the test data files::</span>
+
+<span class="sd">   import MDAnalysis as mda</span>
+<span class="sd">   from MDAnalysisTests.datafiles import GRO, XTC</span>
+<span class="sd">   u = mda.Universe(GRO, XTC)</span>
+<span class="sd">   r = u.select_atoms(&quot;protein&quot;)    # selection of residues</span>
+
+<span class="sd">   from MDAnalysis.analysis.dihedrals import Ramachandran</span>
+<span class="sd">   R = Ramachandran(r).run()</span>
+
+<span class="sd">   import matplotlib.pyplot as plt</span>
+<span class="sd">   fig, ax = plt.subplots(figsize=plt.figaspect(1))</span>
+<span class="sd">   ax.set_title(&quot;Ramachandran Plot (AdK)&quot;)</span>
+<span class="sd">   R.plot(ax=ax, color=&#39;k&#39;, marker=&#39;s&#39;)</span>
+
+<span class="sd">Alternatively, if you wanted to plot the data yourself, the angles themselves</span>
+<span class="sd">can be accessed using :attr:`Ramachandran.angles`::</span>
+
+<span class="sd">   fig, ax = plt.subplots(figsize=plt.figaspect(1))</span>
+<span class="sd">   ax.axis([-180,180,-180,180])</span>
+<span class="sd">   ax.axhline(0, color=&#39;k&#39;, lw=1)</span>
+<span class="sd">   ax.axvline(0, color=&#39;k&#39;, lw=1)</span>
+<span class="sd">   ax.set(xticks=range(-180,181,60), yticks=range(-180,181,60),</span>
+<span class="sd">          xlabel=r&quot;$\phi$ (deg)&quot;, ylabel=r&quot;$\psi$ (deg)&quot;)</span>
+<span class="sd">   for ts in R.angles:</span>
+<span class="sd">       ax.scatter(ts[:,0], ts[:,1], color=&#39;k&#39;, marker=&#39;s&#39;)</span>
+
+<span class="sd">Analysis Class</span>
+<span class="sd">--------------</span>
+
+<span class="sd">.. autoclass:: Ramachandran</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">   .. attribute:: angles</span>
+
+<span class="sd">       Contains the time steps of the phi and psi angles for each residue as</span>
+<span class="sd">       an n_frames×n_residues×2 :class:`numpy.ndarray` with content</span>
+<span class="sd">       ``[[[phi, psi], [residue 2], ...], [time step 2], ...]``.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">zip</span><span class="p">,</span> <span class="nb">range</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="k">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="k">import</span> <span class="n">calc_dihedrals</span>
+
+
+<div class="viewcode-block" id="Ramachandran"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran">[docs]</a><span class="k">class</span> <span class="nc">Ramachandran</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate phi and psi dihedral angles of selected residues.</span>
+
+<span class="sd">    Phi and psi angles will be calculated for each residue corresponding to</span>
+<span class="sd">    `atomgroup` for each time step in the trajectory. A :class:`ResidueGroup`</span>
+<span class="sd">    is generated from `atomgroup` which is compared to the protein to determine</span>
+<span class="sd">    if it is a legitimate selection.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    If the residue selection is beyond the scope of the protein, then an error</span>
+<span class="sd">    will be raised. If the residue selection includes the first or last residue,</span>
+<span class="sd">    then a warning will be raised and they will be removed from the list of</span>
+<span class="sd">    residues, but the analysis will still run.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atomgroup : AtomGroup or ResidueGroup</span>
+<span class="sd">            atoms for residues for which phi and psi are calculated</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">             If the selection of residues is not contained within the protein</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Ramachandran</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">residues</span>
+        <span class="n">protein</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">residues</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">residues</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">protein</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Found atoms outside of protein. Only atoms &quot;</span>
+                             <span class="s2">&quot;inside of a &#39;protein&#39; selection can be used to &quot;</span>
+                             <span class="s2">&quot;calculate dihedrals.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">residues</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">protein</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Cannot determine phi and psi angles for the first &quot;</span>
+                          <span class="s2">&quot;or last residues&quot;</span><span class="p">)</span>
+            <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">protein</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+        <span class="n">phi_sel</span> <span class="o">=</span> <span class="p">[</span><span class="n">res</span><span class="o">.</span><span class="n">phi_selection</span><span class="p">()</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">]</span>
+        <span class="n">psi_sel</span> <span class="o">=</span> <span class="p">[</span><span class="n">res</span><span class="o">.</span><span class="n">psi_selection</span><span class="p">()</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">phi_sel</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">phi_sel</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">phi_sel</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">phi_sel</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">psi_sel</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">phi_angles</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                    <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">psi_angles</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                    <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">phi_psi</span> <span class="o">=</span> <span class="p">[(</span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">)</span> <span class="k">for</span> <span class="n">phi</span><span class="p">,</span> <span class="n">psi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">phi_angles</span><span class="p">,</span> <span class="n">psi_angles</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phi_psi</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="Ramachandran.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plots data into standard ramachandran plot. Each time step in</span>
+<span class="sd">        :attr:`Ramachandran.angles` is plotted onto the same graph.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ax : :class:`matplotlib.axes.Axes`</span>
+<span class="sd">              If no `ax` is supplied or set to ``None`` then the plot will</span>
+<span class="sd">              be added to the current active axes.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ax : :class:`matplotlib.axes.Axes`</span>
+<span class="sd">             Axes with the plot, either `ax` or the current axes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span><span class="mi">180</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span><span class="mi">181</span><span class="p">,</span><span class="mi">60</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span><span class="mi">181</span><span class="p">,</span><span class="mi">60</span><span class="p">),</span>
+               <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\phi$ (deg)&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\psi$ (deg)&quot;</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">a</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

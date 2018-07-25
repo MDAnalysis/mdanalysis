@@ -93,7 +93,7 @@ slice:</p>
 <p>returns an <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> of every second element, corresponding to
 indices 0, 2, and 4.</p>
 <p>It also supports “advanced slicing” when the argument is a
-<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> or a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">list</span></code></a>:</p>
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> or a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">list</span></code></a>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">aslice</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">ag</span><span class="p">[</span><span class="n">aslice</span><span class="p">]</span>
 </pre></div>
@@ -320,7 +320,7 @@ before calculation. [<code class="docutils literal"><span class="pre">False</spa
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>corners</strong> – 2x3 array giving corners of bounding box as
 <code class="docutils literal"><span class="pre">[[xmin,</span> <span class="pre">ymin,</span> <span class="pre">zmin],</span> <span class="pre">[xmax,</span> <span class="pre">ymax,</span> <span class="pre">zmax]]</span></code>.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -426,7 +426,7 @@ output will be a 2d array of shape <code class="docutils literal"><span class="p
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -486,7 +486,7 @@ output will be a 2d array of shape <code class="docutils literal"><span class="p
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -538,7 +538,7 @@ output will be a 2d array of shape <code class="docutils literal"><span class="p
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -655,9 +655,9 @@ duplicate elements</td>
 <dt id="MDAnalysis.core.groups.AtomGroup.forces">
 <code class="descname">forces</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.forces" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forces on each <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> in the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a>.</p>
-<p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> with
-<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.14)"><code class="xref py py-attr docutils literal"><span class="pre">shape</span></code></a><code class="docutils literal"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal"><span class="pre">n_atoms</span></code></a><code class="docutils literal"><span class="pre">,</span> <span class="pre">3)</span></code>
-and <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.14)"><code class="xref py py-attr docutils literal"><span class="pre">dtype</span></code></a><code class="docutils literal"><span class="pre">=numpy.float32</span></code>.</p>
+<p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> with
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.15)"><code class="xref py py-attr docutils literal"><span class="pre">shape</span></code></a><code class="docutils literal"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal"><span class="pre">n_atoms</span></code></a><code class="docutils literal"><span class="pre">,</span> <span class="pre">3)</span></code>
+and <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.15)"><code class="xref py py-attr docutils literal"><span class="pre">dtype</span></code></a><code class="docutils literal"><span class="pre">=numpy.float32</span></code>.</p>
 <p>The forces can be changed by assigning an array of the appropriate
 shape, i.e. either <code class="docutils literal"><span class="pre">(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal"><span class="pre">n_atoms</span></code></a><code class="docutils literal"><span class="pre">,</span> <span class="pre">3)</span></code> to assign
 individual forces or <code class="docutils literal"><span class="pre">(3,)</span></code> to assign the <em>same</em> force to all
@@ -1000,7 +1000,7 @@ timestep dimensions.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>coords</strong> – Shifted atom coordinates.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -1032,9 +1032,9 @@ argument <cite>box</cite> can be used to provide alternative unit cell informati
 <dt id="MDAnalysis.core.groups.AtomGroup.positions">
 <code class="descname">positions</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Coordinates of the <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> in the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a>.</p>
-<p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> with
-<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.14)"><code class="xref py py-attr docutils literal"><span class="pre">shape</span></code></a><code class="docutils literal"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal"><span class="pre">n_atoms</span></code></a><code class="docutils literal"><span class="pre">,</span> <span class="pre">3)</span></code>
-and <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.14)"><code class="xref py py-attr docutils literal"><span class="pre">dtype</span></code></a><code class="docutils literal"><span class="pre">=numpy.float32</span></code>.</p>
+<p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> with
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.15)"><code class="xref py py-attr docutils literal"><span class="pre">shape</span></code></a><code class="docutils literal"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal"><span class="pre">n_atoms</span></code></a><code class="docutils literal"><span class="pre">,</span> <span class="pre">3)</span></code>
+and <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.15)"><code class="xref py py-attr docutils literal"><span class="pre">dtype</span></code></a><code class="docutils literal"><span class="pre">=numpy.float32</span></code>.</p>
 <p>The positions can be changed by assigning an array of the appropriate
 shape, i.e., either <code class="docutils literal"><span class="pre">(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal"><span class="pre">n_atoms</span></code></a><code class="docutils literal"><span class="pre">,</span> <span class="pre">3)</span></code> to
 assign individual coordinates, or <code class="docutils literal"><span class="pre">(3,)</span></code> to assign the <em>same</em>
@@ -1685,9 +1685,9 @@ belongs to.</p>
 <dt id="MDAnalysis.core.groups.AtomGroup.velocities">
 <code class="descname">velocities</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Velocities of the <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atoms</span></code></a> in the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a>.</p>
-<p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> with
-<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.14)"><code class="xref py py-attr docutils literal"><span class="pre">shape</span></code></a><code class="docutils literal"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal"><span class="pre">n_atoms</span></code></a><code class="docutils literal"><span class="pre">,</span> <span class="pre">3)</span></code>
-and <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.14)"><code class="xref py py-attr docutils literal"><span class="pre">dtype</span></code></a><code class="docutils literal"><span class="pre">=numpy.float32</span></code>.</p>
+<p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> with
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.15)"><code class="xref py py-attr docutils literal"><span class="pre">shape</span></code></a><code class="docutils literal"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal"><span class="pre">n_atoms</span></code></a><code class="docutils literal"><span class="pre">,</span> <span class="pre">3)</span></code>
+and <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.15)"><code class="xref py py-attr docutils literal"><span class="pre">dtype</span></code></a><code class="docutils literal"><span class="pre">=numpy.float32</span></code>.</p>
 <p>The velocities can be changed by assigning an array of the appropriate
 shape, i.e. either <code class="docutils literal"><span class="pre">(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal"><span class="pre">n_atoms</span></code></a><code class="docutils literal"><span class="pre">,</span> <span class="pre">3)</span></code> to assign
 individual velocities or <code class="docutils literal"><span class="pre">(3,)</span></code> to assign the <em>same</em> velocity to all
@@ -1849,7 +1849,7 @@ before calculation. [<code class="docutils literal"><span class="pre">False</spa
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>corners</strong> – 2x3 array giving corners of bounding box as
 <code class="docutils literal"><span class="pre">[[xmin,</span> <span class="pre">ymin,</span> <span class="pre">zmin],</span> <span class="pre">[xmax,</span> <span class="pre">ymax,</span> <span class="pre">zmax]]</span></code>.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -1937,7 +1937,7 @@ output will be a 2d array of shape <code class="docutils literal"><span class="p
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -1997,7 +1997,7 @@ output will be a 2d array of shape <code class="docutils literal"><span class="p
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -2049,7 +2049,7 @@ output will be a 2d array of shape <code class="docutils literal"><span class="p
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -2430,7 +2430,7 @@ timestep dimensions.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>coords</strong> – Shifted atom coordinates.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -2875,7 +2875,7 @@ before calculation. [<code class="docutils literal"><span class="pre">False</spa
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>corners</strong> – 2x3 array giving corners of bounding box as
 <code class="docutils literal"><span class="pre">[[xmin,</span> <span class="pre">ymin,</span> <span class="pre">zmin],</span> <span class="pre">[xmax,</span> <span class="pre">ymax,</span> <span class="pre">zmax]]</span></code>.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -2963,7 +2963,7 @@ output will be a 2d array of shape <code class="docutils literal"><span class="p
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -3023,7 +3023,7 @@ output will be a 2d array of shape <code class="docutils literal"><span class="p
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -3075,7 +3075,7 @@ output will be a 2d array of shape <code class="docutils literal"><span class="p
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -3457,7 +3457,7 @@ timestep dimensions.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>coords</strong> – Shifted atom coordinates.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -4278,7 +4278,7 @@ that two objects are of the same level, or to access a particular class:</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
