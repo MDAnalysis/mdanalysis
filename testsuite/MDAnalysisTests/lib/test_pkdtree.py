@@ -57,41 +57,6 @@ def test_setcoords(b, cut, result):
         tree.set_coords(coords, cutoff=cut)
 
 
-@pytest.mark.parametrize('b, cut, new_cut, result',
-                         ((None, None, 1.0,
-                          'No need to build'),
-                         ([10, 10, 10, 90, 90, 90], 1.0, 0.9,
-                          'No need to build')))
-def test_setcutoff_fail(b, cut, new_cut, result):
-    coords = np.array([[1, 1, 1], [2, 2, 2]], dtype=np.float32)
-    if b is not None:
-        b = np.array(b, dtype=np.float32)
-    tree = PeriodicKDTree(box=b)
-    tree.set_coords(coords, cutoff=cut)
-    with pytest.raises(RuntimeError, match=result):
-        tree.set_cutoff(new_cut)
-
-
-def test_setcutoff_pass():
-    b = np.array([10, 10, 10, 90, 90, 90], dtype=np.float32)
-    cutoff, new_cutoff = 1.0, 1.2
-    coords = np.array([[1, 1, 1], [2, 2, 2]], dtype=np.float32)
-    b = np.array(b, dtype=np.float32)
-    tree = PeriodicKDTree(box=b)
-    tree.set_coords(coords, cutoff=cutoff)
-    tree.set_cutoff(new_cutoff)
-    assert_equal(tree.cutoff, new_cutoff)
-
-
-def test_directsetcutoff():
-    b = np.array([10, 10, 10, 90, 90, 90], dtype=np.float32)
-    cutoff = 1.0
-    tree = PeriodicKDTree(box=b)
-    with pytest.raises(RuntimeError,
-                       match='Unbuilt tree. Run tree.set_coords(...)'):
-        tree.set_cutoff(cutoff)
-
-
 def test_searchfail():
     coords = np.array([[1, 1, 1], [2, 2, 2]], dtype=np.float32)
     b = np.array([10, 10, 10, 90, 90, 90], dtype=np.float32)
@@ -100,8 +65,7 @@ def test_searchfail():
     query = np.array([1, 1, 1], dtype=np.float32)
     tree = PeriodicKDTree(box=b)
     tree.set_coords(coords, cutoff=cutoff)
-    match = 'Set cutoff greater or equal to the radius.' \
-            ' Use tree.set_cutoff(...)'
+    match = 'Set cutoff greater or equal to the radius.'
     with pytest.raises(RuntimeError, match=match):
         tree.search(query, search_radius)
 
@@ -139,8 +103,7 @@ def test_nopbc():
                          ([10, 10, 10, 45, 60, 90], 2.0,  [[0, 4],
                                                            [2, 4]]),
                          ([10, 10, 10, 45, 60, 90], 4.5,
-                          'Set cutoff greater or equal to the radius.'
-                          ' Use tree.set_cutoff(...)'),
+                          'Set cutoff greater or equal to the radius.'),
                          ([10, 10, 10, 45, 60, 90], 0.1, [])
                          ))
 def test_searchpairs(b, radius, result):

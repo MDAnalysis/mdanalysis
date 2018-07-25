@@ -80,23 +80,12 @@ class PeriodicKDTree(object):
         self.leafsize = leafsize
         self.dim = 3  # 3D systems
         self.box = box
-        self._pbc = False
-        if self.box is not None:
-            self._pbc = True
         self._built = False
         self.cutoff = None
 
     @property
     def pbc(self):
-      return self._pbc
-
-    @pbc.setter
-    def pbc(self, value):
-        self._pbc = value
-
-    @pbc.getter
-    def pbc(self):
-        return self._pbc
+        return self.box is not None
 
     def set_coords(self, coords, cutoff=None):
         """Constructs KDTree from the coordinates
@@ -130,12 +119,6 @@ class PeriodicKDTree(object):
 
 
         """
-
-        # Check if already built
-        if self._built:
-            raise RuntimeError('Tree is already built.'
-                               'If need to change the cutoff radius'
-                               'Run tree.set_cutoff(cutoff)')
         # If no cutoff distance is provided but PBC aware
         if self.pbc and (cutoff is None):
             raise RuntimeError('Provide a cutoff distance'
@@ -165,20 +148,6 @@ class PeriodicKDTree(object):
             self.ckdt = cKDTree(self.coords, self.leafsize)
         self._built = True
 
-    def set_cutoff(self, cutoff):
-        """Change the cutoff to rebuild the tree"""
-        if not self._built:
-            raise RuntimeError('Unbuilt tree. Run tree.set_coords(...)')
-        if self.pbc:
-            if self.cutoff < cutoff:
-                self.cutoff = cutoff
-                self._built = False
-                self.set_coords(self.coords, self.cutoff)
-            else:
-                raise RuntimeError('No need to build')
-        else:
-            raise RuntimeError('No need to build')
-
     def search(self, centers, radius):
         """Search all points within radius from centers and their periodic images.
 
@@ -202,10 +171,10 @@ class PeriodicKDTree(object):
             centers = centers.reshape((1, self.dim))
 
         self._indices = set()  # clear previous search
+        # Sanity check
         if self.pbc:
             if self.cutoff < radius:
-                raise RuntimeError('Set cutoff greater or equal to the radius.'
-                                   ' Use tree.set_cutoff(...)')
+                raise RuntimeError('Set cutoff greater or equal to the radius.')
             # Bring all query points to the central cell
             wrapped_centers = apply_PBC(centers, self.box)
             indices = list(self.ckdt.query_ball_point(wrapped_centers,
@@ -254,8 +223,7 @@ class PeriodicKDTree(object):
 
         if self.pbc:
             if self.cutoff < radius:
-                raise RuntimeError('Set cutoff greater or equal to the radius.'
-                                   ' Use tree.set_cutoff(...)')
+                raise RuntimeError('Set cutoff greater or equal to the radius.')
 
         pairs = np.array(list(self.ckdt.query_pairs(radius)), dtype=np.int64)
         if self.pbc:
