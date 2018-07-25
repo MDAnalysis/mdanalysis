@@ -409,6 +409,8 @@ Classes
 """
 from __future__ import print_function, division, absolute_import
 
+import warnings
+
 from six.moves import range, zip_longest
 
 import numpy as np
@@ -1201,10 +1203,24 @@ class SurvivalProbability(object):
 
     """
 
-    def __init__(self, universe, selection, verbose=False):
+    def __init__(self, universe, selection, t0=None, tf=None, dtmax=None, verbose=False):
         self.universe = universe
         self.selection = selection
         self.verbose = verbose
+
+        # backward compatibility
+        self.start = self.stop = self.tau_max = None
+        if t0 is not None:
+            self.start = t0
+            warnings.warn("t0 is deprecated, use run(start=t0) instead", category=DeprecationWarning)
+
+        if tf is not None:
+            self.stop = tf
+            warnings.warn("tf is deprecated, use run(stop=tf) instead", category=DeprecationWarning)
+
+        if dtmax is not None:
+            self.tau_max = dtmax
+            warnings.warn("dtmax is deprecated, use run(tau_max=dtmax) instead", category=DeprecationWarning)
 
     def print(self, verbose, *args):
         if self.verbose:
@@ -1212,7 +1228,7 @@ class SurvivalProbability(object):
         elif verbose:
             print(args)
 
-    def run(self, tau_max, start=0, stop=-1, step=1, verbose=False):
+    def run(self, tau_max=20, start=0, stop=-1, step=1, verbose=False):
         """
         Computes and returns the survival probability timeseries
 
@@ -1237,6 +1253,12 @@ class SurvivalProbability(object):
             survival probability for each value of `tau`
         """
 
+        # backward compatibility (and priority)
+        start = self.start if self.start is not None else start
+        stop = self.stop if self.stop is not None else stop
+        tau_max = self.tau_max if self.tau_max is not None else tau_max
+
+        # sanity checks
         if stop >= len(self.universe.trajectory):
             raise ValueError("\"stop\" must be smaller than the number of frames in the trajectory.")
 
