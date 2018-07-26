@@ -308,6 +308,6 @@ cdef float _norm(float * a):
     return sqrt(norm2(a))
 
 
-cdef float norm2(float* a):
+cdef float norm2(float* a) nogil:
     """Square of norm"""
     return a[0] * a[0] + a[1] * a[1] + a[2] * a[2]

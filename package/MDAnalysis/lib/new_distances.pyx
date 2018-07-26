@@ -9,7 +9,7 @@ from pbc cimport PBC, minimum_image
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cdef void inner_distance_array(const float[:, :] a, const float[:, :] b,
-                               PBC box, float[:, :] result):
+                               PBC box, float[:, :] result) nogil:
     """C level of distance_array"""
     cdef int i, j
     cdef float[3] dx
@@ -39,6 +39,7 @@ def distance_array(coords1, coords2, box=None, result=None, backend=None):
     cbox = PBC(box)
     result_view = result
 
-    inner_distance_array(a, b, cbox, result_view)
+    with nogil:
+        inner_distance_array(a, b, cbox, result_view)
 
     return result

@@ -25,4 +25,4 @@ cdef class PBC:
     cdef void find_triclinic_shifts(self)
     cdef float calc_max_cutoff2(self)
 
-cdef void minimum_image(float* dx, PBC pbc)
+cdef void minimum_image(float* dx, PBC pbc) nogil

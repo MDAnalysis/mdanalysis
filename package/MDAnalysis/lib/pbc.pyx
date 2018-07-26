@@ -188,7 +188,7 @@ cdef class PBC:
         return min(min_hv2, min_ss * min_ss)
 
 
-cdef void minimum_image(float* dx, PBC pbc):
+cdef void minimum_image(float* dx, PBC pbc) nogil:
     """Apply minimum image convention to a vector *dx*
 
     Parameters
