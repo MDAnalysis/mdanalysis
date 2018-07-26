@@ -119,13 +119,21 @@ def test_fit_translation_com(fit_universe):
     assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=6)
 
 
-def test_fit_translation_plane(fit_universe):
+@pytest.mark.parametrize('plane', (
+    "yz",
+    "xz",
+    "xy")
+)
+def test_fit_translation_plane(fit_universe, plane):
     test_u = fit_universe[0]
     ref_u = fit_universe[1]
-    # translate the test universe on the x and y coordinates only
-    fit_translation(test_u, ref_u, plane="xy")(test_u.trajectory.ts)
-    # the reference is 10 angstrom in the z coordinate above the test universe
-    shiftz = np.asanyarray([0, 0, -10], np.float32)
+    axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
+    idx = axes[plane]
+    # translate the test universe on the plane coordinates only
+    fit_translation(test_u, ref_u, plane=plane)(test_u.trajectory.ts)
+    # the reference is 10 angstrom in all coordinates above the test universe
+    shiftz = np.asanyarray([0, 0, 0], np.float32)
+    shiftz[idx] = -10
     ref_coordinates = ref_u.trajectory.ts.positions + shiftz 
     assert_array_almost_equal(test_u.trajectory.ts.positions, ref_coordinates, decimal=6)
 
@@ -220,18 +228,29 @@ def test_fit_rot_trans_no_options(fit_universe):
     assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=3)
 
 
-def test_fit_rot_trans_plane(fit_universe):
+@pytest.mark.parametrize('plane', (
+    "yz",
+    "xz",
+    "xy")
+)
+def test_fit_rot_trans_plane(fit_universe, plane):
     # the reference is rotated in the x axis so removing the translations and rotations
     # in the yz plane should return the same as the fitting without specifying a plane
     test_u = fit_universe[0]
     ref_u = fit_universe[1]
     ref_com = ref_u.atoms.center(None)
+    mobile_com = test_u.atoms.center(None)
+    axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
+    idx = axes[plane]
+    rotaxis = np.asarray([0,0,0])
+    rotaxis[idx]=1
     ref_u.trajectory.ts.positions -= ref_com
-    R = rotation_matrix(np.pi/3, [1,0,0])[:3,:3]
+    R = rotation_matrix(np.pi/3, rotaxis)[:3,:3]
     ref_u.trajectory.ts.positions = np.dot(ref_u.trajectory.ts.positions, R)
+    ref_com[idx] = mobile_com[idx]
     ref_u.trajectory.ts.positions += ref_com
-    fit_rot_trans(test_u, ref_u, plane="yz")(test_u.trajectory.ts)
-    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=3)
+    fit_rot_trans(test_u, ref_u, plane=plane)(test_u.trajectory.ts)
+    assert_array_almost_equal(test_u.trajectory.ts.positions[:,idx], ref_u.trajectory.ts.positions[:,idx], decimal=3)
 
 
 def test_fit_rot_trans_transformations_api(fit_universe):
@@ -244,4 +263,4 @@ def test_fit_rot_trans_transformations_api(fit_universe):
     ref_u.trajectory.ts.positions += ref_com
     transform = fit_rot_trans(test_u, ref_u)
     test_u.trajectory.add_transformations(transform)
-#    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=3)
+    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=3)
