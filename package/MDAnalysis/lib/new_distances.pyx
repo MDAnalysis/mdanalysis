@@ -25,13 +25,14 @@ cdef void inner_distance_array(const float[:, :] a, const float[:, :] b,
             result[i, j] = sqrt(norm2(dx))
 
 
-def distance_array(coords1, coords2, box, result=None, backend=None):
+def distance_array(coords1, coords2, box=None, result=None, backend=None):
     cdef PBC cbox
     cdef float[:, :] a, b, result_view
 
     a = np.asarray(coords1, dtype=np.float32)
     b = np.asarray(coords2, dtype=np.float32)
-    box = np.asarray(box, dtype=np.float32)
+    if not box is None:
+        box = np.asarray(box, dtype=np.float32)
     if result is None:
         result = np.zeros((a.shape[0], b.shape[0]), dtype=np.float32)
 

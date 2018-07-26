@@ -55,10 +55,11 @@ class TestDistanceArray(object):
         r = x - ref
         return np.sqrt(np.dot(r, r))
 
-    def test_noPBC(self, backend, ref_system):
+    @pytest.mark.parametrize('da', [da_old, da_new])
+    def test_noPBC(self, da, backend, ref_system):
         box, points, ref, conf = ref_system
 
-        d = da_old(ref, points, backend=backend)
+        d = da(ref, points, backend=backend)
 
         assert_almost_equal(d, np.array([[
             self._dist(points[0], ref[0]),
@@ -348,14 +349,15 @@ class TestTriclinicDistances(object):
         assert_almost_equal(dists, results, self.prec,
                             err_msg="distance_array failed to retrieve PBC distance")
 
-    def test_pbc_wrong_wassenaar_distance(self, backend):
+    @pytest.mark.parametrize('da', [da_old, da_new])
+    def test_pbc_wrong_wassenaar_distance(self, da, backend):
         from MDAnalysis.lib.distances import distance_array
-        box = MDAnalysis.lib.mdamath.triclinic_vectors([2, 2, 2, 60, 60, 60])
-        a, b, c = box
+        box = np.array([2, 2, 2, 60, 60, 60], dtype=np.float32)
+        a, b, c = MDAnalysis.lib.mdamath.triclinic_vectors(box)
         point_a = a + b
         point_b = .5 * point_a
-        dist = distance_array(point_a[np.newaxis, :], point_b[np.newaxis, :],
-                              box=box, backend=backend)
+        dist = da(point_a[np.newaxis, :], point_b[np.newaxis, :],
+                  box=box, backend=backend)
         assert_almost_equal(dist[0, 0], 1)
         # check that our distance is different then the wassenaar distance as
         # expected.

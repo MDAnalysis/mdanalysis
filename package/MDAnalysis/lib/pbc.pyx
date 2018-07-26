@@ -13,7 +13,7 @@ DEF BOX_MARGIN=1.0010
 cdef enum PBC_TYPES:
     ORTHO = 1
     TRICLINIC = 2
-    NONE = 3
+    NOPBC = 3
 
 
 cdef class PBC:
@@ -29,7 +29,7 @@ cdef class PBC:
         self.mhbox_diag = NULL
         self.tric_vec = NULL
 
-    def __init__(self, float[:] box):
+    def __init__(self, box):
         self.mem = Pool()
         self.box = <float**>self.mem.alloc(3, sizeof(float*))
         for i in range(3):
@@ -42,7 +42,12 @@ cdef class PBC:
             self.tric_vec[i] = <float*>self.mem.alloc(3, sizeof(float))
         self.ntric_vec = 0
 
-        self.define_box(box)
+        if box is None:
+            self.pbc_type = NOPBC
+        else:
+            if not box.shape == (6,):
+                raise ValueError('Wrong shaped box')
+            self.define_box(box)
 
     @cython.boundscheck(False)
     @cython.wraparound(False)
@@ -230,5 +235,5 @@ cdef void minimum_image(float* dx, PBC pbc):
             while (dx[i] <= pbc.mhbox_diag[i]):
                 dx[i] += pbc.fbox_diag[i]
 
-    elif pbc.pbc_type == NONE:
+    elif pbc.pbc_type == NOPBC:
         pass
