@@ -22,6 +22,8 @@
 from __future__ import division, absolute_import
 import MDAnalysis
 import MDAnalysis.lib.distances
+from MDAnalysis.lib.distances import distance_array as da_old
+from MDAnalysis.lib.new_distances import distance_array as da_new
 
 import numpy as np
 import pytest
@@ -33,7 +35,7 @@ from MDAnalysis.lib import mdamath
 
 @pytest.fixture()
 def ref_system():
-    box = np.array([1., 1., 2.], dtype=np.float32)
+    box = np.array([1., 1., 2., 90., 90., 90.], dtype=np.float32)
     points = np.array(
         [
             [0, 0, 0], [1, 1, 2], [1, 0, 2],  # identical under PBC
@@ -56,7 +58,7 @@ class TestDistanceArray(object):
     def test_noPBC(self, backend, ref_system):
         box, points, ref, conf = ref_system
 
-        d = MDAnalysis.lib.distances.distance_array(ref, points, backend=backend)
+        d = da_old(ref, points, backend=backend)
 
         assert_almost_equal(d, np.array([[
             self._dist(points[0], ref[0]),
@@ -65,10 +67,11 @@ class TestDistanceArray(object):
             self._dist(points[3], ref[0])]
         ]))
 
-    def test_PBC(self, backend, ref_system):
+    @pytest.mark.parametrize('da', [da_old, da_new])
+    def test_PBC(self, da, backend, ref_system):
         box, points, ref, conf = ref_system
 
-        d = MDAnalysis.lib.distances.distance_array(ref, points, box=box, backend=backend)
+        d = da(ref, points, box=box, backend=backend)
 
         assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3], ref=[1, 1, 2])]]))
 
