@@ -113,30 +113,49 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
 def test_capped_distance_equal(npoints, box, method, min_cutoff):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
-                        size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
+                         size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
     max_cutoff = 0.1
-    pairs, distance = mda.lib.distances.capped_distance(points,
-                                                    points,
-                                                    max_cutoff,
-                                                    min_cutoff=min_cutoff,
-                                                    box=box,
-                                                    method=method,
-                                                    equal=True)
+    pairs, distance = mda.lib.distances.self_capped_distance(points,
+                                                             max_cutoff,
+                                                             min_cutoff=min_cutoff,
+                                                             box=box,
+                                                             method=method)
     found_pairs, found_distance = [], []
-
     for i, coord in enumerate(points):
         dist = mda.lib.distances.distance_array(coord[None, :],
-                                                     points[i+1:],
-                                                     box=box)
+                                                points[i+1:],
+                                                box=box)
         if min_cutoff is not None:
-            idx = np.where((dist <= max_cutoff) & (dist > min_cutoff))[0]
+            idx = np.where((dist < max_cutoff) & (dist > min_cutoff))[0]
         else:
-            idx = np.where((dist <=max_cutoff))[0]
+            idx = np.where((dist < max_cutoff))[0]
         for other_idx in idx:
             j = other_idx + 1 + i
             found_pairs.append((i, j))
             found_distance.append(dist[other_idx])
     assert_equal(len(pairs), len(found_pairs))
+
+@pytest.mark.parametrize('npoints,cutoff,meth',
+                         [(1, 0.02, '_bruteforce_capped_self'),
+                          (1, 0.2, '_bruteforce_capped_self'),
+                          (6000, 0.02, '_pkdtree_capped_self'),
+                          (6000, 0.2, '_pkdtree_capped_self'),
+                          (200000, 0.02, '_pkdtree_capped_self'),
+                          (200000, 0.2, '_bruteforce_capped_self')])
+def test_method_selfselection(npoints, cutoff, meth):
+    np.random.seed(90003)
+    box = np.array([1, 1, 1, 90, 90, 90], dtype=np.float32)
+    points = (np.random.uniform(low=0, high=1.0,
+                        size=(npoints, 3)) * (box[:3])).astype(np.float32)
+    if box is not None:
+        boxtype = mda.lib.distances._box_check(box)
+        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        if (boxtype == 'tri_box'):
+            box = triclinic_vectors(box)
+        if (boxtype == 'tri_vecs_bad'):
+            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+    method = mda.lib.distances._determine_method_self(points, cutoff, box=box)
+    assert_equal(method.__name__, meth)
 
 
 @pytest.mark.parametrize('npoints,cutoff,meth',

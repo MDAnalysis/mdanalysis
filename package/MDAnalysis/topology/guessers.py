@@ -232,11 +232,10 @@ def guess_bonds(atoms, coords, box=None, **kwargs):
 
     bonds = []
 
-    pairs, dist = distances.capped_distance(coords, coords,
-                                            max_cutoff=max_vdw,
-                                            min_cutoff=lower_bound,
-                                            box=box, equal=True
-                                            )
+    pairs, dist = distances.self_capped_distance(coords,
+                                                 max_cutoff=2.0*max_vdw,
+                                                 min_cutoff=lower_bound,
+                                                 box=box)
     for idx, (i, j) in enumerate(pairs):
         d = (vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]])*fudge_factor
         if (dist[idx] < d):
