@@ -52,7 +52,7 @@ cdef class PBC:
 
         triclinic = False
         for i in range(3):
-            if fabs(box[i] - 90.0) > EPSILON:
+            if fabs(box[i + 3] - 90.0) > EPSILON:
                 triclinic = True
 
         if triclinic:

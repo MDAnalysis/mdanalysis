@@ -1,7 +1,7 @@
 import cython
 import numpy as np
 
-from numpy.math import sqrtf as sqrt
+from numpy.math cimport sqrtf as sqrt
 from ._cutil cimport norm2
 from pbc cimport PBC, minimum_image
 
@@ -25,18 +25,18 @@ cdef void inner_distance_array(const float[:, :] a, const float[:, :] b,
             result[i, j] = sqrt(norm2(dx))
 
 
-def distance_array(coords1, coords2, box):
+def distance_array(coords1, coords2, box, result=None, backend=None):
     cdef PBC cbox
-    cdef float[:, :] a, b
-    cdef float[:, :] result_view
+    cdef float[:, :] a, b, result_view
 
     a = np.asarray(coords1, dtype=np.float32)
     b = np.asarray(coords2, dtype=np.float32)
     box = np.asarray(box, dtype=np.float32)
+    if result is None:
+        result = np.zeros((a.shape[0], b.shape[0]), dtype=np.float32)
 
     cbox = PBC(box)
-    result = np.zeros((a.shape[0], b.shape[0]), dtype=np.float32)
-    result_view = result[:]
+    result_view = result
 
     inner_distance_array(a, b, cbox, result_view)
 

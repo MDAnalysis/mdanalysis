@@ -305,6 +305,18 @@ def extensions(config):
                           include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
                           define_macros=define_macros,
                           extra_compile_args=extra_compile_args)
+    pbc = MDAExtension('MDAnalysis.lib.pbc',
+                       ['MDAnalysis/lib/pbc' + source_suffix],
+                       include_dirs=include_dirs,
+                       libraries=mathlib,
+                       define_macros=define_macros,
+                       extra_compile_args=extra_compile_args)
+    new_distances = MDAExtension('MDAnalysis.lib.new_distances',
+                                 ['MDAnalysis/lib/new_distances' + source_suffix],
+                                 include_dirs=include_dirs,
+                                 libraries=mathlib,
+                                 define_macros=define_macros,
+                                 extra_compile_args=extra_compile_args)
     distances = MDAExtension('MDAnalysis.lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
@@ -380,7 +392,7 @@ def extensions(config):
                               libraries=mathlib,
                               define_macros=define_macros,
                               extra_compile_args=extra_compile_args)
-    pre_exts = [libdcd, distances, distances_omp, qcprot,
+    pre_exts = [libdcd, pbc, new_distances, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
                 ap_clustering, spe_dimred, cutil, augment]
 
