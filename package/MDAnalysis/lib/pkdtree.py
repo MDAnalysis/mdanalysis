@@ -233,5 +233,7 @@ class PeriodicKDTree(object):
                 pairs[:, 1] = undo_augment(pairs[:, 1], self.mapping,
                                            len(self.coords))
         if pairs.size > 0:
+            # First sort the pairs then pick the unique pairs
+            pairs = np.sort(pairs, axis=1)
             pairs = unique_rows(pairs)
         return pairs
