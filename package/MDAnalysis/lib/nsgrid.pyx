@@ -548,21 +548,20 @@ cdef class FastNS(object):
     cdef bint prepared
     cdef NSGrid grid
 
-    def __init__(self, u, cutoff, coords=None, prepare=True, debug=False, max_gridsize=5000):
+    def __init__(self, box, cutoff, coords, prepare=True, debug=False, max_gridsize=5000):
         import MDAnalysis as mda
         from MDAnalysis.lib.mdamath import triclinic_vectors
 
         self.debug = debug
 
-        if not isinstance(u, mda.Universe):
-            raise TypeError("FastNS class must be initialized with a valid MDAnalysis.Universe instance")
-        box = triclinic_vectors(u.dimensions)
+        if box.shape != (3,3):
+            box = triclinic_vectors(box)
 
         self.box = PBCBox(box)
 
 
-        if coords is None:
-            coords = u.atoms.positions
+        #if coords is None:
+        #    coords = u.atoms.positions
 
         self.coords = coords.copy()
 
@@ -578,7 +577,6 @@ cdef class FastNS(object):
         self.prepared = False
         if prepare:
             self.prepare()
-
 
     def prepare(self, force=False):
         if self.prepared and not force:

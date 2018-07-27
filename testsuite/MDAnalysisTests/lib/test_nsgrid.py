@@ -43,7 +43,7 @@ def run_grid_search(u, ids, cutoff=3):
     coords = u.atoms.positions
 
     # Run grid search
-    searcher = nsgrid.FastNS(u, cutoff, coords, debug=True)
+    searcher = nsgrid.FastNS(u.dimensions, cutoff, coords, debug=True)
 
     return searcher.search(ids)
 
@@ -156,7 +156,7 @@ def test_nsgrid_PBC_rect():
     cutoff = 7
 
     # FastNS is called differently to max coverage
-    searcher = nsgrid.FastNS(universe, cutoff, prepare=False)
+    searcher = nsgrid.FastNS(universe.dimensions, cutoff, universe.atoms.positions, prepare=False)
 
     results_grid = searcher.search([ref_id,]).get_indices()[0] # pass the id as a list for test+coverage purpose
 

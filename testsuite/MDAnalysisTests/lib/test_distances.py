@@ -66,7 +66,7 @@ query_1 = (np.array([0.1, 0.1, 0.1], dtype=np.float32),
            np.array([[0.1, 0.1, 0.1],
                      [0.2, 0.1, 0.1]], dtype=np.float32))
 
-method_1 = ('bruteforce', 'pkdtree')
+method_1 = ('bruteforce', 'pkdtree', 'nsgrid')
 
 min_cutoff_1 = (None, 0.1)
 
@@ -77,6 +77,10 @@ min_cutoff_1 = (None, 0.1)
 @pytest.mark.parametrize('method', method_1)
 @pytest.mark.parametrize('min_cutoff', min_cutoff_1)
 def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
+    if method == 'nsgrid' and box is None:
+        pytest.skip('Not implemented yet')
+
+
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
                         size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
@@ -89,6 +93,7 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
                                                     min_cutoff=min_cutoff,
                                                     box=box,
                                                     method=method)
+
     if pairs.shape != (0, ):
         found_pairs = pairs[:, 1]
     else:

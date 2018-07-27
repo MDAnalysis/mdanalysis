@@ -520,7 +520,8 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
 
     """
     methods = {'bruteforce': _bruteforce_capped,
-            'pkdtree': _pkdtree_capped}
+            'pkdtree': _pkdtree_capped,
+            'nsgrid': _nsgrid_capped}
 
     if method is not None:
         return methods[method]
@@ -642,6 +643,61 @@ def _pkdtree_capped(reference, configuration, max_cutoff,
                 pairs.append((idx, j))
                 distances.append(dist[num])
     return pairs, distances
+
+def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
+                   box=None):
+    """Search all the pairs in *reference* and *configuration* within 
+    a specified distance using Grid Search
+
+    
+    Parameters
+    -----------
+    reference : array
+        reference coordinates array with shape ``reference.shape = (3,)``
+        or ``reference.shape = (len(reference), 3)``.
+    configuration : array
+        Configuration coordinate array with shape ``reference.shape = (3,)``
+        or ``reference.shape = (len(reference), 3)``
+    max_cutoff : float
+        Maximum cutoff distance between the reference and configuration
+    min_cutoff : (optional) float
+        Minimum cutoff distance between reference and configuration [None]
+    box :  array 
+        The dimensions, if provided, must be provided in the same
+        The unitcell dimesions for this system format as returned
+        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        ``[lx,ly, lz, alpha, beta, gamma]``. Minimum image convention
+        is applied if the box is provided 
+
+    Note
+    ----
+    Non Periodic Boundary conditions can-not be handled currently
+
+    """
+    from .nsgrid import FastNS
+    if reference.shape == (3, ):
+        reference = reference[None, :]
+    if configuration.shape == (3, ):
+        configuration = configuration[None, :]
+    all_coords = np.concatenate([configuration, reference])
+    mapping = np.arange(len(reference), dtype=np.int64)
+    gridsearch = FastNS(box, max_cutoff, all_coords)
+    gridsearch.prepare()
+    search_ids = np.arange(len(configuration), len(all_coords))
+    results = gridsearch.search(search_ids=search_ids)
+    pairs = results.get_pairs()
+    pairs[:, 1] = undo_augment(pairs[:, 1], mapping, len(configuration))
+    pair_distance = results.get_pair_distances()
+    
+    if min_cutoff is not None:
+        idx = pair_distance > min_cutoff
+        pairs, pair_distance = pairs[idx], pair_distance[idx]
+    if pairs.size > 0:
+        # removing the pairs (i, j) from (reference, reference)
+        mask = (pairs[:, 0] < (len(configuration) - 1) )
+        pairs, pair_distance = pairs[mask], pair_distance[mask]
+        pairs = np.sort(pairs, axis=1)
+    return pairs, pair_distance
 
 
 def self_capped_distance(reference, max_cutoff, min_cutoff=None,
