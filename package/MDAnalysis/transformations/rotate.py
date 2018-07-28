@@ -21,12 +21,14 @@
 #
 
 """\
-Rotate trajectory --- :mod:`MDAnalysis.transformations.translate`
-=================================================================
+Trajectory rotation --- :mod:`MDAnalysis.transformations.rotate`
+================================================================
 
 Rotates the coordinates by a given angle arround an axis formed by a direction and a
 point 
-    
+
+.. autofunction:: rotateby
+
 """
 from __future__ import absolute_import
 
@@ -41,8 +43,8 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by 
     the user, combining the direction vector and a point. This point can be the center
-    of geometry or the center of mass of a user defined AtomGroup, or a list defining custom
-    coordinates.
+    of geometry or the center of mass of a user defined AtomGroup, or an array defining 
+    custom coordinates.
     
     Examples
     --------
@@ -74,10 +76,14 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
         rotation angle in degrees
     direction: array-like
         vector that will define the direction of a custom axis of rotation from the
-        provided point.
+        provided point. Expected shapes are (3, ) or (1, 3). 
     ag: AtomGroup, optional
-        use the eighted center of an AtomGroup as the point from where the rotation axis
-        will be defined
+        use the weighted center of an AtomGroup as the point from where the rotation axis
+        will be defined. If no AtomGroup is given, the `point` argument becomes mandatory
+    point: array-like, optional
+        list of the coordinates of the point from where a custom axis of rotation will
+        be defined. Expected shapes are (3, ) or (1, 3). If no point is given, the
+        `ag` argument becomes mandatory.
     weights: {"mass", ``None``} or array_like, optional
         define the weights of the atoms when calculating the center of the AtomGroup.
         With ``"mass"`` uses masses as weights; with ``None`` weigh each atom equally.
@@ -88,13 +94,10 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry. Default is `False`, no changes
         to the atom coordinates are done before calculating the center of the AtomGroup. 
-    point: array-like, optional
-        list of the coordinates of the point from where a custom axis of rotation will
-        be defined. 
 
     Returns
     -------
-    :class:`~MDAnalysis.coordinates.base.Timestep` object
+    MDAnalysis.coordinates.base.Timestep
     
     Warning
     -------
@@ -110,7 +113,7 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
         direction = direction.reshape(3, )
     except ValueError:
         raise ValueError('{} is not a valid direction'.format(direction))
-    if point:
+    if point is not None:
         point = np.asarray(point, np.float32)
         if point.shape != (3, ) and point.shape != (1, 3):
             raise ValueError('{} is not a valid point'.format(point))

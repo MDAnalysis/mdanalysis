@@ -61,19 +61,41 @@ def test_rotation_matrix():
     matrix = rotation_matrix(np.deg2rad(angle), vector, pos)[:3, :3]
     assert_array_almost_equal(matrix, ref_matrix, decimal=6)
     
-
-def test_rotateby_custom_position(rotate_universes):
+@pytest.mark.parametrize('point', (
+    np.asarray([0, 0, 0]),
+    np.asarray([[0, 0, 0]]))
+)
+def test_rotateby_custom_point(rotate_universes, point):
     # what happens when we use a custom point for the axis of rotation?
     ref_u = rotate_universes[0]
     trans_u = rotate_universes[1]
     trans = trans_u.trajectory.ts
     ref = ref_u.trajectory.ts
-    vector = [1,0,0]
-    pos = [0,0,0]
+    vector = [1, 0, 0]
+    pos = point.reshape(3, )
     angle = 90
     matrix = rotation_matrix(np.deg2rad(angle), vector, pos)
     ref_u.atoms.transform(matrix)
-    transformed = rotateby(angle, vector, point=pos)(trans)
+    transformed = rotateby(angle, vector, point=point)(trans)
+    assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
+
+
+@pytest.mark.parametrize('vector', (
+    np.asarray([1, 0, 0]),
+    np.asarray([[1, 0, 0]]))
+)
+def test_rotateby_vector(rotate_universes, vector):
+    # what happens when we use a custom point for the axis of rotation?
+    ref_u = rotate_universes[0]
+    trans_u = rotate_universes[1]
+    trans = trans_u.trajectory.ts
+    ref = ref_u.trajectory.ts
+    point = [0, 0, 0]
+    angle = 90
+    vec = vector.reshape(3, )
+    matrix = rotation_matrix(np.deg2rad(angle), vec, point)
+    ref_u.atoms.transform(matrix)
+    transformed = rotateby(angle, vector, point=point)(trans)
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 
