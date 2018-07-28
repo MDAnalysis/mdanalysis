@@ -126,3 +126,4 @@ e.g. giving a workflow as a keyword argument when defining the universe:
    ./transformations/translate
    ./transformations/rotate
    ./transformations/positionaveraging
+   ./transformations/fit

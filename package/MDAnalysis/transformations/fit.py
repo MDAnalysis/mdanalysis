@@ -24,9 +24,13 @@
 Fitting transformations --- :mod:`MDAnalysis.transformations.fit`
 =================================================================
 
-Translate and rotates the coordinates of a given trajectory to align
+Translate and/or rotates the coordinates of a given trajectory to align
 a given AtomGroup to a reference structure.
-    
+
+.. autofunction:: fit_translation
+
+.. autofunction:: fit_rot_trans
+
 """
 from __future__ import absolute_import
 
@@ -50,11 +54,12 @@ def fit_translation(ag, reference, plane=None, weights=None):
     Removing the translations of a given AtomGroup `ag` on the XY plane by fitting 
     its center of mass to the center of mass of a reference `ref`:
     
-    ..code-block::python
+    .. code-block:: python
     
         ag = u.select_atoms("protein")
         ref = mda.Universe("reference.pdb")
-        transform = mda.transformations.fit_translation(ag, ref, plane="xy", center_of="mass")
+        transform = mda.transformations.fit_translation(ag, ref, plane="xy",
+                                                        center_of="mass")
         u.trajectory.add_transformations(transform)
     
     Parameters
@@ -127,17 +132,18 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
     Example
     -------
     Removing the translations and rotations of a given AtomGroup `ag` on the XY plane
-    by fitting it to a reference `ref`, using the masses as weights for the RMSD fit.
+    by fitting it to a reference `ref`, using the masses as weights for the RMSD fit:
     
-    ..code-block::python
+    .. code-block:: python
     
         ag = u.select_atoms("protein")
         ref = mda.Universe("reference.pdb")
-        transform = mda.transformations.fit_rot_trans(ag, ref, plane="xy", weights="mass")
+        transform = mda.transformations.fit_rot_trans(ag, ref, plane="xy", 
+                                                      weights="mass")
         u.trajectory.add_transformations(transform)
-    
-    Parameter
-    ---------
+ 
+    Parameters
+    ----------
     ag : Universe or AtomGroup
        structure to translate, a
        :class:`~MDAnalysis.core.groups.AtomGroup` or a whole 
