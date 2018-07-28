@@ -112,10 +112,12 @@ def test_nsgrid_badinit():
     with pytest.raises(TypeError):
         nsgrid.FastNS(None, 1)
 
+
 def test_nsgrid_badcutoff(universe):
     with pytest.raises(ValueError):
         run_grid_search(universe, 0, -4)
         run_grid_search(universe, 0, 100000)
+
 
 def test_ns_grid_noneighbor(universe):
     """Check that grid search returns empty lists/arrays when there is no neighbors"""
@@ -158,10 +160,10 @@ def test_nsgrid_PBC_rect():
     # FastNS is called differently to max coverage
     searcher = nsgrid.FastNS(universe.dimensions, cutoff, universe.atoms.positions, prepare=False)
 
-    results_grid = searcher.search([ref_id,]).get_indices()[0] # pass the id as a list for test+coverage purpose
+    results_grid = searcher.search([ref_id, ]).get_indices()[0]  # pass the id as a list for test+coverage purpose
 
     searcher.prepare()  # Does nothing, called here for coverage
-    results_grid2 = searcher.search().get_indices() # call without specifying any ids, should do NS for all beads
+    results_grid2 = searcher.search().get_indices()  # call without specifying any ids, should do NS for all beads
 
     assert_equal(results, results_grid)
     assert_equal(len(universe.atoms), len(results_grid2))
@@ -179,7 +181,6 @@ def test_nsgrid_PBC(universe):
     results_grid = run_grid_search(universe, ref_id).get_indices()[0]
 
     assert_equal(results, results_grid)
-
 
 
 def test_nsgrid_pairs(universe):
@@ -258,4 +259,3 @@ def test_nsgrid_coordinates(universe):
     results_grid = run_grid_search(universe, ref_id).get_coordinates()[0]
 
     assert_allclose(np.sort(results, axis=0), np.sort(results_grid, axis=0), atol=1e-5)
-
