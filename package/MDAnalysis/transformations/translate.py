@@ -24,10 +24,19 @@
 Trajectory translation --- :mod:`MDAnalysis.transformations.translate`
 ======================================================================
 
-Translate the coordinates of a given trajectory by a given vector.
-The vector can either be user defined, using the function :func:`translate`
-or defined by centering an AtomGroup in the unit cell using the function
-:func:`center_in_box`
+Translate the coordinates of a given trajectory. Coordinates may be 
+translated by a vector, using the function :func:`translate` or defined 
+by centering an AtomGroup in the unit cell, a plane or axis using the functions
+:func:`center_in_box`, :func:`center_in_plane` or :func:`center_in_axis`,
+respectively.
+
+.. autofunction:: translate
+
+.. autofunction:: center_in_box
+
+.. autofunction:: center_in_plane
+
+.. autofunction:: center_in_axis
     
 """
 from __future__ import absolute_import, division
@@ -46,9 +55,9 @@ def translate(vector):
     Example
     -------
     
-    Translate the coordinates of the system by the [1, 2, 3] vector
+    Translate the coordinates of the system by the [1, 2, 3] vector:
     
-    ..code-block:: python
+    .. code-block:: python
 
         transform = mda.transformations.translate([1,2,3])
         u.trajectory.add_transformations(transform)
@@ -256,7 +265,8 @@ def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False):
     .. code-block:: python
     
         ag = u.residues[1].atoms
-        transform = mda.transformations.center_in_axis(ag, 'x', [0,0,1], center_of='mass')
+        transform = mda.transformations.center_in_axis(ag, 'x', [0,0,1],
+        weights='mass')
         u.trajectory.add_transformation(transform)
     
     Parameters
