@@ -187,24 +187,32 @@ class InterRDF(AnalysisBase):
 
         # Need to know average volume
         self.volume = 0.0
+        # Set the max range to filter the search radius
+        self._maxrange = self.rdf_settings['range'][1]
 
         # Allocate a results array which we will reuse
-        self._result = np.zeros((len(self.g1), len(self.g2)), dtype=np.float64)
+        self._result = np.ones((len(self.g1), len(self.g2)), dtype=np.float64)
+        # Pre-assign the largest values to avoid 
+        # counting the atoms farther than the maxrange
+        self._result *= self._maxrange + 1
+
         # If provided exclusions, create a mask of _result which
         # lets us take these out
         if self._exclusion_block is not None:
             self._exclusion_mask = blocks_of(self._result,
                                              *self._exclusion_block)
-            self._maxrange = self.rdf_settings['range'][1] + 1.0
         else:
             self._exclusion_mask = None
 
     def _single_frame(self):
-        distances.distance_array(self.g1.positions, self.g2.positions,
-                                 box=self.u.dimensions, result=self._result)
+        pairs, dist = distances.capped_distance(self.g1.positions,
+                                                self.g2.positions,
+                                                self._maxrange,
+                                                box=self.u.dimensions)
+        self._result[tuple(zip(*pairs))] = dist
         # Maybe exclude same molecule distances
         if self._exclusion_mask is not None:
-            self._exclusion_mask[:] = self._maxrange
+            self._exclusion_mask[:] = self._maxrange + 1.0
 
         count = np.histogram(self._result, **self.rdf_settings)[0]
         self.count += count
@@ -323,6 +331,7 @@ class InterRDF_s(AnalysisBase):
         self.count = count_list
         self.edges = edges
         self.bins = 0.5 * (edges[:-1] + edges[1:])
+        self._maxrange = self.rdf_settings['range'][1]
 
         # Need to know average volume
         self.volume = 0.0
@@ -330,8 +339,13 @@ class InterRDF_s(AnalysisBase):
 
     def _single_frame(self):
         for i, (ag1, ag2) in enumerate(self.ags):
-            result=distances.distance_array(ag1.positions, ag2.positions,
-                                            box=self.u.dimensions)
+            pairs, dist = distances.capped_distance(ag1.positions,
+                                                   ag2.positions,
+                                                   self._maxrange,
+                                                   box=self.u.dimensions)
+            result = np.ones((len(self.ag1), len(self.ag2)), dtype=np.float64)
+            result *= self._maxrange + 1.0
+            result[tuple(zip(*pairs))] = dist
             for j in range(ag1.n_atoms):
                 for k in range(ag2.n_atoms):
                     count = np.histogram(result[j, k], **self.rdf_settings)[0]
