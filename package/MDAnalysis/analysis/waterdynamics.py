@@ -1228,7 +1228,7 @@ class SurvivalProbability(object):
         elif verbose:
             print(args)
 
-    def run(self, tau_max=20, start=0, stop=-1, step=1, verbose=False):
+    def run(self, tau_max=20, start=0, stop=None, step=1, verbose=False):
         """
         Computes and returns the survival probability timeseries
 
@@ -1259,11 +1259,11 @@ class SurvivalProbability(object):
         tau_max = self.tau_max if self.tau_max is not None else tau_max
 
         # sanity checks
-        if stop >= len(self.universe.trajectory):
+        if stop is not None and stop >= len(self.universe.trajectory):
             raise ValueError("\"stop\" must be smaller than the number of frames in the trajectory.")
 
-        if stop == -1:
-            stop = self.universe.trajectory[-1].frame + 1
+        if stop is None:
+            stop = len(self.universe.trajectory)
         else:
             stop = stop + 1
 
@@ -1277,7 +1277,7 @@ class SurvivalProbability(object):
             selected_ids.append(set(self.universe.select_atoms(self.selection).ids))
 
         tau_timeseries = np.arange(1, tau_max + 1)
-        sp_timeseries = [[] for _ in range(tau_max)]
+        sp_timeseries_data = [[] for _ in range(tau_max)]
 
         for t in range(0, len(selected_ids), step):
             Nt = len(selected_ids[t])
@@ -1293,9 +1293,11 @@ class SurvivalProbability(object):
 
                 # ids that survive from t to t + tau and at every frame in between
                 Ntau = len(set.intersection(*selected_ids[t:t + tau + 1]))
-                sp_timeseries[tau - 1].append(Ntau / float(Nt))
+                sp_timeseries_data[tau - 1].append(Ntau / float(Nt))
 
         # user can investigate the distribution and sample size
-        self.sp_timeseries = sp_timeseries
+        self.sp_timeseries_data = sp_timeseries_data
 
-        return tau_timeseries, [np.mean(sp) for sp in sp_timeseries]
+        self.tau_timeseries = tau_timeseries
+        self.sp_timeseries = [np.mean(sp) for sp in sp_timeseries_data]
+        return self
