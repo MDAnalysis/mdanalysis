@@ -1,8 +1,8 @@
 import cython
 
 from cymem.cymem cimport Pool
-from libc.math cimport fabs
-from numpy.math cimport deg2radf, sinf as sin, cosf as cos, sqrtf as sqrt
+from libc.math cimport fabs, sin, cos, sqrt
+from numpy.math cimport deg2radf #, sinf as sin, cosf as cos, sqrtf as sqrt
 
 from _cutil cimport norm2
 
