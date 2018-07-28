@@ -74,7 +74,15 @@ class TXYZReader(base.ReaderBase):
         root, ext = os.path.splitext(self.filename)
         self.xyzfile = util.anyopen(self.filename)
         self._cache = dict()
-
+        with util.openany(self.filename) as inp:
+           inp.readline()
+           line=inp.readline()
+           try:
+               float(line.split()[1])
+           except ValueError:
+               self.periodic=False
+           else:
+               self.periodic=True
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         # Haven't quite figured out where to start with all the self._reopen()
         # etc.
@@ -103,6 +111,8 @@ class TXYZReader(base.ReaderBase):
         # the number of lines in the XYZ file will be 1 greater than the
         # number of atoms
         linesPerFrame = self.n_atoms + 1
+        if self.periodic:
+            linesPerFrame +=1
         counter = 0
         offsets = []
 
@@ -134,6 +144,8 @@ class TXYZReader(base.ReaderBase):
         try:
             # we assume that there is only one header line per frame
             f.readline()
+            if self.periodic:
+                ts.dimensions=f.readline().split() 
             # convert all entries at the end once for optimal speed
             tmp_buf = []
             for i in range(self.n_atoms):

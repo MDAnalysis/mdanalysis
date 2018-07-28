@@ -43,6 +43,7 @@ Classes
 """
 
 from __future__ import absolute_import
+import itertools
 import numpy as np
 
 from . import guessers
@@ -88,9 +89,17 @@ class TXYZParser(TopologyReaderBase):
             names = np.zeros(natoms, dtype=object)
             types = np.zeros(natoms, dtype=np.int)
             bonds = []
+            #Checks whether file contains periodic boundary box info 
+            fline = inf.readline()
+            try:
+                float(fline.split()[1])
+            except:
+                pass
+            else:
+                fline = inf.readline()
             # Can't infinitely read as XYZ files can be multiframe
-            for i in range(natoms):
-                line = inf.readline().split()
+            for i, line in zip(range(natoms),itertools.chain([fline],inf)):
+                line = line.split()
                 atomids[i]= line[0]
                 names[i] = line[1]
                 types[i] = line[5]
