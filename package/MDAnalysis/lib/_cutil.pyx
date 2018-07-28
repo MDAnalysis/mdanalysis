@@ -277,7 +277,10 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     if refpoints.size() < natoms:
         raise ValueError("AtomGroup was not contiguous from bonds, process failed")
     else:
-        atomgroup.positions = newpos
+        if inplace:
+            atomgroup.positions = newpos
+        else:
+            return newpos
 
 
 @cython.boundscheck(False)
