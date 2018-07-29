@@ -77,3 +77,18 @@ def test_pbc_boxsize(ARC_PBC_U):
     for ref_box, ts in zip(ref_dimensions, ARC_PBC_U.trajectory):
         assert_almost_equal(ref_box, ts.dimensions, decimal=5)
 
+
+def test_txyz_writer(TXYZ_U):
+    outfile = os.path.join(str(tmpdir), 'test_write.txyz')
+    with mda.coordinates.TXYZWriter(outfile, len(TXYZ_U.atoms)) as W:
+        W.write(TXYZ_U.atoms)
+
+    utest = mda.Universe(outfile)
+    assert_array_equal(TXYZ_U.atoms.indices,
+                        utest.atoms.indices)
+    assert_almost_equal(TXYZ_U.atoms.positions,
+                        utest.atoms.positions, 3)
+    assert_array_equal(TXYZ_U.atoms.types,
+                        utest.atoms.types)
+    assert_array_equal(TXYZ_U.atoms.bonds.to_indices(),
+                        utest.atoms.bonds.to_indices())
