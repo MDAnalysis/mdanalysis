@@ -84,7 +84,7 @@ def test_pbc_boxsize(ARC_PBC_U):
 def test_txyz_writer(TXYZ_U):
     with tempdir.TempDir() as tmpdir:
         outfile = tmpdir + 'test_write.txyz'
-    with mda.coordinates.TXYZWriter(outfile, len(TXYZ_U.atoms)) as W:
+    with mda.coordinates.TXYZ.TXYZWriter(outfile, len(TXYZ_U.atoms)) as W:
         W.write(TXYZ_U.atoms)
 
     utest = mda.Universe(outfile)
