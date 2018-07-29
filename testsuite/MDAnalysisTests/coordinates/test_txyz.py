@@ -88,11 +88,11 @@ def test_txyz_writer(TXYZ_U):
         W.write(TXYZ_U.atoms)
 
     utest = mda.Universe(outfile)
-    assert_array_equal(TXYZ_U.atoms.indices,
+    assert_equal(TXYZ_U.atoms.indices,
                         utest.atoms.indices)
     assert_almost_equal(TXYZ_U.atoms.positions,
                         utest.atoms.positions, 3)
-    assert_array_equal(TXYZ_U.atoms.types,
+    assert_equal(TXYZ_U.atoms.types,
                         utest.atoms.types)
-    assert_array_equal(TXYZ_U.atoms.bonds.to_indices(),
+    assert_equal(TXYZ_U.atoms.bonds.to_indices(),
                         utest.atoms.bonds.to_indices())
