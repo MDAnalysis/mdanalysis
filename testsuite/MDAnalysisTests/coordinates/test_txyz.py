@@ -25,6 +25,7 @@ import pytest
 from numpy.testing import assert_almost_equal
 from numpy.testing import assert_array_equal
 
+from MDAnalysisTests import tempdir
 from MDAnalysisTests.datafiles import TXYZ, ARC, ARC_PBC
 
 import MDAnalysis as mda
