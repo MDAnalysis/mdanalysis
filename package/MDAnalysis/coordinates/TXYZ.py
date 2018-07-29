@@ -152,7 +152,7 @@ class TXYZWriter(base.WriterBase):
             coordinates = ts.positions
 
         self._txyz.write("{0:d} frame {1} {2}\n".format(
-                                             n_atoms, ts.frame, default_remark))
+                                             self.n_atoms, ts.frame, self.remark))
         self._txyz.write("{0:10.5f} {1:10.5f} {2:10.5f} "
                          "{3:10.5f} {4:10.5f} {5:10.5f} \n".format(ts.dimensions))
 
