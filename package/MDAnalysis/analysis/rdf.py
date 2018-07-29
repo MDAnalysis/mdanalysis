@@ -190,31 +190,20 @@ class InterRDF(AnalysisBase):
         # Set the max range to filter the search radius
         self._maxrange = self.rdf_settings['range'][1]
 
-        # Allocate a results array which we will reuse
-        self._result = np.ones((len(self.g1), len(self.g2)), dtype=np.float64)
-        # Pre-assign the largest values to avoid 
-        # counting the atoms farther than the maxrange
-        self._result *= self._maxrange + 1
-
-        # If provided exclusions, create a mask of _result which
-        # lets us take these out
-        if self._exclusion_block is not None:
-            self._exclusion_mask = blocks_of(self._result,
-                                             *self._exclusion_block)
-        else:
-            self._exclusion_mask = None
 
     def _single_frame(self):
         pairs, dist = distances.capped_distance(self.g1.positions,
                                                 self.g2.positions,
                                                 self._maxrange,
                                                 box=self.u.dimensions)
-        self._result[tuple(zip(*pairs))] = dist
         # Maybe exclude same molecule distances
-        if self._exclusion_mask is not None:
-            self._exclusion_mask[:] = self._maxrange + 1.0
+        if self._exclusion_block is not None:
+            idxA, idxB = pairs[:, 0]//self._exclusion_block[0], pairs[:, 1]//self._exclusion_block[1]
+            mask = np.where(idxA != idxB)[0]
+            dist = dist[mask]
 
-        count = np.histogram(self._result, **self.rdf_settings)[0]
+
+        count = np.histogram(dist, **self.rdf_settings)[0]
         self.count += count
 
         self.volume += self._ts.volume
