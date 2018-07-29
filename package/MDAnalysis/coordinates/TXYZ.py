@@ -154,10 +154,10 @@ class TXYZWriter(base.WriterBase):
         self._txyz.write("{0:d} frame {1} {2}\n".format(
                                              self.n_atoms, ts.frame, self.remark))
         self._txyz.write("{0:10.5f} {1:10.5f} {2:10.5f} "
-                         "{3:10.5f} {4:10.5f} {5:10.5f} \n".format(ts.dimensions))
+                         "{3:10.5f} {4:10.5f} {5:10.5f}\n".format(*ts.dimensions))
 
         for atom, (x, y, z)  in zip(self.atoms, coordinates):
-            self._txyz.write("{0} {1!s:>8} {2:10.5f} {3:10.5f} {4:10.5f} {5}"
+            self._txyz.write("{0} {1!s:>8} {2:10.5f} {3:10.5f} {4:10.5f} {5} {b}\n"
                 .format(atom.ix+1, atom.name, x, y, z, atom.type,
                 b = " ".join(str(item) for item in (atom.bonded_atoms).indices + 1)))
 
