@@ -127,6 +127,7 @@ class TXYZWriter(base.WriterBase):
         # atom numbers, names, positions, types, connectivity
 
         atoms = obj.atoms
+        ts = atoms.ts
         if not hasattr(atoms, 'bonds'):
             raise NoDataError('TXYZWriter requires bond information! '
                               'provide a topology file or use guess_bonds '
@@ -141,7 +142,8 @@ class TXYZWriter(base.WriterBase):
                                  'that this should be a trajectory of the '
                                  'same model. But the provided TimeStep has a '
                                  'different number ({}) then expected ({})'
-                                 ''.format(ts.n_atoms, self.n_atoms))
+                                 ''.format(atoms.n_atoms, self.n_atoms))
+
 
         if self.convert_units:
             coordinates = self.convert_pos_to_native(
@@ -153,7 +155,6 @@ class TXYZWriter(base.WriterBase):
                                              n_atoms, ts.frame, default_remark))
         self._txyz.write("{0:10.5f} {1:10.5f} {2:10.5f} "
                          "{3:10.5f} {4:10.5f} {5:10.5f} \n".format(ts.dimensions))
-
 
         for atom, (x, y, z)  in zip(self.atoms, coordinates):
             self._txyz.write("{0} {1!s:>8} {2:10.5f} {3:10.5f} {4:10.5f} {5}"
