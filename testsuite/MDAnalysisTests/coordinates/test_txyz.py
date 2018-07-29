@@ -22,8 +22,9 @@
 from __future__ import absolute_import
 import os
 import pytest
-from numpy.testing import assert_almost_equal
-from numpy.testing import assert_array_equal
+from numpy.testing import (assert_equal,
+                           assert_array_almost_equal,
+                           assert_almost_equal)
 
 from MDAnalysisTests import tempdir
 from MDAnalysisTests.datafiles import TXYZ, ARC, ARC_PBC
@@ -81,7 +82,8 @@ def test_pbc_boxsize(ARC_PBC_U):
 
 
 def test_txyz_writer(TXYZ_U):
-    outfile = os.path.join(str(tmpdir), 'test_write.txyz')
+    with tempdir.TempDir() as tmpdir:
+        outfile = tmpdir + 'test_write.txyz'
     with mda.coordinates.TXYZWriter(outfile, len(TXYZ_U.atoms)) as W:
         W.write(TXYZ_U.atoms)
 
