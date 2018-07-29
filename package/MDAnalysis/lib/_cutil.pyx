@@ -30,6 +30,8 @@ from MDAnalysis import NoDataError
 
 from libcpp.set cimport set as cset
 from libcpp.map cimport map as cmap
+from libcpp.vector cimport vector
+from libc.math cimport sqrt
 
 __all__ = ['unique_int_1d', 'make_whole']
 
@@ -301,6 +303,7 @@ cdef void _cross(float * a, float * b, float * result):
     result[1] = - a[0]*b[2] + a[2]*b[0]
     result[2] = a[0]*b[1] - a[1]*b[0]
 
+
 cdef float _norm(float * a):
     """
     Calculates the magnitude of the vector
@@ -311,3 +314,78 @@ cdef float _norm(float * a):
     for n in range(3):
         result += a[n]*a[n]
     return sqrt(result)
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None, box=None):
+    """Slightly optimised way of bruteforcing capped disdtance
+
+    In general does comparisons of squared distances to minimise calls to sqrt,
+    but still does len(a) * len(b) different comparisons
+    """
+    cdef bint min_crit, ortho, triclinic
+    cdef int Na, Nb, i, j, k
+    cdef float[:, :] a, b
+    cdef double vec_sq, max_sq, min_sq
+    cdef double vec[3]
+    cdef float[:] cbox
+    cdef float inverse_box[3]
+    cdef float tri_box[3][3]
+    cdef vector[int] indices  # will get reshaped to (n, 2)
+    cdef vector[float] distances
+
+    # to allow single coordinate inputs
+    if reference.shape == (3, ):
+        reference = reference[None, :]
+    if configuration.shape == (3, ):
+        configuration = configuration[None, :]
+    a = reference[:]
+    b = configuration[:]
+
+    min_crit = min_cutoff is not None
+    if min_crit:
+        min_sq = min_cutoff * min_cutoff
+    max_sq = max_cutoff * max_cutoff
+
+    if box is not None:
+        cbox = box[:]
+        ortho = (box[3:] == 90.).all()
+        triclinic = not ortho
+
+        if ortho:
+            for i in range(3):
+                inverse_box[i] = 1.0 / cbox[i]
+        else:
+            from .mdamath import triclinic_vectors
+            tri_box = triclinic_vectors(box)
+    else:
+        ortho = False
+        triclinic = False
+
+    Na = a.shape[0]
+    Nb = b.shape[0]
+    for i in range(Na):
+        for j in range(Nb):
+            for k in range(3):
+                vec[k] = a[i, k] - b[j, k]
+
+            # minimum image?
+            if ortho:
+                minimum_image(&vec[0], &cbox[0], &inverse_box[0])
+            elif triclinic:
+                minimum_image_triclinic(&vec[0], <coordinate*>&tri_box[0])
+
+            vec_sq = 0.0
+            for k in range(3):
+                vec_sq += vec[k] * vec[k]
+
+            if vec_sq <= max_sq:
+                if not min_crit or (vec_sq >= min_sq):
+                    indices.push_back(i)
+                    indices.push_back(j)
+                    distances.push_back(sqrt(vec_sq))
+
+    N = distances.size()
+
+    return np.asarray(indices, dtype=np.int32).reshape(N, 2), np.asarray(distances)
