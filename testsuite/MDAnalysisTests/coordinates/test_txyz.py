@@ -20,9 +20,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-
+import os
 import pytest
 from numpy.testing import assert_almost_equal
+from numpy.testing import assert_array_equal
 
 from MDAnalysisTests.datafiles import TXYZ, ARC, ARC_PBC
 
