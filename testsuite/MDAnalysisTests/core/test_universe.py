@@ -25,6 +25,7 @@ from __future__ import absolute_import, print_function
 from six.moves import cPickle
 
 import os
+import subprocess
 
 try:
     from cStringIO import StringIO
@@ -168,7 +169,12 @@ class TestUniverseCreation(object):
         temp_file = os.path.join(temp_dir.name, 'permission.denied.tpr')
         with open(temp_file, 'w'):
             pass
-        os.chmod(temp_file, 0o200)
+
+        if os.name == 'nt':
+            subprocess.call("icacls {filename} /deny Users:RX".format(filename=temp_file),
+                            shell=True)
+        else:
+            os.chmod(temp_file, 0o200)
         try:
             mda.Universe(os.path.join(temp_dir.name, 'permission.denied.tpr'))
         except IOError as e:
