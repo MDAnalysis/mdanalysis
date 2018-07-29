@@ -131,7 +131,7 @@ class TXYZWriter(base.WriterBase):
             raise NoDataError('TXYZWriter requires bond information! '
                               'provide a topology file or use guess_bonds '
                               'before writing the current trajectory in '
-                              'Tinker format.'
+                              'Tinker format.')
 
         if self.n_atoms is None:
             self.n_atoms = atoms.n_atoms
@@ -157,8 +157,8 @@ class TXYZWriter(base.WriterBase):
 
         for atom, (x, y, z)  in zip(self.atoms, coordinates):
             self._txyz.write("{0} {1!s:>8} {2:10.5f} {3:10.5f} {4:10.5f} {5}"
-                .format(atom.ix+1, atom.name, x, y, z, atom.type)
-                b = " ".join(str(item) for item in (atom.bonded_atoms).indices + 1))
+                .format(atom.ix+1, atom.name, x, y, z, atom.type,
+                b = " ".join(str(item) for item in (atom.bonded_atoms).indices + 1)))
 
 
 class TXYZReader(base.ReaderBase):
