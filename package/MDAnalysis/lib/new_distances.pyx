@@ -1,7 +1,7 @@
 import cython
 import numpy as np
 
-from numpy.math cimport sqrtf as sqrt
+from libc.math import sqrt
 from ._cutil cimport norm2
 from pbc cimport PBC, minimum_image
 
