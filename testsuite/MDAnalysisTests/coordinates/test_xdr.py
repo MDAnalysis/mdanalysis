@@ -28,6 +28,7 @@ import errno
 import numpy as np
 import os
 import shutil
+import subprocess
 
 from numpy.testing import (assert_equal, assert_almost_equal)
 
@@ -768,7 +769,14 @@ class _GromacsReader_offsets(object):
 
     def test_persistent_offsets_readonly(self, tmpdir):
         shutil.copy(self.filename, str(tmpdir))
-        os.chmod(str(tmpdir), 0o555)
+
+        if os.name == 'nt':
+            # Windows platform has a unique way to deny write access
+            subprocess.call("icacls {fname} /deny Users:W".format(fname=tmpdir),
+                            shell=True)
+        else:
+            os.chmod(str(tmpdir), 0o555)
+
         filename = str(tmpdir.join(os.path.basename(self.filename)))
         # try to write a offsets file
         self._reader(filename)
