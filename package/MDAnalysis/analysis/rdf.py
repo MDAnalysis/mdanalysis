@@ -235,7 +235,6 @@ class InterRDF(AnalysisBase):
 
 class InterRDF_s(AnalysisBase):
     """Site-specific intermolecular pair distribution function
-
     Arguments
     ---------
     u : Universe
@@ -254,48 +253,32 @@ class InterRDF_s(AnalysisBase):
     step : int (optional)
           The step size through the trajectory in frames (default is
           every frame)
-
     Example
     -------
-
     First create the :class:`InterRDF_s` object, by supplying one Universe and
     one list of pairs of AtomGroups, then use the :meth:`~InterRDF_s.run`
     method::
-
       from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT
       u = mda.Universe(GRO_MEMPROT, XTC_MEMPROT)
-
       s1 = u.select_atoms('name ZND and resid 289')
       s2 = u.select_atoms('(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)')
       s3 = u.select_atoms('name ZND and (resid 291 or resid 292)')
       s4 = u.select_atoms('(name OD1 or name OD2) and sphzone 5.0 (resid 291)')
       ags = [[s1, s2], [s3, s4]]
-
       rdf = InterRDF_s(u, ags)
       rdf.run()
-
     Results are available through the :attr:`bins` and :attr:`rdf` attributes::
-
       plt.plot(rdf.bins, rdf.rdf[0][0][0])
-
     (Which plots the rdf between the first atom in ``s1`` and the first atom in
     ``s2``)
-
     To generate the *cumulative distribution function* (cdf), use the
     :meth:`~InterRDF_s.get_cdf` method ::
-
       cdf = rdf.get_cdf()
-
     Results are available through the :attr:'cdf' attribute::
-
       plt.plot(rdf.bins, rdf.cdf[0][0][0])
-
     (Which plots the cdf between the first atom in ``s1`` and the first atom in
     ``s2``)
-
-
     .. versionadded:: 0.19.0
-
     """
     def __init__(self, u, ags,
                  nbins=75, range=(0.0, 15.0), density=True, **kwargs):
@@ -320,7 +303,6 @@ class InterRDF_s(AnalysisBase):
         self.count = count_list
         self.edges = edges
         self.bins = 0.5 * (edges[:-1] + edges[1:])
-        self._maxrange = self.rdf_settings['range'][1]
 
         # Need to know average volume
         self.volume = 0.0
@@ -328,13 +310,8 @@ class InterRDF_s(AnalysisBase):
 
     def _single_frame(self):
         for i, (ag1, ag2) in enumerate(self.ags):
-            pairs, dist = distances.capped_distance(ag1.positions,
-                                                   ag2.positions,
-                                                   self._maxrange,
-                                                   box=self.u.dimensions)
-            result = np.ones((len(self.ag1), len(self.ag2)), dtype=np.float64)
-            result *= self._maxrange + 1.0
-            result[tuple(zip(*pairs))] = dist
+            result=distances.distance_array(ag1.positions, ag2.positions,
+                                            box=self.u.dimensions)
             for j in range(ag1.n_atoms):
                 for k in range(ag2.n_atoms):
                     count = np.histogram(result[j, k], **self.rdf_settings)[0]
@@ -373,15 +350,12 @@ class InterRDF_s(AnalysisBase):
 
     def get_cdf(self):
         """Calculate the cumulative distribution functions (CDF) for all sites.
-
         Note that this is the actual count within a given radius, i.e.,
         :math:`N(r)`.
-
         Returns
         -------
               cdf : list
                       list of arrays with the same structure as :attr:`rdf`
-
         """
         # Calculate cumulative distribution function
         # Empty list to restore CDF
