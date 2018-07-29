@@ -647,7 +647,7 @@ class GroupBase(_MutableBase):
         return not np.count_nonzero(mask)
 
     @warn_if_not_unique
-    def center(self, weights, pbc=None, compound='group'):
+    def center(self, weights, pbc=None, unwrap=False, compound='group'):
         """Weighted center of (compounds of) the group
 
         Computes the weighted center of :class:`Atoms<Atom>` in the group.
@@ -666,6 +666,9 @@ class GroupBase(_MutableBase):
             be calculated without moving any :class:`Atoms<Atom>` to keep the
             compounds intact. Instead, the resulting position vectors will be
             moved to the primary unit cell after calculation.
+        unwrap : bool, optional
+            if True, atom positions are shifted so as to not break any bonds over
+            periodic boundaries.
         compound : {'group', 'segments', 'residues'}, optional
             If ``'group'``, the weighted center of all atoms in the group will
             be returned as a single position vector. Else, the weighted centers
