@@ -659,7 +659,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       water_density = density_from_Universe(universe, delta=1.0,
                                             atomselection='name OW around 5 resname LIG',
                                             update_selection=True,
-                                            gridcenter=COM,
+                                            gridcenter=ligand_COM,
                                             xdim=20.0, ydim=20.0, zdim=20.0)
 
      (It should be noted that the `padding` keyword is not used when a user
