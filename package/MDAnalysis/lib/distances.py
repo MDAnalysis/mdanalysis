@@ -679,24 +679,14 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         reference = reference[None, :]
     if configuration.shape == (3, ):
         configuration = configuration[None, :]
-    all_coords = np.concatenate([configuration, reference])
-    mapping = np.arange(len(reference), dtype=np.int64)
-    gridsearch = FastNS(box, max_cutoff, all_coords)
-    gridsearch.prepare()
-    search_ids = np.arange(len(configuration), len(all_coords))
-    results = gridsearch.search(search_ids=search_ids)
+    gridsearch = FastNS(box, max_cutoff, configuration)
+    results = gridsearch.search(reference)
     pairs = results.get_pairs()
-    pairs[:, 1] = undo_augment(pairs[:, 1], mapping, len(configuration))
     pair_distance = results.get_pair_distances()
     
     if min_cutoff is not None:
         idx = pair_distance > min_cutoff
         pairs, pair_distance = pairs[idx], pair_distance[idx]
-    if pairs.size > 0:
-        # removing the pairs (i, j) from (reference, reference)
-        mask = (pairs[:, 0] < (len(configuration) - 1) )
-        pairs, pair_distance = pairs[mask], pair_distance[mask]
-        pairs = np.sort(pairs, axis=1)
     return pairs, pair_distance
 
 
