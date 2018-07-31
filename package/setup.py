@@ -383,7 +383,8 @@ def extensions(config):
     nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
                              ['MDAnalysis/lib/nsgrid' + source_suffix],
                              include_dirs=include_dirs,
-                             libraries=mathlib + parallel_libraries,
+                             language='c++',
+                             libraries=parallel_libraries,
                              define_macros=define_macros + parallel_macros,
                              extra_compile_args=extra_compile_args + parallel_args,
                              extra_link_args=parallel_args)
