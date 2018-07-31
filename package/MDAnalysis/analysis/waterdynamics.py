@@ -1199,6 +1199,7 @@ class SurvivalProbability(object):
     verbose : Boolean
       If True, prints progress and comments to the console.
 
+
     .. versionadded:: 0.11.0
 
     """
