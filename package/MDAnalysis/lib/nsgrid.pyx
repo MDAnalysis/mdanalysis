@@ -50,7 +50,6 @@ from libc.math cimport sqrt
 import numpy as np
 cimport numpy as np
 from libcpp.vector cimport vector
-from libcpp.map cimport map as cmap
 
 
 ctypedef np.int_t ns_int
@@ -60,9 +59,7 @@ ctypedef ns_int ivec[DIM]
 ctypedef real matrix[DIM][DIM]
 
 ctypedef vector[ns_int] intvec
-ctypedef cmap[ns_int, intvec] intmap
 ctypedef vector[real] realvec
-ctypedef cmap[ns_int, realvec] realmap
 
 # Useful Functions
 cdef real rvec_norm2(const rvec a) nogil:
@@ -224,8 +221,8 @@ cdef class NSResults(object):
     cdef real[:, ::1] coords  # shape: size, DIM
     cdef real[:, ::1] searchcoords 
     
-    cdef intmap indices_buffer
-    cdef realmap distances_buffer
+    cdef vector[intvec] indices_buffer
+    cdef vector[realvec] distances_buffer
     cdef vector[ns_int] pairs_buffer
     cdef vector[real] pair_distances_buffer
     cdef vector[real] pair_distances2_buffer
@@ -235,7 +232,6 @@ cdef class NSResults(object):
         self.coords = coords
         self.searchcoords = searchcoords
 
-        # Preallocate memory
         self.npairs = 0
      
     cdef void add_neighbors(self, ns_int beadid_i, ns_int beadid_j, real distance2) nogil:
@@ -260,8 +256,14 @@ cdef class NSResults(object):
         
         nsearch = len(self.searchcoords)
 
-        cdef intmap indices_buffer
-        cdef realmap distances_buffer
+        self.indices_buffer = vector[intvec]()
+        self.distances_buffer = vector[realvec]()
+
+        # initialize rows corresponding to search
+        for i in range(nsearch):
+            self.indices_buffer.push_back(intvec())
+            self.distances_buffer.push_back(realvec())
+
         
         for i in range(0, 2*self.npairs, 2):
             beadid_i = self.pairs_buffer[i]
@@ -269,33 +271,27 @@ cdef class NSResults(object):
 
             dist2 = self.pair_distances2_buffer[i//2]
 
-            indices_buffer[beadid_i].push_back(beadid_j)
+            self.indices_buffer[beadid_i].push_back(beadid_j)
 
             dist = sqrt(dist2)
             
-            distances_buffer[beadid_i].push_back(dist)
+            self.distances_buffer[beadid_i].push_back(dist)
         
-        self.indices_buffer.clear()
-        self.distances_buffer.clear()
+        for i in range(self.searchcoords.shape[0]):
+            sorted_indices = np.argsort(self.indices_buffer[i])
+            self.indices_buffer[i] = np.array(self.indices_buffer[i])[sorted_indices]
+            self.distances_buffer[i] = np.array(self.distances_buffer[i])[sorted_indices]
         
-        for idx in range(nsearch):
-            sorted_indices = np.argsort(indices_buffer[idx])
-            self.indices_buffer.insert((idx, intvec()))
-            self.distances_buffer.insert((idx, realvec()))
-            for index in sorted_indices:
-                self.indices_buffer[idx].push_back(indices_buffer[idx][index])
-                self.distances_buffer[idx].push_back(distances_buffer[idx][index])
-
             
     def get_indices(self):
         if self.indices_buffer.empty():
             self.create_buffers()
-        return self.indices_buffer
+        return np.asarray(self.indices_buffer)
 
     def get_distances(self):
         if self.distances_buffer.empty():
             self.create_buffers()
-        return self.distances_buffer
+        return np.asarray(self.distances_buffer)
     
 cdef class NSGrid(object):
     cdef readonly real cutoff  # cutoff
@@ -308,8 +304,9 @@ cdef class NSGrid(object):
     cdef ns_int *nbeads # size (Number of beads in every cell)
     cdef ns_int *beadids # size * nbeads_per_cell (Beadids in every cell)
     cdef ns_int *cellids # ncoords (Cell occupation id for every atom)
+    cdef bint force  # To negate the effects of optimized cutoff
 
-    def __init__(self, ncoords, cutoff, PBCBox box, max_size):
+    def __init__(self, ncoords, cutoff, PBCBox box, max_size, force=False):
         cdef ns_int i
         cdef ns_int ncellx, ncelly, ncellz, size, nbeadspercell
         cdef ns_int xi, yi, zi
@@ -320,14 +317,15 @@ cdef class NSGrid(object):
 
         # Calculate best cutoff
         self.cutoff = cutoff
-        bbox_vol = box.c_pbcbox.box[XX][XX] * box.c_pbcbox.box[YY][YY] * box.c_pbcbox.box[YY][YY]
-        size = bbox_vol/cutoff**3
-        nbeadspercell = ncoords/size
-        while bbox_vol/self.cutoff**3 > max_size:
-            self.cutoff *= 1.2
+        if not force:
+            bbox_vol = box.c_pbcbox.box[XX][XX] * box.c_pbcbox.box[YY][YY] * box.c_pbcbox.box[YY][YY]
+            size = bbox_vol/cutoff**3
+            nbeadspercell = ncoords/size
+            while bbox_vol/self.cutoff**3 > max_size:
+                self.cutoff *= 1.2
 
         for i in range(DIM):
-            self.ncells[i] = <ns_int> (box.c_pbcbox.box[i][i] / self.cutoff + 1)
+            self.ncells[i] = <ns_int> (box.c_pbcbox.box[i][i] / self.cutoff)
             self.cellsize[i] = box.c_pbcbox.box[i][i] / self.ncells[i]
         self.size = self.ncells[XX] * self.ncells[YY] * self.ncells[ZZ]
 
@@ -414,17 +412,12 @@ cdef class FastNS(object):
     cdef PBCBox box
     cdef real[:, ::1] coords
     cdef real[:, ::1] coords_bbox
-    cdef real[:, ::1] searchcoords
-    cdef real[:, ::1] searchcoords_bbox
     cdef readonly real cutoff
-    cdef bint prepared
     cdef NSGrid grid
-    cdef NSGrid searchgrid
     cdef ns_int max_gridsize
-    cdef intmap cell_neighbors
     
 
-    def __init__(self, box, cutoff, coords, prepare=True, max_gridsize=5000):
+    def __init__(self, box, cutoff, coords, max_gridsize=5000):
         import MDAnalysis as mda
         from MDAnalysis.lib.mdamath import triclinic_vectors
 
@@ -445,39 +438,39 @@ cdef class FastNS(object):
 
         self.cutoff = cutoff
         self.max_gridsize = max_gridsize
-
+        # Note that self.cutoff might be different from self.grid.cutoff
         self.grid = NSGrid(self.coords_bbox.shape[0], self.cutoff, self.box, self.max_gridsize)
         
         self.grid.fill_grid(self.coords_bbox)
 
         
 
-    def search(self, searchcoords):
+    def search(self, search_coords):
         cdef ns_int i, j, size_search
         cdef ns_int d, m
-        cdef ns_int ncells  # Total number of cells
         cdef ns_int current_beadid, bid
         cdef ns_int cellindex, cellindex_probe
         cdef ns_int xi, yi, zi
         
         cdef NSResults results
         
-        cdef ivec cellxyz
-        
         cdef real d2
         cdef rvec probe
 
-        ncells = self.grid.size
-        cdef ns_int[:] checked = np.zeros(ncells, dtype=np.int)
+        cdef real[:, ::1] searchcoords
+        cdef real[:, ::1] searchcoords_bbox
+        cdef NSGrid searchgrid
 
+        ncells = self.grid.size
+        
         cdef real cutoff2 = self.cutoff * self.cutoff
         cdef ns_int npairs = 0
 
         # Generate another grid to search
-        self.searchcoords_bbox =  self.box.fast_put_atoms_in_bbox(searchcoords)
-        self.searchgrid = NSGrid(self.searchcoords_bbox.shape[0], self.cutoff, self.box, self.max_gridsize)
-        #cdef ns_int size = self.searchcoords_bbox.shape[0]
-        
+        searchcoords = np.array(search_coords, dtype=np.float32)
+        searchcoords_bbox =  self.box.fast_put_atoms_in_bbox(searchcoords)
+        searchgrid = NSGrid(searchcoords_bbox.shape[0], self.grid.cutoff, self.box, self.max_gridsize, force=True)
+        searchgrid.fill_grid(searchcoords_bbox)
         
         
         size_search = searchcoords.shape[0]
@@ -486,22 +479,18 @@ cdef class FastNS(object):
 
         with nogil:
             for i in range(size_search):
-                for m in range(ncells):
-                    checked[m] = 0
                 # Start with first search coordinate
                 current_beadid = i
                 # find the cellindex of the coordinate
-                cellindex = self.searchgrid.cellids[current_beadid]
-                # Find the actual position of cell 
-                self.searchgrid.cellid2cellxyz(cellindex, cellxyz)
+                cellindex = searchgrid.cellids[current_beadid]
                 for xi in range(DIM):
                     for yi in range(DIM):
                         for zi in range(DIM):
                             #Probe the search coordinates in a brick shaped box
-                            probe[XX] = self.searchcoords_bbox[current_beadid, XX] + (xi - 1) * self.cutoff
-                            probe[YY] = self.searchcoords_bbox[current_beadid, YY] + (yi - 1) * self.cutoff
-                            probe[ZZ] = self.searchcoords_bbox[current_beadid, ZZ] + (zi - 1) * self.cutoff
-                            # Make sure the shifted coordinates is inside the brick-shaped box
+                            probe[XX] = searchcoords[current_beadid, XX] + (xi - 1) * searchgrid.cellsize[XX]
+                            probe[YY] = searchcoords[current_beadid, YY] + (yi - 1) * searchgrid.cellsize[YY]
+                            probe[ZZ] = searchcoords[current_beadid, ZZ] + (zi - 1) * searchgrid.cellsize[ZZ]
+                            # Make sure the probe coordinates is inside the brick-shaped box
                             for m in range(DIM - 1, -1, -1):
                                 while probe[m] < 0:
                                     for d in range(m+1):
@@ -511,42 +500,35 @@ cdef class FastNS(object):
                                         probe[d] -= self.box.c_pbcbox.box[m][d]
                             # Get the cell index corresponding to the probe
                             cellindex_probe = self.grid.coord2cellid(probe)
-                            if checked[cellindex_probe] != 0:
-                                continue
                             #for this cellindex search in grid
                             for j in range(self.grid.nbeads[cellindex_probe]):
                                 bid = self.grid.beadids[cellindex_probe * self.grid.nbeads_per_cell + j]
                                 #find distance between search coords[i] and coords[bid]
-                                d2 = self.box.fast_distance2(&self.searchcoords_bbox[current_beadid, XX], &self.coords_bbox[bid, XX])
+                                d2 = self.box.fast_distance2(&searchcoords_bbox[current_beadid, XX], &self.coords_bbox[bid, XX])
                                 if d2 < cutoff2:
                                     if d2 < EPSILON:
                                         continue
                                     else:
                                         results.add_neighbors(current_beadid, bid, d2)
                                     npairs += 1
-                            checked[cellindex_probe] = 1
         return results
 
 
     def self_search(self):
         cdef ns_int i, j, size_search
         cdef ns_int d, m
-        cdef ns_int ncells  # Total number of cells
         cdef ns_int current_beadid, bid
         cdef ns_int cellindex, cellindex_probe
         cdef ns_int xi, yi, zi
 
+
         cdef NSResults results
-        
-        
-        
-        cdef ivec cellxyz
+
+        cdef ns_int size = self.coords_bbox.shape[0]
+        cdef ns_int[:] checked = np.zeros(size, dtype=np.int)
 
         cdef real d2
         cdef rvec probe
-
-        ncells = self.grid.size
-        cdef ns_int[:] checked = np.zeros(ncells, dtype=np.int)
 
         cdef real cutoff2 = self.cutoff * self.cutoff
         cdef ns_int npairs = 0
@@ -557,22 +539,18 @@ cdef class FastNS(object):
 
         with nogil:
             for i in range(size_search):
-                for m in range(ncells):
-                    checked[m] = 0
                 # Start with first search coordinate
                 current_beadid = i
                 # find the cellindex of the coordinate
                 cellindex = self.grid.cellids[current_beadid]
-                # Find the actual position of cell 
-                self.grid.cellid2cellxyz(cellindex, cellxyz)
                 for xi in range(DIM):
                     for yi in range(DIM): 
                         for zi in range(DIM):
                             # Calculate and/or reinitialize shifted coordinates
                             #Probe the search coordinates in a brick shaped box
-                            probe[XX] = self.coords_bbox[current_beadid, XX] + (xi - 1) * self.cutoff
-                            probe[YY] = self.coords_bbox[current_beadid, YY] + (yi - 1) * self.cutoff
-                            probe[ZZ] = self.coords_bbox[current_beadid, ZZ] + (zi - 1) * self.cutoff
+                            probe[XX] = self.coords_bbox[current_beadid, XX] + (xi - 1) * self.grid.cellsize[XX]
+                            probe[YY] = self.coords_bbox[current_beadid, YY] + (yi - 1) * self.grid.cellsize[XX]
+                            probe[ZZ] = self.coords_bbox[current_beadid, ZZ] + (zi - 1) * self.grid.cellsize[XX]
                             # Make sure the shifted coordinates is inside the brick-shaped box
                             for m in range(DIM - 1, -1, -1):
                                 while probe[m] < 0:
@@ -584,12 +562,10 @@ cdef class FastNS(object):
 
                             # Get the cell index corresponding to the probe
                             cellindex_probe = self.grid.coord2cellid(probe)
-                            if checked[cellindex_probe] != 0:
-                                continue
                             #for this cellindex search in grid
                             for j in range(self.grid.nbeads[cellindex_probe]):
                                 bid = self.grid.beadids[cellindex_probe * self.grid.nbeads_per_cell + j]
-                                if bid > current_beadid:
+                                if bid < current_beadid:
                                     continue
                                 #find distance between search coords[i] and coords[bid]
                                 d2 = self.box.fast_distance2(&self.coords_bbox[current_beadid, XX], &self.coords_bbox[bid, XX])
@@ -600,5 +576,4 @@ cdef class FastNS(object):
                                         results.add_neighbors(current_beadid, bid, d2)
                                         results.add_neighbors(bid, current_beadid, d2)
                                     npairs += 1
-                            checked[cellindex_probe] = 1
         return results
