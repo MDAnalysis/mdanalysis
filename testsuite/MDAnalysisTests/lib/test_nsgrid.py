@@ -39,13 +39,14 @@ def universe():
 
 
 
-def run_grid_search(u, ids, cutoff=3):
+def run_grid_search(u, searchcoords, cutoff=3):
     coords = u.atoms.positions
-
+    if searchcoords.shape == (3, ):
+        searchcoords = searchcoords[None, :]
     # Run grid search
-    searcher = nsgrid.FastNS(u.dimensions, cutoff, coords, debug=True)
+    searcher = nsgrid.FastNS(u.dimensions, cutoff, coords)
 
-    return searcher.search(ids)
+    return searcher.search(searchcoords)
 
 
 def test_pbc_badbox():
@@ -115,8 +116,8 @@ def test_nsgrid_badinit():
 
 def test_nsgrid_badcutoff(universe):
     with pytest.raises(ValueError):
-        run_grid_search(universe, 0, -4)
-        run_grid_search(universe, 0, 100000)
+        run_grid_search(universe, universe.atoms.positions[0], -4)
+        run_grid_search(universe, universe.atoms.positions[0], 100000)
 
 
 def test_ns_grid_noneighbor(universe):
@@ -124,14 +125,12 @@ def test_ns_grid_noneighbor(universe):
     ref_id = 0
     cutoff = 0.5
 
-    results_grid = run_grid_search(universe, ref_id, cutoff)
+    results_grid = run_grid_search(universe, universe.atoms.positions[ref_id], cutoff)
 
-    assert len(results_grid.get_coordinates()[0]) == 0
     assert len(results_grid.get_distances()[0]) == 0
     assert len(results_grid.get_indices()[0]) == 0
     assert len(results_grid.get_pairs()) == 0
     assert len(results_grid.get_pair_distances()) == 0
-    assert len(results_grid.get_pair_coordinates()) == 0
 
 
 def test_nsgrid_noPBC(universe):
@@ -143,7 +142,7 @@ def test_nsgrid_noPBC(universe):
     results = np.array([2, 3, 4, 5, 6, 7, 8, 9, 18, 19, 1211, 10862, 10865, 17582, 17585, 38342,
                         38345]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
 
-    results_grid = run_grid_search(universe, ref_id, cutoff).get_indices()[0]
+    results_grid = run_grid_search(universe, universe.atoms.positions[ref_id], cutoff).get_indices()[0]
 
     assert_equal(results, results_grid)
 
@@ -158,12 +157,11 @@ def test_nsgrid_PBC_rect():
     cutoff = 7
 
     # FastNS is called differently to max coverage
-    searcher = nsgrid.FastNS(universe.dimensions, cutoff, universe.atoms.positions, prepare=False)
+    searcher = nsgrid.FastNS(universe.dimensions, cutoff, universe.atoms.positions)
 
-    results_grid = searcher.search([ref_id, ]).get_indices()[0]  # pass the id as a list for test+coverage purpose
+    results_grid = searcher.search(universe.atoms.positions[ref_id][None, :]).get_indices()[0]  # pass the id as a list for test+coverage purpose
 
-    searcher.prepare()  # Does nothing, called here for coverage
-    results_grid2 = searcher.search().get_indices()  # call without specifying any ids, should do NS for all beads
+    results_grid2 = searcher.search(universe.atoms.positions).get_indices() # call without specifying any ids, should do NS for all beads
 
     assert_equal(results, results_grid)
     assert_equal(len(universe.atoms), len(results_grid2))
@@ -178,7 +176,7 @@ def test_nsgrid_PBC(universe):
     results = np.array([4398, 4401, 13939, 13940, 13941, 17987, 23518, 23519, 23521, 23734,
                         47451]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
 
-    results_grid = run_grid_search(universe, ref_id).get_indices()[0]
+    results_grid = run_grid_search(universe, universe.atoms.positions[ref_id]).get_indices()[0]
 
     assert_equal(results, results_grid)
 
@@ -190,16 +188,12 @@ def test_nsgrid_pairs(universe):
     neighbors = np.array([4398, 4401, 13939, 13940, 13941, 17987, 23518, 23519, 23521, 23734,
                           47451]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
     results = []
-    for nid in neighbors:
-        if nid < ref_id:
-            results.append([nid, ref_id])
-        else:
-            results.append([ref_id, nid])
+    
     results = np.array(results)
 
-    results_grid = run_grid_search(universe, ref_id).get_pairs()
+    results_grid = run_grid_search(universe, universe.atoms.positions[ref_id]).get_pairs()
 
-    assert_equal(np.sort(results, axis=0), np.sort(results_grid, axis=0))
+    assert_equal(np.sort(neighbors, axis=0), np.sort(results_grid[:, 1], axis=0))
 
 
 def test_nsgrid_pair_distances(universe):
@@ -209,30 +203,30 @@ def test_nsgrid_pair_distances(universe):
     results = np.array([0.270, 0.285, 0.096, 0.096, 0.015, 0.278, 0.268, 0.179, 0.259, 0.290,
                         0.270]) * 10  # These distances where obtained by gmx distance so they are in nm
 
-    results_grid = run_grid_search(universe, ref_id).get_pair_distances()
+    results_grid = run_grid_search(universe, universe.atoms.positions[ref_id]).get_pair_distances()
 
     assert_allclose(np.sort(results), np.sort(results_grid), atol=1e-2)
 
 
-def test_nsgrid_pair_coordinates(universe):
-    """Check that grid search return the proper pair coordinates"""
+# def test_nsgrid_pair_coordinates(universe):
+#     """Check that grid search return the proper pair coordinates"""
 
-    ref_id = 13937
-    neighbors = np.array([4398, 4401, 13939, 13940, 13941, 17987, 23518, 23519, 23521, 23734,
-                          47451]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
-    coords = universe.atoms.positions
+#     ref_id = 13937
+#     neighbors = np.array([4398, 4401, 13939, 13940, 13941, 17987, 23518, 23519, 23521, 23734,
+#                           47451]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
+#     coords = universe.atoms.positions
 
-    results = []
-    for nid in neighbors:
-        if nid < ref_id:
-            results.append([coords[nid], coords[ref_id]])
-        else:
-            results.append([coords[ref_id], coords[nid]])
-    results = np.array(results)
+#     results = []
+#     for nid in neighbors:
+#         if nid < ref_id:
+#             results.append([coords[nid], coords[ref_id]])
+#         else:
+#             results.append([coords[ref_id], coords[nid]])
+#     results = np.array(results)
 
-    results_grid = run_grid_search(universe, ref_id).get_pair_coordinates()
+#     results_grid = run_grid_search(universe, ref_id).get_pair_coordinates()
 
-    assert_allclose(np.sort(results, axis=0), np.sort(results_grid, axis=0), atol=1e-5)
+#     assert_allclose(np.sort(results, axis=0), np.sort(results_grid, axis=0), atol=1e-5)
 
 
 def test_nsgrid_distances(universe):
@@ -242,20 +236,20 @@ def test_nsgrid_distances(universe):
     results = np.array([0.270, 0.285, 0.096, 0.096, 0.015, 0.278, 0.268, 0.179, 0.259, 0.290,
                         0.270]) * 10  # These distances where obtained by gmx distance so they are in nm
 
-    results_grid = run_grid_search(universe, ref_id).get_distances()[0]
+    results_grid = run_grid_search(universe, universe.atoms.positions[ref_id]).get_distances()[0]
 
     assert_allclose(np.sort(results), np.sort(results_grid), atol=1e-2)
 
 
-def test_nsgrid_coordinates(universe):
-    """Check that grid search return the proper coordinates"""
+# def test_nsgrid_coordinates(universe):
+#     """Check that grid search return the proper coordinates"""
 
-    ref_id = 13937
-    neighbors = np.array([4398, 4401, 13939, 13940, 13941, 17987, 23518, 23519, 23521, 23734,
-                          47451]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
+#     ref_id = 13937
+#     neighbors = np.array([4398, 4401, 13939, 13940, 13941, 17987, 23518, 23519, 23521, 23734,
+#                           47451]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
 
-    results = universe.atoms.positions[neighbors]
+#     results = universe.atoms.positions[neighbors]
 
-    results_grid = run_grid_search(universe, ref_id).get_coordinates()[0]
+#     results_grid = run_grid_search(universe, ref_id).get_coordinates()[0]
 
-    assert_allclose(np.sort(results, axis=0), np.sort(results_grid, axis=0), atol=1e-5)
+#     assert_allclose(np.sort(results, axis=0), np.sort(results_grid, axis=0), atol=1e-5)
