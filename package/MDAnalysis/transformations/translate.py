@@ -114,7 +114,7 @@ def center_in_box(ag, weights=None, center_to=None, wrap=False):
         If a float array of the same length as `ag` is provided, use each element of
         the `array_like` as a weight for the corresponding atom in `ag`. Default is 
         None.
-    point: array-like, optional
+    center_to: array-like, optional
         overrides the unit cell center - the coordinates of the Timestep are translated so
         that the center of mass/geometry of the given AtomGroup is aligned to this position
         instead. Defined as an array of size 3.
