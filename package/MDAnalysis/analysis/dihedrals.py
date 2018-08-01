@@ -197,7 +197,7 @@ class Ramachandran(AnalysisBase):
         ax.scatter(a[:,0], a[:,1], **kwargs)
         return ax
 
-class Janin(AnalysisBase):
+class Janin(Ramachandran):
     """Calculate chi1 and chi2 dihedral angles of selected residues.
 
     Chi1 and chi2 angles will be calculated for each residue corresponding to
@@ -225,7 +225,7 @@ class Janin(AnalysisBase):
              If the selection of residues is not contained within the protein
 
         """
-        super(Janin, self).__init__(atomgroup.universe.trajectory, **kwargs)
+        super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
         residues = self.atomgroup.residues
         protein = self.atomgroup.universe.select_atoms("protein").residues
@@ -246,19 +246,6 @@ class Janin(AnalysisBase):
         self.ag3 = residues.atoms.select_atoms("name CB")
         self.ag4 = residues.atoms.select_atoms("name CG CG1")
         self.ag5 = residues.atoms.select_atoms("name CD CD1 OD1 ND1 SD")
-
-    def _prepare(self):
-        self.angles = []
-
-    def _single_frame(self):
-        chi1_angle = calc_dihedrals(self.ag1.positions, self.ag2.positions,
-                                    self.ag3.positions, self.ag4.positions,
-                                    box=self.ag1.dimensions)
-        chi2_angle = calc_dihedrals(self.ag2.positions, self.ag3.positions,
-                                    self.ag4.positions, self.ag5.positions,
-                                    box=self.ag1.dimensions)
-        chi1_chi2 = [(chi1, chi2) for chi1, chi2 in zip(chi1_angle, chi2_angle)]
-        self.angles.append(chi1_chi2)
 
     def _conclude(self):
         self.angles = (np.rad2deg(np.array(self.angles)) + 360) % 360
