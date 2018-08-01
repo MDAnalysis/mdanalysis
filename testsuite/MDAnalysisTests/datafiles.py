@@ -156,7 +156,7 @@ __all__ = [
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
     "GSD",
     "GRO_MEMPROT", "XTC_MEMPROT", # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
-    "DihedralsArray", "GLYDihedralsArray" # phi and psi angles for testing Ramachandran class
+    "RamaArray", "GLYRamaArray", "JaninArray", "LYSJaninArray" # Time series of various dihedral angles for testing dihedrals.py
 ]
 
 from pkg_resources import resource_filename
@@ -417,8 +417,10 @@ ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz'
 
 GSD = resource_filename(__name__, 'data/example.gsd')
 
-DihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_dihedrals.npy')
-GLYDihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_GLY_dihedrals.npy')
+RamaArray = resource_filename(__name__, 'data/adk_oplsaa_rama.npy')
+GLYRamaArray = resource_filename(__name__, 'data/adk_oplsaa_GLY_rama.npy')
+JaninArray = resource_filename(__name__, 'data/adk_oplsaa_janin.npy')
+LYSJaninArray = resource_filename(__name__, 'data/adk_oplsaa_LYS_janin.npy')
 
 # This should be the last line: clean up namespace
 del resource_filename

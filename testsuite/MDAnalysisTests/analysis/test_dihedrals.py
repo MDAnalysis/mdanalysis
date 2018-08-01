@@ -27,9 +27,9 @@ import matplotlib
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import (GRO, XTC, DihedralsArray,
-                                       GLYDihedralsArray)
-from MDAnalysis.analysis.dihedrals import Ramachandran
+from MDAnalysisTests.datafiles import (GRO, XTC, RamaArray, GLYRamaArray,
+                                       JaninArray, LYSJaninArray)
+from MDAnalysis.analysis.dihedrals import Ramachandran, Janin
 
 
 class TestRamachandran(object):
@@ -40,7 +40,7 @@ class TestRamachandran(object):
 
     def test_ramachandran(self, universe):
         rama = Ramachandran(universe.select_atoms("protein")).run()
-        test_rama = np.load(DihedralsArray)
+        test_rama = np.load(RamaArray)
 
         assert_almost_equal(rama.angles, test_rama, 5,
                             err_msg="error: dihedral angles should "
@@ -49,7 +49,7 @@ class TestRamachandran(object):
     def test_ramachandran_single_frame(self, universe):
         rama = Ramachandran(universe.select_atoms("protein"),
                             start=5, stop=6).run()
-        test_rama = [np.load(DihedralsArray)[5]]
+        test_rama = [np.load(RamaArray)[5]]
 
         assert_almost_equal(rama.angles, test_rama, 5,
                             err_msg="error: dihedral angles should "
@@ -57,7 +57,7 @@ class TestRamachandran(object):
 
     def test_ramachandran_residue_selections(self, universe):
         rama = Ramachandran(universe.select_atoms("resname GLY")).run()
-        test_rama = np.load(GLYDihedralsArray)
+        test_rama = np.load(GLYRamaArray)
 
         assert_almost_equal(rama.angles, test_rama, 5,
                             err_msg="error: dihedral angles should "
@@ -73,5 +73,48 @@ class TestRamachandran(object):
 
     def test_plot(self, universe):
         ax = Ramachandran(universe.select_atoms("resid 5-10")).run().plot()
+        assert isinstance(ax, matplotlib.axes.Axes), \
+            "Ramachandran.plot() did not return and Axes instance"
+
+class TestJanin(object):
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(GRO, XTC)
+
+    def test_janin(self, universe):
+        janin = Janin(universe.select_atoms("protein")).run()
+        test_janin = np.load(JaninArray)
+
+        assert_almost_equal(janin.angles, test_janin, 5,
+                            err_msg="error: dihedral angles should "
+                            "match test values")
+
+    def test_janin_single_frame(self, universe):
+        janin = Janin(universe.select_atoms("protein"), start=5, stop=6).run()
+        test_janin = [np.load(JaninArray)[5]]
+
+        assert_almost_equal(janin.angles, test_janin, 5,
+                            err_msg="error: dihedral angles should "
+                            "match test values")
+
+    def test_janin_residue_selections(self, universe):
+        janin = Janin(universe.select_atoms("resname LYS")).run()
+        test_janin = np.load(LYSJaninArray)
+
+        assert_almost_equal(janin.angles, test_janin, 5,
+                            err_msg="error: dihedral angles should "
+                            "match test values")
+
+    def test_outside_protein_length(self, universe):
+        with pytest.raises(ValueError):
+            janin = Janin(universe.select_atoms("resid 220")).run()
+
+    def test_remove_residues(self, universe):
+        with pytest.warns(UserWarning):
+            janin = Janin(universe.select_atoms("protein")).run()
+
+    def test_plot(self, universe):
+        ax = Janin(universe.select_atoms("resid 5-10")).run().plot()
         assert isinstance(ax, matplotlib.axes.Axes), \
             "Ramachandran.plot() did not return and Axes instance"
