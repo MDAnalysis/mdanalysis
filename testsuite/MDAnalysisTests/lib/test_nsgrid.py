@@ -45,7 +45,7 @@ def run_grid_search(u, ref_id, cutoff=3):
     if searchcoords.shape == (3, ):
         searchcoords = searchcoords[None, :]
     # Run grid search
-    searcher = nsgrid.FastNS(u.dimensions, cutoff, coords)
+    searcher = nsgrid.FastNS(cutoff, coords, box=u.dimensions)
 
     return searcher.search(searchcoords)
 
@@ -56,11 +56,11 @@ def test_pbc_badbox():
         nsgrid.PBCBox([])
 
     with pytest.raises(ValueError):
-        nsgrid.PBCBox(np.zeros((3)))  # Bad shape
-        nsgrid.PBCBox(np.zeros((3, 3)))  # Collapsed box
-        nsgrid.PBCBOX(np.array([[0, 0, 0], [0, 1, 0], [0, 0, 1]]))  # 2D box
-        nsgrid.PBCBOX(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]))  # Box provided as array of integers
-        nsgrid.PBCBOX(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=float))  # Box provided as array of double
+        nsgrid.PBCBox(np.zeros((3)), True)  # Bad shape
+        nsgrid.PBCBox(np.zeros((3, 3)), True)  # Collapsed box
+        nsgrid.PBCBOX(np.array([[0, 0, 0], [0, 1, 0], [0, 0, 1]]), True)  # 2D box
+        nsgrid.PBCBOX(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), True)  # Box provided as array of integers
+        nsgrid.PBCBOX(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=float), True)  # Box provided as array of double
 
 
 def test_pbc_distances():
@@ -70,7 +70,7 @@ def test_pbc_distances():
     a = np.array([0.1, 0.1, 0.1], dtype=np.float32)
     b = np.array([1.1, -0.1, 0.2], dtype=np.float32)
     dx = np.array([0, -0.2, 0.1], dtype=np.float32)
-    pbcbox = nsgrid.PBCBox(box)
+    pbcbox = nsgrid.PBCBox(box, True)
 
     with pytest.raises(ValueError):
         pbcbox.distance(a, bad)
@@ -105,7 +105,7 @@ def test_pbc_put_in_bbox():
         dtype=np.float32
     )
 
-    pbcbox = nsgrid.PBCBox(box)
+    pbcbox = nsgrid.PBCBox(box, True)
 
     assert_allclose(pbcbox.put_atoms_in_bbox(coords), results, atol=1e-5)
 
@@ -158,7 +158,7 @@ def test_nsgrid_PBC_rect():
     cutoff = 7
 
     # FastNS is called differently to max coverage
-    searcher = nsgrid.FastNS(universe.dimensions, cutoff, universe.atoms.positions)
+    searcher = nsgrid.FastNS(cutoff, universe.atoms.positions, box=universe.dimensions)
 
     results_grid = searcher.search(universe.atoms.positions[ref_id][None, :]).get_indices()[0]  
 

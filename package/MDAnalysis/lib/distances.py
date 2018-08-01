@@ -679,7 +679,7 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         reference = reference[None, :]
     if configuration.shape == (3, ):
         configuration = configuration[None, :]
-    gridsearch = FastNS(box, max_cutoff, configuration)
+    gridsearch = FastNS(max_cutoff, configuration, box=box)
     results = gridsearch.search(reference)
     pairs = results.get_pairs()
     pair_distance = results.get_pair_distances()
