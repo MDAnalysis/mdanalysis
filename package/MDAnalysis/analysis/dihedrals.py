@@ -251,17 +251,17 @@ class Janin(AnalysisBase):
         self.angles = []
 
     def _single_frame(self):
-        chi1_angle = (calc_dihedrals(self.ag1.positions, self.ag2.positions,
+        chi1_angle = calc_dihedrals(self.ag1.positions, self.ag2.positions,
                                     self.ag3.positions, self.ag4.positions,
-                                    box=self.ag1.dimensions)+2*np.pi)%(2*np.pi)
-        chi2_angle = (calc_dihedrals(self.ag2.positions, self.ag3.positions,
+                                    box=self.ag1.dimensions)
+        chi2_angle = calc_dihedrals(self.ag2.positions, self.ag3.positions,
                                     self.ag4.positions, self.ag5.positions,
-                                    box=self.ag1.dimensions)+2*np.pi)%(2*np.pi)
+                                    box=self.ag1.dimensions)
         chi1_chi2 = [(chi1, chi2) for chi1, chi2 in zip(chi1_angle, chi2_angle)]
         self.angles.append(chi1_chi2)
 
     def _conclude(self):
-        self.angles = np.rad2deg(np.array(self.angles))
+        self.angles = (np.rad2deg(np.array(self.angles)) + 360) % 360
 
     def plot(self, ax=None, **kwargs):
         """Plots data into standard Janin plot. Each time step in
