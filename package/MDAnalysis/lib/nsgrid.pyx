@@ -85,9 +85,12 @@ cdef struct cPBCBox_t:
 cdef class PBCBox(object):
     cdef cPBCBox_t c_pbcbox
     cdef bint is_triclinic
+    cdef bint periodic
 
-    def __init__(self, real[:,::1] box):
+    def __init__(self, real[:,::1] box, bint periodic):
+        self.periodic = periodic
         self.update(box)
+
 
     cdef void fast_update(self, real[:,::1] box) nogil:
 
@@ -146,14 +149,15 @@ cdef class PBCBox(object):
         for i in range(DIM):
             dx[i] = other[i] - ref[i]
 
-        for i in range (DIM-1, -1, -1):
-            while dx[i] > self.c_pbcbox.hbox_diag[i]:
-                for j in range (i, -1, -1):
-                    dx[j] -= self.c_pbcbox.box[i][j]
+        if self.periodic:
+            for i in range (DIM-1, -1, -1):
+                while dx[i] > self.c_pbcbox.hbox_diag[i]:
+                    for j in range (i, -1, -1):
+                        dx[j] -= self.c_pbcbox.box[i][j]
 
-            while dx[i] <= self.c_pbcbox.mhbox_diag[i]:
-                for j in range (i, -1, -1):
-                    dx[j] += self.c_pbcbox.box[i][j]
+                while dx[i] <= self.c_pbcbox.mhbox_diag[i]:
+                    for j in range (i, -1, -1):
+                        dx[j] += self.c_pbcbox.box[i][j]
 
     def dx(self, real[:] a, real[:] b):
         cdef rvec dx
@@ -189,22 +193,23 @@ cdef class PBCBox(object):
         with gil:
             bbox_coords = coords.copy()
 
-        if self.is_triclinic:
-            for i in range(natoms):
-                for m in range(DIM - 1, -1, -1):
-                    while bbox_coords[i, m] < 0:
-                        for d in range(m+1):
-                            bbox_coords[i, d] += self.c_pbcbox.box[m][d]
-                    while bbox_coords[i, m] >= self.c_pbcbox.box[m][m]:
-                        for d in range(m+1):
-                            bbox_coords[i, d] -= self.c_pbcbox.box[m][d]
-        else:
-            for i in range(natoms):
-                for m in range(DIM):
-                    while bbox_coords[i, m] < 0:
-                        bbox_coords[i, m] += self.c_pbcbox.box[m][m]
-                    while bbox_coords[i, m] >= self.c_pbcbox.box[m][m]:
-                        bbox_coords[i, m] -= self.c_pbcbox.box[m][m]
+        if self.periodic:
+            if self.is_triclinic:
+                for i in range(natoms):
+                    for m in range(DIM - 1, -1, -1):
+                        while bbox_coords[i, m] < 0:
+                            for d in range(m+1):
+                                bbox_coords[i, d] += self.c_pbcbox.box[m][d]
+                        while bbox_coords[i, m] >= self.c_pbcbox.box[m][m]:
+                            for d in range(m+1):
+                                bbox_coords[i, d] -= self.c_pbcbox.box[m][d]
+            else:
+                for i in range(natoms):
+                    for m in range(DIM):
+                        while bbox_coords[i, m] < 0:
+                            bbox_coords[i, m] += self.c_pbcbox.box[m][m]
+                        while bbox_coords[i, m] >= self.c_pbcbox.box[m][m]:
+                            bbox_coords[i, m] -= self.c_pbcbox.box[m][m]
         return bbox_coords
 
     def put_atoms_in_bbox(self, real[:,::1] coords):
@@ -410,17 +415,35 @@ cdef class FastNS(object):
     cdef readonly real cutoff
     cdef NSGrid grid
     cdef ns_int max_gridsize
+    cdef bint periodic
     
 
-    def __init__(self, box, cutoff, coords, max_gridsize=5000):
+    def __init__(self, cutoff, coords, box=None, max_gridsize=5000):
         import MDAnalysis as mda
         from MDAnalysis.lib.mdamath import triclinic_vectors
+
+        cdef real[:] pseudobox = np.zeros(6, dtype=np.float32)
+        cdef real[DIM] bmax, bmin
+        cdef ns_int i
+        self.periodic = True
+
+        if (box is None) or np.allclose(box[:3], 0.):
+            bmax = np.max(coords, axis=0)
+            bmin = np.min(coords, axis=0)
+            for i in range(DIM):
+                pseudobox[i] = 1.1*(bmax - bmin)
+                pseudobox[DIM + i] = 90.
+            box = pseudobox
+            # shift the origin
+            coords -= bmin
+            self.periodic = False
+
 
 
         if box.shape != (3,3):
             box = triclinic_vectors(box)
 
-        self.box = PBCBox(box)
+        self.box = PBCBox(box, self.periodic)
 
         if cutoff < 0:
             raise ValueError("Cutoff must be positive!")
@@ -455,6 +478,7 @@ cdef class FastNS(object):
         cdef real[:, ::1] searchcoords
         cdef real[:, ::1] searchcoords_bbox
         cdef NSGrid searchgrid
+        cdef bint check
 
         
         cdef real cutoff2 = self.cutoff * self.cutoff
@@ -480,18 +504,30 @@ cdef class FastNS(object):
                 for xi in range(DIM):
                     for yi in range(DIM):
                         for zi in range(DIM):
+                            check = True
                             #Probe the search coordinates in a brick shaped box
                             probe[XX] = searchcoords_bbox[current_beadid, XX] + (xi - 1) * searchgrid.cellsize[XX]
                             probe[YY] = searchcoords_bbox[current_beadid, YY] + (yi - 1) * searchgrid.cellsize[YY]
                             probe[ZZ] = searchcoords_bbox[current_beadid, ZZ] + (zi - 1) * searchgrid.cellsize[ZZ]
                             # Make sure the probe coordinates is inside the brick-shaped box
-                            for m in range(DIM - 1, -1, -1):
-                                while probe[m] < 0:
-                                    for d in range(m+1):
-                                        probe[d] += self.box.c_pbcbox.box[m][d]
-                                while probe[m] >= self.box.c_pbcbox.box[m][m]:
-                                    for d in range(m+1):
-                                        probe[d] -= self.box.c_pbcbox.box[m][d]
+                            if self.periodic:
+                                for m in range(DIM - 1, -1, -1):
+                                    while probe[m] < 0:
+                                        for d in range(m+1):
+                                            probe[d] += self.box.c_pbcbox.box[m][d]
+                                    while probe[m] >= self.box.c_pbcbox.box[m][m]:
+                                        for d in range(m+1):
+                                            probe[d] -= self.box.c_pbcbox.box[m][d]
+                            else:
+                                for m in range(DIM, -1, -1, -1):
+                                    if probe[m] < 0:
+                                        check = False
+                                        break
+                                    if probe[m] > self.box.c_pbcbox.box[m][m]:
+                                        check = False
+                                        break
+                            if not check:
+                                continue
                             # Get the cell index corresponding to the probe
                             cellindex_probe = self.grid.coord2cellid(probe)
                             #for this cellindex search in grid
@@ -518,6 +554,7 @@ cdef class FastNS(object):
 
         cdef real cutoff2 = self.cutoff * self.cutoff
         cdef ns_int npairs = 0
+        cdef bint check
 
         size_search = self.coords.shape[0]
 
@@ -532,20 +569,31 @@ cdef class FastNS(object):
                 for xi in range(DIM):
                     for yi in range(DIM): 
                         for zi in range(DIM):
+                            check = True
                             # Calculate and/or reinitialize shifted coordinates
                             #Probe the search coordinates in a brick shaped box
                             probe[XX] = self.coords_bbox[current_beadid, XX] + (xi - 1) * self.grid.cellsize[XX]
                             probe[YY] = self.coords_bbox[current_beadid, YY] + (yi - 1) * self.grid.cellsize[XX]
                             probe[ZZ] = self.coords_bbox[current_beadid, ZZ] + (zi - 1) * self.grid.cellsize[XX]
                             # Make sure the shifted coordinates is inside the brick-shaped box
-                            for m in range(DIM - 1, -1, -1):
-                                while probe[m] < 0:
-                                    for d in range(m+1):
-                                        probe[d] += self.box.c_pbcbox.box[m][d]
-                                while probe[m] >= self.box.c_pbcbox.box[m][m]:
-                                    for d in range(m+1):
-                                        probe[d] -= self.box.c_pbcbox.box[m][d]
-
+                            if self.periodic:
+                                for m in range(DIM - 1, -1, -1):
+                                    while probe[m] < 0:
+                                        for d in range(m+1):
+                                            probe[d] += self.box.c_pbcbox.box[m][d]
+                                    while probe[m] >= self.box.c_pbcbox.box[m][m]:
+                                        for d in range(m+1):
+                                            probe[d] -= self.box.c_pbcbox.box[m][d]
+                            else:
+                                for m in range(DIM, -1, -1, -1):
+                                    if probe[m] < 0:
+                                        check = False
+                                        break
+                                    elif probe[m] > self.box.c_pbcbox.box[m][m]:
+                                        check = False
+                                        break
+                            if not check:
+                                continue
                             # Get the cell index corresponding to the probe
                             cellindex_probe = self.grid.coord2cellid(probe)
                             #for this cellindex search in grid
