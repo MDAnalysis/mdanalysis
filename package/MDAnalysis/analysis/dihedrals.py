@@ -196,3 +196,96 @@ class Ramachandran(AnalysisBase):
         a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
         ax.scatter(a[:,0], a[:,1], **kwargs)
         return ax
+
+class Janin(AnalysisBase):
+    """Calculate chi1 and chi2 dihedral angles of selected residues.
+
+    Chi1 and chi2 angles will be calculated for each residue corresponding to
+    `atomgroup` for each time step in the trajectory. A :class:`ResidueGroup`
+    is generated from `atomgroup` which is compared to the protein to determine
+    if it is a legitimate selection.
+
+    Note
+    ----
+    If the residue selection is beyond the scope of the protein, then an error
+    will be raised. If the residue selection includes the residues ALA, CYS,
+    GLY, PRO, SER, THR, or VAL, then a warning will be raised and they will be
+    removed from the list of residues, but the analysis will still run.
+
+    """
+    def __init__(self, atomgroup, **kwargs):
+        """Parameters
+        ----------
+        atomgroup : AtomGroup or ResidueGroup
+            atoms for residues for which chi1 and chi2 are calculated
+
+        Raises
+        ------
+        ValueError
+             If the selection of residues is not contained within the protein
+
+        """
+        super(Janin, self).__init__(atomgroup.universe.trajectory, **kwargs)
+        self.atomgroup = atomgroup
+        residues = self.atomgroup.residues
+        protein = self.atomgroup.universe.select_atoms("protein").residues
+        remove = residues.atoms.select_atoms("resname ALA CYS GLY PRO SER"
+                                             " THR VAL").residues
+
+        if not residues.issubset(protein):
+            raise ValueError("Found atoms outside of protein. Only atoms "
+                             "inside of a 'protein' selection can be used to "
+                             "calculate dihedrals.")
+        elif len(remove) != 0:
+            warnings.warn("Cannot determine chi1 and chi2 angles for residues "
+                          "without side chains of appropriate length.")
+            residues = residues.difference(remove)
+
+        self.ag1 = residues.atoms.select_atoms("name N")
+        self.ag2 = residues.atoms.select_atoms("name CA")
+        self.ag3 = residues.atoms.select_atoms("name CB")
+        self.ag4 = residues.atoms.select_atoms("name CG CG1")
+        self.ag5 = residues.atoms.select_atoms("name CD CD1 OD1 ND1 SD")
+
+    def _prepare(self):
+        self.angles = []
+
+    def _single_frame(self):
+        chi1_angle = (calc_dihedrals(self.ag1.positions, self.ag2.positions,
+                                    self.ag3.positions, self.ag4.positions,
+                                    box=self.ag1.dimensions)+2*np.pi)%(2*np.pi)
+        chi2_angle = (calc_dihedrals(self.ag2.positions, self.ag3.positions,
+                                    self.ag4.positions, self.ag5.positions,
+                                    box=self.ag1.dimensions)+2*np.pi)%(2*np.pi)
+        chi1_chi2 = [(chi1, chi2) for chi1, chi2 in zip(chi1_angle, chi2_angle)]
+        self.angles.append(chi1_chi2)
+
+    def _conclude(self):
+        self.angles = np.rad2deg(np.array(self.angles))
+
+    def plot(self, ax=None, **kwargs):
+        """Plots data into standard Janin plot. Each time step in
+        :attr:`Janin.angles` is plotted onto the same graph.
+
+        Parameters
+        ----------
+        ax : :class:`matplotlib.axes.Axes`
+              If no `ax` is supplied or set to ``None`` then the plot will
+              be added to the current active axes.
+
+        Returns
+        -------
+        ax : :class:`matplotlib.axes.Axes`
+             Axes with the plot, either `ax` or the current axes.
+
+        """
+        if ax is None:
+            ax = plt.gca()
+        ax.axis([0, 360, 0, 360])
+        ax.axhline(180, color='k', lw=1)
+        ax.axvline(180, color='k', lw=1)
+        ax.set(xticks=range(0,361,60), yticks=range(0,361,60),
+               xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
+        a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
+        ax.scatter(a[:,0], a[:,1], **kwargs)
+        return ax
