@@ -249,10 +249,10 @@ cdef class NSResults(object):
         self.pair_distances_buffer = np.sqrt(self.pair_distances2_buffer)
         return np.asarray(self.pair_distances_buffer)
     
-    cdef create_buffers(self):
+    cdef void create_buffers(self) nogil:
         cdef ns_int i, beadid_i, beadid_j
         cdef ns_int idx, nsearch
-        cdef real dist2
+        cdef real dist2, dist
         
         nsearch = len(self.searchcoords)
 
@@ -281,12 +281,12 @@ cdef class NSResults(object):
     def get_indices(self):
         if self.indices_buffer.empty():
             self.create_buffers()
-        return np.asarray(self.indices_buffer)
+        return np.ascontiguousarray(self.indices_buffer)
 
     def get_distances(self):
         if self.distances_buffer.empty():
             self.create_buffers()
-        return np.asarray(self.distances_buffer)
+        return np.ascontiguousarray(self.distances_buffer)
     
 cdef class NSGrid(object):
     cdef readonly real cutoff  # cutoff
@@ -456,13 +456,12 @@ cdef class FastNS(object):
         cdef real[:, ::1] searchcoords_bbox
         cdef NSGrid searchgrid
 
-        ncells = self.grid.size
         
         cdef real cutoff2 = self.cutoff * self.cutoff
         cdef ns_int npairs = 0
 
         # Generate another grid to search
-        searchcoords = np.array(search_coords, dtype=np.float32)
+        searchcoords = np.asarray(search_coords, dtype=np.float32)
         searchcoords_bbox =  self.box.fast_put_atoms_in_bbox(searchcoords)
         searchgrid = NSGrid(searchcoords_bbox.shape[0], self.grid.cutoff, self.box, self.max_gridsize, force=True)
         searchgrid.fill_grid(searchcoords_bbox)
@@ -482,9 +481,9 @@ cdef class FastNS(object):
                     for yi in range(DIM):
                         for zi in range(DIM):
                             #Probe the search coordinates in a brick shaped box
-                            probe[XX] = searchcoords[current_beadid, XX] + (xi - 1) * searchgrid.cellsize[XX]
-                            probe[YY] = searchcoords[current_beadid, YY] + (yi - 1) * searchgrid.cellsize[YY]
-                            probe[ZZ] = searchcoords[current_beadid, ZZ] + (zi - 1) * searchgrid.cellsize[ZZ]
+                            probe[XX] = searchcoords_bbox[current_beadid, XX] + (xi - 1) * searchgrid.cellsize[XX]
+                            probe[YY] = searchcoords_bbox[current_beadid, YY] + (yi - 1) * searchgrid.cellsize[YY]
+                            probe[ZZ] = searchcoords_bbox[current_beadid, ZZ] + (zi - 1) * searchgrid.cellsize[ZZ]
                             # Make sure the probe coordinates is inside the brick-shaped box
                             for m in range(DIM - 1, -1, -1):
                                 while probe[m] < 0:
@@ -500,11 +499,8 @@ cdef class FastNS(object):
                                 bid = self.grid.beadids[cellindex_probe * self.grid.nbeads_per_cell + j]
                                 #find distance between search coords[i] and coords[bid]
                                 d2 = self.box.fast_distance2(&searchcoords_bbox[current_beadid, XX], &self.coords_bbox[bid, XX])
-                                if d2 < cutoff2:
-                                    if d2 < EPSILON:
-                                        continue
-                                    else:
-                                        results.add_neighbors(current_beadid, bid, d2)
+                                if d2 < cutoff2 and d2 > EPSILON:
+                                    results.add_neighbors(current_beadid, bid, d2)
                                     npairs += 1
         return results
 
@@ -516,12 +512,7 @@ cdef class FastNS(object):
         cdef ns_int cellindex, cellindex_probe
         cdef ns_int xi, yi, zi
 
-
         cdef NSResults results
-
-        cdef ns_int size = self.coords_bbox.shape[0]
-        cdef ns_int[:] checked = np.zeros(size, dtype=np.int)
-
         cdef real d2
         cdef rvec probe
 
@@ -564,11 +555,8 @@ cdef class FastNS(object):
                                     continue
                                 #find distance between search coords[i] and coords[bid]
                                 d2 = self.box.fast_distance2(&self.coords_bbox[current_beadid, XX], &self.coords_bbox[bid, XX])
-                                if d2 < cutoff2:
-                                    if d2 < EPSILON:
-                                        continue
-                                    else:
-                                        results.add_neighbors(current_beadid, bid, d2)
-                                        results.add_neighbors(bid, current_beadid, d2)
+                                if d2 < cutoff2 and d2 > EPSILON:
+                                    results.add_neighbors(current_beadid, bid, d2)
+                                    results.add_neighbors(bid, current_beadid, d2)
                                     npairs += 1
         return results
