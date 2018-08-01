@@ -145,7 +145,7 @@ def test_nsgrid_noPBC(universe):
 
     results_grid = run_grid_search(universe, ref_id, cutoff).get_indices()[0]
 
-    assert_equal(results, results_grid)
+    assert_equal(np.sort(results), np.sort(results_grid))
 
 
 def test_nsgrid_PBC_rect():
@@ -164,10 +164,10 @@ def test_nsgrid_PBC_rect():
 
     results_grid2 = searcher.search(universe.atoms.positions).get_indices() # call without specifying any ids, should do NS for all beads
 
-    assert_equal(results, results_grid)
+    assert_equal(np.sort(results), np.sort(results_grid))
     assert_equal(len(universe.atoms), len(results_grid2))
     assert searcher.cutoff == 7
-    assert_equal(results_grid, results_grid2[ref_id])
+    assert_equal(np.sort(results_grid), np.sort(results_grid2[ref_id]))
 
 
 def test_nsgrid_PBC(universe):
@@ -179,7 +179,7 @@ def test_nsgrid_PBC(universe):
 
     results_grid = run_grid_search(universe, ref_id).get_indices()[0]
 
-    assert_equal(results, results_grid)
+    assert_equal(np.sort(results), np.sort(results_grid))
 
 
 def test_nsgrid_pairs(universe):

@@ -277,11 +277,6 @@ cdef class NSResults(object):
             
             self.distances_buffer[beadid_i].push_back(dist)
         
-        for i in range(self.searchcoords.shape[0]):
-            sorted_indices = np.argsort(self.indices_buffer[i])
-            self.indices_buffer[i] = np.array(self.indices_buffer[i])[sorted_indices]
-            self.distances_buffer[i] = np.array(self.distances_buffer[i])[sorted_indices]
-        
             
     def get_indices(self):
         if self.indices_buffer.empty():

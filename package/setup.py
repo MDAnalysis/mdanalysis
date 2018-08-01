@@ -386,7 +386,7 @@ def extensions(config):
                              language='c++',
                              libraries=parallel_libraries,
                              define_macros=define_macros + parallel_macros,
-                             extra_compile_args=extra_compile_args + parallel_args,
+                             extra_compile_args=cpp_extra_compile_args + parallel_args,
                              extra_link_args=parallel_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
