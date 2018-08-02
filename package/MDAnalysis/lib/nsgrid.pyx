@@ -26,12 +26,37 @@
 # cython: cdivision=True
 # cython: boundscheck=False
 # cython: initializedcheck=False
+# cython: embedsignature=True
 
 """
-Neighbor search library --- :mod:`MDAnalysis.lib.grid`
-======================================================
+Neighbor search library --- :mod:`MDAnalysis.lib.nsgrid`
+========================================================
 
-This Neighbor search library is a serialized Cython port of the NS grid search implemented in GROMACS.
+About the code
+--------------
+
+This Neighbor search library is a serialized Cython version greatly inspired by the  NS grid search implemented in
+`GROMACS <http://www.gromacs.org/>`_ .
+
+GROMACS 4.x code (more precisely `nsgrid.c <https://github.com/gromacs/gromacs/commits/master/src/mdlib/nsgrid.c>`_  and
+`ns.c <https://github.com/gromacs/gromacs/commits/master/src/mdlib/ns.c>`_ ) was used as reference to write this file.
+
+GROMACS 4.x code is released under the GNU Public Licence v2.
+
+
+About the algorithm
+-------------------
+
+The neighbor search implemented here is based on `cell lists <https://en.wikipedia.org/wiki/Cell_lists>`_ which allow
+computation of pairs [#]_ with a cost of :math:`O(N)`, instead of :math:`O(N^2)`.
+The basic algorithm is described in the following references:`
+
+Examples
+--------
+
+
+.. [#] a pair correspond to two particles that are considered as neighbors .
+
 """
 
 
@@ -85,12 +110,38 @@ cdef struct cPBCBox_t:
 
 # Class to handle PBC calculations
 cdef class PBCBox(object):
+    """
+    Cython implementation of `PBC-related <https://en.wikipedia.org/wiki/Periodic_boundary_conditions>`_ operations.
+    This class is used by classes :class:`FastNS` and :class:`NSGrid` to put all particles inside a brick-shaped box
+    and to compute PBC-aware distance.
+
+    .. warning::
+
+       This class is not meant to be used by end users.
+
+    .. warning::
+
+       Even if MD triclinic boxes can be handle by this class, internal optimization is made based on the
+       assumption that particles are inside a brick-shaped box. When this is not the case, calculated distances are not
+       warranted to be exact.
+
+    """
     cdef cPBCBox_t c_pbcbox
     cdef rvec center
     cdef rvec bbox_center
     cdef bint is_triclinic
 
     def __init__(self, real[:,::1] box):
+        """
+
+        Parameters
+        ----------
+
+        box : :class:`numpy.ndarray`
+          the MD box vectors as returned by
+          :func:`MDAnalysis.lib.mdamath.triclinic_vectors`. dtype must be :class:`numpy.float32`
+
+        """
         self.update(box)
 
     cdef void fast_update(self, real[:,::1] box) nogil:
@@ -142,6 +193,24 @@ cdef class PBCBox(object):
         self.c_pbcbox.max_cutoff2 = min(min_hv2, min_ss * min_ss)
 
     def update(self, real[:,::1] box):
+        """
+
+        Updates internal MD box representation and parameters used for calculations.
+
+        .. note::
+
+            Call to this method is only needed when the MD box is changed as it always called when class is
+            instantiated.
+
+        Parameters
+        ----------
+
+        box : a :class:`numpy.ndarray` that describes the MD box vectors as returned by
+            :func:`MDAnalysis.lib.mdamath.triclinic_vectors`.
+            `dtype` must be :class:`numpy.float32`
+
+        """
+
         if box.shape[0] != DIM or box.shape[1] != DIM:
             raise ValueError("Box must be a {} x {} matrix. Got: {} x {})".format(
                 DIM, DIM, box.shape[0], box.shape[1]))
@@ -167,6 +236,21 @@ cdef class PBCBox(object):
                     dx[j] += self.c_pbcbox.box[i][j]
 
     def dx(self, real[:] a, real[:] b):
+        """
+
+
+        Returns the distance vector :math:`dx` between two coordinates :math:`a` and :math:`b` .
+        if the minimum image convention is respected by :math:`a` and :math:`b` then :math:`dx = ab` .
+        if not, :math:`dx` is modified so it is always compliant with the minimum image convention.
+
+        Parameters
+        ----------
+        a : :class:`numpy.ndarray`
+          coordinates with a `shape` of 3 and a `dtype` of :class:`numpy.float32`
+        b : :class:`numpy.ndarray`
+          coordinates with a `shape` of 3 and a `dtype` of :class:`numpy.float32`
+
+        """
         cdef rvec dx
         if a.shape[0] != DIM or b.shape[0] != DIM:
             raise ValueError("Not 3 D coordinates")
@@ -182,6 +266,19 @@ cdef class PBCBox(object):
         return rvec_norm2(dx)
 
     def distance2(self, real[:] a, real[:] b):
+        """
+        Returns the distance vector :math:`dx` between two coordinates :math:`a` and :math:`b` .
+        if the minimum image convention is respected by :math:`a` and :math:`b` then :math:`dx = ab` .
+        if not, :math:`dx` is modified so it is always compliant with the minimum image convention.
+
+        Parameters
+        ----------
+        a : :class:`numpy.ndarray`
+          coordinates with a `shape` of 3 and a `dtype` of :class:`numpy.float32`
+        b : :class:`numpy.ndarray`
+          coordinates with a `shape` of 3 and a `dtype` of :class:`numpy.float32`
+
+        """
         if a.shape[0] != DIM or b.shape[0] != DIM:
             raise ValueError("Not 3 D coordinates")
         return self.fast_distance2(&a[XX], &b[XX])
