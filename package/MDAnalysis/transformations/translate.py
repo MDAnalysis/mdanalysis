@@ -46,6 +46,7 @@ from functools import partial
 
 from ..lib.mdamath import triclinic_vectors
 from ..lib.util import get_weights
+from ..lib._cutil import make_whole
 
 def translate(vector):
     """
@@ -85,7 +86,7 @@ def translate(vector):
     return wrapped
 
 
-def center_in_box(ag, weights=None, center_to=None, wrap=False):
+def center_in_box(ag, weights=None, center_to=None, wrap=False, unwrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -101,7 +102,7 @@ def center_in_box(ag, weights=None, center_to=None, wrap=False):
     .. code-block:: python
     
         ag = u.residues[1].atoms
-        transform = mda.transformations.center(ag, center_of='mass')
+        transform = mda.transformations.center(ag, weights='mass')
         u.trajectory.add_transformations(transform)
     
     Parameters
@@ -120,8 +121,13 @@ def center_in_box(ag, weights=None, center_to=None, wrap=False):
         instead. Defined as an array of size 3.
     wrap: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
-        before calculating the center of mass or geometry. Default is `False`, no changes
-        to the atom coordinates are done before calculating the center of the AtomGroup. 
+        before calculating the weighted center. Default is `False`, no changes to the atom
+        coordinates are done before calculating the center of the AtomGroup. 
+    unwrap: bool, optional
+        If `True`, all the atoms from the given AtomGroup will be moved so as to not break 
+        any bonds over periodic boundaries before calculating the weighted center. Default
+        is `False`, no changes to the atom coordinates are done before calculating the center
+        of the AtomGroup.
     
     Returns
     -------
@@ -146,14 +152,17 @@ def center_in_box(ag, weights=None, center_to=None, wrap=False):
         except (ValueError, TypeError):
             raise TypeError("weights must be {'mass', None} or an iterable of the "
                         "same size as the atomgroup.")
-    center_method = partial(atoms.center, weights, pbc=wrap)    
-  
+    if unwrap and wrap:
+        raise ValueError("wrap and unwrap can't be both True")
+    center_method = partial(atoms.center, weights, pbc=wrap)
+    
     def wrapped(ts):
         if center_to is None:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
         else:
             boxcenter = center_to
-    
+        if unwrap:
+            make_whole(ag)
         ag_center = center_method()
 
         vector = boxcenter - ag_center
@@ -164,7 +173,7 @@ def center_in_box(ag, weights=None, center_to=None, wrap=False):
     return wrapped
 
     
-def center_in_plane(ag, plane, center_to="center", weights=None, wrap=False):
+def center_in_plane(ag, plane, center_to="center", weights=None, wrap=False, unwrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -201,8 +210,13 @@ def center_in_plane(ag, plane, center_to="center", weights=None, wrap=False):
         None.
     wrap: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
-        before calculating the center of mass or geometry. Default is `False`, no changes
-        to the atom coordinates are done before calculating the center of the AtomGroup. 
+        before calculating the weighted center. Default is `False`, no changes to the atom
+        coordinates are done before calculating the center of the AtomGroup. 
+    unwrap: bool, optional
+        If `True`, all the atoms from the given AtomGroup will be moved so as to not break 
+        any bonds over periodic boundaries before calculating the weighted center. Default
+        is `False`, no changes to the atom coordinates are done before calculating the center
+        of the AtomGroup.
     
     Returns
     -------
@@ -232,6 +246,8 @@ def center_in_plane(ag, plane, center_to="center", weights=None, wrap=False):
         except (ValueError, TypeError):
             raise TypeError("weights must be {'mass', None} or an iterable of the "
                         "same size as the atomgroup.")
+    if unwrap and wrap:
+        raise ValueError("wrap and unwrap can't be both True")
     center_method = partial(atoms.center, weights, pbc=wrap)    
 
     def wrapped(ts):
@@ -240,6 +256,8 @@ def center_in_plane(ag, plane, center_to="center", weights=None, wrap=False):
             _origin = boxcenter
         else:
             _origin = center_to
+        if unwrap:
+            make_whole(ag)
         position = center_method()
         position[plane] = _origin[plane]
         vector = np.asarray(position, np.float32) - center_method()
@@ -250,7 +268,7 @@ def center_in_plane(ag, plane, center_to="center", weights=None, wrap=False):
     return wrapped
 
 
-def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False):
+def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False, unwrap=False):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -289,9 +307,14 @@ def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False):
         None.
     wrap: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
-        before calculating the center of mass or geometry. Default is `False`, no changes
-        to the atom coordinates are done before calculating the center of the AtomGroup. 
-    
+        before calculating the weighted center. Default is `False`, no changes to the atom
+        coordinates are done before calculating the center of the AtomGroup. 
+    unwrap: bool, optional
+        If `True`, all the atoms from the given AtomGroup will be moved so as to not break 
+        any bonds over periodic boundaries before calculating the weighted center. Default
+        is `False`, no changes to the atom coordinates are done before calculating the center
+        of the AtomGroup.
+        
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
@@ -320,6 +343,8 @@ def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False):
         except (ValueError, TypeError):
             raise TypeError("weights must be {'mass', None} or an iterable of the "
                             "same size as the atomgroup.")
+    if unwrap and wrap:
+        raise ValueError("wrap and unwrap can't be both True")
     center_method = partial(ag.atoms.center, weights, pbc=wrap)  
     
     def wrapped(ts):
@@ -327,6 +352,8 @@ def center_in_axis(ag, axis, center_to="center", weights=None, wrap=False):
             _origin = ts.triclinic_dimensions.sum(axis=0) / 2.0
         else:
             _origin = center_to
+        if unwrap:
+            make_whole(ag)
         ag_center = center_method()
         center = _origin
         center[axis] = ag_center[axis]
