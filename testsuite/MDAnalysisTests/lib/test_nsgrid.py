@@ -24,7 +24,7 @@ from __future__ import print_function, absolute_import
 
 import pytest
 
-from numpy.testing import assert_equal, assert_allclose
+from numpy.testing import assert_equal, assert_allclose, assert_array_equal
 import numpy as np
 
 import MDAnalysis as mda
@@ -50,69 +50,18 @@ def run_grid_search(u, ref_id, cutoff=3):
     return searcher.search(searchcoords)
 
 
-def test_pbc_badbox():
+def test_pbc_box():
     """Check that PBC box accepts only well-formated boxes"""
+    pbc = True
     with pytest.raises(TypeError):
         nsgrid.PBCBox([])
 
     with pytest.raises(ValueError):
-        nsgrid.PBCBox(np.zeros((3)), True)  # Bad shape
-        nsgrid.PBCBox(np.zeros((3, 3)), True)  # Collapsed box
-        nsgrid.PBCBOX(np.array([[0, 0, 0], [0, 1, 0], [0, 0, 1]]), True)  # 2D box
-        nsgrid.PBCBOX(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), True)  # Box provided as array of integers
-        nsgrid.PBCBOX(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=float), True)  # Box provided as array of double
-
-
-def test_pbc_distances():
-    """Check that PBC box computes distances"""
-    box = np.identity(3, dtype=np.float32)
-    bad = np.array([0.1, 0.2], dtype=np.float32)
-    a = np.array([0.1, 0.1, 0.1], dtype=np.float32)
-    b = np.array([1.1, -0.1, 0.2], dtype=np.float32)
-    dx = np.array([0, -0.2, 0.1], dtype=np.float32)
-    pbcbox = nsgrid.PBCBox(box, True)
-
-    with pytest.raises(ValueError):
-        pbcbox.distance(a, bad)
-        pbcbox.distance(bad, a)
-
-        pbcbox.distance2(a, bad)
-        pbcbox.distance2(bad, a)
-
-        pbcbox.dx(bad, a)
-        pbcbox.dx(a, bad)
-
-    assert_equal(pbcbox.dx(a, b), dx)
-    assert_allclose(pbcbox.distance(a, b), np.sqrt(np.sum(dx*dx)), atol=1e-5)
-    assert_allclose(pbcbox.distance2(a, b), np.sum(dx*dx), atol=1e-5)
-
-
-def test_pbc_put_in_bbox():
-    "Check that PBC put beads in brick-shaped box"
-    box = np.identity(3, dtype=np.float32)
-    coords = np.array(
-        [
-            [0.1, 0.1, 0.1],
-            [-0.1, 1.1, 0.9]
-        ],
-        dtype=np.float32
-    )
-    results = np.array(
-        [
-            [0.1, 0.1, 0.1],
-            [0.9, 0.1, 0.9]
-        ],
-        dtype=np.float32
-    )
-
-    pbcbox = nsgrid.PBCBox(box, True)
-
-    assert_allclose(pbcbox.put_atoms_in_bbox(coords), results, atol=1e-5)
-
-
-def test_nsgrid_badinit():
-    with pytest.raises(TypeError):
-        nsgrid.FastNS(None, 1)
+        nsgrid.PBCBox(np.zeros((3)), pbc)  # Bad shape
+        nsgrid.PBCBox(np.zeros((3, 3)), pbc)  # Collapsed box
+        nsgrid.PBCBOX(np.array([[0, 0, 0], [0, 1, 0], [0, 0, 1]]), pbc)  # 2D box
+        nsgrid.PBCBOX(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), pbc)  # Box provided as array of integers
+        nsgrid.PBCBOX(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=float), pbc)  # Box provided as array of double
 
 
 def test_nsgrid_badcutoff(universe):
@@ -133,19 +82,6 @@ def test_ns_grid_noneighbor(universe):
     assert len(results_grid.get_pairs()) == 0
     assert len(results_grid.get_pair_distances()) == 0
 
-
-def test_nsgrid_noPBC(universe):
-    """Check that grid search works when no PBC is needed"""
-
-    ref_id = 0
-
-    cutoff = 3
-    results = np.array([2, 3, 4, 5, 6, 7, 8, 9, 18, 19, 1211, 10862, 10865, 17582, 17585, 38342,
-                        38345]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
-
-    results_grid = run_grid_search(universe, ref_id, cutoff).get_indices()[0]
-
-    assert_equal(np.sort(results), np.sort(results_grid))
 
 
 def test_nsgrid_PBC_rect():
@@ -221,3 +157,48 @@ def test_nsgrid_distances(universe):
     results_grid = run_grid_search(universe, ref_id).get_distances()[0]
 
     assert_allclose(np.sort(results), np.sort(results_grid), atol=1e-2)
+
+
+@pytest.mark.parametrize('box, results',
+                         ((None, [3, 13, 24]), 
+                          (np.array([0., 0., 0., 90., 90., 90.]), [3, 13, 24]),  
+                          (np.array([10., 10., 10., 90., 90., 90.]), [3, 13, 24, 39, 67]),
+                          (np.array([10., 10., 10., 60., 75., 90.]), [3, 13, 24, 39, 60, 79])))
+def test_nsgrid_search(box, results):
+    np.random.seed(90003)
+    points = (np.random.uniform(low=0, high=1.0,
+                        size=(100, 3))*(10.)).astype(np.float32)
+    cutoff = 2.0
+    query = np.array([1., 1., 1.]).reshape((1,3))
+    searcher = nsgrid.FastNS(cutoff, points, box=box)
+    searchresults = searcher.search(query)
+    indices = searchresults.get_indices()[0]
+    assert_equal(np.sort(indices), results)
+
+
+@pytest.mark.parametrize('box, result', 
+                         ((None, 21),
+                          (np.array([0., 0., 0., 90., 90., 90.]), 21),  
+                          (np.array([10., 10., 10., 90., 90., 90.]), 26),
+                          (np.array([10., 10., 10., 60., 75., 90.]), 33)))
+def test_nsgrid_selfsearch(box, result):
+    np.random.seed(90003)
+    points = (np.random.uniform(low=0, high=1.0,
+                        size=(100, 3))*(10.)).astype(np.float32)
+    cutoff = 1.0
+    searcher = nsgrid.FastNS(cutoff, points, box=box)
+    searchresults = searcher.self_search()
+    pairs = searchresults.get_pairs()
+    assert_equal(len(pairs)//2, result)
+
+def test_contiguous(universe):
+    ref_id = 13937
+    cutoff = 3
+    coords = universe.atoms.positions
+    searcher = nsgrid.FastNS(cutoff, coords, box=None)
+    searchresults = searcher.search(coords[ref_id][None, :])
+    indices = searchresults.get_indices()
+    distances = searchresults.get_distances()
+
+    assert indices.flags['C_CONTIGUOUS'] == True
+    assert distances.flags['C_CONTIGUOUS'] == True

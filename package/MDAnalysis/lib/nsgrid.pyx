@@ -159,31 +159,12 @@ cdef class PBCBox(object):
                     for j in range (i, -1, -1):
                         dx[j] += self.c_pbcbox.box[i][j]
 
-    def dx(self, real[:] a, real[:] b):
-        cdef rvec dx
-        if a.shape[0] != DIM or b.shape[0] != DIM:
-            raise ValueError("Not 3 D coordinates")
-        self.fast_pbc_dx(&a[XX], &b[XX], dx)
-        return np.array([dx[XX], dx[YY], dx[ZZ]], dtype=np.float32)
-
 
     cdef real fast_distance2(self, rvec a, rvec b) nogil:
         cdef rvec dx
         self.fast_pbc_dx(a, b, dx)
         return rvec_norm2(dx)
 
-    def distance2(self, real[:] a, real[:] b):
-        if a.shape[0] != DIM or b.shape[0] != DIM:
-            raise ValueError("Not 3 D coordinates")
-        return self.fast_distance2(&a[XX], &b[XX])
-
-    cdef real fast_distance(self, rvec a, rvec b) nogil:
-        return sqrt(self.fast_distance2(a,b))
-
-    def distance(self, real[:] a, real[:] b):
-        if a.shape[0] != DIM or b.shape[0] != DIM:
-            raise ValueError("Not 3 D coordinates")
-        return self.fast_distance(&a[XX], &b[XX])
     
     cdef real[:, ::1]fast_put_atoms_in_bbox(self, real[:,::1] coords) nogil:
         cdef ns_int i, m, d, natoms
@@ -211,9 +192,6 @@ cdef class PBCBox(object):
                         while bbox_coords[i, m] >= self.c_pbcbox.box[m][m]:
                             bbox_coords[i, m] -= self.c_pbcbox.box[m][m]
         return bbox_coords
-
-    def put_atoms_in_bbox(self, real[:,::1] coords):
-        return np.asarray(self.fast_put_atoms_in_bbox(coords))
 
 #########################
 # Neighbor Search Stuff #
@@ -427,17 +405,17 @@ cdef class FastNS(object):
         cdef ns_int i
         self.periodic = True
 
-        if (box is None) or np.allclose(box[:3], 0.):
+
+        if (box is None) or (np.allclose(box[:3], 0.) and box.shape[0] == 6):
             bmax = np.max(coords, axis=0)
             bmin = np.min(coords, axis=0)
             for i in range(DIM):
-                pseudobox[i] = 1.1*(bmax - bmin)
+                pseudobox[i] = 1.1*(bmax[i] - bmin[i])
                 pseudobox[DIM + i] = 90.
             box = pseudobox
             # shift the origin
             coords -= bmin
             self.periodic = False
-
 
 
         if box.shape != (3,3):
@@ -519,7 +497,7 @@ cdef class FastNS(object):
                                         for d in range(m+1):
                                             probe[d] -= self.box.c_pbcbox.box[m][d]
                             else:
-                                for m in range(DIM, -1, -1, -1):
+                                for m in range(DIM -1, -1, -1):
                                     if probe[m] < 0:
                                         check = False
                                         break
@@ -585,7 +563,7 @@ cdef class FastNS(object):
                                         for d in range(m+1):
                                             probe[d] -= self.box.c_pbcbox.box[m][d]
                             else:
-                                for m in range(DIM, -1, -1, -1):
+                                for m in range(DIM -1, -1, -1):
                                     if probe[m] < 0:
                                         check = False
                                         break
