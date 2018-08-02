@@ -27,10 +27,48 @@ import matplotlib
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import (GRO, XTC, RamaArray, GLYRamaArray,
-                                       JaninArray, LYSJaninArray)
-from MDAnalysis.analysis.dihedrals import Ramachandran, Janin
+from MDAnalysisTests.datafiles import (GRO, XTC, DihedralArray, DihedralsArray,
+                                       RamaArray, GLYRamaArray, JaninArray,
+                                       LYSJaninArray)
+from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
 
+
+class TestDihedral(object):
+
+    @pytest.fixture()
+    def atomgroup(self):
+        u = mda.Universe(GRO, XTC)
+        ag = u.select_atoms("(resid 4 and name N CA C) or (resid 5 and name N)")
+        return ag
+
+
+    def test_dihedral(self, atomgroup):
+        dihedral = Dihedral([atomgroup]).run()
+        test_dihedral = np.load(DihedralArray)
+
+        assert_almost_equal(dihedral.angles, test_dihedral, 5,
+                            err_msg="error: dihedral angles should "
+                            "match test values")
+
+    def test_dihedral_single_frame(self, atomgroup):
+        dihedral = Dihedral([atomgroup], start=5, stop=6).run()
+        test_dihedral = [np.load(DihedralArray)[5]]
+
+        assert_almost_equal(dihedral.angles, test_dihedral, 5,
+                            err_msg="error: dihedral angles should "
+                            "match test vales")
+
+    def test_atomgroup_list(self, atomgroup):
+        dihedral = Dihedral([atomgroup, atomgroup]).run()
+        test_dihedral = np.load(DihedralsArray)
+
+        assert_almost_equal(dihedral.angles, test_dihedral, 5,
+                            err_msg="error: dihedral angles should "
+                            "match test values")
+
+    def test_enough_atoms(self, atomgroup):
+        with pytest.raises(ValueError):
+            dihedral = Dihedral([atomgroup[:2]]).run()
 
 class TestRamachandran(object):
 

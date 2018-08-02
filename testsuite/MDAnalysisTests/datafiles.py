@@ -156,7 +156,9 @@ __all__ = [
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
     "GSD",
     "GRO_MEMPROT", "XTC_MEMPROT", # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
-    "RamaArray", "GLYRamaArray", "JaninArray", "LYSJaninArray" # Time series of various dihedral angles for testing dihedrals.py
+    "DihedralArray", "DihedralsArray", # time series of single dihedral
+    "RamaArray", "GLYRamaArray", # time series of phi/psi angles
+    "JaninArray", "LYSJaninArray" # time series of chi1/chi2 angles
 ]
 
 from pkg_resources import resource_filename
@@ -417,6 +419,8 @@ ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz'
 
 GSD = resource_filename(__name__, 'data/example.gsd')
 
+DihedralArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral.npy')
+DihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral_list.npy')
 RamaArray = resource_filename(__name__, 'data/adk_oplsaa_rama.npy')
 GLYRamaArray = resource_filename(__name__, 'data/adk_oplsaa_GLY_rama.npy')
 JaninArray = resource_filename(__name__, 'data/adk_oplsaa_janin.npy')

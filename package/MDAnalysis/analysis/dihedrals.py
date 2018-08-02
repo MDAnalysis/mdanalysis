@@ -103,6 +103,31 @@ from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.lib.distances import calc_dihedrals
 
 
+class Dihedral(AnalysisBase):
+    def __init__(self, atomgroups, **kwargs):
+        super(Dihedral, self).__init__(atomgroups[0].universe.trajectory, **kwargs)
+        self.atomgroups = atomgroups
+
+        if any([len(ag) != 4 for ag in atomgroups]):
+            raise ValueError("All AtomGroups must contain 4 atoms")
+
+        self.ag1 = mda.AtomGroup([ag[0] for ag in atomgroups])
+        self.ag2 = mda.AtomGroup([ag[1] for ag in atomgroups])
+        self.ag3 = mda.AtomGroup([ag[2] for ag in atomgroups])
+        self.ag4 = mda.AtomGroup([ag[3] for ag in atomgroups])
+
+    def _prepare(self):
+        self.angles = []
+
+    def _single_frame(self):
+        angle = calc_dihedrals(self.ag1.positions, self.ag2.positions,
+                               self.ag3.positions, self.ag4.positions,
+                               box=self.ag1.dimensions)
+        self.angles.append(angle)
+
+    def _conclude(self):
+        self.angles = np.rad2deg(np.array(self.angles))
+
 class Ramachandran(AnalysisBase):
     """Calculate phi and psi dihedral angles of selected residues.
 
