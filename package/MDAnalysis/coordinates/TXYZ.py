@@ -74,20 +74,19 @@ class TXYZReader(base.ReaderBase):
         root, ext = os.path.splitext(self.filename)
         self.xyzfile = util.anyopen(self.filename)
         self._cache = dict()
+        # Check if file has box information saved
         with util.openany(self.filename) as inp:
            inp.readline()
-           line=inp.readline()
+           line = inp.readline()
+           # If second line has float at second position, we have box info
            try:
                float(line.split()[1])
            except ValueError:
-               self.periodic=False
+               self.periodic = False
            else:
-               self.periodic=True
+               self.periodic = True
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
-        # Haven't quite figured out where to start with all the self._reopen()
-        # etc.
-        # (Also cannot just use seek() or reset() because that would break
-        # with urllib2.urlopen() streams)
+
         self._read_next_timestep()
 
     @property
@@ -112,7 +111,7 @@ class TXYZReader(base.ReaderBase):
         # number of atoms
         linesPerFrame = self.n_atoms + 1
         if self.periodic:
-            linesPerFrame +=1
+            linesPerFrame += 1
         counter = 0
         offsets = []
 
@@ -145,7 +144,7 @@ class TXYZReader(base.ReaderBase):
             # we assume that there is only one header line per frame
             f.readline()
             if self.periodic:
-                ts.dimensions=f.readline().split() 
+                ts.dimensions = f.readline().split() 
             # convert all entries at the end once for optimal speed
             tmp_buf = []
             for i in range(self.n_atoms):
