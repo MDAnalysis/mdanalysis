@@ -20,6 +20,7 @@ The rules for this file:
 
 Enhancements
 
+  * Added wrap/unwrap transformations
   * Modified around selections to work with KDTree and periodic boundary
     conditions.  Should reduce memory usage (#974 PR #2022)
   * Modified topology.guessers.guess_bonds to automatically select the
