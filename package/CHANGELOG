@@ -20,6 +20,7 @@ The rules for this file:
 
 Enhancements
 
+  * Added wrap/unwrap transformations
   * Added augment functionality to create relevant images of particles 
     in the vicinity of central cell to handle periodic boundary
     conditions (PR #1977) 
