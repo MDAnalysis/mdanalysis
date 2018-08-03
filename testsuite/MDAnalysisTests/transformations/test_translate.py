@@ -169,9 +169,8 @@ def test_center_in_box_bad_wrap_unwrap(translate_universes):
     " ",
     "totallynotmasses",
     123456789,
-    [0, 1, 2, 3, 4],
     np.array([0, 1]),
-    np.array([0, 1, 2, 3, 4]),
+    np.array([0, 1, 2, 3]),
     np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]))
 )
 def test_center_in_box_bad_weights(translate_universes, weights):
@@ -179,9 +178,8 @@ def test_center_in_box_bad_weights(translate_universes, weights):
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # what if a wrong center type name is passed?
-    bad_weights = " "
     with pytest.raises(TypeError): 
-        center_in_box(ag, weights=bad_weights)(ts)
+        center_in_box(ag, weights=weights)(ts)
 
 
 def test_center_in_box_no_masses(translate_universes):   
@@ -386,9 +384,8 @@ def test_center_in_axis_bad_wrap_unwrap(translate_universes):
     " ",
     "totallynotmasses",
     123456789,
-    [0, 1, 2, 3, 4],
     np.array([0, 1]),
-    np.array([0, 1, 2, 3, 4]),
+    np.array([0, 1, 2, 3]),
     np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]))
 )
 def test_center_in_axis_bad_weights(translate_universes, weights):
@@ -396,10 +393,9 @@ def test_center_in_axis_bad_weights(translate_universes, weights):
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # what if a wrong center type name is passed?
-    bad_weights = " "
     axis = 'x'
     with pytest.raises(TypeError):
-        center_in_axis(ag, axis, weights=bad_weights)(ts)
+        center_in_axis(ag, axis, weights=weights)(ts)
 
 
 def test_center_in_axis_no_masses(translate_universes):   
@@ -606,15 +602,22 @@ def test_center_in_plane_bad_unwrap(translate_universes):
         center_in_plane(ag, plane, unwrap=True)(ts)
 
 
-def test_center_in_plane_bad_weights(translate_universes):
+@pytest.mark.parametrize('weights', (
+    " ",
+    "totallynotmasses",
+    123456789,
+    np.array([0, 1]),
+    np.array([0, 1, 2, 3]),
+    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]))
+)
+def test_center_in_plane_bad_weights(translate_universes, weights):
     # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # what if a wrong center type name is passed?
-    bad_weights = " "
     plane = 'yz'
     with pytest.raises(TypeError):
-        center_in_plane(ag, plane, weights=bad_weights)(ts)
+        center_in_plane(ag, plane, weights=weights)(ts)
 
 
 def test_center_in_planes_no_masses(translate_universes):   
