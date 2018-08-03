@@ -288,10 +288,12 @@ the zone, on the other hand, a fast decay means a short permanence time::
   universe = MDAnalysis.Universe(pdb, trajectory)
   selection = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26 or resid 34 or resid 80) "
   sp = SP(universe, selection, verbose=True)
-  taus, sp_timeseries = sp.run(start=0, stop=100, tau_max=20)
+  sp.run(start=0, stop=100, tau_max=20)
+  tau_timeseries = sp.tau_timeseries
+  sp_timeseries = sp.sp_timeseries
 
   # print in console
-  for tau, sp in zip(taus, sp_timeseries):
+  for tau, sp in zip(tau_timeseries, sp_timeseries):
         print("{time} {sp}".format(time=tau, sp=sp))
 
   # plot
@@ -375,9 +377,9 @@ represents a MSD value in its respective window timestep. Data is stored in
 SurvivalProbability
 ~~~~~~~~~~~~~~~~~~~
 
-Survival Probability (SP) returns two lists: a list of taus and a list of their corresponding mean survival
-probabilities. Additionally, a list :attr:`SurvivalProbability.sp_timeseries` is provided which contains
-a list of SPs for each tau. This provides the number of datapoints gathered and the distribution.
+Survival Probability (SP) computes two lists: a list of taus (:attr:`SurvivalProbability.tau_timeseries`) and a list of their corresponding mean survival
+probabilities (:attr:`SurvivalProbability.sp_timeseries`). Additionally, a list :attr:`SurvivalProbability.sp_timeseries_data` is provided which contains
+a list of SPs for each tau, which can be used to compute their distribution, etc.
 
     results = [ tau1, tau2, ..., tau_n ], [ sp_tau1, sp_tau2, ..., sp_tau_n]
 
@@ -1249,9 +1251,9 @@ class SurvivalProbability(object):
         Returns
         -------
         tau_timeseries : list
-            tau from 1 to tau_max
+            tau from 1 to tau_max. Saved in the field tau_timeseries.
         sp_timeseries : list
-            survival probability for each value of `tau`
+            survival probability for each value of `tau`. Saved in the field sp_timeseries.
         """
 
         # backward compatibility (and priority)
