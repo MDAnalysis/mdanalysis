@@ -42,7 +42,7 @@ Classes
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, zip
 import itertools
 import numpy as np
 
@@ -89,16 +89,21 @@ class TXYZParser(TopologyReaderBase):
             names = np.zeros(natoms, dtype=object)
             types = np.zeros(natoms, dtype=np.int)
             bonds = []
-            #Checks whether file contains periodic boundary box info 
+            # Find first atom line, maybe there's box information
             fline = inf.readline()
             try:
+                # If a box second value will be a float
+                # If an atom, second value will be a string
                 float(fline.split()[1])
-            except:
+            except ValueError:
+                # If float conversion failed, we have first atom line
                 pass
             else:
+                # If previous try succeeded it was a box
+                # so read another line to find the first atom line
                 fline = inf.readline()
             # Can't infinitely read as XYZ files can be multiframe
-            for i, line in zip(range(natoms),itertools.chain([fline],inf)):
+            for i, line in zip(range(natoms), itertools.chain([fline], inf)):
                 line = line.split()
                 atomids[i]= line[0]
                 names[i] = line[1]
