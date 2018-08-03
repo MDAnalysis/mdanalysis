@@ -85,7 +85,7 @@ __all__ = [
     "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
-    "TXYZ", "ARC", "ARC_PDB",        # Tinker files
+    "TXYZ", "ARC", "ARC_PBC",        # Tinker files
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
