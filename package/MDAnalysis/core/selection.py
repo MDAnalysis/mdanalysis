@@ -48,7 +48,6 @@ import warnings
 
 import numpy as np
 from numpy.lib.utils import deprecate
-from Bio.KDTree import KDTree
 
 from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.lib.util import unique_int_1d
@@ -284,25 +283,13 @@ class AroundSelection(DistanceSelection):
         sys = group[~np.in1d(group.indices, sel.indices)]
 
         box = self.validate_dimensions(group.dimensions)
-        if box is None:
-            kdtree = KDTree(dim=3, bucket_size=10)
-            kdtree.set_coords(sys.positions)
-            found_indices = []
-            for atom in sel.positions:
-                kdtree.search(atom, self.cutoff)
-                found_indices.append(kdtree.get_indices())
-            unique_idx = unique_int_1d(
-                np.concatenate(found_indices).astype(np.int64)
-            )
 
-        else:
-            kdtree = PeriodicKDTree(box, bucket_size=10)
-            kdtree.set_coords(sys.positions)
-            kdtree.search(sel.positions, self.cutoff)
-            unique_idx = np.asarray(kdtree.get_indices())
+        cut = self.cutoff if box is not None else None
+        kdtree = PeriodicKDTree(box=box, leafsize=10)
+        kdtree.set_coords(sys.positions, cutoff=cut)
+        kdtree.search(sel.positions, self.cutoff)
+        unique_idx = np.asarray(kdtree.get_indices())
 
-        # These are the indices from SYS that were seen when
-        # probing with SEL
         return sys[unique_idx.astype(np.int32)].unique
 
     def _apply_distmat(self, group):
@@ -335,11 +322,10 @@ class SphericalLayerSelection(DistanceSelection):
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
         ref = sel.center_of_geometry(pbc=self.periodic)
-        if box is None:
-            kdtree = KDTree(dim=3, bucket_size=10)
-        else:
-            kdtree = PeriodicKDTree(box, bucket_size=10)
-        kdtree.set_coords(group.positions)
+        kdtree = PeriodicKDTree(box=box)
+
+        cutoff = self.exRadius if box is not None else None
+        kdtree.set_coords(group.positions, cutoff=cutoff)
         kdtree.search(ref, self.exRadius)
         found_ExtIndices = kdtree.get_indices()
         kdtree.search(ref, self.inRadius)
@@ -378,11 +364,10 @@ class SphericalZoneSelection(DistanceSelection):
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
         ref = sel.center_of_geometry(pbc=self.periodic)
-        if box is None:
-            kdtree = KDTree(dim=3, bucket_size=10)
-        else:
-            kdtree = PeriodicKDTree(box, bucket_size=10)
-        kdtree.set_coords(group.positions)
+
+        cut = self.cutoff if box is not None else None
+        kdtree = PeriodicKDTree(box=box)
+        kdtree.set_coords(group.positions, cutoff=cut)
         kdtree.search(ref, self.cutoff)
         found_indices = kdtree.get_indices()
         return group[found_indices].unique
@@ -499,11 +484,9 @@ class PointSelection(DistanceSelection):
 
     def _apply_KDTree(self, group):
         box = group.dimensions if self.periodic else None
-        if box is None:
-            kdtree = KDTree(dim=3, bucket_size=10)
-        else:
-            kdtree = PeriodicKDTree(box, bucket_size=10)
-        kdtree.set_coords(group.positions)
+        kdtree = PeriodicKDTree(box=box)
+        cut = self.cutoff if box is not None else None
+        kdtree.set_coords(group.positions, cutoff=cut)
         kdtree.search(self.ref, self.cutoff)
         found_indices = kdtree.get_indices()
 

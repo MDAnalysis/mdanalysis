@@ -58,11 +58,6 @@ npoints_1 = (1, 100)
 
 boxes_1 = (np.array([1, 2, 3, 90, 90, 90], dtype=np.float32),  # ortho
            np.array([1, 2, 3, 30, 45, 60], dtype=np.float32),  # tri_box
-           triclinic_vectors(  # tri_vecs
-           np.array([1, 2, 3, 90, 90, 45], dtype=np.float32)),
-           np.array([[0.5, 0.9, 1.9],  # tri_vecs_bad
-                     [2.0, 0.4, 0.1],
-                     [0.0, 0.6, 0.5]], dtype=np.float32),
            None,  # Non Periodic
            )
 
