@@ -98,9 +98,6 @@ from ..core.topologyattrs import (
     Segids,
     AtomAttr,
     Bonds,
-    Angles,
-    Dihedrals,
-    Impropers
 )
 
 
@@ -123,8 +120,6 @@ class TOPParser(TopologyReaderBase):
     - Resnames
     - Type_indices
     - Bonds
-    - Angles
-    - Dihedrals (inc. impropers)
 
     Guesses the following attributes:
      - Elements (if not included in topology)
@@ -157,13 +152,9 @@ class TOPParser(TopologyReaderBase):
             "ATOM_TYPE_INDEX": (1, 10, self.parse_type_indices, "type_indices", 0),
             "AMBER_ATOM_TYPE": (1, 20, self.parse_types, "types", 0),
             "RESIDUE_LABEL": (1, 20, self.parse_resnames, "resname", 11),
-            "RESIDUE_POINTER": (1, 10, self.parse_residx, "respoint", 11),
-            "BONDS_INC_HYDROGEN": (3, 10, self.parse_bonded, "bondh", 2),
-            "BONDS_WITHOUT_HYDROGEN": (3, 10, self.parse_bonded, "bonda", 3),
-            "ANGLES_INC_HYDROGEN": (4, 10, self.parse_bonded, "angh", 4),
-            "ANGLES_WITHOUT_HYDROGEN": (4, 10, self.parse_bonded, "anga", 5),
-            "DIHEDRALS_INC_HYDROGEN", (5, 10, self.parse_bonded, "dihh", 6),
-            "DIHEDRALS_WITHOUT_HYDROGEN", (5, 10, self.parse_bonded, "diha", 7)
+            "RESIDUE_POINTER": (2, 10, self.parse_residx, "respoint", 11),
+            "BONDS_INC_HYDROGEN": (2, 10, self.parse_bonds, "bondh", 3)
+            "BONDS_WITHOUT_HYDROGEN": (2, 10, self.parse_bonds, "bonda", 4)
         }
 
         attrs = {}  # empty dict for attrs that we'll fill
@@ -200,7 +191,7 @@ class TOPParser(TopologyReaderBase):
                     def next_getter():
                         return self.skipper()
                 else:
-                    num = sys_info[sect_num] * atoms_per
+                    num = sys_info[sect_num]
                     numlines = (num // per_line)
                     if num % per_line != 0:
                         numlines += 1
@@ -232,22 +223,14 @@ class TOPParser(TopologyReaderBase):
         # Combine the bond records
         bonds = attrs.pop('bonda')
         bonds.extend(attrs.pop('bondh'))
-        # Combine the angle records
-        angles = attrs.pop('anga')
-        angles.extend(attrs.pop('angh'))
-        # Combine the dihedral records
-        dihedrals = attrs.pop('diha')
-        dihedrals.extend(attrs.pop('dihh'))
-        # Deal with impropers (move to own function)
-        impropers = []
-        for i in dihedrals:
-            if i(3) = 
         # TEST: to be removed pre-PR
         print("bond section next")
         for i in bonds:
             print(i)
-        # Add final lists into attrs
-        attrs['bonds'] = Bonds(bonds)
+        # Add final list into attrs
+        attrs['bonds'] = bonds
+        # Should we be sorting first? This could easily be done via:
+        # attrs['bonds'] = sorted(bonds, key=lambda tup: tup[0])
 
         # Guess elements if not in topology
         if not 'elements' in attrs:
@@ -331,8 +314,7 @@ class TOPParser(TopologyReaderBase):
             ----------
             data : input parm7 bond/angle list, adjusted for zero-indexing
                    (np.int64)
-            chunksize : the size over which to split the input list. 
-                   Note: output set is assumed to be chunksize-1 atoms (int)
+            chuunksize : the number of atoms involved in the bond/angle (int)
 
             Note:
             -----
@@ -341,15 +323,17 @@ class TOPParser(TopologyReaderBase):
             Where 1:n represent the ids of the n atoms involved in the
             bond/angle and the internal index links to a given set of FF
             parameters. Therefore, to extract the required information, we
-            split out the list into chunks, and only extract the atom ids.
-            Note: chunksize is set at natoms + 1 to cover the index.
+            split out the list into chunks of size n+1, and only extract the
+            atom ids.
+            Note: For the sake of readability, we set the input chunksize value
+            to the size of n atoms.
         """
         vals = []
-        for i in range(0, len(data), chunksize):
-            vals.append(tuple(data[i:i+(chunksize-1)]))
+        for i in range(0, len(iterable), chunksize+1):
+            vals.append(tuple(iterable[i:i+chunksize]))
         return vals
 
-    def parse_bonded(self, atoms_per, numlines):
+    def parse_bonds(self, atoms_per, numlines):
         """ Extracts bond information from PARM7 format files
 
             Paramters:
@@ -357,19 +341,25 @@ class TOPParser(TopologyReaderBase):
             atoms_per :
             numlines :
         """
-        # For the bond/angle sections, the atom numbers are set to coordinate
-        # array index values. To recover the actual atom number, one should
-        # divide the values by 3 and add 1. Since we want to satisfy
-        # zero-indexing, we only divide by 3.
-        fields = self.parsesection_mapper(atoms_per, numlines, lambda x: np.int64(x) // 3)
+        #y = next(self.topfile).strip("%FORMAT(")
+        #y.strip(")")
+        #x = FORTRANReader(y)
+        #fields = []
+        #for i in range(numlines):
+            #line = next(self.topfile)
+            # For the bond/angle sections, the atom numbers are set to coordinate
+            # array index values. To recover the actual atom number, one should
+            # divide the values by 3 and add 1. Since we want to satisfy
+            # zero-indexing, we only divide by 3.
+            #fields.append(np.int64(line.split()) / 3)
+        # The parm7 format should guarantee that the bonds are not duplicated
+        # so we don't check for this here.
+        fields = parsesection_mapper(atoms_per, numlines, lambda x: np.int64(x) / 3)
         # IA DEBUG
         print("fields section next")
-        print(len(fields))
-        for i in fields:
-           print(i)
+        print(fields)
         # IA DEBUG
-        section = self.parse_chunks(fields, atoms_per)
-        #section = self.parse_chunks(list(itertools.chain(*fields)), atoms_per)
+        section = self.parse_chunks(list(itertools.chain(*fields)), atoms_per)
         return section
 
     def parsesection_mapper(self, atoms_per, numlines, mapper):
