@@ -21,8 +21,8 @@
 #
 
 """\
-Wrap/unwrap translation --- :mod:`MDAnalysis.transformations.wrap`
-==================================================================
+Wrap/unwrap transformations --- :mod:`MDAnalysis.transformations.wrap`
+======================================================================
 
 Wrap/unwrap the atoms of a given AtomGroup in the unit cell. :func:`wrap` 
 translates the atoms back in the unit cell. :func:`unwrap` translates the
@@ -31,14 +31,14 @@ atoms of each molecule so that bons don't split over images.
 .. autofunction:: wrap
 
 .. autofunction:: unwrap
-    
+
 """
 
 from ..lib._cutil import make_whole
 
 def wrap(ag, compound='atoms'):
     """
-    Shift the contents of this group back into the unit cell.
+    Shift the contents of a given AtomGroup back into the unit cell. ::
     
        +-----------+          +-----------+
        |           |          |           |
@@ -50,8 +50,8 @@ def wrap(ag, compound='atoms'):
        |           |          |           |
        +-----------+          +-----------+
     
-    Usage
-    -----
+    Example
+    -------
     
     .. code-block:: python
         
@@ -65,7 +65,7 @@ def wrap(ag, compound='atoms'):
     ag: Atomgroup
         Atomgroup to be wrapped in the unit cell
     compound : {'atoms', 'group', 'residues', 'segments', 'fragments'}, optional
-            The group which will be kept together through the shifting process.
+        The group which will be kept together through the shifting process.
     
     Notes
     -----
@@ -98,7 +98,7 @@ def unwrap(ag):
     This function is most useful when atoms have been packed into the primary
     unit cell, causing breaks mid molecule, with the molecule then appearing
     on either side of the unit cell. This is problematic for operations
-    such as calculating the center of mass of the molecule.
+    such as calculating the center of mass of the molecule. ::
     
        +-----------+     +-----------+
        |           |     |           |
@@ -110,11 +110,25 @@ def unwrap(ag):
        |           |     |           |
        +-----------+     +-----------+
     
+    Example
+    -------
+    
+    .. code-block:: python
+        
+        ag = u.atoms 
+        transform = mda.transformations.unwrap(ag)
+        u.trajectory.add_transformations(transform)
+    
     Parameters
     ----------
     atomgroup : AtomGroup
         The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
-        The positions of this are modified in place.    
+        The positions of this are modified in place.
+    
+    Returns
+    -------
+    MDAnalysis.coordinates.base.Timestep
+    
     """
     
     try:
@@ -129,3 +143,4 @@ def unwrap(ag):
         return ts
     
     return wrapped
+
