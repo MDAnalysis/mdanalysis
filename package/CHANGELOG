@@ -20,6 +20,8 @@ The rules for this file:
 
 Enhancements
 
+  * Modified around selections to work with KDTree and periodic boundary
+    conditions (PR #2022)
   * Added augment functionality to create relevant images of particles 
     in the vicinity of central cell to handle periodic boundary
     conditions (PR #1977) 
