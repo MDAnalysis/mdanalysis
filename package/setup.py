@@ -384,10 +384,8 @@ def extensions(config):
                              ['MDAnalysis/lib/nsgrid' + source_suffix],
                              include_dirs=include_dirs,
                              language='c++',
-                             libraries=parallel_libraries,
-                             define_macros=define_macros + parallel_macros,
-                             extra_compile_args=cpp_extra_compile_args + parallel_args,
-                             extra_link_args=parallel_args)
+                             define_macros=define_macros,
+                             extra_compile_args=cpp_extra_compile_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
                 ap_clustering, spe_dimred, cutil, augment, nsgrid]
