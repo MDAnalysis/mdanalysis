@@ -20,6 +20,9 @@ The rules for this file:
 
 Enhancements
 
+  * Added lib.distances.self_capped_distance to internally select the
+    optimized method for distance evaluations. Modified topology.guessers.guess_bonds
+    for fast bonds guessing. (PR #2006)
   * Added augment functionality to create relevant images of particles 
     in the vicinity of central cell to handle periodic boundary
     conditions (PR #1977) 

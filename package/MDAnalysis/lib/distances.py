@@ -59,6 +59,8 @@ Functions
 .. autofunction:: calc_angles(atom1, atom2, atom3 [,box [, result [, backend]]])
 .. autofunction:: calc_dihedrals(atom1, atom2, atom3, atom4 [,box [, result [, backend]]])
 .. autofunction:: apply_PBC(coordinates, box [, backend])
+.. autofunction:: capped_distance(reference, configuration, max_cutoff [, min_cutoff [, box [, method]]])
+.. autofunction:: self_capped_distance(reference, max_cutoff, [, min_cutoff [, box [, method]]])
 .. autofunction:: transform_RtoS(coordinates, box [, backend])
 .. autofunction:: transform_StoR(coordinates, box [,backend])
 .. autofunction:: MDAnalysis.lib._augment.augment_coordinates(coordinates, box, radius)
@@ -461,7 +463,6 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
 
     .. SeeAlso:: :func:'MDAnalysis.lib.distances.distance_array'
     .. SeeAlso:: :func:'MDAnalysis.lib.pkdtree.PeriodicKDTree'
-
     """
     if box is not None:
         if box.shape[0] != 6:
@@ -568,11 +569,6 @@ def _bruteforce_capped(reference, configuration, max_cutoff,
     """
     pairs, distance = [], []
 
-    #if equal:
-    #    pairs, distance = _bruteforce_capped_self(reference, max_cutoff,
-    #                                              min_cutoff=min_cutoff,
-    #                                              box=box)
-    #    return pairs, distance
 
     reference = np.asarray(reference, dtype=np.float32)
     configuration = np.asarray(configuration, dtype=np.float32)
@@ -618,12 +614,6 @@ def _pkdtree_capped(reference, configuration, max_cutoff,
 
     pairs, distances = [], []
 
-    #if equal:
-    #    pairs, distance = _pkdtree_capped_self(reference, max_cutoff,
-    #                                           min_cutoff=min_cutoff,
-    #                                           box=box)
-    #    return pairs, distance
-
     reference = np.asarray(reference, dtype=np.float32)
     configuration = np.asarray(configuration, dtype=np.float32)
 
@@ -667,6 +657,48 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None,
     provided. Users can override the method with this functionality.
     Currently pkdtree and bruteforce are implemented.
 
+    Parameters
+    -----------
+    reference : array
+        reference coordinates array with shape ``reference.shape = (3,)``
+        or ``reference.shape = (len(reference), 3)``
+    max_cutoff : float
+        Maximum cutoff distance to check the neighbors with itself
+    min_cutoff : (optional) float
+        Minimum cutoff distance [None]
+    box : (optional) array or None
+        The dimensions, if provided, must be provided in the same
+        The unitcell dimesions for this system format as returned
+        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        ``[lx,ly, lz, alpha, beta, gamma]``. Minimum image convention
+        is applied if the box is provided [None]
+    method : (optional) 'bruteforce' or 'pkdtree' or 'None'
+        Keyword to override the automatic guessing of method built-in
+        in the function [None]
+
+    Returns
+    -------
+    pairs : array
+        Pair of indices such that distance between them is 
+        within the ``max_cutoff`` and ``min_cutoff``
+    distances : array
+        Distances corresponding to each pair of indices.
+        d[k] corresponding to the pairs[i,j] gives the distance between
+        i-th and j-th coordinate in reference
+
+        .. code-block:: python
+
+            pairs, distances = self_capped_distances(reference, max_cutoff)
+            for indx, [a,b] in enumerate(pairs):
+                coord1, coords2 = reference[a], reference[b]
+                distance = distances[indx]
+
+    Note
+    -----
+    Currently only supports brute force and Periodic KDtree
+
+    .. SeeAlso:: :func:'MDAnalysis.lib.distances.distance_array'
+    .. SeeAlso:: :func:'MDAnalysis.lib.pkdtree.PeriodicKDTree'
     """
     if box is not None:
         if box.shape[0] != 6:
@@ -682,7 +714,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None,
     return np.asarray(pairs), np.asarray(dist)
 
 def _determine_method_self(reference, max_cutoff, min_cutoff=None,
-                      box=None, method=None):
+                           box=None, method=None):
     """
     Switch between different methods based on the the optimized time.
     All the rules to select the method based on the input can be
@@ -746,8 +778,8 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None,
 
 def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None,
                             box=None):
-    """Finds all the pairs among the coordinates within a fixed distance
-    using brute force method
+    """Finds all the pairs among the *reference* coordinates within
+    a fixed distance using brute force method
 
     Internal method using brute force method to evaluate all the pairs
     of atoms within a fixed distance.

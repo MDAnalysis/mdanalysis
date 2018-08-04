@@ -110,7 +110,7 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
 @pytest.mark.parametrize('box', boxes_1)
 @pytest.mark.parametrize('method', method_1)
 @pytest.mark.parametrize('min_cutoff', min_cutoff_1)
-def test_capped_distance_equal(npoints, box, method, min_cutoff):
+def test_self_capped_distance(npoints, box, method, min_cutoff):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
                          size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
