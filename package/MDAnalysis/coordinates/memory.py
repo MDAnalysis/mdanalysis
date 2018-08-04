@@ -196,20 +196,25 @@ class Timestep(base.Timestep):
     """
     Timestep for the :class:`MemoryReader`
 
-    Overrides the positions property in
-    :class:`MDAnalysis.coordinates.base.Timestep` to use avoid
-    duplication of the array.
-
+    Compared to the base :class:`base.Timestep`, this version has an additional
+    :meth:`replace_positions_array` method. This property replaces the array of
+    positions, while the :attr:`positions` property replaces the content of the
+    array.
     """
+    def replace_positions_array(self, new):
+        """Replace the array of positions
 
-    @property
-    def positions(self):
-        return base.Timestep.positions.fget(self)
-
-    @positions.setter
-    def positions(self, new):
+        Replaces the array of positions by an other array. This is different
+        from the bahavior of the :attr:`position` property that replaces the
+        **content** of the array. The :meth:`replace_positions_array` method
+        should only be used to set the positions to a different frame; there,
+        the memory reader sets the positions to a view to the correct frame.
+        Modifying the positions for a given frames should be done with the
+        :attr:`positions` attribute that do not break the link between the
+        array of positions in the time step and the
+        :attr:`MemoryReader.coordinate_array`.
+        """
         self.has_positions = True
-        # Use reference to original rather than a copy
         self._pos = new
 
 
@@ -464,7 +469,7 @@ class MemoryReader(base.ProtoReader):
         basic_slice = ([slice(None)]*(f_index) +
                        [self.ts.frame] +
                        [slice(None)]*(2-f_index))
-        ts.positions = self.coordinate_array[basic_slice]
+        ts.replace_positions_array(self.coordinate_array[basic_slice])
 
         ts.time = self.ts.frame*self.dt
         return ts
