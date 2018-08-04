@@ -190,15 +190,3 @@ def test_nsgrid_selfsearch(box, result):
     searchresults = searcher.self_search()
     pairs = searchresults.get_pairs()
     assert_equal(len(pairs)//2, result)
-
-def test_contiguous(universe):
-    ref_id = 13937
-    cutoff = 3
-    coords = universe.atoms.positions
-    searcher = nsgrid.FastNS(cutoff, coords, box=None)
-    searchresults = searcher.search(coords[ref_id][None, :])
-    indices = searchresults.get_indices()
-    distances = searchresults.get_distances()
-
-    assert indices.flags['C_CONTIGUOUS'] == True
-    assert distances.flags['C_CONTIGUOUS'] == True
