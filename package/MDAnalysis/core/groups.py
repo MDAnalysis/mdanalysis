@@ -1141,7 +1141,7 @@ class GroupBase(_MutableBase):
                 return ag.universe.trajectory.ts.positions[unique_ix[restore_mask]]
             return packed_coords[restore_mask]
 
-    def unwrap(self, compound='group', center=None, box=None):
+    def unwrap(self, compound='group', center=None, reference_point=None):
         """Move coordinates to prevent bonds being split over periodic boundaries
 
         This is the inverse transformation to packing atoms into the primary unit
@@ -1156,15 +1156,11 @@ class GroupBase(_MutableBase):
         compound : str, optional {'group', 'residues', 'segments', 'fragments'}
             which level of topology to keep together [``fragment``]
         center : numpy.ndarray, optional
+            how to define center of group, 'com', 'cog'
+        reference_point : np.ndarray
             position to try and center unwrapped molecules around.  If given
             then for each group unwrapped, the COM of the atoms will be as close
             as possible to this point.  Defaults to center of primary unit cell.
-        box : array_like
-            Box dimensions, can be either orthogonal or triclinic information.
-            Cell dimensions must be in an identical to format to those returned
-            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
-            ``[lx, ly, lz, alpha, beta, gamma]``. If ``None``, uses these
-            timestep dimensions.
 
         # TODO the function isn't actually here, merge the _cutil in to make docs work
         .. seealso:: :func:`MDAnalysis.lib.util.make_whole`
@@ -1186,25 +1182,56 @@ class GroupBase(_MutableBase):
                              "Please use one of 'group' 'residues' 'segments'"
                              "or 'fragments'".format(compound))
 
-        for o in objects:
-            make_whole(o.atoms)
-
-        if center is None:
-            tri_box = mdamath.triclinic_vectors(u.dimensions)
+        if reference_point is None:
+            tri_box = mdamath.triclinic_vectors(self.dimensions)
             center = np.diag(tri_box) / 2.0
 
-        object_centers = np.vstack([o.center_of_geometry(pbc=False) for o in objects])
+        for o in objects:
+            make_whole(o.atoms)
+            o.choose_image(reference_point, center=center, inplace=True)
 
-        if box is None:
-            box = self.dimensions
+    def choose_image(self, reference_point, center='com', inplace=True):
+        """Shift coordinates to be as close as possible to reference point
 
-        dests = distances.apply_PBC(object_centers, box=box)
-        shifts = dests - object_centers
+        Parameters
+        ----------
+        reference_point : coordinate
+          position to move group close to
+        center : str, optional
+          how to define the center of AtomGroup
+        inplace : bool, optional
+          if True, changes AtomGroup positions directly, otherwise returns
+          the positions [``True``]
 
-        for o, s in zip(objects, shifts):
-            # Save some needless shifts
-            if not all(s == 0.0):
-                o.atoms.translate(s)
+        Returns
+        -------
+        shifted_coords : np.ndarray
+          if not inplace, returns the coordinates of this Group which
+          minimise the distance from center of Group to reference_point
+
+        .. versionadded:: 0.19.0
+        """
+        ag = self.atoms.unique
+
+        if center.lower() in ('com', 'centerofmass'):
+            center = ag.center_of_mass()
+        elif center.lower() in ('cog', 'centroid', 'centerofgeometry'):
+            center = ag.center_of_geometry()
+        else:
+            raise ValueError("Unrecognized center definition: {0}"
+                             "Please use one of 'com' or 'cog'".format(center))
+
+        shift = reference_point - center
+        box_shifts = np.rint(shift)
+
+        if inplace:
+            if any(box_shifts):
+                ag.translate(s)
+        else:
+            if any(box_shifts):
+                return self.positions + shift
+            else:
+                return self.positions
 
     def wrap(self, compound="atoms", center="com", box=None):
         """Shift the contents of this group back into the unit cell.
@@ -1265,6 +1292,8 @@ class GroupBase(_MutableBase):
             raise ValueError("Unrecognized compound definition: {0}"
                              "Please use one of 'group' 'residues' 'segments'"
                              "or 'fragments'".format(compound))
+
+        for o in self.objects:
 
         # TODO: ADD TRY-EXCEPT FOR MASSES PRESENCE
         if center.lower() in ('com', 'centerofmass'):
