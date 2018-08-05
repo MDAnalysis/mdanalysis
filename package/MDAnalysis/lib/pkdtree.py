@@ -192,7 +192,7 @@ class PeriodicKDTree(object):
                                                       radius))
             self._indices = np.array(list(
                                      itertools.chain.from_iterable(indices)),
-                                     dtype=np.int)
+                                     dtype=np.int64)
         self._indices = np.asarray(unique_int_1d(self._indices))
         return self._indices
 
