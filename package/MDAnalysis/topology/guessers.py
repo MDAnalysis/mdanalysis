@@ -232,25 +232,14 @@ def guess_bonds(atoms, coords, box=None, **kwargs):
 
     bonds = []
 
-    for i, atom in enumerate(atoms[:-1]):
-        vdw_i = vdwradii[atomtypes[i]]
-        max_d = (vdw_i + max_vdw) * fudge_factor
-
-        # using self_distance_array scales O(n^2)
-        # 20,000 atoms = 1.6 Gb memory
-        dist = distances.distance_array(coords[i][None, :], coords[i + 1:],
-                                        box=box)[0]
-        idx = np.where((dist > lower_bound) & (dist <= max_d))[0]
-
-        for a in idx:
-            j = i + 1 + a
-            atom_j = atoms[j]
-
-            if dist[a] < (vdw_i + vdwradii[atomtypes[j]]) * fudge_factor:
-                # because of method used, same bond won't be seen twice,
-                # so don't need to worry about duplicates
-                bonds.append((atom.index, atom_j.index))
-
+    pairs, dist = distances.self_capped_distance(coords,
+                                                 max_cutoff=2.0*max_vdw,
+                                                 min_cutoff=lower_bound,
+                                                 box=box)
+    for idx, (i, j) in enumerate(pairs):
+        d = (vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]])*fudge_factor
+        if (dist[idx] < d):
+            bonds.append((atoms[i].index, atoms[j].index))
     return tuple(bonds)
 
 
