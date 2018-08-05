@@ -135,6 +135,9 @@ def test_self_capped_distance(npoints, box, method, min_cutoff):
             found_distance.append(dist[other_idx])
     assert_equal(len(pairs), len(found_pairs))
 
+@pytest.mark.parametrize('box', (None, 
+                                 np.array([1, 1, 1,  90, 90, 90], dtype=np.float32),
+                                 np.array([1, 1, 1, 60, 75, 80], dtype=np.float32)))
 @pytest.mark.parametrize('npoints,cutoff,meth',
                          [(1, 0.02, '_bruteforce_capped_self'),
                           (1, 0.2, '_bruteforce_capped_self'),
@@ -142,22 +145,17 @@ def test_self_capped_distance(npoints, box, method, min_cutoff):
                           (6000, 0.2, '_pkdtree_capped_self'),
                           (200000, 0.02, '_pkdtree_capped_self'),
                           (200000, 0.2, '_bruteforce_capped_self')])
-def test_method_selfselection(npoints, cutoff, meth):
+def test_method_selfselection(box, npoints, cutoff, meth):
     np.random.seed(90003)
-    box = np.array([1, 1, 1, 90, 90, 90], dtype=np.float32)
     points = (np.random.uniform(low=0, high=1.0,
-                        size=(npoints, 3)) * (box[:3])).astype(np.float32)
-    if box is not None:
-        boxtype = mda.lib.distances._box_check(box)
-        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-        if (boxtype == 'tri_box'):
-            box = triclinic_vectors(box)
-        if (boxtype == 'tri_vecs_bad'):
-            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+                        size=(npoints, 3))).astype(np.float32)
     method = mda.lib.distances._determine_method_self(points, cutoff, box=box)
     assert_equal(method.__name__, meth)
 
 
+@pytest.mark.parametrize('box', (None, 
+                                 np.array([1, 1, 1,  90, 90, 90], dtype=np.float32),
+                                 np.array([1, 1, 1, 60, 75, 80], dtype=np.float32)))
 @pytest.mark.parametrize('npoints,cutoff,meth',
                          [(1, 0.02, '_bruteforce_capped'),
                           (1, 0.2, '_bruteforce_capped'),
@@ -165,20 +163,11 @@ def test_method_selfselection(npoints, cutoff, meth):
                           (6000, 0.2, '_pkdtree_capped'),
                           (200000, 0.02, '_pkdtree_capped'),
                           (200000, 0.2, '_bruteforce_capped')])
-def test_method_selection(npoints, cutoff, meth):
+def test_method_selection(box, npoints, cutoff, meth):
     np.random.seed(90003)
-    box = np.array([1, 1, 1, 90, 90, 90], dtype=np.float32)
     points = (np.random.uniform(low=0, high=1.0,
-                        size=(npoints, 3)) * (box[:3])).astype(np.float32)
-    if box is not None:
-        boxtype = mda.lib.distances._box_check(box)
-        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-        if (boxtype == 'tri_box'):
-            box = triclinic_vectors(box)
-        if (boxtype == 'tri_vecs_bad'):
-            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
-    method = mda.lib.distances._determine_method(points, points,
-                                                 cutoff, box=box)
+                        size=(npoints, 3)).astype(np.float32))
+    method = mda.lib.distances._determine_method(points, points, cutoff, box=box)
     assert_equal(method.__name__, meth)
 
 

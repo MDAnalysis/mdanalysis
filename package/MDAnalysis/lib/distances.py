@@ -526,22 +526,21 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
         return methods[method]
 
     if len(reference) > 5000 and len(configuration) > 5000:
-        if box is None and reference.shape[0] != 3 and configuration.shape[0] != 3:
+        if box is None:
             min_dim = np.array([reference.min(axis=0),
                                configuration.min(axis=0)])
             max_dim = np.array([reference.max(axis=0),
                                configuration.max(axis=0)])
             size = max_dim.max(axis=0) - min_dim.min(axis=0)
-        elif box is not None:
-            if np.allclose(box[3:], 90):
-                size = box[:3]
-            else:
-                tribox = triclinic_vectors(box)
-                size = tribox.max(axis=0) - tribox.min(axis=0)
+        elif np.allclose(box[3:], 90):
+            size = box[:3]
+        else:
+            tribox = triclinic_vectors(box)
+            size = tribox.max(axis=0) - tribox.min(axis=0)
 
-        if (np.any(size < 10.0*max_cutoff) and
+        if ((np.any(size < 10.0*max_cutoff) and
                    len(reference) > 100000 and
-                   len(configuration) > 100000):
+                   len(configuration) > 100000)):
             return methods['bruteforce']
         else:
             return methods['pkdtree']
@@ -644,6 +643,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff,
                 distances.append(dist[num])
     return pairs, distances
 
+
 def self_capped_distance(reference, max_cutoff, min_cutoff=None,
                          box=None, method=None):
     """Finds all the pairs and respective distances within a specified cutoff
@@ -679,7 +679,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None,
     Returns
     -------
     pairs : array
-        Pair of indices such that distance between them is 
+        Pair of indices such that distance between them is
         within the ``max_cutoff`` and ``min_cutoff``
     distances : array
         Distances corresponding to each pair of indices.
@@ -697,7 +697,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None,
     -----
     Currently only supports brute force and Periodic KDtree
 
-    .. SeeAlso:: :func:'MDAnalysis.lib.distances.distance_array'
+    .. SeeAlso:: :func:'MDAnalysis.lib.distances.self_distance_array'
     .. SeeAlso:: :func:'MDAnalysis.lib.pkdtree.PeriodicKDTree'
     """
     if box is not None:
@@ -712,6 +712,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None,
                          min_cutoff=min_cutoff, box=box)
 
     return np.asarray(pairs), np.asarray(dist)
+
 
 def _determine_method_self(reference, max_cutoff, min_cutoff=None,
                            box=None, method=None):
@@ -758,23 +759,23 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None,
         return methods[method]
 
     if len(reference) > 5000:
-        if box is None and reference.shape[0] != 3:
+        if box is None:
             min_dim = np.array([reference.min(axis=0)])
             max_dim = np.array([reference.max(axis=0)])
             size = max_dim.max(axis=0) - min_dim.min(axis=0)
-        elif box is not None:
-            if np.allclose(box[3:], 90):
-                size = box[:3]
-            else:
-                tribox = triclinic_vectors(box)
-                size = tribox.max(axis=0) - tribox.min(axis=0)
+        elif np.allclose(box[3:], 90):
+            size = box[:3]
+        else:
+            tribox = triclinic_vectors(box)
+            size = tribox.max(axis=0) - tribox.min(axis=0)
 
-        if (np.any(size < 10.0*max_cutoff) and
-                   len(reference) > 100000):
+        if ((np.any(size < 10.0*max_cutoff) and
+                   (len(reference) > 100000))):
             return methods['bruteforce']
         else:
             return methods['pkdtree']
     return methods['bruteforce']
+
 
 def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None,
                             box=None):
@@ -800,6 +801,9 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None,
     if reference.shape == (3, ):
         reference = reference[None, :]
     for i, coords in enumerate(reference):
+        # Each pair of atoms needs to be checked only once.
+        # Only calculate distance for atomA and atomB
+        # if atomidA < atomidB
         dist = distance_array(coords[None, :], reference[i+1:],
                              box=box)[0]
 
@@ -808,6 +812,8 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None,
         else:
             idx = np.where((dist < max_cutoff))[0]
         for other_idx in idx:
+            # Actual atomid for atomB
+            # can be direclty obtained in this way
             j = other_idx + 1 + i
             pairs.append((i, j))
             distance.append(dist[other_idx])
@@ -837,7 +843,7 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None,
     reference = np.asarray(reference, dtype=np.float32)
     if reference.shape == (3, ):
         reference = reference[None, :]
-    
+
     pairs, distance = [], []
     kdtree = PeriodicKDTree(box=box)
     cut = max_cutoff if box is not None else None
