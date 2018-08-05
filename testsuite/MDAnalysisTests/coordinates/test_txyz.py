@@ -23,6 +23,7 @@ from __future__ import absolute_import
 
 import pytest
 from numpy.testing import assert_almost_equal
+from six.moves import zip
 
 from MDAnalysisTests.datafiles import TXYZ, ARC, ARC_PBC
 
