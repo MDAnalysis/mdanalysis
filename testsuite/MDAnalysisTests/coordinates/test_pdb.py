@@ -333,6 +333,10 @@ class TestPDBWriter(object):
             assert int(line[10:14]) == model % 10000
 
 
+@pytest.mark.xfail(os.name == 'nt',
+                   strict=True,
+                   reason="PDB multiframe reading not yet supported "
+                          "on Windows.")
 class TestMultiPDBReader(TestCase):
     def setUp(self):
         self.multiverse = mda.Universe(PDB_multiframe,
@@ -479,6 +483,10 @@ def test_conect_bonds_all(tmpdir):
 
     # assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
 
+@pytest.mark.xfail(os.name == 'nt',
+                   strict=True,
+                   reason="PDB multiframe reading not yet supported "
+                          "on Windows.")
 class TestMultiPDBWriter(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small)
