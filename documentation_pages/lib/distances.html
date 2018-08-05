@@ -434,6 +434,138 @@ by box.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="MDAnalysis.lib.distances.capped_distance">
+<code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">capped_distance</code><span class="sig-paren">(</span><em>reference</em>, <em>configuration</em>, <em>max_cutoff</em><span class="optional">[</span>, <em>min_cutoff</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>method</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#capped_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.capped_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the pairs and distances within a specified distance</p>
+<p>If a <em>box</em> is supplied, then a minimum image convention is used
+to evaluate the distances.</p>
+<p>An automatic guessing of optimized method to calculate the distances is
+included in the function. An optional keyword for the method is also
+provided. Users can override the method with this functionality.
+Currently pkdtree and bruteforce are implemented.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>reference</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – reference coordinates array with shape <code class="docutils literal"><span class="pre">reference.shape</span> <span class="pre">=</span> <span class="pre">(3,)</span></code>
+or <code class="docutils literal"><span class="pre">reference.shape</span> <span class="pre">=</span> <span class="pre">(len(reference),</span> <span class="pre">3)</span></code></li>
+<li><strong>configuration</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – Configuration coordinate array with shape <code class="docutils literal"><span class="pre">reference.shape</span> <span class="pre">=</span> <span class="pre">(3,)</span></code>
+or <code class="docutils literal"><span class="pre">reference.shape</span> <span class="pre">=</span> <span class="pre">(len(reference),</span> <span class="pre">3)</span></code></li>
+<li><strong>max_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Maximum cutoff distance between the reference and configuration</li>
+<li><strong>min_cutoff</strong> (<em>(</em><em>optional</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Minimum cutoff distance between reference and configuration [None]</li>
+<li><strong>box</strong> (<em>(</em><em>optional</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – The dimensions, if provided, must be provided in the same
+The unitcell dimesions for this system format as returned
+by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal"><span class="pre">[lx,ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. Minimum image convention
+is applied if the box is provided [None]</li>
+<li><strong>method</strong> (<em>(</em><em>optional</em><em>) </em><em>'bruteforce'</em><em> or </em><em>'pkdtree'</em><em> or </em><em>'None'</em>) – Keyword to override the automatic guessing of method built-in
+in the function [None]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul>
+<li><p class="first"><strong>pairs</strong> (<em>array</em>) – Pair of indices, one from each reference and configuration such that
+distance between them is  within the <code class="docutils literal"><span class="pre">max_cutoff</span></code> and <code class="docutils literal"><span class="pre">min_cutoff</span></code>
+pairs[i,j] contains the indices i from reference coordinates, and
+j from configuration</p>
+</li>
+<li><p class="first"><strong>distances</strong> (<em>array</em>) – Distances corresponding to each pair of indices.
+d[k] corresponding to the pairs[i,j] gives the distance between
+i-th and j-th coordinate in reference and configuration respectively</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">capped_distances</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">indx</span><span class="p">,</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">]</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+    <span class="n">coord1</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+    <span class="n">coord2</span> <span class="o">=</span> <span class="n">configuration</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Currently only supports brute force and Periodic KDtree</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">:func:’MDAnalysis.lib.distances.distance_array’</p>
+</div>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">:func:’MDAnalysis.lib.pkdtree.PeriodicKDTree’</p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.distances.self_capped_distance">
+<code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">self_capped_distance</code><span class="sig-paren">(</span><em>reference</em>, <em>max_cutoff</em><span class="optional">[</span>, <em>min_cutoff</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>method</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#self_capped_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.self_capped_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds all the pairs and respective distances within a specified cutoff
+for a configuration <em>reference</em></p>
+<p>If a <em>box</em> is supplied, then a minimum image convention is used
+to evaluate the distances.</p>
+<p>An automatic guessing of optimized method to calculate the distances is
+included in the function. An optional keyword for the method is also
+provided. Users can override the method with this functionality.
+Currently pkdtree and bruteforce are implemented.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>reference</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – reference coordinates array with shape <code class="docutils literal"><span class="pre">reference.shape</span> <span class="pre">=</span> <span class="pre">(3,)</span></code>
+or <code class="docutils literal"><span class="pre">reference.shape</span> <span class="pre">=</span> <span class="pre">(len(reference),</span> <span class="pre">3)</span></code></li>
+<li><strong>max_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Maximum cutoff distance to check the neighbors with itself</li>
+<li><strong>min_cutoff</strong> (<em>(</em><em>optional</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Minimum cutoff distance [None]</li>
+<li><strong>box</strong> (<em>(</em><em>optional</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – The dimensions, if provided, must be provided in the same
+The unitcell dimesions for this system format as returned
+by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal"><span class="pre">[lx,ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. Minimum image convention
+is applied if the box is provided [None]</li>
+<li><strong>method</strong> (<em>(</em><em>optional</em><em>) </em><em>'bruteforce'</em><em> or </em><em>'pkdtree'</em><em> or </em><em>'None'</em>) – Keyword to override the automatic guessing of method built-in
+in the function [None]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul>
+<li><p class="first"><strong>pairs</strong> (<em>array</em>) – Pair of indices such that distance between them is
+within the <code class="docutils literal"><span class="pre">max_cutoff</span></code> and <code class="docutils literal"><span class="pre">min_cutoff</span></code></p>
+</li>
+<li><p class="first"><strong>distances</strong> (<em>array</em>) – Distances corresponding to each pair of indices.
+d[k] corresponding to the pairs[i,j] gives the distance between
+i-th and j-th coordinate in reference</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">self_capped_distances</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">indx</span><span class="p">,</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">]</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+    <span class="n">coord1</span><span class="p">,</span> <span class="n">coords2</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="n">reference</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Currently only supports brute force and Periodic KDtree</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">:func:’MDAnalysis.lib.distances.self_distance_array’</p>
+</div>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">:func:’MDAnalysis.lib.pkdtree.PeriodicKDTree’</p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="MDAnalysis.lib.distances.transform_RtoS">
 <code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">transform_RtoS</code><span class="sig-paren">(</span><em>coordinates</em>, <em>box</em><span class="optional">[</span>, <em>backend</em><span class="optional">]</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#transform_RtoS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.transform_RtoS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform an array of coordinates from real space to S space (aka lambda space)</p>
@@ -922,9 +1054,9 @@ possibilities are “OpenMP” (OpenMP).</li>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.lib.distances.capped_distance">
-<code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">capped_distance</code><span class="sig-paren">(</span><em>reference</em>, <em>configuration</em>, <em>max_cutoff</em>, <em>min_cutoff=None</em>, <em>box=None</em>, <em>method=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#capped_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.capped_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the pairs and distance within a specified distance</p>
+<dt>
+<code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">capped_distance</code><span class="sig-paren">(</span><em>reference</em>, <em>configuration</em>, <em>max_cutoff</em>, <em>min_cutoff=None</em>, <em>box=None</em>, <em>method=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#capped_distance"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Calculates the pairs and distances within a specified distance</p>
 <p>If a <em>box</em> is supplied, then a minimum image convention is used
 to evaluate the distances.</p>
 <p>An automatic guessing of optimized method to calculate the distances is
@@ -1042,6 +1174,70 @@ copies of the ref and conf arrays.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">self_capped_distance</code><span class="sig-paren">(</span><em>reference</em>, <em>max_cutoff</em>, <em>min_cutoff=None</em>, <em>box=None</em>, <em>method=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#self_capped_distance"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Finds all the pairs and respective distances within a specified cutoff
+for a configuration <em>reference</em></p>
+<p>If a <em>box</em> is supplied, then a minimum image convention is used
+to evaluate the distances.</p>
+<p>An automatic guessing of optimized method to calculate the distances is
+included in the function. An optional keyword for the method is also
+provided. Users can override the method with this functionality.
+Currently pkdtree and bruteforce are implemented.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>reference</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a>) – reference coordinates array with shape <code class="docutils literal"><span class="pre">reference.shape</span> <span class="pre">=</span> <span class="pre">(3,)</span></code>
+or <code class="docutils literal"><span class="pre">reference.shape</span> <span class="pre">=</span> <span class="pre">(len(reference),</span> <span class="pre">3)</span></code></li>
+<li><strong>max_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Maximum cutoff distance to check the neighbors with itself</li>
+<li><strong>min_cutoff</strong> (<em>(</em><em>optional</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Minimum cutoff distance [None]</li>
+<li><strong>box</strong> (<em>(</em><em>optional</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – The dimensions, if provided, must be provided in the same
+The unitcell dimesions for this system format as returned
+by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal"><span class="pre">[lx,ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. Minimum image convention
+is applied if the box is provided [None]</li>
+<li><strong>method</strong> (<em>(</em><em>optional</em><em>) </em><em>'bruteforce'</em><em> or </em><em>'pkdtree'</em><em> or </em><em>'None'</em>) – Keyword to override the automatic guessing of method built-in
+in the function [None]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul>
+<li><p class="first"><strong>pairs</strong> (<em>array</em>) – Pair of indices such that distance between them is
+within the <code class="docutils literal"><span class="pre">max_cutoff</span></code> and <code class="docutils literal"><span class="pre">min_cutoff</span></code></p>
+</li>
+<li><p class="first"><strong>distances</strong> (<em>array</em>) – Distances corresponding to each pair of indices.
+d[k] corresponding to the pairs[i,j] gives the distance between
+i-th and j-th coordinate in reference</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">self_capped_distances</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">indx</span><span class="p">,</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">]</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+    <span class="n">coord1</span><span class="p">,</span> <span class="n">coords2</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="n">reference</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Currently only supports brute force and Periodic KDtree</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">:func:’MDAnalysis.lib.distances.self_distance_array’</p>
+</div>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">:func:’MDAnalysis.lib.pkdtree.PeriodicKDTree’</p>
+</div>
 </div>
 </dd></dl>
 
