@@ -20,7 +20,8 @@ The rules for this file:
 
 Enhancements
 
-
+  * Modified around selections to work with KDTree and periodic boundary
+    conditions.  Should reduce memory usage (#974 PR #2022)
   * Modified topology.guessers.guess_bonds to automatically select the
     fastest method for guessing bonds using
     lib.distance.self_capped_distance (PR # 2006)
