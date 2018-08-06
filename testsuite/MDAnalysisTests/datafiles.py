@@ -85,7 +85,7 @@ __all__ = [
     "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
-    "TXYZ", "ARC",        # Tinker files
+    "TXYZ", "ARC", "ARC_PBC",        # Tinker files
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
@@ -155,7 +155,8 @@ __all__ = [
     "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
     "GSD",
-    "GRO_MEMPROT", "XTC_MEMPROT" # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
+    "GRO_MEMPROT", "XTC_MEMPROT", # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
+    "DihedralsArray", "GLYDihedralsArray" # phi and psi angles for testing Ramachandran class
 ]
 
 from pkg_resources import resource_filename
@@ -293,6 +294,7 @@ XYZ_mini = resource_filename(__name__, 'data/mini.xyz')
 XYZ_five = resource_filename(__name__, 'data/five.xyz')
 TXYZ = resource_filename(__name__, 'data/coordinates/test.txyz')
 ARC = resource_filename(__name__, 'data/coordinates/test.arc')
+ARC_PBC = resource_filename(__name__, 'data/coordinates/new_hexane.arc')
 
 PRM = resource_filename(__name__, 'data/Amber/ache.prmtop')
 TRJ = resource_filename(__name__, 'data/Amber/ache.mdcrd')
@@ -414,6 +416,9 @@ ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
 ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')
 
 GSD = resource_filename(__name__, 'data/example.gsd')
+
+DihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_dihedrals.npy')
+GLYDihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_GLY_dihedrals.npy')
 
 # This should be the last line: clean up namespace
 del resource_filename
