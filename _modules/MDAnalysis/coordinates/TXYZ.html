@@ -122,12 +122,19 @@
         <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-
+        <span class="c1"># Check if file has box information saved</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">inp</span><span class="p">:</span>
+           <span class="n">inp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+           <span class="n">line</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+           <span class="c1"># If second line has float at second position, we have box info</span>
+           <span class="k">try</span><span class="p">:</span>
+               <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+           <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="kc">False</span>
+           <span class="k">else</span><span class="p">:</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
-        <span class="c1"># Haven&#39;t quite figured out where to start with all the self._reopen()</span>
-        <span class="c1"># etc.</span>
-        <span class="c1"># (Also cannot just use seek() or reset() because that would break</span>
-        <span class="c1"># with urllib2.urlopen() streams)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="nd">@property</span>
@@ -151,6 +158,8 @@
         <span class="c1"># the number of lines in the XYZ file will be 1 greater than the</span>
         <span class="c1"># number of atoms</span>
         <span class="n">linesPerFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span><span class="p">:</span>
+            <span class="n">linesPerFrame</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">offsets</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -182,6 +191,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># we assume that there is only one header line per frame</span>
             <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span><span class="p">:</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> 
             <span class="c1"># convert all entries at the end once for optimal speed</span>
             <span class="n">tmp_buf</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
