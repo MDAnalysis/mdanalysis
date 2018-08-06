@@ -24,7 +24,7 @@ from __future__ import print_function, absolute_import
 
 import pytest
 
-from numpy.testing import assert_equal, assert_allclose, assert_array_equal
+from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 
 import MDAnalysis as mda
@@ -36,8 +36,6 @@ from MDAnalysis.lib import nsgrid
 def universe():
     u = mda.Universe(GRO)
     return u
-
-
 
 def run_grid_search(u, ref_id, cutoff=3):
     coords = u.atoms.positions
@@ -84,7 +82,6 @@ def test_ns_grid_noneighbor(universe):
     assert len(results_grid.get_pair_distances()) == 1
 
 
-
 def test_nsgrid_PBC_rect():
     """Check that nsgrid works with rect boxes and PBC"""
     ref_id = 191
@@ -97,9 +94,9 @@ def test_nsgrid_PBC_rect():
     # FastNS is called differently to max coverage
     searcher = nsgrid.FastNS(cutoff, universe.atoms.positions, box=universe.dimensions)
 
-    results_grid = searcher.search(universe.atoms.positions[ref_id][None, :]).get_indices()[0]  
+    results_grid = searcher.search(universe.atoms.positions[ref_id][None, :]).get_indices()[0]
 
-    results_grid2 = searcher.search(universe.atoms.positions).get_indices() # call without specifying any ids, should do NS for all beads
+    results_grid2 = searcher.search(universe.atoms.positions).get_indices()  # call without specifying any ids, should do NS for all beads
 
     assert_equal(np.sort(results), np.sort(results_grid))
     assert_equal(len(universe.atoms), len(results_grid2))
@@ -126,7 +123,7 @@ def test_nsgrid_pairs(universe):
     neighbors = np.array([4398, 4401, 13938, 13939, 13940, 13941, 17987, 23518, 23519, 23521, 23734,
                           47451]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
     results = []
-    
+
     results = np.array(results)
 
     results_grid = run_grid_search(universe, ref_id).get_pairs()
@@ -146,8 +143,6 @@ def test_nsgrid_pair_distances(universe):
     assert_allclose(np.sort(results), np.sort(results_grid), atol=1e-2)
 
 
-
-
 def test_nsgrid_distances(universe):
     """Check that grid search returns the proper distances"""
 
@@ -161,8 +156,7 @@ def test_nsgrid_distances(universe):
 
 
 @pytest.mark.parametrize('box, results',
-                         ((None, [3, 13, 24]), 
-                          (np.array([0., 0., 0., 90., 90., 90.]), [3, 13, 24]),  
+                         ((None, [3, 13, 24]),
                           (np.array([10., 10., 10., 90., 90., 90.]), [3, 13, 24, 39, 67]),
                           (np.array([10., 10., 10., 60., 75., 90.]), [3, 13, 24, 39, 60, 79])))
 def test_nsgrid_search(box, results):
@@ -170,16 +164,30 @@ def test_nsgrid_search(box, results):
     points = (np.random.uniform(low=0, high=1.0,
                         size=(100, 3))*(10.)).astype(np.float32)
     cutoff = 2.0
-    query = np.array([1., 1., 1.], dtype=np.float32).reshape((1,3))
-    searcher = nsgrid.FastNS(cutoff, points, box=box)
-    searchresults = searcher.search(query)
+    query = np.array([1., 1., 1.], dtype=np.float32).reshape((1, 3))
+
+    if box is None:
+        pseudobox = np.zeros(6, dtype=np.float32)
+        all_coords = np.concatenate([points, query])
+        lmax = all_coords.max(axis=0)
+        lmin = all_coords.min(axis=0)
+        pseudobox[:3] = 1.1*(lmax - lmin)
+        pseudobox[3:] = 90.
+        shiftpoints, shiftquery = points.copy(), query.copy()
+        shiftpoints -= lmin
+        shiftquery -= lmin
+        searcher = nsgrid.FastNS(cutoff, shiftpoints, box=pseudobox, pbc=False)
+        searchresults = searcher.search(shiftquery)
+    else:
+        searcher = nsgrid.FastNS(cutoff, points, box)
+        searchresults = searcher.search(query)
     indices = searchresults.get_indices()[0]
     assert_equal(np.sort(indices), results)
 
 
-@pytest.mark.parametrize('box, result', 
+@pytest.mark.parametrize('box, result',
                          ((None, 21),
-                          (np.array([0., 0., 0., 90., 90., 90.]), 21),  
+                          (np.array([0., 0., 0., 90., 90., 90.]), 21),
                           (np.array([10., 10., 10., 90., 90., 90.]), 26),
                           (np.array([10., 10., 10., 60., 75., 90.]), 33)))
 def test_nsgrid_selfsearch(box, result):
@@ -187,14 +195,22 @@ def test_nsgrid_selfsearch(box, result):
     points = (np.random.uniform(low=0, high=1.0,
                         size=(100, 3))*(10.)).astype(np.float32)
     cutoff = 1.0
-    searcher = nsgrid.FastNS(cutoff, points, box=box)
-    searchresults = searcher.self_search()
+    if box is None or np.allclose(box[:3], 0):
+        # create a pseudobox
+        # define the max range
+        # and supply the pseudobox
+        # along with only one set of coordinates
+        pseudobox = np.zeros(6, dtype=np.float32)
+        lmax = points.max(axis=0)
+        lmin = points.min(axis=0)
+        pseudobox[:3] = 1.1*(lmax - lmin)
+        pseudobox[3:] = 90.
+        shiftref = points.copy()
+        shiftref -= lmin
+        searcher = nsgrid.FastNS(cutoff, shiftref, box=pseudobox, pbc=False)
+        searchresults = searcher.self_search()
+    else:
+        searcher = nsgrid.FastNS(cutoff, points, box=box)
+        searchresults = searcher.self_search()
     pairs = searchresults.get_pairs()
     assert_equal(len(pairs)//2, result)
-
-def test_gridfail():
-    points = np.array([[1., 1., 1.]], dtype=np.float32)
-    cutoff = 0.3
-    match = "Need atleast two coordinates to search using NSGrid without PBC"
-    with pytest.raises(ValueError, match=match):
-        searcher = nsgrid.FastNS(cutoff, points)

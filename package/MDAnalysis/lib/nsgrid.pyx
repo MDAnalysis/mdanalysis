@@ -58,7 +58,7 @@ Appendix F,  Page 552 of
 ``Understanding Molecular Dynamics: From Algorithm to Applications`` by Frenkel and Smit.
 
 In brief, the algorithm divides the domain into smaller subdomains called `cells`
-and distributes every particle to these cells based on its position. Subsequently,
+and distributes every particle to these cells based on their positions. Subsequently,
 any distance based query first identifies the corresponding cell position in the
 domain followed by distance evaluations within the identified cell and
 neighboring cells only. Care must be taken to ensure that `cellsize` is
@@ -130,8 +130,10 @@ cdef class PBCBox(object):
         This class is not meant to be used by end users.
 
     .. warning::
-        Even if MD triclinic boxes can be handled by this class, internal optimization is made based on the
-        assumption that particles are inside a brick-shaped box. When this is not the case, calculated distances are not
+        Even if MD triclinic boxes can be handled by this class,
+        internal optimization is made based on the assumption that
+        particles are inside a brick-shaped box. When this is not
+        the case, calculated distances are not
         warranted to be exact.
     """
 
@@ -299,6 +301,7 @@ cdef class PBCBox(object):
                             bbox_coords[i, m] += self.c_pbcbox.box[m][m]
                         while bbox_coords[i, m] >= self.c_pbcbox.box[m][m]:
                             bbox_coords[i, m] -= self.c_pbcbox.box[m][m]
+
         return bbox_coords
 
 #########################
@@ -351,8 +354,9 @@ cdef class NSResults(object):
 
         The buffers populated using this method are used by
         other methods of this class. This is the
-        primary function used by :class:`FastNS` to save the pair of atoms,
-        which can be considered as neighbors.
+        primary function used by :class:`FastNS` to save all
+        the pair of atoms,
+        which are considered as neighbors.
         """
 
         self.pairs_buffer.push_back(beadid_i)
@@ -585,10 +589,12 @@ cdef class NSGrid(object):
         self.cell_offsets[ZZ] = self.ncells[XX] * self.ncells[YY]
 
         # Allocate memory
+        # Number of beads in every cell
         self.nbeads = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.size)
         if not self.nbeads:
             raise MemoryError("Could not allocate memory from NSGrid.nbeads ({} bits requested)".format(sizeof(ns_int) * self.size))
         self.beadids = NULL
+        # Cellindex of every bead
         self.cellids = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.ncoords)
         if not self.cellids:
             raise MemoryError("Could not allocate memory from NSGrid.cellids ({} bits requested)".format(sizeof(ns_int) * self.ncoords))
@@ -686,7 +692,7 @@ cdef class FastNS(object):
     grid in an orthogonal brick shaped box.
 
     Minimum image convention is used for distance evaluations
-    if box dimensions are provided.
+    if pbc is set to ``True``.
     """
     cdef PBCBox box
     cdef real[:, ::1] coords
@@ -696,7 +702,7 @@ cdef class FastNS(object):
     cdef ns_int max_gridsize
     cdef bint periodic
 
-    def __init__(self, cutoff, coords, box=None, max_gridsize=5000):
+    def __init__(self, cutoff, coords, box, max_gridsize=5000, pbc=True):
         """
         Initialize the grid and sort the coordinates in respective
         cells by shifting the coordinates in a brick shaped box.
@@ -705,9 +711,10 @@ cdef class FastNS(object):
         If box is supplied, periodic shifts along box vectors are used
         to contain all the coordinates inside the brick shaped box.
         If box is not supplied, the range of coordinates i.e.
-        ``[xmax, ymax, zmax] - [xmin, ymin, zmin]`` is used to construct
-        a pseudo box. Subsequently, the origin is also shifted
-        to the ``[xmin, ymin, zmin]``.
+        ``[xmax, ymax, zmax] - [xmin, ymin, zmin]`` should be used
+        to construct a pseudo box. Subsequently, the origin should also be
+        shifted to ``[xmin, ymin, zmin]``. These arguments must be provided
+        to the function.
 
         Parameters
         ----------
@@ -715,53 +722,58 @@ cdef class FastNS(object):
             Desired cutoff distance
         coords : numpy.ndarray
             atom coordinates of shape ``(N, 3)`` for ``N`` atoms.
-            ``dtype=numpy.float32``
+            ``dtype=numpy.float32``. For Non-PBC calculations,
+            all the coords must be within the bounding box specified
+            by ``box``
         box : numpy.ndarray
             Box dimension of shape (6, ). The dimensions must be
             provided in the same format as returned
             by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
-            ``[lx, ly, lz, alpha, beta, gamma]`` (dtype = numpy.float32)
-            [None]
+            ``[lx, ly, lz, alpha, beta, gamma]``. For non-PBC
+            evaluations, provide an orthogonal bounding box
+            (dtype = numpy.float32)
         max_gridsize : int
-            maximum number of cells in the grid
+            maximum number of cells in the grid. This parameter
+            can be tuned for superior performance.
+        pbc : boolean
+            Handle to switch periodic boundary conditions on/off [True]
 
         Note
         ----
-        box=``None`` and ``[0., 0., 0., 90., 90., 90]``
-        both are used for Non-PBC aware calculations
+        * ``pbc=False`` Only works for orthogonal boxes.
+        * Care must be taken such that all particles are inside
+          the bounding box as defined by the box argument for non-PBC
+          calculations.
+        * In case of Non-PBC calculations, a bounding box must be provided
+          to encompass all the coordinates as well as the search coordinates.
+          The dimension should be similar to ``box`` argument but for
+          an orthogonal box. For instance, one valid set of argument
+          for ``box`` for the case of no PBC could be
+          ``[10, 10, 10, 90, 90, 90]``
+        * Following operations are advisable for non-PBC calculations
+
+        ..code-block:: python
+
+            lmax = all_coords.max(axis=0)
+            lmin = all_coords.min(axis=0)
+            pseudobox[:3] = 1.1*(lmax - lmin)
+            pseudobox[3:] = 90.
+            shift = all_coords.copy()
+            shift -= lmin
+            gridsearch = FastNS(max_cutoff, shift, box=pseudobox, pbc=False)
 
         """
 
-        import MDAnalysis as mda
         from MDAnalysis.lib.mdamath import triclinic_vectors
-        
 
-        cdef real[:] pseudobox = np.zeros(6, dtype=np.float32)
-        cdef real[DIM] bmax, bmin
-        cdef ns_int i, j, ncoords
 
         _check_array(coords, 'coords')
 
-        self.periodic = True
+        if np.allclose(box[:3], 0.0):
+            raise ValueError("Any of the box dimensions cannot be 0")
+
+        self.periodic = pbc
         self.coords = coords.copy()
-        ncoords = len(self.coords)
-
-        if (box is None) or (np.allclose(box[:3], 0.) and box.shape[0] == 6):
-            if len(coords) == 1:
-                raise ValueError("Need atleast two coordinates to search using"
-                                 " NSGrid without PBC")
-
-            bmax = np.max(self.coords, axis=0)
-            bmin = np.min(self.coords, axis=0)
-            for i in range(DIM):
-                pseudobox[i] = 1.1*(bmax[i] - bmin[i])
-                pseudobox[DIM + i] = 90.
-            box = pseudobox
-            # shift the origin
-            for i in range(ncoords):
-                for j in range(DIM):
-                    self.coords[i][j] -= bmin[j]
-            self.periodic = False
 
         if box.shape != (3, 3):
             box = triclinic_vectors(box)
@@ -778,6 +790,7 @@ cdef class FastNS(object):
         self.cutoff = cutoff
         self.max_gridsize = max_gridsize
         # Note that self.cutoff might be different from self.grid.cutoff
+        # due to optimization
         self.grid = NSGrid(self.coords_bbox.shape[0], self.cutoff, self.box, self.max_gridsize)
 
         self.grid.fill_grid(self.coords_bbox)
@@ -810,8 +823,8 @@ cdef class FastNS(object):
         Note
         ----
         For non-PBC aware calculations, the current implementation doesn't work
-        if any of the query coordinates is beyond the specified range of
-        initialized coordinates in :func:`MDAnalysis.lib.nsgrid.FastNS`.
+        if any of the query coordinates is beyond the range specified in
+        ``box`` in :func:`MDAnalysis.lib.nsgrid.FastNS`.
 
         See Also
         --------
@@ -944,10 +957,10 @@ cdef class FastNS(object):
                         for zi in range(DIM):
                             check = True
                             # Calculate and/or reinitialize shifted coordinates
-                            #Probe the search coordinates in a brick shaped box
+                            # Probe the search coordinates in a brick shaped box
                             probe[XX] = self.coords_bbox[current_beadid, XX] + (xi - 1) * self.grid.cellsize[XX]
-                            probe[YY] = self.coords_bbox[current_beadid, YY] + (yi - 1) * self.grid.cellsize[XX]
-                            probe[ZZ] = self.coords_bbox[current_beadid, ZZ] + (zi - 1) * self.grid.cellsize[XX]
+                            probe[YY] = self.coords_bbox[current_beadid, YY] + (yi - 1) * self.grid.cellsize[YY]
+                            probe[ZZ] = self.coords_bbox[current_beadid, ZZ] + (zi - 1) * self.grid.cellsize[ZZ]
                             # Make sure the shifted coordinates is inside the brick-shaped box
                             if self.periodic:
                                 for m in range(DIM - 1, -1, -1):
@@ -962,7 +975,7 @@ cdef class FastNS(object):
                                     if probe[m] < 0:
                                         check = False
                                         break
-                                    elif probe[m] > self.box.c_pbcbox.box[m][m]:
+                                    elif probe[m] >= self.box.c_pbcbox.box[m][m]:
                                         check = False
                                         break
                             if not check:
@@ -979,5 +992,5 @@ cdef class FastNS(object):
                                 if d2 < cutoff2 and d2 > EPSILON:
                                     results.add_neighbors(current_beadid, bid, d2)
                                     results.add_neighbors(bid, current_beadid, d2)
-                                    npairs += 1
+                                    npairs += 2
         return results
