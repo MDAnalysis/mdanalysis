@@ -34,6 +34,7 @@ env:
     - PIP_DEPENDENCIES="duecredit"
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
+    - CYTHON_TRACE_NOGIL=1  # for cython coverage
 
   matrix:
     # Run a coverage test for most versions
