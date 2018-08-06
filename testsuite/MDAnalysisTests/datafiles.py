@@ -85,7 +85,7 @@ __all__ = [
     "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
-    "TXYZ", "ARC",        # Tinker files
+    "TXYZ", "ARC", "ARC_PBC",        # Tinker files
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
@@ -294,6 +294,7 @@ XYZ_mini = resource_filename(__name__, 'data/mini.xyz')
 XYZ_five = resource_filename(__name__, 'data/five.xyz')
 TXYZ = resource_filename(__name__, 'data/coordinates/test.txyz')
 ARC = resource_filename(__name__, 'data/coordinates/test.arc')
+ARC_PBC = resource_filename(__name__, 'data/coordinates/new_hexane.arc')
 
 PRM = resource_filename(__name__, 'data/Amber/ache.prmtop')
 TRJ = resource_filename(__name__, 'data/Amber/ache.mdcrd')

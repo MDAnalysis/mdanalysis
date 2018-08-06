@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
-         VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull
+         VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta
 
   * 0.18.1
 
@@ -75,6 +75,7 @@ Fixes
   * PDBWriter now properly sets start value
   * Zero length TopologyGroup now return proper shape array via to_indices
     (Issue #1974)
+  * Added periodic boundary box support to the Tinker file reader (Issue #2001)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)
