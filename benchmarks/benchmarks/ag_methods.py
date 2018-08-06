@@ -4,7 +4,7 @@ import MDAnalysis
 import numpy as np
 
 try:
-    from MDAnalysisTests.datafiles import GRO
+    from MDAnalysisTests.datafiles import GRO, TPR, XTC
     from MDAnalysis.exceptions import NoDataError
 except:
     pass
@@ -322,3 +322,17 @@ class AtomGroupAttrsBench(object):
         Requires ag of size 2.
         """
         self.ag[:2].bond
+
+
+class FragmentFinding(object):
+    """Test how quickly we find fragments (distinct molecules from bonds)"""
+    params = [(TPR, XTC),  # single large fragment, many small solvents
+              (PSF, DCD),  # single large fragment
+              (TRZ_psf, TRZ)]  # 20ish polymer chains
+    param_names = ['universe']
+
+    def setup(self, universe):
+        self.u = MDAnalysis.Universe(*universe)
+
+    def test_find_fragments(self, universe):
+        frags = self.u.atoms.fragments

@@ -30,8 +30,11 @@ from MDAnalysis import NoDataError
 
 from libcpp.set cimport set as cset
 from libcpp.map cimport map as cmap
+from libcpp.vector cimport vector
+from cython.operator cimport dereference as deref
 
-__all__ = ['unique_int_1d', 'make_whole']
+
+__all__ = ['unique_int_1d', 'make_whole', 'find_fragments']
 
 cdef extern from "calc_distances.h":
     ctypedef float coordinate[3]
@@ -312,3 +315,75 @@ cdef float _norm(float * a):
     for n in range(3):
         result += a[n]*a[n]
     return sqrt(result)
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def find_fragments(atoms, bondlist):
+    """Calculate distinct fragments from nodes and edges
+
+    Parameters
+    ----------
+    atoms : numpy.ndarray
+       array of nodes
+    bonds : numpy.ndarray
+       array of edges.  Any edges which refer to nodes not in *atoms*
+       will be ignored
+
+    Returns
+    -------
+    fragments : list
+       list of arrays, each containing the indices of a fragment
+
+    .. versionaddded:: 0.19.0
+    """
+    cdef intmap bondmap
+    cdef intset todo, frag_todo, frag_done
+    cdef vector[int] this_frag
+    cdef int i, a, b
+    cdef np.int64_t[:] atoms_view
+    cdef np.int32_t[:, :] bonds_view
+
+    atoms_view = np.asarray(atoms, dtype=np.int64)
+    bonds_view = np.asarray(bondlist, dtype=np.int32)
+
+    # grab record of which atoms I have to process
+    # ie set of all nodes
+    for i in range(atoms_view.shape[0]):
+        todo.insert(atoms_view[i])
+    # Process edges into map
+    for i in range(bonds_view.shape[0]):
+        a = bondlist[i, 0]
+        b = bondlist[i, 1]
+        # only include edges if both are known nodes
+        if todo.count(a) and todo.count(b):
+            bondmap[a].insert(b)
+            bondmap[b].insert(a)
+
+    frags = []
+
+    while not todo.empty():  # While not all nodes have been done
+        # Start a new fragment
+        frag_todo.clear()
+        frag_done.clear()
+        this_frag.clear()
+        # Grab a start point for next fragment
+        frag_todo.insert(deref(todo.begin()))
+
+        # Loop until fragment fully explored
+        while not frag_todo.empty():
+            # Pop next in this frag todo
+            a = deref(frag_todo.begin())
+            frag_todo.erase(a)
+            if not frag_done.count(a):
+                this_frag.push_back(a)
+                frag_done.insert(a)
+                todo.erase(a)
+                for b in bondmap[a]:
+                    if not frag_done.count(b):
+                        frag_todo.insert(b)
+
+        # Add fragment to output
+        frags.append(np.asarray(this_frag))
+
+    return frags
