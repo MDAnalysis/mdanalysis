@@ -14,12 +14,19 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
-         VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, arm61
+         VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta, arm61
 
   * 0.18.1
 
 Enhancements
 
+  * Modified around selections to work with KDTree and periodic boundary
+    conditions.  Should reduce memory usage (#974 PR #2022)
+  * Modified topology.guessers.guess_bonds to automatically select the
+    fastest method for guessing bonds using
+    lib.distance.self_capped_distance (PR # 2006)
+  * Added lib.distances.self_capped_distance to internally select the
+    optimized method for distance evaluations of coordinates with itself. (PR # 2006)
   * Added augment functionality to create relevant images of particles 
     in the vicinity of central cell to handle periodic boundary
     conditions (PR #1977) 
@@ -69,6 +76,7 @@ Fixes
   * Introduced compatibility for pbd files hybrid36 format encoding (Issue #1897)
   * Zero length TopologyGroup now return proper shape array via to_indices
     (Issue #1974)
+  * Added periodic boundary box support to the Tinker file reader (Issue #2001)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)

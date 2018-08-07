@@ -243,9 +243,6 @@ class DistanceSelection(Selection):
             self.apply = self._apply_distmat
 
         self.periodic = flags['use_periodic_selections']
-        # KDTree doesn't support periodic
-        if self.periodic:
-            self.apply = self._apply_distmat
 
     def validate_dimensions(self, dimensions):
         r"""Check if the system is periodic in all three-dimensions.
@@ -281,6 +278,9 @@ class AroundSelection(DistanceSelection):
         sel = self.sel.apply(group)
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
+
+        if not sys:
+            return sys[[]]
 
         box = self.validate_dimensions(group.dimensions)
 
@@ -321,7 +321,8 @@ class SphericalLayerSelection(DistanceSelection):
         """
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
-        ref = sel.center_of_geometry(pbc=self.periodic)
+        periodic = box is not None
+        ref = sel.center_of_geometry(pbc=periodic)
         kdtree = PeriodicKDTree(box=box)
 
         cutoff = self.exRadius if box is not None else None
@@ -363,7 +364,8 @@ class SphericalZoneSelection(DistanceSelection):
         """
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
-        ref = sel.center_of_geometry(pbc=self.periodic)
+        periodic = box is not None
+        ref = sel.center_of_geometry(pbc=periodic)
 
         cut = self.cutoff if box is not None else None
         kdtree = PeriodicKDTree(box=box)
@@ -483,7 +485,7 @@ class PointSelection(DistanceSelection):
         self.cutoff = float(tokens.popleft())
 
     def _apply_KDTree(self, group):
-        box = group.dimensions if self.periodic else None
+        box = self.validate_dimensions(group.dimensions)
         kdtree = PeriodicKDTree(box=box)
         cut = self.cutoff if box is not None else None
         kdtree.set_coords(group.positions, cutoff=cut)
@@ -496,7 +498,7 @@ class PointSelection(DistanceSelection):
         ref_coor = self.ref[np.newaxis, ...]
 
         ref_coor = np.asarray(ref_coor, dtype=np.float32)
-        box = group.dimensions if self.periodic else None
+        box = self.validate_dimensions(group.dimensions)
 
         dist = distances.distance_array(group.positions, ref_coor, box)
         mask = (dist <= self.cutoff).any(axis=1)
