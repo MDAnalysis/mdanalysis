@@ -20,7 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 """
-Dihedral and Ramachandran analysis --- :mod:`MDAnalysis.analysis.dihedrals`
+Dihedral angles analysis --- :mod:`MDAnalysis.analysis.dihedrals`
 ===========================================================================
 
 :Author: Henry Mull
@@ -29,14 +29,14 @@ Dihedral and Ramachandran analysis --- :mod:`MDAnalysis.analysis.dihedrals`
 
 .. versionadded:: 0.18.1
 
-This module calculates the dihedral angles phi and psi in degrees for a given
-list of residues (or atoms corresponding to the residues). This can be done for
-selected frames or whole trajectories.
+This module contains classes for calculating dihedral angles for a given set of
+atoms or residues. This can be done for selected frames or whole trajectories.
 
-A list of time steps that contain phi and psi angles for each residue is
-generated, and a basic Ramachandran plot can be generated using the method
-:meth:`Ramachandran.plot()`. This plot is best used as a reference, but it also
-allows for user customization.
+A list of time steps that contain angles of interest is generated and can be
+easily plotted if desired. For the :class:`~MDAnalysis.analysis.dihedrals.Ramachandran`
+and :class:`~MDAnalysis.analysis.dihedrals.Janin` classes, basic plots can be
+generated using the method :meth:`Ramachandran.plot()` or :meth:`Janin.plot()`.
+These plots are best used as references, but they also allow for user customization.
 
 
 See Also
@@ -45,39 +45,62 @@ See Also
    function to calculate dihedral angles from atom positions
 
 
-Example application
--------------------
-This example will show how to calculate the phi and psi angles of adenylate
-kinase (AdK) and generate a basic Ramachandran plot. The trajectory is included
-within the test data files::
+Example applications
+--------------------
+
+General dihedral analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :class:`~MDAnalysis.analysis.dihedrals.Dihedral` class is useful for calculating
+angles for many dihedrals of interest. For example, we can find the phi angles
+for residues 5-10 of adenylate kinase (AdK). The trajectory is included within
+the test data files::
 
    import MDAnalysis as mda
    from MDAnalysisTests.datafiles import GRO, XTC
    u = mda.Universe(GRO, XTC)
-   r = u.select_atoms("protein")    # selection of residues
 
-   from MDAnalysis.analysis.dihedrals import Ramachandran
+   # selection of atomgroups
+   ags = [res.phi_selection() for res in u.residues[4:9]]
+
+   from MDAnalysis.analysis.dihedrals import Dihedral
+   R = Dihedral(ags).run()
+
+The angles can then be accessed with :attr:`Dihedral.angles`.
+
+Ramachandran analysis
+~~~~~~~~~~~~~~~~~~~~~
+
+The :class:`~MDAnalysis.analysis.dihedrals.Ramachandran` class allows for the
+quick calculation of phi and psi angles. Unlike the :class:`~MDanalysis.analysis.dihedrals.Dihedral`
+class which takes a list of `atomgroups`, this class only needs a list of
+residues or atoms from those residues. The previous example can repeated with::
+
+   u = mda.Universe(GRO, XTC)
+   r = u.select_atoms("resid 5-10")
+
    R = Ramachandran(r).run()
+
+Then it can be plotted using the built-in plotting method :meth:`Ramachandran.plot()`::
 
    import matplotlib.pyplot as plt
    fig, ax = plt.subplots(figsize=plt.figaspect(1))
-   ax.set_title("Ramachandran Plot (AdK)")
    R.plot(ax=ax, color='k', marker='s')
 
-Alternatively, if you wanted to plot the data yourself, the angles themselves
-can be accessed using :attr:`Ramachandran.angles`::
-
-   fig, ax = plt.subplots(figsize=plt.figaspect(1))
-   ax.axis([-180,180,-180,180])
-   ax.axhline(0, color='k', lw=1)
-   ax.axvline(0, color='k', lw=1)
-   ax.set(xticks=range(-180,181,60), yticks=range(-180,181,60),
-          xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
-   for ts in R.angles:
-       ax.scatter(ts[:,0], ts[:,1], color='k', marker='s')
+The Janin class works in the same way, only needing a list of residues.
 
 Analysis Class
 --------------
+
+.. autoclass:: Dihedral
+   :members:
+   :inherited-members:
+
+   .. attribute:: angles
+
+       Contains the time steps of the angles for each atomgroup in the list as
+       an n_frames×len(atomgroups) :class:`numpy.ndarray` with content
+       ``[[angle 1, angle 2, ...], [time step 2], ...]``.
 
 .. autoclass:: Ramachandran
    :members:
@@ -88,6 +111,16 @@ Analysis Class
        Contains the time steps of the phi and psi angles for each residue as
        an n_frames×n_residues×2 :class:`numpy.ndarray` with content
        ``[[[phi, psi], [residue 2], ...], [time step 2], ...]``.
+
+.. autoclass:: Janin
+   :members:
+   :inherited-members:
+
+   .. attribute:: angles
+
+       Contains the time steps of the phi and psi angles for each residue as
+       an n_frames×n_residues×2 :class:`numpy.ndarray` with content
+       ``[[[chi1, chi2], [residue 2], ...], [time step 2], ...]``.
 
 """
 from __future__ import absolute_import
@@ -104,7 +137,31 @@ from MDAnalysis.lib.distances import calc_dihedrals
 
 
 class Dihedral(AnalysisBase):
+    """Calculate dihedral angles for specified atomgroups.
+
+    Dihedral angles will be calculated for each atomgroup that is given for
+    each step in the trajectory. Each :class:`~MDAnalysis.core.groups.AtomGroup`
+    must contain 4 atoms.
+
+    Note
+    ----
+    This class takes a list as an input and is most useful for a large
+    selection of atomgroups. If there is only one atomgroup of interest, then
+    it must be given as a list of one atomgroup.
+
+    """
     def __init__(self, atomgroups, **kwargs):
+        """Parameters
+        ----------
+        atomgroups : list
+            a list of atomgroups for which the dihedral angles are calculated
+
+        Raises
+        ------
+        ValueError
+            If any atomgroups do not contain 4 atoms
+
+        """
         super(Dihedral, self).__init__(atomgroups[0].universe.trajectory, **kwargs)
         self.atomgroups = atomgroups
 
@@ -132,7 +189,7 @@ class Ramachandran(AnalysisBase):
     """Calculate phi and psi dihedral angles of selected residues.
 
     Phi and psi angles will be calculated for each residue corresponding to
-    `atomgroup` for each time step in the trajectory. A :class:`ResidueGroup`
+    `atomgroup` for each time step in the trajectory. A :class:`~MDAnalysis.ResidueGroup`
     is generated from `atomgroup` which is compared to the protein to determine
     if it is a legitimate selection.
 
@@ -153,7 +210,7 @@ class Ramachandran(AnalysisBase):
         Raises
         ------
         ValueError
-             If the selection of residues is not contained within the protein
+            If the selection of residues is not contained within the protein
 
         """
         super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
@@ -172,6 +229,16 @@ class Ramachandran(AnalysisBase):
 
         phi_sel = [res.phi_selection() for res in residues]
         psi_sel = [res.psi_selection() for res in residues]
+        if any(sel is None for sel in phi_sel):
+            warnings.warn("Some residues in selection do not have phi selections")
+            remove = [i for i, sel in enumerate(phi_sel) if sel is None]
+            phi_sel = [sel for i, sel in enumerate(phi_sel) if i not in remove]
+            psi_sel = [sel for i, sel in enumerate(psi_sel) if i not in remove]
+        if any(sel is None for sel in psi_sel):
+            warnings.warn("Some residues in selection do not have psi selections")
+            remove = [i for i, sel in enumerate(psi_sel) if sel is None]
+            phi_sel = [sel for i, sel in enumerate(phi_sel) if i not in remove]
+            psi_sel = [sel for i, sel in enumerate(psi_sel) if i not in remove]
         self.ag1 = mda.AtomGroup([atoms[0] for atoms in phi_sel])
         self.ag2 = mda.AtomGroup([atoms[1] for atoms in phi_sel])
         self.ag3 = mda.AtomGroup([atoms[2] for atoms in phi_sel])
@@ -226,7 +293,7 @@ class Janin(Ramachandran):
     """Calculate chi1 and chi2 dihedral angles of selected residues.
 
     Chi1 and chi2 angles will be calculated for each residue corresponding to
-    `atomgroup` for each time step in the trajectory. A :class:`ResidueGroup`
+    `atomgroup` for each time step in the trajectory. A :class:`~MDAnalysis.ResidueGroup`
     is generated from `atomgroup` which is compared to the protein to determine
     if it is a legitimate selection.
 
@@ -266,11 +333,12 @@ class Janin(Ramachandran):
                           "without side chains of appropriate length.")
             residues = residues.difference(remove)
 
-        self.ag1 = residues.atoms.select_atoms("name N")
-        self.ag2 = residues.atoms.select_atoms("name CA")
-        self.ag3 = residues.atoms.select_atoms("name CB")
-        self.ag4 = residues.atoms.select_atoms("name CG CG1")
-        self.ag5 = residues.atoms.select_atoms("name CD CD1 OD1 ND1 SD")
+        self.ag1 = residues.atoms.select_atoms("name N and not altloc B")
+        self.ag2 = residues.atoms.select_atoms("name CA and not altloc B")
+        self.ag3 = residues.atoms.select_atoms("name CB and not altloc B")
+        self.ag4 = residues.atoms.select_atoms("name CG CG1 and not altloc B")
+        self.ag5 = residues.atoms.select_atoms("name CD CD1 OD1 ND1 SD and not"
+                                               "altloc B")
 
     def _conclude(self):
         self.angles = (np.rad2deg(np.array(self.angles)) + 360) % 360
