@@ -510,7 +510,8 @@
 <span class="sd">    Currently only supports brute force and Periodic KDtree</span>
 
 <span class="sd">    .. SeeAlso:: :func:&#39;MDAnalysis.lib.distances.distance_array&#39;</span>
-<span class="sd">    .. SeeAlso:: :func:&#39;MDAnalysis.lib.pkdtree.PeriodicKDTree&#39;</span>
+<span class="sd">    .. SeeAlso:: :func:&#39;MDAnalysis.lib.pkdtree.PeriodicKDTree.search&#39;</span>
+<span class="sd">    .. SeeAlso:: :class:&#39;MDAnalysis.lib.nsgrid.FastNS.search&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">6</span><span class="p">:</span>
@@ -565,10 +566,12 @@
 <span class="sd">    Currently implemented methods are present in the ``methods`` dictionary</span>
 <span class="sd">        bruteforce : returns ``_bruteforce_capped``</span>
 <span class="sd">        PKDtree : return ``_pkdtree_capped`</span>
+<span class="sd">        NSGrid : return ``_nsgrid_capped`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">:</span> <span class="n">_bruteforce_capped</span><span class="p">,</span>
-            <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped</span><span class="p">}</span>
+               <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped</span><span class="p">,</span>
+               <span class="s1">&#39;nsgrid&#39;</span><span class="p">:</span> <span class="n">_nsgrid_capped</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
@@ -615,7 +618,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pairs</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
-
 
     <span class="n">reference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="n">configuration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -692,6 +694,77 @@
     <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
 
 
+<span class="k">def</span> <span class="nf">_nsgrid_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Search all the pairs in *reference* and *configuration* within</span>
+<span class="sd">    a specified distance using Grid Search</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    reference : array</span>
+<span class="sd">        reference coordinates array with shape ``reference.shape = (3,)``</span>
+<span class="sd">        or ``reference.shape = (len(reference), 3)``.</span>
+<span class="sd">    configuration : array</span>
+<span class="sd">        Configuration coordinate array with shape ``reference.shape = (3,)``</span>
+<span class="sd">        or ``reference.shape = (len(reference), 3)``</span>
+<span class="sd">    max_cutoff : float</span>
+<span class="sd">        Maximum cutoff distance between the reference and configuration</span>
+<span class="sd">    min_cutoff : (optional) float</span>
+<span class="sd">        Minimum cutoff distance between reference and configuration [None]</span>
+<span class="sd">    box :  array</span>
+<span class="sd">        The dimensions, if provided, must be provided in the same</span>
+<span class="sd">        The unitcell dimesions for this system format as returned</span>
+<span class="sd">        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx,ly, lz, alpha, beta, gamma]``. Minimum image convention</span>
+<span class="sd">        is applied if the box is provided</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.nsgrid</span> <span class="k">import</span> <span class="n">FastNS</span>
+    <span class="k">if</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">):</span>
+        <span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="k">if</span> <span class="n">configuration</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">):</span>
+        <span class="n">configuration</span> <span class="o">=</span> <span class="n">configuration</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># create a pseudobox</span>
+        <span class="c1"># define the max range</span>
+        <span class="c1"># and supply the pseudobox</span>
+        <span class="c1"># along with only one set of coordinates</span>
+        <span class="n">pseudobox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">all_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">])</span>
+        <span class="n">lmax</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">lmin</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Using maximum dimension as the box size</span>
+        <span class="n">boxsize</span> <span class="o">=</span> <span class="p">(</span><span class="n">lmax</span><span class="o">-</span><span class="n">lmin</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="c1"># to avoid failures of very close particles</span>
+        <span class="c1"># but with larger cutoff</span>
+        <span class="k">if</span> <span class="n">boxsize</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="p">:</span>
+            <span class="c1"># just enough box size so that NSGrid doesnot fails</span>
+            <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">2.2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="o">/</span><span class="n">boxsize</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">1.2</span>
+        <span class="n">pseudobox</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">sizefactor</span><span class="o">*</span><span class="n">boxsize</span>
+        <span class="n">pseudobox</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span>
+        <span class="n">shiftref</span><span class="p">,</span> <span class="n">shiftconf</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">configuration</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># Extra padding near the origin</span>
+        <span class="n">shiftref</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">boxsize</span>
+        <span class="n">shiftconf</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">boxsize</span>
+        <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">shiftconf</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pseudobox</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">shiftref</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">()</span>
+    <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">pair_distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
+        <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">pair_distance</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span>
+
+
 <div class="viewcode-block" id="self_capped_distance"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_capped_distance">[docs]</a><span class="k">def</span> <span class="nf">self_capped_distance</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                          <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Finds all the pairs and respective distances within a specified cutoff</span>
@@ -743,10 +816,11 @@
 
 <span class="sd">    Note</span>
 <span class="sd">    -----</span>
-<span class="sd">    Currently only supports brute force and Periodic KDtree</span>
+<span class="sd">    Currently only supports brute force, Periodic KDtree and Grid Search</span>
 
 <span class="sd">    .. SeeAlso:: :func:&#39;MDAnalysis.lib.distances.self_distance_array&#39;</span>
-<span class="sd">    .. SeeAlso:: :func:&#39;MDAnalysis.lib.pkdtree.PeriodicKDTree&#39;</span>
+<span class="sd">    .. SeeAlso:: :func:&#39;MDAnalysis.lib.pkdtree.PeriodicKDTree.search&#39;</span>
+<span class="sd">    .. SeeAlso:: :func:&#39;MDAnalysis.lib.nsgrid.FastNS.self_search&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">6</span><span class="p">:</span>
@@ -798,10 +872,12 @@
 <span class="sd">    Currently implemented methods are present in the ``methods`` dictionary</span>
 <span class="sd">        bruteforce : returns ``_bruteforce_capped_self``</span>
 <span class="sd">        PKDtree : return ``_pkdtree_capped_self``</span>
+<span class="sd">        NSGrid : return ``_nsgrid_capped_self``</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">:</span> <span class="n">_bruteforce_capped_self</span><span class="p">,</span>
-            <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped_self</span><span class="p">}</span>
+            <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped_self</span><span class="p">,</span>
+            <span class="s1">&#39;nsgrid&#39;</span><span class="p">:</span> <span class="n">_nsgrid_capped_self</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
@@ -904,6 +980,64 @@
             <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">pairs</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">distance</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_nsgrid_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Finds all the pairs among the *reference* coordinates within</span>
+<span class="sd">    a fixed distance using gridsearch</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pairs : array</span>
+<span class="sd">        Arrray of ``[i, j]`` pairs such that atom-index ``i``</span>
+<span class="sd">        and ``j`` from reference array are within a fixed distance</span>
+<span class="sd">    distance: array</span>
+<span class="sd">         Distance between ``reference[i]`` and ``reference[j]``</span>
+<span class="sd">         atom coordinate</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.nsgrid</span> <span class="k">import</span> <span class="n">FastNS</span>
+
+    <span class="n">reference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[],</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># create a pseudobox</span>
+        <span class="c1"># define the max range</span>
+        <span class="c1"># and supply the pseudobox</span>
+        <span class="c1"># along with only one set of coordinates</span>
+        <span class="n">pseudobox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">lmax</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">lmin</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Using maximum dimension as the box size</span>
+        <span class="n">boxsize</span> <span class="o">=</span> <span class="p">(</span><span class="n">lmax</span><span class="o">-</span><span class="n">lmin</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="c1"># to avoid failures of very close particles</span>
+        <span class="c1"># but with larger cutoff</span>
+        <span class="k">if</span> <span class="n">boxsize</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="p">:</span>
+            <span class="c1"># just enough box size so that NSGrid doesnot fails</span>
+            <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">2.2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="o">/</span><span class="n">boxsize</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">1.2</span>
+        <span class="n">pseudobox</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">sizefactor</span><span class="o">*</span><span class="n">boxsize</span>
+        <span class="n">pseudobox</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span>
+        <span class="n">shiftref</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># Extra padding near the origin</span>
+        <span class="n">shiftref</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">boxsize</span>
+        <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">shiftref</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pseudobox</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">self_search</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">self_search</span><span class="p">()</span>
+
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">()[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()[::</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">pair_distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
+        <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">pair_distance</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span>
 
 
 <div class="viewcode-block" id="transform_RtoS"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_RtoS">[docs]</a><span class="k">def</span> <span class="nf">transform_RtoS</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
