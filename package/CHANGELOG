@@ -20,6 +20,11 @@ The rules for this file:
 
 Enhancements
 
+  * Added a wrapper of lib.nsgrid in lib.distances.self_capped_distance
+    and lib.distances.capped_distanceto automatically chose the fastest
+    method for distance based calculations. (PR #2008)  
+  * Added Grid search functionality in lib.nsgrid for faster distance based
+    calculations. (PR #2008)   
   * Modified around selections to work with KDTree and periodic boundary
     conditions.  Should reduce memory usage (#974 PR #2022)
   * Modified topology.guessers.guess_bonds to automatically select the
