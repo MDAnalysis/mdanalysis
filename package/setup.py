@@ -386,7 +386,10 @@ def extensions(config):
 
     cython_generated = []
     if use_cython:
-        extensions = cythonize(pre_exts)
+        extensions = cythonize(
+            pre_exts,
+            compiler_directives={'linetrace': os.environ.get('CYTHON_TRACE_NOGIL', False)},
+        )
         for pre_ext, post_ext in zip(pre_exts, extensions):
             for source in post_ext.sources:
                 if source not in pre_ext.sources:
