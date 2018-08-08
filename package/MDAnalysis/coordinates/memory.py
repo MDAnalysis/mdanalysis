@@ -33,8 +33,8 @@ Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.memory`
 .. versionadded:: 0.16.0
 
 The module contains a trajectory reader that operates on an array in
-memory, rather than reading from file. This makes it possible to use
-operate on raw coordinate using existing MDAnalysis tools. In
+memory, rather than reading from file. This makes it possible to
+operate on raw coordinates using existing MDAnalysis tools. In
 addition, it allows the user to make changes to the coordinates in a
 trajectory (e.g. through
 :attr:`MDAnalysis.core.groups.AtomGroup.positions`) without having
@@ -193,23 +193,37 @@ from . import base
 
 
 class Timestep(base.Timestep):
+    """Timestep for the :class:`MemoryReader`
+
+    Compared to the base :class:`base.Timestep`, this version
+    (:class:`memory.Timestep`) has an additional
+    :meth:`_replace_positions_array` method, which replaces the array of
+    positions while the :attr:`positions` property replaces the content of the
+    array.
+
     """
-    Timestep for the :class:`MemoryReader`
+    def _replace_positions_array(self, new):
+        """Replace the array of positions
 
-    Overrides the positions property in
-    :class:`MDAnalysis.coordinates.base.Timestep` to use avoid
-    duplication of the array.
+        Replaces the array of positions by another array.
 
-    """
 
-    @property
-    def positions(self):
-        return base.Timestep.positions.fget(self)
+        Note
+        ----
+        The behavior of :meth:`_replace_positions_array` is different from the
+        behavior of the :attr:`position` property that replaces the **content**
+        of the array. The :meth:`_replace_positions_array` method should only be
+        used to set the positions to a different frame in
+        :meth:`MemoryReader._read_next_timestep`; there, the memory reader sets
+        the positions to a view of the correct frame.  Modifying the positions
+        for a given frame should be done with the :attr:`positions` attribute
+        that does not break the link between the array of positions in the time
+        step and the :attr:`MemoryReader.coordinate_array`.
 
-    @positions.setter
-    def positions(self, new):
+
+        .. versionadded:: 0.19.0
+        """
         self.has_positions = True
-        # Use reference to original rather than a copy
         self._pos = new
 
 
@@ -262,6 +276,7 @@ class MemoryReader(base.ProtoReader):
         At the moment, only a fixed `dimension` is supported, i.e., the same
         unit cell for all frames in `coordinate_array`. See issue `#1041`_.
 
+
         .. _`#1041`: https://github.com/MDAnalysis/mdanalysis/issues/1041
 
         .. versionchanged:: 0.18.1
@@ -273,13 +288,16 @@ class MemoryReader(base.ProtoReader):
         self.filename = filename
         self.stored_order = order
 
-        # See Issue #1685. The block below checks if the coordinate array passed is of shape (N, 3) and if it is, the coordiante array is reshaped to (1, N, 3)
+        # See Issue #1685. The block below checks if the coordinate array
+        # passed is of shape (N, 3) and if it is, the coordiante array is
+        # reshaped to (1, N, 3)
         try:
             if len(coordinate_array.shape) == 2 and coordinate_array.shape[1] == 3:
                     coordinate_array = coordinate_array[np.newaxis, :, :]
         except AttributeError as e:
-            raise TypeError("The input has to be a numpy.ndarray that corresponds to the layout specified by the 'order' keyword."
-                )
+            raise TypeError("The input has to be a numpy.ndarray that "
+                            "corresponds to the layout specified by the "
+                            "'order' keyword.")
 
         self.set_array(coordinate_array, order)
         self.n_frames = \
@@ -464,7 +482,7 @@ class MemoryReader(base.ProtoReader):
         basic_slice = ([slice(None)]*(f_index) +
                        [self.ts.frame] +
                        [slice(None)]*(2-f_index))
-        ts.positions = self.coordinate_array[basic_slice]
+        ts._replace_positions_array(self.coordinate_array[basic_slice])
 
         ts.time = self.ts.frame*self.dt
         return ts
@@ -483,30 +501,30 @@ class MemoryReader(base.ProtoReader):
                     nframes=self.n_frames,
                     natoms=self.n_atoms
                 ))
-    
+
     def add_transformations(self, *transformations):
         """ Add all transformations to be applied to the trajectory.
-        
+
         This function take as list of transformations as an argument. These
         transformations are functions that will be called by the Reader and given
         a :class:`Timestep` object as argument, which will be transformed and returned
         to the Reader.
-        The transformations can be part of the :mod:`~MDAnalysis.transformations` 
-        module, or created by the user, and are stored as a list `transformations`. 
+        The transformations can be part of the :mod:`~MDAnalysis.transformations`
+        module, or created by the user, and are stored as a list `transformations`.
         This list can only be modified once, and further calls of this function will
         raise an exception.
-        
+
         .. code-block:: python
-                         
+
           u = MDAnalysis.Universe(topology, coordinates)
           workflow = [some_transform, another_transform, this_transform]
           u.trajectory.add_transformations(*workflow)
-        
+
         Parameters
         ----------
         transform_list : list
             list of all the transformations that will be applied to the coordinates
-            
+
         See Also
         --------
         :mod:`MDAnalysis.transformations`
@@ -515,7 +533,7 @@ class MemoryReader(base.ProtoReader):
         #to avoid unintended behaviour where the coordinates of each frame are transformed
         #multiple times when iterating over the trajectory.
         #In this method, the trajectory is modified all at once and once only.
-        
+
         super(MemoryReader, self).add_transformations(*transformations)
         for i, ts in enumerate(self):
             for transform in self.transformations:
@@ -525,5 +543,5 @@ class MemoryReader(base.ProtoReader):
         """ Applies the transformations to the timestep."""
         # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
         # to avoid applying the same transformations multiple times on each frame
-        
+
         return ts

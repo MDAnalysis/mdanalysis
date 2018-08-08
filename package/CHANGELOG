@@ -33,9 +33,9 @@ Enhancements
     lib.distance.self_capped_distance (PR # 2006)
   * Added lib.distances.self_capped_distance to internally select the
     optimized method for distance evaluations of coordinates with itself. (PR # 2006)
-  * Added augment functionality to create relevant images of particles 
+  * Added augment functionality to create relevant images of particles
     in the vicinity of central cell to handle periodic boundary
-    conditions (PR #1977) 
+    conditions (PR #1977)
   * Added lib.distances.capped_distance function to quickly calculate all distances
     up to a given maximum distance (PR #1941)
   * Added a rotation coordinate transformation (PR #1937)
@@ -64,7 +64,7 @@ Enhancements
     generated with gromacs -noappend (PR #1728)
   * MDAnalysis.lib.mdamath now supports triclinic boxes and rewrote in Cython (PR #1965)
   * AtomGroup.write can write a trajectory of selected frames (Issue #1037)
-  * Added dihedrals.py with Ramachandran class to analysis module 
+  * Added analysis.dihedrals with Ramachandran class to analysis module (PR #1997)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
@@ -82,6 +82,8 @@ Fixes
   * Zero length TopologyGroup now return proper shape array via to_indices
     (Issue #1974)
   * Added periodic boundary box support to the Tinker file reader (Issue #2001)
+  * Modifying coordinates by assignation is consistently persistent when using
+    the memory reader (Issue #2018)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)

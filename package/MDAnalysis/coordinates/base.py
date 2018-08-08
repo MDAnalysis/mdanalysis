@@ -278,7 +278,7 @@ class Timestep(object):
 
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
-        
+
 
     @classmethod
     def from_timestep(cls, other, **kwargs):
@@ -589,7 +589,7 @@ class Timestep(object):
 
 
         .. versionchanged:: 0.11.0
-           Now can raise :exc`NoDataError` when no position data present
+           Now can raise :exc:`NoDataError` when no position data present
         """
         if self.has_positions:
             return self._pos
@@ -932,7 +932,7 @@ class FrameIteratorSliced(FrameIteratorBase):
         else:
             # The range is empty.
             return 0
-    
+
     def __iter__(self):
         for i in range(self.start, self.stop, self.step):
             yield self.trajectory[i]
@@ -960,7 +960,7 @@ class FrameIteratorSliced(FrameIteratorBase):
                 start = max(0, start)
             else:
                 stop = max(0, stop)
-            
+
             new_slice = slice(start, stop, step)
             return FrameIteratorSliced(self.trajectory, new_slice)
         else:
@@ -1402,9 +1402,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         else:
             for auxname in self.aux_list:
                 ts = self._auxs[auxname].update_ts(ts)
-            
+
             ts = self._apply_transformations(ts)
-                
+
         return ts
 
     def __next__(self):
@@ -1561,9 +1561,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         ts = self._read_frame(frame)  # pylint: disable=assignment-from-no-return
         for aux in self.aux_list:
             ts = self._auxs[aux].update_ts(ts)
-            
+
         ts = self._apply_transformations(ts)
-                
+
         return ts
 
     def _sliced_iter(self, start, stop, step):
@@ -1945,67 +1945,67 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             auxnames = self.aux_list
         descriptions = [self._auxs[aux].get_description() for aux in auxnames]
         return descriptions
-    
+
     @property
     def transformations(self):
         """ Returns the list of transformations"""
         return self._transformations
-    
+
     @transformations.setter
     def transformations(self, transformations):
         if not self._transformations:
             self._transformations = transformations
         else:
             raise ValueError("Transformations are already set")
-        
+
     def add_transformations(self, *transformations):
         """ Add all transformations to be applied to the trajectory.
-        
+
         This function take as list of transformations as an argument. These
         transformations are functions that will be called by the Reader and given
         a :class:`Timestep` object as argument, which will be transformed and returned
         to the Reader.
-        The transformations can be part of the :mod:`~MDAnalysis.transformations` 
-        module, or created by the user, and are stored as a list `transformations`. 
+        The transformations can be part of the :mod:`~MDAnalysis.transformations`
+        module, or created by the user, and are stored as a list `transformations`.
         This list can only be modified once, and further calls of this function will
         raise an exception.
-        
+
         .. code-block:: python
-                         
+
           u = MDAnalysis.Universe(topology, coordinates)
           workflow = [some_transform, another_transform, this_transform]
           u.trajectory.add_transformations(*workflow)
-        
+
         Parameters
         ----------
         transform_list : list
             list of all the transformations that will be applied to the coordinates
-            
+
         See Also
         --------
         :mod:`MDAnalysis.transformations`
         """
-        
+
         try:
             self.transformations = transformations
         except ValueError:
-            raise ValueError("Can't add transformations again. Please create new Universe object")  
+            raise ValueError("Can't add transformations again. Please create new Universe object")
         else:
             self.ts = self._apply_transformations(self.ts)
-                
-             
+
+
         # call reader here to apply the newly added transformation on the
         # current loaded frame?
-        
+
     def _apply_transformations(self, ts):
         """Applies all the transformations given by the user """
-        
+
         for transform in self.transformations:
             ts = transform(ts)
-        
+
         return ts
-            
-    
+
+
 
 class ReaderBase(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
@@ -2245,7 +2245,7 @@ class SingleFrameReaderBase(ProtoReader):
         # since the transformations have already been applied to the frame
         # simply copy the property
         new.transformations = self.transformations
-        
+
         return new
 
     def _read_first_frame(self):  # pragma: no cover
@@ -2279,30 +2279,30 @@ class SingleFrameReaderBase(ProtoReader):
         # self.filename. Explicitly setting it to the null action in case
         # the IOBase.close method is ever changed from that.
         pass
-    
+
     def add_transformations(self, *transformations):
         """ Add all transformations to be applied to the trajectory.
-        
+
         This function take as list of transformations as an argument. These
         transformations are functions that will be called by the Reader and given
         a :class:`Timestep` object as argument, which will be transformed and returned
         to the Reader.
-        The transformations can be part of the :mod:`~MDAnalysis.transformations` 
-        module, or created by the user, and are stored as a list `transformations`. 
+        The transformations can be part of the :mod:`~MDAnalysis.transformations`
+        module, or created by the user, and are stored as a list `transformations`.
         This list can only be modified once, and further calls of this function will
         raise an exception.
-        
+
         .. code-block:: python
-                         
+
           u = MDAnalysis.Universe(topology, coordinates)
           workflow = [some_transform, another_transform, this_transform]
           u.trajectory.add_transformations(*workflow)
-        
+
         Parameters
         ----------
         transform_list : list
             list of all the transformations that will be applied to the coordinates
-            
+
         See Also
         --------
         :mod:`MDAnalysis.transformations`
@@ -2311,7 +2311,7 @@ class SingleFrameReaderBase(ProtoReader):
         #to avoid unintended behaviour where the coordinates of each frame are transformed
         #multiple times when iterating over the trajectory.
         #In this method, the trajectory is modified all at once and once only.
-        
+
         super(SingleFrameReaderBase, self).add_transformations(*transformations)
         for transform in self.transformations:
             self.ts = transform(self.ts)
@@ -2320,5 +2320,5 @@ class SingleFrameReaderBase(ProtoReader):
         """ Applies the transformations to the timestep."""
         # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
         # to avoid applying the same transformations multiple times on each frame
-        
+
         return ts
