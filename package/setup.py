@@ -380,9 +380,16 @@ def extensions(config):
                               libraries=mathlib,
                               define_macros=define_macros,
                               extra_compile_args=extra_compile_args)
+    nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
+                             ['MDAnalysis/lib/nsgrid' + source_suffix],
+                             include_dirs=include_dirs,
+                             language='c++',
+                             define_macros=define_macros,
+                             extra_compile_args=cpp_extra_compile_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred, cutil, augment]
+                ap_clustering, spe_dimred, cutil, augment, nsgrid]
+
 
     cython_generated = []
     if use_cython:
