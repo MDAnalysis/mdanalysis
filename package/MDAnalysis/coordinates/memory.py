@@ -33,8 +33,8 @@ Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.memory`
 .. versionadded:: 0.16.0
 
 The module contains a trajectory reader that operates on an array in
-memory, rather than reading from file. This makes it possible to use
-operate on raw coordinate using existing MDAnalysis tools. In
+memory, rather than reading from file. This makes it possible to
+operate on raw coordinates using existing MDAnalysis tools. In
 addition, it allows the user to make changes to the coordinates in a
 trajectory (e.g. through
 :attr:`MDAnalysis.core.groups.AtomGroup.positions`) without having
@@ -215,8 +215,8 @@ class Timestep(base.Timestep):
         of the array. The :meth:`replace_positions_array` method should only be
         used to set the positions to a different frame in
         :meth:`MemoryReader._read_next_timestep`; there, the memory reader sets
-        the positions to a view to the correct frame.  Modifying the positions
-        for a given frames should be done with the :attr:`positions` attribute
+        the positions to a view of the correct frame.  Modifying the positions
+        for a given frame should be done with the :attr:`positions` attribute
         that does not break the link between the array of positions in the time
         step and the :attr:`MemoryReader.coordinate_array`.
 
