@@ -119,6 +119,14 @@ PDB or GRO file is used as a topology.</dd>
 <dd>a selector for a single atom consisting of segid resid atomname,
 e.g. <code class="docutils literal"><span class="pre">DMPC</span> <span class="pre">1</span> <span class="pre">C2</span></code> selects the C2 carbon of the first residue of the
 DMPC segment</dd>
+<dt>altloc <em>alternative-location</em></dt>
+<dd>a selection for atoms where alternative locations are available, which is
+often the case with high-resolution crystal structures
+e.g. <cite>resid 4 and resname ALA and altloc B</cite> selects only the atoms of ALA-4
+that have an altloc B record.</dd>
+<dt>moltype <em>molecule-type</em></dt>
+<dd>select by molecule type, e.g. <code class="docutils literal"><span class="pre">moltype</span> <span class="pre">Protein_A</span></code>. At the moment, only
+the TPR format defines the molecule type.</dd>
 </dl>
 </div>
 <div class="section" id="boolean">
@@ -211,6 +219,10 @@ coordinates <code class="docutils literal"><span class="pre">x,</span> <span cla
 <dd>selects all atoms that are in the same segment and residue as selection,
 e.g. specify the subselection after the byres keyword.  <code class="docutils literal"><span class="pre">byres</span></code> is a
 shortcut to <code class="docutils literal"><span class="pre">same</span> <span class="pre">residue</span> <span class="pre">as</span></code></dd>
+<dt>bonded <em>selection</em></dt>
+<dd>selects all atoms that are bonded to selection
+eg: <code class="docutils literal"><span class="pre">select</span> <span class="pre">name</span> <span class="pre">H</span> <span class="pre">and</span> <span class="pre">bonded</span> <span class="pre">name</span> <span class="pre">O</span></code> selects only hydrogens bonded to
+oxygens</dd>
 </dl>
 </div>
 <div class="section" id="index">
