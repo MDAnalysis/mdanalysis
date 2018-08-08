@@ -302,7 +302,9 @@ class Janin(Ramachandran):
     If the residue selection is beyond the scope of the protein, then an error
     will be raised. If the residue selection includes the residues ALA, CYS,
     GLY, PRO, SER, THR, or VAL, then a warning will be raised and they will be
-    removed from the list of residues, but the analysis will still run.
+    removed from the list of residues, but the analysis will still run. Some
+    topologies have altloc attribues which can add duplicate atoms to the
+    selection and must be removed.
 
     """
     def __init__(self, atomgroup, **kwargs):
@@ -316,11 +318,15 @@ class Janin(Ramachandran):
         ValueError
              If the selection of residues is not contained within the protein
 
+        ValueError
+             If not enough or too many atoms are found for a residue in the
+             selection, usually due to missing atoms or alternative locations
+
         """
         super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
-        residues = self.atomgroup.residues
-        protein = self.atomgroup.universe.select_atoms("protein").residues
+        residues = atomgroup.residues
+        protein = atomgroup.universe.select_atoms("protein").residues
         remove = residues.atoms.select_atoms("resname ALA CYS GLY PRO SER"
                                              " THR VAL").residues
 
@@ -329,16 +335,20 @@ class Janin(Ramachandran):
                              "inside of a 'protein' selection can be used to "
                              "calculate dihedrals.")
         elif len(remove) != 0:
-            warnings.warn("Cannot determine chi1 and chi2 angles for residues "
-                          "without side chains of appropriate length.")
+            warnings.warn("All ALA, CYS, GLY, PRO, SER, THR, and VAL residues"
+                          " have been removed from the selection.")
             residues = residues.difference(remove)
 
-        self.ag1 = residues.atoms.select_atoms("name N and not altloc B")
-        self.ag2 = residues.atoms.select_atoms("name CA and not altloc B")
-        self.ag3 = residues.atoms.select_atoms("name CB and not altloc B")
-        self.ag4 = residues.atoms.select_atoms("name CG CG1 and not altloc B")
-        self.ag5 = residues.atoms.select_atoms("name CD CD1 OD1 ND1 SD and not"
-                                               "altloc B")
+        self.ag1 = atomgroup.atoms.select_atoms("name N")
+        self.ag2 = atomgroup.atoms.select_atoms("name CA")
+        self.ag3 = atomgroup.atoms.select_atoms("name CB")
+        self.ag4 = atomgroup.atoms.select_atoms("name CG CG1")
+        self.ag5 = atomgroup.atoms.select_atoms("name CD CD1 OD1 ND1 SD")
+
+        if any(len(self.ag1) != len(ag) for ag in [self.ag2, self.ag3,
+                                                   self.ag4, self.ag5]):
+            raise ValueError("Too many or too few atoms selected. Check for "
+                             "missing or duplicate atoms in topology.")
 
     def _conclude(self):
         self.angles = (np.rad2deg(np.array(self.angles)) + 360) % 360
