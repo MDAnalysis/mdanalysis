@@ -197,12 +197,12 @@ class Timestep(base.Timestep):
 
     Compared to the base :class:`base.Timestep`, this version
     (:class:`memory.Timestep`) has an additional
-    :meth:`replace_positions_array` method, which replaces the array of
+    :meth:`_replace_positions_array` method, which replaces the array of
     positions while the :attr:`positions` property replaces the content of the
     array.
 
     """
-    def replace_positions_array(self, new):
+    def _replace_positions_array(self, new):
         """Replace the array of positions
 
         Replaces the array of positions by another array.
@@ -210,9 +210,9 @@ class Timestep(base.Timestep):
 
         Note
         ----
-        The behavior of :meth:`replace_positions_array` is different from the
+        The behavior of :meth:`_replace_positions_array` is different from the
         behavior of the :attr:`position` property that replaces the **content**
-        of the array. The :meth:`replace_positions_array` method should only be
+        of the array. The :meth:`_replace_positions_array` method should only be
         used to set the positions to a different frame in
         :meth:`MemoryReader._read_next_timestep`; there, the memory reader sets
         the positions to a view of the correct frame.  Modifying the positions
@@ -482,7 +482,7 @@ class MemoryReader(base.ProtoReader):
         basic_slice = ([slice(None)]*(f_index) +
                        [self.ts.frame] +
                        [slice(None)]*(2-f_index))
-        ts.replace_positions_array(self.coordinate_array[basic_slice])
+        ts._replace_positions_array(self.coordinate_array[basic_slice])
 
         ts.time = self.ts.frame*self.dt
         return ts
