@@ -89,8 +89,13 @@ Then it can be plotted using the built-in plotting method :meth:`Ramachandran.pl
 
 The Janin class works in the same way, only needing a list of residues.
 
-Analysis Class
---------------
+These classes are prone to errors if the topology contains duplicate or missing
+atoms (e.g. atoms with `altloc` or incomplete residues). If the topology has as
+an `altloc` attribute, you must specify only one `altloc` for the atoms with
+more than one (``"protein and not altloc B"``).
+
+Analysis Classes
+----------------
 
 .. autoclass:: Dihedral
    :members:
@@ -198,7 +203,8 @@ class Ramachandran(AnalysisBase):
     If the residue selection is beyond the scope of the protein, then an error
     will be raised. If the residue selection includes the first or last residue,
     then a warning will be raised and they will be removed from the list of
-    residues, but the analysis will still run.
+    residues, but the analysis will still run. If a phi or psi selection cannot
+    be made, that residue will be removed from the analysis.
 
     """
     def __init__(self, atomgroup, **kwargs):
