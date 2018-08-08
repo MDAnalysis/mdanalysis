@@ -81,8 +81,8 @@
 <span class="sd">.. versionadded:: 0.16.0</span>
 
 <span class="sd">The module contains a trajectory reader that operates on an array in</span>
-<span class="sd">memory, rather than reading from file. This makes it possible to use</span>
-<span class="sd">operate on raw coordinate using existing MDAnalysis tools. In</span>
+<span class="sd">memory, rather than reading from file. This makes it possible to</span>
+<span class="sd">operate on raw coordinates using existing MDAnalysis tools. In</span>
 <span class="sd">addition, it allows the user to make changes to the coordinates in a</span>
 <span class="sd">trajectory (e.g. through</span>
 <span class="sd">:attr:`MDAnalysis.core.groups.AtomGroup.positions`) without having</span>
@@ -241,23 +241,37 @@
 
 
 <div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Timestep for the :class:`MemoryReader`</span>
+    <span class="sd">&quot;&quot;&quot;Timestep for the :class:`MemoryReader`</span>
 
-<span class="sd">    Overrides the positions property in</span>
-<span class="sd">    :class:`MDAnalysis.coordinates.base.Timestep` to use avoid</span>
-<span class="sd">    duplication of the array.</span>
+<span class="sd">    Compared to the base :class:`base.Timestep`, this version</span>
+<span class="sd">    (:class:`memory.Timestep`) has an additional</span>
+<span class="sd">    :meth:`_replace_positions_array` method, which replaces the array of</span>
+<span class="sd">    positions while the :attr:`positions` property replaces the content of the</span>
+<span class="sd">    array.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_replace_positions_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Replace the array of positions</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">fget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+<span class="sd">        Replaces the array of positions by another array.</span>
 
-    <span class="nd">@positions</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        The behavior of :meth:`_replace_positions_array` is different from the</span>
+<span class="sd">        behavior of the :attr:`position` property that replaces the **content**</span>
+<span class="sd">        of the array. The :meth:`_replace_positions_array` method should only be</span>
+<span class="sd">        used to set the positions to a different frame in</span>
+<span class="sd">        :meth:`MemoryReader._read_next_timestep`; there, the memory reader sets</span>
+<span class="sd">        the positions to a view of the correct frame.  Modifying the positions</span>
+<span class="sd">        for a given frame should be done with the :attr:`positions` attribute</span>
+<span class="sd">        that does not break the link between the array of positions in the time</span>
+<span class="sd">        step and the :attr:`MemoryReader.coordinate_array`.</span>
+
+
+<span class="sd">        .. versionadded:: 0.19.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">has_positions</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="c1"># Use reference to original rather than a copy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">new</span></div>
 
 
@@ -310,6 +324,7 @@
 <span class="sd">        At the moment, only a fixed `dimension` is supported, i.e., the same</span>
 <span class="sd">        unit cell for all frames in `coordinate_array`. See issue `#1041`_.</span>
 
+
 <span class="sd">        .. _`#1041`: https://github.com/MDAnalysis/mdanalysis/issues/1041</span>
 
 <span class="sd">        .. versionchanged:: 0.18.1</span>
@@ -321,13 +336,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span> <span class="o">=</span> <span class="n">order</span>
 
-        <span class="c1"># See Issue #1685. The block below checks if the coordinate array passed is of shape (N, 3) and if it is, the coordiante array is reshaped to (1, N, 3)</span>
+        <span class="c1"># See Issue #1685. The block below checks if the coordinate array</span>
+        <span class="c1"># passed is of shape (N, 3) and if it is, the coordiante array is</span>
+        <span class="c1"># reshaped to (1, N, 3)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coordinate_array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">coordinate_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
                     <span class="n">coordinate_array</span> <span class="o">=</span> <span class="n">coordinate_array</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
         <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The input has to be a numpy.ndarray that corresponds to the layout specified by the &#39;order&#39; keyword.&quot;</span>
-                <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The input has to be a numpy.ndarray that &quot;</span>
+                            <span class="s2">&quot;corresponds to the layout specified by the &quot;</span>
+                            <span class="s2">&quot;&#39;order&#39; keyword.&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">coordinate_array</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> \
@@ -512,7 +530,7 @@
         <span class="n">basic_slice</span> <span class="o">=</span> <span class="p">([</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span><span class="o">*</span><span class="p">(</span><span class="n">f_index</span><span class="p">)</span> <span class="o">+</span>
                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span> <span class="o">+</span>
                        <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="n">f_index</span><span class="p">))</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="p">[</span><span class="n">basic_slice</span><span class="p">]</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">_replace_positions_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="p">[</span><span class="n">basic_slice</span><span class="p">])</span>
 
         <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
         <span class="k">return</span> <span class="n">ts</span>
@@ -531,30 +549,30 @@
                     <span class="n">nframes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
                     <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
                 <span class="p">))</span>
-    
+
 <div class="viewcode-block" id="MemoryReader.add_transformations"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.add_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Add all transformations to be applied to the trajectory.</span>
-<span class="sd">        </span>
+
 <span class="sd">        This function take as list of transformations as an argument. These</span>
 <span class="sd">        transformations are functions that will be called by the Reader and given</span>
 <span class="sd">        a :class:`Timestep` object as argument, which will be transformed and returned</span>
 <span class="sd">        to the Reader.</span>
-<span class="sd">        The transformations can be part of the :mod:`~MDAnalysis.transformations` </span>
-<span class="sd">        module, or created by the user, and are stored as a list `transformations`. </span>
+<span class="sd">        The transformations can be part of the :mod:`~MDAnalysis.transformations`</span>
+<span class="sd">        module, or created by the user, and are stored as a list `transformations`.</span>
 <span class="sd">        This list can only be modified once, and further calls of this function will</span>
 <span class="sd">        raise an exception.</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. code-block:: python</span>
-<span class="sd">                         </span>
+
 <span class="sd">          u = MDAnalysis.Universe(topology, coordinates)</span>
 <span class="sd">          workflow = [some_transform, another_transform, this_transform]</span>
 <span class="sd">          u.trajectory.add_transformations(*workflow)</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        transform_list : list</span>
 <span class="sd">            list of all the transformations that will be applied to the coordinates</span>
-<span class="sd">            </span>
+
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        :mod:`MDAnalysis.transformations`</span>
@@ -563,7 +581,7 @@
         <span class="c1">#to avoid unintended behaviour where the coordinates of each frame are transformed</span>
         <span class="c1">#multiple times when iterating over the trajectory.</span>
         <span class="c1">#In this method, the trajectory is modified all at once and once only.</span>
-        
+
         <span class="nb">super</span><span class="p">(</span><span class="n">MemoryReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transformations</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
@@ -573,7 +591,7 @@
         <span class="sd">&quot;&quot;&quot; Applies the transformations to the timestep.&quot;&quot;&quot;</span>
         <span class="c1"># Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`</span>
         <span class="c1"># to avoid applying the same transformations multiple times on each frame</span>
-        
+
         <span class="k">return</span> <span class="n">ts</span></div>
 </pre></div>
 

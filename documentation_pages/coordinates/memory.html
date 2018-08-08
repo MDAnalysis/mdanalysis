@@ -67,8 +67,8 @@
 <p><span class="versionmodified">New in version 0.16.0.</span></p>
 </div>
 <p>The module contains a trajectory reader that operates on an array in
-memory, rather than reading from file. This makes it possible to use
-operate on raw coordinate using existing MDAnalysis tools. In
+memory, rather than reading from file. This makes it possible to
+operate on raw coordinates using existing MDAnalysis tools. In
 addition, it allows the user to make changes to the coordinates in a
 trajectory (e.g. through
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.groups.AtomGroup.positions</span></code></a>) without having
@@ -194,9 +194,11 @@ on the sub-system.</p>
 <dt id="MDAnalysis.coordinates.memory.Timestep">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.memory.</code><code class="descname">Timestep</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/memory.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Timestep for the <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal"><span class="pre">MemoryReader</span></code></a></p>
-<p>Overrides the positions property in
-<a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep</span></code></a> to use avoid
-duplication of the array.</p>
+<p>Compared to the base <code class="xref py py-class docutils literal"><span class="pre">base.Timestep</span></code>, this version
+(<code class="xref py py-class docutils literal"><span class="pre">memory.Timestep</span></code>) has an additional
+<code class="xref py py-meth docutils literal"><span class="pre">_replace_positions_array()</span></code> method, which replaces the array of
+positions while the <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.positions" title="MDAnalysis.coordinates.memory.Timestep.positions"><code class="xref py py-attr docutils literal"><span class="pre">positions</span></code></a> property replaces the content of the
+array.</p>
 <p>Create a Timestep, representing a frame of a trajectory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -377,6 +379,29 @@ or remove the data.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="MDAnalysis.coordinates.memory.Timestep.positions">
+<code class="descname">positions</code><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>A record of the positions of all atoms in this Timestep</p>
+<p>Setting this attribute will add positions to the Timestep if they
+weren’t originally present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>positions</strong> – position data of shape <code class="docutils literal"><span class="pre">(n_atoms,</span> <span class="pre">3)</span></code> for all atoms</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray with dtype numpy.float32</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal"><span class="pre">MDAnalysis.exceptions.NoDataError</span></code></a> – if the Timestep has no position data</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Now can raise <code class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></code> when no position data present</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="MDAnalysis.coordinates.memory.Timestep.time">
 <code class="descname">time</code><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.time" title="Permalink to this definition">¶</a></dt>
 <dd><p>The time in ps of this timestep</p>
@@ -505,11 +530,11 @@ when created from an array</li>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>At the moment, only a fixed <cite>dimension</cite> is supported, i.e., the same
+<p class="last">At the moment, only a fixed <cite>dimension</cite> is supported, i.e., the same
 unit cell for all frames in <cite>coordinate_array</cite>. See issue <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/1041">#1041</a>.</p>
-<div class="last versionchanged">
-<p><span class="versionmodified">Changed in version 0.18.1: </span>The input to the MemoryReader now must be a np.ndarray</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.1: </span>The input to the MemoryReader now must be a np.ndarray</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.memory.MemoryReader.OtherWriter">
