@@ -462,7 +462,8 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
     Currently only supports brute force and Periodic KDtree
 
     .. SeeAlso:: :func:'MDAnalysis.lib.distances.distance_array'
-    .. SeeAlso:: :func:'MDAnalysis.lib.pkdtree.PeriodicKDTree'
+    .. SeeAlso:: :func:'MDAnalysis.lib.pkdtree.PeriodicKDTree.search'
+    .. SeeAlso:: :class:'MDAnalysis.lib.nsgrid.FastNS.search'
     """
     if box is not None:
         if box.shape[0] != 6:
@@ -517,10 +518,12 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
     Currently implemented methods are present in the ``methods`` dictionary
         bruteforce : returns ``_bruteforce_capped``
         PKDtree : return ``_pkdtree_capped`
+        NSGrid : return ``_nsgrid_capped`
 
     """
     methods = {'bruteforce': _bruteforce_capped,
-            'pkdtree': _pkdtree_capped}
+               'pkdtree': _pkdtree_capped,
+               'nsgrid': _nsgrid_capped}
 
     if method is not None:
         return methods[method]
@@ -567,7 +570,6 @@ def _bruteforce_capped(reference, configuration, max_cutoff,
 
     """
     pairs, distance = [], []
-
 
     reference = np.asarray(reference, dtype=np.float32)
     configuration = np.asarray(configuration, dtype=np.float32)
@@ -644,6 +646,77 @@ def _pkdtree_capped(reference, configuration, max_cutoff,
     return pairs, distances
 
 
+def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
+                   box=None):
+    """Search all the pairs in *reference* and *configuration* within
+    a specified distance using Grid Search
+
+
+    Parameters
+    -----------
+    reference : array
+        reference coordinates array with shape ``reference.shape = (3,)``
+        or ``reference.shape = (len(reference), 3)``.
+    configuration : array
+        Configuration coordinate array with shape ``reference.shape = (3,)``
+        or ``reference.shape = (len(reference), 3)``
+    max_cutoff : float
+        Maximum cutoff distance between the reference and configuration
+    min_cutoff : (optional) float
+        Minimum cutoff distance between reference and configuration [None]
+    box :  array
+        The dimensions, if provided, must be provided in the same
+        The unitcell dimesions for this system format as returned
+        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        ``[lx,ly, lz, alpha, beta, gamma]``. Minimum image convention
+        is applied if the box is provided
+
+    """
+    from .nsgrid import FastNS
+    if reference.shape == (3, ):
+        reference = reference[None, :]
+    if configuration.shape == (3, ):
+        configuration = configuration[None, :]
+
+    if box is None:
+        # create a pseudobox
+        # define the max range
+        # and supply the pseudobox
+        # along with only one set of coordinates
+        pseudobox = np.zeros(6, dtype=np.float32)
+        all_coords = np.concatenate([reference, configuration])
+        lmax = all_coords.max(axis=0)
+        lmin = all_coords.min(axis=0)
+        # Using maximum dimension as the box size
+        boxsize = (lmax-lmin).max()
+        # to avoid failures of very close particles
+        # but with larger cutoff
+        if boxsize < 2*max_cutoff:
+            # just enough box size so that NSGrid doesnot fails
+            sizefactor = 2.2*max_cutoff/boxsize
+        else:
+            sizefactor = 1.2
+        pseudobox[:3] = sizefactor*boxsize
+        pseudobox[3:] = 90.
+        shiftref, shiftconf = reference.copy(), configuration.copy()
+        # Extra padding near the origin
+        shiftref -= lmin - 0.1*boxsize
+        shiftconf -= lmin - 0.1*boxsize
+        gridsearch = FastNS(max_cutoff, shiftconf, box=pseudobox, pbc=False)
+        results = gridsearch.search(shiftref)
+    else:
+        gridsearch = FastNS(max_cutoff, configuration, box=box)
+        results = gridsearch.search(reference)
+
+    pairs = results.get_pairs()
+    pair_distance = results.get_pair_distances()
+
+    if min_cutoff is not None:
+        idx = pair_distance > min_cutoff
+        pairs, pair_distance = pairs[idx], pair_distance[idx]
+    return pairs, pair_distance
+
+
 def self_capped_distance(reference, max_cutoff, min_cutoff=None,
                          box=None, method=None):
     """Finds all the pairs and respective distances within a specified cutoff
@@ -695,10 +768,11 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None,
 
     Note
     -----
-    Currently only supports brute force and Periodic KDtree
+    Currently only supports brute force, Periodic KDtree and Grid Search
 
     .. SeeAlso:: :func:'MDAnalysis.lib.distances.self_distance_array'
-    .. SeeAlso:: :func:'MDAnalysis.lib.pkdtree.PeriodicKDTree'
+    .. SeeAlso:: :func:'MDAnalysis.lib.pkdtree.PeriodicKDTree.search'
+    .. SeeAlso:: :func:'MDAnalysis.lib.nsgrid.FastNS.self_search'
     """
     if box is not None:
         if box.shape[0] != 6:
@@ -750,10 +824,12 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None,
     Currently implemented methods are present in the ``methods`` dictionary
         bruteforce : returns ``_bruteforce_capped_self``
         PKDtree : return ``_pkdtree_capped_self``
+        NSGrid : return ``_nsgrid_capped_self``
 
     """
     methods = {'bruteforce': _bruteforce_capped_self,
-            'pkdtree': _pkdtree_capped_self}
+            'pkdtree': _pkdtree_capped_self,
+            'nsgrid': _nsgrid_capped_self}
 
     if method is not None:
         return methods[method]
@@ -856,6 +932,64 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None,
             mask = np.where(distance > min_cutoff)[0]
             pairs, distance = pairs[mask], distance[mask]
     return np.asarray(pairs), np.asarray(distance)
+
+
+def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None,
+                        box=None):
+    """Finds all the pairs among the *reference* coordinates within
+    a fixed distance using gridsearch
+
+    Returns
+    -------
+    pairs : array
+        Arrray of ``[i, j]`` pairs such that atom-index ``i``
+        and ``j`` from reference array are within a fixed distance
+    distance: array
+         Distance between ``reference[i]`` and ``reference[j]``
+         atom coordinate
+
+    """
+    from .nsgrid import FastNS
+
+    reference = np.asarray(reference, dtype=np.float32)
+    if reference.shape == (3, ) or len(reference) == 1:
+        return [], []
+
+    if box is None:
+        # create a pseudobox
+        # define the max range
+        # and supply the pseudobox
+        # along with only one set of coordinates
+        pseudobox = np.zeros(6, dtype=np.float32)
+        lmax = reference.max(axis=0)
+        lmin = reference.min(axis=0)
+        # Using maximum dimension as the box size
+        boxsize = (lmax-lmin).max()
+        # to avoid failures of very close particles
+        # but with larger cutoff
+        if boxsize < 2*max_cutoff:
+            # just enough box size so that NSGrid doesnot fails
+            sizefactor = 2.2*max_cutoff/boxsize
+        else:
+            sizefactor = 1.2
+        pseudobox[:3] = sizefactor*boxsize
+        pseudobox[3:] = 90.
+        shiftref = reference.copy()
+        # Extra padding near the origin
+        shiftref -= lmin - 0.1*boxsize
+        gridsearch = FastNS(max_cutoff, shiftref, box=pseudobox, pbc=False)
+        results = gridsearch.self_search()
+    else:
+        gridsearch = FastNS(max_cutoff, reference, box=box)
+        results = gridsearch.self_search()
+
+    pairs = results.get_pairs()[::2, :]
+    pair_distance = results.get_pair_distances()[::2]
+
+    if min_cutoff is not None:
+        idx = pair_distance > min_cutoff
+        pairs, pair_distance = pairs[idx], pair_distance[idx]
+    return pairs, pair_distance
 
 
 def transform_RtoS(inputcoords, box, backend="serial"):
