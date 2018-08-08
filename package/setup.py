@@ -88,6 +88,9 @@ try:
               "parallelization module".format(
                Cython.__version__, required_version))
         cython_found = False
+
+    cython_linetrace = os.getenv("CYTHON_TRACE_NOGIL", False)
+
 except ImportError:
     cython_found = False
     if not is_release:
@@ -300,6 +303,12 @@ def extensions(config):
     else:
         mathlib = ['m']
 
+    # Add cython linetrace define if needed
+    if cython_linetrace:
+        extra_compile_args.append("-DCYTHON_TRACE_NOGIL")
+        cpp_extra_compile_args.append("-DCYTHON_TRACE_NOGIL")
+
+
     libdcd = MDAExtension('MDAnalysis.lib.formats.libdcd',
                           ['MDAnalysis/lib/formats/libdcd' + source_suffix],
                           include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
@@ -388,8 +397,11 @@ def extensions(config):
     if use_cython:
         extensions = cythonize(
             pre_exts,
-            compiler_directives={'linetrace': os.environ.get('CYTHON_TRACE_NOGIL', False)},
+            compiler_directives={'linetrace' : cython_linetrace,
+                                 'embedsignature' : cython_linetrace},
         )
+        if cython_linetrace:
+            print("Cython coverage will be enabled")
         for pre_ext, post_ext in zip(pre_exts, extensions):
             for source in post_ext.sources:
                 if source not in pre_ext.sources:
@@ -573,7 +585,7 @@ if __name__ == '__main__':
     )
 
     # Releases keep their cythonized stuff for shipping.
-    if not config.get('keep_cythonized', default=is_release):
+    if not config.get('keep_cythonized', default=is_release) and not cython_linetrace:
         for cythonized in cythonfiles:
             try:
                 os.unlink(cythonized)
