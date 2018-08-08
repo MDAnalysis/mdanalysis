@@ -109,6 +109,11 @@ class TestRamachandran(object):
         with pytest.warns(UserWarning):
             rama = Ramachandran(universe.select_atoms("protein")).run()
 
+    def test_None_removal(self):
+        with pytest.warns(UserWarning):
+            u = mda.coordinates.MMTF.fetch_mmtf('19hc')
+            rama = Ramachandran(u.select_atoms("protein").residues[1:-1])
+
     def test_plot(self, universe):
         ax = Ramachandran(universe.select_atoms("resid 5-10")).run().plot()
         assert isinstance(ax, matplotlib.axes.Axes), \
@@ -151,6 +156,12 @@ class TestJanin(object):
     def test_remove_residues(self, universe):
         with pytest.warns(UserWarning):
             janin = Janin(universe.select_atoms("protein")).run()
+
+    def test_atom_selection(self):
+        with pytest.raises(ValueError):
+            u = mda.coordinates.MMTF.fetch_mmtf('1a28')
+            janin = Janin(u.select_atoms("protein and not resname ALA CYS GLY "
+                                         "PRO SER THR VAL"))
 
     def test_plot(self, universe):
         ax = Janin(universe.select_atoms("resid 5-10")).run().plot()

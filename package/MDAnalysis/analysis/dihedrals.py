@@ -339,11 +339,11 @@ class Janin(Ramachandran):
                           " have been removed from the selection.")
             residues = residues.difference(remove)
 
-        self.ag1 = atomgroup.atoms.select_atoms("name N")
-        self.ag2 = atomgroup.atoms.select_atoms("name CA")
-        self.ag3 = atomgroup.atoms.select_atoms("name CB")
-        self.ag4 = atomgroup.atoms.select_atoms("name CG CG1")
-        self.ag5 = atomgroup.atoms.select_atoms("name CD CD1 OD1 ND1 SD")
+        self.ag1 = residues.atoms.select_atoms("name N")
+        self.ag2 = residues.atoms.select_atoms("name CA")
+        self.ag3 = residues.atoms.select_atoms("name CB")
+        self.ag4 = residues.atoms.select_atoms("name CG CG1")
+        self.ag5 = residues.atoms.select_atoms("name CD CD1 OD1 ND1 SD")
 
         if any(len(self.ag1) != len(ag) for ag in [self.ag2, self.ag3,
                                                    self.ag4, self.ag5]):
