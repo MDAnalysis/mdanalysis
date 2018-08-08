@@ -92,6 +92,16 @@ atom *seg-name*  *residue-number*  *atom-name*
     e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of the
     DMPC segment
 
+altloc *alternative-location*
+    a selection for atoms where alternative locations are available, which is
+    often the case with high-resolution crystal structures
+    e.g. `resid 4 and resname ALA and altloc B` selects only the atoms of ALA-4
+    that have an altloc B record.
+
+moltype *molecule-type*
+    select by molecule type, e.g. ``moltype Protein_A``. At the moment, only
+    the TPR format defines the molecule type.
+
 Boolean
 -------
 
@@ -188,6 +198,11 @@ byres *selection*
     selects all atoms that are in the same segment and residue as selection,
     e.g. specify the subselection after the byres keyword.  ``byres`` is a
     shortcut to ``same residue as``
+
+bonded *selection*
+    selects all atoms that are bonded to selection
+    eg: ``select name H and bonded name O`` selects only hydrogens bonded to
+    oxygens
 
 Index
 -----

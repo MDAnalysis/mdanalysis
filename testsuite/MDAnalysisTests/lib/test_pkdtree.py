@@ -119,7 +119,6 @@ def test_searchpairs(b, radius, result):
         indices = tree.search_pairs(radius)
         assert_equal(len(indices), len(result))
 
-
 @pytest.mark.parametrize('radius, result', ((0.1, []),
                                             (0.3, [[0, 2]])))
 def test_ckd_searchpairs_nopbc(radius, result):

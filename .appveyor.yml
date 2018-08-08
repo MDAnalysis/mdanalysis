@@ -7,13 +7,6 @@ max_jobs: 100
 cache:
     - '%LOCALAPPDATA%\pip\Cache'
 
-matrix:
-    # FIXME: allow all Windows builds
-    # to fail for now; remove this
-    # when we have full Windows compatibility
-    allow_failures:
-      - PYTHON_ARCH: 64
-
 image:
     - Visual Studio 2015
 

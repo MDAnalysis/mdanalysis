@@ -28,6 +28,7 @@ import importlib
 import tempfile
 import numpy as np
 import sys
+import os
 import warnings
 
 import pytest
@@ -114,6 +115,9 @@ class TestEncore(object):
                         err_msg="Error in TriangularMatrix: multiplication by scalar gave\
 inconsistent results")
 
+    @pytest.mark.xfail(os.name == 'nt',
+                       strict=True,
+                       reason="Not yet supported on Windows.")
     def test_parallel_calculation(self):
 
         def function(x):
