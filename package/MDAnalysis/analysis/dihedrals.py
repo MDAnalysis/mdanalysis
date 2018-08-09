@@ -404,7 +404,6 @@ class Janin(Ramachandran):
         ax.set(xticks=range(0,361,60), yticks=range(0,361,60),
                xlabel=r"$\chi1$ (deg)", ylabel=r"$\chi2$ (deg)")
         if ref == True:
-            if ref == True:
             X, Y = np.meshgrid(np.arange(0, 360, 6), np.arange(0, 360, 6))
             levels = [1, 6, 600]
             colors = ['#A1D4FF', '#35A1FF']
