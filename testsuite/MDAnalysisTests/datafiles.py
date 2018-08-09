@@ -85,7 +85,7 @@ __all__ = [
     "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
-    "TXYZ", "ARC", "ARC_PBC",        # Tinker files
+    "TXYZ", "ARC", "ARC_PBC",       # Tinker files
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
@@ -159,7 +159,7 @@ __all__ = [
     "DihedralArray", "DihedralsArray", # time series of single dihedral
     "RamaArray", "GLYRamaArray", # time series of phi/psi angles
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
-    "Rama_ref", "Janin_ref" # data for allowed and marginally allowed regions
+    "PDB_rama", "PDB_janin" # for testing failures of Ramachandran and Janin classes
 ]
 
 from pkg_resources import resource_filename
@@ -426,9 +426,8 @@ RamaArray = resource_filename(__name__, 'data/adk_oplsaa_rama.npy')
 GLYRamaArray = resource_filename(__name__, 'data/adk_oplsaa_GLY_rama.npy')
 JaninArray = resource_filename(__name__, 'data/adk_oplsaa_janin.npy')
 LYSJaninArray = resource_filename(__name__, 'data/adk_oplsaa_LYS_janin.npy')
-
-Rama_ref = resource_filename(__name__, 'data/rama_ref_data.npy')
-Janin_ref = resource_filename(__name__, 'data/janin_ref_data.npy')
+PDB_rama = resource_filename(__name__, 'data/19hc.pdb.gz')
+PDB_janin = resource_filename(__name__, 'data/1a28.pdb.gz')
 
 # This should be the last line: clean up namespace
 del resource_filename

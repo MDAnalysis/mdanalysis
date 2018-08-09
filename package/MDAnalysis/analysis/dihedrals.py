@@ -146,7 +146,7 @@ import warnings
 import MDAnalysis as mda
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.lib.distances import calc_dihedrals
-from MDAnalysisTests.datafiles import Rama_ref, Janin_ref
+from MDAnalysis.analysis.data.filenames import Rama_ref, Janin_ref
 
 
 class Dihedral(AnalysisBase):
@@ -301,13 +301,13 @@ class Ramachandran(AnalysisBase):
         ax.axis([-180,180,-180,180])
         ax.axhline(0, color='k', lw=1)
         ax.axvline(0, color='k', lw=1)
-        ax.set(xticks=range(-180,181,60), yticks=range(-180,181,60),
+        ax.set(xticks=range(-180, 181, 60), yticks=range(-180, 181, 60),
                xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
         if ref == True:
             X, Y = np.meshgrid(np.arange(-180, 180, 4), np.arange(-180, 180, 4))
             levels = [1, 17, 15000]
             colors = ['#A1D4FF', '#35A1FF']
-            ax.contourf(X, Y, Rama_ref, levels=levels, colors=colors)
+            ax.contourf(X, Y, np.load(Rama_ref), levels=levels, colors=colors)
         a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
         ax.scatter(a[:,0], a[:,1], **kwargs)
         return ax
@@ -401,13 +401,13 @@ class Janin(Ramachandran):
         ax.axis([0, 360, 0, 360])
         ax.axhline(180, color='k', lw=1)
         ax.axvline(180, color='k', lw=1)
-        ax.set(xticks=range(0,361,60), yticks=range(0,361,60),
+        ax.set(xticks=range(0, 361, 60), yticks=range(0, 361, 60),
                xlabel=r"$\chi1$ (deg)", ylabel=r"$\chi2$ (deg)")
         if ref == True:
             X, Y = np.meshgrid(np.arange(0, 360, 6), np.arange(0, 360, 6))
             levels = [1, 6, 600]
             colors = ['#A1D4FF', '#35A1FF']
-            ax.contourf(X, Y, Rama_ref, levels=levels, colors=colors)
+            ax.contourf(X, Y, np.load(Janin_ref), levels=levels, colors=colors)
         a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
         ax.scatter(a[:,0], a[:,1], **kwargs)
         return ax

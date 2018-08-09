@@ -29,7 +29,7 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (GRO, XTC, DihedralArray, DihedralsArray,
                                        RamaArray, GLYRamaArray, JaninArray,
-                                       LYSJaninArray)
+                                       LYSJaninArray, PDB_rama, PDB_janin)
 from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
 
 
@@ -76,20 +76,22 @@ class TestRamachandran(object):
     def universe(self):
         return mda.Universe(GRO, XTC)
 
+    @pytest.fixture()
+    def rama_ref_array(self):
+        return np.load(RamaArray)
+
     def test_ramachandran(self, universe):
         rama = Ramachandran(universe.select_atoms("protein")).run()
-        test_rama = np.load(RamaArray)
 
-        assert_almost_equal(rama.angles, test_rama, 5,
+        assert_almost_equal(rama.angles, rama_ref_array, 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
     def test_ramachandran_single_frame(self, universe):
         rama = Ramachandran(universe.select_atoms("protein"),
                             start=5, stop=6).run()
-        test_rama = [np.load(RamaArray)[5]]
 
-        assert_almost_equal(rama.angles, test_rama, 5,
+        assert_almost_equal(rama.angles, [rama_ref_array[5]], 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -111,7 +113,7 @@ class TestRamachandran(object):
 
     def test_None_removal(self):
         with pytest.warns(UserWarning):
-            u = mda.coordinates.MMTF.fetch_mmtf('19hc')
+            u = mda.Universe(PDB_rama)
             rama = Ramachandran(u.select_atoms("protein").residues[1:-1])
 
     def test_plot(self, universe):
@@ -125,19 +127,22 @@ class TestJanin(object):
     def universe(self):
         return mda.Universe(GRO, XTC)
 
+    @pytest.fixture()
+    def janin_ref_array(self):
+        return np.load(JaninArray)
+
     def test_janin(self, universe):
         janin = Janin(universe.select_atoms("protein")).run()
-        test_janin = np.load(JaninArray)
 
-        assert_almost_equal(janin.angles, test_janin, 4,
+        # Test precision lowered to account for platform differences with osx
+        assert_almost_equal(janin.angles, janin_ref_array, 3,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
     def test_janin_single_frame(self, universe):
         janin = Janin(universe.select_atoms("protein"), start=5, stop=6).run()
-        test_janin = [np.load(JaninArray)[5]]
 
-        assert_almost_equal(janin.angles, test_janin, 4,
+        assert_almost_equal(janin.angles, janin_ref_array[5], 3,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -145,7 +150,7 @@ class TestJanin(object):
         janin = Janin(universe.select_atoms("resname LYS")).run()
         test_janin = np.load(LYSJaninArray)
 
-        assert_almost_equal(janin.angles, test_janin, 4,
+        assert_almost_equal(janin.angles, test_janin, 3,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -159,7 +164,7 @@ class TestJanin(object):
 
     def test_atom_selection(self):
         with pytest.raises(ValueError):
-            u = mda.coordinates.MMTF.fetch_mmtf('1a28')
+            u = mda.Universe(PDB_janin)
             janin = Janin(u.select_atoms("protein and not resname ALA CYS GLY "
                                          "PRO SER THR VAL"))
 
