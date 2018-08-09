@@ -158,7 +158,8 @@ __all__ = [
     "GRO_MEMPROT", "XTC_MEMPROT", # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
     "DihedralArray", "DihedralsArray", # time series of single dihedral
     "RamaArray", "GLYRamaArray", # time series of phi/psi angles
-    "JaninArray", "LYSJaninArray" # time series of chi1/chi2 angles
+    "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
+    "Rama_ref", "Janin_ref" # data for allowed and marginally allowed regions
 ]
 
 from pkg_resources import resource_filename
@@ -425,6 +426,9 @@ RamaArray = resource_filename(__name__, 'data/adk_oplsaa_rama.npy')
 GLYRamaArray = resource_filename(__name__, 'data/adk_oplsaa_GLY_rama.npy')
 JaninArray = resource_filename(__name__, 'data/adk_oplsaa_janin.npy')
 LYSJaninArray = resource_filename(__name__, 'data/adk_oplsaa_LYS_janin.npy')
+
+Rama_ref = resource_filename(__name__, 'data/rama_ref_data.npy')
+Janin_ref = resource_filename(__name__, 'data/janin_ref_data.npy')
 
 # This should be the last line: clean up namespace
 del resource_filename

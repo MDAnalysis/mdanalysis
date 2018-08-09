@@ -89,6 +89,13 @@ Then it can be plotted using the built-in plotting method :meth:`Ramachandran.pl
 
 The Janin class works in the same way, only needing a list of residues.
 
+Reference plots can be added to the axes for both the Ramachandran and Janin
+classes using the kwarg ``ref=True``. These were made using data obtained from
+a large selection of pdb files, and were analyzed using these classes. The
+allowed and marginally allowed regions of the Ramachandran reference plt have
+cutoffs set to include 90% and 99% of the data points, and the Janin reference
+plot has cutoffs for 90% and 98% of the data points.
+
 These classes are prone to errors if the topology contains duplicate or missing
 atoms (e.g. atoms with `altloc` or incomplete residues). If the topology has as
 an `altloc` attribute, you must specify only one `altloc` for the atoms with
@@ -139,6 +146,7 @@ import warnings
 import MDAnalysis as mda
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.lib.distances import calc_dihedrals
+from MDAnalysisTests.datafiles import Rama_ref, Janin_ref
 
 
 class Dihedral(AnalysisBase):
@@ -268,7 +276,7 @@ class Ramachandran(AnalysisBase):
         self.angles = np.rad2deg(np.array(self.angles))
 
 
-    def plot(self, ax=None, **kwargs):
+    def plot(self, ax=None, ref=False, **kwargs):
         """Plots data into standard ramachandran plot. Each time step in
         :attr:`Ramachandran.angles` is plotted onto the same graph.
 
@@ -277,6 +285,10 @@ class Ramachandran(AnalysisBase):
         ax : :class:`matplotlib.axes.Axes`
               If no `ax` is supplied or set to ``None`` then the plot will
               be added to the current active axes.
+
+        ref : bool, optional
+              Adds a general Ramachandran plot which shows allowed and
+              marginally allowed regions
 
         Returns
         -------
@@ -291,6 +303,11 @@ class Ramachandran(AnalysisBase):
         ax.axvline(0, color='k', lw=1)
         ax.set(xticks=range(-180,181,60), yticks=range(-180,181,60),
                xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
+        if ref == True:
+            X, Y = np.meshgrid(np.arange(-180, 180, 4), np.arange(-180, 180, 4))
+            levels = [1, 17, 15000]
+            colors = ['#A1D4FF', '#35A1FF']
+            ax.contourf(X, Y, Rama_ref, levels=levels, colors=colors)
         a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
         ax.scatter(a[:,0], a[:,1], **kwargs)
         return ax
@@ -359,7 +376,7 @@ class Janin(Ramachandran):
     def _conclude(self):
         self.angles = (np.rad2deg(np.array(self.angles)) + 360) % 360
 
-    def plot(self, ax=None, **kwargs):
+    def plot(self, ax=None, ref=False, **kwargs):
         """Plots data into standard Janin plot. Each time step in
         :attr:`Janin.angles` is plotted onto the same graph.
 
@@ -368,6 +385,10 @@ class Janin(Ramachandran):
         ax : :class:`matplotlib.axes.Axes`
               If no `ax` is supplied or set to ``None`` then the plot will
               be added to the current active axes.
+
+        ref : bool, optional
+              Adds a general Janin plot which shows allowed and marginally
+              allowed regions
 
         Returns
         -------
@@ -381,7 +402,13 @@ class Janin(Ramachandran):
         ax.axhline(180, color='k', lw=1)
         ax.axvline(180, color='k', lw=1)
         ax.set(xticks=range(0,361,60), yticks=range(0,361,60),
-               xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
+               xlabel=r"$\chi1$ (deg)", ylabel=r"$\chi2$ (deg)")
+        if ref == True:
+            if ref == True:
+            X, Y = np.meshgrid(np.arange(0, 360, 6), np.arange(0, 360, 6))
+            levels = [1, 6, 600]
+            colors = ['#A1D4FF', '#35A1FF']
+            ax.contourf(X, Y, Rama_ref, levels=levels, colors=colors)
         a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
         ax.scatter(a[:,0], a[:,1], **kwargs)
         return ax
