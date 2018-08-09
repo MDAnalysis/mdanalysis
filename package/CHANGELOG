@@ -13,6 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+mm/dd/yy davidercruz
+
+  * 0.21.0
+
+Enhancements
+  * Added wrap/unwrap transformations (PR #2038)
+
+
 mm/dd/yy richardjgowers
 
   * 0.20.2
@@ -22,8 +30,6 @@ Fixes
     (Issue #2350)
   * Chainreader and continuous option work correctly when readers work for more 
     than one format (Issue #2353)
-
-Enhancements
 
 
 09/05/19 IAlibay, richardjgowers
