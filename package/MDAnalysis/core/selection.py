@@ -49,10 +49,12 @@ import warnings
 import numpy as np
 from numpy.lib.utils import deprecate
 
+
 from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.lib.util import unique_int_1d
 from MDAnalysis.core import flags
 from ..lib import distances
+from ..lib import nsgrid
 from ..exceptions import SelectionError, NoDataError
 
 
@@ -237,6 +239,7 @@ class DistanceSelection(Selection):
      - _apply_distmat
     """
     def __init__(self):
+        
         if flags['use_KDTree_routines'] in (True, 'fast', 'always'):
             self.apply = self._apply_KDTree
         else:
@@ -303,6 +306,41 @@ class AroundSelection(DistanceSelection):
         mask = (dist <= self.cutoff).any(axis=1)
 
         return sys[mask].unique
+
+    def _apply_nsgrid(self, group):
+        sel = self.sel.apply(group)
+        # All atoms in group that aren't in sel
+        sys = group[~np.in1d(group.indices, sel.indices)]
+        box = self.validate_dimensions(group.dimensions)
+        # Box handling for no PBC case
+        if box is None:
+            pseudobox = np.zeros(6, dtype=np.float32)
+            all_coords = np.concatenate([group.positions, sel.positions])
+            lmax = all_coords.max(axis=0)
+            lmin = all_coords.min(axis=0)
+            # Using maximum dimension as the box size
+            boxsize = (lmax-lmin).max()
+            # to avoid failures of very close particles
+            # but with larger cutoff
+            if boxsize < 2*self.cutoff:
+                # just enough box size so that NSGrid doesnot fails
+                sizefactor = 2.2*self.cutoff/boxsize
+            else:
+                sizefactor = 1.2
+            pseudobox[:3] = sizefactor*boxsize
+            pseudobox[3:] = 90.
+            shiftref, shiftconf = sys.positions.copy(), sel.positions.copy()
+            # Extra padding near the origin
+            shiftref -= lmin - 0.1*boxsize
+            shiftconf -= lmin - 0.1*boxsize
+            gridsearch = nsgrid.FastNS(self.cutoff, shiftref, box=pseudobox, pbc=False)
+            results = gridsearch.search(shiftconf)
+        else:
+            gridsearch = nsgrid.FastNS(self.cutoff, sys.positions, box=box)
+            results = gridsearch.search(sel.positions)
+
+        indices = np.sort(results.get_pairs()[:, 1])
+        return sys[indices].unique
 
 
 class SphericalLayerSelection(DistanceSelection):

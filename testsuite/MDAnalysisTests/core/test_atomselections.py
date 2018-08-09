@@ -502,6 +502,13 @@ class BaseDistanceSelection(object):
                ('distmat', True),
                ('distmat', False)]
 
+    around_methods =  [('kdtree', False),
+                       ('kdtree', True),
+                       ('distmat', True),
+                       ('distmat', False),
+                       ('nsgrid', False),
+                       ('nsgrid', True)]
+
     @staticmethod
     def choosemeth(sel, meth, periodic):
         """hack in the desired apply method"""
@@ -509,6 +516,8 @@ class BaseDistanceSelection(object):
             sel.apply = sel._apply_KDTree
         elif meth == 'distmat':
             sel.apply = sel._apply_distmat
+        elif meth == 'nsgrid':
+            sel.apply = sel._apply_nsgrid
 
         if periodic:
             sel.periodic = True
@@ -517,7 +526,7 @@ class BaseDistanceSelection(object):
 
         return sel
 
-    @pytest.mark.parametrize('meth, periodic', methods)
+    @pytest.mark.parametrize('meth, periodic', around_methods)
     def test_around(self, u, meth, periodic):
         sel = Parser.parse('around 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
