@@ -129,7 +129,7 @@ class TestJanin(object):
         janin = Janin(universe.select_atoms("protein")).run()
         test_janin = np.load(JaninArray)
 
-        assert_almost_equal(janin.angles, test_janin, 5,
+        assert_almost_equal(janin.angles, test_janin, 4,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -137,7 +137,7 @@ class TestJanin(object):
         janin = Janin(universe.select_atoms("protein"), start=5, stop=6).run()
         test_janin = [np.load(JaninArray)[5]]
 
-        assert_almost_equal(janin.angles, test_janin, 5,
+        assert_almost_equal(janin.angles, test_janin, 4,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -145,7 +145,7 @@ class TestJanin(object):
         janin = Janin(universe.select_atoms("resname LYS")).run()
         test_janin = np.load(LYSJaninArray)
 
-        assert_almost_equal(janin.angles, test_janin, 5,
+        assert_almost_equal(janin.angles, test_janin, 4,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
