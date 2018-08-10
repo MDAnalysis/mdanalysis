@@ -13,10 +13,12 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-mm/dd/18 orbeckst
+mm/dd/18 orbeckst, arm61
   * 0.18.1
     - skip tests for duecredit when duecredit is not installed (#1906)
     - updated meta data for PyPi and updated README and INSTALL
+    - added test for fix to issue #1897
+
 
 04/15/18 tylerjereddy, zemanj
   * 0.18.0
