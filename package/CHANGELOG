@@ -14,15 +14,28 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
-         VOD555, davidercruz, jbarnoud, ayushsuhane, arm61
+         VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta,
+         sebastien.buchoux, arm61
 
   * 0.18.1
 
 Enhancements
 
-  * Added augment functionality to create relevant images of particles 
+  * Added a wrapper of lib.nsgrid in lib.distances.self_capped_distance
+    and lib.distances.capped_distanceto automatically chose the fastest
+    method for distance based calculations. (PR #2008)  
+  * Added Grid search functionality in lib.nsgrid for faster distance based
+    calculations. (PR #2008)   
+  * Modified around selections to work with KDTree and periodic boundary
+    conditions.  Should reduce memory usage (#974 PR #2022)
+  * Modified topology.guessers.guess_bonds to automatically select the
+    fastest method for guessing bonds using
+    lib.distance.self_capped_distance (PR # 2006)
+  * Added lib.distances.self_capped_distance to internally select the
+    optimized method for distance evaluations of coordinates with itself. (PR # 2006)
+  * Added augment functionality to create relevant images of particles
     in the vicinity of central cell to handle periodic boundary
-    conditions (PR #1977) 
+    conditions (PR #1977)
   * Added lib.distances.capped_distance function to quickly calculate all distances
     up to a given maximum distance (PR #1941)
   * Added a rotation coordinate transformation (PR #1937)
@@ -51,6 +64,7 @@ Enhancements
     generated with gromacs -noappend (PR #1728)
   * MDAnalysis.lib.mdamath now supports triclinic boxes and rewrote in Cython (PR #1965)
   * AtomGroup.write can write a trajectory of selected frames (Issue #1037)
+  * Added analysis.dihedrals with Ramachandran class to analysis module (PR #1997)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
@@ -68,6 +82,9 @@ Fixes
   * Introduced compatibility for pbd files hybrid36 format encoding (Issue #1897)
   * Zero length TopologyGroup now return proper shape array via to_indices
     (Issue #1974)
+  * Added periodic boundary box support to the Tinker file reader (Issue #2001)
+  * Modifying coordinates by assignation is consistently persistent when using
+    the memory reader (Issue #2018)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)

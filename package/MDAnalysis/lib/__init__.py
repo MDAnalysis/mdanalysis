@@ -29,7 +29,7 @@
 from __future__ import absolute_import
 
 __all__ = ['log', 'transformations', 'util', 'mdamath', 'distances',
-           'NeighborSearch', 'formats', 'pkdtree']
+           'NeighborSearch', 'formats', 'pkdtree', 'nsgrid']
 
 from . import log
 from . import transformations
@@ -39,3 +39,4 @@ from . import distances  # distances relies on mdamath
 from . import NeighborSearch
 from . import formats
 from . import pkdtree
+from . import nsgrid
