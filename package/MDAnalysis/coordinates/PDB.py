@@ -316,6 +316,11 @@ class PDBReader(base.ReaderBase):
             models.append(0)
         if len(crysts) == len(models):
             offsets = [min(a, b) for a, b in zip(models, crysts)]
+            if len(offsets) == 1 and offsets[0] < 0:
+                    err_msg = '''This should ONLY happen on
+                                 Windows; see PR#2034.'''
+                    assert os.name == 'nt', err_msg
+                    offsets[0] = 0
         else:
             offsets = models
         # Position of the start of each frame
