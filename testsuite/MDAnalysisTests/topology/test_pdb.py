@@ -42,6 +42,29 @@ from MDAnalysis.topology.PDBParser import PDBParser
 
 _PDBPARSER = mda.topology.PDBParser.PDBParser
 
+hybrid36 = [
+    ("A0000", 100000),
+    ("MEGAN", 20929695),
+    ("J0NNY", 15247214),
+    ("DREW6", 6417862),
+    ("ST3V3", 31691119),
+    ("ADA8M", 719798),
+    ("a0000", 43770016),
+    ("megan", 64599711),
+    ("j0nny", 58917230),
+    ("drew6", 50087878),
+    ("st3v3", 75361135),
+    ("ada8m", 44389814),
+    ("    6", 6),
+    ("   24", 24),
+    ("  645", 645),
+    (" 4951", 4951),
+    ("10267", 10267)
+]
+
+@pytest.mark.parametrize('hybrid, integer', hybrid36)
+def test_hy36decode(hybrid, integer):
+    assert mda.topology.PDBParser.hy36decode(5, hybrid) == integer
 
 class TestPDBParser(ParserBase):
     """This one has neither chainids or segids"""

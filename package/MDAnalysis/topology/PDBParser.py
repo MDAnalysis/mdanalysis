@@ -94,7 +94,21 @@ digits_upper_values = dict([pair for pair in zip(digits_upper, range(36))])
 digits_lower_values = dict([pair for pair in zip(digits_lower, range(36))])
 
 def decode_pure(digits_values, s):
-    "decodes the string s using the digit, value associations for each character"
+    """Decodes the string s using the digit, value associations for each
+    character.
+
+    Parameters
+    ----------
+    digits_values: dict
+        A dictionary containing the base-10 numbers that each hexadecimal
+        number corresponds to.
+    s: str
+        The contents of the pdb index columns.
+
+    Returns
+    -------
+    The integer in base-10 corresponding to traditional base-36.
+    """
     result = 0
     n = len(digits_values)
     for c in s:
@@ -102,8 +116,23 @@ def decode_pure(digits_values, s):
         result += digits_values[c]
     return result
 
+
 def hy36decode(width, s):
-    "decodes base-10/upper-case base-36/lower-case base-36 hybrid"
+    """
+    Decodes base-10/upper-case base-36/lower-case base-36 hybrid.
+
+    Parameters
+    ----------
+    width: int
+        The number of columns in the pdb file store atom index.
+    s: str
+        The contents of the pdb index columns.
+
+    Returns
+    -------
+    int
+        Base-10 integer corresponding to hybrid36.
+    """
     if (len(s) == width):
         f = s[0]
         if (f == "-" or f == " " or f.isdigit()):
@@ -115,13 +144,15 @@ def hy36decode(width, s):
         elif (f in digits_upper_values):
             try:
                 return decode_pure(
-                    digits_values=digits_upper_values, s=s) - 10 * 36 ** (width - 1) + 10 ** width
+                    digits_values=digits_upper_values, s=s) - 10 * 36 ** (
+                        width - 1) + 10 ** width
             except KeyError:
                 pass
         elif (f in digits_lower_values):
             try:
                 return decode_pure(
-                    digits_values=digits_lower_values, s=s) + 16 * 36 ** (width - 1) + 10 ** width
+                    digits_values=digits_lower_values, s=s) + 16 * 36 ** (
+                        width - 1) + 10 ** width
             except KeyError:
                 pass
     raise ValueError("invalid number literal.")
