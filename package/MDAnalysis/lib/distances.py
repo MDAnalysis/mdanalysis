@@ -583,7 +583,11 @@ def _bruteforce_capped(reference, configuration, max_cutoff,
          is set to ``True``
 
     """
+<<<<<<< d2e22ffb0cb46af5266e39b940d7f00c1ca293c1
     pairs, distance = [], []
+=======
+
+>>>>>>> modified capped function for faster computations, added search_tree in pkdtree, added tests, updated Changlog
     reference = np.asarray(reference, dtype=np.float32)
     configuration = np.asarray(configuration, dtype=np.float32)
 
@@ -601,8 +605,12 @@ def _bruteforce_capped(reference, configuration, max_cutoff,
     else:
         mask = np.where((distance <= max_cutoff))
 
+<<<<<<< d2e22ffb0cb46af5266e39b940d7f00c1ca293c1
     if mask[0].size > 0:
         pairs = np.c_[mask[0], mask[1]]
+=======
+    pairs = np.c_[mask[0], mask[1]]
+>>>>>>> modified capped function for faster computations, added search_tree in pkdtree, added tests, updated Changlog
 
     if return_distances:
         distance = distance[mask]
@@ -905,6 +913,7 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None,
         reference = reference[None, :]
 
     N = len(reference)
+<<<<<<< d2e22ffb0cb46af5266e39b940d7f00c1ca293c1
     distvec = np.zeros((N*(N-1)//2), dtype=np.float64)
     self_distance_array(reference, box=box, result=distvec)
 
@@ -920,6 +929,25 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None,
         pairs = np.c_[mask[0], mask[1]]
         distance = distance[mask]
     return np.asarray(pairs), np.asarray(distance)
+=======
+    distance = np.zeros((N*(N-1)//2), dtype=np.float64)
+    self_distance_array(reference, box=box, result=distance)
+    if min_cutoff is not None:
+        idx = np.where((distance < max_cutoff) & (distance > min_cutoff))[0]
+    else:
+        idx = np.where((distance < max_cutoff))[0]
+
+    pairs, dist = [], []
+    k, count = 0, 0
+    for i in range(N):
+        for j in range(i+1, N):
+            if count < len(idx) and idx[count] == k:
+                pairs.append((i, j))
+                dist.append(distance[k])
+                count += 1
+            k += 1
+    return np.asarray(pairs), np.asarray(dist)
+>>>>>>> modified capped function for faster computations, added search_tree in pkdtree, added tests, updated Changlog
 
 
 def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None,
