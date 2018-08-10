@@ -24,9 +24,9 @@ Enhancements
   * Added return_distances argument in lib.distances.capped_distances
     to evaluate and return distances only when required. Modified
     the optimization rules in lib.distances._determine_method for
-    faster computations.
+    faster computations. (PR #2041)
   * Added method search_tree in lib.pkdtree to find all the pairs between
-    two kdtrees.
+    two kdtrees. (PR #2041)
   * Added a wrapper of lib.nsgrid in lib.distances.self_capped_distance
     and lib.distances.capped_distanceto automatically chose the fastest
     method for distance based calculations. (PR #2008)  
