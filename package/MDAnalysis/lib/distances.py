@@ -583,6 +583,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff,
          is set to ``True``
 
     """
+
     pairs, distance = [], []
     reference = np.asarray(reference, dtype=np.float32)
     configuration = np.asarray(configuration, dtype=np.float32)
