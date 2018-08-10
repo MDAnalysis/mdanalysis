@@ -107,6 +107,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
 <span class="kn">from</span> <span class="nn">.guessers</span> <span class="k">import</span> <span class="n">guess_masses</span><span class="p">,</span> <span class="n">guess_types</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
@@ -134,6 +135,63 @@
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">default</span>
+
+<span class="n">DIGITS_UPPER</span> <span class="o">=</span> <span class="s2">&quot;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;</span>
+<span class="n">DIGITS_LOWER</span> <span class="o">=</span> <span class="n">DIGITS_UPPER</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="n">DIGITS_UPPER_VALUES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span><span class="n">pair</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">DIGITS_UPPER</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">36</span><span class="p">))])</span>
+<span class="n">DIGITS_LOWER_VALUES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span><span class="n">pair</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">DIGITS_LOWER</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">36</span><span class="p">))])</span>
+
+<span class="k">def</span> <span class="nf">decode_pure</span><span class="p">(</span><span class="n">digits_values</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decodes the string s using the digit, value associations for each</span>
+<span class="sd">    character.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    digits_values: dict</span>
+<span class="sd">        A dictionary containing the base-10 numbers that each hexadecimal</span>
+<span class="sd">        number corresponds to.</span>
+<span class="sd">    s: str</span>
+<span class="sd">        The contents of the pdb index columns.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The integer in base-10 corresponding to traditional base-36.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">digits_values</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">*=</span> <span class="n">n</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">digits_values</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span> <span class="nf">hy36decode</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decodes base-10/upper-case base-36/lower-case base-36 hybrid.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    width: int</span>
+<span class="sd">        The number of columns in the pdb file store atom index.</span>
+<span class="sd">    s: str</span>
+<span class="sd">        The contents of the pdb index columns.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        Base-10 integer corresponding to hybrid36.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="n">width</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span> <span class="ow">or</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()):</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">f</span> <span class="ow">in</span> <span class="n">DIGITS_UPPER_VALUES</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">decode_pure</span><span class="p">(</span><span class="n">digits_values</span><span class="o">=</span><span class="n">DIGITS_UPPER_VALUES</span><span class="p">,</span>
+                               <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">36</span> <span class="o">**</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">width</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">f</span> <span class="ow">in</span> <span class="n">DIGITS_LOWER_VALUES</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">decode_pure</span><span class="p">(</span><span class="n">digits_values</span><span class="o">=</span><span class="n">DIGITS_LOWER_VALUES</span><span class="p">,</span>
+                               <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="mi">16</span> <span class="o">*</span> <span class="mi">36</span> <span class="o">**</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">width</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid number literal.&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="PDBParser"><a class="viewcode-back" href="../../../documentation_pages/topology/PDBParser.html#MDAnalysis.topology.ExtendedPDBParser.PDBParser">[docs]</a><span class="k">class</span> <span class="nc">PDBParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
@@ -215,11 +273,14 @@
                 <span class="n">record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">serial</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">11</span><span class="p">])</span>
-                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                    <span class="c1"># serial can become &#39;***&#39; when they get too high</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_serials</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="n">serial</span> <span class="o">=</span> <span class="n">last_wrapped_serial</span>
-                    <span class="n">last_wrapped_serial</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">serial</span> <span class="o">=</span> <span class="n">hy36decode</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">11</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="c1"># serial can become &#39;***&#39; when they get too high</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_serials</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">serial</span> <span class="o">=</span> <span class="n">last_wrapped_serial</span>
+                        <span class="n">last_wrapped_serial</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">finally</span><span class="p">:</span>
                     <span class="n">serials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">serial</span><span class="p">)</span>
 
@@ -471,7 +532,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
