@@ -127,3 +127,27 @@ def test_ckd_searchpairs_nopbc(radius, result):
     tree.set_coords(coords)
     indices = tree.search_pairs(radius)
     assert_equal(indices, result)
+
+
+@pytest.mark.parametrize('b, q, result', (
+                         ([10, 10, 10, 90, 90, 90], [0.5, -0.1, 1.1], []),
+                         ([10, 10, 10, 90, 90, 90], [2.1, -3.1, 0.1], [[0, 2],
+                                                                       [0, 3],
+                                                                       [0, 4]]),
+                         ([10, 10, 10, 90, 90, 90], [[2.1, -3.1, 0.1],
+                                                     [0.5, 0.5, 0.5]], [[0, 2],
+                                                                        [0, 3],
+                                                                        [0, 4],
+                                                                        [1, 1]]),
+                         ([10, 10, 10, 45, 60, 90], [2.1, -3.1, 0.1], [[0, 2],
+                                                                       [0, 3]])
+                         ))
+def test_searchtree(b, q, result):
+    b = np.array(b, dtype=np.float32)
+    cutoff = 3.0
+    coords = transform_StoR(f_dataset, b)
+    q = transform_StoR(np.array(q, dtype=np.float32), b)
+    tree = PeriodicKDTree(box=b)
+    tree.set_coords(coords, cutoff=cutoff)
+    pairs = tree.search_tree(q, cutoff)
+    assert_equal(pairs, result)

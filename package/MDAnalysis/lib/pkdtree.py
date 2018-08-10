@@ -170,7 +170,6 @@ class PeriodicKDTree(object):
         if centers.shape == (self.dim, ):
             centers = centers.reshape((1, self.dim))
 
-        self._indices = set()  # clear previous search
         # Sanity check
         if self.pbc:
             if self.cutoff < radius:
@@ -235,5 +234,53 @@ class PeriodicKDTree(object):
         if pairs.size > 0:
             # First sort the pairs then pick the unique pairs
             pairs = np.sort(pairs, axis=1)
+            pairs = unique_rows(pairs)
+        return pairs
+
+    def search_tree(self, centers, radius):
+        """
+        Searches all the pairs within radius between ``centers``
+        and ``coords``
+
+        Parameters
+        ----------
+        centers: array_like (N,3)
+          coordinate array to search for neighbors
+        radius: float
+          maximum distance to search for neighbors.
+
+        Returns
+        -------
+        pairs : array
+          all the pairs between ``coords`` and ``centers``
+        """
+
+        if not self._built:
+            raise RuntimeError('Unbuilt tree. Run tree.set_coords(...)')
+
+        centers = np.asarray(centers)
+        if centers.shape == (self.dim, ):
+            centers = centers.reshape((1, self.dim))
+
+        # Sanity check
+        if self.pbc:
+            if self.cutoff < radius:
+                raise RuntimeError('Set cutoff greater or equal to the radius.')
+            # Bring all query points to the central cell
+            wrapped_centers = apply_PBC(centers, self.box)
+            other_tree = cKDTree(wrapped_centers, leafsize=self.leafsize)
+            pairs = other_tree.query_ball_tree(self.ckdt, radius)
+            pairs = np.array([[i, j] for i, lst in enumerate(pairs) for j in lst],
+                                   dtype=np.int64)
+            if pairs.size > 0:
+                pairs[:, 1] = undo_augment(pairs[:, 1],
+                                             self.mapping,
+                                             len(self.coords))
+        else:
+            other_tree = cKDTree(centers, leafsize=self.leafsize)
+            pairs = other_tree.query_ball_tree(self.ckdt, radius)
+            pairs = np.array([[i, j] for i, lst in enumerate(pairs) for j in lst],
+                                   dtype=np.int64)
+        if pairs.size > 0:
             pairs = unique_rows(pairs)
         return pairs
