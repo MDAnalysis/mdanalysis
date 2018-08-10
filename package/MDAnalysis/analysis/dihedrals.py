@@ -87,14 +87,17 @@ Then it can be plotted using the built-in plotting method :meth:`Ramachandran.pl
    fig, ax = plt.subplots(figsize=plt.figaspect(1))
    R.plot(ax=ax, color='k', marker='s')
 
-The Janin class works in the same way, only needing a list of residues.
+The Janin class works in the same way, only needing a list of residues. To plot
+the data yourself, the angles can be accessed using :attr:`Ramachandran.angles`.
 
 Reference plots can be added to the axes for both the Ramachandran and Janin
 classes using the kwarg ``ref=True``. These were made using data obtained from
 a large selection of pdb files, and were analyzed using these classes. The
 allowed and marginally allowed regions of the Ramachandran reference plt have
 cutoffs set to include 90% and 99% of the data points, and the Janin reference
-plot has cutoffs for 90% and 98% of the data points.
+plot has cutoffs for 90% and 98% of the data points. The list of PDB files used
+for the referece plots was taken from [Lovell2003]_ and information about general
+Janin regions was taken from [Janin1978]_.
 
 These classes are prone to errors if the topology contains duplicate or missing
 atoms (e.g. atoms with `altloc` or incomplete residues). If the topology has as
@@ -111,7 +114,7 @@ Analysis Classes
    .. attribute:: angles
 
        Contains the time steps of the angles for each atomgroup in the list as
-       an n_frames×len(atomgroups) :class:`numpy.ndarray` with content
+       an ``n_frames×len(atomgroups)`` :class:`numpy.ndarray` with content
        ``[[angle 1, angle 2, ...], [time step 2], ...]``.
 
 .. autoclass:: Ramachandran
@@ -120,9 +123,9 @@ Analysis Classes
 
    .. attribute:: angles
 
-       Contains the time steps of the phi and psi angles for each residue as
-       an n_frames×n_residues×2 :class:`numpy.ndarray` with content
-       ``[[[phi, psi], [residue 2], ...], [time step 2], ...]``.
+       Contains the time steps of the :math:`\phi` and :math:`\psi` angles for
+       each residue as an ``n_frames×n_residues×2`` :class:`numpy.ndarray` with
+       content ``[[[phi, psi], [residue 2], ...], [time step 2], ...]``.
 
 .. autoclass:: Janin
    :members:
@@ -130,9 +133,18 @@ Analysis Classes
 
    .. attribute:: angles
 
-       Contains the time steps of the phi and psi angles for each residue as
-       an n_frames×n_residues×2 :class:`numpy.ndarray` with content
-       ``[[[chi1, chi2], [residue 2], ...], [time step 2], ...]``.
+       Contains the time steps of the :math:`\chi_1` and :math:`\chi_2` angles
+       for each residue as an ``n_frames×n_residues×2`` :class:`numpy.ndarray`
+       with content ``[[[chi1, chi2], [residue 2], ...], [time step 2], ...]``.
+
+References
+----------
+.. [Lovell2003] Lovell, Simon C., et al (2003). "Structure validation by
+   :math:`C\\alpha` geometry: :math:`\phi`, :math:`\psi`, and :math:`C\\beta`
+   deviation". Proteins 50(3): 437-450.
+
+.. [Janin1978] Janin, Joel, et al. (1978). "Conformation of amnio acid
+   side-chains in proteins". Journal of Molecular Biology 125(3): 357-386.
 
 """
 from __future__ import absolute_import
@@ -199,27 +211,28 @@ class Dihedral(AnalysisBase):
         self.angles = np.rad2deg(np.array(self.angles))
 
 class Ramachandran(AnalysisBase):
-    """Calculate phi and psi dihedral angles of selected residues.
+    """Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected residues.
 
-    Phi and psi angles will be calculated for each residue corresponding to
-    `atomgroup` for each time step in the trajectory. A :class:`~MDAnalysis.ResidueGroup`
-    is generated from `atomgroup` which is compared to the protein to determine
-    if it is a legitimate selection.
+    :math:`\phi` and :math:`\psi` angles will be calculated for each residue \
+    corresponding to `atomgroup` for each time step in the trajectory. A
+    :class:`~MDAnalysis.ResidueGroup` is generated from `atomgroup` which is
+    compared to the protein to determine if it is a legitimate selection.
 
     Note
     ----
     If the residue selection is beyond the scope of the protein, then an error
     will be raised. If the residue selection includes the first or last residue,
     then a warning will be raised and they will be removed from the list of
-    residues, but the analysis will still run. If a phi or psi selection cannot
-    be made, that residue will be removed from the analysis.
+    residues, but the analysis will still run. If a :math:`\phi` or :math:`\psi`
+    selection cannot be made, that residue will be removed from the analysis.
 
     """
     def __init__(self, atomgroup, **kwargs):
         """Parameters
         ----------
         atomgroup : AtomGroup or ResidueGroup
-            atoms for residues for which phi and psi are calculated
+            atoms for residues for which :math:`\phi` and :math:`\psi` are
+            calculated
 
         Raises
         ------
@@ -243,6 +256,9 @@ class Ramachandran(AnalysisBase):
 
         phi_sel = [res.phi_selection() for res in residues]
         psi_sel = [res.psi_selection() for res in residues]
+        # phi_selection() and psi_selection() currently can't handle topologies
+        # with an altloc attribute so this removes any residues that have either
+        # angle return none instead of a value
         if any(sel is None for sel in phi_sel):
             warnings.warn("Some residues in selection do not have phi selections")
             remove = [i for i, sel in enumerate(phi_sel) if sel is None]
@@ -313,12 +329,12 @@ class Ramachandran(AnalysisBase):
         return ax
 
 class Janin(Ramachandran):
-    """Calculate chi1 and chi2 dihedral angles of selected residues.
+    """Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of selected residues.
 
-    Chi1 and chi2 angles will be calculated for each residue corresponding to
-    `atomgroup` for each time step in the trajectory. A :class:`~MDAnalysis.ResidueGroup`
-    is generated from `atomgroup` which is compared to the protein to determine
-    if it is a legitimate selection.
+    :math:`\chi_1` and :math:`\chi_2` angles will be calculated for each residue
+    corresponding to `atomgroup` for each time step in the trajectory. A
+    :class:`~MDAnalysis.ResidueGroup` is generated from `atomgroup` which is
+    compared to the protein to determine if it is a legitimate selection.
 
     Note
     ----
@@ -334,7 +350,8 @@ class Janin(Ramachandran):
         """Parameters
         ----------
         atomgroup : AtomGroup or ResidueGroup
-            atoms for residues for which chi1 and chi2 are calculated
+            atoms for residues for which :math:`\chi_1` and :math:`\chi_2` are
+            calculated
 
         Raises
         ------
@@ -368,6 +385,9 @@ class Janin(Ramachandran):
         self.ag4 = residues.atoms.select_atoms("name CG CG1")
         self.ag5 = residues.atoms.select_atoms("name CD CD1 OD1 ND1 SD")
 
+        # if there is an altloc attribute, too many atoms will be selected which
+        # must be removed before using the class, or the file is missing atoms
+        # for some residues which must also be removed
         if any(len(self.ag1) != len(ag) for ag in [self.ag2, self.ag3,
                                                    self.ag4, self.ag5]):
             raise ValueError("Too many or too few atoms selected. Check for "
