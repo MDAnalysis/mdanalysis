@@ -88,16 +88,19 @@ Then it can be plotted using the built-in plotting method :meth:`Ramachandran.pl
    R.plot(ax=ax, color='k', marker='s')
 
 The Janin class works in the same way, only needing a list of residues. To plot
-the data yourself, the angles can be accessed using :attr:`Ramachandran.angles`.
+the data yourself, the angles can be accessed using :attr:`Ramachandran.angles`
+or :attr:`Janin.angles`.
 
 Reference plots can be added to the axes for both the Ramachandran and Janin
-classes using the kwarg ``ref=True``. These were made using data obtained from
-a large selection of pdb files, and were analyzed using these classes. The
-allowed and marginally allowed regions of the Ramachandran reference plt have
-cutoffs set to include 90% and 99% of the data points, and the Janin reference
-plot has cutoffs for 90% and 98% of the data points. The list of PDB files used
-for the referece plots was taken from [Lovell2003]_ and information about general
-Janin regions was taken from [Janin1978]_.
+classes using the kwarg ``ref=True``. The Ramachandran reference data
+(:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data
+(:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data
+obtained from a large selection of pdb files, and were analyzed using these
+classes. The allowed and marginally allowed regions of the Ramachandran reference
+plt have cutoffs set to include 90% and 99% of the data points, and the Janin
+reference plot has cutoffs for 90% and 98% of the data points. The list of PDB
+files used for the referece plots was taken from [Lovell2003]_ and information
+about general Janin regions was taken from [Janin1978]_.
 
 These classes are prone to errors if the topology contains duplicate or missing
 atoms (e.g. atoms with `altloc` or incomplete residues). If the topology has as
@@ -213,7 +216,7 @@ class Dihedral(AnalysisBase):
 class Ramachandran(AnalysisBase):
     """Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected residues.
 
-    :math:`\phi` and :math:`\psi` angles will be calculated for each residue 
+    :math:`\phi` and :math:`\psi` angles will be calculated for each residue
     corresponding to `atomgroup` for each time step in the trajectory. A
     :class:`~MDAnalysis.ResidueGroup` is generated from `atomgroup` which is
     compared to the protein to determine if it is a legitimate selection.

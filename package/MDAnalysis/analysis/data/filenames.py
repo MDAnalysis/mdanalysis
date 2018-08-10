@@ -19,7 +19,19 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+"""
+Analysis data files
+===================
 
+.. data:: Rama_ref
+   Reference Ramachandran histogram for :class:`MDAnalysis.analysis.dihedrals.Ramachandran`.
+   The data were calculated on a data set of 500 PDB structures taken from [Lovell2003]_.
+
+.. data:: Janin_ref
+   Reference Ramachandran histogram for :class:`MDAnalysis.analysis.dihedrals.Ramachandran`.
+   The data were calculated on a data set of 500 PDB structures taken from [Lovell2003]_.
+   
+"""
 from __future__ import absolute_import
 
 __all__ = [
