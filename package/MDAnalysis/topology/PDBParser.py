@@ -136,25 +136,13 @@ def hy36decode(width, s):
     if (len(s) == width):
         f = s[0]
         if (f == "-" or f == " " or f.isdigit()):
-            try:
-                return int(s)
-            except ValueError:
-                pass
-            if (s == " " * width): return 0
+            return int(s)
         elif (f in DIGITS_UPPER_VALUES):
-            try:
-                return decode_pure(
-                    digits_values=DIGITS_UPPER_VALUES, s=s) - 10 * 36 ** (
-                        width - 1) + 10 ** width
-            except KeyError:
-                pass
+            return decode_pure(digits_values=DIGITS_UPPER_VALUES,
+                               s=s) - 10 * 36 ** (width - 1) + 10 ** width
         elif (f in DIGITS_LOWER_VALUES):
-            try:
-                return decode_pure(
-                    digits_values=DIGITS_LOWER_VALUES, s=s) + 16 * 36 ** (
-                        width - 1) + 10 ** width
-            except KeyError:
-                pass
+            return decode_pure(digits_values=DIGITS_LOWER_VALUES,
+                               s=s) + 16 * 36 ** (width - 1) + 10 ** width
     raise ValueError("invalid number literal.")
 
 
