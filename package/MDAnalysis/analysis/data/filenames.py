@@ -23,14 +23,26 @@
 Analysis data files
 ===================
 
+:mod:`MDAnalysis.analysis.data` contains data files that are used as part of
+analysis. These can be experimental or theoretical data. Files are stored
+inside the package and made accessible via variables in
+:mod:`MDAnalysis.analysis.data.filenames`. These variables are documented
+below, including references to the literature and where they are used
+inside :mod:`MDAnalysis.analysis`.
+
+Data files
+----------
+
 .. data:: Rama_ref
+
    Reference Ramachandran histogram for :class:`MDAnalysis.analysis.dihedrals.Ramachandran`.
    The data were calculated on a data set of 500 PDB structures taken from [Lovell2003]_.
 
 .. data:: Janin_ref
+
    Reference Ramachandran histogram for :class:`MDAnalysis.analysis.dihedrals.Ramachandran`.
    The data were calculated on a data set of 500 PDB structures taken from [Lovell2003]_.
-   
+
 """
 from __future__ import absolute_import
 

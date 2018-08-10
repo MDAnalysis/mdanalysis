@@ -19,7 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
+r"""
 Dihedral angles analysis --- :mod:`MDAnalysis.analysis.dihedrals`
 ===========================================================================
 
@@ -143,7 +143,8 @@ Analysis Classes
 References
 ----------
 .. [Lovell2003] Lovell, Simon C., et al (2003). "Structure validation by
-   :math:`C\\alpha` geometry: :math:`\phi`, :math:`\psi`, and :math:`C\\beta`
+   :math:`C_{\alpha}` geometry: :math:`\phi`, :math:`\psi`, and
+   :math:`C_{\beta}`
    deviation". Proteins 50(3): 437-450.
 
 .. [Janin1978] Janin, Joel, et al. (1978). "Conformation of amnio acid

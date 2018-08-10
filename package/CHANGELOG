@@ -65,7 +65,8 @@ Enhancements
   * MDAnalysis.lib.mdamath now supports triclinic boxes and rewrote in Cython (PR #1965)
   * AtomGroup.write can write a trajectory of selected frames (Issue #1037)
   * Added dihedrals.py with Dihedral, Ramachandran, and Janin classes to
-    analysis module (PR #1997, PR #2033) 
+    analysis module (PR #1997, PR #2033)
+  * Added the analysis.data module for reference data used in analysis (PR #2033)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
