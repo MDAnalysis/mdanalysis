@@ -88,10 +88,10 @@ def float_or_default(val, default):
     except ValueError:
         return default
 
-digits_upper = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-digits_lower = digits_upper.lower()
-digits_upper_values = dict([pair for pair in zip(digits_upper, range(36))])
-digits_lower_values = dict([pair for pair in zip(digits_lower, range(36))])
+DIGITS_UPPER = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+DIGITS_LOWER = DIGITS_UPPER.lower()
+DIGITS_UPPER_VALUES = dict([pair for pair in zip(DIGITS_UPPER, range(36))])
+DIGITS_LOWER_VALUES = dict([pair for pair in zip(DIGITS_LOWER, range(36))])
 
 def decode_pure(digits_values, s):
     """Decodes the string s using the digit, value associations for each
@@ -141,17 +141,17 @@ def hy36decode(width, s):
             except ValueError:
                 pass
             if (s == " " * width): return 0
-        elif (f in digits_upper_values):
+        elif (f in DIGITS_UPPER_VALUES):
             try:
                 return decode_pure(
-                    digits_values=digits_upper_values, s=s) - 10 * 36 ** (
+                    digits_values=DIGITS_UPPER_VALUES, s=s) - 10 * 36 ** (
                         width - 1) + 10 ** width
             except KeyError:
                 pass
-        elif (f in digits_lower_values):
+        elif (f in DIGITS_LOWER_VALUES):
             try:
                 return decode_pure(
-                    digits_values=digits_lower_values, s=s) + 16 * 36 ** (
+                    digits_values=DIGITS_LOWER_VALUES, s=s) + 16 * 36 ** (
                         width - 1) + 10 ** width
             except KeyError:
                 pass
