@@ -80,18 +80,18 @@ class TestRamachandran(object):
     def rama_ref_array(self):
         return np.load(RamaArray)
 
-    def test_ramachandran(self, universe):
+    def test_ramachandran(self, universe, rama_ref_array):
         rama = Ramachandran(universe.select_atoms("protein")).run()
 
         assert_almost_equal(rama.angles, rama_ref_array, 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_ramachandran_single_frame(self, universe):
+    def test_ramachandran_single_frame(self, universe, rama_ref_array):
         rama = Ramachandran(universe.select_atoms("protein"),
                             start=5, stop=6).run()
 
-        assert_almost_equal(rama.angles, [rama_ref_array[5]], 5,
+        assert_almost_equal(rama.angles[0], rama_ref_array[5], 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -131,7 +131,7 @@ class TestJanin(object):
     def janin_ref_array(self):
         return np.load(JaninArray)
 
-    def test_janin(self, universe):
+    def test_janin(self, universe, janin_ref_array):
         janin = Janin(universe.select_atoms("protein")).run()
 
         # Test precision lowered to account for platform differences with osx
@@ -139,10 +139,10 @@ class TestJanin(object):
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_janin_single_frame(self, universe):
+    def test_janin_single_frame(self, universe, janin_ref_array):
         janin = Janin(universe.select_atoms("protein"), start=5, stop=6).run()
 
-        assert_almost_equal(janin.angles, janin_ref_array[5], 3,
+        assert_almost_equal(janin.angles[0], janin_ref_array[5], 3,
                             err_msg="error: dihedral angles should "
                             "match test values")
 

@@ -213,7 +213,7 @@ class Dihedral(AnalysisBase):
 class Ramachandran(AnalysisBase):
     """Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected residues.
 
-    :math:`\phi` and :math:`\psi` angles will be calculated for each residue \
+    :math:`\phi` and :math:`\psi` angles will be calculated for each residue 
     corresponding to `atomgroup` for each time step in the trajectory. A
     :class:`~MDAnalysis.ResidueGroup` is generated from `atomgroup` which is
     compared to the protein to determine if it is a legitimate selection.
