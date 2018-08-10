@@ -117,7 +117,6 @@ class PeriodicKDTree(object):
         --------
         MDAnalysis.lib._augment.augment_coordinates
 
-
         """
         # If no cutoff distance is provided but PBC aware
         if self.pbc and (cutoff is None):
@@ -242,6 +241,13 @@ class PeriodicKDTree(object):
         Searches all the pairs within radius between ``centers``
         and ``coords``
 
+        ``coords`` are the already initialized coordinates in the tree
+        during ``set_coords(coords, cutoff)``.
+         ``centers`` are wrapped around the primary unit cell
+        if PBC is desired. Minimum image convention (PBC) is
+        activated if ``box`` argument is provided during
+        class initialization
+
         Parameters
         ----------
         centers: array_like (N,3)
@@ -253,6 +259,12 @@ class PeriodicKDTree(object):
         -------
         pairs : array
           all the pairs between ``coords`` and ``centers``
+
+        Note
+        ----
+        This method constructs another tree from the ``centers``
+        and queries the previously built tree (Built in
+        ``PeriodicKDTree.set_coords(...)``)
         """
 
         if not self._built:

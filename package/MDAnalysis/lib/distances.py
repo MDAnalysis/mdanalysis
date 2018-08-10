@@ -542,7 +542,21 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
     if len(reference) < 10 or len(configuration) < 10:
         return methods['bruteforce']
     else:
-        return methods['nsgrid']
+        if box is None:
+            min_dim = np.array([reference.min(axis=0),
+                               configuration.min(axis=0)])
+            max_dim = np.array([reference.max(axis=0),
+                               configuration.max(axis=0)])
+            size = max_dim.max(axis=0) - min_dim.min(axis=0)
+        elif np.allclose(box[3:], 90):
+            size = box[:3]
+        else:
+            tribox = triclinic_vectors(box)
+            size = tribox.max(axis=0) - tribox.min(axis=0)
+        if np.any(max_cutoff > 0.2*size):
+            return methods['bruteforce']
+        else:
+            return methods['nsgrid']
 
 
 def _bruteforce_capped(reference, configuration, max_cutoff,
@@ -565,7 +579,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff,
          is set to ``True``
 
     """
-
+    pairs, distance = [], []
     reference = np.asarray(reference, dtype=np.float32)
     configuration = np.asarray(configuration, dtype=np.float32)
 
@@ -583,7 +597,8 @@ def _bruteforce_capped(reference, configuration, max_cutoff,
     else:
         mask = np.where((distance <= max_cutoff))
 
-    pairs = np.c_[mask[0], mask[1]]
+    if mask[0].size > 0:
+        pairs = np.c_[mask[0], mask[1]]
 
     if return_distances:
         distance = distance[mask]
@@ -881,29 +896,26 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None,
 
     """
     pairs, distance = [], []
-
     reference = np.asarray(reference, dtype=np.float32)
     if reference.shape == (3, ):
         reference = reference[None, :]
 
     N = len(reference)
-    distance = np.zeros((N*(N-1)//2), dtype=np.float64)
-    self_distance_array(reference, box=box, result=distance)
-    if min_cutoff is not None:
-        idx = np.where((distance < max_cutoff) & (distance > min_cutoff))[0]
-    else:
-        idx = np.where((distance < max_cutoff))[0]
+    distvec = np.zeros((N*(N-1)//2), dtype=np.float64)
+    self_distance_array(reference, box=box, result=distvec)
 
-    pairs, dist = [], []
-    k, count = 0, 0
-    for i in range(N):
-        for j in range(i+1, N):
-            if count < len(idx) and idx[count] == k:
-                pairs.append((i, j))
-                dist.append(distance[k])
-                count += 1
-            k += 1
-    return np.asarray(pairs), np.asarray(dist)
+    distance = np.ones((N, N), dtype=np.float32)*max_cutoff
+    distance[np.triu_indices(N, 1)] = distvec
+
+    if min_cutoff is not None:
+        mask = np.where((distance < max_cutoff) & (distance > min_cutoff))
+    else:
+        mask = np.where((distance < max_cutoff))
+
+    if mask[0].size > 0:
+        pairs = np.c_[mask[0], mask[1]]
+        distance = distance[mask]
+    return np.asarray(pairs), np.asarray(distance)
 
 
 def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None,
