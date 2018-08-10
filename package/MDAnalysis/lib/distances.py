@@ -541,6 +541,10 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
 
     if len(reference) < 10 or len(configuration) < 10:
         return methods['bruteforce']
+    elif len(reference)*len(configuration) > 1e7:
+        # CAUTION : for large datasets, shouldnt go into 'bruteforce'
+        # in any case. Arbitrary number, but can be characterized
+        return methods['nsgrid']
     else:
         if box is None:
             min_dim = np.array([reference.min(axis=0),
