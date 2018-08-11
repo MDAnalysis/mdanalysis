@@ -541,11 +541,7 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
 
     if len(reference) < 10 or len(configuration) < 10:
         return methods['bruteforce']
-<<<<<<< b3c03dc82d03c5d5d7a5bcdfd9148fef46935c29
-    elif len(reference)*len(configuration) >= 1e8:
-=======
-    elif len(reference)*len(configuration) > 1e7:
->>>>>>> safety condition added for bruteforce method
+    elif len(reference)*len(configuration) > 1e8:
         # CAUTION : for large datasets, shouldnt go into 'bruteforce'
         # in any case. Arbitrary number, but can be characterized
         return methods['nsgrid']
