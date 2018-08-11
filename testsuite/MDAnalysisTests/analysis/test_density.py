@@ -136,7 +136,7 @@ class Test_density_from_Universe(object):
                       {'meandensity': 0.015535385132107926, },
                   }
     cutoffs = {'notwithin': 4.0, }
-    gridcenters = {'static_defined': np.array([56.0,45.0,35.0])}
+    gridcenters = {'static_defined': np.array([56.0, 45.0, 35.0]), }
     precision = 5
     outfile = 'density.dx'
 

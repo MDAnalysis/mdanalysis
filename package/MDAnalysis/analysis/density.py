@@ -495,34 +495,49 @@ class Density(Grid):
             grid_type = 'histogram'
         return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + ' bins>'
 
+
 def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     """Helper function to set the grid dimensions to user defined values
-       
-       Called by : density_from_Universe 
-       Condition : gridcenter must be defined
 
-       Parameters
-       ----------
-       gridcenter : numpy array containing the x,y,z of the box center (np.float32)
-       x/y/zdim :   box edge lengths in each dimension
-       smin/smax :  minimum and maximum x,y,z for given selection (padding ignored)
+    Parameters
+    ----------
+    gridcenter : numpy ndarray, float32
+            3-element  containing the x, y and z coordinates of the grid box
+            center
+    xdim : float
+            Box edge length in the x dimension
+    ydim : float
+            Box edge length in the y dimension
+    zdim : float
+            Box edge length in the y dimension
+    smin : numpy ndarray, float32
+            Minimum x,y,z coordinates for the input selection
+    smax : numpy ndarray, float32
+            Maximum x,y,z coordinates for the input selection
 
-       Returns
-       -------
-       umin/umax :  replacement values for the box min and max values (np.float32)
-       
+    Returns
+    -------
+    umin : numpy ndarray, float32
+            Minimum x,y,z coordinates of the user defined grid
+    umax : numpy ndarray, float32
+            Maximum x,y,z coordinates of the user defined grid
     """
-    #Copy grid to umin and umax and then set the min/max to half the edge values
+    # Just in case, let's check that gridcenter is 3 element in length
+    # otherwise it will likely just silently fail later on
+    assert len(gridcenter) == 3, "gridcenter contains more than 3 elements"
+
+    # Copy gridcenter value to umin and umax
     umin = np.copy(gridcenter)
     umax = np.copy(gridcenter)
 
-    #set x dimension
+    # Set min/max of each dimension by shifting by half the edge length
+    # x dimension
     umin[0] -= xdim/2.0
     umax[0] += xdim/2.0
-    #set y dimension
+    # y dimension
     umin[1] -= ydim/2.0
     umax[1] += ydim/2.0
-    #set z dimension
+    # z dimension
     umin[2] -= zdim/2.0
     umax[2] += zdim/2.0
 
@@ -531,9 +546,10 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     if any(smin < umin) or any(smax > umax):
         msg = "Atom selection does not fit grid --- you may want to define a larger box"
         logger.warning(msg)
-    
-    #Return umin and umax
+
+    # Return umin and umax
     return umin, umax
+
 
 def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           start=None, stop=None, step=None,
@@ -589,14 +605,18 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
            Show status update every `interval` frame [1]
     parameters : dict (optional)
             `dict` with some special parameters for :class:`Density` (see docs)
-    gridcenter : np.array float (optional)
-            User defined grid box center (x,y,z: numpy array float 32) in Angstroem [None]
-    xdim : float (optional - ignored if gridcenter is None)
-            User defined x dimension box edge in Angstroem [2.0]
-    ydim : float (optional - ignored if gridcenter is None)
-            User defined y dimension box edge in Angstroem [2.0]
-    zdim : float (optional - ignored if gridcenter is None)
-            User defined z dimension box edge in Angstroem [2.0]
+    gridcenter : float32 numpy ndarray (optional)
+            3 element numpy array detailing the x, y and z coordinates of the
+            center of a user defined grid box in Angstroem [``None``]
+    xdim : float (optional)
+            User defined x dimension box edge in ångström; ignored if
+            gridcenter is ``None`` [2.0]
+    ydim : float (optional)
+            User defined y dimension box edge in ångström; ignored if
+            gridcenter is ``None`` [2.0]
+    zdim : float (optional)
+            User defined z dimension box edge in ångström; ignored if
+            gridcenter is ``None`` [2.0]
 
     Returns
     -------
@@ -644,9 +664,9 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
 
     If you are interested in explicitly setting a grid box of a given edge size
     and origin, you can use the gridcenter and x/y/zdim arguments. For example
-    to plot the density of waters within 5 Å of a ligand (in this case the ligand
-    has been assigned the residue name "LIG") in a cubic grid with 20 Å edges
-    which is centered on the centre of mass (COM) of the ligand::
+    to plot the density of waters within 5 Å of a ligand (in this case the
+    ligand has been assigned the residue name "LIG") in a cubic grid with 20 Å
+    edges which is centered on the centre of mass (COM) of the ligand::
 
       # Create a selection based on the ligand
       ligand_selection = universe.select_atoms("resname LIG")
@@ -662,9 +682,12 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                                             gridcenter=ligand_COM,
                                             xdim=20.0, ydim=20.0, zdim=20.0)
 
-     (It should be noted that the `padding` keyword is not used when a user
+      (It should be noted that the `padding` keyword is not used when a user
       defined grid is assigned).
 
+    .. versionchanged:: 0.18.1
+       *gridcenter*, *xdim*, *ydim* and *zdim* keywords added to allow for user
+       defined boxes
     .. versionchanged:: 0.13.0
        *update_selection* and *quiet* keywords added
 
@@ -705,7 +728,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     if gridcenter is not None:
         # We first generate a copy of smin/smax from the coords to
         # check if the defined box might be too small for the selection
-        smin = np.min(coord, axis=0) 
+        smin = np.min(coord, axis=0)
         smax = np.max(coord, axis=0)
         # Then call the user grid function and overwrite smin/sma
         # Note: a helper function is used here so that it may be reused.
