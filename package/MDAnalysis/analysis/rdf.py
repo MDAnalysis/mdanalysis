@@ -235,6 +235,7 @@ class InterRDF(AnalysisBase):
 
 class InterRDF_s(AnalysisBase):
     """Site-specific intermolecular pair distribution function
+
     Arguments
     ---------
     u : Universe
@@ -253,32 +254,48 @@ class InterRDF_s(AnalysisBase):
     step : int (optional)
           The step size through the trajectory in frames (default is
           every frame)
+
     Example
     -------
+
     First create the :class:`InterRDF_s` object, by supplying one Universe and
     one list of pairs of AtomGroups, then use the :meth:`~InterRDF_s.run`
     method::
+
       from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT
       u = mda.Universe(GRO_MEMPROT, XTC_MEMPROT)
+
       s1 = u.select_atoms('name ZND and resid 289')
       s2 = u.select_atoms('(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)')
       s3 = u.select_atoms('name ZND and (resid 291 or resid 292)')
       s4 = u.select_atoms('(name OD1 or name OD2) and sphzone 5.0 (resid 291)')
       ags = [[s1, s2], [s3, s4]]
+
       rdf = InterRDF_s(u, ags)
       rdf.run()
+
     Results are available through the :attr:`bins` and :attr:`rdf` attributes::
+
       plt.plot(rdf.bins, rdf.rdf[0][0][0])
+
     (Which plots the rdf between the first atom in ``s1`` and the first atom in
     ``s2``)
+
     To generate the *cumulative distribution function* (cdf), use the
     :meth:`~InterRDF_s.get_cdf` method ::
+
       cdf = rdf.get_cdf()
+
     Results are available through the :attr:'cdf' attribute::
+
       plt.plot(rdf.bins, rdf.cdf[0][0][0])
+
     (Which plots the cdf between the first atom in ``s1`` and the first atom in
     ``s2``)
+
+
     .. versionadded:: 0.19.0
+
     """
     def __init__(self, u, ags,
                  nbins=75, range=(0.0, 15.0), density=True, **kwargs):
