@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
          VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta,
-         sebastien.buchoux, IAlibay
+         sebastien.buchoux, arm61, IAlibay
 
   * 0.18.1
 
@@ -80,6 +80,7 @@ Fixes
     pack_into_box() (Issue #1911)
   * Fixed format of MODEL number in PDB file writing (Issue #1950)
   * PDBWriter now properly sets start value
+  * Introduced compatibility for pbd files hybrid36 format encoding (Issue #1897)
   * Zero length TopologyGroup now return proper shape array via to_indices
     (Issue #1974)
   * Added periodic boundary box support to the Tinker file reader (Issue #2001)

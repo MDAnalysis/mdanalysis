@@ -1983,7 +1983,7 @@ class PSAnalysis(object):
 
         if self._NN is None:
             raise ValueError("No nearest neighbor data; run "
-                             "'PSAnalysis.run_nearest_neighbors()' first.")
+                             "'PSAnalysis.run_pairs_analysis(neighbors=True)' first.")
 
         sns.set_style('whitegrid')
 
