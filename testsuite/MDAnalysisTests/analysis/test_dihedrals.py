@@ -117,7 +117,7 @@ class TestRamachandran(object):
             rama = Ramachandran(u.select_atoms("protein").residues[1:-1])
 
     def test_plot(self, universe):
-        ax = Ramachandran(universe.select_atoms("resid 5-10")).run().plot()
+        ax = Ramachandran(universe.select_atoms("resid 5-10")).run().plot(ref=True)
         assert isinstance(ax, matplotlib.axes.Axes), \
             "Ramachandran.plot() did not return and Axes instance"
 
@@ -169,6 +169,6 @@ class TestJanin(object):
                                          "PRO SER THR VAL"))
 
     def test_plot(self, universe):
-        ax = Janin(universe.select_atoms("resid 5-10")).run().plot()
+        ax = Janin(universe.select_atoms("resid 5-10")).run().plot(ref=True)
         assert isinstance(ax, matplotlib.axes.Axes), \
             "Ramachandran.plot() did not return and Axes instance"
