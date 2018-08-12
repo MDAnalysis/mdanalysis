@@ -195,8 +195,8 @@ def test_method_selfselection(box, npoints, cutoff, meth):
                          [(1, 0.02, '_bruteforce_capped'),
                           (1, 0.2, '_bruteforce_capped'),
                           (200, 0.02, '_nsgrid_capped'),
-                          (200, 0.3, '_bruteforce_capped'),
-                          (10000, 0.3, '_nsgrid_capped')])
+                          (200, 0.35, '_bruteforce_capped'),
+                          (10000, 0.35, '_nsgrid_capped')])
 def test_method_selection(box, npoints, cutoff, meth):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,

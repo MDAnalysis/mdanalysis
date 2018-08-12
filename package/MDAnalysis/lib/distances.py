@@ -557,7 +557,7 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
         else:
             tribox = triclinic_vectors(box)
             size = tribox.max(axis=0) - tribox.min(axis=0)
-        if np.any(max_cutoff > 0.2*size):
+        if np.any(max_cutoff > 0.3*size):
             return methods['bruteforce']
         else:
             return methods['nsgrid']
