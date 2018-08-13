@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>4.6.1. Polymer analysis — MDAnalysis.analysis.polymer &#8212; MDAnalysis 0.18.1-dev documentation</title>
+    <title>4.11.1. Analysis data files &#8212; MDAnalysis 0.18.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -28,8 +28,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="4.7.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" />
-    <link rel="prev" title="4.5.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo" href="nuclinfo.html" />
+    <link rel="next" title="5. Topology modules" href="../topology_modules.html" />
+    <link rel="prev" title="4.10.1.1.1. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.legacy.x3dna" href="legacy/x3dna.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -47,88 +47,31 @@
 
           <div class="body" role="main">
             
-  <span class="target" id="module-MDAnalysis.analysis.polymer"></span><div class="section" id="polymer-analysis-mdanalysis-analysis-polymer">
-<h1>4.6.1. Polymer analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.polymer" title="MDAnalysis.analysis.polymer"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.polymer</span></code></a><a class="headerlink" href="#polymer-analysis-mdanalysis-analysis-polymer" title="Permalink to this headline">¶</a></h1>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Richard J. Gowers</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2015</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
-</tr>
-</tbody>
-</table>
-<p>This module contains various commonly used tools in analysing polymers.</p>
-<dl class="class">
-<dt id="MDAnalysis.analysis.polymer.PersistenceLength">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.polymer.</code><code class="descname">PersistenceLength</code><span class="sig-paren">(</span><em>atomgroups</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/polymer.html#PersistenceLength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the persistence length for polymer chains</p>
-<p>The persistence length is the length at which two points on the polymer
-chain become decorrelated.</p>
-<p class="rubric">Notes</p>
-<p>This analysis requires that the trajectory supports indexing.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.13.0.</span></p>
+  <span class="target" id="module-MDAnalysis.analysis.data.filenames"></span><div class="section" id="analysis-data-files">
+<h1>4.11.1. Analysis data files<a class="headerlink" href="#analysis-data-files" title="Permalink to this headline">¶</a></h1>
+<p><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.data</span></code> contains data files that are used as part of
+analysis. These can be experimental or theoretical data. Files are stored
+inside the package and made accessible via variables in
+<a class="reference internal" href="#module-MDAnalysis.analysis.data.filenames" title="MDAnalysis.analysis.data.filenames"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.data.filenames</span></code></a>. These variables are documented
+below, including references to the literature and where they are used
+inside <code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis</span></code>.</p>
+<div class="section" id="data-files">
+<h2>4.11.1.1. Data files<a class="headerlink" href="#data-files" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="MDAnalysis.analysis.data.filenames.Rama_ref">
+<code class="descclassname">MDAnalysis.analysis.data.filenames.</code><code class="descname">Rama_ref</code><a class="headerlink" href="#MDAnalysis.analysis.data.filenames.Rama_ref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference Ramachandran histogram for <a class="reference internal" href="dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran" title="MDAnalysis.analysis.dihedrals.Ramachandran"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.analysis.dihedrals.Ramachandran</span></code></a>.
+The data were calculated on a data set of 500 PDB structures taken from <a class="reference internal" href="dihedrals.html#lovell2003" id="id1">[Lovell2003]</a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.analysis.data.filenames.Janin_ref">
+<code class="descclassname">MDAnalysis.analysis.data.filenames.</code><code class="descname">Janin_ref</code><a class="headerlink" href="#MDAnalysis.analysis.data.filenames.Janin_ref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference Ramachandran histogram for <a class="reference internal" href="dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran" title="MDAnalysis.analysis.dihedrals.Ramachandran"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.analysis.dihedrals.Ramachandran</span></code></a>.
+The data were calculated on a data set of 500 PDB structures taken from <a class="reference internal" href="dihedrals.html#lovell2003" id="id2">[Lovell2003]</a>.</p>
+</dd></dl>
+
 </div>
-<p>Calculate the persistence length for polymer chains</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>atomgroups</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of atomgroups.  Each atomgroup should represent a single
-polymer chain, ordered in the correct order.</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to analyse, Default: None becomes 0.</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Last frame of trajectory to analyse, Default: None becomes
-n_frames.</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Frame index to stop analysis. Default: None becomes
-n_frames. Iteration stops <em>before</em> this frame number.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal"><span class="pre">True</span></code>; the
-default is <code class="docutils literal"><span class="pre">False</span></code>.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="MDAnalysis.analysis.polymer.PersistenceLength.perform_fit">
-<code class="descname">perform_fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/polymer.html#PersistenceLength.perform_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength.perform_fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit the results to an exponential decay</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.analysis.polymer.PersistenceLength.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/polymer.html#PersistenceLength.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Oooh fancy</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.analysis.polymer.fit_exponential_decay">
-<code class="descclassname">MDAnalysis.analysis.polymer.</code><code class="descname">fit_exponential_decay</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/polymer.html#fit_exponential_decay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.polymer.fit_exponential_decay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit a function to an exponential decay</p>
-<div class="math">
-\[y = \exp(-x/a)\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>y</strong> (<em>x</em><em>,</em>) – The two arrays of data</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>a</strong> – The coefficient <em>a</em> for this decay</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)">float</a></td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>This function assumes that data starts at 1.0 and decays to 0.0</p>
-</dd></dl>
-
 </div>
 
 
@@ -170,15 +113,18 @@ default is <code class="docutils literal"><span class="pre">False</span></code>.
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.6.1. Polymer analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.polymer</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#dimensionality-reduction">4.9. Dimensionality Reduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#legacy-analysis-modules">4.10. Legacy analysis modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#data">4.11. Data</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#data">4.11. Data</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.11.1. Analysis data files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#data-files">4.11.1.1. Data files</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
@@ -200,8 +146,8 @@ default is <code class="docutils literal"><span class="pre">False</span></code>.
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../analysis_modules.html">4. Analysis modules</a><ul>
-      <li>Previous: <a href="nuclinfo.html" title="previous chapter">4.5.1. Nucleic acid analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a></li>
-      <li>Next: <a href="gnm.html" title="next chapter">4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
+      <li>Previous: <a href="legacy/x3dna.html" title="previous chapter">4.10.1.1.1. Generation and Analysis of X3DNA helicoidal parameter profiles — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.legacy.x3dna</span></code></a></li>
+      <li>Next: <a href="../topology_modules.html" title="next chapter">5. Topology modules</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -228,7 +174,7 @@ default is <code class="docutils literal"><span class="pre">False</span></code>.
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
-      <a href="../../_sources/documentation_pages/analysis/polymer.rst.txt"
+      <a href="../../_sources/documentation_pages/analysis/data.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
