@@ -103,6 +103,45 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
 
     assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
 
+# for coverage
+@pytest.mark.parametrize('npoints', npoints_1)
+@pytest.mark.parametrize('box', boxes_1)
+@pytest.mark.parametrize('query', query_1)
+@pytest.mark.parametrize('method', method_1)
+@pytest.mark.parametrize('min_cutoff', min_cutoff_1)
+def test_capped_distance_return(npoints, box, query, method, min_cutoff):
+    np.random.seed(90003)
+    points = (np.random.uniform(low=0, high=1.0,
+                        size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
+    max_cutoff = 0.3
+    # capped distance should be able to handle array of vectors
+    # as well as single vectors.
+    pairs = mda.lib.distances.capped_distance(query,
+                                                    points,
+                                                    max_cutoff,
+                                                    min_cutoff=min_cutoff,
+                                                    box=box,
+                                                    method=method,
+                                                    return_distances=False)
+
+    if pairs.shape != (0, ):
+        found_pairs = pairs[:, 1]
+    else:
+        found_pairs = list()
+
+    if(query.shape[0] == 3):
+        query = query.reshape((1, 3))
+
+    distances = mda.lib.distances.distance_array(query,
+                                                 points, box=box)
+
+    if min_cutoff is None:
+        min_cutoff = 0.
+    indices = np.where((distances < max_cutoff) & (distances > min_cutoff))
+
+    assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
+
+
 @pytest.mark.parametrize('npoints', npoints_1)
 @pytest.mark.parametrize('box', boxes_1)
 @pytest.mark.parametrize('method', method_1)
@@ -139,10 +178,8 @@ def test_self_capped_distance(npoints, box, method, min_cutoff):
 @pytest.mark.parametrize('npoints,cutoff,meth',
                          [(1, 0.02, '_bruteforce_capped_self'),
                           (1, 0.2, '_bruteforce_capped_self'),
-                          (6000, 0.02, '_pkdtree_capped_self'),
-                          (6000, 0.2, '_pkdtree_capped_self'),
-                          (200000, 0.02, '_pkdtree_capped_self'),
-                          (200000, 0.2, '_bruteforce_capped_self')])
+                          (600, 0.02, '_pkdtree_capped_self'),
+                          (600, 0.2, '_nsgrid_capped_self')])
 def test_method_selfselection(box, npoints, cutoff, meth):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
@@ -157,10 +194,9 @@ def test_method_selfselection(box, npoints, cutoff, meth):
 @pytest.mark.parametrize('npoints,cutoff,meth',
                          [(1, 0.02, '_bruteforce_capped'),
                           (1, 0.2, '_bruteforce_capped'),
-                          (6000, 0.02, '_pkdtree_capped'),
-                          (6000, 0.2, '_pkdtree_capped'),
-                          (200000, 0.02, '_pkdtree_capped'),
-                          (200000, 0.2, '_bruteforce_capped')])
+                          (200, 0.02, '_nsgrid_capped'),
+                          (200, 0.35, '_bruteforce_capped'),
+                          (10000, 0.35, '_nsgrid_capped')])
 def test_method_selection(box, npoints, cutoff, meth):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
