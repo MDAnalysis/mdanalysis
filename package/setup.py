@@ -532,6 +532,10 @@ if __name__ == '__main__':
           classifiers=CLASSIFIERS,
           provides=['MDAnalysis'],
           packages=find_packages(),
+          package_data={'MDAnalysis':
+                        ['analysis/data/*.npy',
+                        ],
+          },
           ext_modules=exts,
           requires=['numpy (>=1.10.4)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
