@@ -134,6 +134,54 @@ class TestPSAnalysis(object):
         err_msg = "Frechet distances did not increase after path reversal"
         assert frech_matrix[1,2] >= frech_matrix[0,1], err_msg
 
+    def test_get_num_paths(self, psa):
+        assert psa.get_num_paths() == 3
+
+    def test_get_paths(self, psa):
+        paths = psa.get_paths()
+        assert len(paths) == 3
+        assert isinstance(paths, list)
+
+    def test_psa_pairs_ValueError(self, psa):
+        with pytest.raises(ValueError):
+            psa.psa_pairs
+
+    def test_psa_pairs(self, psa):
+        psa.run_pairs_analysis()
+        assert len(psa.psa_pairs) == 3
+
+    def test_hausdorff_pairs_ValueError(self, psa):
+        with pytest.raises(ValueError):
+            psa.hausdorff_pairs
+
+    def test_hausdorff_pairs(self, psa):
+        psa.run_pairs_analysis(hausdorff_pairs=True)
+        assert len(psa.hausdorff_pairs) == 3
+
+    def test_nearest_neighbors_ValueError(self, psa):
+        with pytest.raises(ValueError):
+            psa.nearest_neighbors
+
+    def test_nearest_neighbors(self, psa):
+        psa.run_pairs_analysis(neighbors=True)
+        assert len(psa.nearest_neighbors) == 3
+
+    @pytest.mark.xfail
+    def test_load(self, psa):
+        """Test that the automatically saved files can be loaded"""
+        expected_path_names = psa.path_names[:]
+        expected_paths = [p.copy() for p in psa.paths]
+        psa.save_paths()
+        psa.load()
+        assert psa.path_names == expected_path_names
+        # manually compare paths because
+        #         assert_almost_equal(psa.paths, expected_paths, decimal=6)
+        # raises a ValueError in the assertion code itself
+        assert len(psa.paths) == len(expected_paths)
+        for ipath, (observed, expected) in enumerate(zip(psa.paths, expected_paths)):
+            assert_almost_equal(observed, expected, decimal=6,
+                                err_msg="loaded path {} does not agree with input".format(ipath))
+
     def test_dendrogram_produced(self, plot_data):
         """Test whether Dendrogram dictionary object was produced"""
         err_msg = "Dendrogram dictionary object was not produced"
