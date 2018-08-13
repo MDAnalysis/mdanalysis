@@ -451,7 +451,7 @@
 
 
 <div class="viewcode-block" id="capped_distance"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.capped_distance">[docs]</a><span class="k">def</span> <span class="nf">capped_distance</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                    <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculates the pairs and distances within a specified distance</span>
 
 <span class="sd">    If a *box* is supplied, then a minimum image convention is used</span>
@@ -484,6 +484,8 @@
 <span class="sd">    method : (optional) &#39;bruteforce&#39; or &#39;pkdtree&#39; or &#39;None&#39;</span>
 <span class="sd">        Keyword to override the automatic guessing of method built-in</span>
 <span class="sd">        in the function [None]</span>
+<span class="sd">    return_distances : (optional) &#39;True&#39;/&#39;False&#39;</span>
+<span class="sd">        Function returns distances if set to &#39;True&#39;</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -492,10 +494,11 @@
 <span class="sd">        distance between them is  within the ``max_cutoff`` and ``min_cutoff``</span>
 <span class="sd">        pairs[i,j] contains the indices i from reference coordinates, and</span>
 <span class="sd">        j from configuration</span>
-<span class="sd">    distances : array</span>
+<span class="sd">    distances : (optional) array</span>
 <span class="sd">        Distances corresponding to each pair of indices.</span>
 <span class="sd">        d[k] corresponding to the pairs[i,j] gives the distance between</span>
 <span class="sd">        i-th and j-th coordinate in reference and configuration respectively</span>
+<span class="sd">        Returns only if ``return_distances`` is set to `True`</span>
 
 <span class="sd">        .. code-block:: python</span>
 
@@ -521,10 +524,18 @@
     <span class="n">method</span> <span class="o">=</span> <span class="n">_determine_method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span>
                                <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
                                <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
-    <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
-                         <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+        <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
+                         <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                         <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
+                         <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                         <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_determine_method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -576,7 +587,13 @@
     <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5000</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mf">1e8</span><span class="p">:</span>
+        <span class="c1"># CAUTION : for large datasets, shouldnt go into &#39;bruteforce&#39;</span>
+        <span class="c1"># in any case. Arbitrary number, but can be characterized</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;nsgrid&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">min_dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reference</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
                                <span class="n">configuration</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
@@ -588,18 +605,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">tribox</span> <span class="o">=</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">tribox</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">tribox</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mf">10.0</span><span class="o">*</span><span class="n">max_cutoff</span><span class="p">)</span> <span class="ow">and</span>
-                   <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100000</span> <span class="ow">and</span>
-                   <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100000</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">max_cutoff</span> <span class="o">&gt;</span> <span class="mf">0.3</span><span class="o">*</span><span class="n">size</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;pkdtree&#39;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;nsgrid&#39;</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">_bruteforce_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
-                       <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                       <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Internal method for bruteforce calculations</span>
 
 <span class="sd">    Uses naive distance calulations and returns a list</span>
@@ -609,16 +622,16 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pairs : list</span>
-<span class="sd">        List of ``[(i, j)]`` pairs such that atom-index ``i`` is</span>
+<span class="sd">    pairs : array</span>
+<span class="sd">        Every ``[i, j]`` pair is such that atom-index ``i`` is</span>
 <span class="sd">        from reference and ``j`` from configuration array</span>
-<span class="sd">    distance: list</span>
+<span class="sd">    distance: (optional) array</span>
 <span class="sd">         Distance between ``reference[i]`` and ``configuration[j]``</span>
-<span class="sd">         atom coordinate</span>
+<span class="sd">         atom coordinate. Only returns when ``return_distances``</span>
+<span class="sd">         is set to ``True``</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pairs</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
-
     <span class="n">reference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="n">configuration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
@@ -630,38 +643,41 @@
     <span class="n">_check_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="s1">&#39;reference&#39;</span><span class="p">)</span>
     <span class="n">_check_array</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reference</span><span class="p">):</span>
-        <span class="n">dist</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dist</span> <span class="o">&lt;</span> <span class="n">max_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dist</span> <span class="o">&lt;</span> <span class="n">max_cutoff</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">:</span>
-            <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-            <span class="n">distance</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distance</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">distance</span> <span class="o">&lt;=</span> <span class="n">max_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">distance</span> <span class="o">&lt;=</span> <span class="n">max_cutoff</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mask</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distance</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span>
 
 
 <span class="k">def</span> <span class="nf">_pkdtree_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
-                    <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                    <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Capped Distance evaluations using KDtree.</span>
 
 <span class="sd">    Uses minimum image convention if *box* is specified</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">    --------</span>
-<span class="sd">    pairs : list</span>
-<span class="sd">        List of atom indices which are within the specified cutoff distance.</span>
-<span class="sd">        pairs `(i, j)` corresponds to i-th particle in reference and</span>
+<span class="sd">    pairs : array</span>
+<span class="sd">        Array of atom indices which are within the specified cutoff distance.</span>
+<span class="sd">        Every pairs `(i, j)` corresponds to i-th particle in reference and</span>
 <span class="sd">        j-th particle in configuration</span>
-<span class="sd">    distance : list</span>
+<span class="sd">    distance : (optional) array</span>
 <span class="sd">        Distance between two atoms corresponding to the (i, j) indices</span>
-<span class="sd">        in pairs.</span>
+<span class="sd">        in pairs. Only returns when ``return_distances``</span>
+<span class="sd">         is set to ``True``</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.pkdtree</span> <span class="k">import</span> <span class="n">PeriodicKDTree</span>
-
-    <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
 
     <span class="n">reference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="n">configuration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -673,29 +689,27 @@
 
     <span class="n">_check_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="s1">&#39;reference&#39;</span><span class="p">)</span>
     <span class="n">_check_array</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">)</span>
-
     <span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
     <span class="n">cut</span> <span class="o">=</span> <span class="n">max_cutoff</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
     <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cut</span><span class="p">)</span>
-    <span class="c1"># Search for every query point</span>
-    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">centers</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reference</span><span class="p">):</span>
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">get_indices</span><span class="p">()</span>
-        <span class="n">dist</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span><span class="n">centers</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
-                              <span class="n">configuration</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">search_tree</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">and</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="n">reference</span><span class="p">[</span><span class="n">refA</span><span class="p">],</span> <span class="n">configuration</span><span class="p">[</span><span class="n">refB</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
-            <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="p">))]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">num</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
-                <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">idx</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-                <span class="n">distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">num</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">)</span>
+            <span class="n">pairs</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">distance</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distance</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span>
 
 
 <span class="k">def</span> <span class="nf">_nsgrid_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                   <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Search all the pairs in *reference* and *configuration* within</span>
 <span class="sd">    a specified distance using Grid Search</span>
 
@@ -718,6 +732,17 @@
 <span class="sd">        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx,ly, lz, alpha, beta, gamma]``. Minimum image convention</span>
 <span class="sd">        is applied if the box is provided</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pairs : array</span>
+<span class="sd">        Array of atom indices which are within the specified cutoff distance.</span>
+<span class="sd">        Every pairs `(i, j)` corresponds to i-th particle in reference and</span>
+<span class="sd">        j-th particle in configuration</span>
+<span class="sd">    distance : (optional) array</span>
+<span class="sd">        Distance between two atoms corresponding to the (i, j) indices</span>
+<span class="sd">        in pairs. Only returns when ``return_distances``</span>
+<span class="sd">         is set to ``True``</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.nsgrid</span> <span class="k">import</span> <span class="n">FastNS</span>
@@ -757,12 +782,16 @@
         <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
 
     <span class="n">pairs</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">()</span>
-    <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">pair_distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
+            <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">pair_distance</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">pair_distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
-        <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">pair_distance</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span>
+    <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span>
 
 
 <div class="viewcode-block" id="self_capped_distance"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_capped_distance">[docs]</a><span class="k">def</span> <span class="nf">self_capped_distance</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -882,23 +911,22 @@
     <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">min_dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reference</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
             <span class="n">max_dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reference</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">max_dim</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">min_dim</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">3</span><span class="p">:],</span> <span class="mi">90</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">3</span><span class="p">:],</span> <span class="mi">90</span><span class="p">):</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">box</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">tribox</span> <span class="o">=</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
-            <span class="n">size</span> <span class="o">=</span> <span class="n">tribox</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">tribox</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tribox</span> <span class="o">=</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">tribox</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">tribox</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mf">10.0</span><span class="o">*</span><span class="n">max_cutoff</span><span class="p">)</span> <span class="ow">and</span>
-                   <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100000</span><span class="p">))):</span>
-            <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;pkdtree&#39;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">max_cutoff</span> <span class="o">&lt;</span> <span class="mf">0.03</span><span class="o">*</span><span class="n">size</span><span class="o">.</span><span class="n">min</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;pkdtree&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;nsgrid&#39;</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">_bruteforce_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -920,27 +948,25 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pairs</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
-
     <span class="n">reference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">):</span>
         <span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reference</span><span class="p">):</span>
-        <span class="c1"># Each pair of atoms needs to be checked only once.</span>
-        <span class="c1"># Only calculate distance for atomA and atomB</span>
-        <span class="c1"># if atomidA &lt; atomidB</span>
-        <span class="n">dist</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">reference</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:],</span>
-                             <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dist</span> <span class="o">&lt;</span> <span class="n">max_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dist</span> <span class="o">&lt;</span> <span class="n">max_cutoff</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">other_idx</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">:</span>
-            <span class="c1"># Actual atomid for atomB</span>
-            <span class="c1"># can be direclty obtained in this way</span>
-            <span class="n">j</span> <span class="o">=</span> <span class="n">other_idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">i</span>
-            <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-            <span class="n">distance</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">other_idx</span><span class="p">])</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+    <span class="n">distvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">distvec</span><span class="p">)</span>
+
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">*</span><span class="n">max_cutoff</span>
+    <span class="n">distance</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">distvec</span>
+
+    <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">distance</span> <span class="o">&lt;</span> <span class="n">max_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">distance</span> <span class="o">&lt;</span> <span class="n">max_cutoff</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mask</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
 
 
