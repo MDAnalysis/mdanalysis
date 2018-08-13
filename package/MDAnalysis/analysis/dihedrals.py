@@ -19,8 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-r"""
-Dihedral angles analysis --- :mod:`MDAnalysis.analysis.dihedrals`
+r"""Dihedral angles analysis --- :mod:`MDAnalysis.analysis.dihedrals`
 ===========================================================================
 
 :Author: Henry Mull
@@ -87,25 +86,51 @@ Then it can be plotted using the built-in plotting method :meth:`Ramachandran.pl
    fig, ax = plt.subplots(figsize=plt.figaspect(1))
    R.plot(ax=ax, color='k', marker='s')
 
-The Janin class works in the same way, only needing a list of residues. To plot
-the data yourself, the angles can be accessed using :attr:`Ramachandran.angles`
-or :attr:`Janin.angles`.
+as shown in the example :ref:`Ramachandran plot figure <figure-ramachandran>`.
+
+.. _figure-ramachandran:
+
+.. figure:: /images/rama_demo_plot.png
+   :scale: 50 %
+   :alt: Ramachandran plot
+
+   Ramachandran plot for residues 5 to 10 of AdK, sampled from the AdK test
+   trajectory (XTC). The contours in the background are the "allowed region"
+   and the "marginally allowed" regions.
+
+The Janin class works in the same way, only needing a list of residues; see the
+:ref:`Janin plot figure <figure-janin>` as an example. To plot the data
+yourself, the angles can be accessed using :attr:`Ramachandran.angles` or
+:attr:`Janin.angles`.
 
 Reference plots can be added to the axes for both the Ramachandran and Janin
 classes using the kwarg ``ref=True``. The Ramachandran reference data
 (:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data
 (:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data
-obtained from a large selection of pdb files, and were analyzed using these
+obtained from a large selection of 500 PDB files, and were analyzed using these
 classes. The allowed and marginally allowed regions of the Ramachandran reference
 plt have cutoffs set to include 90% and 99% of the data points, and the Janin
 reference plot has cutoffs for 90% and 98% of the data points. The list of PDB
 files used for the referece plots was taken from [Lovell2003]_ and information
 about general Janin regions was taken from [Janin1978]_.
 
-These classes are prone to errors if the topology contains duplicate or missing
-atoms (e.g. atoms with `altloc` or incomplete residues). If the topology has as
-an `altloc` attribute, you must specify only one `altloc` for the atoms with
-more than one (``"protein and not altloc B"``).
+.. Note::
+   These classes are prone to errors if the topology contains duplicate or missing
+   atoms (e.g. atoms with `altloc` or incomplete residues). If the topology has as
+   an `altloc` attribute, you must specify only one `altloc` for the atoms with
+   more than one (``"protein and not altloc B"``).
+
+
+.. _figure-janin:
+
+.. figure:: /images/janin_demo_plot.png
+   :scale: 50 %
+   :alt: Janin plot
+
+   Janin plot for residues 5 to 10 of AdK, sampled from the AdK test trajectory
+   (XTC). The contours in the background are the "allowed region" and the
+   "marginally allowed" regions for all possible residues.
+
 
 Analysis Classes
 ----------------
@@ -142,13 +167,17 @@ Analysis Classes
 
 References
 ----------
-.. [Lovell2003] Lovell, Simon C., et al (2003). "Structure validation by
+.. [Lovell2003] Simon C. Lovell, Ian W. Davis, W. Bryan Arendall III,
+   Paul I. W. de Bakker, J. Michael Word, Michael G. Prisant,
+   Jane S. Richardson, and David C. Richardson (2003). "Structure validation by
    :math:`C_{\alpha}` geometry: :math:`\phi`, :math:`\psi`, and
-   :math:`C_{\beta}`
-   deviation". Proteins 50(3): 437-450.
+   :math:`C_{\beta}` deviation". *Proteins* 50(3): 437-450. doi:
+   `10.1002/prot.10286 <https://doi.org/10.1002/prot.10286>`_
 
-.. [Janin1978] Janin, Joel, et al. (1978). "Conformation of amnio acid
-   side-chains in proteins". Journal of Molecular Biology 125(3): 357-386.
+.. [Janin1978] Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard
+   Maigret. (1978). "Conformation of amino acid side-chains in
+   proteins". *Journal of Molecular Biology* 125(3): 357-386. doi:
+   `10.1016/0022-2836(78)90408-4 <https://doi.org/10.1016/0022-2836(78)90408-4>`_
 
 """
 from __future__ import absolute_import
