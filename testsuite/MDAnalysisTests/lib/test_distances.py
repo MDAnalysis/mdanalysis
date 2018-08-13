@@ -25,11 +25,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal
 
-import itertools
-
 import MDAnalysis as mda
-
-from MDAnalysis.lib.mdamath import triclinic_vectors, triclinic_box
 
 @pytest.mark.parametrize('coord_dtype', (np.float32, np.float64))
 def test_transform_StoR_pass(coord_dtype):
@@ -58,11 +54,6 @@ npoints_1 = (1, 100)
 
 boxes_1 = (np.array([1, 2, 3, 90, 90, 90], dtype=np.float32),  # ortho
            np.array([1, 2, 3, 30, 45, 60], dtype=np.float32),  # tri_box
-           triclinic_vectors(  # tri_vecs
-           np.array([1, 2, 3, 90, 90, 45], dtype=np.float32)),
-           np.array([[0.5, 0.9, 1.9],  # tri_vecs_bad
-                     [2.0, 0.4, 0.1],
-                     [0.0, 0.6, 0.5]], dtype=np.float32),
            None,  # Non Periodic
            )
 
@@ -71,7 +62,7 @@ query_1 = (np.array([0.1, 0.1, 0.1], dtype=np.float32),
            np.array([[0.1, 0.1, 0.1],
                      [0.2, 0.1, 0.1]], dtype=np.float32))
 
-method_1 = ('bruteforce', 'pkdtree')
+method_1 = ('bruteforce', 'pkdtree', 'nsgrid')
 
 min_cutoff_1 = (None, 0.1)
 
@@ -94,6 +85,45 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
                                                     min_cutoff=min_cutoff,
                                                     box=box,
                                                     method=method)
+
+    if pairs.shape != (0, ):
+        found_pairs = pairs[:, 1]
+    else:
+        found_pairs = list()
+
+    if(query.shape[0] == 3):
+        query = query.reshape((1, 3))
+
+    distances = mda.lib.distances.distance_array(query,
+                                                 points, box=box)
+
+    if min_cutoff is None:
+        min_cutoff = 0.
+    indices = np.where((distances < max_cutoff) & (distances > min_cutoff))
+
+    assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
+
+# for coverage
+@pytest.mark.parametrize('npoints', npoints_1)
+@pytest.mark.parametrize('box', boxes_1)
+@pytest.mark.parametrize('query', query_1)
+@pytest.mark.parametrize('method', method_1)
+@pytest.mark.parametrize('min_cutoff', min_cutoff_1)
+def test_capped_distance_return(npoints, box, query, method, min_cutoff):
+    np.random.seed(90003)
+    points = (np.random.uniform(low=0, high=1.0,
+                        size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
+    max_cutoff = 0.3
+    # capped distance should be able to handle array of vectors
+    # as well as single vectors.
+    pairs = mda.lib.distances.capped_distance(query,
+                                                    points,
+                                                    max_cutoff,
+                                                    min_cutoff=min_cutoff,
+                                                    box=box,
+                                                    method=method,
+                                                    return_distances=False)
+
     if pairs.shape != (0, ):
         found_pairs = pairs[:, 1]
     else:
@@ -112,35 +142,74 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
     assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
 
 
+@pytest.mark.parametrize('npoints', npoints_1)
+@pytest.mark.parametrize('box', boxes_1)
+@pytest.mark.parametrize('method', method_1)
+@pytest.mark.parametrize('min_cutoff', min_cutoff_1)
+def test_self_capped_distance(npoints, box, method, min_cutoff):
+    np.random.seed(90003)
+    points = (np.random.uniform(low=0, high=1.0,
+                         size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
+    max_cutoff = 0.2
+    pairs, distance = mda.lib.distances.self_capped_distance(points,
+                                                             max_cutoff,
+                                                             min_cutoff=min_cutoff,
+                                                             box=box,
+                                                             method=method)
+    found_pairs, found_distance = [], []
+    for i, coord in enumerate(points):
+        dist = mda.lib.distances.distance_array(coord[None, :],
+                                                points[i+1:],
+                                                box=box)
+        if min_cutoff is not None:
+            idx = np.where((dist < max_cutoff) & (dist > min_cutoff))[1]
+        else:
+            idx = np.where((dist < max_cutoff))[1]
+        for other_idx in idx:
+            j = other_idx + 1 + i
+            found_pairs.append((i, j))
+            found_distance.append(dist[0, other_idx])
+    assert_equal(len(pairs), len(found_pairs))
+
+
+@pytest.mark.parametrize('box', (None,
+                                 np.array([1, 1, 1,  90, 90, 90], dtype=np.float32),
+                                 np.array([1, 1, 1, 60, 75, 80], dtype=np.float32)))
+@pytest.mark.parametrize('npoints,cutoff,meth',
+                         [(1, 0.02, '_bruteforce_capped_self'),
+                          (1, 0.2, '_bruteforce_capped_self'),
+                          (600, 0.02, '_pkdtree_capped_self'),
+                          (600, 0.2, '_nsgrid_capped_self')])
+def test_method_selfselection(box, npoints, cutoff, meth):
+    np.random.seed(90003)
+    points = (np.random.uniform(low=0, high=1.0,
+                        size=(npoints, 3))).astype(np.float32)
+    method = mda.lib.distances._determine_method_self(points, cutoff, box=box)
+    assert_equal(method.__name__, meth)
+
+
+@pytest.mark.parametrize('box', (None,
+                                 np.array([1, 1, 1,  90, 90, 90], dtype=np.float32),
+                                 np.array([1, 1, 1, 60, 75, 80], dtype=np.float32)))
 @pytest.mark.parametrize('npoints,cutoff,meth',
                          [(1, 0.02, '_bruteforce_capped'),
                           (1, 0.2, '_bruteforce_capped'),
-                          (6000, 0.02, '_pkdtree_capped'),
-                          (6000, 0.2, '_pkdtree_capped'),
-                          (200000, 0.02, '_pkdtree_capped'),
-                          (200000, 0.2, '_bruteforce_capped')])
-def test_method_selection(npoints, cutoff, meth):
+                          (200, 0.02, '_nsgrid_capped'),
+                          (200, 0.35, '_bruteforce_capped'),
+                          (10000, 0.35, '_nsgrid_capped')])
+def test_method_selection(box, npoints, cutoff, meth):
     np.random.seed(90003)
-    box = np.array([1, 1, 1, 90, 90, 90], dtype=np.float32)
     points = (np.random.uniform(low=0, high=1.0,
-                        size=(npoints, 3)) * (box[:3])).astype(np.float32)
-    if box is not None:
-        boxtype = mda.lib.distances._box_check(box)
-        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-        if (boxtype == 'tri_box'):
-            box = triclinic_vectors(box)
-        if (boxtype == 'tri_vecs_bad'):
-            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
-    method = mda.lib.distances._determine_method(points, points,
-                                                 cutoff, box=box)
+                        size=(npoints, 3)).astype(np.float32))
+    method = mda.lib.distances._determine_method(points, points, cutoff, box=box)
     assert_equal(method.__name__, meth)
 
 
 # different boxlengths to shift a coordinate
 shifts = [
-    ((0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)), # no shifting
-    ((1, 0, 0), (0, 1, 1), (0, 0, 1), (1, 1, 0)), # single box lengths
-    ((-1, 0, 1), (0, -1, 0), (1, 0, 1), (-1, -1, -1)), # negative single
+    ((0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)),  # no shifting
+    ((1, 0, 0), (0, 1, 1), (0, 0, 1), (1, 1, 0)),  # single box lengths
+    ((-1, 0, 1), (0, -1, 0), (1, 0, 1), (-1, -1, -1)),  # negative single
     ((4, 3, -2), (-2, 2, 2), (-5, 2, 2), (0, 2, 2)),  # multiple boxlengths
 ]
 

@@ -29,7 +29,7 @@ from MDAnalysisTests.datafiles import DCD, PSF
 from MDAnalysisTests.coordinates.base import (BaseReference,
                                               MultiframeReaderTest)
 from MDAnalysis.coordinates.memory import Timestep
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_almost_equal
 
 
 class MemoryReference(BaseReference):
@@ -193,3 +193,10 @@ class TestMemoryReader(MultiframeReaderTest):
         coordinates = np.random.uniform(size=(100, ref.universe.atoms.n_atoms, 3)).cumsum(0)
         universe = mda.Universe(ref.universe.filename, coordinates, format=MemoryReader)
         assert_equal(universe.trajectory.get_array().dtype, np.dtype('float32'))
+
+    def test_position_assignation(self, reader):
+        # When coordinates are assigned to a timestep, is the change persistent?
+        new_positions = np.ones_like(reader.ts.positions, dtype=np.float32)
+        reader.ts.positions = new_positions
+        reader[0]
+        assert_almost_equal(reader.ts.positions, new_positions)

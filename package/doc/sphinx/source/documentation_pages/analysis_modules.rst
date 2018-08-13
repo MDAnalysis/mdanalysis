@@ -137,3 +137,11 @@ analysis modules. *Use with care.*
    :maxdepth: 1
 
    analysis/legacy_modules
+
+Data
+====
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/data

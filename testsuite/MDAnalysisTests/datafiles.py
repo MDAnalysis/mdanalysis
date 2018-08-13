@@ -85,7 +85,7 @@ __all__ = [
     "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
-    "TXYZ", "ARC",        # Tinker files
+    "TXYZ", "ARC", "ARC_PBC",       # Tinker files
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
@@ -156,7 +156,10 @@ __all__ = [
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
     "GSD",
     "GRO_MEMPROT", "XTC_MEMPROT", # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
-    "DihedralsArray", "GLYDihedralsArray" # phi and psi angles for testing Ramachandran class
+    "DihedralArray", "DihedralsArray", # time series of single dihedral
+    "RamaArray", "GLYRamaArray", # time series of phi/psi angles
+    "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
+    "PDB_rama", "PDB_janin" # for testing failures of Ramachandran and Janin classes
 ]
 
 from pkg_resources import resource_filename
@@ -294,6 +297,7 @@ XYZ_mini = resource_filename(__name__, 'data/mini.xyz')
 XYZ_five = resource_filename(__name__, 'data/five.xyz')
 TXYZ = resource_filename(__name__, 'data/coordinates/test.txyz')
 ARC = resource_filename(__name__, 'data/coordinates/test.arc')
+ARC_PBC = resource_filename(__name__, 'data/coordinates/new_hexane.arc')
 
 PRM = resource_filename(__name__, 'data/Amber/ache.prmtop')
 TRJ = resource_filename(__name__, 'data/Amber/ache.mdcrd')
@@ -416,8 +420,14 @@ ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz'
 
 GSD = resource_filename(__name__, 'data/example.gsd')
 
-DihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_dihedrals.npy')
-GLYDihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_GLY_dihedrals.npy')
+DihedralArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral.npy')
+DihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral_list.npy')
+RamaArray = resource_filename(__name__, 'data/adk_oplsaa_rama.npy')
+GLYRamaArray = resource_filename(__name__, 'data/adk_oplsaa_GLY_rama.npy')
+JaninArray = resource_filename(__name__, 'data/adk_oplsaa_janin.npy')
+LYSJaninArray = resource_filename(__name__, 'data/adk_oplsaa_LYS_janin.npy')
+PDB_rama = resource_filename(__name__, 'data/19hc.pdb.gz')
+PDB_janin = resource_filename(__name__, 'data/1a28.pdb.gz')
 
 # This should be the last line: clean up namespace
 del resource_filename
