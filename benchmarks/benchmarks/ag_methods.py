@@ -24,8 +24,11 @@ class AtomGroupMethodsBench(object):
         self.u = MDAnalysis.Universe(GRO)
         self.ag = self.u.atoms[:num_atoms]
         self.weights = np.ones(num_atoms)
-        self.vdwradii = {'NA':1.0,
-                         'M':1.0}
+        self.vdwradii = {'H':1.0,
+                         'C':1.0,
+                         'N':1.0,
+                         'O':1.0,
+                         'DUMMY':1.0}
         self.rot_matrix = np.ones((3,3))
         self.trans = np.ones((4,4))
 
