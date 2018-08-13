@@ -54,7 +54,6 @@ from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.lib.util import unique_int_1d
 from MDAnalysis.core import flags
 from ..lib import distances
-from ..lib import nsgrid
 from ..exceptions import SelectionError, NoDataError
 
 
@@ -274,7 +273,7 @@ class AroundSelection(DistanceSelection):
         sel = self.sel.apply(group)
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
-        
+
         if not sys or not sel:
             return sys[[]]
 
