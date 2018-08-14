@@ -172,22 +172,37 @@ def _check_box(box):
     if box.dtype != np.float32:
         raise TypeError("Invalid box dtype. Must be numpy.float32, got {0}."
                         "".format(box.dtype))
+    boxtype = None
     if box.shape == (6,):
         if np.all(box[3:] == 90.):
-            return 'ortho', box
+            boxtype = 'ortho'
+            checked_box = box[:3]
         else:
-            return 'tri_vecs', triclinic_vectors(box)
+            boxtype = 'tri_vecs'
+            checked_box = triclinic_vectors(box)
     elif box.shape == (3,):
-        return 'ortho', box
+        boxtype = 'ortho'
+        checked_box = box
     elif box.shape == (3, 3):
-        # Check if triclinic box vectors are properly formatted:
-        if np.all([box[0][1] == 0.0, box[0][2] == 0.0, box[1][2] == 0.0]):
-            return 'tri_vecs', box
+        # Check if triclinic box vectors are improperly formatted:
+        if np.count_nonzero(np.triu(box, 1)):
+            checked_box = triclinic_vectors(triclinic_box(box[0], box[1],
+                                                          box[2]))
         else:
-            return 'tri_vecs', triclinic_vectors(triclinic_box(box[0], box[1],
-                                                              box[2]))
-    raise ValueError("Box input not recognized, must be an array of box "
-                     "dimensions.")
+            checked_box = box
+        # Check if lower triangle is nonzero:
+        if np.count_nonzero(np.tril(checked_box, -1)):
+            boxtype = 'tri_vecs'
+        # otherwise, the box is orthogonal and we return only the diagonal:
+        else:
+            boxtype = 'ortho'
+            checked_box = checked_box.diagonal().copy()
+    if boxtype is None:
+        raise ValueError("Box input not recognized, must be an array of box "
+                         "dimensions.")
+    elif not checked_box.flags['C_CONTIGUOUS']:
+        raise ValueError("Box must be a C-contiguous numpy array.")
+    return boxtype, checked_box
 
 
 def _check_coord_array(coords, desc):
