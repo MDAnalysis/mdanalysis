@@ -97,6 +97,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="k">import</span> <span class="n">deprecate</span>
 
+
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.pkdtree</span> <span class="k">import</span> <span class="n">PeriodicKDTree</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">unique_int_1d</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core</span> <span class="k">import</span> <span class="n">flags</span>
@@ -285,10 +286,6 @@
 <span class="sd">     - _apply_distmat</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_KDTree_routines&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;fast&#39;</span><span class="p">,</span> <span class="s1">&#39;always&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">apply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_KDTree</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">apply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_distmat</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_periodic_selections&#39;</span><span class="p">]</span>
 
@@ -319,39 +316,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_apply_KDTree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;KDTree based selection is about 7x faster than distmat</span>
-<span class="sd">        for typical problems.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="c1"># All atoms in group that aren&#39;t in sel</span>
         <span class="n">sys</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">sel</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">sel</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sys</span><span class="p">[[]]</span>
 
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                                          <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
 
-        <span class="n">cut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">leafsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cut</span><span class="p">)</span>
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">)</span>
-        <span class="n">unique_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">kdtree</span><span class="o">.</span><span class="n">get_indices</span><span class="p">())</span>
-
-        <span class="k">return</span> <span class="n">sys</span><span class="p">[</span><span class="n">unique_idx</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
-
-    <span class="k">def</span> <span class="nf">_apply_distmat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
-        <span class="n">sys</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">sel</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
-
-        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-        <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">distance_array</span><span class="p">(</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">sel</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
-
-        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">sys</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
-
+        <span class="k">return</span> <span class="n">sys</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
 
 <span class="k">class</span> <span class="nc">SphericalLayerSelection</span><span class="p">(</span><span class="n">DistanceSelection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;sphlayer&#39;</span>
@@ -362,39 +343,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_apply_KDTree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Selection using KDTree and PeriodicKDTree for aperiodic and</span>
-<span class="sd">        fully-periodic systems, respectively.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
-        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-        <span class="n">periodic</span> <span class="o">=</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="n">ref</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">periodic</span><span class="p">)</span>
-        <span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-
-        <span class="n">cutoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">)</span>
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span><span class="p">)</span>
-        <span class="n">found_ExtIndices</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">get_indices</span><span class="p">()</span>
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span><span class="p">)</span>
-        <span class="n">found_IntIndices</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">get_indices</span><span class="p">()</span>
-        <span class="n">found_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">found_ExtIndices</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">found_IntIndices</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">found_indices</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
-
-    <span class="k">def</span> <span class="nf">_apply_distmat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
         <span class="n">periodic</span> <span class="o">=</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">ref</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">periodic</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">distance_array</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span>
-                                     <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                     <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span>
-        <span class="n">mask</span> <span class="o">&amp;=</span> <span class="n">d</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span><span class="p">,</span>
+                                          <span class="n">min_cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span><span class="p">,</span>
+                                          <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                                          <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
 
 
 <span class="k">class</span> <span class="nc">SphericalZoneSelection</span><span class="p">(</span><span class="n">DistanceSelection</span><span class="p">):</span>
@@ -406,38 +370,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_apply_KDTree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Selection using KDTree and PeriodicKDTree for aperiodic and</span>
-<span class="sd">        fully-periodic systems, respectively.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
         <span class="n">periodic</span> <span class="o">=</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="n">ref</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">periodic</span><span class="p">)</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">periodic</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span>
+                                          <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                                          <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
 
-        <span class="n">cut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cut</span><span class="p">)</span>
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">)</span>
-        <span class="n">found_indices</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">get_indices</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">found_indices</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
-
-    <span class="k">def</span> <span class="nf">_apply_distmat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
-        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-        <span class="n">periodic</span> <span class="o">=</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="n">ref</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">periodic</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span>\
-            <span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">distance_array</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span>
-                                     <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                     <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span>
-        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
 
 
 <span class="k">class</span> <span class="nc">CylindricalSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_periodic_selections&#39;</span><span class="p">]</span>
+
 
     <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
@@ -532,25 +484,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">_apply_KDTree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-        <span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-        <span class="n">cut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cut</span><span class="p">)</span>
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">)</span>
-        <span class="n">found_indices</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">get_indices</span><span class="p">()</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span>
+                                          <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                                          <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">found_indices</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
-
-    <span class="k">def</span> <span class="nf">_apply_distmat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="n">ref_coor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
-
-        <span class="n">ref_coor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ref_coor</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-
-        <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">distance_array</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">ref_coor</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
 
 
 <span class="k">class</span> <span class="nc">AtomSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
