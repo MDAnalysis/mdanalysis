@@ -167,7 +167,7 @@ def _check_box(box):
          dtype ``numpy.float32``.
        * Now also returns the box in the format expected by low-level functions
          in :mod:`~MDAnalysis.lib.c_distances`.
-       * Removed obsolete `boxtype` ``tri_vecs_bad``.
+       * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
     """
     if box.dtype != np.float32:
         raise TypeError("Invalid box dtype. Must be numpy.float32, got {0}."
@@ -182,9 +182,9 @@ def _check_box(box):
     elif box.shape == (3, 3):
         # Check if triclinic box vectors are properly formatted:
         if np.all([box[0][1] == 0.0, box[0][2] == 0.0, box[1][2] == 0.0]):
-            return 'tri_box', box
+            return 'tri_vecs', box
         else:
-            return 'tri_box', triclinic_vectors(triclinic_box(box[0], box[1],
+            return 'tri_vecs', triclinic_vectors(triclinic_box(box[0], box[1],
                                                               box[2]))
     raise ValueError("Box input not recognized, must be an array of box "
                      "dimensions.")
