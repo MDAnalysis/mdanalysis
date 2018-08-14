@@ -106,6 +106,8 @@ Changes
   * The TPR parser reads SETTLE constraints as bonds. (Issue #1949)
   * Indexing a trajectory with a slice or an array now returns an iterable
     (Issue #1894)
+  * removed unused function MDAnalysis.lb.mdamath.one_to_many_pointers()
+    (issue #2010)
 
 Deprecations
   * almost all "save()", "save_results()", "save_table()" methods in
