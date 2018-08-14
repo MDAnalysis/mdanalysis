@@ -233,6 +233,14 @@ class TestTriclinicDistances(object):
 
         return S_mol1, S_mol2
 
+    @staticmethod
+    @pytest.fixture()
+    def S_mol_single(TRIC):
+        S_mol1 = TRIC.atoms[383].position
+        S_mol2 = TRIC.atoms[390].position
+        return S_mol1, S_mol2
+
+    @pytest.mark.parametrize('S_mol', [S_mol, S_mol_single], indirect=True)
     def test_transforms(self, S_mol, box, boxV, backend):
         from MDAnalysis.lib.distances import transform_StoR, transform_RtoS
         # To check the cython coordinate transform, the same operation is done in numpy
