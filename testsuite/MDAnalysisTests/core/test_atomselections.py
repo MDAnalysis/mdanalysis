@@ -496,31 +496,14 @@ class BaseDistanceSelection(object):
 
     Cylindrical methods don't use KDTree
     """
-
-    methods = [('kdtree', False),
-               ('kdtree', True),
-               ('distmat', True),
-               ('distmat', False)]
-
-    @staticmethod
-    def choosemeth(sel, meth, periodic):
-        """hack in the desired apply method"""
-        if meth == 'kdtree':
-            sel.apply = sel._apply_KDTree
-        elif meth == 'distmat':
-            sel.apply = sel._apply_distmat
-
+    @pytest.mark.parametrize('periodic', (True, False))
+    def test_around(self, u, periodic):
+        sel = Parser.parse('around 5.0 resid 1', u.atoms)
         if periodic:
             sel.periodic = True
         else:
             sel.periodic = False
 
-        return sel
-
-    @pytest.mark.parametrize('meth, periodic', methods)
-    def test_around(self, u, meth, periodic):
-        sel = Parser.parse('around 5.0 resid 1', u.atoms)
-        sel = self.choosemeth(sel, meth, periodic)
         result = sel.apply(u.atoms)
 
         r1 = u.select_atoms('resid 1')
@@ -535,10 +518,14 @@ class BaseDistanceSelection(object):
         ref.difference_update(set(r1.indices))
         assert ref == set(result.indices)
 
-    @pytest.mark.parametrize('meth, periodic', methods)
-    def test_spherical_layer(self, u, meth, periodic):
+    @pytest.mark.parametrize('periodic', (True, False))
+    def test_spherical_layer(self, u, periodic):
         sel = Parser.parse('sphlayer 2.4 6.0 resid 1', u.atoms)
-        sel = self.choosemeth(sel, meth, periodic)
+        if periodic:
+            sel.periodic = True
+        else:
+            sel.periodic = False
+
         result = sel.apply(u.atoms)
 
         r1 = u.select_atoms('resid 1')
@@ -549,10 +536,14 @@ class BaseDistanceSelection(object):
 
         assert ref == set(result.indices)
 
-    @pytest.mark.parametrize('meth, periodic', methods)
-    def test_spherical_zone(self, u, meth, periodic):
+    @pytest.mark.parametrize('periodic', (True, False))
+    def test_spherical_zone(self, u, periodic):
         sel = Parser.parse('sphzone 5.0 resid 1', u.atoms)
-        sel = self.choosemeth(sel, meth, periodic)
+        if periodic:
+            sel.periodic = True
+        else:
+            sel.periodic = False
+
         result = sel.apply(u.atoms)
 
         r1 = u.select_atoms('resid 1')
@@ -563,10 +554,13 @@ class BaseDistanceSelection(object):
 
         assert ref == set(result.indices)
 
-    @pytest.mark.parametrize('meth, periodic', methods)
-    def test_point(self, u, meth, periodic):
+    @pytest.mark.parametrize('periodic', (True, False))
+    def test_point(self, u, periodic):
         sel = Parser.parse('point 5.0 5.0 5.0  3.0', u.atoms)
-        sel = self.choosemeth(sel, meth, periodic)
+        if periodic:
+            sel.periodic = True
+        else:
+            sel.periodic = False
         result = sel.apply(u.atoms)
 
         box = u.dimensions if periodic else None
