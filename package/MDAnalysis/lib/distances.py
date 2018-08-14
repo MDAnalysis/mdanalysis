@@ -128,96 +128,169 @@ from .c_distances import (calc_distance_array,
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
-def _box_check(box):
-    """Take a box input and deduce what type of system it represents based
-    on the shape of the array and whether all angles are 90.
+def _check_box(box):
+    """Take a box input and deduce what type of system it represents based on
+    the shape of the array and whether all angles are 90 degrees.
 
     Parameters
     ----------
-    box : array
-        Box information of unknown format.
+    box : numpy.ndarray
+        Array with dtype ``numpy.float32`` containing box information of unknown
+        format.
 
     Returns
     -------
     boxtype : str
-        * ``ortho`` orthogonal box
-        * ``tri_vecs`` triclinic box vectors
-        * ``tri_box`` triclinic box lengths and angles
+        * ``'ortho'`` orthogonal box
+        * ``'tri_vecs'`` triclinic box vectors
+
+    checked_box : numpy.ndarray
+        Array of dtype ``numpy.float32`` containing box information:
+        * If `boxtype` is ``'ortho'``, `cecked_box` will have the shape ``(3,)``
+          containing the x-, y-, and z-dimensions of the orthogonal box.
+        * If  `boxtype` is ``'tri_vecs'``, `cecked_box` will have the shape
+          ``(3, 3)`` containing the triclinic box vectors in a lower triangular
+          matrix as returned by
+          :meth:`~MDAnalysis.lib.mdamath.triclinic_vectors`.
 
     Raises
     ------
     TypeError
-        If box is not float32.
+        If the dtype of `box` is not ``numpy.float32``.
     ValueError
-        If box type not detected.
+        If box type cannot be detected.
+
+
+    .. seealso: :meth:`~MDAnalysis.lib.mdamath.triclinic_vectors`
+    .. versionchanged: 0.19.0
+       * Added automatic conversion of input to :class:`numpy.ndarray` with
+         dtype ``numpy.float32``.
+       * Now also returns the box in the format expected by low-level functions
+         in :mod:`~MDAnalysis.lib.c_distances`.
+       * Removed obsolete `boxtype` ``tri_vecs_bad``.
     """
     if box.dtype != np.float32:
-        raise TypeError("Box must be of type float32")
-
-    boxtype = 'unknown'
-
-    if box.shape == (3,):
-        boxtype = 'ortho'
-    elif box.shape == (3, 3):
-        if np.all([box[0][1] == 0.0,  # Checks that tri box is properly formatted
-                      box[0][2] == 0.0,
-                      box[1][2] == 0.0]):
-            boxtype = 'tri_vecs'
-        else:
-            boxtype = 'tri_vecs_bad'
-    elif box.shape == (6,):
+        raise TypeError("Invalid box dtype. Must be numpy.float32, got {0}."
+                        "".format(box.dtype))
+    if box.shape == (6,):
         if np.all(box[3:] == 90.):
-            boxtype = 'ortho'
+            return 'ortho', box
         else:
-            boxtype = 'tri_box'
+            return 'tri_vecs', triclinic_vectors(box)
+    elif box.shape == (3,):
+        return 'ortho', box
+    elif box.shape == (3, 3):
+        # Check if triclinic box vectors are properly formatted:
+        if np.all([box[0][1] == 0.0, box[0][2] == 0.0, box[1][2] == 0.0]):
+            return 'tri_box', box
+        else:
+            return 'tri_box', triclinic_vectors(triclinic_box(box[0], box[1],
+                                                              box[2]))
+    raise ValueError("Box input not recognized, must be an array of box "
+                     "dimensions.")
 
-    if boxtype == 'unknown':
-        raise ValueError("box input not recognised"
-                         ", must be an array of box dimensions")
 
-    return boxtype
+def _check_coord_array(coords, desc):
+    """Check if an array is a valid coordinate array.
 
+    The `coords` array must meet the following requirements:
+      * Must have a shape of ``(n, 3)``.
+      * Its dtype must be ``numpy.float32``.
 
-def _check_array(coords, desc):
-    """Check an array is a valid array of coordinates
+    Parameters
+    ----------
+    coords : numpy.ndarray
+        The coordinate array to check for validity.
+    desc : str
+        Name of the coordinate array. Only used in error messages.
 
-    Must be:
-       (n,3) in shape
-       float32 data
+    Raises
+    ------
+    ValueError
+        If `coords` has a wrong shape.
+    TypeError
+        If the dtype of `coords` is not ``numpy.float32``.
     """
-    if (coords.ndim != 2 or coords.shape[1] != 3):
-        raise ValueError("{0} must be a sequence of 3 dimensional coordinates"
-                         "".format(desc))
-    _check_array_dtype(coords, desc)
-
-
-def _check_array_dtype(coords, desc):
-    """Check whether an array contains values of dtype: np.float32 or not"""
+    _check_coord_array_shape_2d(coords, desc)
     if coords.dtype != np.float32:
-        raise TypeError("{0} must be of type float32".format(desc))
+        raise TypeError("{0} must be of type numpy.float32".format(desc))
+# The following two lines would break a lot of tests. WHY?!
+#    if not coords.flags['C_CONTIGUOUS']:
+#        raise ValueError("{0} is not C-contiguous.".format(desc))
 
 
-def _check_results_array(results, size):
-    """Check the results array is ok to use
-
-    Must be:
-      same shape as size
-      float64
+def _check_coord_array_shape_1d(coord, desc):
+    """Check whether a single coordinate array has the correct shape of
+    ``(3,)``.
     """
-    if results.shape != size:
-        raise ValueError("Result array has incorrect size,"
-                         "should be {0}, got {1}".format(size, results.shape))
-    if results.dtype != np.float64:
-        raise TypeError("Results array must be of type float64")
+    if coord.shape != (3,):
+        raise ValueError("{0} must have a shape of (3,), got {1}."
+                         "".format(desc, coord.shape))
 
+
+def _check_coord_array_shape_2d(coords, desc):
+    """Check whether a coordinate array has the correct shape of ``(n, 3)``."""
+    if (coords.ndim != 2 or coords.shape[1] != 3):
+        raise ValueError("{0} must have a shape of (n, 3), got {1}."
+                         "".format(desc, coords.shape))
+
+
+def _check_coord_array_shape_1d_or_2d(coords, desc):
+    """Check if a coordinate array has the correct shape of either ``(3,)`` or
+    ``(n, 3)``.
+    """
+    if (coords.ndim not in (1, 2) or coords.shape[-1] != 3):
+        raise ValueError("{0} must have a shape of either (3,) or (n, 3), "
+                         "got {1}.".format(desc, coords.shape))
+
+
+def _check_result_array(result, shape):
+    """Check if the result array is ok to use.
+
+    The `result` array must meet the following requirements:
+      * Must have a shape equal to `shape`.
+      * Its dtype must be ``numpy.float64``.
+
+    Paramaters
+    ----------
+    result : numpy.ndarray or None
+        The result array to check. If `result` is `None``, a newly created
+        array of correct shape and dtype ``numpy.float64`` will be returned.
+    shape : tuple
+        The shape expected for the `result` array.
+
+    Returns
+    -------
+    result : numpy.ndarray
+        The input array or a newly created array if the input was ``None``.
+
+    Raises
+    ------
+    ValueError
+        If `result` is of incorrect shape.
+    TypeError
+        If the dtype of `result` is not ``numpy.float64``.
+    """
+    if result is None:
+        return np.zeros(shape, dtype=np.float64)
+    if result.shape != shape:
+        raise ValueError("Result array has incorrect shape, should be {0}, got "
+                         "{1}.".format(shape, result.shape))
+    if result.dtype != np.float64:
+        raise TypeError("Result array must be of type numpy.float64, got {}"
+                        "".format(result.dtype))
+# The following two lines would break a lot of tests. WHY?!
+#    if not coords.flags['C_CONTIGUOUS']:
+#        raise ValueError("{0} is not C-contiguous.".format(desc))
+    return result
 
 def _check_lengths_match(*arrays):
     """Check all arrays are same shape"""
     ref = arrays[0].shape
 
     if not all( a.shape == ref for a in arrays):
-        raise ValueError("Input arrays must all be same shape"
-                         "Got {0}".format([a.shape for a in arrays]))
+        raise ValueError("Input arrays must all have the same shape, got {0}."
+                         "".format([a.shape for a in arrays]))
 
 def distance_array(reference, configuration, box=None, result=None, backend="serial"):
     """Calculate all distances between a reference set and another configuration.
@@ -271,42 +344,31 @@ def distance_array(reference, configuration, box=None, result=None, backend="ser
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    ref = reference.astype(np.float32, order='C', copy=True)
-    conf = configuration.astype(np.float32, order='C', copy=True)
+    _check_coord_array_shape_2d(configuration, 'configuration')
+    _check_coord_array_shape_2d(reference, 'reference')
 
-    _check_array(conf, 'conf')
-    _check_array(ref, 'ref')
-
-    if box is not None:
-        boxtype = _box_check(box)
-        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-        if (boxtype == 'tri_box'):
-            box = triclinic_vectors(box)
-        if (boxtype == 'tri_vecs_bad'):
-            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+    ref = reference.astype(np.float32, order='C', copy=False)
+    conf = configuration.astype(np.float32, order='C', copy=False)
 
     confnum = conf.shape[0]
     refnum = ref.shape[0]
 
-    if result is not None:
-        _check_results_array(result, (refnum, confnum))
-        distances = np.asarray(result)
-    else:
-        distances = np.zeros((refnum, confnum), np.float64)
+    distances = _check_result_array(result, (refnum, confnum))
 
     if box is not None:
+        boxtype, box = _check_box(box)
         if boxtype == 'ortho':
             _run("calc_distance_array_ortho",
-                   args=(ref, conf, box, distances),
-                   backend=backend)
+                 args=(ref, conf, box, distances),
+                 backend=backend)
         else:
             _run("calc_distance_array_triclinic",
-                   args=(ref, conf, box, distances),
-                   backend=backend)
+                 args=(ref, conf, box, distances),
+                 backend=backend)
     else:
         _run("calc_distance_array",
-               args=(ref, conf, distances),
-               backend=backend)
+             args=(ref, conf, distances),
+             backend=backend)
 
     return distances
 
@@ -363,41 +425,29 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    ref = reference.astype(np.float32, order='C', copy=True)
+    _check_coord_array_shape_2d(reference, 'reference')
 
-    _check_array(ref, 'ref')
-
-    with_PBC = (box is not None)
-    if box is not None:
-        boxtype = _box_check(box)
-        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-        if (boxtype == 'tri_box'):
-            box = triclinic_vectors(box)
-        if (boxtype == 'tri_vecs_bad'):
-            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+    ref = reference.astype(np.float32, order='C', copy=False)
 
     refnum = ref.shape[0]
     distnum = refnum * (refnum - 1) // 2
 
-    if result is not None:
-        _check_results_array(result, (distnum,))
-        distances = np.asarray(result)
-    else:
-        distances = np.zeros((distnum,), np.float64)
+    distances = _check_result_array(result, (distnum,))
 
     if box is not None:
+        boxtype, box = _check_box(box)
         if boxtype == 'ortho':
             _run("calc_self_distance_array_ortho",
-                   args=(ref, box, distances),
-                   backend=backend)
+                 args=(ref, box, distances),
+                 backend=backend)
         else:
             _run("calc_self_distance_array_triclinic",
-                   args=(ref, box, distances),
-                   backend=backend)
+                 args=(ref, box, distances),
+                 backend=backend)
     else:
         _run("calc_self_distance_array",
-               args=(ref, distances),
-               backend=backend)
+             args=(ref, distances),
+             backend=backend)
 
     return distances
 
@@ -592,8 +642,8 @@ def _bruteforce_capped(reference, configuration, max_cutoff,
     if configuration.shape == (3, ):
         configuration = configuration[None, :]
 
-    _check_array(reference, 'reference')
-    _check_array(configuration, 'configuration')
+    _check_coord_array(reference, 'reference')
+    _check_coord_array(configuration, 'configuration')
 
     distance = distance_array(reference, configuration, box=box)
     if min_cutoff is not None:
@@ -639,8 +689,8 @@ def _pkdtree_capped(reference, configuration, max_cutoff,
     if configuration.shape == (3, ):
         configuration = configuration[None, :]
 
-    _check_array(reference, 'reference')
-    _check_array(configuration, 'configuration')
+    _check_coord_array(reference, 'reference')
+    _check_coord_array(configuration, 'configuration')
     kdtree = PeriodicKDTree(box=box)
     cut = max_cutoff if box is not None else None
     kdtree.set_coords(configuration, cutoff=cut)
@@ -695,7 +745,6 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         Distance between two atoms corresponding to the (i, j) indices
         in pairs. Only returns when ``return_distances``
          is set to ``True``
-
     """
     from .nsgrid import FastNS
     if reference.shape == (3, ):
@@ -864,11 +913,11 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None,
         return methods[method]
 
     if box is None:
-            min_dim = np.array([reference.min(axis=0)])
-            max_dim = np.array([reference.max(axis=0)])
-            size = max_dim.max(axis=0) - min_dim.min(axis=0)
+        min_dim = np.array([reference.min(axis=0)])
+        max_dim = np.array([reference.max(axis=0)])
+        size = max_dim.max(axis=0) - min_dim.min(axis=0)
     elif np.allclose(box[3:], 90):
-            size = box[:3]
+        size = box[:3]
     else:
         tribox = triclinic_vectors(box)
         size = tribox.max(axis=0) - tribox.min(axis=0)
@@ -1018,31 +1067,33 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None,
     return pairs, pair_distance
 
 
-def transform_RtoS(inputcoords, box, backend="serial"):
-    """Transform an array of coordinates from real space to S space (aka lambda space)
+def transform_RtoS(coords, box, backend="serial"):
+    """Transform an array of coordinates from real space to S space (a.k.a.
+    lambda space)
 
-    S space represents fractional space within the unit cell for this system
+    S space represents fractional space within the unit cell for this system.
 
-    Reciprocal operation to :meth:`transform_StoR`
+    Reciprocal operation to :meth:`transform_StoR`.
 
     Parameters
     ----------
-    inputcoords : array
-        A (3,) coordinate or (n x 3) array of coordinates (``dtype`` is
-        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
-    box : array
-        The unitcell dimesions for this system.
-        The dimensions must be provided in the same format as returned
-        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,
-        ly, lz, alpha, beta, gamma]``.
+    coords : numpy.ndarray
+        A ``(3,)`` or ``(n, 3)`` array of coordinates (dtype is arbitrary, will
+        be converted to ``numpy.float32`` internally).
+    box : numpy.ndarray
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        ``[lx, ly, lz, alpha, beta, gamma]``.
     backend : str, optional
-        Select the type of acceleration; "serial" is always available. Other
-        possibilities are "OpenMP" (OpenMP).
+        Select the type of acceleration; ``'serial'`` is always available.
+        Another possibility is ``'OpenMP'``.
 
     Returns
     -------
-    outcoords : array
-        A n x 3 array of fractional coordiantes.
+    newcoords : numpy.ndarray
+        An array of dtype ``numpy.float32`` with the same shape as `coords`
+        containing fractional coordiantes.
 
 
     .. versionchanged:: 0.13.0
@@ -1050,62 +1101,59 @@ def transform_RtoS(inputcoords, box, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    coords = inputcoords.astype(np.float32, order='C', copy=True)
+    _check_coord_array_shape_1d_or_2d(coords, 'coords')
+
+    # Here, copy=True is necessary to not modify the input coordinates:
+    newcoords = coords.astype(np.float32, order='C', copy=True)
 
     is_1d = False  # True if only one vector coordinate
-    if len(coords.shape) == 1:
-        coords = coords.reshape(1, len(coords))
+    if newcoords.ndim == 1:
+        newcoords = newcoords[None, :]
         is_1d = True
 
-    boxtype = _box_check(box)
-    # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-    if (boxtype == 'tri_box'):
-        box = triclinic_vectors(box)
-    if (boxtype == 'tri_vecs_bad'):
-        box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
-    elif (boxtype == 'ortho'):
+    boxtype, box = _check_box(box)
+    if boxtype == 'ortho':
         box = np.array([[box[0], 0.0, 0.0],
-                           [0.0, box[1], 0.0],
-                           [0.0, 0.0, box[2]]], dtype=np.float32)
+                        [0.0, box[1], 0.0],
+                        [0.0, 0.0, box[2]]], dtype=np.float32)
 
     # Create inverse matrix of box
     # need order C here
     inv = np.array(np.matrix(box).I, dtype=np.float32, order='C')
 
-    _run("coord_transform",
-           args=(coords, inv),
-           backend=backend)
+    _run("coord_transform", args=(newcoords, inv), backend=backend)
 
     if is_1d:
-        coords = coords.reshape(len(coords[0]), )
-    return coords
+        return newcoords[0]
+    return newcoords
 
 
-def transform_StoR(inputcoords, box, backend="serial"):
+def transform_StoR(coords, box, backend="serial"):
     """Transform an array of coordinates from S space into real space.
 
-    S space represents fractional space within the unit cell for this system
+    S space represents fractional space within the unit cell for this system.
 
     Reciprocal operation to :meth:`transform_RtoS`
 
     Parameters
     ----------
-    inputcoords : array
-        A (3,) coordinate or (n x 3) array of coordinates (``dtype`` is
-        arbitrary, will be converted to ``dtype=numpy.float32`` internally)
-    box : array
-        The unitcell dimesions for this system.
-        The dimensions must be provided in the same format as returned
-        by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx,
-        ly, lz, alpha, beta, gamma]``.
+    coords : numpy.ndarray
+        A ``(3,)`` or ``(n, 3)`` array of coordinates (dtype is arbitrary, will
+        be converted to ``numpy.float32`` internally).
+    box : numpy.ndarray
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        ``[lx, ly, lz, alpha, beta, gamma]``.
     backend : str, optional
-        Select the type of acceleration; "serial" is always available. Other
-        possibilities are "OpenMP" (OpenMP).
+        Select the type of acceleration; ``'serial'`` is always available.
+        Another possibility is ``'OpenMP'``.
 
     Returns
     -------
-    outcoords : array
-        A n x 3 array of fractional coordiantes.
+    newcoords : numpy.ndarray
+        An array of dtype ``numpy.float32`` with the same shape as `coords`
+        containing real space coordiantes.
 
 
     .. versionchanged:: 0.13.0
@@ -1113,29 +1161,27 @@ def transform_StoR(inputcoords, box, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    coords = inputcoords.astype(np.float32, order='C', copy=True)
+    _check_coord_array_shape_1d_or_2d(coords, 'coords')
+
+    # Here, copy=True is necessary to not modify the input coordinates:
+    newcoords = coords.astype(np.float32, order='C', copy=True)
 
     is_1d = False  # True if only one vector coordinate
-    if len(coords.shape) == 1:
-        coords = coords.reshape(1, len(coords))
+    if len(newcoords.shape) == 1:
+        newcoords = newcoords[None, :]
         is_1d = True
 
-    boxtype = _box_check(box)
-    # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-    if (boxtype == 'tri_box'):
-        box = triclinic_vectors(box)
-    elif (boxtype == 'ortho'):
+    boxtype, box = _check_box(box)
+    if boxtype == 'ortho':
         box = np.array([[box[0], 0.0, 0.0],
                         [0.0, box[1], 0.0],
                         [0.0, 0.0, box[2]]], dtype=np.float32)
 
-    _run("coord_transform",
-           args=(coords, box),
-           backend=backend)
+    _run("coord_transform", args=(newcoords, box), backend=backend)
 
     if is_1d:
-        coords = coords.reshape(len(coords[0]),)
-    return coords
+        return newcoords[0]
+    return newcoords
 
 
 def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
@@ -1191,44 +1237,32 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
+    _check_coord_array_shape_2d(coords1, 'coords1')
+    _check_coord_array_shape_2d(coords2, 'coords2')
+    _check_lengths_match(coords1, coords2)
+
     atom1 = coords1.astype(np.float32, order='C', copy=True)
     atom2 = coords2.astype(np.float32, order='C', copy=True)
-
-    _check_array(atom1, 'atom1')
-    _check_array(atom2, 'atom2')
-    _check_lengths_match(atom1, atom2)
-
-    if box is not None:
-        boxtype = _box_check(box)
-        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-        if (boxtype == 'tri_box'):
-            box = triclinic_vectors(box)
-        if (boxtype == 'tri_vecs_bad'):
-            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
-
     numatom = atom1.shape[0]
 
-    if result is not None:
-        _check_results_array(result, (numatom,))
-        distances = np.asarray(result)
-    else:
-        distances = np.zeros((numatom,), np.float64)
+    bondlengths = _check_result_array(result, (numatom,))
 
     if box is not None:
+        boxtype, box = _check_box(box)
         if boxtype == 'ortho':
             _run("calc_bond_distance_ortho",
-                   args=(atom1, atom2, box, distances),
-                   backend=backend)
+                 args=(atom1, atom2, box, bondlengths),
+                 backend=backend)
         else:
             _run("calc_bond_distance_triclinic",
-                   args=(atom1, atom2, box, distances),
-                   backend=backend)
+                 args=(atom1, atom2, box, bondlengths),
+                 backend=backend)
     else:
         _run("calc_bond_distance",
-               args=(atom1, atom2, distances),
-               backend=backend)
+             args=(atom1, atom2, bondlengths),
+             backend=backend)
 
-    return distances
+    return bondlengths
 
 
 def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="serial"):
@@ -1285,31 +1319,20 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="seria
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
+    _check_coord_array_shape_2d(coords1, 'coords1')
+    _check_coord_array_shape_2d(coords2, 'coords2')
+    _check_coord_array_shape_2d(coords3, 'coords3')
+    _check_lengths_match(coords1, coords2, coords3)
+
     atom1 = coords1.astype(np.float32, order='C', copy=True)
     atom2 = coords2.astype(np.float32, order='C', copy=True)
     atom3 = coords3.astype(np.float32, order='C', copy=True)
     numatom = atom1.shape[0]
 
-    _check_array(atom1, 'coords1')
-    _check_array(atom2, 'coords2')
-    _check_array(atom3, 'coords3')
-    _check_lengths_match(atom1, atom2, atom3)
+    angles = _check_result_array(result, (numatom,))
 
     if box is not None:
-        boxtype = _box_check(box)
-        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-        if (boxtype == 'tri_box'):
-            box = triclinic_vectors(box)
-        if (boxtype == 'tri_vecs_bad'):
-            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
-
-    if result is not None:
-        _check_results_array(result, (numatom,))
-        angles = np.asarray(result)
-    else:
-        angles = np.zeros((numatom,), np.float64)
-
-    if box is not None:
+        boxtype, box = _check_box(box)
         if boxtype == 'ortho':
             _run("calc_angle_ortho",
                    args=(atom1, atom2, atom3, box, angles),
@@ -1394,75 +1417,61 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
+    _check_coord_array_shape_2d(coords1, 'coords1')
+    _check_coord_array_shape_2d(coords2, 'coords2')
+    _check_coord_array_shape_2d(coords3, 'coords3')
+    _check_coord_array_shape_2d(coords4, 'coords4')
+    _check_lengths_match(coords1, coords2, coords3, coords4)
+
     atom1 = coords1.astype(np.float32, order='C', copy=True)
     atom2 = coords2.astype(np.float32, order='C', copy=True)
     atom3 = coords3.astype(np.float32, order='C', copy=True)
     atom4 = coords4.astype(np.float32, order='C', copy=True)
 
-    _check_array(atom1, 'atom1')
-    _check_array(atom2, 'atom2')
-    _check_array(atom3, 'atom3')
-    _check_array(atom4, 'atom4')
-    _check_lengths_match(atom1, atom2, atom3, atom4)
-
     numatom = atom1.shape[0]
 
-    if box is not None:
-        boxtype = _box_check(box)
-        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-        if (boxtype == 'tri_box'):
-            box = triclinic_vectors(box)
-        if (boxtype == 'tri_vecs_bad'):
-            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
-
-    if result is not None:
-        _check_results_array(result, (numatom,))
-        angles = np.asarray(result)
-    else:
-        angles = np.zeros((numatom,), np.float64)
+    dihedrals = _check_result_array(result, (numatom,))
 
     if box is not None:
+        boxtype, box = _check_box(box)
         if boxtype == 'ortho':
             _run("calc_dihedral_ortho",
-                   args=(atom1, atom2, atom3, atom4, box, angles),
-                   backend=backend)
+                 args=(atom1, atom2, atom3, atom4, box, dihedrals),
+                 backend=backend)
         else:
             _run("calc_dihedral_triclinic",
-                   args=(atom1, atom2, atom3, atom4, box, angles),
-                   backend=backend)
+                 args=(atom1, atom2, atom3, atom4, box, dihedrals),
+                 backend=backend)
     else:
         _run("calc_dihedral",
-               args=(atom1, atom2, atom3, atom4, angles),
-               backend=backend)
+             args=(atom1, atom2, atom3, atom4, dihedrals),
+             backend=backend)
 
-    return angles
+    return dihedrals
 
 
-def apply_PBC(incoords, box, backend="serial"):
-    """Moves a set of coordinates to all be within the primary unit cell
-
-    newcoords = apply_PBC(coords, box)
+def apply_PBC(coords, box, backend="serial"):
+    """Moves coordinates into the primary unit cell.
 
     Parameters
     ----------
-    incoords : numpy.ndarray
-        Coordinate array of shape ``(n, 3)`` (``dtype`` is arbitrary, will be
-        converted to ``dtype=numpy.float32`` internally)
-    box : array
-        The unitcell dimesions for this system; can be either orthogonal or
-        triclinic information. The dimensions must be provided in the same
-        format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`: ``[lx, ly, lz,
-        alpha, beta, gamma]``.
-    backend : str
-        Select the type of acceleration; ``"serial"`` is always available. Other
-        possibilities are ``"OpenMP"`` (OpenMP).
+    coords : numpy.ndarray
+        Coordinate array of shape ``(n, 3)`` (dtype is arbitrary, will be
+        converted to ``numpy.float32`` internally).
+    box : numpy.ndarray
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+    backend : str, optional
+        Select the type of acceleration; ``'serial'`` is always available.
+        Another possibility is ``'OpenMP'``.
 
     Returns
     -------
-    newcoords : numpy.ndarray(dtype=numpy.float32)
-        Coordinates that are now all within the primary unit cell, as defined
-        by box.
+    newcoords : numpy.ndarray
+        Array of dtype ``numpy.float32`` containing coordinates that all lie
+        within the primary unit cell as defined by `box`.
 
 
     .. versionadded:: 0.8
@@ -1471,37 +1480,19 @@ def apply_PBC(incoords, box, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    coords = incoords.astype(np.float32, order='C', copy=True)
+    _check_coord_array_shape_2d(coords, 'coords')
 
-    _check_array(coords, 'coords')
+    newcoords = coords.astype(np.float32, order='C', copy=True)
 
-    coordnum = coords.shape[0]
-
-    # determine boxtype
-    boxtype = _box_check(box)
-    # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-    if boxtype == 'tri_box':
-        box = triclinic_vectors(box)
-    if boxtype == 'tri_vecs_bad':
-        box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
-
-    box_inv = np.zeros((3), dtype=np.float32)
+    boxtype, box = _check_box(box)
     if boxtype == 'ortho':
-        box_inv[0] = 1.0 / box[0]
-        box_inv[1] = 1.0 / box[1]
-        box_inv[2] = 1.0 / box[2]
-        _run("ortho_pbc",
-               args=(coords, box, box_inv),
-               backend=backend)
+        box_inv = 1.0 / box
+        _run("ortho_pbc", args=(newcoords, box, box_inv), backend=backend)
     else:
-        box_inv[0] = 1.0 / box[0][0]
-        box_inv[1] = 1.0 / box[1][1]
-        box_inv[2] = 1.0 / box[2][2]
-        _run("triclinic_pbc",
-               args=(coords, box, box_inv),
-               backend=backend)
+        box_inv = 1.0 / np.diagonal(box)
+        _run("triclinic_pbc", args=(newcoords, box, box_inv), backend=backend)
 
-    return coords
+    return newcoords
 
 
 def calc_distance(a, b, box=None):
@@ -1517,6 +1508,9 @@ def calc_distance(a, b, box=None):
 
     .. versionadded:: 0.18.1
     """
+    _check_coord_array_shape_1d(a, 'a')
+    _check_coord_array_shape_1d(b, 'b')
+
     return calc_bonds(a[None, :], b[None, :], box=box)[0]
 
 
@@ -1534,7 +1528,12 @@ def calc_angle(a, b, c, box=None):
 
     .. versionadded:: 0.18.1
     """
-    return np.rad2deg(calc_angles(a[None, :], b[None, :], c[None, :], box=box)[0])
+    _check_coord_array_shape_1d(a, 'a')
+    _check_coord_array_shape_1d(b, 'b')
+    _check_coord_array_shape_1d(c, 'c')
+
+    return np.rad2deg(
+        calc_angles(a[None, :], b[None, :], c[None, :], box=box)[0])
 
 
 def calc_dihedral(a, b, c, d, box=None):
@@ -1550,5 +1549,10 @@ def calc_dihedral(a, b, c, d, box=None):
 
     .. versionadded:: 0.18.1
     """
+    _check_coord_array_shape_1d(a, 'a')
+    _check_coord_array_shape_1d(b, 'b')
+    _check_coord_array_shape_1d(c, 'c')
+    _check_coord_array_shape_1d(d, 'd')
+
     return np.rad2deg(
         calc_dihedrals(a[None, :], b[None, :], c[None, :], d[None, :], box)[0])

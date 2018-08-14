@@ -72,7 +72,7 @@ not reflect in the results.
 .. versionadded:: 0.19.0
 """
 
-from MDAnalysis.lib.distances import _check_array
+from MDAnalysis.lib.distances import _check_coord_array
 # Used to handle memory allocation
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from libc.math cimport sqrt
@@ -767,7 +767,7 @@ cdef class FastNS(object):
         from MDAnalysis.lib.mdamath import triclinic_vectors
 
 
-        _check_array(coords, 'coords')
+        _check_coord_array(coords, 'coords')
 
         if np.allclose(box[:3], 0.0):
             raise ValueError("Any of the box dimensions cannot be 0")
@@ -850,7 +850,7 @@ cdef class FastNS(object):
 
         cdef real cutoff2 = self.cutoff * self.cutoff
         cdef ns_int npairs = 0
-        _check_array(search_coords, 'search_coords')
+        _check_coord_array(search_coords, 'search_coords')
 
         # Generate another grid to search
         searchcoords = np.ascontiguousarray(search_coords, dtype=np.float32)

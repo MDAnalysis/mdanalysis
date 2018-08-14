@@ -83,8 +83,8 @@ def test_augment(b, q, res):
         aug = np.sort(aug, axis=0)
     else:
         aug = list()
-    cs = transform_StoR(np.array(res, dtype=np.float32), b)
-    if cs.size > 0:
+    if len(res) > 0:
+        cs = transform_StoR(np.array(res, dtype=np.float32), b)
         cs = np.sort(cs, axis=0)
     else:
         cs = list()
