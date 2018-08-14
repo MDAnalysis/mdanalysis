@@ -21,6 +21,10 @@ The rules for this file:
 
 Enhancements
 
+  * Replaced multiple apply (_apply_distmat, _apply_kdtree)
+    methods in distance based selections with
+    lib.distances.capped_distance for automatic selection of
+    distance evaluation method. (PR #2035)
   * Added return_distances argument in lib.distances.capped_distances
     to evaluate and return distances only when required. Modified
     the optimization rules in lib.distances._determine_method for
