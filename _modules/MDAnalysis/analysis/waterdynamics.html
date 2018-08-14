@@ -331,23 +331,24 @@
 
 <span class="sd">  import MDAnalysis</span>
 <span class="sd">  from MDAnalysis.analysis.waterdynamics import SurvivalProbability as SP</span>
+<span class="sd">  import matplotlib.pyplot as plt</span>
 
-<span class="sd">  u = MDAnalysis.Universe(pdb, trajectory)</span>
+<span class="sd">  universe = MDAnalysis.Universe(pdb, trajectory)</span>
 <span class="sd">  selection = &quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26 or resid 34 or resid 80) &quot;</span>
-<span class="sd">  SP_analysis = SP(universe, selection, 0, 100, 20)</span>
-<span class="sd">  SP_analysis.run()</span>
-<span class="sd">  #now we print data ready to graph. The graph</span>
-<span class="sd">  #represents SP vs t</span>
-<span class="sd">  time = 0</span>
-<span class="sd">  for sp in SP_analysis.timeseries:</span>
-<span class="sd">        print(&quot;{time} {sp}&quot;.format(time=time, sp=sp))</span>
-<span class="sd">        time += 1</span>
+<span class="sd">  sp = SP(universe, selection, verbose=True)</span>
+<span class="sd">  sp.run(start=0, stop=100, tau_max=20)</span>
+<span class="sd">  tau_timeseries = sp.tau_timeseries</span>
+<span class="sd">  sp_timeseries = sp.sp_timeseries</span>
 
-<span class="sd">  #Plot</span>
-<span class="sd">  plt.xlabel(&#39;time&#39;)</span>
+<span class="sd">  # print in console</span>
+<span class="sd">  for tau, sp in zip(tau_timeseries, sp_timeseries):</span>
+<span class="sd">        print(&quot;{time} {sp}&quot;.format(time=tau, sp=sp))</span>
+
+<span class="sd">  # plot</span>
+<span class="sd">  plt.xlabel(&#39;Time&#39;)</span>
 <span class="sd">  plt.ylabel(&#39;SP&#39;)</span>
 <span class="sd">  plt.title(&#39;Survival Probability&#39;)</span>
-<span class="sd">  plt.plot(range(0,time),MSD_analysis.timeseries)</span>
+<span class="sd">  plt.plot(taus, sp_timeseries)</span>
 <span class="sd">  plt.show()</span>
 
 
@@ -424,16 +425,13 @@
 <span class="sd">SurvivalProbability</span>
 <span class="sd">~~~~~~~~~~~~~~~~~~~</span>
 
-<span class="sd">Survival Probability (SP) data is returned in a list, which each element</span>
-<span class="sd">represents a SP value in its respective window timestep. Data is stored in</span>
-<span class="sd">:attr:`SurvivalProbability.timeseries`::</span>
+<span class="sd">Survival Probability (SP) computes two lists: a list of taus (:attr:`SurvivalProbability.tau_timeseries`) and a list of their corresponding mean survival</span>
+<span class="sd">probabilities (:attr:`SurvivalProbability.sp_timeseries`). Additionally, a list :attr:`SurvivalProbability.sp_timeseries_data` is provided which contains</span>
+<span class="sd">a list of SPs for each tau, which can be used to compute their distribution, etc.</span>
 
-<span class="sd">    results = [</span>
-<span class="sd">         # SP values order by window timestep</span>
-<span class="sd">            &lt;SP_t0&gt;, &lt;SP_t1&gt;, ...</span>
-<span class="sd">     ]</span>
+<span class="sd">    results = [ tau1, tau2, ..., tau_n ], [ sp_tau1, sp_tau2, ..., sp_tau_n]</span>
 
-
+<span class="sd">Additionally, for each</span>
 
 <span class="sd">Classes</span>
 <span class="sd">--------</span>
@@ -460,6 +458,9 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span><span class="p">,</span> <span class="n">zip_longest</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -1233,7 +1234,8 @@
 <span class="sd">        P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}</span>
 
 <span class="sd">    where :math:`T` is the maximum time of simulation, :math:`\tau` is the</span>
-<span class="sd">    timestep and :math:`N` the number of particles in certain time.</span>
+<span class="sd">    timestep, :math:`N(t)` the number of particles at time t, and</span>
+<span class="sd">    :math:`N(t, t+\tau)` is the number of particles at every frame from t to `\tau`.</span>
 
 
 <span class="sd">    Parameters</span>
@@ -1242,102 +1244,114 @@
 <span class="sd">      Universe object</span>
 <span class="sd">    selection : str</span>
 <span class="sd">      Selection string; any selection is allowed. With this selection you</span>
-<span class="sd">      define the region/zone where to analyze, e.g.: &quot;selection_a&quot; and &quot;zone&quot;</span>
-<span class="sd">      (see `SP-examples`_ )</span>
-<span class="sd">    t0 : int</span>
-<span class="sd">      frame  where analysis begins</span>
-<span class="sd">    tf : int</span>
-<span class="sd">      frame where analysis ends</span>
-<span class="sd">    dtmax : int</span>
-<span class="sd">      Maximum dt size, `dtmax` &lt; `tf` or it will crash.</span>
+<span class="sd">      define the region/zone where to analyze, e.g.: &quot;resname SOL and around 5 (resname LIPID)&quot;</span>
+<span class="sd">      and &quot;resname ION and around 10 (resid 20)&quot; (see `SP-examples`_ )</span>
+<span class="sd">    verbose : Boolean</span>
+<span class="sd">      If True, prints progress and comments to the console.</span>
 
 
 <span class="sd">    .. versionadded:: 0.11.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">selection</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="n">t0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">=</span> <span class="n">tf</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">=</span> <span class="n">dtmax</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
 
+        <span class="c1"># backward compatibility</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tau_max</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">t0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">t0</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;t0 is deprecated, use run(start=t0) instead&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SurvivalProbability.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="n">tf</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;tf is deprecated, use run(stop=tf) instead&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
 
-        <span class="c1"># select all frames to an array</span>
-        <span class="n">selected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection_serial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dtmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tau_max</span> <span class="o">=</span> <span class="n">dtmax</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;dtmax is deprecated, use run(tau_max=dtmax) instead&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span><span class="p">:</span>
-            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;ERROR: Cannot select fewer frames than dtmax&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
+    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">window_size</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMeanOnePoint</span><span class="p">(</span><span class="n">selected</span><span class="p">,</span> <span class="n">window_size</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
-
-
-    <span class="k">def</span> <span class="nf">_selection_serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection_str</span><span class="p">):</span>
-        <span class="n">selected</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                           <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">offset</span><span class="o">=-</span><span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">]:</span>
-            <span class="n">selected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection_str</span><span class="p">))</span>
-            <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">selected</span>
-
-
-    <span class="k">def</span> <span class="nf">_getMeanOnePoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected</span><span class="p">,</span> <span class="n">window_size</span><span class="p">):</span>
+<div class="viewcode-block" id="SurvivalProbability.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function gets one point of the plot P(t) vs t. It uses the</span>
-<span class="sd">        _getOneDeltaPoint() function to calculate the average.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">sumDeltaP</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="k">for</span> <span class="n">frame_no</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span> <span class="o">-</span> <span class="n">window_size</span><span class="p">):</span>
-            <span class="n">delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getOneDeltaPoint</span><span class="p">(</span><span class="n">selected</span><span class="p">,</span> <span class="n">frame_no</span><span class="p">,</span> <span class="n">window_size</span><span class="p">)</span>
-            <span class="n">sumDeltaP</span> <span class="o">+=</span> <span class="n">delta</span>
-            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="sd">        Computes and returns the survival probability timeseries</span>
 
-        <span class="k">return</span> <span class="n">sumDeltaP</span><span class="o">/</span><span class="n">n</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : int</span>
+<span class="sd">            Zero-based index of the first frame to be analysed</span>
+<span class="sd">        stop : int</span>
+<span class="sd">            Zero-based index of the last frame to be analysed (inclusive)</span>
+<span class="sd">        step : int</span>
+<span class="sd">            Jump every `step`&#39;th frame</span>
+<span class="sd">        tau_max : int</span>
+<span class="sd">            Survival probability is calculated for the range :math:`1 &lt;= \tau &lt;= tau_max`</span>
+<span class="sd">        verbose : Boolean</span>
+<span class="sd">            Overwrite the constructor&#39;s verbosity</span>
 
-
-    <span class="k">def</span> <span class="nf">_getOneDeltaPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gives one point to calculate the mean and</span>
-<span class="sd">        gets one point of the plot C_vect vs t.</span>
-<span class="sd">        - Ex: t=1 and tau=1 calculates</span>
-<span class="sd">        how many selected water molecules survive from the frame 1 to 2</span>
-<span class="sd">        - Ex: t=5 and tau=3 calculates</span>
-<span class="sd">        how many selected water molecules survive from the frame 5 to 8</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tau_timeseries : list</span>
+<span class="sd">            tau from 1 to tau_max. Saved in the field tau_timeseries.</span>
+<span class="sd">        sp_timeseries : list</span>
+<span class="sd">            survival probability for each value of `tau`. Saved in the field sp_timeseries.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">Nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">Nt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
+        <span class="c1"># backward compatibility (and priority)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">start</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">stop</span>
+        <span class="n">tau_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tau_max</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tau_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">tau_max</span>
 
-        <span class="c1"># fraction of water molecules that survived</span>
-        <span class="n">Ntau</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_NumPart_tau</span><span class="p">(</span><span class="n">selected</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Ntau</span><span class="o">/</span><span class="n">Nt</span>
+        <span class="c1"># sanity checks</span>
+        <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stop</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">stop</span><span class="se">\&quot;</span><span class="s2"> must be smaller than the number of frames in the trajectory.&quot;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">stop</span> <span class="o">+</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="nf">_NumPart_tau</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compares the molecules in t selection and t+tau selection and</span>
-<span class="sd">        select only the particles that remain from t to t+tau and</span>
-<span class="sd">        at each point in between.</span>
-<span class="sd">        It returns the number of remaining particles.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">survivors</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">selected</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="ow">and</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected</span><span class="p">):</span>
-            <span class="nb">next</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">selected</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span><span class="p">])</span>
-            <span class="n">survivors</span> <span class="o">=</span> <span class="n">survivors</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">next</span><span class="p">)</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">survivors</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">tau_max</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too few frames selected for given tau_max.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># load all frames to an array of sets</span>
+        <span class="n">selected_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="s2">&quot;Loading frame:&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
+            <span class="n">selected_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span><span class="o">.</span><span class="n">ids</span><span class="p">))</span>
+
+        <span class="n">tau_timeseries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">tau_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">sp_timeseries_data</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tau_max</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_ids</span><span class="p">),</span> <span class="n">step</span><span class="p">):</span>
+            <span class="n">Nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_ids</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">Nt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span>
+                           <span class="s2">&quot;At frame </span><span class="si">{}</span><span class="s2"> the selection did not find any molecule. Moving on to the next frame&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">tau_timeseries</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_ids</span><span class="p">):</span>
+                    <span class="k">break</span>
+
+                <span class="c1"># ids that survive from t to t + tau and at every frame in between</span>
+                <span class="n">Ntau</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="n">selected_ids</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
+                <span class="n">sp_timeseries_data</span><span class="p">[</span><span class="n">tau</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Ntau</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">Nt</span><span class="p">))</span>
+
+        <span class="c1"># user can investigate the distribution and sample size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sp_timeseries_data</span> <span class="o">=</span> <span class="n">sp_timeseries_data</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tau_timeseries</span> <span class="o">=</span> <span class="n">tau_timeseries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sp_timeseries</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span> <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">sp_timeseries_data</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>
 
           </div>
@@ -1411,7 +1425,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
