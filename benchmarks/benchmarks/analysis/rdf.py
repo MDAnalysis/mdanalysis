@@ -17,21 +17,23 @@ class SimpleRdfBench(object):
     """
 
     params = ([20,75,200],
-              [[0,5], [0,15], [0,20]])
+              [[0,5], [0,15], [0,20]],
+              [1, 100, 1000, 10000])
 
     param_names = ['nbins',
-                   'range_val']
+                   'range_val',
+                   'natoms']
 
-    def setup(self, nbins, range_val):
+    def setup(self, nbins, range_val, natoms):
         
         self.sel_str = 'name OW'
 
         self.u = MDAnalysis.Universe(TPR, XTC)
 
         try:
-            self.sel = self.u.select_atoms(self.sel_str)[:200]
+            self.sel = self.u.select_atoms(self.sel_str)[:natoms]
         except AttributeError:
-            self.sel = self.u.selectAtoms(self.sel_str)[:200]
+            self.sel = self.u.selectAtoms(self.sel_str)[:natoms]
 
         # do not include initialization of the
         # InterRDF object in the benchmark itself

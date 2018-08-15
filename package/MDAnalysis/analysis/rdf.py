@@ -187,26 +187,23 @@ class InterRDF(AnalysisBase):
 
         # Need to know average volume
         self.volume = 0.0
+        # Set the max range to filter the search radius
+        self._maxrange = self.rdf_settings['range'][1]
 
-        # Allocate a results array which we will reuse
-        self._result = np.zeros((len(self.g1), len(self.g2)), dtype=np.float64)
-        # If provided exclusions, create a mask of _result which
-        # lets us take these out
-        if self._exclusion_block is not None:
-            self._exclusion_mask = blocks_of(self._result,
-                                             *self._exclusion_block)
-            self._maxrange = self.rdf_settings['range'][1] + 1.0
-        else:
-            self._exclusion_mask = None
 
     def _single_frame(self):
-        distances.distance_array(self.g1.positions, self.g2.positions,
-                                 box=self.u.dimensions, result=self._result)
+        pairs, dist = distances.capped_distance(self.g1.positions,
+                                                self.g2.positions,
+                                                self._maxrange,
+                                                box=self.u.dimensions)
         # Maybe exclude same molecule distances
-        if self._exclusion_mask is not None:
-            self._exclusion_mask[:] = self._maxrange
+        if self._exclusion_block is not None:
+            idxA, idxB = pairs[:, 0]//self._exclusion_block[0], pairs[:, 1]//self._exclusion_block[1]
+            mask = np.where(idxA != idxB)[0]
+            dist = dist[mask]
 
-        count = np.histogram(self._result, **self.rdf_settings)[0]
+
+        count = np.histogram(dist, **self.rdf_settings)[0]
         self.count += count
 
         self.volume += self._ts.volume
@@ -370,15 +367,12 @@ class InterRDF_s(AnalysisBase):
 
     def get_cdf(self):
         """Calculate the cumulative distribution functions (CDF) for all sites.
-
         Note that this is the actual count within a given radius, i.e.,
         :math:`N(r)`.
-
         Returns
         -------
               cdf : list
                       list of arrays with the same structure as :attr:`rdf`
-
         """
         # Calculate cumulative distribution function
         # Empty list to restore CDF
