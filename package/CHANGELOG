@@ -15,16 +15,26 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
          VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta,
-         sebastien.buchoux, arm61, IAlibay
+         sebastien.buchoux, arm61, p-j-smith, IAlibay
 
   * 0.18.1
 
 Enhancements
+  * Replaced multiple apply (_apply_distmat, _apply_kdtree)
+    methods in distance based selections with
+    lib.distances.capped_distance for automatic selection of
+    distance evaluation method. (PR #2035)
+  * Added return_distances argument in lib.distances.capped_distances
+    to evaluate and return distances only when required. Modified
+    the optimization rules in lib.distances._determine_method for
+    faster computations. (PR #2041)
+  * Added method search_tree in lib.pkdtree to find all the pairs between
+    two kdtrees. (PR #2041)
   * Added a wrapper of lib.nsgrid in lib.distances.self_capped_distance
     and lib.distances.capped_distanceto automatically chose the fastest
-    method for distance based calculations. (PR #2008)  
+    method for distance based calculations. (PR #2008)
   * Added Grid search functionality in lib.nsgrid for faster distance based
-    calculations. (PR #2008)   
+    calculations. (PR #2008)
   * Modified around selections to work with KDTree and periodic boundary
     conditions.  Should reduce memory usage (#974 PR #2022)
   * Modified topology.guessers.guess_bonds to automatically select the
@@ -63,9 +73,13 @@ Enhancements
     generated with gromacs -noappend (PR #1728)
   * MDAnalysis.lib.mdamath now supports triclinic boxes and rewrote in Cython (PR #1965)
   * AtomGroup.write can write a trajectory of selected frames (Issue #1037)
+  * Added dihedrals.py with Dihedral, Ramachandran, and Janin classes to
+    analysis module (PR #1997, PR #2033)
+  * Added the analysis.data module for reference data used in analysis (PR #2033)
   * Added analysis.dihedrals with Ramachandran class to analysis module (PR #1997)
-  * Added user defined boxes in density code (PR #2005)
   * Added augment functionality to create relevant images of particles 
+  * Added user defined boxes in density code (PR #2005)
+
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
@@ -96,9 +110,13 @@ Changes
     duplicates. Otherwise, the group itself is returned. Repeated access of
     *Group.unique will always return the same object unless the group is
     updated or modified. (PR #1922)
+  * SurvivalProbability does not dilute SP anymore when the reference frame (t0)
+    cannot find any molecules in the first place. (PR #1995)
   * The TPR parser reads SETTLE constraints as bonds. (Issue #1949)
   * Indexing a trajectory with a slice or an array now returns an iterable
     (Issue #1894)
+  * removed unused function MDAnalysis.lb.mdamath.one_to_many_pointers()
+    (issue #2010)
 
 Deprecations
   * almost all "save()", "save_results()", "save_table()" methods in

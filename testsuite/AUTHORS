@@ -6,12 +6,12 @@
 
 MDAnalysis was originally written by Naveen Michaud-Agrawal.
 
-Oliver Beckstein and Elizabeth J. Denning are maintaining the project
-and contributing to the development.
+The project is maintained by the MDAnalysis Core Developer Team
+(@MDAnalysis/coredevs on https://github.com/MDAnalysis).
 
-All contributing authors are listed in this file below. The repository
-history at https://github.com/MDAnalysis/mdanalysis and the CHANGELOG
-show individual code contributions.
+All contributing authors for the testsuite are listed in this file below. The
+repository history at https://github.com/MDAnalysis/mdanalysis and the
+CHANGELOG show individual code contributions.
 
 
 Chronological list of authors
@@ -84,6 +84,8 @@ Chronological list of authors
 2018
   - Johannes Zeman
   - Ayush Suhane
+  - Paul Smith
+  - Mateusz Bieniek
 
 
 External code
