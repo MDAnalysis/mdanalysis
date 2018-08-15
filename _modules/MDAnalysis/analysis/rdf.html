@@ -235,26 +235,23 @@
 
         <span class="c1"># Need to know average volume</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="c1"># Set the max range to filter the search radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="c1"># Allocate a results array which we will reuse</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g2</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="c1"># If provided exclusions, create a mask of _result which</span>
-        <span class="c1"># lets us take these out</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_mask</span> <span class="o">=</span> <span class="n">blocks_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span>
-                                             <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1.0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_mask</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">distances</span><span class="o">.</span><span class="n">distance_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                 <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">)</span>
+        <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">g2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span><span class="p">,</span>
+                                                <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
         <span class="c1"># Maybe exclude same molecule distances</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_mask</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">idxA</span><span class="p">,</span> <span class="n">idxB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">idxA</span> <span class="o">!=</span> <span class="n">idxB</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
-        <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="n">count</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">volume</span>
@@ -418,15 +415,12 @@
 
 <div class="viewcode-block" id="InterRDF_s.get_cdf"><a class="viewcode-back" href="../../../documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.InterRDF_s.get_cdf">[docs]</a>    <span class="k">def</span> <span class="nf">get_cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculate the cumulative distribution functions (CDF) for all sites.</span>
-
 <span class="sd">        Note that this is the actual count within a given radius, i.e.,</span>
 <span class="sd">        :math:`N(r)`.</span>
-
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">              cdf : list</span>
 <span class="sd">                      list of arrays with the same structure as :attr:`rdf`</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Calculate cumulative distribution function</span>
         <span class="c1"># Empty list to restore CDF</span>
