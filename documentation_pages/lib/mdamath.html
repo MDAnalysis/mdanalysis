@@ -356,40 +356,6 @@ linalg.norm does.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.lib.mdamath.one_to_many_pointers">
-<code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">one_to_many_pointers</code><span class="sig-paren">(</span><em>Ni</em>, <em>Nj</em>, <em>i2j</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#one_to_many_pointers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.one_to_many_pointers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Based on a many to one mapping of i to j, create the reverse mapping</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>Ni</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of i  components</li>
-<li><strong>Nj</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of j components</li>
-<li><strong>i2j</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – relates i to parent js</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>ordered</strong> (<em>list</em>) – an ordered list of i indices [size (i,)]</li>
-<li><strong>ptrs</strong> (<em>list</em>) – the start and end index for each j [size (Nj, 2)]</li>
-</ul>
-</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Example</p>
-<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Residx - the resid of each Atom</span>
-<span class="n">ordered</span><span class="p">,</span> <span class="n">ptrs</span> <span class="o">=</span> <span class="n">one_to_many_pointers</span><span class="p">(</span><span class="n">Natoms</span><span class="p">,</span> <span class="n">Nres</span><span class="p">,</span> <span class="n">Residx</span><span class="p">)</span>
-
-<span class="c1"># Returns an array of the atom indices that are in resid 7</span>
-<span class="n">atoms</span> <span class="o">=</span> <span class="n">ordered</span><span class="p">[</span><span class="n">ptrs</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">]:</span><span class="n">ptrs</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
 <dt>
 <code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">stp</code><span class="sig-paren">(</span><em>vec1</em>, <em>vec2</em>, <em>vec3</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#stp"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Takes the scalar triple product of three vectors.</p>
