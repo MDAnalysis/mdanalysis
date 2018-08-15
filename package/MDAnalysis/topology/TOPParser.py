@@ -45,7 +45,7 @@ Amber keywords are turned into the following attributes:
 | ANGLES_INC_HYDROGEN        | angles               |
 | ANGLES_WITHOUT_HYDROGEN    |                      |
 +----------------------------+----------------------+
-| DIHEDRALS_INC_HYDROGEN     | dihedrals / implicit |
+| DIHEDRALS_INC_HYDROGEN     | dihedrals / improper |
 | DIHEDRALS_WITHOUT_HYDROGEN |                      |
 +----------------------------+----------------------+
 | ATOM_TYPE_INDEX            | type_indices         |
@@ -58,8 +58,7 @@ Amber keywords are turned into the following attributes:
 +----------------------------+----------------------+
 
 TODO:
-  Add reading of bonds etc
-  - IA: in progress
+  More stringent tests
 
 .. Note::
 
@@ -142,7 +141,9 @@ class TOPParser(TopologyReaderBase):
     .. _`PARM parameter/topology file specification`:
        http://ambermd.org/formats.html#topology
 
-   .. versionchanged:: 0.7.6
+    .. versionchanged:: 0.18.1
+      parses bonds, angles, dihedrals, and impropers
+    .. versionchanged:: 0.7.6
       parses both amber10 and amber12 formats
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
@@ -267,10 +268,10 @@ class TOPParser(TopologyReaderBase):
         """TOPParser :class: helper function, skips lines of input parm7 file
         until we find the next %FLAG entry and return that
 
-        Returns:
-        --------
+        Returns
+        -------
         line : string
-               String containing the current line of the parm7 file
+            String containing the current line of the parm7 file
         """
         line = next(self.topfile)
         while not line.startswith("%FLAG"):
@@ -283,16 +284,15 @@ class TOPParser(TopologyReaderBase):
         Parameters
         ----------
         num_per_record : int
-                         The number of entries for each record in the section
-                         (unused input)
+            The number of entries for each record in the section (unused input)
         numlines : int
-                   The number of lines to be parsed in current section
+            The number of lines to be parsed in current section
 
         Returns
         -------
-        attr : :class: `Atomnames`
-                A :class: `Atomnames` instance containing the names of each
-                atom as defined in the parm7 file
+        attr : :class:`Atomnames`
+            A :class:`Atomnames` instance containing the names of each atom as
+            defined in the parm7 file
         """
         vals = self.parsesection_mapper(numlines, lambda x: x)
         attr = Atomnames(np.array(vals, dtype=object))
@@ -301,19 +301,18 @@ class TOPParser(TopologyReaderBase):
     def parse_resnames(self, num_per_record, numlines):
         """Extracts the names of each residue
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         num_per_record : int
-                         The number of entries for each recrod in section
-                         (unused input)
+            The number of entries for each recrod in section (unused input)
         numlines : int
-                   The number of lines to be parsed in current section
+            The number of lines to be parsed in current section
 
-        Returns:
-        --------
-        attr : :class: `Resnames`
-                A :class: `Resnames` instance containing the names of each
-                residue as defined in the parm7 file
+        Returns
+        -------
+        attr : :class:`Resnames`
+            A :class:`Resnames` instance containing the names of each residue
+            as defined in the parm7 file
         """
         vals = self.parsesection_mapper(numlines, lambda x: x)
         attr = Resnames(np.array(vals, dtype=object))
@@ -322,19 +321,18 @@ class TOPParser(TopologyReaderBase):
     def parse_charges(self, num_per_record, numlines):
         """Extracts the partial charges for each atom
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         num_per_record : int
-                         The number of entries for each record in section
-                         (unused input)
+            The number of entries for each record in section (unused input)
         numlines : int
-                   The number of lines to be parsed in current section
+            The number of lines to be parsed in current section
 
-        Returns:
-        --------
-        attr : :class: `Charges`
-                A :class: `Charges` instance containing the partial charges of
-                each atom as defined in the parm7 file
+        Returns
+        -------
+        attr : :class:`Charges`
+            A :class:`Charges` instance containing the partial charges of each
+            atom as defined in the parm7 file
         """
         vals = self.parsesection_mapper(numlines, lambda x: float(x))
         charges = np.array(vals, dtype=np.float32)
@@ -345,19 +343,18 @@ class TOPParser(TopologyReaderBase):
     def parse_masses(self, num_per_record, numlines):
         """Extracts the mass of each atom
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         num_per_record : int
-                         The number of entries for each record in section
-                         (unused input)
+            The number of entries for each record in section (unused input)
         numlines : int
-                   The number of lines to be parsed in current section
+            The number of lines to be parsed in current section
 
-        Returns:
-        --------
-        attr : :class: `Masses`
-                A :class: `Masses` instance containing the mass of each atom as
-                defined in the parm7 file
+        Returns
+        -------
+        attr : :class:`Masses`
+            A :class:`Masses` instance containing the mass of each atom as
+            defined in the parm7 file
         """
         vals = self.parsesection_mapper(numlines, lambda x: float(x))
         attr = Masses(vals)
@@ -366,19 +363,18 @@ class TOPParser(TopologyReaderBase):
     def parse_elements(self, num_per_record, numlines):
         """Extracts the atomic numbers of each atom and converts to element type
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         num_per_record : int
-                         The number of entries for each record in section
-                         (unused input)
+            The number of entries for each record in section(unused input)
         numlines : int
-                   The number of lines to be pasred in current section
+            The number of lines to be pasred in current section
 
-        Returns:
-        --------
-        attr : :class: `Elements`
-                A :class: `Elements` instance containing the element of each
-                atom as defined in the parm7 file
+        Returns
+        -------
+        attr : :class:`Elements`
+            A :class:`Elements` instance containing the element of each atom
+            as defined in the parm7 file
         """
         vals = self.parsesection_mapper(
                 numlines, lambda x: NUMBER_TO_ELEMENT[int(x)])
@@ -388,19 +384,18 @@ class TOPParser(TopologyReaderBase):
     def parse_types(self, num_per_record, numlines):
         """Extracts the force field atom types of each atom
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         num_per_record : int
-                         The number of entries for each record in section
-                         (unused input)
+            The number of entries for each record in section (unused input)
         numlines : int
-                   The number of lines to be parsed in current section
+            The number of lines to be parsed in current section
 
-        Returns:
-        --------
-        attr : :class: `Atomtypes`
-                A :class: `Atomtypes` instance containing the atom types for
-                each atom as defined in the parm7 file
+        Returns
+        -------
+        attr : :class:`Atomtypes`
+            A :class:`Atomtypes` instance containing the atom types for each
+            atom as defined in the parm7 file
         """
         vals = self.parsesection_mapper(numlines, lambda x: x)
         attr = Atomtypes(np.array(vals, dtype=object))
@@ -410,19 +405,18 @@ class TOPParser(TopologyReaderBase):
         """Extracts the index of atom types of the each atom involved in Lennard
         Jones (6-12) interactions.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         num_per_record : int
-                         The number of entries for each record in section
-                         (unused input)
+            The number of entries for each record in section (unused input)
         numlines : int
-                   The number of lines to be parsed in current section
+            The number of lines to be parsed in current section
 
-        Returns:
-        --------
-        attr :class: `TypeIndices`
-              A :class: `TypeIndices` instance containing the LJ 6-12 atom
-              type index for each atom
+        Returns
+        -------
+        attr :class:`TypeIndices`
+            A :class:`TypeIndices` instance containing the LJ 6-12 atom type
+            index for each atom
         """
         vals = self.parsesection_mapper(numlines, lambda x: int(x))
         attr = TypeIndices(np.array(vals, dtype=np.int32))
@@ -431,43 +425,41 @@ class TOPParser(TopologyReaderBase):
     def parse_residx(self, num_per_record, numlines):
         """Extracts the residue pointers for each atom
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         num_per_record : int
-                         The number of entries for each record in section
-                         (unused input)
+            The number of entries for each record in section (unused input)
         numlines : int
-                   The number of lines to be parsed in current section
+            The number of lines to be parsed in current section
 
-        Returns:
-        --------
+        Returns
+        -------
         vals : list of int
-               A list of zero-formatted residue pointers for each atom
+            A list of zero-formatted residue pointers for each atom
         """
         vals = self.parsesection_mapper(numlines, lambda x: int(x) - 1)
         return vals
 
     def parse_chunks(self, data, chunksize):
-        """Helper function to parse AMBER TOP bonds/angles.
+        """Helper function to parse AMBER PRMTOP bonds/angles.
 
         Parameters
         ----------
-        data : np.int64 list
-               input list of the parm7 bond/angle section, zero-indexed
-
+        data : list of int64
+            Input list of the parm7 bond/angle section, zero-indexed
         num_per_record : int
-                        The number of entries for each record in the input list
+            The number of entries for each record in the input list
 
-        Returns:
-        --------
-        vals : list of int64 containing tuples
-               A list of tuples containing the atoms involved in a given bonded
-               interaction
+        Returns
+        -------
+        vals : list of int64 tuples
+            A list of tuples containing the atoms involved in a given bonded
+            interaction
 
-        Note:
-        -----
-        In the parm7 format this information is structured as:
-                atoms 1:n, internal index
+        Note
+        ----
+        In the parm7 format this information is structured in the following
+        format: [ atoms 1:n, internal index ]
         Where 1:n represent the ids of the n atoms involved in the bond/angle
         and the internal index links to a given set of FF parameters.
         Therefore, to extract the required information, we split out the list
@@ -481,15 +473,15 @@ class TOPParser(TopologyReaderBase):
     def parse_bonded(self, num_per_record, numlines):
         """Extracts bond information from PARM7 format files
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         num_per_record : int
-                         The number of entries for each record in section
+            The number of entries for each record in section
         numlines : int
-                   The number of lines to be parsed for this section
+            The number of lines to be parsed for this section
 
-        Notes:
-        ------
+        Note
+        ----
         For the bond/angle sections of parm7 files, the atom numbers are set to
         coordinate array index values. As detailed in
         http://ambermd.org/formats.html to recover the actual atom number, one
@@ -504,17 +496,17 @@ class TOPParser(TopologyReaderBase):
         """Parses FORTRAN formatted section, and returns a list of all entries
         in each line
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         numlines : int
-                   The number of lines to be parsed in this section
+            The number of lines to be parsed in this section
         mapper : lambda operator
-                 Operator to format entries in current section
+            Operator to format entries in current section
 
-        Returns:
-        --------
+        Returns
+        -------
         section : list
-                  A list of all entries in a given parm7 section
+            A list of all entries in a given parm7 section
         """
         section = []
         y = next(self.topfile).strip("%FORMAT(")
@@ -532,39 +524,40 @@ class TOPParser(TopologyReaderBase):
         """Combines hydrogen and non-hydrogen containing AMBER dihedral lists
         and extracts sublists for conventional dihedrals and improper angles
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         diha : list of 4 np.int64 element tuples
-               The dihedrals not involving hydrogens
+            The dihedrals not involving hydrogens
         dihh : list of 4 np.int64 element tuples
-               The dihedrals involving hydrogens
+            The dihedrals involving hydrogens
 
-        Returns:
-        --------
+        Returns
+        -------
         dihedrals : :class:`Dihedrals`
-                    A :class:`Dihedrals` instance containing a list of all
-                    unique dihedrals as defined by the parm7 file
+            A :class:`Dihedrals` instance containing a list of all unique
+            dihedrals as defined by the parm7 file
         impropers : :class:`Impropers`
-                    A :class:`Impropers` instance containing a list of all
-                    unique improper dihedrals as defined by the parm7 file
+            A :class:`Impropers` instance containing a list of all unique
+            improper dihedrals as defined by the parm7 file
 
-        Notes:
-        ------
+        Note
+        ----
         As detailed in http://ambermd.org/formats.html, the dihedral sections
         of parm7 files contain information about both conventional dihedrals
-        and impropers:
-            - If the fourth atom in a dihedral entry is given a negative value,
-            this indicates that it is an improper.
-            - If the third atom in a dihedral entry is given a negative value,
-            this indicates that it 1-4 NB interactions are ignored for this
-            dihedrals. This could be due to the dihedral within a ring, or
-            if it is part of a multi-term dihedral definition. To account for
-            the latter case and avoid the possibility of duplicate dihedral
-            entries, we check that any such dihedral does not already exist in
-            the accumulated dihderals list. Note: currently we assume that
-            multiterm dihedrals are added to the parm7 file after the initial
-            dihedral. This is likely true for leap generated files, but such
-            behaviour is not necessarily guaranteed.
+        and impropers. The following must be accounted for:
+        1) If the fourth atom in a dihedral entry is given a negative value,
+        this indicates that it is an improper.
+        2) If the third atom in a dihedral entry is given a negative value,
+        this indicates that it 1-4 NB interactions are ignored for this
+        dihedrals. This could be due to the dihedral within a ring, or if it is
+        part of a multi-term dihedral definition. To account for the latter
+        case and avoid the possibility of duplicate dihedral entries, we check
+        that any such dihedral does not already exist in the accumulated
+        dihderals list.
+        Caveat: currently we assume that multiterm dihedrals are
+        added to the parm7 file after the initial dihedral. This is likely true
+        for leap generated files, but such behaviour is not necessarily
+        guaranteed.
         """
         improp = []
         dihed = []
