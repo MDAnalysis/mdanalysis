@@ -141,10 +141,10 @@ class TOPParser(TopologyReaderBase):
     .. _`PARM parameter/topology file specification`:
        http://ambermd.org/formats.html#topology
 
-    .. versionchanged:: 0.18.1
-      parses bonds, angles, dihedrals, and impropers
     .. versionchanged:: 0.7.6
       parses both amber10 and amber12 formats
+    .. versionchanged:: 0.18.1
+      parses bonds, angles, dihedrals, and impropers
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
 
