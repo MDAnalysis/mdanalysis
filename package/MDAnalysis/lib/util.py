@@ -109,7 +109,7 @@ Containers and lists
 .. autofunction:: asiterable
 .. autofunction:: hasmethod
 .. autoclass:: Namespace
-.. autofunction:: unique_int_1d
+.. autofunction:: unique_int_1d(values)
 
 File parsing
 ------------
@@ -117,7 +117,6 @@ File parsing
 .. autoclass:: FORTRANReader
    :members:
 .. autodata:: FORTRAN_format_regex
-
 
 Data manipulation and handling
 ------------------------------
@@ -132,13 +131,10 @@ Strings
 .. autofunction:: parse_residue
 .. autofunction:: conv_float
 
-
 Class decorators
 ----------------
 
 .. autofunction:: cached
-
-
 
 Function decorators
 -------------------
@@ -146,7 +142,6 @@ Function decorators
 .. autofunction:: static_variables
 .. autofunction:: warn_if_not_unique
 .. autofunction:: check_coords
-
 
 Code management
 ---------------
@@ -167,8 +162,6 @@ Code management
    order to make :meth:`NamedStream.close` actually close the
    underlying stream and ``NamedStream.close(force=True)`` will also
    close it.
-
-
 """
 from __future__ import division, absolute_import
 import six
@@ -1585,28 +1578,29 @@ def unique_rows(arr, return_index=False):
 
 
 def blocks_of(a, n, m):
-    """Extract a view of (n, m) blocks along the diagonal of the array `a`
+    """Extract a view of ``(n, m)`` blocks along the diagonal of the array `a`.
 
     Parameters
     ----------
-    a : array_like
-        starting array
+    a : numpy.ndarray
+        Input array, must be C contiguous and at least 2D.
     n : int
-        size of block in first dimension
+        Size of block in first dimension.
     m : int
-        size of block in second dimension
+        Size of block in second dimension.
 
     Returns
     -------
-    (nblocks, n, m) : tuple
-          view of the original array, where nblocks is the number of times the
-          miniblock fits in the original.
+    view : numpy.ndarray
+        A view of the original array with shape ``(nblocks, n, m)``, where
+        ``nblocks`` is the number of times the miniblocks of shape ``(n, m)``
+        fit in the original.
 
     Raises
     ------
     ValueError
         If the supplied `n` and `m` don't divide `a` into an integer number
-        of blocks.
+        of blocks or if `a` is not C contiguous.
 
     Examples
     --------
@@ -1621,9 +1615,11 @@ def blocks_of(a, n, m):
 
     Notes
     -----
-    n, m must divide a into an identical integer number of blocks.
+    `n`, `m` must divide `a` into an identical integer number of blocks. Please
+    note that if the block size is larger than the input array, this number will
+    be zero, resulting in an empty view!
 
-    Uses strides so probably requires that the array is C contiguous.
+    Uses strides and therefore requires that the array is C contiguous.
 
     Returns a view, so editing this modifies the original array.
 
@@ -1634,6 +1630,8 @@ def blocks_of(a, n, m):
     # based on:
     # http://stackoverflow.com/a/10862636
     # but generalised to handle non square blocks.
+    if not a.flags['C_CONTIGUOUS']:
+        raise ValueError("Input array is not C contiguous.")
 
     nblocks = a.shape[0] // n
     nblocks2 = a.shape[1] // m
@@ -1795,6 +1793,7 @@ def warn_if_not_unique(groupmethod):
         :class:`~MDAnalysis.core.groups.ResidueGroup`, or
         :class:`~MDAnalysis.core.groups.SegmentGroup` of which the decorated
         method is a member contains duplicates.
+
 
     .. versionadded:: 0.19.0
     """

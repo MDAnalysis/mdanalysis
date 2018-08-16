@@ -970,8 +970,6 @@ class TestBlocksOf(object):
 
         view = util.blocks_of(arr, 1, 1)
 
-        # should return a (4, 1, 1) view
-        # ie 4 lots of 1x1
         assert view.shape == (4, 1, 1)
         assert_array_almost_equal(view,
                                   np.array([[[0]], [[5]], [[10]], [[15]]]))
@@ -990,7 +988,6 @@ class TestBlocksOf(object):
 
         view = util.blocks_of(arr, 2, 2)
 
-        # should return (2, 2, 2)
         assert view.shape == (2, 2, 2)
         assert_array_almost_equal(view, np.array([[[0, 1], [4, 5]],
                                                   [[10, 11], [14, 15]]]))
@@ -1012,10 +1009,20 @@ class TestBlocksOf(object):
 
         assert view.shape == (4, 2, 1)
 
+    def test_blocks_of_4(self):
+        # testing block exceeding array size results in empty view
+        arr = np.arange(4).reshape(2, 2)
+        view = util.blocks_of(arr, 3, 3)
+        assert view.shape == (0, 3, 3)
+        view[:] = 100
+        assert_array_equal(arr, np.arange(4).reshape(2, 2))
+
     def test_blocks_of_ValueError(self):
         arr = np.arange(16).reshape(4, 4)
         with pytest.raises(ValueError):
-            util.blocks_of(arr, 2, 1)
+            util.blocks_of(arr, 2, 1)  # blocks don't fit
+        with pytest.raises(ValueError):
+            util.blocks_of(arr[:, ::2], 2, 1)  # non-contiguous input
 
 
 class TestNamespace(object):
