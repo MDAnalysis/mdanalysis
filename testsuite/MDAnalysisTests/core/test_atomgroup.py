@@ -1250,7 +1250,7 @@ class TestAtomGroup(object):
         u.trajectory.rewind()  # just to make sure...
         ag = u.atoms[1000:2000:200]
         # Provide arbitrary box
-        box = np.array([5., 5., 5.], dtype=np.float32)
+        box = np.array([5., 5., 5., 90., 90., 90.], dtype=np.float32)
         # Expected folded coordinates
         packed_coords = np.array([[3.94543672, 2.5939188, 2.73179913],
                                   [3.21632767, 0.879035, 0.32085133],

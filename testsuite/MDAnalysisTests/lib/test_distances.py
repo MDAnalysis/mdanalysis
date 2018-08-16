@@ -30,16 +30,21 @@ import MDAnalysis as mda
 
 class TestCheckBox(object):
 
-    prec = 7
+    prec = 6
     ref_ortho = np.ones(3, dtype=np.float32)
     ref_tri_vecs = np.array([[1, 0, 0], [0, 1, 0], [0, 2 ** 0.5, 2 ** 0.5]],
                             dtype=np.float32)
 
     @pytest.mark.parametrize('box',
-        (np.ones(3, dtype=np.float32),
+        ([1, 1, 1, 90, 90, 90],
+         (1, 1, 1, 90, 90, 90),
+         ['1', '1', 1, 90, '90', '90'],
+         ('1', '1', 1, 90, '90', '90'),
+         np.array(['1', '1', 1, 90, '90', '90']),
          np.array([1, 1, 1, 90, 90, 90], dtype=np.float32),
-         np.identity(3, dtype=np.float32),
-         np.roll(np.identity(3, dtype=np.float32), 1, axis=0)))
+         np.array([1, 1, 1, 90, 90, 90], dtype=np.float64),
+         np.array([1, 1, 1, 1, 1, 1, 90, 90, 90, 90, 90, 90],
+                  dtype=np.float32)[::2]))
     def test_ckeck_box_ortho(self, box):
         boxtype, checked_box = mda.lib.distances._check_box(box)
         assert boxtype == 'ortho'
@@ -47,34 +52,31 @@ class TestCheckBox(object):
         assert checked_box.flags['C_CONTIGUOUS']
 
     @pytest.mark.parametrize('box',
-         (np.array([1, 1, 2, 45, 90, 90], dtype=np.float32),
-         np.array([[1, 0, 0],
-                   [0, 1, 0],
-                   [0, 2**0.5, 2**0.5]], dtype=np.float32),
-         np.array([[0, 1, 0],
-                   [0, 0, 1],
-                   [2**0.5, 0, 2**0.5]], dtype=np.float32)))
+         ([1, 1, 2, 45, 90, 90],
+          (1, 1, 2, 45, 90, 90),
+          ['1', '1', 2, 45, '90', '90'],
+          ('1', '1', 2, 45, '90', '90'),
+          np.array(['1', '1', 2, 45, '90', '90']),
+          np.array([1, 1, 2, 45, 90, 90], dtype=np.float32),
+          np.array([1, 1, 2, 45, 90, 90], dtype=np.float64),
+          np.array([1, 1, 1, 1, 2, 2, 45, 45, 90, 90, 90, 90],
+                   dtype=np.float32)[::2]))
     def test_check_box_tri_vecs(self, box):
         boxtype, checked_box = mda.lib.distances._check_box(box)
         assert boxtype == 'tri_vecs'
         assert_almost_equal(checked_box, self.ref_tri_vecs, self.prec)
         assert checked_box.flags['C_CONTIGUOUS']
 
-    def test_check_box_wrong_dtype(self):
-        with pytest.raises(TypeError):
-            wrongbox = np.ones(3, dtype=np.float64)
+    def test_check_box_wrong_data(self):
+        with pytest.raises(ValueError):
+            wrongbox = ['invalid', 1, 1, 90, 90, 90]
             boxtype, checked_box = mda.lib.distances._check_box(wrongbox)
 
     def test_check_box_wrong_shape(self):
         with pytest.raises(ValueError):
-            wrongbox = np.ones(5, dtype=np.float32)
+            wrongbox = np.ones((3, 3), dtype=np.float32)
             boxtype, checked_box = mda.lib.distances._check_box(wrongbox)
 
-    def test_check_box_non_congiguous(self):
-        non_cont_box = np.ones(6, dtype=np.float32)[::2]
-        assert not non_cont_box.flags['C_CONTIGUOUS']
-        with pytest.raises(ValueError):
-            boxtype, checked_box = mda.lib.distances._check_box(non_cont_box)
 
 @pytest.mark.parametrize('coord_dtype', (np.float32, np.float64))
 def test_transform_StoR_pass(coord_dtype):

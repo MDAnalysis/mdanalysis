@@ -33,7 +33,7 @@ from MDAnalysis.lib import mdamath
 
 @pytest.fixture()
 def ref_system():
-    box = np.array([1., 1., 2.], dtype=np.float32)
+    box = np.array([1., 1., 2., 90., 90., 90], dtype=np.float32)
     points = np.array(
         [
             [0, 0, 0], [1, 1, 2], [1, 0, 2],  # identical under PBC
@@ -75,13 +75,13 @@ class TestDistanceArray(object):
     def test_PBC2(self, backend):
         a = np.array([7.90146923, -13.72858524, 3.75326586], dtype=np.float32)
         b = np.array([-1.36250901, 13.45423985, -0.36317623], dtype=np.float32)
-        box = np.array([5.5457325, 5.5457325, 5.5457325], dtype=np.float32)
+        box = np.array([5.5457325, 5.5457325, 5.5457325, 90., 90., 90.], dtype=np.float32)
 
         def mindist(a, b, box):
             x = a - b
             return np.linalg.norm(x - np.rint(x / box) * box)
 
-        ref = mindist(a, b, box)
+        ref = mindist(a, b, box[:3])
         val = MDAnalysis.lib.distances.distance_array(np.array([a]), np.array([b]),
                                                       box=box, backend=backend)[0, 0]
 
@@ -217,13 +217,13 @@ class TestTriclinicDistances(object):
 
     @staticmethod
     @pytest.fixture()
-    def box(TRIC):
+    def tri_vec_box(TRIC):
         return MDAnalysis.coordinates.core.triclinic_vectors(TRIC.dimensions)
 
     @staticmethod
     @pytest.fixture()
-    def boxV(box):
-        return MDAnalysis.coordinates.core.triclinic_box(box[0], box[1], box[2])
+    def box(TRIC):
+        return TRIC.dimensions
 
     @staticmethod
     @pytest.fixture()
@@ -241,32 +241,28 @@ class TestTriclinicDistances(object):
         return S_mol1, S_mol2
 
     @pytest.mark.parametrize('S_mol', [S_mol, S_mol_single], indirect=True)
-    def test_transforms(self, S_mol, box, boxV, backend):
+    def test_transforms(self, S_mol, tri_vec_box, box, backend):
         from MDAnalysis.lib.distances import transform_StoR, transform_RtoS
         # To check the cython coordinate transform, the same operation is done in numpy
-        # Is a matrix multiplication of Coords x Box = NewCoords, so can use np.dot
+        # Is a matrix multiplication of Coords x tri_vec_box = NewCoords, so can use np.dot
         S_mol1, S_mol2 = S_mol
         # Test transformation
         R_mol1 = transform_StoR(S_mol1, box, backend=backend)
-        R_np1 = np.dot(S_mol1, box)
+        R_np1 = np.dot(S_mol1, tri_vec_box)
+        R_mol2 = transform_StoR(S_mol2, box, backend=backend)
+        R_np2 = np.dot(S_mol2, tri_vec_box)
 
-        # Test transformation when given box in different form
-        R_mol2 = transform_StoR(S_mol2, boxV, backend=backend)
-        R_np2 = np.dot(S_mol2, box)
-
-        assert_almost_equal(R_mol1, R_np1, self.prec, err_msg="StoR transform failed with box")
-        assert_almost_equal(R_mol2, R_np2, self.prec, err_msg="StoR transform failed with boxV")
+        assert_almost_equal(R_mol1, R_np1, self.prec, err_msg="StoR transform failed for S_mol1")
+        assert_almost_equal(R_mol2, R_np2, self.prec, err_msg="StoR transform failed for S_mol2")
 
         # Round trip test
-        # boxV here althought initial transform with box
-        S_test1 = transform_RtoS(R_mol1, boxV, backend=backend)
-        # and vice versa, should still work
+        S_test1 = transform_RtoS(R_mol1, box, backend=backend)
         S_test2 = transform_RtoS(R_mol2, box, backend=backend)
 
-        assert_almost_equal(S_test1, S_mol1, self.prec, err_msg="Round trip failed in transform")
-        assert_almost_equal(S_test2, S_mol2, self.prec, err_msg="Round trip failed in transform")
+        assert_almost_equal(S_test1, S_mol1, self.prec, err_msg="Round trip 1 failed in transform")
+        assert_almost_equal(S_test2, S_mol2, self.prec, err_msg="Round trip 2 failed in transform")
 
-    def test_selfdist(self, S_mol, box, boxV, backend):
+    def test_selfdist(self, S_mol, box, tri_vec_box, backend):
         from MDAnalysis.lib.distances import self_distance_array
         from MDAnalysis.lib.distances import transform_StoR
 
@@ -281,9 +277,9 @@ class TestTriclinicDistances(object):
         for i, Ri in enumerate(R_coords):
             for Rj in R_coords[i + 1:]:
                 Rij = Rj - Ri
-                Rij -= round(Rij[2] / box[2][2]) * box[2]
-                Rij -= round(Rij[1] / box[1][1]) * box[1]
-                Rij -= round(Rij[0] / box[0][0]) * box[0]
+                Rij -= round(Rij[2] / tri_vec_box[2][2]) * tri_vec_box[2]
+                Rij -= round(Rij[1] / tri_vec_box[1][1]) * tri_vec_box[1]
+                Rij -= round(Rij[0] / tri_vec_box[0][0]) * tri_vec_box[0]
                 Rij = np.linalg.norm(Rij)  # find norm of Rij vector
                 manual[distpos] = Rij  # and done, phew
                 distpos += 1
@@ -292,19 +288,18 @@ class TestTriclinicDistances(object):
                             err_msg="self_distance_array failed with input 1")
 
         # Do it again for input 2 (has wider separation in points)
-        # Also use boxV here in self_dist calculation
         R_coords = transform_StoR(S_mol2, box, backend=backend)
         # Transform functions are tested elsewhere so taken as working here
-        dists = self_distance_array(R_coords, box=boxV, backend=backend)
+        dists = self_distance_array(R_coords, box=box, backend=backend)
         # Manually calculate self_distance_array
         manual = np.zeros(len(dists), dtype=np.float64)
         distpos = 0
         for i, Ri in enumerate(R_coords):
             for Rj in R_coords[i + 1:]:
                 Rij = Rj - Ri
-                Rij -= round(Rij[2] / box[2][2]) * box[2]
-                Rij -= round(Rij[1] / box[1][1]) * box[1]
-                Rij -= round(Rij[0] / box[0][0]) * box[0]
+                Rij -= round(Rij[2] / tri_vec_box[2][2]) * tri_vec_box[2]
+                Rij -= round(Rij[1] / tri_vec_box[1][1]) * tri_vec_box[1]
+                Rij -= round(Rij[0] / tri_vec_box[0][0]) * tri_vec_box[0]
                 Rij = np.linalg.norm(Rij)  # find norm of Rij vector
                 manual[distpos] = Rij  # and done, phew
                 distpos += 1
@@ -312,7 +307,7 @@ class TestTriclinicDistances(object):
         assert_almost_equal(dists, manual, self.prec,
                             err_msg="self_distance_array failed with input 2")
 
-    def test_distarray(self, S_mol, box, boxV, backend):
+    def test_distarray(self, S_mol, tri_vec_box, box, backend):
         from MDAnalysis.lib.distances import distance_array
         from MDAnalysis.lib.distances import transform_StoR
 
@@ -328,26 +323,21 @@ class TestTriclinicDistances(object):
         for i, Ri in enumerate(R_mol1):
             for j, Rj in enumerate(R_mol2):
                 Rij = Rj - Ri
-                Rij -= round(Rij[2] / box[2][2]) * box[2]
-                Rij -= round(Rij[1] / box[1][1]) * box[1]
-                Rij -= round(Rij[0] / box[0][0]) * box[0]
+                Rij -= round(Rij[2] / tri_vec_box[2][2]) * tri_vec_box[2]
+                Rij -= round(Rij[1] / tri_vec_box[1][1]) * tri_vec_box[1]
+                Rij -= round(Rij[0] / tri_vec_box[0][0]) * tri_vec_box[0]
                 Rij = np.linalg.norm(Rij)  # find norm of Rij vector
                 manual[i][j] = Rij
 
         assert_almost_equal(dists, manual, self.prec,
                             err_msg="distance_array failed with box")
 
-        # Now check using boxV
-        dists = distance_array(R_mol1, R_mol2, box=boxV, backend=backend)
-        assert_almost_equal(dists, manual, self.prec,
-                            err_msg="distance_array failed with boxV")
-
-    def test_pbc_dist(self, S_mol, boxV, backend):
+    def test_pbc_dist(self, S_mol, box, backend):
         from MDAnalysis.lib.distances import distance_array
         S_mol1, S_mol2 = S_mol
 
         results = np.array([[37.629944]])
-        dists = distance_array(S_mol1, S_mol2, box=boxV,
+        dists = distance_array(S_mol1, S_mol2, box=box,
                                backend=backend)
 
         assert_almost_equal(dists, results, self.prec,
@@ -355,14 +345,15 @@ class TestTriclinicDistances(object):
 
     def test_pbc_wrong_wassenaar_distance(self, backend):
         from MDAnalysis.lib.distances import distance_array
-        box = MDAnalysis.lib.mdamath.triclinic_vectors([2, 2, 2, 60, 60, 60])
-        a, b, c = box
+        box = [2, 2, 2, 60, 60, 60]
+        tri_vec_box = MDAnalysis.lib.mdamath.triclinic_vectors(box)
+        a, b, c = tri_vec_box
         point_a = a + b
         point_b = .5 * point_a
         dist = distance_array(point_a[np.newaxis, :], point_b[np.newaxis, :],
                               box=box, backend=backend)
         assert_almost_equal(dist[0, 0], 1)
-        # check that our distance is different then the wassenaar distance as
+        # check that our distance is different from the wassenaar distance as
         # expected.
         assert np.linalg.norm(point_a - point_b) != dist[0, 0]
 
@@ -378,12 +369,15 @@ class TestCythonFunctions(object):
     @staticmethod
     @pytest.fixture()
     def box():
-        return np.array([10., 10., 10.], dtype=np.float32)
+        return np.array([10., 10., 10., 90., 90., 90.], dtype=np.float32)
 
     @staticmethod
     @pytest.fixture()
     def triclinic_box():
-        return np.array([[10., 0., 0.], [1., 10., 0., ], [1., 0., 10.]], dtype=np.float32)
+        box_vecs = np.array([[10., 0., 0.], [1., 10., 0., ], [1., 0., 10.]],
+                               dtype=np.float32)
+        return MDAnalysis.lib.mdamath.triclinic_box(box_vecs[0], box_vecs[1],
+                                                    box_vecs[2])
 
     @staticmethod
     @pytest.fixture()
@@ -438,18 +432,16 @@ class TestCythonFunctions(object):
 
     def test_bonds_badbox(self, positions, backend):
         a, b, c, d = positions
-        badboxtype = np.array([10., 10., 10.], dtype=np.float64)
-        badboxsize = np.array([[10., 10.], [10., 10., ]], dtype=np.float32)
+        badbox1 = np.array([10., 10., 10.], dtype=np.float64)
+        badbox2 = np.array([[10., 10.], [10., 10., ]], dtype=np.float32)
 
         with pytest.raises(ValueError):
-            MDAnalysis.lib.distances.calc_bonds(a,
-                                                b, box=badboxsize,
-                                                backend=backend)  # Bad box data
+            MDAnalysis.lib.distances.calc_bonds(a, b, box=badbox1,
+                                                backend=backend)
 
-        with pytest.raises(TypeError):
-            MDAnalysis.lib.distances.calc_bonds(a,
-                                                b, box=badboxtype,
-                                                backend=backend)  # Bad box type
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_bonds(a, b, box=badbox2,
+                                                backend=backend)
 
     def test_bonds_badresult(self, positions, backend):
         a, b, c, d = positions
@@ -573,15 +565,12 @@ class Test_apply_PBC(object):
 
         U = MDAnalysis.Universe(PSF, DCD)
         atoms = U.atoms.positions
-        box1 = np.array([2.5, 2.5, 3.5], dtype=np.float32)
-        box2 = np.array([2.5, 2.5, 3.5, 90., 90., 90.], dtype=np.float32)
+        box = np.array([2.5, 2.5, 3.5, 90., 90., 90.], dtype=np.float32)
+        with pytest.raises(ValueError):
+            cyth1 = apply_PBC(atoms, box[:3], backend=backend)
+        cyth2 = apply_PBC(atoms, box, backend=backend)
+        reference = atoms - np.floor(atoms / box[:3]) * box[:3]
 
-        cyth1 = apply_PBC(atoms, box1, backend=backend)
-        cyth2 = apply_PBC(atoms, box2, backend=backend)
-        reference = atoms - np.floor(atoms / box1) * box1
-
-        assert_almost_equal(cyth1, reference, self.prec,
-                            err_msg="Ortho apply_PBC #1 failed comparison with np")
         assert_almost_equal(cyth2, reference, self.prec,
                             err_msg="Ortho apply_PBC #2 failed comparison with np")
 
@@ -590,8 +579,7 @@ class Test_apply_PBC(object):
 
         U = MDAnalysis.Universe(TRIC)
         atoms = U.atoms.positions
-        box1 = U.dimensions
-        box2 = MDAnalysis.coordinates.core.triclinic_vectors(box1)
+        box = U.dimensions
 
         def numpy_PBC(coords, box):
             # move to fractional coordinates
@@ -601,13 +589,10 @@ class Test_apply_PBC(object):
             # move back to real coordinates
             return MDAnalysis.lib.distances.transform_StoR(fractional, box)
 
-        cyth1 = apply_PBC(atoms, box1, backend=backend)
-        cyth2 = apply_PBC(atoms, box2, backend=backend)
-        reference = numpy_PBC(atoms, box2)
+        cyth1 = apply_PBC(atoms, box, backend=backend)
+        reference = numpy_PBC(atoms, box)
 
         assert_almost_equal(cyth1, reference, decimal=4,
-                            err_msg="Triclinic apply_PBC failed comparison with np")
-        assert_almost_equal(cyth2, reference, decimal=4,
                             err_msg="Triclinic apply_PBC failed comparison with np")
 
         box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
@@ -643,6 +628,7 @@ class TestPeriodicAngles(object):
 
         ref = calc_angles(a, b, c, backend=backend)
 
+        box = np.append(box, [90, 90, 90])
         test1 = calc_angles(a2, b, c, box=box, backend=backend)
         test2 = calc_angles(a, b2, c, box=box, backend=backend)
         test3 = calc_angles(a, b, c2, box=box, backend=backend)
@@ -661,6 +647,7 @@ class TestPeriodicAngles(object):
 
         ref = calc_dihedrals(a, b, c, d, backend=backend)
 
+        box = np.append(box, [90, 90, 90])
         test1 = calc_dihedrals(a2, b, c, d, box=box,
                                backend=backend)
         test2 = calc_dihedrals(a, b2, c, d, box=box,
