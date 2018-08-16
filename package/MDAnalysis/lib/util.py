@@ -139,6 +139,15 @@ Class decorators
 .. autofunction:: cached
 
 
+
+Function decorators
+-------------------
+
+.. autofunction:: static_variables
+.. autofunction:: warn_if_not_unique
+.. autofunction:: check_coords
+
+
 Code management
 ---------------
 
@@ -1735,11 +1744,11 @@ def static_variables(**kwargs):
     Example
     -------
 
-    >>> @static(msg='foo calls', calls=0)
-    >>> def foo():
-    >>>     foo.calls += 1
-    >>>     print("{}: {}".format(foo.msg, foo.calls))
-    >>>
+    >>> @static_variables(msg='foo calls', calls=0)
+    ... def foo():
+    ...     foo.calls += 1
+    ...     print("{}: {}".format(foo.msg, foo.calls))
+    ...
     >>> foo()
     foo calls: 1
     >>> foo()
@@ -1747,7 +1756,7 @@ def static_variables(**kwargs):
 
 
     .. note:: Based on https://stackoverflow.com/a/279586
-        by user `Claudiu<https://stackoverflow.com/users/15055/claudiu>`
+        by `Claudiu <https://stackoverflow.com/users/15055/claudiu>`_
 
     .. versionadded:: 0.19.0
     """
@@ -1773,11 +1782,19 @@ def static_variables(**kwargs):
 
 @static_variables(warned=False)
 def warn_if_not_unique(groupmethod):
-    """Decorator triggering a :class:`DuplicateWarning` if the underlying group
-    is not unique.
+    """Decorator triggering a :class:`~MDAnalysis.exceptions.DuplicateWarning`
+    if the underlying group is not unique.
 
-    Assures that during execution of the decorated method, only the first of
+    Assures that during execution of the decorated method only the first of
     potentially multiple warnings concerning the uniqueness of groups is shown.
+
+    Raises
+    ------
+    :class:`~MDAnalysis.exceptions.DuplicateWarning`
+        If the :class:`~MDAnalysis.core.groups.AtomGroup`,
+        :class:`~MDAnalysis.core.groups.ResidueGroup`, or
+        :class:`~MDAnalysis.core.groups.SegmentGroup` of which the decorated
+        method is a member contains duplicates.
 
     .. versionadded:: 0.19.0
     """
@@ -1815,6 +1832,180 @@ def warn_if_not_unique(groupmethod):
             warn_if_not_unique.warned = False
         return result
     return wrapper
+
+
+def check_coords(*coord_names, **options):
+    """Decorator for automated coordinate array checking.
+
+    This decorator is intended for use especially in
+    :mod:`MDAnalysis.lib.distances`.
+    It takes an arbitrary number of positional arguments which must correspond
+    to names of positional arguments of the decorated function.
+    It then checks if the corresponding values are valid coordinate arrays.
+    If all these arrays are single coordinates (i.e., their shape is ``(3,)``),
+    the decorated function can optionally return a single coordinate (or angle)
+    instead of an array of coordinates (or angles). This can be used to enable
+    computations of single observables using functions originally designed to
+    accept only 2-d coordinate arrays.
+
+    The checks performed on each individual coordinate array are:
+
+    * Check that coordinate arrays are of type :class:`numpy.ndarray`.
+    * Check that coordinate arrays have a shape of ``(n, 3)`` (or ``(3,)`` if
+      single coordinates are allowed; see keyword argument `allow_single`).
+    * Automatic dtype conversion to ``numpy.float32``.
+    * Optional replacement by a copy; see keyword argument `enforce_copy` .
+    * If coordinate arrays aren't C-contiguous, they will be automatically
+      replaced by a C-contiguous copy.
+    * Optional check for equal length of all coordinate arrays; see optional
+      keyword argument `check_lengths_match`.
+
+    Parameters
+    ----------
+    *coord_names : tuple
+        Arbitrary number of strings corresponding to names of positional
+        arguments of the decorated function.
+    **options : dict, optional
+        * **enforce_copy** (:class:`bool`, optional) -- Enforce working on a
+          copy of the coordinate arrays. This is useful to ensure that the input
+          arrays are left unchanged. Default: ``True``
+        * **allow_single** (:class:`bool`, optional) -- Allow the input
+          coordinate array to be a single coordinate with shape ``(3,)``.
+        * **convert_single** (:class:`bool`, optional) -- If ``True``, single
+          coordinate arrays will be converted to have a shape of ``(1, 3)``.
+          Only has an effect if `allow_single` is ``True``. Default: ``True``
+        * **reduce_result_if_single** (:class:`bool`, optional) -- If ``True``
+          and *all* input coordinates are single, a decorated function ``func``
+          will return ``func()[0]`` instead of ``func()``. Only has an effect if
+          `allow_single` is ``True``. Default: ``True``
+        * **check_lengths_match** (:class:`bool`, optional) -- If ``True``, a
+          :class:`ValueError` is raised if not all coordinate arrays contain the
+          same number of coordinates. Default: ``True``
+
+    Raises
+    ------
+    ValueError
+        If the decorator is used without positional arguments (for development
+        purposes only).
+
+        If any of the positional arguments supplied to the decorator doesn't
+        correspond to a name of any of the decorated function's positional
+        arguments.
+
+        If any of the coordinate arrays has a wrong shape.
+    TypeError
+        If any of the coordinate arrays is not a :class:`numpy.ndarray`.
+
+        If the dtype of any of the coordinate arrays is not convertible to
+          ``numpy.float32``.
+
+    Example
+    -------
+
+    >>> @check_coords('coords1', 'coords2')
+    ... def coordsum(coords1, coords2):
+    ...     assert coords1.dtype == np.float32
+    ...     assert coords2.flags['C_CONTIGUOUS']
+    ...     return coords1 + coords2
+    ...
+    >>> # automatic dtype conversion:
+    >>> coordsum(np.zeros(3, dtype=np.int64), np.ones(3))
+    array([1., 1., 1.], dtype=float32)
+    >>>
+    >>> # automatic handling of non-contiguous arrays:
+    >>> coordsum(np.zeros(3), np.ones(6)[::2])
+    array([1., 1., 1.], dtype=float32)
+    >>>
+    >>> # automatic shape checking:
+    >>> coordsum(np.zeros(3), np.ones(6))
+    ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).
+
+
+    .. versionadded:: 0.19.0
+    """
+    enforce_copy = options.get('enforce_copy', True)
+    allow_single = options.get('allow_single', True)
+    convert_single = options.get('convert_single', True)
+    reduce_result_if_single = options.get('reduce_result_if_single', True)
+    check_lengths_match = options.get('check_lengths_match',
+                                     len(coord_names) > 1)
+    if not coord_names:
+        raise ValueError("Decorator check_coords() cannot be used without "
+                         "positional arguments.")
+    def check_coords_decorator(func):
+        fname = func.__name__
+        code = func.__code__
+        ndefaults = len(func.__defaults__) if func.__defaults__ else 0
+        # Create a tuple of positional argument names:
+        nposargs = code.co_argcount - ndefaults
+        posargnames = code.co_varnames[:nposargs]
+        # The check_coords() decorator is designed to work only for positional
+        # arguments:
+        for name in coord_names:
+            if name not in posargnames:
+                raise ValueError("In decorator check_coords(): Name '{}' "
+                                 "doesn't correspond to any positional "
+                                 "argument of the decorated function {}()."
+                                 "".format(name, func.__name__))
+
+        def _check_coords(coords, argname):
+            if not isinstance(coords, np.ndarray):
+                raise TypeError("{}(): Parameter '{}' must be a numpy.ndarray, "
+                                "got {}.".format(fname, argname, type(coords)))
+            is_single = False
+            if allow_single:
+                if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
+                    raise ValueError("{}(): {}.shape must be (3,) or (n, 3), "
+                                     "got {}.".format(fname, argname,
+                                                      coords.shape))
+                if coords.ndim == 1:
+                    is_single = True
+                    if convert_single:
+                        coords = coords[None, :]
+            else:
+                if (coords.ndim != 2) or (coords.shape[1] != 3):
+                    raise ValueError("{}(): {}.shape must be (n, 3), got {}."
+                                     "".format(fname, argname, coords.shape))
+            try:
+                coords = coords.astype(np.float32, order='C', copy=enforce_copy)
+            except ValueError:
+                raise TypeError("{}(): {}.dtype must be convertible to float32,"
+                                " got {}.".format(fname, argname, coords.dtype))
+            return coords, is_single
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            args = list(args)
+            ncoords = []
+            all_single = allow_single
+            for name in coord_names:
+                idx = posargnames.index(name)
+                if idx < len(args):
+                    args[idx], is_single = _check_coords(args[idx], name)
+                    all_single &= is_single
+                    ncoords.append(args[idx].shape[0])
+                else:
+                    try:
+                        kwargs[name], is_single = _check_coords(kwargs[name], name)
+                        all_single &= is_single
+                        ncoords.append(kwargs[name].shape[0])
+                    except KeyError:
+                        # If we end up here, func() has been called with missing
+                        # positional arguments. We don't want to catch that
+                        # error here.
+                        pass
+            if check_lengths_match and ncoords:
+                if ncoords.count(ncoords[0]) != len(ncoords):
+                    raise ValueError("{}(): {} must contain the same number of "
+                                     "coordinates, got {}."
+                                     "".format(fname, ", ".join(coord_names),
+                                               ncoords))
+            # If all input coordinate arrays were 1-d, so should be the output:
+            if all_single and reduce_result_if_single:
+                return func(*args, **kwargs)[0]
+            return func(*args, **kwargs)
+        return wrapper
+    return check_coords_decorator
 
 
 #------------------------------------------------------------------

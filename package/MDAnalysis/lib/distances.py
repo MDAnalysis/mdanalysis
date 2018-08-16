@@ -73,6 +73,7 @@ from six.moves import range
 import numpy as np
 from numpy.lib.utils import deprecate
 
+from .util import check_coords
 from .mdamath import triclinic_vectors, triclinic_box
 from ._augment import augment_coordinates, undo_augment
 
@@ -134,9 +135,11 @@ def _check_box(box):
 
     Parameters
     ----------
-    box : numpy.ndarray
-        Array with dtype ``numpy.float32`` containing box information of unknown
-        format.
+    box : array_like
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
     -------
@@ -155,108 +158,26 @@ def _check_box(box):
 
     Raises
     ------
-    TypeError
-        If the dtype of `box` is not ``numpy.float32``.
     ValueError
-        If box type cannot be detected.
-
+        If `box` is not of the form ``[lx, ly, lz, alpha, beta, gamma]``
+        or contains data that is not convertible to ``numpy.float32``.
 
     .. seealso: :meth:`~MDAnalysis.lib.mdamath.triclinic_vectors`
     .. versionchanged: 0.19.0
+       * Enforced correspondence of `box` with specified format.
        * Added automatic conversion of input to :class:`numpy.ndarray` with
          dtype ``numpy.float32``.
        * Now also returns the box in the format expected by low-level functions
          in :mod:`~MDAnalysis.lib.c_distances`.
        * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
     """
-    if box.dtype != np.float32:
-        raise TypeError("Invalid box dtype. Must be numpy.float32, got {0}."
-                        "".format(box.dtype))
-    boxtype = None
-    if box.shape == (6,):
-        if np.all(box[3:] == 90.):
-            boxtype = 'ortho'
-            checked_box = box[:3]
-        else:
-            boxtype = 'tri_vecs'
-            checked_box = triclinic_vectors(box)
-    elif box.shape == (3,):
-        boxtype = 'ortho'
-        checked_box = box
-    elif box.shape == (3, 3):
-        # Check if triclinic box vectors are improperly formatted:
-        if np.count_nonzero(np.triu(box, 1)):
-            checked_box = triclinic_vectors(triclinic_box(box[0], box[1],
-                                                          box[2]))
-        else:
-            checked_box = box
-        # Check if lower triangle is nonzero:
-        if np.count_nonzero(np.tril(checked_box, -1)):
-            boxtype = 'tri_vecs'
-        # otherwise, the box is orthogonal and we return only the diagonal:
-        else:
-            boxtype = 'ortho'
-            checked_box = checked_box.diagonal().copy()
-    if boxtype is None:
-        raise ValueError("Box input not recognized, must be an array of box "
-                         "dimensions.")
-    elif not checked_box.flags['C_CONTIGUOUS']:
-        raise ValueError("Box must be a C-contiguous numpy array.")
-    return boxtype, checked_box
-
-
-def _check_coord_array(coords, desc):
-    """Check if an array is a valid coordinate array.
-
-    The `coords` array must meet the following requirements:
-      * Must have a shape of ``(n, 3)``.
-      * Its dtype must be ``numpy.float32``.
-
-    Parameters
-    ----------
-    coords : numpy.ndarray
-        The coordinate array to check for validity.
-    desc : str
-        Name of the coordinate array. Only used in error messages.
-
-    Raises
-    ------
-    ValueError
-        If `coords` has a wrong shape.
-    TypeError
-        If the dtype of `coords` is not ``numpy.float32``.
-    """
-    _check_coord_array_shape_2d(coords, desc)
-    if coords.dtype != np.float32:
-        raise TypeError("{0} must be of type numpy.float32".format(desc))
-# The following two lines would break a lot of tests. WHY?!
-#    if not coords.flags['C_CONTIGUOUS']:
-#        raise ValueError("{0} is not C-contiguous.".format(desc))
-
-
-def _check_coord_array_shape_1d(coord, desc):
-    """Check whether a single coordinate array has the correct shape of
-    ``(3,)``.
-    """
-    if coord.shape != (3,):
-        raise ValueError("{0} must have a shape of (3,), got {1}."
-                         "".format(desc, coord.shape))
-
-
-def _check_coord_array_shape_2d(coords, desc):
-    """Check whether a coordinate array has the correct shape of ``(n, 3)``."""
-    if (coords.ndim != 2 or coords.shape[1] != 3):
-        raise ValueError("{0} must have a shape of (n, 3), got {1}."
-                         "".format(desc, coords.shape))
-
-
-def _check_coord_array_shape_1d_or_2d(coords, desc):
-    """Check if a coordinate array has the correct shape of either ``(3,)`` or
-    ``(n, 3)``.
-    """
-    if (coords.ndim not in (1, 2) or coords.shape[-1] != 3):
-        raise ValueError("{0} must have a shape of either (3,) or (n, 3), "
-                         "got {1}.".format(desc, coords.shape))
+    box = np.asarray(box, dtype=np.float32, order='C')
+    if box.shape != (6,):
+        raise ValueError("Invalid box information. Must be of the form "
+                         "[lx, ly, lz, alpha, beta, gamma].")
+    if np.all(box[3:] == 90.):
+        return 'ortho', box[:3]
+    return 'tri_vecs', triclinic_vectors(box)
 
 
 def _check_result_array(result, shape):
@@ -299,15 +220,10 @@ def _check_result_array(result, shape):
 #        raise ValueError("{0} is not C-contiguous.".format(desc))
     return result
 
-def _check_lengths_match(*arrays):
-    """Check all arrays are same shape"""
-    ref = arrays[0].shape
-
-    if not all( a.shape == ref for a in arrays):
-        raise ValueError("Input arrays must all have the same shape, got {0}."
-                         "".format([a.shape for a in arrays]))
-
-def distance_array(reference, configuration, box=None, result=None, backend="serial"):
+@check_coords('reference', 'configuration', enforce_copy=False,
+              check_lengths_match=False)
+def distance_array(reference, configuration, box=None, result=None,
+                   backend="serial"):
     """Calculate all distances between a reference set and another configuration.
 
     If there are *i* positions in reference, and *j* positions in configuration,
@@ -348,25 +264,14 @@ def distance_array(reference, configuration, box=None, result=None, backend="ser
         ``d[i,j]`` between reference coordinates `i` and configuration
         coordinates `j`.
 
-    Note
-    ----
-    This method is slower than it could be because internally we need to make
-    copies of the ref and conf arrays.
-
 
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    _check_coord_array_shape_2d(configuration, 'configuration')
-    _check_coord_array_shape_2d(reference, 'reference')
-
-    ref = reference.astype(np.float32, order='C', copy=False)
-    conf = configuration.astype(np.float32, order='C', copy=False)
-
-    confnum = conf.shape[0]
-    refnum = ref.shape[0]
+    confnum = configuration.shape[0]
+    refnum = reference.shape[0]
 
     distances = _check_result_array(result, (refnum, confnum))
 
@@ -374,20 +279,20 @@ def distance_array(reference, configuration, box=None, result=None, backend="ser
         boxtype, box = _check_box(box)
         if boxtype == 'ortho':
             _run("calc_distance_array_ortho",
-                 args=(ref, conf, box, distances),
+                 args=(reference, configuration, box, distances),
                  backend=backend)
         else:
             _run("calc_distance_array_triclinic",
-                 args=(ref, conf, box, distances),
+                 args=(reference, configuration, box, distances),
                  backend=backend)
     else:
         _run("calc_distance_array",
-             args=(ref, conf, distances),
+             args=(reference, configuration, distances),
              backend=backend)
 
     return distances
 
-
+@check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
 def self_distance_array(reference, box=None, result=None, backend="serial"):
     """Calculate all distances within a configuration *reference*.
 
@@ -429,39 +334,32 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
                     k += 1
                     dist[i,j] = d[k]
 
-    Note
-    ----
-    This method is slower than it could be because internally we need to make
-    copies of the coordinate array.
-
 
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    _check_coord_array_shape_2d(reference, 'reference')
-
-    ref = reference.astype(np.float32, order='C', copy=False)
-
-    refnum = ref.shape[0]
+    refnum = reference.shape[0]
     distnum = refnum * (refnum - 1) // 2
 
     distances = _check_result_array(result, (distnum,))
+    if len(distances) == 0:
+        return distances
 
     if box is not None:
         boxtype, box = _check_box(box)
         if boxtype == 'ortho':
             _run("calc_self_distance_array_ortho",
-                 args=(ref, box, distances),
+                 args=(reference, box, distances),
                  backend=backend)
         else:
             _run("calc_self_distance_array_triclinic",
-                 args=(ref, box, distances),
+                 args=(reference, box, distances),
                  backend=backend)
     else:
         _run("calc_self_distance_array",
-             args=(ref, distances),
+             args=(reference, distances),
              backend=backend)
 
     return distances
@@ -627,9 +525,10 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
         else:
             return methods['nsgrid']
 
-
-def _bruteforce_capped(reference, configuration, max_cutoff,
-                       min_cutoff=None, box=None, return_distances=True):
+@check_coords('reference', 'configuration', enforce_copy=False,
+              reduce_result_if_single=False, check_lengths_match=False)
+def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
+                       box=None, return_distances=True):
     """Internal method for bruteforce calculations
 
     Uses naive distance calulations and returns a list
@@ -648,17 +547,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff,
          is set to ``True``
 
     """
-    pairs, distance = [], []
-    reference = np.asarray(reference, dtype=np.float32)
-    configuration = np.asarray(configuration, dtype=np.float32)
-
-    if reference.shape == (3, ):
-        reference = reference[None, :]
-    if configuration.shape == (3, ):
-        configuration = configuration[None, :]
-
-    _check_coord_array(reference, 'reference')
-    _check_coord_array(configuration, 'configuration')
+    pairs = []
 
     distance = distance_array(reference, configuration, box=box)
     if min_cutoff is not None:
@@ -675,9 +564,10 @@ def _bruteforce_capped(reference, configuration, max_cutoff,
     else:
         return pairs
 
-
-def _pkdtree_capped(reference, configuration, max_cutoff,
-                    min_cutoff=None, box=None, return_distances=True):
+@check_coords('reference', 'configuration', enforce_copy=False,
+              reduce_result_if_single=False, check_lengths_match=False)
+def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
+                    box=None, return_distances=True):
     """ Capped Distance evaluations using KDtree.
 
     Uses minimum image convention if *box* is specified
@@ -696,16 +586,6 @@ def _pkdtree_capped(reference, configuration, max_cutoff,
     """
     from .pkdtree import PeriodicKDTree
 
-    reference = np.asarray(reference, dtype=np.float32)
-    configuration = np.asarray(configuration, dtype=np.float32)
-
-    if reference.shape == (3, ):
-        reference = reference[None, :]
-    if configuration.shape == (3, ):
-        configuration = configuration[None, :]
-
-    _check_coord_array(reference, 'reference')
-    _check_coord_array(configuration, 'configuration')
     kdtree = PeriodicKDTree(box=box)
     cut = max_cutoff if box is not None else None
     kdtree.set_coords(configuration, cutoff=cut)
@@ -724,7 +604,8 @@ def _pkdtree_capped(reference, configuration, max_cutoff,
     else:
         return pairs
 
-
+@check_coords('reference', 'configuration', enforce_copy=False,
+              reduce_result_if_single=False, check_lengths_match=False)
 def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
                    box=None, return_distances=True):
     """Search all the pairs in *reference* and *configuration* within
@@ -762,10 +643,6 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
          is set to ``True``
     """
     from .nsgrid import FastNS
-    if reference.shape == (3, ):
-        reference = reference[None, :]
-    if configuration.shape == (3, ):
-        configuration = configuration[None, :]
 
     if box is None:
         # create a pseudobox
@@ -810,8 +687,8 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         return pairs
 
 
-def self_capped_distance(reference, max_cutoff, min_cutoff=None,
-                         box=None, method=None):
+def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
+                         method=None):
     """Finds all the pairs and respective distances within a specified cutoff
     for a configuration *reference*
 
@@ -881,8 +758,8 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None,
     return np.asarray(pairs), np.asarray(dist)
 
 
-def _determine_method_self(reference, max_cutoff, min_cutoff=None,
-                           box=None, method=None):
+def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
+                           method=None):
     """
     Switch between different methods based on the the optimized time.
     All the rules to select the method based on the input can be
@@ -944,9 +821,8 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None,
     else:
         return methods['nsgrid']
 
-
-def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None,
-                            box=None):
+@check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
+def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
     """Finds all the pairs among the *reference* coordinates within
     a fixed distance using brute force method
 
@@ -964,9 +840,6 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None,
 
     """
     pairs, distance = [], []
-    reference = np.asarray(reference, dtype=np.float32)
-    if reference.shape == (3, ):
-        reference = reference[None, :]
 
     N = len(reference)
     distvec = np.zeros((N*(N-1)//2), dtype=np.float64)
@@ -985,9 +858,8 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None,
         distance = distance[mask]
     return np.asarray(pairs), np.asarray(distance)
 
-
-def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None,
-                         box=None):
+@check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
+def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
     """Finds all the pairs among the coordinates within a fixed distance
     using PeriodicKDTree
 
@@ -1006,10 +878,6 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None,
     """
     from .pkdtree import PeriodicKDTree
 
-    reference = np.asarray(reference, dtype=np.float32)
-    if reference.shape == (3, ):
-        reference = reference[None, :]
-
     pairs, distance = [], []
     kdtree = PeriodicKDTree(box=box)
     cut = max_cutoff if box is not None else None
@@ -1024,8 +892,7 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None,
     return np.asarray(pairs), np.asarray(distance)
 
 
-def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None,
-                        box=None):
+def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
     """Finds all the pairs among the *reference* coordinates within
     a fixed distance using gridsearch
 
@@ -1081,7 +948,7 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None,
         pairs, pair_distance = pairs[idx], pair_distance[idx]
     return pairs, pair_distance
 
-
+@check_coords('coords')
 def transform_RtoS(coords, box, backend="serial"):
     """Transform an array of coordinates from real space to S space (a.k.a.
     lambda space)
@@ -1116,33 +983,20 @@ def transform_RtoS(coords, box, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    _check_coord_array_shape_1d_or_2d(coords, 'coords')
-
-    # Here, copy=True is necessary to not modify the input coordinates:
-    newcoords = coords.astype(np.float32, order='C', copy=True)
-
-    is_1d = False  # True if only one vector coordinate
-    if newcoords.ndim == 1:
-        newcoords = newcoords[None, :]
-        is_1d = True
-
     boxtype, box = _check_box(box)
     if boxtype == 'ortho':
-        box = np.array([[box[0], 0.0, 0.0],
-                        [0.0, box[1], 0.0],
-                        [0.0, 0.0, box[2]]], dtype=np.float32)
+        box = np.diag(box)
 
     # Create inverse matrix of box
     # need order C here
     inv = np.array(np.matrix(box).I, dtype=np.float32, order='C')
 
-    _run("coord_transform", args=(newcoords, inv), backend=backend)
+    _run("coord_transform", args=(coords, inv), backend=backend)
 
-    if is_1d:
-        return newcoords[0]
-    return newcoords
+    return coords
 
 
+@check_coords('coords')
 def transform_StoR(coords, box, backend="serial"):
     """Transform an array of coordinates from S space into real space.
 
@@ -1176,29 +1030,14 @@ def transform_StoR(coords, box, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    _check_coord_array_shape_1d_or_2d(coords, 'coords')
-
-    # Here, copy=True is necessary to not modify the input coordinates:
-    newcoords = coords.astype(np.float32, order='C', copy=True)
-
-    is_1d = False  # True if only one vector coordinate
-    if len(newcoords.shape) == 1:
-        newcoords = newcoords[None, :]
-        is_1d = True
-
     boxtype, box = _check_box(box)
     if boxtype == 'ortho':
-        box = np.array([[box[0], 0.0, 0.0],
-                        [0.0, box[1], 0.0],
-                        [0.0, 0.0, box[2]]], dtype=np.float32)
+        box = np.diag(box)
 
-    _run("coord_transform", args=(newcoords, box), backend=backend)
+    _run("coord_transform", args=(coords, box), backend=backend)
+    return coords
 
-    if is_1d:
-        return newcoords[0]
-    return newcoords
-
-
+@check_coords('coords1', 'coords2', enforce_copy=False)
 def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     """
     Calculate all distances between a pair of atoms.  *atom1* and *atom2* are both
@@ -1252,34 +1091,27 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    _check_coord_array_shape_2d(coords1, 'coords1')
-    _check_coord_array_shape_2d(coords2, 'coords2')
-    _check_lengths_match(coords1, coords2)
-
-    atom1 = coords1.astype(np.float32, order='C', copy=True)
-    atom2 = coords2.astype(np.float32, order='C', copy=True)
-    numatom = atom1.shape[0]
-
+    numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
 
     if box is not None:
         boxtype, box = _check_box(box)
         if boxtype == 'ortho':
             _run("calc_bond_distance_ortho",
-                 args=(atom1, atom2, box, bondlengths),
+                 args=(coords1, coords2, box, bondlengths),
                  backend=backend)
         else:
             _run("calc_bond_distance_triclinic",
-                 args=(atom1, atom2, box, bondlengths),
+                 args=(coords1, coords2, box, bondlengths),
                  backend=backend)
     else:
         _run("calc_bond_distance",
-             args=(atom1, atom2, bondlengths),
+             args=(coords1, coords2, bondlengths),
              backend=backend)
 
     return bondlengths
 
-
+@check_coords('coords1', 'coords2', 'coords3', enforce_copy=False)
 def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="serial"):
     """
     Calculates the angle formed between three atoms, over a list of coordinates.
@@ -1334,36 +1166,27 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="seria
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    _check_coord_array_shape_2d(coords1, 'coords1')
-    _check_coord_array_shape_2d(coords2, 'coords2')
-    _check_coord_array_shape_2d(coords3, 'coords3')
-    _check_lengths_match(coords1, coords2, coords3)
-
-    atom1 = coords1.astype(np.float32, order='C', copy=True)
-    atom2 = coords2.astype(np.float32, order='C', copy=True)
-    atom3 = coords3.astype(np.float32, order='C', copy=True)
-    numatom = atom1.shape[0]
-
+    numatom = coords1.shape[0]
     angles = _check_result_array(result, (numatom,))
 
     if box is not None:
         boxtype, box = _check_box(box)
         if boxtype == 'ortho':
             _run("calc_angle_ortho",
-                   args=(atom1, atom2, atom3, box, angles),
+                   args=(coords1, coords2, coords3, box, angles),
                    backend=backend)
         else:
             _run("calc_angle_triclinic",
-                   args=(atom1, atom2, atom3, box, angles),
+                   args=(coords1, coords2, coords3, box, angles),
                    backend=backend)
     else:
         _run("calc_angle",
-               args=(atom1, atom2, atom3, angles),
+               args=(coords1, coords2, coords3, angles),
                backend=backend)
 
     return angles
 
-
+@check_coords('coords1', 'coords2', 'coords3', 'coords4', enforce_copy=False)
 def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
                    backend="serial"):
     """
@@ -1432,39 +1255,27 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    _check_coord_array_shape_2d(coords1, 'coords1')
-    _check_coord_array_shape_2d(coords2, 'coords2')
-    _check_coord_array_shape_2d(coords3, 'coords3')
-    _check_coord_array_shape_2d(coords4, 'coords4')
-    _check_lengths_match(coords1, coords2, coords3, coords4)
-
-    atom1 = coords1.astype(np.float32, order='C', copy=True)
-    atom2 = coords2.astype(np.float32, order='C', copy=True)
-    atom3 = coords3.astype(np.float32, order='C', copy=True)
-    atom4 = coords4.astype(np.float32, order='C', copy=True)
-
-    numatom = atom1.shape[0]
-
+    numatom = coords1.shape[0]
     dihedrals = _check_result_array(result, (numatom,))
 
     if box is not None:
         boxtype, box = _check_box(box)
         if boxtype == 'ortho':
             _run("calc_dihedral_ortho",
-                 args=(atom1, atom2, atom3, atom4, box, dihedrals),
+                 args=(coords1, coords2, coords3, coords4, box, dihedrals),
                  backend=backend)
         else:
             _run("calc_dihedral_triclinic",
-                 args=(atom1, atom2, atom3, atom4, box, dihedrals),
+                 args=(coords1, coords2, coords3, coords4, box, dihedrals),
                  backend=backend)
     else:
         _run("calc_dihedral",
-             args=(atom1, atom2, atom3, atom4, dihedrals),
+             args=(coords1, coords2, coords3, coords4, dihedrals),
              backend=backend)
 
     return dihedrals
 
-
+@check_coords('coords')
 def apply_PBC(coords, box, backend="serial"):
     """Moves coordinates into the primary unit cell.
 
@@ -1495,19 +1306,15 @@ def apply_PBC(coords, box, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
     """
-    _check_coord_array_shape_2d(coords, 'coords')
-
-    newcoords = coords.astype(np.float32, order='C', copy=True)
-
     boxtype, box = _check_box(box)
     if boxtype == 'ortho':
-        box_inv = 1.0 / box
-        _run("ortho_pbc", args=(newcoords, box, box_inv), backend=backend)
+        box_inv = box ** (-1)
+        _run("ortho_pbc", args=(coords, box, box_inv), backend=backend)
     else:
-        box_inv = 1.0 / np.diagonal(box)
-        _run("triclinic_pbc", args=(newcoords, box, box_inv), backend=backend)
+        box_inv = np.diagonal(box) ** (-1)
+        _run("triclinic_pbc", args=(coords, box, box_inv), backend=backend)
 
-    return newcoords
+    return coords
 
 
 def calc_distance(a, b, box=None):
@@ -1523,10 +1330,7 @@ def calc_distance(a, b, box=None):
 
     .. versionadded:: 0.18.1
     """
-    _check_coord_array_shape_1d(a, 'a')
-    _check_coord_array_shape_1d(b, 'b')
-
-    return calc_bonds(a[None, :], b[None, :], box=box)[0]
+    return calc_bonds(a, b, box=box)
 
 
 def calc_angle(a, b, c, box=None):
@@ -1543,12 +1347,7 @@ def calc_angle(a, b, c, box=None):
 
     .. versionadded:: 0.18.1
     """
-    _check_coord_array_shape_1d(a, 'a')
-    _check_coord_array_shape_1d(b, 'b')
-    _check_coord_array_shape_1d(c, 'c')
-
-    return np.rad2deg(
-        calc_angles(a[None, :], b[None, :], c[None, :], box=box)[0])
+    return np.rad2deg(calc_angles(a, b, c, box=box))
 
 
 def calc_dihedral(a, b, c, d, box=None):
@@ -1564,10 +1363,4 @@ def calc_dihedral(a, b, c, d, box=None):
 
     .. versionadded:: 0.18.1
     """
-    _check_coord_array_shape_1d(a, 'a')
-    _check_coord_array_shape_1d(b, 'b')
-    _check_coord_array_shape_1d(c, 'c')
-    _check_coord_array_shape_1d(d, 'd')
-
-    return np.rad2deg(
-        calc_dihedrals(a[None, :], b[None, :], c[None, :], d[None, :], box)[0])
+    return np.rad2deg(calc_dihedrals(a, b, c, d, box))
