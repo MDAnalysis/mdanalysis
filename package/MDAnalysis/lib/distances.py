@@ -213,7 +213,7 @@ def _check_result_array(result, shape):
         raise ValueError("Result array has incorrect shape, should be {0}, got "
                          "{1}.".format(shape, result.shape))
     if result.dtype != np.float64:
-        raise TypeError("Result array must be of type numpy.float64, got {}"
+        raise TypeError("Result array must be of type numpy.float64, got {}."
                         "".format(result.dtype))
 # The following two lines would break a lot of tests. WHY?!
 #    if not coords.flags['C_CONTIGUOUS']:

@@ -1934,10 +1934,12 @@ def check_coords(*coord_names, **options):
     def check_coords_decorator(func):
         fname = func.__name__
         code = func.__code__
+        argnames = code.co_varnames
+        nargs = len(code.co_varnames)
         ndefaults = len(func.__defaults__) if func.__defaults__ else 0
         # Create a tuple of positional argument names:
         nposargs = code.co_argcount - ndefaults
-        posargnames = code.co_varnames[:nposargs]
+        posargnames = argnames[:nposargs]
         # The check_coords() decorator is designed to work only for positional
         # arguments:
         for name in coord_names:
@@ -1974,6 +1976,27 @@ def check_coords(*coord_names, **options):
 
         @wraps(func)
         def wrapper(*args, **kwargs):
+            # Check for invalid function call:
+            if len(args) != nposargs:
+                # set marker for testing purposes:
+                wrapper._invalid_call = True
+                if len(args) > nargs:
+                    # too many arguments, invoke call:
+                    return func(*args, **kwargs)
+                for name in posargnames[:len(args)]:
+                    if name in kwargs:
+                        # duplicate argument, invoke call:
+                        return func(*args, **kwargs)
+                for name in posargnames[len(args):]:
+                    if name not in kwargs:
+                        # missing argument, invoke call:
+                        return func(*args, **kwargs)
+                for name in kwargs:
+                    if name not in argnames:
+                        # unexpected kwarg, invoke call:
+                        return func(*args, **kwargs)
+                # call is valid, unset test marker:
+                wrapper._invalid_call = False
             args = list(args)
             ncoords = []
             all_single = allow_single
@@ -1984,15 +2007,10 @@ def check_coords(*coord_names, **options):
                     all_single &= is_single
                     ncoords.append(args[idx].shape[0])
                 else:
-                    try:
-                        kwargs[name], is_single = _check_coords(kwargs[name], name)
-                        all_single &= is_single
-                        ncoords.append(kwargs[name].shape[0])
-                    except KeyError:
-                        # If we end up here, func() has been called with missing
-                        # positional arguments. We don't want to catch that
-                        # error here.
-                        pass
+                    kwargs[name], is_single = _check_coords(kwargs[name],
+                                                            name)
+                    all_single &= is_single
+                    ncoords.append(kwargs[name].shape[0])
             if check_lengths_match and ncoords:
                 if ncoords.count(ncoords[0]) != len(ncoords):
                     raise ValueError("{}(): {} must contain the same number of "

@@ -48,7 +48,8 @@ class TestCheckBox(object):
     def test_ckeck_box_ortho(self, box):
         boxtype, checked_box = mda.lib.distances._check_box(box)
         assert boxtype == 'ortho'
-        assert np.all(checked_box == self.ref_ortho)
+        assert_equal(checked_box, self.ref_ortho)
+        assert checked_box.dtype == np.float32
         assert checked_box.flags['C_CONTIGUOUS']
 
     @pytest.mark.parametrize('box',
@@ -65,6 +66,7 @@ class TestCheckBox(object):
         boxtype, checked_box = mda.lib.distances._check_box(box)
         assert boxtype == 'tri_vecs'
         assert_almost_equal(checked_box, self.ref_tri_vecs, self.prec)
+        assert checked_box.dtype == np.float32
         assert checked_box.flags['C_CONTIGUOUS']
 
     def test_check_box_wrong_data(self):
@@ -76,6 +78,37 @@ class TestCheckBox(object):
         with pytest.raises(ValueError):
             wrongbox = np.ones((3, 3), dtype=np.float32)
             boxtype, checked_box = mda.lib.distances._check_box(wrongbox)
+
+
+class TestCheckResultArray(object):
+
+    ref = np.zeros(1, dtype=np.float64)
+
+    def test_check_result_array_pass(self):
+        # Assert input array is returned if it has correct shape and dtype:
+        res = mda.lib.distances._check_result_array(self.ref, self.ref.shape)
+        assert res is self.ref
+        # Assert correct array is returned if input is None:
+        res = mda.lib.distances._check_result_array(None, self.ref.shape)
+        assert_equal(res, self.ref)
+        assert res.dtype == np.float64
+
+    def test_check_result_array_wrong_shape(self):
+        wrong_shape = (1,) + self.ref.shape
+        with pytest.raises(ValueError) as err:
+            res = mda.lib.distances._check_result_array(self.ref, wrong_shape)
+            assert err.msg == ("Result array has incorrect shape, should be "
+                               "{0}, got {1}.".format(self.ref.shape,
+                                                      wrong_shape))
+
+    def test_check_result_array_wrong_dtype(self):
+        wrong_dtype = np.int64
+        ref_wrong_dtype = self.ref.astype(wrong_dtype)
+        with pytest.raises(TypeError) as err:
+            res = mda.lib.distances._check_result_array(ref_wrong_dtype,
+                                                        self.ref.shape)
+            assert err.msg == ("Result array must be of type numpy.float64, "
+                               "got {}.".format(wrong_dtype))
 
 
 @pytest.mark.parametrize('coord_dtype', (np.float32, np.float64))
