@@ -1521,7 +1521,7 @@ class TestCheckCoords(object):
         # usage with posarg doubly defined:
         assert not func._invalid_call
         with pytest.raises(TypeError):
-            func(0, a=0)
+            func(0, a=0)  # pylint: disable=redundant-keyword-arg
         assert func._invalid_call
         func._invalid_call = False
 
@@ -1549,7 +1549,7 @@ class TestCheckCoords(object):
         # usage with unexpected kwarg:
         assert not func._invalid_call
         with pytest.raises(TypeError):
-            func(a=0, b=0, c=1, d=1)
+            func(a=0, b=0, c=1, d=1)  # pylint: disable=unexpected-keyword-arg
         assert func._invalid_call
         func._invalid_call = False
 
