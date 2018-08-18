@@ -565,23 +565,24 @@ with a single element.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.lib.util.unique_int_1d">
-<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">unique_int_1d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.util.unique_int_1d" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">unique_int_1d</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.util.unique_int_1d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the unique elements of a 1D array of integers.</p>
 <p>This function is optimal on sorted arrays.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>values</strong> (<em>np.ndarray of type int64</em>) – 1D array of int in which to find the unique values.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>values</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – 1D array of dtype <code class="docutils literal"><span class="pre">numpy.int64</span></code> in which to find the unique values.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
-<li><em>np.ndarray</em></li>
-<li><em>.. versionadded:: 0.19.0</em></li>
-</ul>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A deduplicated copy of <cite>values</cite>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.19.0.</span></p>
+</div>
 </dd></dl>
 
 </div>
@@ -856,8 +857,161 @@ decorator:</p>
 </dd></dl>
 
 </div>
+<div class="section" id="function-decorators">
+<h2>12.2.8.8. Function decorators<a class="headerlink" href="#function-decorators" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.lib.util.static_variables">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">static_variables</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#static_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.static_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator equipping functions or methods with static variables.</p>
+<p>Static variables are declared and initialized by supplying keyword arguments
+and initial values to the decorator.</p>
+<p class="rubric">Example</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@static_variables</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;foo calls&#39;</span><span class="p">,</span> <span class="n">calls</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="n">foo</span><span class="o">.</span><span class="n">calls</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">msg</span><span class="p">,</span> <span class="n">foo</span><span class="o">.</span><span class="n">calls</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">foo</span><span class="p">()</span>
+<span class="go">foo calls: 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">foo</span><span class="p">()</span>
+<span class="go">foo calls: 2</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Based on <a class="reference external" href="https://stackoverflow.com/a/279586">https://stackoverflow.com/a/279586</a>
+by <a class="reference external" href="https://stackoverflow.com/users/15055/claudiu">Claudiu</a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.19.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.util.warn_if_not_unique">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">warn_if_not_unique</code><span class="sig-paren">(</span><em>groupmethod</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#warn_if_not_unique"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.warn_if_not_unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator triggering a <a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.DuplicateWarning" title="MDAnalysis.exceptions.DuplicateWarning"><code class="xref py py-class docutils literal"><span class="pre">DuplicateWarning</span></code></a>
+if the underlying group is not unique.</p>
+<p>Assures that during execution of the decorated method only the first of
+potentially multiple warnings concerning the uniqueness of groups is shown.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.DuplicateWarning" title="MDAnalysis.exceptions.DuplicateWarning"><code class="xref py py-class docutils literal"><span class="pre">DuplicateWarning</span></code></a> – If the <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a>,
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal"><span class="pre">ResidueGroup</span></code></a>, or
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal"><span class="pre">SegmentGroup</span></code></a> of which the decorated
+method is a member contains duplicates.</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.19.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.util.check_coords">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">check_coords</code><span class="sig-paren">(</span><em>*coord_names</em>, <em>**options</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for automated coordinate array checking.</p>
+<p>This decorator is intended for use especially in
+<a class="reference internal" href="distances.html#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a>.
+It takes an arbitrary number of positional arguments which must correspond
+to names of positional arguments of the decorated function.
+It then checks if the corresponding values are valid coordinate arrays.
+If all these arrays are single coordinates (i.e., their shape is <code class="docutils literal"><span class="pre">(3,)</span></code>),
+the decorated function can optionally return a single coordinate (or angle)
+instead of an array of coordinates (or angles). This can be used to enable
+computations of single observables using functions originally designed to
+accept only 2-d coordinate arrays.</p>
+<p>The checks performed on each individual coordinate array are:</p>
+<ul class="simple">
+<li>Check that coordinate arrays are of type <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>.</li>
+<li>Check that coordinate arrays have a shape of <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> (or <code class="docutils literal"><span class="pre">(3,)</span></code> if
+single coordinates are allowed; see keyword argument <cite>allow_single</cite>).</li>
+<li>Automatic dtype conversion to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</li>
+<li>Optional replacement by a copy; see keyword argument <cite>enforce_copy</cite> .</li>
+<li>If coordinate arrays aren’t C-contiguous, they will be automatically
+replaced by a C-contiguous copy.</li>
+<li>Optional check for equal length of all coordinate arrays; see optional
+keyword argument <cite>check_lengths_match</cite>.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*coord_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><em>tuple</em></a>) – Arbitrary number of strings corresponding to names of positional
+arguments of the decorated function.</li>
+<li><strong>**options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a><em>, </em><em>optional</em>) – <ul>
+<li><strong>enforce_copy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></a>, optional) – Enforce working on a
+copy of the coordinate arrays. This is useful to ensure that the input
+arrays are left unchanged. Default: <code class="docutils literal"><span class="pre">True</span></code></li>
+<li><strong>allow_single</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></a>, optional) – Allow the input
+coordinate array to be a single coordinate with shape <code class="docutils literal"><span class="pre">(3,)</span></code>.</li>
+<li><strong>convert_single</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal"><span class="pre">True</span></code>, single
+coordinate arrays will be converted to have a shape of <code class="docutils literal"><span class="pre">(1,</span> <span class="pre">3)</span></code>.
+Only has an effect if <cite>allow_single</cite> is <code class="docutils literal"><span class="pre">True</span></code>. Default: <code class="docutils literal"><span class="pre">True</span></code></li>
+<li><strong>reduce_result_if_single</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal"><span class="pre">True</span></code>
+and <em>all</em> input coordinates are single, a decorated function <code class="docutils literal"><span class="pre">func</span></code>
+will return <code class="docutils literal"><span class="pre">func()[0]</span></code> instead of <code class="docutils literal"><span class="pre">func()</span></code>. Only has an effect if
+<cite>allow_single</cite> is <code class="docutils literal"><span class="pre">True</span></code>. Default: <code class="docutils literal"><span class="pre">True</span></code></li>
+<li><strong>check_lengths_match</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal"><span class="pre">True</span></code>, a
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">ValueError</span></code></a> is raised if not all coordinate arrays contain the
+same number of coordinates. Default: <code class="docutils literal"><span class="pre">True</span></code></li>
+</ul>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last">
+<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If the decorator is used without positional arguments (for development
+purposes only).</p>
+<p>If any of the positional arguments supplied to the decorator doesn’t
+correspond to a name of any of the decorated function’s positional
+arguments.</p>
+<p>If any of the coordinate arrays has a wrong shape.</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> – If any of the coordinate arrays is not a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>.</p>
+<dl class="docutils">
+<dt>If the dtype of any of the coordinate arrays is not convertible to</dt>
+<dd><p class="first last"><code class="docutils literal"><span class="pre">numpy.float32</span></code>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">def</span> <span class="nf">coordsum</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">assert</span> <span class="n">coords1</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+<span class="gp">... </span>    <span class="k">assert</span> <span class="n">coords2</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;C_CONTIGUOUS&#39;</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">coords1</span> <span class="o">+</span> <span class="n">coords2</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># automatic dtype conversion:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coordsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">array([1., 1., 1.], dtype=float32)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># automatic handling of non-contiguous arrays:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coordsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">6</span><span class="p">)[::</span><span class="mi">2</span><span class="p">])</span>
+<span class="go">array([1., 1., 1.], dtype=float32)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># automatic shape checking:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coordsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+<span class="go">ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.19.0.</span></p>
+</div>
+</dd></dl>
+
+</div>
 <div class="section" id="code-management">
-<h2>12.2.8.8. Code management<a class="headerlink" href="#code-management" title="Permalink to this headline">¶</a></h2>
+<h2>12.2.8.9. Code management<a class="headerlink" href="#code-management" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.deprecate">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">deprecate</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#deprecate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.deprecate" title="Permalink to this definition">¶</a></dt>
@@ -1053,7 +1207,8 @@ close it.</td></tr>
 <li class="toctree-l4"><a class="reference internal" href="#data-manipulation-and-handling">12.2.8.5. Data manipulation and handling</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#strings">12.2.8.6. Strings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#class-decorators">12.2.8.7. Class decorators</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#code-management">12.2.8.8. Code management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#function-decorators">12.2.8.8. Function decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#code-management">12.2.8.9. Code management</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="nsgrid.html">12.2.9. Neighbor search library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
