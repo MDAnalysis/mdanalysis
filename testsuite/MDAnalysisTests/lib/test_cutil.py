@@ -42,13 +42,13 @@ def test_unique_int_1d(values):
 
 
 @pytest.mark.parametrize('edges,ref', [
-    (np.array([[0, 1], [1, 2], [2, 3], [3, 4]], dtype=np.int32),
+    ([[0, 1], [1, 2], [2, 3], [3, 4]],
      [[0, 1, 2, 3, 4]]),  # linear chain
-    (np.array([[0, 1], [1, 2], [2, 3], [3, 4], [4, 10]], dtype=np.int32),
+    ([[0, 1], [1, 2], [2, 3], [3, 4], [4, 10]],
      [[0, 1, 2, 3, 4]]),  # unused edge (4, 10)
-    (np.array([[0, 1], [1, 2], [2, 3]], dtype=np.int32),
+    ([[0, 1], [1, 2], [2, 3]],
      [[0, 1, 2, 3], [4]]),  # lone atom
-    (np.array([[0, 1], [1, 2], [2, 0], [3, 4], [4, 3]], dtype=np.int32),
+    ([[0, 1], [1, 2], [2, 0], [3, 4], [4, 3]],
      [[0, 1, 2], [3, 4]]),  # circular
 ])
 def test_find_fragments(edges, ref):
