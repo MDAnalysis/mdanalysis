@@ -78,7 +78,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.pkdtree</span> <span class="k">import</span> <span class="n">PeriodicKDTree</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="k">import</span> <span class="n">capped_distance</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">unique_int_1d</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="k">import</span> <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">Atom</span>
@@ -113,7 +113,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">atom_group</span> <span class="o">=</span> <span class="n">atom_group</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_box</span> <span class="o">=</span> <span class="n">box</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">leafsize</span><span class="o">=</span><span class="n">bucket_size</span><span class="p">)</span>
+        <span class="c1">#self.kdtree = PeriodicKDTree(box=box, leafsize=bucket_size)</span>
 
 <div class="viewcode-block" id="AtomNeighborSearch.search"><a class="viewcode-back" href="../../../documentation_pages/lib/NeighborSearch.html#MDAnalysis.lib.NeighborSearch.AtomNeighborSearch.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -130,23 +130,17 @@
 <span class="sd">          char (A, R, S). Return atoms(A), residues(R) or segments(S) within</span>
 <span class="sd">          *radius* of *atoms*.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">unique_idx</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">Atom</span><span class="p">):</span>
             <span class="n">positions</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">positions</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
-
-        <span class="c1"># check if already built</span>
         
-        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">radius</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atom_group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">)</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">capped_distance</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                <span class="n">radius</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_box</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
-            <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span><span class="o">.</span><span class="n">get_indices</span><span class="p">())</span>
-        <span class="n">unique_idx</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">indices</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">l</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">unique_idx</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index2level</span><span class="p">(</span><span class="n">unique_idx</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_index2level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
