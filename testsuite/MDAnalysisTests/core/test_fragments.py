@@ -28,11 +28,13 @@ from numpy.testing import (
 )
 import pytest
 
+import MDAnalysis as mda
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.core import groups
 from MDAnalysis import NoDataError
 
 from MDAnalysisTests import make_Universe
+from MDAnalysisTests.datafiles import TPR, XTC
 
 
 # Also used in topology/test_guessers
@@ -175,3 +177,9 @@ class TestFragments(object):
         u = make_Universe()
         with pytest.raises(NoDataError):
             getattr(u.atoms[10], 'fragment')
+
+
+def test_tpr_fragments():
+    frags = mda.Universe(TPR, XTC).atoms.fragments
+
+    assert len(frags[0]) == 3341

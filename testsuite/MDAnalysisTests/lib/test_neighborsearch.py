@@ -41,8 +41,8 @@ def universe():
 
 
 def test_search(universe):
-    """simply check that for a centered protein in a large box pkdtree
-    and kdtree return the same result"""
+    """simply check that for a centered protein in a large box periodic
+    and non-periodic return the same result"""
     ns = NeighborSearch.AtomNeighborSearch(universe.atoms)
     pns = NeighborSearch.AtomNeighborSearch(universe.atoms,
                                             universe.atoms.dimensions)

@@ -82,6 +82,8 @@ Enhancements
   * Added the analysis.data module for reference data used in analysis (PR #2033)
   * Most functions in `MDanalysis.lib.distances` previously only accepting
     arrays of coordinates now also accept single coordinates as input (PR #2048)
+  * Performance improvements to make_whole (PR #1965)
+  * Performance improvements to fragment finding (PR #2028)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
