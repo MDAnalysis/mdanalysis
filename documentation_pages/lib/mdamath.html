@@ -265,6 +265,36 @@ caused by the atomgroup not being a single fragment.
 </div>
 </dd></dl>
 
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.find_fragments">
+<code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">find_fragments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.mdamath.find_fragments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate distinct fragments from nodes (atom indices) and edges (pairs
+of atom indices).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>atoms</strong> (<em>array_like</em>) – 1-D Array of atom indices (dtype will be converted to <code class="docutils literal"><span class="pre">numpy.int64</span></code>
+internally)</li>
+<li><strong>bonds</strong> (<em>array_like</em>) – 2-D array of bonds (dtype will be converted to <code class="docutils literal"><span class="pre">numpy.int32</span></code>
+internally), where <code class="docutils literal"><span class="pre">bonds[i,</span> <span class="pre">0]</span></code> and <code class="docutils literal"><span class="pre">bonds[i,</span> <span class="pre">1]</span></code> are the
+indices of atoms connected by the <code class="docutils literal"><span class="pre">i</span></code>-th bond. Any bonds referring to
+atom indices not in <cite>atoms</cite> will be ignored.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>fragments</strong> (<em>list</em>) – List of arrays, each containing the atom indices of a fragment.</li>
+<li><em>.. versionaddded:: 0.19.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.11.0.</span></p>
 </div>

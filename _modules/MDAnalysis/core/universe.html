@@ -165,6 +165,7 @@
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">..lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span><span class="p">,</span> <span class="n">_set_verbose</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">NamedStream</span><span class="p">,</span> <span class="n">isstream</span>
+<span class="kn">from</span> <span class="nn">..lib.mdamath</span> <span class="k">import</span> <span class="n">find_fragments</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">groups</span>
 <span class="kn">from</span> <span class="nn">._get_readers</span> <span class="k">import</span> <span class="n">get_reader_for</span><span class="p">,</span> <span class="n">get_parser_for</span>
 <span class="kn">from</span> <span class="nn">.groups</span> <span class="k">import</span> <span class="p">(</span><span class="n">ComponentBase</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
@@ -1026,58 +1027,14 @@
 <span class="sd">        .. versionchanged:: 0.16.0</span>
 <span class="sd">           Fragment atoms are sorted by their index, and framgents are sorted</span>
 <span class="sd">           by their first atom index so their order is predictable.</span>
+<span class="sd">        .. versionchanged:: 0.19.0</span>
+<span class="sd">           Uses faster C++ implementation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bonds</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">ix</span>
+        <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">to_indices</span><span class="p">()</span>
 
-        <span class="k">class</span> <span class="nc">_fragset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-            <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ats&#39;</span><span class="p">]</span>
-            <span class="sd">&quot;&quot;&quot;Normal sets aren&#39;t hashable, this is&quot;&quot;&quot;</span>
-
-            <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ats</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ats</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ats</span><span class="p">)</span>
-
-            <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ats</span><span class="p">)</span>
-
-            <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ats</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-
-            <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ats</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">ats</span><span class="p">)</span>
-
-        <span class="c1"># each atom starts with its own list</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="ow">in</span> <span class="n">bonds</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">f</span><span class="p">[</span><span class="n">a2</span><span class="p">]):</span>
-                <span class="c1"># New set made here</span>
-                <span class="n">new</span> <span class="o">=</span> <span class="n">_fragset</span><span class="p">([</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">])</span>
-                <span class="n">f</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">a2</span><span class="p">]</span> <span class="o">=</span> <span class="n">new</span>
-            <span class="k">elif</span> <span class="n">f</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="p">[</span><span class="n">a2</span><span class="p">]:</span>
-                <span class="c1"># If a2 isn&#39;t in a fragment, add it to a1&#39;s</span>
-                <span class="n">f</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
-                <span class="n">f</span><span class="p">[</span><span class="n">a2</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="ow">not</span> <span class="n">f</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">f</span><span class="p">[</span><span class="n">a2</span><span class="p">]:</span>
-                <span class="c1"># If a1 isn&#39;t in a fragment, add it to a2&#39;s</span>
-                <span class="n">f</span><span class="p">[</span><span class="n">a2</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a1</span><span class="p">)</span>
-                <span class="n">f</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">a2</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">f</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span> <span class="ow">is</span> <span class="n">f</span><span class="p">[</span><span class="n">a2</span><span class="p">]:</span>
-                <span class="c1"># If they&#39;re in the same fragment, do nothing</span>
-                <span class="k">continue</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># If they are both in different fragments, combine fragments</span>
-                <span class="n">f</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">a2</span><span class="p">])</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">f</span><span class="p">[</span><span class="n">a1</span><span class="p">])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="n">a2</span><span class="p">]))</span>
-
-        <span class="c1"># Lone atoms get their own fragment</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">_fragset</span><span class="p">((</span><span class="n">a</span><span class="p">,)))</span>
-                      <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span><span class="p">))</span>
-
-        <span class="c1"># All the unique values in f are the fragments</span>
-        <span class="n">frags</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">AtomGroup</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">at</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">ag</span><span class="p">])),</span> <span class="bp">self</span><span class="p">)</span>
-             <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">values</span><span class="p">())],</span>
-        <span class="p">)</span>
+        <span class="n">frag_indices</span> <span class="o">=</span> <span class="n">find_fragments</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">bonds</span><span class="p">)</span>
+        <span class="n">frags</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">AtomGroup</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">ix</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span> <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">frag_indices</span><span class="p">])</span>
 
         <span class="n">fragdict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frags</span><span class="p">:</span>

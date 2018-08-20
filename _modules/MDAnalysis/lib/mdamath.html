@@ -83,6 +83,7 @@
 <span class="sd">.. autofunction:: triclinic_vectors</span>
 <span class="sd">.. autofunction:: box_volume</span>
 <span class="sd">.. autofunction:: make_whole</span>
+<span class="sd">.. autofunction:: find_fragments</span>
 
 <span class="sd">.. versionadded:: 0.11.0</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -92,7 +93,7 @@
 
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">util</span>
-<span class="kn">from</span> <span class="nn">._cutil</span> <span class="k">import</span> <span class="n">make_whole</span>
+<span class="kn">from</span> <span class="nn">._cutil</span> <span class="k">import</span> <span class="n">make_whole</span><span class="p">,</span> <span class="n">find_fragments</span>
 
 <span class="c1"># geometric functions</span>
 <div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
