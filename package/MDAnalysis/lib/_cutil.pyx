@@ -320,20 +320,24 @@ cdef float _norm(float * a):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def find_fragments(atoms, bondlist):
-    """Calculate distinct fragments from nodes and edges
+    """Calculate distinct fragments from nodes (atom indices) and edges (pairs
+    of atom indices).
 
     Parameters
     ----------
-    atoms : numpy.ndarray
-       array of nodes
-    bonds : numpy.ndarray
-       array of edges.  Any edges which refer to nodes not in *atoms*
-       will be ignored
+    atoms : array_like
+       1-D Array of atom indices (dtype will be converted to ``numpy.int64``
+       internally)
+    bonds : array_like
+       2-D array of bonds (dtype will be converted to ``numpy.int32``
+       internally), where ``bonds[i, 0]`` and ``bonds[i, 1]`` are the
+       indices of atoms connected by the ``i``-th bond. Any bonds referring to
+       atom indices not in `atoms` will be ignored.
 
     Returns
     -------
     fragments : list
-       list of arrays, each containing the indices of a fragment
+       List of arrays, each containing the atom indices of a fragment.
 
     .. versionaddded:: 0.19.0
     """
