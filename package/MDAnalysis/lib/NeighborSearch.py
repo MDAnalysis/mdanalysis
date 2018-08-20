@@ -82,6 +82,7 @@ class AtomNeighborSearch(object):
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
         """
+        unique_idx = []
         if isinstance(atoms, Atom):
             positions = atoms.position.reshape(1, 3)
         else:
@@ -89,19 +90,9 @@ class AtomNeighborSearch(object):
         
         pairs = capped_distance(positions, self.atom_group.positions,
                                 radius, box=self._box, return_distances=False)
-        #cutoff = radius if self._box is not None else None
-        #self.kdtree.set_coords(self.atom_group.positions, cutoff=cutoff)
 
-        #indices = []
-        #for pos in positions:
-        #    self.kdtree.search(pos, radius)
-        #    indices.append(self.kdtree.get_indices())
-        #unique_idx = unique_int_1d(
-        #    np.array([i for l in indices for i in l], dtype=np.int64)
-        #)
-        unique_idx = []
         if pairs.size > 0:
-            unique_idx = unique_int_1d(pairs[:, 1])
+            unique_idx = unique_int_1d(np.asarray(pairs[:, 1], dtype=np.int64))
         return self._index2level(unique_idx, level)
 
     def _index2level(self, indices, level):
