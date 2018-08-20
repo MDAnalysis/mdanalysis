@@ -30,7 +30,7 @@ This module contains classes that allow neighbor searches directly with
 from __future__ import absolute_import
 
 import numpy as np
-from MDAnalysis.lib.pkdtree import PeriodicKDTree
+from MDAnalysis.lib.distances import capped_distance
 from MDAnalysis.lib.util import unique_int_1d
 
 from MDAnalysis.core.groups import AtomGroup, Atom
@@ -65,7 +65,7 @@ class AtomNeighborSearch(object):
         self.atom_group = atom_group
         self._u = atom_group.universe
         self._box = box
-        self.kdtree = PeriodicKDTree(box=box, leafsize=bucket_size)
+        #self.kdtree = PeriodicKDTree(box=box, leafsize=bucket_size)
 
     def search(self, atoms, radius, level='A'):
         """
@@ -86,19 +86,22 @@ class AtomNeighborSearch(object):
             positions = atoms.position.reshape(1, 3)
         else:
             positions = atoms.positions
-
-        # check if already built
         
-        cutoff = radius if self._box is not None else None
-        self.kdtree.set_coords(self.atom_group.positions, cutoff=cutoff)
+        pairs = capped_distance(positions, self.atom_group.positions,
+                                radius, box=self._box, return_distances=False)
+        #cutoff = radius if self._box is not None else None
+        #self.kdtree.set_coords(self.atom_group.positions, cutoff=cutoff)
 
-        indices = []
-        for pos in positions:
-            self.kdtree.search(pos, radius)
-            indices.append(self.kdtree.get_indices())
-        unique_idx = unique_int_1d(
-            np.array([i for l in indices for i in l], dtype=np.int64)
-        )
+        #indices = []
+        #for pos in positions:
+        #    self.kdtree.search(pos, radius)
+        #    indices.append(self.kdtree.get_indices())
+        #unique_idx = unique_int_1d(
+        #    np.array([i for l in indices for i in l], dtype=np.int64)
+        #)
+        unique_idx = []
+        if pairs.size > 0:
+            unique_idx = unique_int_1d(pairs[:, 1])
         return self._index2level(unique_idx, level)
 
     def _index2level(self, indices, level):
