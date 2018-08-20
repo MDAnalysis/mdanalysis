@@ -357,8 +357,8 @@ def find_fragments(atoms, bondlist):
         todo.insert(atoms_view[i])
     # Process edges into map
     for i in range(bonds_view.shape[0]):
-        a = bondlist[i, 0]
-        b = bondlist[i, 1]
+        a = bonds_view[i, 0]
+        b = bonds_view[i, 1]
         # only include edges if both are known nodes
         if todo.count(a) and todo.count(b):
             bondmap[a].insert(b)
