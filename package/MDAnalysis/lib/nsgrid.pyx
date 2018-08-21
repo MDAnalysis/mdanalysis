@@ -72,7 +72,6 @@ not reflect in the results.
 .. versionadded:: 0.19.0
 """
 
-from MDAnalysis.lib.distances import _check_array
 # Used to handle memory allocation
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from libc.math cimport sqrt
@@ -766,14 +765,15 @@ cdef class FastNS(object):
 
         from MDAnalysis.lib.mdamath import triclinic_vectors
 
-
-        _check_array(coords, 'coords')
+        if (coords.ndim != 2 or coords.shape[1] != 3):
+            raise ValueError("coords must have a shape of (n, 3), got {}."
+                             "".format(coords.shape))
 
         if np.allclose(box[:3], 0.0):
             raise ValueError("Any of the box dimensions cannot be 0")
 
         self.periodic = pbc
-        self.coords = coords.copy()
+        self.coords = coords.astype(np.float32, order='C', copy=True)
 
         if box.shape != (3, 3):
             box = triclinic_vectors(box)
@@ -850,10 +850,13 @@ cdef class FastNS(object):
 
         cdef real cutoff2 = self.cutoff * self.cutoff
         cdef ns_int npairs = 0
-        _check_array(search_coords, 'search_coords')
+
+        if (search_coords.ndim != 2 or search_coords.shape[1] != 3):
+            raise ValueError("search_coords must have a shape of (n, 3), got "
+                             "{}.".format(search_coords.shape))
 
         # Generate another grid to search
-        searchcoords = np.ascontiguousarray(search_coords, dtype=np.float32)
+        searchcoords = search_coords.astype(np.float32, order='C', copy=False)
         searchcoords_bbox = self.box.fast_put_atoms_in_bbox(searchcoords)
         searchgrid = NSGrid(searchcoords_bbox.shape[0], self.grid.cutoff, self.box, self.max_gridsize, force=True)
         searchgrid.fill_grid(searchcoords_bbox)
