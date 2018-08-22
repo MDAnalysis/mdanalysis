@@ -209,7 +209,7 @@ class TestAlign(object):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
         # this shouldn't throw an exception
-        align.AlignTraj(universe, reference, filename=outfile, step=10).run()
+        align.AlignTraj(universe, reference, filename=outfile).run(step=10)
 
     def test_AlignTraj(self, universe, reference, tmpdir):
         reference.trajectory[-1]

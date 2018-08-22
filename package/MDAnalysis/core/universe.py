@@ -115,7 +115,7 @@ else:
 from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
 from ..lib import util
-from ..lib.log import ProgressMeter, _set_verbose
+from ..lib.log import ProgressMeter
 from ..lib.util import cached, NamedStream, isstream
 from ..lib.mdamath import find_fragments
 from . import groups
@@ -602,7 +602,7 @@ class Universe(object):
         return self
 
     def transfer_to_memory(self, start=None, stop=None, step=None,
-                           verbose=None, quiet=None):
+                           verbose=False):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -625,8 +625,6 @@ class Universe(object):
         .. versionadded:: 0.16.0
         """
         from ..coordinates.memory import MemoryReader
-
-        verbose = _set_verbose(verbose, quiet, default=False)
 
         if not isinstance(self.trajectory, MemoryReader):
             # Try to extract coordinates using Timeseries object

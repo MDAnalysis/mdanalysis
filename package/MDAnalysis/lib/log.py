@@ -221,59 +221,6 @@ def _guess_string_format(template):
         return _legacy_format
 
 
-def _set_verbose(verbose, quiet, default=True,
-                 was='quiet', now='verbose'):
-    """Return the expected value of verbosity
-
-    This function aims at handling the deprecation of the *quiet* keyword in
-    versin 0.16.
-
-    This function issues a deprecation warning if *quiet* was set (is not
-    None), and raises a ValueError if *verbose* and *quiet* are set to
-    contradicting values.
-
-    If *verbose* is set, then the function returns the set value of *verbose*.
-    If it is not set, but *quiet* is set, then the function returns
-    `not quiet`. Finally, if none of *verbose* nor *quiet* is set, then
-    *default* is returned.
-
-    During the deprecation phase of the *quiet* keyword, this function is
-    expected to be used as follow:
-
-    .. code-block:: python
-
-       def method(verbose=None, quiet=None):
-           # *verbose* and *quiet* are set to None to distinguish explicitly
-           # set values.
-           self.verbose = _set_verbose(verbose, quiet, default=True)
-
-    At the end of the deprecation period, the code above should be replaced by:
-
-    .. code-block:: python
-
-       def method(verbose=True):
-           # The *quiet* keyword disapeard and the default value for *verbose*
-           # is set to the actual default value.
-           self.verbose = verbose
-
-    In `MDAnalysis.analysis.hbonds.hbonds_analysis`, the deprecation scheme is
-    more complex: *quiet* becomes *verbose*, and *verbose* becomes *debug*.
-    Hence, this function allows to use diffrent argument names to display in
-    error messages and deprecation warnings.
-    """
-    if quiet is not None:
-        warnings.warn("Keyword *{}* is deprecated (from version 0.16); "
-                      "use *{}* instead.".format(was, now), DeprecationWarning)
-        if verbose is not None and verbose == quiet:
-            raise ValueError("Keywords *{}* and *{}* are contradicting each other."
-                             .format(now, was))
-        return not quiet
-    elif verbose is None:
-        return default
-    else:
-        return verbose
-
-
 class ProgressMeter(object):
     r"""Simple progress meter
 
@@ -378,16 +325,14 @@ class ProgressMeter(object):
     """
 
     def __init__(self, numsteps, format=None, interval=10, offset=1,
-                 verbose=None, dynamic=True,
-                 format_handling='auto', quiet=None):
+                 verbose=True, dynamic=True,
+                 format_handling='auto'):
         self.numsteps = numsteps
         self.interval = int(interval)
         self.offset = int(offset)
+        self.verbose = verbose
         self.dynamic = dynamic
         self.numouts = -1
-
-        # The *quiet* keyword argument is deprecated.
-        self.verbose = _set_verbose(verbose, quiet, default=True)
 
         if format is None:
             format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"

@@ -388,14 +388,6 @@ class Contacts(AnalysisBase):
         kwargs : dict, optional
             dictionary of additional kwargs passed to `method`. Check
             respective functions for reasonable values.
-        start : int, optional
-            First frame of trajectory to analyse, Default: None becomes 0.
-        stop : int, optional
-            Frame index to stop analysis. Default: None becomes
-            n_frames. Iteration stops *before* this frame number,
-            which means that the trajectory would be read until the end.
-        step : int, optional
-            Step between frames to analyse, Default: None becomes 1.
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.

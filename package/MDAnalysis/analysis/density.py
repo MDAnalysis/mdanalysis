@@ -552,7 +552,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           start=None, stop=None, step=None,
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
                           use_kdtree=True, update_selection=False,
-                          verbose=None, interval=1, quiet=None,
+                          verbose=False, interval=1, quiet=None,
                           parameters=None,
                           gridcenter=None, xdim=None, ydim=None, zdim=None):
     """Create a density grid from a :class:`MDAnalysis.Universe` object.
@@ -751,7 +751,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     h = grid.copy()
 
     pm = ProgressMeter(u.trajectory.n_frames, interval=interval,
-                       verbose=verbose, quiet=quiet,
+                       verbose=verbose,
                        format="Histogramming %(n_atoms)6d atoms in frame "
                        "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
     start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
