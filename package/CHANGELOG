@@ -120,12 +120,16 @@ Changes
     (Issue #1894)
   * removed unused function MDAnalysis.lb.mdamath.one_to_many_pointers()
     (issue #2010)
+  * Added periodic keyword to select_atoms (#759)
 
 Deprecations
   * almost all "save()", "save_results()", "save_table()" methods in
     analysis classes were deprecated and will be removed in 1.0 (Issue
     #1972 and #1745)
-
+  * deprecated use of core.flags.  For use_pbc, the pbc keyword should
+    be used, use_KDTree_routines is obsolete as all distance calculations
+    select the fastest method, all other uses of flags are deprecated.
+    (#782)
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
          orbeckst, xiki-tempula, navyakhare, zemanj, ayushsuhane, davidercruz,

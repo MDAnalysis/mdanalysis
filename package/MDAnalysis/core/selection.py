@@ -50,7 +50,6 @@ import numpy as np
 from numpy.lib.utils import deprecate
 
 
-from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.lib.util import unique_int_1d
 from MDAnalysis.core import flags
 from ..lib import distances
@@ -227,19 +226,7 @@ class ByResSelection(UnarySelection):
 
 
 class DistanceSelection(Selection):
-    """Base class for distance search based selections
-
-    Grabs the flags for this selection
-     - 'use_KDTree_routines'
-     - 'use_periodic_selections'
-
-    Populates the `apply` method with either
-     - _apply_KDTree
-     - _apply_distmat
-    """
-    def __init__(self):
-
-        self.periodic = flags['use_periodic_selections']
+    """Base class for distance search based selections"""
 
     def validate_dimensions(self, dimensions):
         r"""Check if the system is periodic in all three-dimensions.
@@ -264,7 +251,7 @@ class AroundSelection(DistanceSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(AroundSelection, self).__init__()
+        self.periodic = parser.periodic
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
@@ -291,7 +278,7 @@ class SphericalLayerSelection(DistanceSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(SphericalLayerSelection, self).__init__()
+        self.periodic = parser.periodic
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
@@ -318,7 +305,7 @@ class SphericalZoneSelection(DistanceSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(SphericalZoneSelection, self).__init__()
+        self.periodic = parser.periodic
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
@@ -339,10 +326,6 @@ class SphericalZoneSelection(DistanceSelection):
 
 
 class CylindricalSelection(Selection):
-    def __init__(self):
-        self.periodic = flags['use_periodic_selections']
-
-
     def apply(self, group):
         sel = self.sel.apply(group)
 
@@ -405,7 +388,7 @@ class CylindricalZoneSelection(CylindricalSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(CylindricalZoneSelection, self).__init__()
+        self.periodic = parser.periodic
         self.exRadius = float(tokens.popleft())
         self.zmax = float(tokens.popleft())
         self.zmin = float(tokens.popleft())
@@ -417,7 +400,7 @@ class CylindricalLayerSelection(CylindricalSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(CylindricalLayerSelection, self).__init__()
+        self.periodic = parser.periodic
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
         self.zmax = float(tokens.popleft())
@@ -429,7 +412,7 @@ class PointSelection(DistanceSelection):
     token = 'point'
 
     def __init__(self, parser, tokens):
-        super(PointSelection, self).__init__()
+        self.periodic = parser.periodic
         x = float(tokens.popleft())
         y = float(tokens.popleft())
         z = float(tokens.popleft())
@@ -1135,7 +1118,7 @@ class SelectionParser(object):
                 "Unexpected token: '{0}' Expected: '{1}'"
                 "".format(self.tokens[0], token))
 
-    def parse(self, selectstr, selgroups):
+    def parse(self, selectstr, selgroups, periodic=None):
         """Create a Selection object from a string.
 
         Parameters
@@ -1144,6 +1127,9 @@ class SelectionParser(object):
             The string that describes the selection
         selgroups : AtomGroups
             AtomGroups to be used in `group` selections
+        periodic : bool, optional
+            for distance based selections, whether to consider
+            periodic boundary conditions
 
         Returns
         -------
@@ -1155,6 +1141,8 @@ class SelectionParser(object):
         SelectionError
             If anything goes wrong in creating the Selection object.
         """
+        self.periodic = periodic
+
         self.selectstr = selectstr
         self.selgroups = selgroups
         tokens = selectstr.replace('(', ' ( ').replace(')', ' ) ')
