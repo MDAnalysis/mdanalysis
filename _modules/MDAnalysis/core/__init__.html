@@ -140,6 +140,19 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">_DEPMSG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;use_KDTree_routines&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;This flag is obsolete, all selections now &#39;</span>
+                            <span class="s1">&#39;automatically select the fastest method&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;use_periodic_selections&#39;</span><span class="p">:</span> <span class="s1">&#39;Use periodic=True/False to select_atoms&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;convert_lengths&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;length_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;time_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;speed_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;force_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;charge_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;use_pbc&#39;</span><span class="p">:</span> <span class="s1">&#39;Supply a pbc kwarg to the relevant methods&#39;</span><span class="p">,</span>
+<span class="p">}</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AtomGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;Selection&#39;</span><span class="p">]</span>
 
@@ -291,6 +304,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.core.flags is deprecated and will be removed in version 1.0. &#39;</span>
+                      <span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="n">_DEPMSG</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>  <span class="c1"># custom message for each flag too</span>
+                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
@@ -328,9 +345,6 @@
 <span class="sd">         * False    - periodicity is ignored</span>
 
 <span class="sd">        The MDAnalysis preset of this flag is %(default)r.</span>
-
-<span class="sd">        Note that KD-tree based distance selections always ignore this flag. (For</span>
-<span class="sd">        details see the docs for the &#39;use_KDTree_routines&#39; flag.)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
     <span class="p">),</span>
     <span class="n">_Flag</span><span class="p">(</span>

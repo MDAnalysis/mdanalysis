@@ -105,20 +105,6 @@ an <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGr
 <dt id="MDAnalysis.core.selection.DistanceSelection">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">DistanceSelection</code><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#DistanceSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.DistanceSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for distance search based selections</p>
-<dl class="docutils">
-<dt>Grabs the flags for this selection</dt>
-<dd><ul class="first last simple">
-<li>‘use_KDTree_routines’</li>
-<li>‘use_periodic_selections’</li>
-</ul>
-</dd>
-<dt>Populates the <cite>apply</cite> method with either</dt>
-<dd><ul class="first last simple">
-<li>_apply_KDTree</li>
-<li>_apply_distmat</li>
-</ul>
-</dd>
-</dl>
 <dl class="method">
 <dt id="MDAnalysis.core.selection.DistanceSelection.validate_dimensions">
 <code class="descname">validate_dimensions</code><span class="sig-paren">(</span><em>dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#DistanceSelection.validate_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.DistanceSelection.validate_dimensions" title="Permalink to this definition">¶</a></dt>
@@ -262,7 +248,7 @@ expressions into nested Selection tree.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.selection.SelectionParser.parse">
-<code class="descname">parse</code><span class="sig-paren">(</span><em>selectstr</em>, <em>selgroups</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.parse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parse</code><span class="sig-paren">(</span><em>selectstr</em>, <em>selgroups</em>, <em>periodic=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Selection object from a string.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -271,6 +257,8 @@ expressions into nested Selection tree.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>selectstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The string that describes the selection</li>
 <li><strong>selgroups</strong> (<em>AtomGroups</em>) – AtomGroups to be used in <cite>group</cite> selections</li>
+<li><strong>periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – for distance based selections, whether to consider
+periodic boundary conditions</li>
 </ul>
 </td>
 </tr>
