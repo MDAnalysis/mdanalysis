@@ -417,7 +417,7 @@ cdef class NSResults(object):
         cdef ns_int idx, nsearch
         cdef real dist2, dist
 
-        nsearch = len(self.searchcoords)
+        nsearch = self.searchcoords.shape[0]
 
         self.indices_buffer = vector[intvec]()
         self.distances_buffer = vector[realvec]()
