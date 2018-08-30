@@ -2362,7 +2362,11 @@ class AtomGroup(GroupBase):
             the `updating` argument.
         .. versionchanged:: 0.17.0 Added *moltype* and *molnum* selections.
         .. versionchanged:: 0.18.1 Added strict type checking for passed groups.
+        .. versionchanged:: 0.19.0 Added periodic kwarg (default True)
         """
+        # once flags removed, replace with default=True
+        periodic = selgroups.pop('periodic', flags['use_periodic_selections'])
+
         updating = selgroups.pop('updating', False)
         sel_strs = (sel,) + othersel
 
@@ -2372,7 +2376,7 @@ class AtomGroup(GroupBase):
                                 "You provided {} for group '{}'".format(
                                     thing.__class__.__name__, group))
 
-        selections = tuple((selection.Parser.parse(s, selgroups)
+        selections = tuple((selection.Parser.parse(s, selgroups, periodic=periodic)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
