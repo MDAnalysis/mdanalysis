@@ -21,10 +21,13 @@ The rules for this file:
 
 Enhancements
 
+
   * Replaced multiple apply (_apply_distmat, _apply_kdtree)
     methods in distance based selections with
     lib.distances.capped_distance for automatic selection of
     distance evaluation method. (PR #2035)
+  * Modified analysis.rdf.InterRDF to use lib.distances.capped_distance
+    to handle rdf calculations for large systems. (PR #2013)
   * Added return_distances argument in lib.distances.capped_distances
     to evaluate and return distances only when required. Modified
     the optimization rules in lib.distances._determine_method for
@@ -77,6 +80,9 @@ Enhancements
   * Added dihedrals.py with Dihedral, Ramachandran, and Janin classes to
     analysis module (PR #1997, PR #2033)
   * Added the analysis.data module for reference data used in analysis (PR #2033)
+  * Added dihedrals.py with Ramachandran class to analysis module
+  * Performance improvements to make_whole (PR #1965)
+  * Performance improvements to fragment finding (PR #2028)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
@@ -114,12 +120,16 @@ Changes
     (Issue #1894)
   * removed unused function MDAnalysis.lb.mdamath.one_to_many_pointers()
     (issue #2010)
+  * Added periodic keyword to select_atoms (#759)
 
 Deprecations
   * almost all "save()", "save_results()", "save_table()" methods in
     analysis classes were deprecated and will be removed in 1.0 (Issue
     #1972 and #1745)
-
+  * deprecated use of core.flags.  For use_pbc, the pbc keyword should
+    be used, use_KDTree_routines is obsolete as all distance calculations
+    select the fastest method, all other uses of flags are deprecated.
+    (#782)
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
          orbeckst, xiki-tempula, navyakhare, zemanj, ayushsuhane, davidercruz,

@@ -35,6 +35,7 @@ Helper functions for common mathematical operations
 .. autofunction:: triclinic_vectors
 .. autofunction:: box_volume
 .. autofunction:: make_whole
+.. autofunction:: find_fragments
 
 .. versionadded:: 0.11.0
 """
@@ -44,7 +45,7 @@ import numpy as np
 
 from ..exceptions import NoDataError
 from . import util
-from ._cutil import make_whole
+from ._cutil import make_whole, find_fragments
 
 # geometric functions
 def norm(v):
