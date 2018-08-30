@@ -51,6 +51,74 @@ class TOPBase(ParserBase):
         assert len(top.dihedrals.values) == self.expected_n_dihedrals
         assert len(top.impropers.values) == self.expected_n_impropers
 
+    def test_bonds_atom_counts(self, filename):
+        u = mda.Universe(filename)
+        assert len(u.atoms[[0]].bonds) == self.expected_n_zero_bonds
+        assert len(u.atoms[[self.atom_i]].bonds) == self.expected_n_i_bonds
+
+    def test_angles_atom_counts(self, filename):
+        u = mda.Universe(filename)
+        assert len(u.atoms[[0]].angles) == self.expected_n_zero_angles
+        assert len(u.atoms[[self.atom_i]].angles) == self.expected_n_i_angles
+
+    def test_dihedrals_atom_counts(self, filename):
+        u = mda.Universe(filename)
+        assert len(u.atoms[[0]].dihedrals) == self.expected_n_zero_dihedrals
+        assert len(u.atoms[[self.atom_i]].dihedrals) == \
+            self.expected_n_i_dihedrals
+
+    def test_impropers_atom_counts(self, filename):
+        u = mda.Universe(filename)
+        assert len(u.atoms[[0]].impropers) == self.expected_n_zero_impropers
+        assert len(u.atoms[[self.atom_i]].impropers) == \
+            self.expected_n_i_impropers
+
+    def test_bonds_identity(self, top):
+        vals = top.bonds.values
+        for bond in self.atom_zero_bond_values:
+            assert (bond in vals) or (bond[::-1] in vals)
+        for bond in self.atom_i_bond_values:
+            assert (bond in vals) or (bond[::-1] in vals)
+
+    def test_angles_identity(self, top):
+        vals = top.angles.values
+        for ang in self.atom_zero_angle_values:
+            assert (ang in vals) or (ang[::-1] in vals)
+        for ang in self.atom_i_angle_values:
+            assert (ang in vals) or (ang[::-1] in vals)
+
+    def test_dihedrals_identity(self, top):
+        vals = top.dihedrals.values
+        for dih in self.atom_zero_dihedral_values:
+            assert (dih in vals) or (dih[::-1] in vals)
+        for dih in self.atom_i_dihedral_values:
+            assert (dih in vals) or (dih[::-1] in vals)
+
+    def test_impropers_identity(self, top):
+        vals = top.impropers.values
+        for imp in self.atom_zero_improper_values:
+            assert (imp in vals) or (imp[::-1] in vals)
+        for imp in self.atom_i_improper_values:
+            assert (imp in vals) or (imp[::-1] in vals)
+
+    def test_angle_atoms_bonded(self, top):
+        vals = top.bonds.values
+        for ang in top.angles.values:
+            for b in ((ang[0], ang[1]), (ang[1], ang[2])):
+                assert (b in vals) or (b[::-1] in vals)
+
+    def test_dihedral_atoms_bonded(self, top):
+        vals = top.bonds.values
+        for dih in top.dihedrals.values:
+            for b in ((dih[0], dih[1]), (dih[1], dih[2]), (dih[2], dih[3])):
+                assert (b in vals) or (b[::-1] in vals)
+
+    def test_improper_atoms_bonded(self, top):
+        vals = top.bonds.values
+        for imp in top.impropers.values:
+            for b in ((imp[0], imp[2]), (imp[1], imp[2]), (imp[2], imp[3])):
+                assert (b in vals) or (b[::-1] in vals)
+
 
 class TestPRMParser(TOPBase):
     ref_filename = PRM
@@ -61,6 +129,41 @@ class TestPRMParser(TOPBase):
     expected_n_dihedrals = 673
     expected_n_impropers = 66
     guessed_attrs = ['elements']
+    atom_i = 79
+    expected_n_zero_bonds = 4
+    expected_n_i_bonds = 3
+    expected_n_zero_angles = 9
+    expected_n_i_angles = 9
+    expected_n_zero_dihedrals = 14
+    expected_n_i_dihedrals = 15
+    expected_n_zero_impropers = 0
+    expected_n_i_impropers = 4
+    atom_zero_bond_values = ((0, 4), (0, 1), (0, 2), (0, 3))
+    atom_i_bond_values = ((79, 80), (79, 83), (77, 79))
+    atom_zero_angle_values = ((0, 4, 6), (0, 4, 10), (3, 0, 4),
+                              (2, 0, 3), (2, 0, 4), (1, 0, 2),
+                              (1, 0, 3), (1, 0, 4), (0, 4, 5))
+    atom_i_angle_values = ((80, 79, 83), (77, 79, 80), (77, 79, 83),
+                           (74, 77, 79), (79, 80, 81), (79, 80, 82),
+                           (79, 83, 84), (79, 83, 85), (78, 77, 79))
+    atom_zero_dihedral_values = ((0, 4, 10, 11), (0, 4, 10, 12),
+                                 (3, 0, 4, 5), (3, 0, 4, 6),
+                                 (3, 0, 4, 10), (2, 0, 4, 5),
+                                 (2, 0, 4, 6), (2, 0, 4, 10),
+                                 (1, 0, 4, 5), (1, 0, 4, 6),
+                                 (1, 0, 4, 10), (0, 4, 6, 7),
+                                 (0, 4, 6, 8), (0, 4, 6, 9))
+    atom_i_dihedral_values = ((71, 74, 77, 79), (74, 77, 79, 80),
+                              (74, 77, 79, 83), (75, 74, 77, 79),
+                              (76, 74, 77, 79), (77, 79, 80, 81),
+                              (77, 79, 80, 82), (77, 79, 83, 84),
+                              (77, 79, 83, 85), (78, 77, 79, 80),
+                              (78, 77, 79, 83), (80, 79, 83, 84),
+                              (80, 79, 83, 85), (81, 80, 79, 83),
+                              (82, 80, 79, 83))
+    atom_zero_improper_values = ()
+    atom_i_improper_values = ((74, 79, 77, 78), (77, 80, 79, 83),
+                              (79, 81, 80, 82), (79, 84, 83, 85))
 
 
 class TestPRM12Parser(TOPBase):
@@ -75,7 +178,44 @@ class TestPRM12Parser(TOPBase):
     expected_n_angles = 756
     expected_n_dihedrals = 1128
     expected_n_impropers = 72
+    expected_n_zero_bonds = 1
+    expected_n_i_bonds = 4
+    expected_n_zero_angles = 1
+    expected_n_i_angles = 12
+    expected_n_zero_dihedrals = 3
+    expected_n_i_dihedrals = 28
+    expected_n_zero_impropers = 0
+    expected_n_i_impropers = 1
+    atom_i = 335
     ref_proteinatoms = 0
+    atom_zero_bond_values = ((0, 1),)
+    atom_i_bond_values = ((335, 337), (335, 354),
+                          (334, 335), (335, 336))
+    atom_zero_angle_values = ((0, 1, 2),)
+    atom_i_angle_values = ((337, 335, 354), (335, 337, 338),
+                           (335, 337, 351), (335, 354, 352),
+                           (334, 335, 337), (334, 335, 354),
+                           (332, 334, 335), (336, 335, 337),
+                           (336, 335, 354), (335, 354, 355),
+                           (335, 354, 356), (334, 335, 336))
+    atom_zero_dihedral_values = ((0, 1, 2, 3), (0, 1, 2, 4),
+                                 (0, 1, 2, 5))
+    atom_i_dihedral_values = ((329, 332, 334, 335), (332, 334, 335, 336),
+                              (332, 334, 335, 337), (332, 334, 335, 354),
+                              (332, 352, 354, 335), (333, 332, 334, 335),
+                              (334, 335, 337, 338), (334, 335, 337, 351),
+                              (334, 335, 354, 352), (334, 335, 354, 355),
+                              (334, 335, 354, 356), (335, 334, 332, 352),
+                              (335, 337, 338, 339), (335, 337, 338, 340),
+                              (335, 337, 351, 341), (335, 337, 351, 350),
+                              (335, 354, 352, 353), (335, 354, 352, 357),
+                              (336, 335, 337, 338), (336, 335, 337, 351),
+                              (336, 335, 354, 352), (336, 335, 354, 355),
+                              (336, 335, 354, 356), (337, 335, 354, 352),
+                              (337, 335, 354, 355), (337, 335, 354, 356),
+                              (338, 337, 335, 354), (351, 337, 335, 354))
+    atom_zero_improper_values = ()
+    atom_i_improper_values = ((335, 337, 338, 351),)
 
 
 class TestParm7Parser(TOPBase):
@@ -87,6 +227,51 @@ class TestParm7Parser(TOPBase):
     expected_n_dihedrals = 602
     expected_n_impropers = 55
     guessed_attrs = ['elements']
+    atom_i = 135
+    expected_n_zero_bonds = 4
+    expected_n_i_bonds = 4
+    expected_n_zero_angles = 9
+    expected_n_i_angles = 13
+    expected_n_zero_dihedrals = 14
+    expected_n_i_dihedrals = 27
+    expected_n_zero_impropers = 0
+    expected_n_i_impropers = 2
+    atom_zero_bond_values = ((0, 4), (0, 1), (0, 2), (0, 3))
+    atom_i_bond_values = ((135, 137), (135, 155), (133, 135),
+                          (135, 136))
+    atom_zero_angle_values = ((0, 4, 6), (0, 4, 11), (3, 0, 4),
+                              (2, 0, 3), (2, 0, 4), (1, 0, 2),
+                              (1, 0, 3), (1, 0, 4), (0, 4, 5))
+    atom_i_angle_values = ((131, 133, 135), (137, 135, 155),
+                           (135, 137, 140), (135, 155, 156),
+                           (135, 155, 157), (133, 135, 137),
+                           (133, 135, 155), (136, 135, 137),
+                           (136, 135, 155), (135, 137, 138),
+                           (135, 137, 139), (134, 133, 135),
+                           (133, 135, 136))
+    atom_zero_dihedral_values = ((0, 4, 6, 7), (0, 4, 6, 8),
+                                 (0, 4, 6, 9), (0, 4, 11, 12),
+                                 (0, 4, 11, 13), (1, 0, 4, 5),
+                                 (1, 0, 4, 6), (1, 0, 4, 11),
+                                 (2, 0, 4, 5), (2, 0, 4, 6),
+                                 (2, 0, 4, 11), (3, 0, 4, 5),
+                                 (3, 0, 4, 6), (3, 0, 4, 11))
+    atom_i_dihedral_values = ((113, 131, 133, 135), (131, 133, 135, 136),
+                              (131, 133, 135, 137), (131, 133, 135, 155),
+                              (132, 131, 133, 135), (133, 135, 137, 138),
+                              (133, 135, 137, 139), (133, 135, 137, 140),
+                              (133, 135, 155, 156), (133, 135, 155, 157),
+                              (134, 133, 135, 136), (134, 133, 135, 137),
+                              (134, 133, 135, 155), (135, 137, 140, 141),
+                              (135, 137, 140, 154), (135, 155, 157, 158),
+                              (135, 155, 157, 159), (136, 135, 137, 138),
+                              (136, 135, 137, 139), (136, 135, 137, 140),
+                              (136, 135, 155, 156), (136, 135, 155, 157),
+                              (137, 135, 155, 156), (137, 135, 155, 157),
+                              (138, 137, 135, 155), (139, 137, 135, 155),
+                              (140, 137, 135, 155))
+    atom_zero_improper_values = ()
+    atom_i_improper_values = ((131, 135, 133, 134), (135, 157, 155, 156))
 
 
 class TestPRM2(TOPBase):
@@ -99,3 +284,30 @@ class TestPRM2(TOPBase):
     expected_n_dihedrals = 41
     expected_n_impropers = 4
     guessed_attrs = ['elements']
+    atom_i = 14
+    expected_n_zero_bonds = 1
+    expected_n_i_bonds = 3
+    expected_n_zero_angles = 3
+    expected_n_i_angles = 8
+    expected_n_zero_dihedrals = 2
+    expected_n_i_dihedrals = 18
+    expected_n_zero_impropers = 0
+    expected_n_i_impropers = 2
+    atom_zero_bond_values = ((0, 1),)
+    atom_i_bond_values = ((14, 15), (14, 16), (8, 14))
+    atom_zero_angle_values = ((0, 1, 2), (0, 1, 3), (0, 1, 4))
+    atom_i_angle_values = ((15, 14, 16), (14, 16, 18), (10,  8, 14),
+                           (8, 14, 15), (8, 14, 16), (6,  8, 14),
+                           (14, 16, 17), (9,  8, 14))
+    atom_zero_dihedral_values = ((0, 1, 4, 5), (0, 1, 4, 6))
+    atom_i_dihedral_values = ((4, 6, 8, 14), (6, 8, 14, 15),
+                              (6, 8, 14, 16), (7, 6, 8, 14),
+                              (8, 14, 16, 17), (8, 14, 16, 18),
+                              (9, 8, 14, 15), (9, 8, 14, 16),
+                              (10, 8, 14, 15), (10, 8, 14, 16),
+                              (11, 10, 8, 14), (12, 10, 8, 14),
+                              (13, 10, 8, 14), (14, 16, 18, 19),
+                              (14, 16, 18, 20), (14, 16, 18, 21),
+                              (15, 14, 16, 17), (15, 14, 16, 18))
+    atom_zero_improper_values = ()
+    atom_i_improper_values = ((8, 16, 14, 15), (14, 18, 16, 17))
