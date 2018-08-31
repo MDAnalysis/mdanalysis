@@ -351,10 +351,8 @@
 
         <span class="c1"># List of pairs of AtomGroups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ags</span> <span class="o">=</span> <span class="n">ags</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">u</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_density</span> <span class="o">=</span> <span class="n">density</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bins&#39;</span><span class="p">:</span> <span class="n">nbins</span><span class="p">,</span>
                              <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">}</span>
 
@@ -371,16 +369,19 @@
 
         <span class="c1"># Need to know average volume</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
 
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">):</span>
-            <span class="n">result</span><span class="o">=</span><span class="n">distances</span><span class="o">.</span><span class="n">distance_array</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                            <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
-                    <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">],</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">count</span>
+            <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                                    <span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span><span class="p">,</span>
+                                                    <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> 
+                                                             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>            
 
         <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">volume</span>
 
