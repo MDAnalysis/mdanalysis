@@ -303,10 +303,8 @@ class InterRDF_s(AnalysisBase):
 
         # List of pairs of AtomGroups
         self.ags = ags
-
         self.u = u
         self._density = density
-
         self.rdf_settings = {'bins': nbins,
                              'range': range}
 
@@ -323,16 +321,19 @@ class InterRDF_s(AnalysisBase):
 
         # Need to know average volume
         self.volume = 0.0
+        self._maxrange = self.rdf_settings['range'][1]
 
 
     def _single_frame(self):
         for i, (ag1, ag2) in enumerate(self.ags):
-            result=distances.distance_array(ag1.positions, ag2.positions,
-                                            box=self.u.dimensions)
-            for j in range(ag1.n_atoms):
-                for k in range(ag2.n_atoms):
-                    count = np.histogram(result[j, k], **self.rdf_settings)[0]
-                    self.count[i][j, k, :] += count
+            pairs, dist = distances.capped_distance(ag1.positions,
+                                                    ag2.positions,
+                                                    self._maxrange,
+                                                    box=self.u.dimensions)
+
+            for j, (idx1, idx2) in enumerate(pairs):
+                self.count[i][idx1, idx2, :] += np.histogram(dist[j], 
+                                                             **self.rdf_settings)[0]            
 
         self.volume += self._ts.volume
 
