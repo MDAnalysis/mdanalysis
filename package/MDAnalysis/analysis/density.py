@@ -502,8 +502,8 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     Parameters
     ----------
     gridcenter : numpy ndarray, float32
-            3-element  containing the x, y and z coordinates of the grid box
-            center
+            3 element ndarray containing the x, y and z coordinates of the grid
+            box center
     xdim : float
             Box edge length in the x dimension
     ydim : float
@@ -522,9 +522,12 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     umax : numpy ndarray, float32
             Maximum x,y,z coordinates of the user defined grid
     """
-    # Just in case, let's check that gridcenter is 3 element in length
-    # otherwise it will likely just silently fail later on
-    assert len(gridcenter) == 3, "gridcenter contains more than 3 elements"
+    # Check user inputs
+    if (len(gridcenter) != 3) or not isinstance(gridcenter, np.ndarray):
+        raise ValueError('gridcenter is improperly defined')
+    for entry in (xdim, ydim, zdim):
+        if not isinstance(entry, (float, int)):
+            raise ValueError("x/y/z dimensions are improperly defined")
 
     # Copy gridcenter value to umin and umax
     umin = np.copy(gridcenter)
@@ -545,9 +548,7 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     # if this happens, we warn users they may want to resize their grids
     if any(smin < umin) or any(smax > umax):
         msg = "Atom selection does not fit grid --- you may want to define a larger box"
-        logger.warning(msg)
-
-    # Return umin and umax
+        warnings.warn(msg)
     return umin, umax
 
 
@@ -557,7 +558,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           use_kdtree=True, update_selection=False,
                           verbose=None, interval=1, quiet=None,
                           parameters=None,
-                          gridcenter=None, xdim=1.0, ydim=1.0, zdim=1.0):
+                          gridcenter=None, xdim=None, ydim=None, zdim=None):
     """Create a density grid from a :class:`MDAnalysis.Universe` object.
 
     The trajectory is read, frame by frame, and the atoms selected with `atomselection` are
@@ -605,18 +606,18 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
            Show status update every `interval` frame [1]
     parameters : dict (optional)
             `dict` with some special parameters for :class:`Density` (see docs)
-    gridcenter : float32 numpy ndarray (optional)
+    gridcenter : numpy ndarray, float32 (optional)
             3 element numpy array detailing the x, y and z coordinates of the
             center of a user defined grid box in Angstroem [``None``]
     xdim : float (optional)
             User defined x dimension box edge in ångström; ignored if
-            gridcenter is ``None`` [2.0]
+            gridcenter is ``None``
     ydim : float (optional)
             User defined y dimension box edge in ångström; ignored if
-            gridcenter is ``None`` [2.0]
+            gridcenter is ``None``
     zdim : float (optional)
             User defined z dimension box edge in ångström; ignored if
-            gridcenter is ``None`` [2.0]
+            gridcenter is ``None``
 
     Returns
     -------
@@ -726,12 +727,11 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         logger.warning(msg)
 
     if gridcenter is not None:
-        # We first generate a copy of smin/smax from the coords to
-        # check if the defined box might be too small for the selection
+        # Generate a copy of smin/smax from coords to later check if the
+        # defined box might be too small for the selection
         smin = np.min(coord, axis=0)
         smax = np.max(coord, axis=0)
-        # Then call the user grid function and overwrite smin/sma
-        # Note: a helper function is used here so that it may be reused.
+        # Overwrite smin/smax with user defined values
         smin, smax = _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax)
     else:
         # Make the box bigger to avoid as much as possible 'outlier'. This
