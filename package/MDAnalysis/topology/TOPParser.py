@@ -445,14 +445,14 @@ class TOPParser(TopologyReaderBase):
 
         Parameters
         ----------
-        data : list of int64
+        data : list of int
             Input list of the parm7 bond/angle section, zero-indexed
         num_per_record : int
             The number of entries for each record in the input list
 
         Returns
         -------
-        vals : list of int64 tuples
+        vals : list of int tuples
             A list of tuples containing the atoms involved in a given bonded
             interaction
 
@@ -465,9 +465,8 @@ class TOPParser(TopologyReaderBase):
         Therefore, to extract the required information, we split out the list
         into chunks of size num_per_record, and only extract the atom ids.
         """
-        vals = []
-        for i in range(0, len(data), chunksize):
-            vals.append(tuple(data[i:i+(chunksize-1)]))
+        vals = [tuple(data[x:x+chunksize-1])
+                for x in range(0, len(data), chunksize)]
         return vals
 
     def parse_bonded(self, num_per_record, numlines):
@@ -488,7 +487,7 @@ class TOPParser(TopologyReaderBase):
         should divide the values by 3 and add 1. Here, since we want to satisfy
         zero-indexing, we only divide by 3.
         """
-        fields = self.parsesection_mapper(numlines, lambda x: np.int64(x) // 3)
+        fields = self.parsesection_mapper(numlines, lambda x: int(x) // 3)
         section = self.parse_chunks(fields, num_per_record)
         return section
 
@@ -526,10 +525,10 @@ class TOPParser(TopologyReaderBase):
 
         Parameters
         ----------
-        diha : list of 4 np.int64 element tuples
-            The dihedrals not involving hydrogens
-        dihh : list of 4 np.int64 element tuples
-            The dihedrals involving hydrogens
+        diha : list of tuples
+            The atom ids of dihedrals not involving hydrogens
+        dihh : list of tuples
+            The atom ids of dihedrals involving hydrogens
 
         Returns
         -------
@@ -550,28 +549,19 @@ class TOPParser(TopologyReaderBase):
         2) If the third atom in a dihedral entry is given a negative value,
         this indicates that it 1-4 NB interactions are ignored for this
         dihedrals. This could be due to the dihedral within a ring, or if it is
-        part of a multi-term dihedral definition. To account for the latter
-        case and avoid the possibility of duplicate dihedral entries, we check
-        that any such dihedral does not already exist in the accumulated
-        dihderals list.
-        Caveat: currently we assume that multiterm dihedrals are
-        added to the parm7 file after the initial dihedral. This is likely true
-        for leap generated files, but such behaviour is not necessarily
-        guaranteed.
+        part of a multi-term dihedral definition or if it is an improper.
         """
         improp = []
         dihed = []
         for i in itertools.chain(diha, dihh):
             if i[3] < 0:
-                improp.append(i[:3]+(abs(i[3]),))
+                improp.append(i[:2]+(abs(i[2]),)+(abs(i[3]),))
             elif i[2] < 0:
                 vals = i[:2] + (abs(i[2]),) + i[3:]
-                if vals in dihed:
-                    continue
-                else:
-                    dihed.append(vals)
+                dihed.append(vals)
             else:
-                    dihed.append(i)
+                dihed.append(i)
+        dihed = sorted(set(dihed))
         dihedrals = Dihedrals(dihed)
         impropers = Impropers(improp)
         return dihedrals, impropers
