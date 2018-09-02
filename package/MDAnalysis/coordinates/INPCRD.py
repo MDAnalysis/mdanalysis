@@ -41,20 +41,11 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from six.moves import range
 
 from . import base
-from ..core import flags
 import scipy.io.netcdf
 import warnings
 import logging
-import errno
-import numpy as np
 
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
-
-try:
-    import netCDF4
-except ImportError:
-    netCDF4 = None
-    logger.warning("netCDF4 is not available. Writing AMBER NCRST will be slow.")
 
 
 class INPReader(base.SingleFrameReaderBase):
@@ -133,7 +124,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
                     rstfile.Conventions.decode('utf-8').split(',') or
                     'AMBERRESTART' in
                     rstfile.Conventions.decode('utf-8').split()):
-                errmsg = ("NCDF restart file {0} does not conform to AMBER "
+                errmsg = ("NetCDF restart file {0} does not conform to AMBER "
                           "specifications, http://ambermd.org/netcdf/nctraj.xhtml "
                           "('AMBERRESTART' must be one of the tokens in attribute "
                           "Conventions)".format(self.filename))
