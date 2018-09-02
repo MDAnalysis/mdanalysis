@@ -136,7 +136,10 @@ class Test_density_from_Universe(object):
                       {'meandensity': 0.015535385132107926, },
                   }
     cutoffs = {'notwithin': 4.0, }
-    gridcenters = {'static_defined': np.array([56.0, 45.0, 35.0]), }
+    gridcenters = {'static_defined': np.array([56.0, 45.0, 35.0]),
+                   'error1': np.array([56.0, 45.0]),
+                   'error2': [56.0, 45.0, 35.0],
+                   }
     precision = 5
     outfile = 'density.dx'
 
@@ -209,6 +212,27 @@ class Test_density_from_Universe(object):
             universe=universe,
             tmpdir=tmpdir
         )
+
+    def test_density_from_Universe_userdefn_ValueErrors(self, universe):
+        import MDAnalysis.analysis.density
+        # Test len(gridcenter) != 3
+        with pytest.raises(ValueError):
+            D = MDAnalysis.analysis.density.density_from_Universe(
+                universe, atomselection=self.selections['static'],
+                delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['error1'])
+        # Test gridcenter != ndarray
+        with pytest.raises(ValueError):
+            D = MDAnalysis.analysis.density.density_from_Universe(
+                universe, atomselection=self.selections['static'],
+                delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['error2'])
+        # Test xdim != int or float
+        with pytest.raises(ValueError):
+            D = MDAnalysis.analysis.density.density_from_Universe(
+                universe, atomselection=self.selections['static'],
+                delta=self.delta, xdim="10.0", ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['static_defined'])
 
 
 class TestGridImport(object):
