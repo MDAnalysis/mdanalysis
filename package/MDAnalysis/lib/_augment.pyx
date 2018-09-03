@@ -299,26 +299,26 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def undo_augment(np.int64_t[:] results, np.int64_t[:] translation, int nreal):
-    """Translate augmented indices back to original indices
+    """Translate augmented indices back to original indices.
 
     Parameters
     ----------
     results : numpy.ndarray
-      Array of coordinate indices with dtype ``numpy.int64``, including
+      Array of dtype ``numpy.int64`` containing coordinate indices, including
       "augmented" indices.
     translation : numpy.ndarray
-      Index map (dtype ``numpy.int64``) linking the augmented indices to the
+      Index map of dtype ``numpy.int64`` linking the augmented indices to the
       original particle indices such that
-      ``translation[augmented_index] = real_index``
+      ``translation[augmented_index] = original_index``.
     nreal : int
-      Number of real coordinates, i.e., values in results equal or larger
-      than this need to be translated to their real counterpart
+      Number of real coordinates, i.e., indices in `results` equal or larger
+      than this need to be mapped to their real counterpart.
 
     Returns
     -------
     results : numpy.ndarray
       Modified input `results` with all the augmented indices translated to
-      their corresponding initial original indices (dtype ``numpy.int64``)
+      their corresponding initial original indices.
 
     Note
     ----
