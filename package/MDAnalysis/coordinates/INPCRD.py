@@ -21,19 +21,76 @@
 #
 
 
-"""INPCRD structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.INPCRD`
+"""AMBER restart files in MDAnalysis --- :mod:`MDAnalysis.coordinates.INPCRD`
 ================================================================================
 
-Read coordinates in Amber_ coordinate/restart file (suffix "inpcrd").
+AMBER_ can write :ref:`ASCII restart<ascii-restart>` ("inpcrd") and
+:ref:`binary restart<netcdf-restart>` ("ncrst") coordinate files. MDAnalysis
+supports reading of both file formats.
 
-.. _Amber: http://ambermd.org/formats.html#restart
+.. rubric:: Units
+
+AMBER restart files are assumed to be in the following units:
+
+* length in Angstrom (Å)
+* time in ps
+* velocity (NCRST only) in Å / ps
+* force (NCRST only) in kcal / (mol * Å)
 
 
-Classes
--------
+.. _ascii-restart:
+
+ASCII INPCRD restart files
+--------------------------
+
+ASCII AMBER_ INPCRD coordinate files (as defined in `AMBER INPCRD FORMAT`_)
+are handled by the :class:`INPReader`.
+
+AMBER ASICC restart files are recognised by the suffix '.inpcrd', '.restrt', or
+'.rst7'
+
+.. rubric:: Limitations
+
+* Box information is not read (or checked for).
+
+* Velocities are currently *not supported*.
 
 .. autoclass:: INPReader
    :members:
+
+
+.. _netcdf-restart:
+
+Binary NetCDF restart files
+---------------------------
+
+The `AMBER netcdf`_ restart format makes use of NetCDF_ (Network Common Data
+Form) format. Such binary restart files are recognised in MDAnalysis by the
+suffix '.ncrst' or '.ncrestrt' and read by the :class:`NCRSTReader`.
+
+Binary restart files can also contain velocity and force information, and can
+record the simulation time step. Whilst the `AMBER netcdf`_ format details
+default unit values of ångström and picoseconds, these can in theory occupy any
+unit type. However, at the moment MDAnalysis only supports the default types
+and will raise a :exc:`NotImplementedError` if anything else is detected.
+
+.. rubric:: Limitations
+
+* scale_factors are not supported (and not checked).
+* Replica exchange variables are not supported.
+* Restart files without coordinate information are not supported.
+
+.. autoclass:: NCRSTReader
+   :members:
+
+
+
+.. Links
+
+.. _AMBER: http://ambermd.org
+.. _AMBER INPCRD FORMAT: http://ambermd.org/formats.html#restart
+.. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.xhtml
+.. _NetCDF: http://www.unidata.ucar.edu/software/netcdf
 
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
@@ -51,7 +108,7 @@ logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 class INPReader(base.SingleFrameReaderBase):
     """Reader for Amber restart files."""
 
-    format = ['INPCRD', 'RESTRT']
+    format = ['INPCRD', 'RESTRT', 'RST7']
     units = {'length': 'Angstrom'}
 
     def _read_first_frame(self):
@@ -91,8 +148,52 @@ class INPReader(base.SingleFrameReaderBase):
 
 
 class NCRSTReader(base.SingleFrameReaderBase):
-    """Reader for Amber NetCDF restart files.
-    To do: detailed information here.
+    """Reader for `AMBER NETCDF format`_ (version 1.0 rev C) restart files.
+
+    This reader is :class:`SingleFrameReaderBase` adaptation of the
+    :class:`NCDFReader` AMBER NETCDF trajectory reader.
+
+    AMBER binary restart files are automatically recognised by the file
+    extensions ".ncrst" and ".ncrestrt".
+
+    The number of atoms (`n_atoms`) does not have to be provided as it can
+    be read from the input NETCDF file.
+
+    Current simulation time is autodetected and read into the
+    :attr:`Timestep.time` attribute. (If this is not available in the restart
+    file, then :attr:`Timestep.time` will return 0.0 ps).
+
+    Velocities are autodetected and read into the
+    :attr:`Timestep._velocities` attribute
+
+    Forces are autodetected and read into the
+    :attr:`Timestep._forces` attribute
+
+    Periodic unit cell information is detected and used to populate the
+    :attr:`Timestep.dimensions` attribute. (If not unit cell is available in
+    the restart file, then :attr:`Timestep.dimensions` will return
+    ``[0,0,0,0,0,0]``).
+
+    Current limitations:
+
+    * Only restart files with time in ps and lengths in Angstroem are processed
+    * scale_factors are not supported (and not checked)
+    * Restart files without coordinate information are not supported
+    * Replica exchange variables are not supported
+
+    The NCRST reader uses :mod:`scipy.io.netcdf` and therefore :mod:`scipy`
+    must be installed. It supports the *mmap* keyword argument as detailed in
+    :class:`NCDFReader`.
+
+    .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.xhtml
+
+    See Also
+    --------
+    :class:`NCDFReader`
+    :class:`NCDFWriter`
+
+    .. versionadded: 0.18.1
+
     """
 
     format = ['NCRST', 'NCRESTRT']
@@ -102,12 +203,28 @@ class NCRSTReader(base.SingleFrameReaderBase):
              'velocity': 'Angstrom/ps',
              'forces': 'kcal/(mol*Angstrom)'}
 
+    class Timestep(base.Timestep):
+        """ Modified Timestep class for AMBER
 
-    def __init__(self, filename, n_atoms=None, convert_units=None, mmap=None, **kwargs):
-        # Add optional mmap here
+        Uses C order memory mapping to match the style used AMBER TRAJ
+
+        The Timestep can be initialized with `arg` being an integer
+        (the number of atoms) and an optional keyword arguments to allocate
+        space for velocities, and forces.
+
+        .. versionchanged:: 0.10.0
+           Added ability to contain Forces
+        TODO: test if this actually impacts on performance / results
+        """
+        order = 'C'
+
+    _Timestep = Timestep
+
+    def __init__(self, filename, n_atoms=None, convert_units=None, mmap=None,
+                 **kwargs):
         self._mmap = mmap
-        super(NCRSTReader, self).__init__(filename, convert_units, n_atoms, **kwargs)
-
+        super(NCRSTReader, self).__init__(filename, convert_units, n_atoms,
+                                          **kwargs)
 
     @staticmethod
     def parse_natoms(filename, **kwargs):
@@ -115,85 +232,129 @@ class NCRSTReader(base.SingleFrameReaderBase):
             n_atoms = f.dimensions['atom']
         return n_atoms
 
-
     def _read_first_frame(self):
-        # Open netcdf file as a context manager
+        """Function to read NetCDF restart file and fill timestep
+
+        Called by: :class:`SingleFrameReaderBase`.__init__
+        Overrides :class:`SingleFrameReaderBase` placeholder function
+        """
         with scipy.io.netcdf.netcdf_file(self.filename, mmap=self._mmap) as rstfile:
-            # Check file contents
+            # Global attribute checks
+            # Conventions should contain the AMBERRESTART string
             if not ('AMBERRESTART' in
                     rstfile.Conventions.decode('utf-8').split(',') or
                     'AMBERRESTART' in
                     rstfile.Conventions.decode('utf-8').split()):
                 errmsg = ("NetCDF restart file {0} does not conform to AMBER "
-                          "specifications, http://ambermd.org/netcdf/nctraj.xhtml "
-                          "('AMBERRESTART' must be one of the tokens in attribute "
-                          "Conventions)".format(self.filename))
+                          "specifications, as detailed in "
+                          "http://ambermd.org/netcdf/nctraj.xhtml "
+                          "('AMBERRESTART' must be one of the tokens in "
+                          "attribute Conventions)".format(self.filename))
                 logger.fatal(errmsg)
                 raise TypeError(errmsg)
 
+            # ConventionVersion should exist and be equal to 1.0
             if not rstfile.ConventionVersion.decode('utf-8') == self.version:
-                wmsg = ("NCDF trajectory format is {0!s} but the reader "
+                wmsg = ("NCDF restart format is {0!s} but the reader "
                         "implements format {1!s}".format(
-                        rstfile.ConventionVersion, self.version))
+                         rstfile.ConventionVersion, self.version))
                 warnings.warn(wmsg)
                 logger.warning(wmsg)
 
-            if rstfile.variables['time'].units.decode('utf-8') != "picosecond":
-                raise NotImplementedError(
-                    "NCRSTReader currently assumes that the trajectory was written "
-                    "with a time unit of picoseconds and not {0}.".format(
-                        rstfile.variables['time'].units))
-            if rstfile.variables['coordinates'].units.decode('utf-8') != "angstrom":
-                raise NotImplementedError(
-                    "NCRSTReader currently assumes that the trajectory was written "
-                    "with a length unit of Angstroem and not {0}.".format(
-                        rstfile.variables['coordinates'].units))
+            # The use of scale_factor is currently unsupported
             if hasattr(rstfile.variables['coordinates'], 'scale_factor'):
                 raise NotImplementedError("scale_factors are not implemented")
 
-            # Get remarks
-            try:
-                self.remarks = rstfile.title
-            except AttributeError:
-                self.remarks = ""
-            # Get n_atoms - Base class assigns self.n_atom to the passed value
-            # of n_atoms which make for a slightly confusing check
-            self.n_atoms = rstfile.dimensions['atom']
-            if self.n_atom is not None and self.n_atom != self.n_atoms:
-                raise ValueError("Supplied n_atoms ({0}) != natom from ncdf ({1}). "
-                                 "Note: n_atoms can be None and then the ncdf value "
-                                 "is used!".format(n_atoms, self.n_atoms))
+            # Note: SingleFrameReaderBase class sets parsed n_atoms value to
+            # self.n_atom which makes for a confusing check
+            if 'atom' in rstfile.dimensions:
+                self.n_atoms = rstfile.dimensions['atom']
+                if self.n_atom is not None and self.n_atom != self.n_atoms:
+                    raise ValueError("Supplied n_atoms ({0}) != n_atoms from "
+                                     "NetCDF restart file ({1}). "
+                                     "Note: n_atoms can be None and then the "
+                                     "restart file value is used.".format(
+                                      self.n_atom, self.n_atoms))
+            else:
+                errmsg = ("NetCDF restart file {0} does not contain "
+                          "atom information ".format(self.filename))
+                logger.fatal(errmsg)
+                raise TypeError(errmsg)
 
-            # Check for the presence of optional variables
+            # Optional variables
             self.has_velocities = 'velocities' in rstfile.variables
             self.has_forces = 'forces' in rstfile.variables
             self.periodic = 'cell_lengths' in rstfile.variables
+
             # Set timestep
-            self.ts = self._Timestep(self.n_atom,
+            self.ts = self._Timestep(self.n_atoms,
                                      velocities=self.has_velocities,
                                      forces=self.has_forces,
                                      reader=self,
                                      **self._ts_kwargs)
 
-            # Fetch file data
-            self.ts._pos[:] = rstfile.variables['coordinates'][:]
-            self.ts.time = rstfile.variables['time'].getValue()
+            # NetCDF file title is optional
+            try:
+                self.remarks = rstfile.title
+            except AttributeError:
+                self.remarks = ""
+
+            # Default to time units of picoseconds
+            # Note: unlike trajectories the AMBER NetCDF convention allows
+            # restart files to omit time when unecessary (i.e. minimizations)
+            if 'time' in rstfile.variables:
+                units = rstfile.variables['time'].units.decode('utf-8')
+                if units != "picosecond":
+                    raise NotImplementedError(
+                        "NCRSTReader currently assumes that the restart file "
+                        "uses a time unit of picoseconds and not {0}.".format(
+                         rstfile.variables['time'].units))
+                self.ts.time = rstfile.variables['time'].getValue()
+            else:
+                # As of AMBER16 the NetCDF restart files created by
+                # minimizations ignore convention and default to 0.0, so we do
+                # the same here
+                self.ts.time = 0.0
+
+            # Default to length units of Angstroem
+            if 'coordinates' in rstfile.variables:
+                units = rstfile.variables['coordinates'].units.decode('utf-8')
+                if units != "angstrom":
+                    raise NotImplementedError(
+                        "NCRSTReader currently assumes that the restart file "
+                        "uses a length unit of Angstroem and not {0}.".format(
+                         rstfile.variables['coordinates'].units))
+                self.ts._pos[:] = rstfile.variables['coordinates'][:]
+            else:
+                # Technically coordinate information is not required, however
+                # the lack of it in a restart file is highly unlikely
+                errmsg = ("NetCDF restart file {0} is missing coordinate "
+                          "information ".format(self.filename))
+                logger.fatal(errmsg)
+                raise TypeError(errmsg)
+
             if self.has_velocities:
                 self.ts._velocities[:] = rstfile.variables['velocities'][:]
+
+            # The presence of forces in a restart file is very rare, but
+            # according to AMBER convention it can exist.
             if self.has_forces:
                 self.ts._forces[:] = rstfile.variables['forces'][:]
+
+            # If false u.dimensions is set to [0., 0., 0., 0., 0., 0]
             if self.periodic:
                 self.ts._unitcell[:3] = rstfile.variables['cell_lengths'][:]
                 self.ts._unitcell[3:] = rstfile.variables['cell_angles'][:]
 
-            # Convert units
+            # Convert units inplace
             if self.convert_units:
                 self.convert_pos_from_native(self.ts._pos)
                 self.convert_time_from_native(self.ts.time)
                 if self.has_velocities:
                     self.convert_velocities_from_native(self.ts._velocities,
                                                         inplace=True)
-            if self.has_forces:
-                self.convert_forces_from_native(self.ts._forces, inplace=True)
-            if self.periodic:
-                self.convert_pos_from_native(self.ts._unitcell[:3])
+                if self.has_forces:
+                    self.convert_forces_from_native(self.ts._forces,
+                                                    inplace=True)
+                if self.periodic:
+                    self.convert_pos_from_native(self.ts._unitcell[:3])
