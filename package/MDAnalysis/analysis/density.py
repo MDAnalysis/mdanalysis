@@ -523,32 +523,28 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
             Maximum x,y,z coordinates of the user defined grid
     """
     # Check user inputs
-    if (len(gridcenter) != 3) or not isinstance(gridcenter, np.ndarray):
-        raise ValueError('gridcenter is improperly defined')
-    for entry in (xdim, ydim, zdim):
-        if not isinstance(entry, (float, int)):
-            raise ValueError("x/y/z dimensions are improperly defined")
+    try:
+        gridcenter = np.asarray(gridcenter, dtype=np.float32)
+        if gridcenter.shape != (3,):
+            raise ValueError("gridcenter must be a 3D coordinate")
+    except ValueError:
+        raise ValueError("Non-number values assigned to gridcenter")
+    try:
+        xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
+    except ValueError:
+        raise ValueError("xdim, ydim, and zdim must be numbers")
 
-    # Copy gridcenter value to umin and umax
-    umin = np.copy(gridcenter)
-    umax = np.copy(gridcenter)
-
-    # Set min/max of each dimension by shifting by half the edge length
-    # x dimension
-    umin[0] -= xdim/2.0
-    umax[0] += xdim/2.0
-    # y dimension
-    umin[1] -= ydim/2.0
-    umax[1] += ydim/2.0
-    # z dimension
-    umin[2] -= zdim/2.0
-    umax[2] += zdim/2.0
+    # Set min/max by shifting by half the edge length of each dimension
+    umin = gridcenter - xyzdim/2
+    umax = gridcenter + xyzdim/2
 
     # Here we test if coords of selection fall outside of the defined grid
     # if this happens, we warn users they may want to resize their grids
     if any(smin < umin) or any(smax > umax):
-        msg = "Atom selection does not fit grid --- you may want to define a larger box"
+        msg = ("Atom selection does not fit grid --- "
+               "you may want to define a larger box")
         warnings.warn(msg)
+        logger.warning(msg)
     return umin, umax
 
 
