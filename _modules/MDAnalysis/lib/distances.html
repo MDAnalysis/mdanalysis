@@ -269,7 +269,7 @@
     <span class="k">return</span> <span class="n">result</span>
 
 <div class="viewcode-block" id="distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.distance_array">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-              <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate all distances between a reference set and another configuration.</span>
