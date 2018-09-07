@@ -15,13 +15,14 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
          VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta,
-         sebastien.buchoux, arm61, p-j-smith
+         sebastien.buchoux, arm61, p-j-smith, IAlibay
 
   * 0.18.1
 
 Enhancements
 
 
+  * Added bond/angle/dihedral reading in PARM7 TOPParser (PR #2052)
   * Replaced multiple apply (_apply_distmat, _apply_kdtree)
     methods in distance based selections with
     lib.distances.capped_distance for automatic selection of
