@@ -80,6 +80,8 @@ Enhancements
   * Added the analysis.data module for reference data used in analysis (PR #2033)
   * Added analysis.dihedrals with Ramachandran class to analysis module (PR #1997)
   * Added augment functionality to create relevant images of particles 
+  * Most functions in `MDanalysis.lib.distances` previously only accepting
+    arrays of coordinates now also accept single coordinates as input (PR #2048)
   * Performance improvements to make_whole (PR #1965)
   * Performance improvements to fragment finding (PR #2028)
   * Added user defined boxes in density code (PR #2005)
@@ -120,6 +122,9 @@ Changes
     (Issue #1894)
   * removed unused function MDAnalysis.lb.mdamath.one_to_many_pointers()
     (issue #2010)
+  * Box input for functions in `MDAnalysis.lib.distances` is now consistently
+    enforced to be of the form ``[lx, ly, lz, alpha, beta, gamma]`` as required
+    by the docs (Issue #2046, PR #2048)
   * Added periodic keyword to select_atoms (#759)
 
 Deprecations

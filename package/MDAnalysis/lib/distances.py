@@ -221,7 +221,7 @@ def _check_result_array(result, shape):
     return result
 
 @check_coords('reference', 'configuration', enforce_copy=False,
-              check_lengths_match=False)
+              reduce_result_if_single=False, check_lengths_match=False)
 def distance_array(reference, configuration, box=None, result=None,
                    backend="serial"):
     """Calculate all distances between a reference set and another configuration.
