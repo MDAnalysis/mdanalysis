@@ -158,11 +158,11 @@ class NCRSTReader(base.SingleFrameReaderBase):
     :attr:`Timestep.time` attribute. (If this is not available in the restart
     file, then :attr:`Timestep.time` will return 0.0 ps).
 
-    Velocities are autodetected and read into the
-    :attr:`Timestep._velocities` attribute
+    Velocities are autodetected and read into the :attr:`Timestep._velocities`
+    attribute.
 
-    Forces are autodetected and read into the
-    :attr:`Timestep._forces` attribute
+    Forces are autodetected and read into the :attr:`Timestep._forces`
+    attribute.
 
     Periodic unit cell information is detected and used to populate the
     :attr:`Timestep.dimensions` attribute. (If not unit cell is available in
@@ -170,18 +170,18 @@ class NCRSTReader(base.SingleFrameReaderBase):
     ``[0,0,0,0,0,0]``).
 
     The NCRST reader uses :mod:`scipy.io.netcdf` and therefore :mod:`scipy`
-    must be installed. It supports the *mmap* keyword argument as detailed in
-    :class:`NCDFReader`.
+    must be installed. Support for the *mmap* keyword is available as detailed
+    in :class:`NCDFReader` and :mod:`scipy.io.netcdf.netcdf_file`.
 
     The NCRST reader also uses a custom Timestep object with C-style memory
     mapping in order to match the NCDFReader.
 
     .. rubric:: Limitations
 
-    * Only restart files with time in ps and lengths in Angstroem are processed
-    * scale_factors are not supported (and not checked)
-    * Restart files without coordinate information are not supported
-    * Replica exchange variables are not supported
+    * Only NCRST files with time in ps and lengths in Angstroem are processed.
+    * scale_factors are not supported (and not checked).
+    * Restart files without coordinate information are not supported.
+    * Replica exchange variables are not supported.
 
     .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.xhtml
 
@@ -219,6 +219,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
 
     def __init__(self, filename, n_atoms=None, convert_units=None, mmap=None,
                  **kwargs):
+        # Assign input mmap value
         self._mmap = mmap
         super(NCRSTReader, self).__init__(filename, convert_units, n_atoms,
                                           **kwargs)
@@ -235,7 +236,8 @@ class NCRSTReader(base.SingleFrameReaderBase):
         Called by: :class:`SingleFrameReaderBase`.__init__
         Overrides :class:`SingleFrameReaderBase` placeholder function
         """
-        with scipy.io.netcdf.netcdf_file(self.filename, mmap=self._mmap) as rstfile:
+        # Open netcdf file via context manager
+        with scipy.io.netcdf.netcdf_file(self.filename, mode='r', mmap=self._mmap) as rstfile:
             # Global attribute checks
             # Conventions should contain the AMBERRESTART string
             if not ('AMBERRESTART' in
@@ -247,6 +249,16 @@ class NCRSTReader(base.SingleFrameReaderBase):
                           "http://ambermd.org/netcdf/nctraj.xhtml "
                           "('AMBERRESTART' must be one of the tokens in "
                           "attribute Conventions)".format(self.filename))
+                logger.fatal(errmsg)
+                raise TypeError(errmsg)
+
+            # The AMBER NetCDF standard enforces 64 bit offsets
+            if not rstfile.version_byte == 2:
+                errmsg = ("NetCDF restart file {0} does not conform to AMBER "
+                          "specifications, as details in "
+                          "http://ambermd.org/netcdf/nctraj.xhtml "
+                          "(NetCDF file does not use 64 bit offsets "
+                          "[version_byte = 2]) ".format(self.filename))
                 logger.fatal(errmsg)
                 raise TypeError(errmsg)
 
@@ -316,6 +328,9 @@ class NCRSTReader(base.SingleFrameReaderBase):
                 warnings.warn(wmsg)
                 logger.warning(wmsg)
                 self.ts.time = 0.0
+
+            # Single frame so we assign it to 0
+            self.ts.frame = 0
 
             # Default to length units of Angstroem
             try:
