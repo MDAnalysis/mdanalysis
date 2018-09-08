@@ -525,10 +525,10 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     # Check user inputs
     try:
         gridcenter = np.asarray(gridcenter, dtype=np.float32)
-        if gridcenter.shape != (3,):
-            raise ValueError("gridcenter must be a 3D coordinate")
     except ValueError:
         raise ValueError("Non-number values assigned to gridcenter")
+    if gridcenter.shape != (3,):
+        raise ValueError("gridcenter must be a 3D coordinate")
     try:
         xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
     except ValueError:
