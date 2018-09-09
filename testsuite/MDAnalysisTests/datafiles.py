@@ -94,6 +94,8 @@ __all__ = [
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
     "PRMcs", # Amber (format, Issue 1331)
+    "PRMNCRST", # Amber ncrst with positions/forces/velocities
+    "PRMErr1", "PRMErr2", "PRMErr3", # Amber TOP files to check raised errors
     "PQR",  # PQR v1
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
@@ -320,6 +322,12 @@ PRM7 =  resource_filename(__name__, 'data/Amber/tz2.truncoct.parm7.bz2')
 NCDFtruncoct =  resource_filename(__name__, 'data/Amber/tz2.truncoct.nc')
 
 PRMcs = resource_filename(__name__, 'data/Amber/chitosan.prmtop')
+
+PRMNCRST = resource_filename(__name__, 'data/Amber/ace_mbondi3.parm7')
+
+PRMErr1 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error1.parm7')
+PRMErr2 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error2.parm7')
+PRMErr3 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error3.parm7')
 
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 PQR_icodes = resource_filename(__name__, 'data/1A2C.pqr')

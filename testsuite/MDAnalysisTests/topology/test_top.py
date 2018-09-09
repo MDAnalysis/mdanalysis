@@ -21,6 +21,7 @@
 #
 from __future__ import absolute_import
 import MDAnalysis as mda
+import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
@@ -28,6 +29,10 @@ from MDAnalysisTests.datafiles import (
     PRM12,  # anti.top
     PRM7,  # tz2.truncoct.parm7.bz2
     PRMpbc,
+    PRMNCRST,
+    PRMErr1,
+    PRMErr2,
+    PRMErr3
 )
 
 
@@ -311,3 +316,45 @@ class TestPRM2(TOPBase):
                               (15, 14, 16, 17), (15, 14, 16, 18))
     atom_zero_improper_values = ()
     atom_i_improper_values = ((8, 16, 14, 15), (14, 18, 16, 17))
+
+
+class TestPRMNCRST(TOPBase):
+    # Test case of PARM7 with no non-hydrogen including dihedrals
+    ref_filename = PRMNCRST
+    expected_n_atoms = 6
+    expected_n_residues = 1
+    ref_proteinatoms = 6
+    expected_n_bonds = 5
+    expected_n_angles = 7
+    expected_n_dihedrals = 3
+    expected_n_impropers = 0
+    atom_i = 4
+    expected_n_zero_bonds = 1
+    expected_n_i_bonds = 2
+    expected_n_zero_angles = 3
+    expected_n_i_angles = 4
+    expected_n_zero_dihedrals = 1
+    expected_n_i_dihedrals = 3
+    expected_n_zero_impropers = 0
+    expected_n_i_impropers = 0
+    atom_zero_bond_values = ((0, 1),)
+    atom_i_bond_values = ((1, 4), (4, 5))
+    atom_zero_angle_values = ((0, 1, 2), (0, 1, 3), (0, 1, 4))
+    atom_i_angle_values = ((0, 1, 4), (1, 4, 5), (2, 1, 4), (3, 1, 4))
+    atom_zero_dihedral_values = ((0, 1, 4, 5),)
+    atom_i_dihedral_values = ((0, 1, 4, 5), (2, 1, 4, 5), (3, 1, 4, 5))
+    atom_zero_improper_values = ()
+    atom_i_improper_values = ()
+
+
+class CheckErrors(object):
+    # Check Errors being raised
+    # Missing version line
+    with pytest.raises(ValueError):
+        u = mda.Universe(PRMErr1)
+    # Missing TITLE section
+    with pytest.raises(ValueError):
+        u = mda.Universe(PRMErr2)
+    # Unexpected lack of %FLAG line
+    with pytest.raises(IndexError):
+        u = mda.Universe(PRMErr3)

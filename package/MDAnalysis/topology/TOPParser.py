@@ -219,10 +219,18 @@ class TOPParser(TopologyReaderBase):
 
                 try:
                     line = next_getter()
+                    # Capture case where section is empty w/ 1 empty line
+                    if numlines == 0 and not line.strip():
+                        line = next_getter()
                 except StopIteration:
                     next_section = None
                 else:
-                    next_section = line.split("%FLAG")[1].strip()
+                    try:
+                        next_section = line.split("%FLAG")[1].strip()
+                    except IndexError:
+                        msg = ("%FLAG section not found, formatting error "
+                               "for PARM7 file {0} ".format(self.filename))
+                        raise IndexError(msg)
 
         # strip out a few values to play with them
         n_atoms = len(attrs['name'])
