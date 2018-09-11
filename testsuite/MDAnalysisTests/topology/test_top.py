@@ -347,14 +347,16 @@ class TestPRMNCRST(TOPBase):
     atom_i_improper_values = ()
 
 
-class CheckErrors(object):
+class TestErrors(object):
     # Check Errors being raised
-    # Missing version line
-    with pytest.raises(ValueError):
-        u = mda.Universe(PRMErr1)
-    # Missing TITLE section
-    with pytest.raises(ValueError):
-        u = mda.Universe(PRMErr2)
-    # Unexpected lack of %FLAG line
-    with pytest.raises(IndexError):
-        u = mda.Universe(PRMErr3)
+    def test_versionline(self):
+        with pytest.raises(ValueError):
+            u = mda.Universe(PRMErr1)
+
+    def test_title(self):
+        with pytest.raises(ValueError):
+            u = mda.Universe(PRMErr2)
+
+    def test_flag(self):
+        with pytest.raises(IndexError):
+            u = mda.Universe(PRMErr3)
