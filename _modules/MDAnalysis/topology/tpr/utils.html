@@ -686,14 +686,24 @@
             <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;SETTLE&#39;</span><span class="p">:</span>
                 <span class="c1"># SETTLE interactions are optimized triangular constraints for</span>
                 <span class="c1"># water molecules. They should be counted as a pair of bonds</span>
-                <span class="c1"># between the oxigen and the hydrogens. The format only</span>
-                <span class="c1"># specifies the index of the oxygen and assumes that the next</span>
-                <span class="c1"># two atoms are the hydrogens.</span>
-                <span class="n">base_atom</span> <span class="o">=</span> <span class="n">ilist</span><span class="o">.</span><span class="n">iatoms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">bonds</span> <span class="o">+=</span> <span class="p">[</span>
-                    <span class="p">[</span><span class="n">base_atom</span><span class="p">,</span> <span class="n">base_atom</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
-                    <span class="p">[</span><span class="n">base_atom</span><span class="p">,</span> <span class="n">base_atom</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
-                <span class="p">]</span>
+                <span class="c1"># between the oxigen and the hydrogens. In older versions of</span>
+                <span class="c1"># the TPR format only specifies the index of the oxygen and</span>
+                <span class="c1"># assumes that the next two atoms are the hydrogens.</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ias</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="c1"># Old format. Only the first atom is specified.</span>
+                    <span class="n">base_atom</span> <span class="o">=</span> <span class="n">ias</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">bonds</span> <span class="o">+=</span> <span class="p">[</span>
+                        <span class="p">[</span><span class="n">base_atom</span><span class="p">,</span> <span class="n">base_atom</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">base_atom</span><span class="p">,</span> <span class="n">base_atom</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
+                    <span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">all_settle</span> <span class="o">=</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">settle</span> <span class="ow">in</span> <span class="n">all_settle</span><span class="p">:</span>
+                        <span class="n">base_atom</span> <span class="o">=</span> <span class="n">settle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">bonds</span> <span class="o">+=</span> <span class="p">[</span>
+                            <span class="p">[</span><span class="n">settle</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">settle</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                            <span class="p">[</span><span class="n">settle</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">settle</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                        <span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># other interaction types are not interested at the moment</span>
                 <span class="k">pass</span>
