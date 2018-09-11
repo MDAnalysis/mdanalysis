@@ -15,13 +15,11 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
          VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta,
-         sebastien.buchoux, arm61, p-j-smith
+         sebastien.buchoux, arm61, p-j-smith, IAlibay
 
   * 0.18.1
 
 Enhancements
-
-
   * Replaced multiple apply (_apply_distmat, _apply_kdtree)
     methods in distance based selections with
     lib.distances.capped_distance for automatic selection of
@@ -80,10 +78,13 @@ Enhancements
   * Added dihedrals.py with Dihedral, Ramachandran, and Janin classes to
     analysis module (PR #1997, PR #2033)
   * Added the analysis.data module for reference data used in analysis (PR #2033)
+  * Added analysis.dihedrals with Ramachandran class to analysis module (PR #1997)
+  * Added augment functionality to create relevant images of particles 
   * Most functions in `MDanalysis.lib.distances` previously only accepting
     arrays of coordinates now also accept single coordinates as input (PR #2048)
   * Performance improvements to make_whole (PR #1965)
   * Performance improvements to fragment finding (PR #2028)
+  * Added user defined boxes in density code (PR #2005)
 
 Fixes
   * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
