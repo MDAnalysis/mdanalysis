@@ -233,3 +233,5 @@ def bonds_water(request):
 def test_settle(bonds_water):
     # There are 101 water molecule with 2 bonds each
     assert len(bonds_water) == 202
+    # The last index corresponds to the last water atom
+    assert bonds_water[-1][1] == 2262

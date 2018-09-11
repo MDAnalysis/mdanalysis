@@ -638,14 +638,24 @@ def do_moltype(data, symtab, fver):
             elif ik_obj.name == 'SETTLE':
                 # SETTLE interactions are optimized triangular constraints for
                 # water molecules. They should be counted as a pair of bonds
-                # between the oxigen and the hydrogens. The format only
-                # specifies the index of the oxygen and assumes that the next
-                # two atoms are the hydrogens.
-                base_atom = ilist.iatoms[-1]
-                bonds += [
-                    [base_atom, base_atom + 1],
-                    [base_atom, base_atom + 2]
-                ]
+                # between the oxigen and the hydrogens. In older versions of
+                # the TPR format only specifies the index of the oxygen and
+                # assumes that the next two atoms are the hydrogens.
+                if len(ias) == 2:
+                    # Old format. Only the first atom is specified.
+                    base_atom = ias[1]
+                    bonds += [
+                        [base_atom, base_atom + 1],
+                        [base_atom, base_atom + 2],
+                    ]
+                else:
+                    all_settle = ik_obj.process(ias)
+                    for settle in all_settle:
+                        base_atom = settle[0]
+                        bonds += [
+                            [settle[0], settle[1]],
+                            [settle[0], settle[2]],
+                        ]
             else:
                 # other interaction types are not interested at the moment
                 pass
