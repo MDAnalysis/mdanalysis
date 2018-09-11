@@ -232,7 +232,6 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.density&quot;</span><span class="p">)</span>
 
-
 <div class="viewcode-block" id="Density"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density">[docs]</a><span class="k">class</span> <span class="nc">Density</span><span class="p">(</span><span class="n">Grid</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class representing a density on a regular cartesian grid.</span>
 
@@ -325,7 +324,6 @@
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    gridData.core.Grid : the base class of :class:`Density`.</span>
-
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -545,12 +543,66 @@
             <span class="n">grid_type</span> <span class="o">=</span> <span class="s1">&#39;histogram&#39;</span>
         <span class="k">return</span> <span class="s1">&#39;&lt;Density &#39;</span> <span class="o">+</span> <span class="n">grid_type</span> <span class="o">+</span> <span class="s1">&#39; with &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; bins&gt;&#39;</span></div>
 
+
+<span class="k">def</span> <span class="nf">_set_user_grid</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper function to set the grid dimensions to user defined values</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gridcenter : numpy ndarray, float32</span>
+<span class="sd">            3 element ndarray containing the x, y and z coordinates of the grid</span>
+<span class="sd">            box center</span>
+<span class="sd">    xdim : float</span>
+<span class="sd">            Box edge length in the x dimension</span>
+<span class="sd">    ydim : float</span>
+<span class="sd">            Box edge length in the y dimension</span>
+<span class="sd">    zdim : float</span>
+<span class="sd">            Box edge length in the y dimension</span>
+<span class="sd">    smin : numpy ndarray, float32</span>
+<span class="sd">            Minimum x,y,z coordinates for the input selection</span>
+<span class="sd">    smax : numpy ndarray, float32</span>
+<span class="sd">            Maximum x,y,z coordinates for the input selection</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    umin : numpy ndarray, float32</span>
+<span class="sd">            Minimum x,y,z coordinates of the user defined grid</span>
+<span class="sd">    umax : numpy ndarray, float32</span>
+<span class="sd">            Maximum x,y,z coordinates of the user defined grid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check user inputs</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">gridcenter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Non-number values assigned to gridcenter&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">gridcenter</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;gridcenter must be a 3D coordinate&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">xyzdim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;xdim, ydim, and zdim must be numbers&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Set min/max by shifting by half the edge length of each dimension</span>
+    <span class="n">umin</span> <span class="o">=</span> <span class="n">gridcenter</span> <span class="o">-</span> <span class="n">xyzdim</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">umax</span> <span class="o">=</span> <span class="n">gridcenter</span> <span class="o">+</span> <span class="n">xyzdim</span><span class="o">/</span><span class="mi">2</span>
+
+    <span class="c1"># Here we test if coords of selection fall outside of the defined grid</span>
+    <span class="c1"># if this happens, we warn users they may want to resize their grids</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">smin</span> <span class="o">&lt;</span> <span class="n">umin</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">smax</span> <span class="o">&gt;</span> <span class="n">umax</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Atom selection does not fit grid --- &quot;</span>
+               <span class="s2">&quot;you may want to define a larger box&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">umin</span><span class="p">,</span> <span class="n">umax</span>
+
+
 <div class="viewcode-block" id="density_from_Universe"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.density_from_Universe">[docs]</a><span class="k">def</span> <span class="nf">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">atomselection</span><span class="o">=</span><span class="s1">&#39;name OH2&#39;</span><span class="p">,</span>
                           <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">soluteselection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">use_kdtree</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">update_selection</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                           <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                          <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                          <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">gridcenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xdim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ydim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create a density grid from a :class:`MDAnalysis.Universe` object.</span>
 
 <span class="sd">    The trajectory is read, frame by frame, and the atoms selected with `atomselection` are</span>
@@ -575,7 +627,7 @@
 <span class="sd">            are passed through as they are.</span>
 <span class="sd">    padding : float (optional)</span>
 <span class="sd">            increase histogram dimensions by padding (on top of initial box size)</span>
-<span class="sd">            in Angstroem [2.0]</span>
+<span class="sd">            in Angstroem. Padding is ignored when setting a user defined grid. [2.0]</span>
 <span class="sd">    soluteselection : str (optional)</span>
 <span class="sd">            MDAnalysis selection for the solute, e.g. &quot;protein&quot; [``None``]</span>
 <span class="sd">    cutoff : float (optional)</span>
@@ -598,6 +650,18 @@
 <span class="sd">           Show status update every `interval` frame [1]</span>
 <span class="sd">    parameters : dict (optional)</span>
 <span class="sd">            `dict` with some special parameters for :class:`Density` (see docs)</span>
+<span class="sd">    gridcenter : numpy ndarray, float32 (optional)</span>
+<span class="sd">            3 element numpy array detailing the x, y and z coordinates of the</span>
+<span class="sd">            center of a user defined grid box in Angstroem [``None``]</span>
+<span class="sd">    xdim : float (optional)</span>
+<span class="sd">            User defined x dimension box edge in ångström; ignored if</span>
+<span class="sd">            gridcenter is ``None``</span>
+<span class="sd">    ydim : float (optional)</span>
+<span class="sd">            User defined y dimension box edge in ångström; ignored if</span>
+<span class="sd">            gridcenter is ``None``</span>
+<span class="sd">    zdim : float (optional)</span>
+<span class="sd">            User defined z dimension box edge in ångström; ignored if</span>
+<span class="sd">            gridcenter is ``None``</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -643,6 +707,32 @@
 <span class="sd">    (Using the special case for the bulk with `soluteselection` and `cutoff`</span>
 <span class="sd">    improves performance over the simple `update_selection` approach.)</span>
 
+<span class="sd">    If you are interested in explicitly setting a grid box of a given edge size</span>
+<span class="sd">    and origin, you can use the gridcenter and x/y/zdim arguments. For example</span>
+<span class="sd">    to plot the density of waters within 5 Å of a ligand (in this case the</span>
+<span class="sd">    ligand has been assigned the residue name &quot;LIG&quot;) in a cubic grid with 20 Å</span>
+<span class="sd">    edges which is centered on the centre of mass (COM) of the ligand::</span>
+
+<span class="sd">      # Create a selection based on the ligand</span>
+<span class="sd">      ligand_selection = universe.select_atoms(&quot;resname LIG&quot;)</span>
+
+<span class="sd">      # Extract the COM of the ligand</span>
+<span class="sd">      ligand_COM = ligand_selection.center_of_mass()</span>
+
+<span class="sd">      # Generate a density of waters on a cubic grid centered on the ligand COM</span>
+<span class="sd">      # In this case, we update the atom selection as shown above.</span>
+<span class="sd">      water_density = density_from_Universe(universe, delta=1.0,</span>
+<span class="sd">                                            atomselection=&#39;name OW around 5 resname LIG&#39;,</span>
+<span class="sd">                                            update_selection=True,</span>
+<span class="sd">                                            gridcenter=ligand_COM,</span>
+<span class="sd">                                            xdim=20.0, ydim=20.0, zdim=20.0)</span>
+
+<span class="sd">      (It should be noted that the `padding` keyword is not used when a user</span>
+<span class="sd">      defined grid is assigned).</span>
+
+<span class="sd">    .. versionchanged:: 0.18.1</span>
+<span class="sd">       *gridcenter*, *xdim*, *ydim* and *zdim* keywords added to allow for user</span>
+<span class="sd">       defined boxes</span>
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       *update_selection* and *quiet* keywords added</span>
 
@@ -680,15 +770,23 @@
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-    <span class="c1"># Make the box bigger to avoid as much as possible &#39;outlier&#39;. This</span>
-    <span class="c1"># is important if the sites are defined at a high density: in this</span>
-    <span class="c1"># case the bulk regions don&#39;t have to be close to 1 * n0 but can</span>
-    <span class="c1"># be less. It&#39;s much more difficult to deal with outliers.  The</span>
-    <span class="c1"># ideal solution would use images: implement &#39;looking across the</span>
-    <span class="c1"># periodic boundaries&#39; but that gets complicate when the box</span>
-    <span class="c1"># rotates due to RMS fitting.</span>
-    <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">padding</span>
-    <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">padding</span>
+    <span class="k">if</span> <span class="n">gridcenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Generate a copy of smin/smax from coords to later check if the</span>
+        <span class="c1"># defined box might be too small for the selection</span>
+        <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Overwrite smin/smax with user defined values</span>
+        <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span> <span class="o">=</span> <span class="n">_set_user_grid</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Make the box bigger to avoid as much as possible &#39;outlier&#39;. This</span>
+        <span class="c1"># is important if the sites are defined at a high density: in this</span>
+        <span class="c1"># case the bulk regions don&#39;t have to be close to 1 * n0 but can</span>
+        <span class="c1"># be less. It&#39;s much more difficult to deal with outliers.  The</span>
+        <span class="c1"># ideal solution would use images: implement &#39;looking across the</span>
+        <span class="c1"># periodic boundaries&#39; but that gets complicate when the box</span>
+        <span class="c1"># rotates due to RMS fitting.</span>
+        <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">padding</span>
+        <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">padding</span>
 
     <span class="n">BINS</span> <span class="o">=</span> <span class="n">fixedwidth_bins</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">)</span>
     <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">],</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]))</span>
@@ -1163,7 +1261,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>

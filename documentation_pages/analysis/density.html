@@ -112,7 +112,7 @@ any manner.</p>
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal"><span class="pre">Density</span></code></a> object.</p>
 <dl class="function">
 <dt id="MDAnalysis.analysis.density.density_from_Universe">
-<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">density_from_Universe</code><span class="sig-paren">(</span><em>universe</em>, <em>delta=1.0</em>, <em>atomselection='name OH2'</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>metadata=None</em>, <em>padding=2.0</em>, <em>cutoff=0</em>, <em>soluteselection=None</em>, <em>use_kdtree=True</em>, <em>update_selection=False</em>, <em>verbose=None</em>, <em>interval=1</em>, <em>quiet=None</em>, <em>parameters=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#density_from_Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_Universe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">density_from_Universe</code><span class="sig-paren">(</span><em>universe</em>, <em>delta=1.0</em>, <em>atomselection='name OH2'</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>metadata=None</em>, <em>padding=2.0</em>, <em>cutoff=0</em>, <em>soluteselection=None</em>, <em>use_kdtree=True</em>, <em>update_selection=False</em>, <em>verbose=None</em>, <em>interval=1</em>, <em>quiet=None</em>, <em>parameters=None</em>, <em>gridcenter=None</em>, <em>xdim=None</em>, <em>ydim=None</em>, <em>zdim=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#density_from_Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_Universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> object.</p>
 <p>The trajectory is read, frame by frame, and the atoms selected with <cite>atomselection</cite> are
 histogrammed on a grid with spacing <cite>delta</cite>.</p>
@@ -132,7 +132,7 @@ is to read the whole trajectory.</li>
 <li><strong>metadata</strong> (<em>dict. optional</em>) – <cite>dict</cite> of additional data to be saved with the object; the meta data
 are passed through as they are.</li>
 <li><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – increase histogram dimensions by padding (on top of initial box size)
-in Angstroem [2.0]</li>
+in Angstroem. Padding is ignored when setting a user defined grid. [2.0]</li>
 <li><strong>soluteselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection for the solute, e.g. “protein” [<code class="docutils literal"><span class="pre">None</span></code>]</li>
 <li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – With <cite>cutoff</cite>, select “&lt;atomsel&gt; NOT WITHIN &lt;cutoff&gt; OF &lt;soluteselection&gt;”
 (Special routines that are faster than the standard <code class="docutils literal"><span class="pre">AROUND</span></code> selection);
@@ -153,6 +153,14 @@ processed, which is interesting with <code class="docutils literal"><span class=
 </li>
 <li><strong>interval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Show status update every <cite>interval</cite> frame [1]</li>
 <li><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a><em> (</em><em>optional</em><em>)</em>) – <cite>dict</cite> with some special parameters for <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal"><span class="pre">Density</span></code></a> (see docs)</li>
+<li><strong>gridcenter</strong> (<em>numpy ndarray</em><em>, </em><em>float32</em><em> (</em><em>optional</em><em>)</em>) – 3 element numpy array detailing the x, y and z coordinates of the
+center of a user defined grid box in Angstroem [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+<li><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined x dimension box edge in ångström; ignored if
+gridcenter is <code class="docutils literal"><span class="pre">None</span></code></li>
+<li><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined y dimension box edge in ångström; ignored if
+gridcenter is <code class="docutils literal"><span class="pre">None</span></code></li>
+<li><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined z dimension box edge in ångström; ignored if
+gridcenter is <code class="docutils literal"><span class="pre">None</span></code></li>
 </ul>
 </td>
 </tr>
@@ -197,6 +205,33 @@ all water oxygen atoms that are <em>farther away</em> than a given cut-off (say,
 </div>
 <p>(Using the special case for the bulk with <cite>soluteselection</cite> and <cite>cutoff</cite>
 improves performance over the simple <cite>update_selection</cite> approach.)</p>
+<p>If you are interested in explicitly setting a grid box of a given edge size
+and origin, you can use the gridcenter and x/y/zdim arguments. For example
+to plot the density of waters within 5 Å of a ligand (in this case the
+ligand has been assigned the residue name “LIG”) in a cubic grid with 20 Å
+edges which is centered on the centre of mass (COM) of the ligand:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span># Create a selection based on the ligand
+ligand_selection = universe.select_atoms(&quot;resname LIG&quot;)
+
+# Extract the COM of the ligand
+ligand_COM = ligand_selection.center_of_mass()
+
+# Generate a density of waters on a cubic grid centered on the ligand COM
+# In this case, we update the atom selection as shown above.
+water_density = density_from_Universe(universe, delta=1.0,
+                                      atomselection=&#39;name OW around 5 resname LIG&#39;,
+                                      update_selection=True,
+                                      gridcenter=ligand_COM,
+                                      xdim=20.0, ydim=20.0, zdim=20.0)
+
+(It should be noted that the `padding` keyword is not used when a user
+defined grid is assigned).
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.1: </span><em>gridcenter</em>, <em>xdim</em>, <em>ydim</em> and <em>zdim</em> keywords added to allow for user
+defined boxes</p>
+</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.13.0: </span><em>update_selection</em> and <em>quiet</em> keywords added</p>
 </div>
@@ -918,7 +953,7 @@ calculation.</td></tr>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Vedant Rathore, Tyler Reddy, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
