@@ -77,8 +77,7 @@ from numpy.lib.utils import deprecate
 from .util import check_coords
 from .mdamath import triclinic_vectors, triclinic_box
 from ._augment import augment_coordinates, undo_augment
-
-
+from .nsgrid import FastNS
 
 # hack to select backend with backend=<backend> kwarg. Note that
 # the cython parallel code (prange) in parallel.distances is
@@ -502,13 +501,6 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
     -------
     function : callable
         The function implementing the guessed (or deliberatly chosen) method.
-
-    Note
-    ----
-    Currently implemented methods are present in the ``methods`` dictionary
-        bruteforce : returns ``_bruteforce_capped``
-        PKDtree : return ``_pkdtree_capped``
-        NSGrid : return ``_nsgrid_capped``
     """
     methods = {'bruteforce': _bruteforce_capped,
                'pkdtree': _pkdtree_capped,
@@ -669,7 +661,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
     """
-    from .pkdtree import PeriodicKDTree
+    from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
     kdtree = PeriodicKDTree(box=box)
     cut = max_cutoff if box is not None else None
@@ -745,8 +737,6 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
     """
-    from .nsgrid import FastNS
-
     if box is None:
         # create a pseudobox
         # define the max range
@@ -898,13 +888,6 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
     -------
     function : callable
         The function implementing the guessed (or deliberatly chosen) method.
-
-    Note
-    ----
-    Currently implemented methods are present in the ``methods`` dictionary
-        bruteforce : returns ``_bruteforce_capped_self``
-        PKDtree : return ``_pkdtree_capped_self``
-        NSGrid : return ``_nsgrid_capped_self``
     """
     methods = {'bruteforce': _bruteforce_capped_self,
                'pkdtree': _pkdtree_capped_self,
@@ -1035,7 +1018,7 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         distance between the coordinates ``reference[pairs[k, 0]]`` and
         ``reference[pairs[k, 1]]``.
     """
-    from .pkdtree import PeriodicKDTree
+    from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
     pairs, distance = [], []
     kdtree = PeriodicKDTree(box=box)
@@ -1092,8 +1075,6 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         distance between the coordinates ``reference[pairs[k, 0]]`` and
         ``reference[pairs[k, 1]]``.
     """
-    from .nsgrid import FastNS
-
     reference = np.asarray(reference, dtype=np.float32)
     if reference.shape == (3, ) or len(reference) == 1:
         return [], []
