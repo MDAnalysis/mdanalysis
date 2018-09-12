@@ -52,6 +52,19 @@ case-insensitive):
 
 Functions
 ---------
+.. autofunction:: distance_array
+.. autofunction:: self_distance_array
+.. autofunction:: capped_distance
+.. autofunction:: self_capped_distance
+.. autofunction:: calc_bonds
+.. autofunction:: calc_angles
+.. autofunction:: calc_dihedrals
+.. autofunction:: calc_distance
+.. autofunction:: calc_angle
+.. autofunction:: calc_dihedral
+.. autofunction:: apply_PBC
+.. autofunction:: transform_RtoS
+.. autofunction:: transform_StoR
 .. autofunction:: augment_coordinates(coordinates, box, r)
 .. autofunction:: undo_augment(results, translation, nreal)
 """
