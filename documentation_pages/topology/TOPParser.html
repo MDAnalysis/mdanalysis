@@ -53,8 +53,8 @@
 <p>Amber keywords are turned into the following attributes:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="44%" />
 <col width="56%" />
+<col width="44%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>AMBER flag</td>
@@ -72,16 +72,28 @@
 <tr class="row-odd"><td>MASS</td>
 <td>masses</td>
 </tr>
-<tr class="row-even"><td>ATOM_TYPE_INDEX</td>
+<tr class="row-even"><td>BONDS_INC_HYDROGEN
+BONDS_WITHOUT_HYDROGEN</td>
+<td>bonds</td>
+</tr>
+<tr class="row-odd"><td>ANGLES_INC_HYDROGEN
+ANGLES_WITHOUT_HYDROGEN</td>
+<td>angles</td>
+</tr>
+<tr class="row-even"><td>DIHEDRALS_INC_HYDROGEN
+DIHEDRALS_WITHOUT_HYDROGEN</td>
+<td>dihedrals / improper</td>
+</tr>
+<tr class="row-odd"><td>ATOM_TYPE_INDEX</td>
 <td>type_indices</td>
 </tr>
-<tr class="row-odd"><td>AMBER_ATOM_TYPE</td>
+<tr class="row-even"><td>AMBER_ATOM_TYPE</td>
 <td>types</td>
 </tr>
-<tr class="row-even"><td>RESIDUE_LABEL</td>
+<tr class="row-odd"><td>RESIDUE_LABEL</td>
 <td>resnames</td>
 </tr>
-<tr class="row-odd"><td>RESIDUE_POINTER</td>
+<tr class="row-even"><td>RESIDUE_POINTER</td>
 <td>residues</td>
 </tr>
 </tbody>
@@ -98,15 +110,17 @@ by 18.2223.</p>
 <dt id="MDAnalysis.topology.TOPParser.TOPParser">
 <em class="property">class </em><code class="descclassname">MDAnalysis.topology.TOPParser.</code><code class="descname">TOPParser</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads topology information from an AMBER top file.</p>
-<blockquote>
-<div><p>Reads the following Attributes if in topology:
+<p>Reads the following Attributes if in topology:
 - Atomnames
 - Charges
 - Masses
 - Elements
 - Atomtypes
 - Resnames
-- Type_indices</p>
+- Type_indices
+- Bonds
+- Angles
+- Dihedrals (inc. impropers)</p>
 <dl class="docutils">
 <dt>Guesses the following attributes:</dt>
 <dd><ul class="first last simple">
@@ -117,9 +131,11 @@ by 18.2223.</p>
 <p>The format is defined in <a class="reference external" href="http://ambermd.org/formats.html#topology">PARM parameter/topology file
 specification</a>.  The reader tries to detect if it is a newer
 (AMBER 12?) file format by looking for the flag “ATOMIC_NUMBER”.</p>
-</div></blockquote>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.7.6: </span>parses both amber10 and amber12 formats</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.1: </span>parses bonds, angles, dihedrals, and impropers</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.topology.TOPParser.TOPParser.close">
@@ -375,9 +391,345 @@ is avoided.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_bonded">
+<code class="descname">parse_bonded</code><span class="sig-paren">(</span><em>num_per_record</em>, <em>numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_bonded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_bonded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts bond information from PARM7 format files</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of entries for each record in section</li>
+<li><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of lines to be parsed for this section</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For the bond/angle sections of parm7 files, the atom numbers are set to
+coordinate array index values. As detailed in
+<a class="reference external" href="http://ambermd.org/formats.html">http://ambermd.org/formats.html</a> to recover the actual atom number, one
+should divide the values by 3 and add 1. Here, since we want to satisfy
+zero-indexing, we only divide by 3.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_charges">
+<code class="descname">parse_charges</code><span class="sig-paren">(</span><em>num_per_record</em>, <em>numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_charges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_charges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the partial charges for each atom</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of entries for each record in section (unused input)</li>
+<li><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of lines to be parsed in current section</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>attr</strong> – A <code class="xref py py-class docutils literal"><span class="pre">Charges</span></code> instance containing the partial charges of each
+atom as defined in the parm7 file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">Charges</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_chunks">
+<code class="descname">parse_chunks</code><span class="sig-paren">(</span><em>data</em>, <em>chunksize</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_chunks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to parse AMBER PRMTOP bonds/angles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>list of int</em>) – Input list of the parm7 bond/angle section, zero-indexed</li>
+<li><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of entries for each record in the input list</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>vals</strong> – A list of tuples containing the atoms involved in a given bonded
+interaction</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of int tuples</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the parm7 format this information is structured in the following
+format: [ atoms 1:n, internal index ]
+Where 1:n represent the ids of the n atoms involved in the bond/angle
+and the internal index links to a given set of FF parameters.
+Therefore, to extract the required information, we split out the list
+into chunks of size num_per_record, and only extract the atom ids.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_dihedrals">
+<code class="descname">parse_dihedrals</code><span class="sig-paren">(</span><em>diha</em>, <em>dihh</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_dihedrals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combines hydrogen and non-hydrogen containing AMBER dihedral lists
+and extracts sublists for conventional dihedrals and improper angles</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>diha</strong> (<em>list of tuples</em>) – The atom ids of dihedrals not involving hydrogens</li>
+<li><strong>dihh</strong> (<em>list of tuples</em>) – The atom ids of dihedrals involving hydrogens</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>dihedrals</strong> (<code class="xref py py-class docutils literal"><span class="pre">Dihedrals</span></code>) – A <code class="xref py py-class docutils literal"><span class="pre">Dihedrals</span></code> instance containing a list of all unique
+dihedrals as defined by the parm7 file</li>
+<li><strong>impropers</strong> (<code class="xref py py-class docutils literal"><span class="pre">Impropers</span></code>) – A <code class="xref py py-class docutils literal"><span class="pre">Impropers</span></code> instance containing a list of all unique
+improper dihedrals as defined by the parm7 file</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As detailed in <a class="reference external" href="http://ambermd.org/formats.html">http://ambermd.org/formats.html</a>, the dihedral sections
+of parm7 files contain information about both conventional dihedrals
+and impropers. The following must be accounted for:
+1) If the fourth atom in a dihedral entry is given a negative value,
+this indicates that it is an improper.
+2) If the third atom in a dihedral entry is given a negative value,
+this indicates that it 1-4 NB interactions are ignored for this
+dihedrals. This could be due to the dihedral within a ring, or if it is
+part of a multi-term dihedral definition or if it is an improper.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_elements">
+<code class="descname">parse_elements</code><span class="sig-paren">(</span><em>num_per_record</em>, <em>numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the atomic numbers of each atom and converts to element type</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of entries for each record in section(unused input)</li>
+<li><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of lines to be pasred in current section</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>attr</strong> – A <code class="xref py py-class docutils literal"><span class="pre">Elements</span></code> instance containing the element of each atom
+as defined in the parm7 file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">Elements</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_masses">
+<code class="descname">parse_masses</code><span class="sig-paren">(</span><em>num_per_record</em>, <em>numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_masses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_masses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the mass of each atom</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of entries for each record in section (unused input)</li>
+<li><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of lines to be parsed in current section</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>attr</strong> – A <code class="xref py py-class docutils literal"><span class="pre">Masses</span></code> instance containing the mass of each atom as
+defined in the parm7 file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">Masses</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_names">
+<code class="descname">parse_names</code><span class="sig-paren">(</span><em>num_per_record</em>, <em>numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts atoms names from parm7 file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of entries for each record in the section (unused input)</li>
+<li><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of lines to be parsed in current section</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>attr</strong> – A <code class="xref py py-class docutils literal"><span class="pre">Atomnames</span></code> instance containing the names of each atom as
+defined in the parm7 file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">Atomnames</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_residx">
+<code class="descname">parse_residx</code><span class="sig-paren">(</span><em>num_per_record</em>, <em>numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_residx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_residx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the residue pointers for each atom</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of entries for each record in section (unused input)</li>
+<li><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of lines to be parsed in current section</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>vals</strong> – A list of zero-formatted residue pointers for each atom</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_resnames">
+<code class="descname">parse_resnames</code><span class="sig-paren">(</span><em>num_per_record</em>, <em>numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_resnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_resnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the names of each residue</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of entries for each recrod in section (unused input)</li>
+<li><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of lines to be parsed in current section</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>attr</strong> – A <code class="xref py py-class docutils literal"><span class="pre">Resnames</span></code> instance containing the names of each residue
+as defined in the parm7 file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">Resnames</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_type_indices">
+<code class="descname">parse_type_indices</code><span class="sig-paren">(</span><em>num_per_record</em>, <em>numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_type_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_type_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the index of atom types of the each atom involved in Lennard
+Jones (6-12) interactions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of entries for each record in section (unused input)</li>
+<li><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of lines to be parsed in current section</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <code class="xref py py-class docutils literal"><span class="pre">TypeIndices</span></code> instance containing the LJ 6-12 atom type
+index for each atom</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">attr <code class="xref py py-class docutils literal"><span class="pre">TypeIndices</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_types">
+<code class="descname">parse_types</code><span class="sig-paren">(</span><em>num_per_record</em>, <em>numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the force field atom types of each atom</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of entries for each record in section (unused input)</li>
+<li><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of lines to be parsed in current section</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>attr</strong> – A <code class="xref py py-class docutils literal"><span class="pre">Atomtypes</span></code> instance containing the atom types for each
+atom as defined in the parm7 file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">Atomtypes</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parsesection_mapper">
+<code class="descname">parsesection_mapper</code><span class="sig-paren">(</span><em>numlines</em>, <em>mapper</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parsesection_mapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parsesection_mapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses FORTRAN formatted section, and returns a list of all entries
+in each line</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of lines to be parsed in this section</li>
+<li><strong>mapper</strong> (<em>lambda operator</em>) – Operator to format entries in current section</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>section</strong> – A list of all entries in a given parm7 section</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.topology.TOPParser.TOPParser.skipper">
 <code class="descname">skipper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.skipper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.skipper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Skip until we find the next %FLAG entry and return that</p>
+<dd><p>TOPParser :class: helper function, skips lines of input parm7 file
+until we find the next %FLAG entry and return that</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>line</strong> – String containing the current line of the parm7 file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/string.html#module-string" title="(in Python v3.7)">string</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
