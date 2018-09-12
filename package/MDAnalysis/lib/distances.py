@@ -163,7 +163,11 @@ def _check_box(box):
         If `box` is not of the form ``[lx, ly, lz, alpha, beta, gamma]``
         or contains data that is not convertible to ``numpy.float32``.
 
-    .. seealso: :meth:`MDAnalysis.lib.mdamath.triclinic_vectors`
+    See Also
+    --------
+    MDAnalysis.lib.mdamath.triclinic_vectors
+
+
     .. versionchanged: 0.19.0
        * Enforced correspondence of `box` with specified format.
        * Added automatic conversion of input to :class:`numpy.ndarray` with
@@ -441,9 +445,11 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
     Currently supports brute force, grid-based, and periodic KDtree search
     methods.
 
-    .. seealso:: :meth:`~MDAnalysis.lib.distances.distance_array`
-    .. seealso:: :meth:`MDAnalysis.lib.pkdtree.PeriodicKDTree.search`
-    .. seealso:: :meth:`MDAnalysis.lib.nsgrid.FastNS.search`
+    See Also
+    --------
+    distance_array
+    MDAnalysis.lib.pkdtree.PeriodicKDTree.search
+    MDAnalysis.lib.nsgrid.FastNS.search
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -847,9 +853,11 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
     Currently supports brute force, grid-based, and periodic KDtree search
     methods.
 
-    .. seealso:: :meth:`~MDAnalysis.lib.distances.self_distance_array`
-    .. seealso:: :meth:`MDAnalysis.lib.pkdtree.PeriodicKDTree.search`
-    .. seealso:: :meth:`MDAnalysis.lib.nsgrid.FastNS.self_search`
+    See Also
+    --------
+    self_distance_array
+    MDAnalysis.lib.pkdtree.PeriodicKDTree.search
+    MDAnalysis.lib.nsgrid.FastNS.self_search
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
