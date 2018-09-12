@@ -262,9 +262,8 @@ def distance_array(reference, configuration, box=None, result=None,
         ``numpy.float64``.
         Avoids creating the array which saves time when the function
         is called repeatedly.
-    backend : str, optional
-        Select the type of acceleration; ``'serial'`` is always available.
-        Another possibility is ``'OpenMP'``.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -328,9 +327,8 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
         Preallocated result array which must have the shape ``(n*(n-1)/2,)`` and
         dtype ``numpy.float64``. Avoids creating the array which saves time when
         the function is called repeatedly.
-    backend : str, optional
-        Select the type of acceleration; ``'serial'`` is always available.
-        Another possibility is ``'OpenMP'``.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -409,9 +407,9 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : str, optional
-        Keyword to override the automatic guessing ofthe employed search method.
-        Can be ``'bruteforce'``, ``'nsgrid'``,  or ``'pkdtree'``.
+    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
+        Keyword to override the automatic guessing of the employed search
+        method.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
 
@@ -496,9 +494,9 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : str, optional
-        Keyword to override the automatic guessing ofthe employed search method.
-        Can be ``'bruteforce'``, ``'nsgrid'``, or ``'pkdtree'``.
+    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
+        Keyword to override the automatic guessing of the employed search
+        method.
 
     Returns
     -------
@@ -821,9 +819,9 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : str, optional
-        Keyword to override the automatic guessing ofthe employed search method.
-        Can be ``'bruteforce'``, ``'nsgrid'``,  or ``'pkdtree'``.
+    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
+        Keyword to override the automatic guessing of the employed search
+        method.
 
     Returns
     -------
@@ -892,9 +890,9 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : str, optional
-        Keyword to override the automatic guessing ofthe employed search method.
-        Can be ``'bruteforce'``, ``'nsgrid'``, or ``'pkdtree'``.
+    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
+        Keyword to override the automatic guessing of the employed search
+        method.
 
     Returns
     -------
@@ -1156,9 +1154,8 @@ def transform_RtoS(coords, box, backend="serial"):
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    backend : str, optional
-        Select the type of acceleration; ``'serial'`` is always available.
-        Another possibility is ``'OpenMP'``.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -1204,9 +1201,8 @@ def transform_StoR(coords, box, backend="serial"):
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    backend : str, optional
-        Select the type of acceleration; ``'serial'`` is always available.
-        Another possibility is ``'OpenMP'``.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -1268,9 +1264,8 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
         Preallocated result array which must be of the same length ``n`` as the
         coordinate arrays and of  dtype ``numpy.float64``. Avoids recreating the
         array in repeated function calls.
-    backend : str, optional
-        Select the type of acceleration; ``'serial'`` is always available.
-        Another possibility is ``'OpenMP'``.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -1355,9 +1350,8 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="seria
         Preallocated result array which must be of the same length ``n`` as the
         coordinate arrays and of dtype ``numpy.float64``. Avoids recreating the
         array in repeated function calls.
-    backend : str, optional
-        Select the type of acceleration; ``'serial'`` is always available.
-        Another possibility is ``'OpenMP'``.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -1454,9 +1448,8 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
         Preallocated result array which must be of the same length as the
         coordinate arrays and of dtype ``numpy.float64``. Avoids recreating the
         array in repeated function calls.
-    backend : str, optional
-        Select the type of acceleration; ``'serial'`` is always available.
-        Another possibility is ``'OpenMP'``.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -1514,9 +1507,8 @@ def apply_PBC(coords, box, backend="serial"):
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    backend : str, optional
-        Select the type of acceleration; ``'serial'`` is always available.
-        Another possibility is ``'OpenMP'``.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
