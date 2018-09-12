@@ -105,6 +105,7 @@ Fixes
   * Added periodic boundary box support to the Tinker file reader (Issue #2001)
   * Modifying coordinates by assignation is consistently persistent when using
     the memory reader (Issue #2018)
+  * allow import of WaterBridgeAnalysis from analysis.hbonds (#2064)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)
