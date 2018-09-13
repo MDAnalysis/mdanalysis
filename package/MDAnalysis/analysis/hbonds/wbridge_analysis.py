@@ -636,11 +636,12 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = distances.calc_distance(donor_atom.position,
-                                                           a.position)
+                            dist = distances.calc_bonds(donor_atom.position,
+                                                        a.position)
                             if dist <= self.distance:
-                                angle = distances.calc_angle(d.position, h.position,
+                                angle = distances.calc_angles(d.position, h.position,
                                                              a.position)
+                                angle = np.rad2deg(angle)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "S1-D: {0!s} <-> W-A: {1!s} {2:f} A, {3:f} DEG"\
@@ -662,11 +663,12 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = distances.calc_distance(donor_atom.position,
-                                                           a.position)
+                            dist = distances.calc_bonds(donor_atom.position,
+                                                        a.position)
                             if dist <= self.distance:
-                                angle = distances.calc_angle(d.position, h.position,
+                                angle = distances.calc_angles(d.position, h.position,
                                                              a.position)
+                                angle = np.rad2deg(angle)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "S1-A: {0!s} <-> W-D: {1!s} {2:f} A, {3:f} DEG"\
@@ -712,11 +714,12 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy'  else d
-                            dist = distances.calc_distance(donor_atom.position,
-                                                           a.position)
+                            dist = distances.calc_bonds(donor_atom.position,
+                                                        a.position)
                             if dist <= self.distance:
-                                angle = distances.calc_angle(d.position, h.position,
+                                angle = distances.calc_angles(d.position, h.position,
                                                              a.position)
+                                angle = np.rad2deg(angle)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "WB-D: {0!s} <-> S2-A: {1!s} {2:f} A, {3:f} DEG"\
@@ -736,11 +739,12 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = distances.calc_distance(donor_atom.position,
-                                                           a.position)
+                            dist = distances.calc_bonds(donor_atom.position,
+                                                        a.position)
                             if dist <= self.distance:
-                                angle = distances.calc_angle(d.position, h.position,
+                                angle = distances.calc_angles(d.position, h.position,
                                                              a.position)
+                                angle = np.rad2deg(angle)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "WB-A: {0!s} <-> S2-D: {1!s} {2:f} A, {3:f} DEG"\
