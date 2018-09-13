@@ -68,8 +68,6 @@ Enhancements
   * Calculations in *Group.center() are performed in double precision (#PR1936)
   * Functions in lib.distances accept coordinate arrays of arbitrary dtype
     (PR #1936)
-  * Added calc_distance, calc_angle and calc_dihedral to lib.distances
-    (Issue #1262 #1938)
   * Added pbc kwarg to Bond/Angle/Dihedral/Improper object value method,
     default True. (Issue #1938)
   * ChainReader can correctly handle continuous trajectories split into multiple files,
@@ -82,7 +80,8 @@ Enhancements
   * Added analysis.dihedrals with Ramachandran class to analysis module (PR #1997)
   * Added augment functionality to create relevant images of particles 
   * Most functions in `MDanalysis.lib.distances` previously only accepting
-    arrays of coordinates now also accept single coordinates as input (PR #2048)
+    arrays of coordinates now also accept single coordinates as input (PR #2048,
+    Issues #1262 #1938)
   * Performance improvements to make_whole (PR #1965)
   * Performance improvements to fragment finding (PR #2028)
   * Added user-defined boxes in density code (PR #2005)

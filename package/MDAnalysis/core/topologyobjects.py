@@ -201,7 +201,7 @@ class Bond(TopologyObject):
         """
         box = self.universe.dimensions if pbc else None
 
-        return distances.calc_distance(self[0].position, self[1].position, box)
+        return distances.calc_bonds(self[0].position, self[1].position, box)
 
     value = length
 
@@ -241,8 +241,8 @@ class Angle(TopologyObject):
         """
         box = self.universe.dimensions if pbc else None
 
-        return distances.calc_angle(
-            self[0].position, self[1].position, self[2].position, box)
+        return np.rad2deg(distances.calc_angles(
+            self[0].position, self[1].position, self[2].position, box))
 
     value = angle
 
@@ -291,8 +291,8 @@ class Dihedral(TopologyObject):
         box = self.universe.dimensions if pbc else None
         A, B, C, D = self.atoms
 
-        return distances.calc_dihedral(
-            A.position, B.position, C.position, D.position, box)
+        return np.rad2deg(distances.calc_dihedrals(
+            A.position, B.position, C.position, D.position, box))
 
     value = dihedral
 

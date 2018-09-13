@@ -807,7 +807,7 @@ class HydrogenBondAnalysis(object):
             hydrogens = [
                 a for a in self.u.atoms[atom.index + 1:atom.index + 4]
                 if (a.name.startswith(('H', '1H', '2H', '3H')) and
-                    distances.calc_distance(atom.position, a.position, box) < self.r_cov[atom.name[0]])
+                    distances.calc_bonds(atom.position, a.position, box=box) < self.r_cov[atom.name[0]])
                 ]
         except IndexError:
             hydrogens = []  # weird corner case that atom is the last one in universe
@@ -993,10 +993,12 @@ class HydrogenBondAnalysis(object):
                     for h in donor_h_set:
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
-                            angle = distances.calc_angle(d.position, h.position,
-                                                         a.position, box=box)
+                            angle = distances.calc_angles(d.position,
+                                                          h.position,
+                                                          a.position, box=box)
+                            angle = np.rad2deg(angle)
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = distances.calc_distance(donor_atom.position, a.position, box)
+                            dist = distances.calc_bonds(donor_atom.position, a.position, box=box)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
                                     "S1-D: {0!s} <-> S2-A: {1!s} {2:f} A, {3:f} DEG".format(h.index, a.index, dist, angle))
@@ -1019,10 +1021,12 @@ class HydrogenBondAnalysis(object):
                                     (h.index, a.index) in already_found or
                                     (a.index, h.index) in already_found):
                                 continue
-                            angle = distances.calc_angle(d.position, h.position,
-                                                         a.position, box=box)
+                            angle = distances.calc_angles(d.position,
+                                                          h.position,
+                                                          a.position, box=box)
+                            angle = np.rad2deg(angle)
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = distances.calc_distance(donor_atom.position, a.position, box)
+                            dist = distances.calc_bonds(donor_atom.position, a.position, box=box)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
                                     "S1-A: {0!s} <-> S2-D: {1!s} {2:f} A, {3:f} DEG".format(a.index, h.index, dist, angle))
