@@ -249,7 +249,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span></div>
 
     <span class="n">value</span> <span class="o">=</span> <span class="n">length</span></div>
 
@@ -289,8 +289,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_angle</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">calc_angles</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">))</span></div>
 
     <span class="n">value</span> <span class="o">=</span> <span class="n">angle</span></div>
 
@@ -339,8 +339,8 @@
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
 
-        <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_dihedral</span><span class="p">(</span>
-            <span class="n">A</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">calc_dihedrals</span><span class="p">(</span>
+            <span class="n">A</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">))</span></div>
 
     <span class="n">value</span> <span class="o">=</span> <span class="n">dihedral</span></div>
 
