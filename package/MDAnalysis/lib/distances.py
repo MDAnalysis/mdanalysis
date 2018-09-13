@@ -1157,7 +1157,7 @@ def transform_RtoS(coords, box, backend="serial"):
 
     # Create inverse matrix of box
     # need order C here
-    inv = np.array(np.matrix(box).I, dtype=np.float32, order='C')
+    inv = np.array(np.linalg.inv(box), dtype=np.float32, order='C')
 
     _run("coord_transform", args=(coords, inv), backend=backend)
 
@@ -1514,103 +1514,3 @@ def apply_PBC(coords, box, backend="serial"):
         _run("triclinic_pbc", args=(coords, box, box_inv), backend=backend)
 
     return coords
-
-
-def calc_distance(a, b, box=None):
-    """Calculates the distance between positions `a` and `b`.
-
-    If the optional argument `box` is supplied, the minimum image convention is
-    applied during distance calculation. Either orthogonal or triclinic boxes
-    are supported.
-
-    Parameters
-    ----------
-    a,b : numpy.ndarray
-        Single position vectors of shape ``(3,)``.
-    box : numpy.ndarray, optional
-        The unitcell dimensions of the system, which can be orthogonal or
-        triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
-        ``[lx, ly, lz, alpha, beta, gamma]``.
-
-    Returns
-    -------
-    distance : float
-        The distance between positions `a` and `b`.
-
-
-    .. versionadded:: 0.18.1
-    """
-    return calc_bonds(a, b, box=box)
-
-
-def calc_angle(a, b, c, box=None):
-    """Calculates the angle (in degrees) between the positions `a`, `b`, and
-    `c`, where `b` represents the apex of the angle::
-
-            b---c
-           /
-          a
-
-    If the optional argument `box` is supplied, periodic boundaries are taken
-    into account when constructing the connecting vectors between coordinates,
-    i.e., the minimum image convention is applied for the vectors forming the
-    angle. Either orthogonal or triclinic boxes are supported.
-
-    Parameters
-    ----------
-    a,b,c : numpy.ndarray
-        Single position vectors of shape ``(3,)``.
-    box : numpy.ndarray, optional
-        The unitcell dimensions of the system, which can be orthogonal or
-        triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
-        ``[lx, ly, lz, alpha, beta, gamma]``.
-
-    Returns
-    -------
-    angle : float
-        The angle between the vectors `b`:math:`\\rightarrow`\ `a` and
-        `b`:math:`\\rightarrow`\ `c`.
-
-
-    .. versionadded:: 0.18.1
-    """
-    return np.rad2deg(calc_angles(a, b, c, box=box))
-
-
-def calc_dihedral(a, b, c, d, box=None):
-    """Calculates the dihedral angle (in degrees) between the planes spanned by
-    the coordinates (`a`, `b`, `c`) and (`b`, `c`, `d`)::
-
-                  d
-                  |
-            b-----c
-           /
-          a
-
-    If the optional argument `box` is supplied, periodic boundaries are taken
-    into account when constructing the connecting vectors between coordinates,
-    i.e., the minimum image convention is applied for the vectors forming the
-    dihedral angle. Either orthogonal or triclinic boxes are supported.
-
-    Parameters
-    ----------
-    a,b,c,d : numpy.ndarray
-        Single coordinate vectors of shape ``(3,)``.
-    box : numpy.ndarray, optional
-        The unitcell dimensions of the system, which can be orthogonal or
-        triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
-        ``[lx, ly, lz, alpha, beta, gamma]``.
-
-    Returns
-    -------
-    dihedral : float
-        The dihedral angle between the planes spanned by the coordinates
-        (`a`, `b`, `c`) and (`b`, `c`, `d`).
-
-
-    .. versionadded:: 0.18.1
-    """
-    return np.rad2deg(calc_dihedrals(a, b, c, d, box))
