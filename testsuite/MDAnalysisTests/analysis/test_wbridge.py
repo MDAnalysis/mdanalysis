@@ -6,6 +6,14 @@ from numpy.testing import assert_equal
 import MDAnalysis
 from MDAnalysis.analysis.hbonds.wbridge_analysis import WaterBridgeAnalysis
 
+def test_import_from_hbonds():
+    try:
+        from MDAnalysis.analysis.hbonds import WaterBridgeAnalysis
+    except ImportError:
+        raise AssertionError("Issue #2064 not fixed: "
+                             "importing WaterBridgeAnalysis from "
+                             "MDAnalysis.analysis.hbonds failed.'")
+
 class TestWaterBridgeAnalysis(object):
     def test_acceptor_water_accepter(self):
         '''Test case where the hydrogen bond acceptor from selection 1 form
