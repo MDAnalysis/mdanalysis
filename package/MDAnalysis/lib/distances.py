@@ -59,9 +59,6 @@ Functions
 .. autofunction:: calc_bonds
 .. autofunction:: calc_angles
 .. autofunction:: calc_dihedrals
-.. autofunction:: calc_distance
-.. autofunction:: calc_angle
-.. autofunction:: calc_dihedral
 .. autofunction:: apply_PBC
 .. autofunction:: transform_RtoS
 .. autofunction:: transform_StoR
