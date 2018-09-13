@@ -522,7 +522,7 @@ class TestCythonFunctions(object):
         result = MDAnalysis.lib.distances.calc_angles(a, b, c, box,
                                                       backend=backend)
         reference = ref if periodic else manual_angle(a, b, c)
-        assert_almost_equal(result, reference, decimal=self.prec)
+        assert_almost_equal(result, reference, decimal=4)
 
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     def test_dihedrals(self, positions, backend, dtype):
@@ -598,7 +598,7 @@ class TestCythonFunctions(object):
         result = MDAnalysis.lib.distances.calc_dihedrals(a, b, c, d, box,
                                                          backend=backend)
         reference = ref if periodic else manual_dihedral(a, b, c, d)
-        assert_almost_equal(abs(result), abs(reference), decimal=self.prec)
+        assert_almost_equal(abs(result), abs(reference), decimal=4)
 
     def test_numpy_compliance(self, positions, backend):
         a, b, c, d = positions
