@@ -383,7 +383,6 @@ class TestCythonFunctions(object):
     @pytest.fixture()
     def positions():
         # dummy atom data
-
         a = np.array([[0., 0., 0.], [0., 0., 0.], [0., 11., 0.], [1., 1., 1.]], dtype=np.float32)
         b = np.array([[0., 0., 0.], [1., 1., 1.], [0., 0., 0.], [29., -21., 99.]], dtype=np.float32)
         c = np.array([[0., 0., 0.], [2., 2., 2.], [11., 0., 0.], [1., 9., 9.]], dtype=np.float32)
@@ -396,17 +395,16 @@ class TestCythonFunctions(object):
 
     @staticmethod
     @pytest.fixture()
-    def wrongtype():
-        # declared as float64 and should raise TypeError
-        return np.array([[0., 0., 0.], [3., 3., 3.], [3., 3., 3.], [3., 3., 3.]],
-                        dtype=np.float64)
-
-    @staticmethod
-    @pytest.fixture()
     def wronglength():
         # has a different length to other inputs and should raise ValueError
         return np.array([[0., 0., 0.], [3., 3., 3.]],
                         dtype=np.float32)
+
+    # coordinate shifts for single coord tests
+    shifts = [((0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)),  # no shifting
+              ((1, 0, 0), (0, 1, 1), (0, 0, 1), (1, 1, 0)),  # single box lengths
+              ((-1, 0, 1), (0, -1, 0), (1, 0, 1), (-1, -1, -1)),  # negative single
+              ((4, 3, -2), (-2, 2, 2), (-5, 2, 2), (0, 2, 2))]  # multiple boxlengths
 
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     def test_bonds(self, positions, box, backend, dtype):
@@ -457,6 +455,26 @@ class TestCythonFunctions(object):
         reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
         assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
 
+    @pytest.mark.parametrize('shift', shifts)
+    @pytest.mark.parametrize('periodic', [True, False])
+    def test_bonds_single_coords(self, shift, periodic, backend):
+        box = np.array([10, 20, 30, 90., 90., 90.], dtype=np.float32)
+
+        coords = np.array([[1, 1, 1], [3, 1, 1]], dtype=np.float32)
+
+        shift1, shift2, _, _ = shift
+
+        coords[0] += shift1 * box[:3]
+        coords[1] += shift2 * box[:3]
+
+        box = box if periodic else None
+        result = MDAnalysis.lib.distances.calc_bonds(coords[0], coords[1], box,
+                                                     backend=backend)
+
+        reference = 2.0 if periodic else np.linalg.norm(coords[0] - coords[1])
+
+        assert_almost_equal(result, reference, decimal=self.prec)
+
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     def test_angles(self, positions, backend, dtype):
         a, b, c, d = self.convert_position_dtype(*positions, dtype=dtype)
@@ -479,6 +497,32 @@ class TestCythonFunctions(object):
         with pytest.raises(ValueError):
             MDAnalysis.lib.distances.calc_angles(
                 a, b, c, result=badresult, backend=backend)  # Bad result array
+
+    @pytest.mark.parametrize('case', [
+        (np.array([[1, 1, 1], [1, 2, 1], [2, 2, 1]], dtype=np.float32), 0.5 * np.pi),  # 90 degree angle
+        (np.array([[1, 1, 1], [1, 2, 1], [1, 3, 1]], dtype=np.float32), np.pi),  # straight line / 180.
+        (np.array([[1, 1, 1], [1, 2, 1], [2, 1, 1]], dtype=np.float32), 0.25 * np.pi),  # 45
+    ])
+    @pytest.mark.parametrize('shift', shifts)
+    @pytest.mark.parametrize('periodic', [True, False])
+    def test_angles_single_coords(self, case, shift, periodic, backend):
+        def manual_angle(x, y, z):
+            return MDAnalysis.lib.mdamath.angle(y - x, y - z)
+
+        box = np.array([10, 20, 30, 90., 90., 90.], dtype=np.float32)
+        (a, b, c), ref = case
+
+        shift1, shift2, shift3, _ = shift
+
+        a += shift1 * box[:3]
+        b += shift2 * box[:3]
+        c += shift3 * box[:3]
+
+        box = box if periodic else None
+        result = MDAnalysis.lib.distances.calc_angles(a, b, c, box,
+                                                      backend=backend)
+        reference = ref if periodic else manual_angle(a, b, c)
+        assert_almost_equal(result, reference, decimal=self.prec)
 
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     def test_dihedrals(self, positions, backend, dtype):
@@ -525,7 +569,36 @@ class TestCythonFunctions(object):
                 a, b, c, d, result=badresult,
                 backend=backend)  # Bad result array
 
+    @pytest.mark.parametrize('case', [
+        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 2, 1]], dtype=np.float32), 0.),  # 0 degree angle (cis)
+        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 0, 1]], dtype=np.float32), np.pi),  # 180 degree (trans)
+        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 1, 2]], dtype=np.float32), 0.5 * np.pi),  # 90 degree
+        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 1, 0]], dtype=np.float32), 0.5 * np.pi),  # other 90 degree
+        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 2, 2]], dtype=np.float32), 0.25 * np.pi),  # 45 degree
+        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 0, 2]], dtype=np.float32), 0.75 * np.pi),  # 135
+    ])
+    @pytest.mark.parametrize('shift', shifts)
+    @pytest.mark.parametrize('periodic', [True, False])
+    def test_dihedrals_single_coords(self, case, shift, periodic, backend):
+        def manual_dihedral(a, b, c, d):
+            return MDAnalysis.lib.mdamath.dihedral(b - a, c - b, d - c)
 
+        box = np.array([10., 10., 10., 90., 90., 90.], dtype=np.float32)
+
+        (a, b, c, d), ref = case
+
+        shift1, shift2, shift3, shift4 = shift
+
+        a += shift1 * box[:3]
+        b += shift2 * box[:3]
+        c += shift3 * box[:3]
+        d += shift4 * box[:3]
+
+        box = box if periodic else None
+        result = MDAnalysis.lib.distances.calc_dihedrals(a, b, c, d, box,
+                                                         backend=backend)
+        reference = ref if periodic else manual_dihedral(a, b, c, d)
+        assert_almost_equal(abs(result), abs(reference), decimal=self.prec)
 
     def test_numpy_compliance(self, positions, backend):
         a, b, c, d = positions
