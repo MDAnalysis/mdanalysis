@@ -1209,9 +1209,10 @@ def transform_StoR(coords, box, backend="serial"):
 @check_coords('coords1', 'coords2', enforce_copy=False)
 def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     """Calculates the bond lengths between pairs of atom positions from the two
-    coordinate arrays `coords1` and `coords2`. Both coordinate arrays must be of
-    the same length, so that ``coords1[i]`` and ``coords2[i]`` represent the
-    positions of atoms connected by the ``i``-th bond.
+    coordinate arrays `coords1` and `coords2`, which must contain the same
+    number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
+    positions of atoms connected by the ``i``-th bond. If single coordinates are
+    supplied, a single distance will be returned.
 
     In comparison to :meth:`distance_array` and :meth:`self_distance_array`,
     which calculate distances between all possible combinations of coordinates,
@@ -1224,27 +1225,29 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     applied when calculating distances. Either orthogonal or triclinic boxes are
     supported.
 
-    If a 1D numpy array of dtype ``numpy.float64`` with ``len(coords1)``
-    elements is provided in `result`, then this preallocated array is filled.
-    This can speed up calculations.
+    If a numpy array of dtype ``numpy.float64`` with shape ``(n,)`` (for ``n``
+    coordinate pairs) is provided in `result`, then this preallocated array is
+    filled. This can speed up calculations.
 
     Parameters
     ----------
     coords1 : numpy.ndarray
-        Coordinate array of shape ``(n, 3)`` for one half of ``n`` bonds (dtype
-        is arbitrary, will be converted to ``numpy.float32`` internally).
+        Coordinate array of shape ``(3,)`` or ``(n, 3)`` for one half of a
+        single or ``n`` bonds, respectively (dtype is arbitrary, will be
+        converted to ``numpy.float32`` internally).
     coords2 : numpy.ndarray
-        Coordinate array of shape ``(n, 3)`` for the other half of ``n`` bonds
-        (dtype is arbitrary, will be converted to ``numpy.float32`` internally).
+        Coordinate array of shape ``(3,)`` or ``(n, 3)`` for the other half of
+        a single or ``n`` bonds, respectively (dtype is arbitrary, will be
+        converted to ``numpy.float32`` internally).
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
-        Preallocated result array which must be of the same length ``n`` as the
-        coordinate arrays and of  dtype ``numpy.float64``. Avoids recreating the
-        array in repeated function calls.
+        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
+        (for ``n`` coordinate pairs). Avoids recreating the array in repeated
+        function calls.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
 
@@ -1285,52 +1288,54 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
 
 
 @check_coords('coords1', 'coords2', 'coords3', enforce_copy=False)
-def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="serial"):
+def calc_angles(coords1, coords2, coords3, box=None, result=None,
+                backend="serial"):
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
-    arrays must be of equal length, with the coordinates in `coords2`
-    representing the apices of the angles::
+    arrays must contain the same number of coordinates.
+
+    The coordinates in `coords2` represent the apices of the angles::
 
             2---3
            /
           1
 
     Configurations where the angle is undefined (e.g., when coordinates 1 or 3
-    of a triplet coincide with coordinate 2) result in a value of zero for that
-    angle.
+    of a triplet coincide with coordinate 2) result in a value of **zero** for
+    that angle.
 
     If the optional argument `box` is supplied, periodic boundaries are taken
     into account when constructing the connecting vectors between coordinates,
     i.e., the minimum image convention is applied for the vectors forming the
     angles. Either orthogonal or triclinic boxes are supported.
 
-    If a 1D numpy array of dtype ``numpy.float64`` with ``len(coords1)``
-    elements is provided in `result`, then this preallocated array is filled.
-    This can speed up calculations.
+    If a numpy array of dtype ``numpy.float64`` with shape ``(n,)`` (for ``n``
+    coordinate triplets) is provided in `result`, then this preallocated array
+    is filled. This can speed up calculations.
 
     Parameters
     ----------
     coords1 : numpy.ndarray
-        Array of shape ``(n, 3)`` containing the coordinates of one side of
-        ``n`` angles (dtype is arbitrary, will be converted to ``numpy.float32``
-        internally)
+        Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of one
+        side of a single or ``n`` angles, respectively (dtype is arbitrary, will
+        be converted to ``numpy.float32`` internally)
     coords2 : numpy.ndarray
-        Array of shape ``(n, 3)`` containing the coordinates of the apices of
-        ``n`` angles (dtype is arbitrary, will be converted to ``numpy.float32``
-        internally)
+        Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the
+        apices of a single or ``n`` angles, respectively (dtype is arbitrary,
+        will be converted to ``numpy.float32`` internally)
     coords3 : numpy.ndarray
-        Array of shape ``(n, 3)`` containing the coordinates of the other side
-        of ``n`` angles (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
+        Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the
+        other side of a single or ``n`` angles, respectively (dtype is
+        arbitrary, will be converted to ``numpy.float32`` internally)
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
-        Preallocated result array which must be of the same length ``n`` as the
-        coordinate arrays and of dtype ``numpy.float64``. Avoids recreating the
-        array in repeated function calls.
+        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
+        (for ``n`` coordinate triplets). Avoids recreating the array in repeated
+        function calls.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
 
@@ -1379,7 +1384,7 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
                    backend="serial"):
     """Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
-    `coords4`, which must be of equal length.
+    `coords4`, which must contain the same number of coordinates.
 
     The dihedral angle formed by a quadruplet of positions (1,2,3,4) is
     calculated around the axis connecting positions 2 and 3 (i.e., the angle
@@ -1402,9 +1407,9 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     i.e., the minimum image convention is applied for the vectors forming the
     dihedral angles. Either orthogonal or triclinic boxes are supported.
 
-    If a 1D numpy array of dtype ``numpy.float64`` with ``len(coords1)``
-    elements is provided in `result` then this preallocated array is filled.
-    This can speed up calculations.
+    If a numpy array of dtype ``numpy.float64`` with shape ``(n,)`` (for ``n``
+    coordinate quadruplets) is provided in `result` then this preallocated array
+    is filled. This can speed up calculations.
 
     Parameters
     ----------
@@ -1426,9 +1431,9 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
-        Preallocated result array which must be of the same length as the
-        coordinate arrays and of dtype ``numpy.float64``. Avoids recreating the
-        array in repeated function calls.
+        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
+        (for ``n`` coordinate quadruplets). Avoids recreating the array in
+        repeated function calls.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
 
