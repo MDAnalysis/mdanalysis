@@ -1411,17 +1411,21 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     Parameters
     ----------
     coords1 : numpy.ndarray
-        Coordinate array of 1st positions in dihedrals (dtype is arbitrary, will
-        be converted to ``numpy.float32`` internally)
+        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 1st
+        positions in dihedrals (dtype is arbitrary, will be converted to
+        ``numpy.float32`` internally)
     coords2 : numpy.ndarray
-        Coordinate array of 2nd positions in dihedrals (dtype is arbitrary, will
-        be converted to ``numpy.float32`` internally)
+        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 2nd
+        positions in dihedrals (dtype is arbitrary, will be converted to
+        ``numpy.float32`` internally)
     coords3 : numpy.ndarray
-        Coordinate array of 3rd positions in dihedrals (dtype is arbitrary, will
-        will be converted to ``numpy.float32`` internally)
+        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 3rd
+        positions in dihedrals (dtype is arbitrary, will be converted to
+        ``numpy.float32`` internally)
     coords4 : numpy.ndarray
-        Coordinate array of 4th positions in dihedrals (dtype is arbitrary, will
-        be converted to ``numpy.float32`` internally)
+        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 4th
+        positions in dihedrals (dtype is arbitrary, will be converted to
+        ``numpy.float32`` internally)
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
