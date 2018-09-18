@@ -39,7 +39,7 @@ env:
     # Run a coverage test for most versions
     - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.6 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=3.4 NUMPY_VERSION=1.14 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - PYTHON_VERSION=3.4 NUMPY_VERSION="" CHECK_FOR_LATEST_NUMPY_BUILD="true" CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=2.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - NUMPY_VERSION=1.10.4
     - NUMPY_VERSION=dev  EVENT_TYPE="cron"
@@ -97,6 +97,10 @@ install:
     fi
   - git clone git://github.com/astropy/ci-helpers.git
   - source ci-helpers/travis/setup_conda.sh
+  - |
+    if [[ $CHECK_FOR_LATEST_NUMPY_BUILD == 'true' ]]; then
+        bash ./maintainer/check_conda_for_latest_numpy_build.sh
+    fi
   - eval $BUILD_CMD
 
 script:
