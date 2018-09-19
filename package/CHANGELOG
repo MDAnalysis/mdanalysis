@@ -85,6 +85,9 @@ Enhancements
   * Performance improvements to make_whole (PR #1965)
   * Performance improvements to fragment finding (PR #2028)
   * Added user-defined boxes in density code (PR #2005)
+  * MemoryReader now can accept velocities and forces (PR #2080)
+  * Universe.transfer_to_memory now copies dimensions, velocities and forces
+    (where possible) (Issue #1041 PR #2080)
 
 Fixes
   * Rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
@@ -111,6 +114,9 @@ Fixes
     center of the reference group (Issue #1795)
   * PCA analysis now uses start frame as reference frame rather than 0th frame
     (PR #2055)
+  * Fixed trajectory iteration from a MDAnalysis.Universe.empty (#2076)
+  * Fixed copies MemoryReader not linking to the underlying coordinate array
+    on initial Timestep (Issue #2081 PR #2080)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)
@@ -136,6 +142,7 @@ Changes
     otherwise a ValueError is raised (PR #2055)
   * The quiet keyword has been removed and replaced with verbose (Issue #1975
     PR #2055)
+  * MDAnalysis.Universe.empty now creates a MemoryReader trajectory (#2076 #2077)
 
 Deprecations
   * start/stop/step are deprecated in the initialization of Analysis classes.
