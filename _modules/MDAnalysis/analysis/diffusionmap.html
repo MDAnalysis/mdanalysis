@@ -246,8 +246,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">rmsd</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">1E0</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span>
-                 <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                 <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -274,14 +273,6 @@
 <span class="sd">            Default: 1EO-5</span>
 <span class="sd">        weights : array, optional</span>
 <span class="sd">            Weights to be given to coordinates for metric calculation</span>
-<span class="sd">        start : int, optional</span>
-<span class="sd">            First frame of trajectory to analyse, Default: None becomes 0.</span>
-<span class="sd">        stop : int, optional</span>
-<span class="sd">            Frame index to stop analysis. Default: None becomes</span>
-<span class="sd">            n_frames. Iteration stops *before* this frame number,</span>
-<span class="sd">            which means that the trajectory would be read until the end.</span>
-<span class="sd">        step : int, optional</span>
-<span class="sd">            Step between frames to analyse, Default: None becomes 1.</span>
 <span class="sd">        verbose : bool (optional)</span>
 <span class="sd">             Show detailed progress of the calculation if set to ``True``; the</span>
 <span class="sd">             default is ``False``.</span>
@@ -290,8 +281,7 @@
         <span class="n">traj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">trajectory</span>
 
         <span class="c1"># remember that this must be called before referencing self.n_frames</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">DistanceMatrix</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span>
-                                           <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DistanceMatrix</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span> <span class="o">=</span> <span class="n">metric</span>
@@ -373,7 +363,7 @@
 <span class="sd">        **kwargs</span>
 <span class="sd">            Parameters to be passed for the initialization of a</span>
 <span class="sd">            :class:`DistanceMatrix`.</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">Universe</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span> <span class="o">=</span> <span class="n">DistanceMatrix</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">DistanceMatrix</span><span class="p">):</span>
@@ -382,20 +372,32 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;U is not a Universe or DistanceMatrix and&quot;</span>
                              <span class="s2">&quot; so the DiffusionMap has no data to work with.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+
+<div class="viewcode-block" id="DiffusionMap.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/diffusionmap.html#MDAnalysis.analysis.diffusionmap.DiffusionMap.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create and decompose the diffusion matrix in preparation</span>
+<span class="sd">        for a diffusion map.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : int, optional</span>
+<span class="sd">            start frame of analysis</span>
+<span class="sd">        stop : int, optional</span>
+<span class="sd">            stop frame of analysis</span>
+<span class="sd">        step : int, optional</span>
+<span class="sd">            number of frames to skip between each analysed frame</span>
+
+<span class="sd">        .. versionchanged:: 0.19.0</span>
+<span class="sd">           Added start/stop/step kwargs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># run only if distance matrix not already calculated</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">_calculated</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
         <span class="c1"># important for transform function and length of .run() method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">n_frames</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The distance matrix is very large, and can &quot;</span>
                           <span class="s2">&quot;be very slow to compute. Consider picking a larger &quot;</span>
                           <span class="s2">&quot;step size in distance matrix initialization.&quot;</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="DiffusionMap.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/diffusionmap.html#MDAnalysis.analysis.diffusionmap.DiffusionMap.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create and decompose the diffusion matrix in preparation</span>
-<span class="sd">        for a diffusion map.&quot;&quot;&quot;</span>
-        <span class="c1"># run only if distance matrix not already calculated</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">_calculated</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_scaled_matrix</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">dist_matrix</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span>
                                <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">)</span>
         <span class="c1"># take negative exponent of scaled matrix to create Isotropic kernel</span>

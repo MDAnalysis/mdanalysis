@@ -172,7 +172,7 @@
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="n">FinishTimeException</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span><span class="p">,</span> <span class="n">_set_verbose</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="k">import</span> <span class="n">mdamath</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -216,7 +216,7 @@
                        <span class="n">bend_filename</span><span class="o">=</span><span class="s2">&quot;local_bend.xvg&quot;</span><span class="p">,</span>
                        <span class="n">twist_filename</span><span class="o">=</span><span class="s2">&quot;unit_twist.xvg&quot;</span><span class="p">,</span>
                        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;helanal_&quot;</span><span class="p">,</span> <span class="n">ref_axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                       <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Perform HELANAL helix analysis on all frames in `universe`.</span>
 
 <span class="sd">    Parameters</span>
@@ -284,7 +284,6 @@
 <span class="sd">       `verbose` one.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">verbose</span> <span class="o">=</span> <span class="n">_set_verbose</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="n">quiet</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ref_axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ref_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>

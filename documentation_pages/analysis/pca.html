@@ -184,6 +184,10 @@ principal components.</p>
 
 <p class="rubric">Notes</p>
 <p>Computation can be speed up by supplying a precalculated mean structure</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>The start frame is used when performing selections and calculating
+mean positions.  Previously the 0th frame was always used.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -198,12 +202,6 @@ structure.</li>
 covariance matrix.</li>
 <li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – The number of principal components to be saved, default saves
 all principal components, Default: None</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to use for generation
-of covariance matrix, Default: None</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Last frame of trajectory to use for generation
-of covariance matrix, Default: None</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Step between frames of trajectory to use for generation
-of covariance matrix, Default: None</li>
 <li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal"><span class="pre">True</span></code>; the
 default is <code class="docutils literal"><span class="pre">False</span></code>.</li>
 </ul>

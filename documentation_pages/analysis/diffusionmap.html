@@ -204,7 +204,7 @@ diffusion map. More information in <a class="reference internal" href="#lafon1" 
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.diffusionmap.DistanceMatrix">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.diffusionmap.</code><code class="descname">DistanceMatrix</code><span class="sig-paren">(</span><em>u</em>, <em>select='all'</em>, <em>metric=&lt;function rmsd&gt;</em>, <em>cutoff=-4.0</em>, <em>weights=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/diffusionmap.html#DistanceMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.diffusionmap.DistanceMatrix" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.diffusionmap.</code><code class="descname">DistanceMatrix</code><span class="sig-paren">(</span><em>u</em>, <em>select='all'</em>, <em>metric=&lt;function rmsd&gt;</em>, <em>cutoff=-4.0</em>, <em>weights=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/diffusionmap.html#DistanceMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.diffusionmap.DistanceMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the pairwise distance between each frame in a trajectory
 using a given metric</p>
 <p>A distance matrix can be initialized on its own and used as an
@@ -246,11 +246,6 @@ set to rms.rmsd().</li>
 <li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – Specify a given cutoff for metric values to be considered equal,
 Default: 1EO-5</li>
 <li><strong>weights</strong> (<a class="reference external" href="https://docs.python.org/3/library/array.html#module-array" title="(in Python v3.7)"><em>array</em></a><em>, </em><em>optional</em>) – Weights to be given to coordinates for metric calculation</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to analyse, Default: None becomes 0.</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Frame index to stop analysis. Default: None becomes
-n_frames. Iteration stops <em>before</em> this frame number,
-which means that the trajectory would be read until the end.</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Step between frames to analyse, Default: None becomes 1.</li>
 <li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal"><span class="pre">True</span></code>; the
 default is <code class="docutils literal"><span class="pre">False</span></code>.</li>
 </ul>

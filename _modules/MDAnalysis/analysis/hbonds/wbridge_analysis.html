@@ -340,7 +340,7 @@
 
 <span class="kn">from</span> <span class="nn">.hbond_analysis</span> <span class="k">import</span> <span class="n">HydrogenBondAnalysis</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.NeighborSearch</span> <span class="k">import</span> <span class="n">AtomNeighborSearch</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span><span class="p">,</span> <span class="n">_set_verbose</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="k">import</span> <span class="n">distances</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="n">SelectionWarning</span>
 
@@ -367,8 +367,7 @@
                  <span class="n">update_selection2</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">update_water_selection</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">filter_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">distance_type</span><span class="o">=</span><span class="s1">&#39;hydrogen&#39;</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
                  <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">,</span> <span class="n">forcefield</span><span class="o">=</span><span class="s1">&#39;CHARMM27&#39;</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">acceptors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">acceptors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set up the calculation of water bridges between two selections in a</span>
 <span class="sd">        universe.</span>
 
@@ -454,16 +453,6 @@
 <span class="sd">            Extra H acceptor atom types (in addition to those in</span>
 <span class="sd">            :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a</span>
 <span class="sd">            sequence.</span>
-<span class="sd">        start : int (optional)</span>
-<span class="sd">            starting frame-index for analysis, ``None`` is the first one, 0.</span>
-<span class="sd">            `start` and `stop` are 0-based frame indices and are used to slice</span>
-<span class="sd">            the trajectory (if supported) [``None``]</span>
-<span class="sd">        stop : int (optional)</span>
-<span class="sd">            last trajectory frame for analysis, ``None`` is the last one</span>
-<span class="sd">            [``None``]</span>
-<span class="sd">        step : int (optional)</span>
-<span class="sd">            read every `step` between `start` (included) and `stop` (excluded),</span>
-<span class="sd">            ``None`` selects 1. [``None``]</span>
 <span class="sd">        distance_type : {&quot;hydrogen&quot;, &quot;heavy&quot;} (optional)</span>
 <span class="sd">            Measure hydrogen bond lengths between donor and acceptor heavy</span>
 <span class="sd">            attoms (&quot;heavy&quot;) or between donor hydrogen and acceptor heavy</span>
@@ -499,7 +488,7 @@
             <span class="n">update_selection2</span><span class="o">=</span><span class="n">update_selection2</span><span class="p">,</span> <span class="n">filter_first</span><span class="o">=</span><span class="n">filter_first</span><span class="p">,</span>
             <span class="n">distance_type</span><span class="o">=</span><span class="n">distance_type</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">distance</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span>
             <span class="n">forcefield</span><span class="o">=</span><span class="n">forcefield</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="n">donors</span><span class="p">,</span> <span class="n">acceptors</span><span class="o">=</span><span class="n">acceptors</span><span class="p">,</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_water_selection</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_log_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -595,7 +584,7 @@
                 <span class="s1">&#39;name </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s2">&quot;Water acceptors: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_water_acceptors</span><span class="p">)))</span>
 
-<div class="viewcode-block" id="WaterBridgeAnalysis.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="WaterBridgeAnalysis.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries.</span>
 
 <span class="sd">        Stores the water bridge data per frame as</span>
@@ -604,6 +593,16 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        start : int (optional)</span>
+<span class="sd">            starting frame-index for analysis, ``None`` is the first one, 0.</span>
+<span class="sd">            `start` and `stop` are 0-based frame indices and are used to slice</span>
+<span class="sd">            the trajectory (if supported) [``None``]</span>
+<span class="sd">        stop : int (optional)</span>
+<span class="sd">            last trajectory frame for analysis, ``None`` is the last one</span>
+<span class="sd">            [``None``]</span>
+<span class="sd">        step : int (optional)</span>
+<span class="sd">            read every `step` between `start` (included) and `stop` (excluded),</span>
+<span class="sd">            ``None`` selects 1. [``None``]</span>
 <span class="sd">        verbose : bool (optional)</span>
 <span class="sd">             toggle progress meter output</span>
 <span class="sd">             :class:`~MDAnalysis.lib.log.ProgressMeter` [``True``]</span>
@@ -619,12 +618,13 @@
 <span class="sd">        :meth:`WaterBridgeAnalysis.generate_table` :</span>
 <span class="sd">               processing the data into a different format.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_frames</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: starting&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: donors    </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: acceptors </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WBridge analysis: water bridge </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">water_selection</span><span class="p">)</span>
 
-        <span class="n">debug</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">debug</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">debug</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Toggling debug to </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
@@ -635,26 +635,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_water_network</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;checking trajectory...&quot;</span><span class="p">)</span>  <span class="c1"># n_frames can take a while!</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="p">]</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Problem reading trajectory or trajectory slice incompatible.&quot;</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span>
-            <span class="k">raise</span>
-        <span class="n">verbose</span> <span class="o">=</span> <span class="n">_set_verbose</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                               <span class="n">quiet</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quiet&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                               <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span>
+        <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
                            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;WBridge frame </span><span class="si">{current_step:5d}</span><span class="s2">: </span><span class="si">{step:5d}</span><span class="s2">/</span><span class="si">{numsteps}</span><span class="s2"> [</span><span class="si">{percentage:5.1f}</span><span class="s2">%]</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span>
                            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting analysis (frame index start=</span><span class="si">%d</span><span class="s2"> stop=</span><span class="si">%d</span><span class="s2">, step=</span><span class="si">%d</span><span class="s2">)&quot;</span><span class="p">,</span>
-                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">),</span>
-                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">),</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="o">.</span><span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">progress</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">progress</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">]):</span>
             <span class="c1"># all bonds for this timestep</span>
 
             <span class="c1"># dict of tuples (atom.index, atom.index) for quick check if</span>

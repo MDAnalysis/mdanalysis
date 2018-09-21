@@ -374,7 +374,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="n">MissingDataWarning</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span><span class="p">,</span> <span class="n">_set_verbose</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.NeighborSearch</span> <span class="k">import</span> <span class="n">AtomNeighborSearch</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="k">import</span> <span class="n">distances</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">deprecate</span>
@@ -383,7 +384,7 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.hbonds&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="HydrogenBondAnalysis"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_analysis.html#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondAnalysis</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="HydrogenBondAnalysis"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_analysis.html#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondAnalysis</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AnalysisBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Perform a hydrogen bond analysis</span>
 
 <span class="sd">    The analysis of the trajectory is performed with the</span>
@@ -454,8 +455,7 @@
                  <span class="n">update_selection1</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">update_selection2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filter_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">distance_type</span><span class="o">=</span><span class="s1">&#39;hydrogen&#39;</span><span class="p">,</span>
                  <span class="n">distance</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">,</span>
                  <span class="n">forcefield</span><span class="o">=</span><span class="s1">&#39;CHARMM27&#39;</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acceptors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">debug</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">detect_hydrogens</span><span class="o">=</span><span class="s1">&#39;distance&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                 <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">detect_hydrogens</span><span class="o">=</span><span class="s1">&#39;distance&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set up calculation of hydrogen bonds between two selections in a universe.</span>
 
 <span class="sd">        The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.</span>
@@ -518,15 +518,6 @@
 <span class="sd">        acceptors : sequence (optional)</span>
 <span class="sd">            Extra H acceptor atom types (in addition to those in</span>
 <span class="sd">            :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.</span>
-<span class="sd">        start : int (optional)</span>
-<span class="sd">            starting frame-index for analysis, ``None`` is the first one, 0.</span>
-<span class="sd">            `start` and `stop` are 0-based frame indices and are used to slice</span>
-<span class="sd">            the trajectory (if supported) [``None``]</span>
-<span class="sd">        stop : int (optional)</span>
-<span class="sd">            last trajectory frame for analysis, ``None`` is the last one [``None``]</span>
-<span class="sd">        step : int (optional)</span>
-<span class="sd">            read every `step` between `start` (included) and `stop` (excluded),</span>
-<span class="sd">            ``None`` selects 1. [``None``]</span>
 <span class="sd">        detect_hydrogens : {&quot;distance&quot;, &quot;heuristic&quot;} (optional)</span>
 <span class="sd">            Determine the algorithm to find hydrogens connected to donor</span>
 <span class="sd">            atoms. Can be &quot;distance&quot; (default; finds all hydrogens in the</span>
@@ -544,7 +535,7 @@
 <span class="sd">            If set to ``True`` enables per-frame debug logging. This is disabled</span>
 <span class="sd">            by default because it generates a very large amount of output in</span>
 <span class="sd">            the log file. (Note that a logger must have been started to see</span>
-<span class="sd">            the output, e.g. using :func:`MDAnalysis.start_logging`.)</span>
+<span class="sd">            the output, e.g. using :func:`MDAnalysis.start_logging`.) [``False``]</span>
 <span class="sd">        verbose : bool (optional)</span>
 <span class="sd">            Toggle progress output. (Can also be given as keyword argument to</span>
 <span class="sd">            :meth:`run`.)</span>
@@ -612,6 +603,9 @@
 <span class="sd">        .. _`Issue 138`: https://github.com/MDAnalysis/mdanalysis/issues/138</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HydrogenBondAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># per-frame debugging output?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_get_bonded_hydrogens_algorithms</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;distance&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bonded_hydrogens_dist</span><span class="p">,</span>  <span class="c1"># 0.7.6 default</span>
@@ -632,7 +626,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">=</span> <span class="n">distance_type</span>  <span class="c1"># note: everything except &#39;heavy&#39; will give the default behavior</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span> <span class="o">=</span> <span class="n">pbc</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
 
         <span class="c1"># set up the donors/acceptors lists</span>
@@ -654,19 +647,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># placeholder for output table</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># always enable debug output for initial selection update</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_selection_1</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_selection_2</span><span class="p">()</span>
-        <span class="c1"># per-frame debugging output?</span>
-        <span class="c1"># This line must be changed at the end of the deprecation period for</span>
-        <span class="c1"># the *quiet* keyword argument. Then it must become:</span>
-        <span class="c1"># self.debug = debug</span>
-        <span class="c1"># In the signature, *verbose* must be removed and the default value</span>
-        <span class="c1"># for *debug* must be set to False.</span>
-        <span class="c1"># See the docstring for lib.log._set_verbose, the pull request #1150,</span>
-        <span class="c1"># and the issue #903.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">_set_verbose</span><span class="p">(</span><span class="n">debug</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                  <span class="n">was</span><span class="o">=</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="n">now</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_parameters</span><span class="p">()</span>
 
@@ -682,7 +664,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_sanity_check</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;acceptors&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sanity_check</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;donors&#39;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;HBond analysis: initial checks passed.&quot;</span><span class="p">)</span>
-
 
     <span class="k">def</span> <span class="nf">_sanity_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">htype</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;sanity check the selections 1 and 2</span>
@@ -921,7 +902,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HydrogenBondAnalysis.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_analysis.html#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="HydrogenBondAnalysis.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_analysis.html#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries.</span>
 
 <span class="sd">        Stores the hydrogen bond data per frame as</span>
@@ -930,6 +911,15 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        start : int (optional)</span>
+<span class="sd">            starting frame-index for analysis, ``None`` is the first one, 0.</span>
+<span class="sd">            `start` and `stop` are 0-based frame indices and are used to slice</span>
+<span class="sd">            the trajectory (if supported) [``None``]</span>
+<span class="sd">        stop : int (optional)</span>
+<span class="sd">            last trajectory frame for analysis, ``None`` is the last one [``None``]</span>
+<span class="sd">        step : int (optional)</span>
+<span class="sd">            read every `step` between `start` (included) and `stop` (excluded),</span>
+<span class="sd">            ``None`` selects 1. [``None``]</span>
 <span class="sd">        verbose : bool (optional)</span>
 <span class="sd">             toggle progress meter output :class:`~MDAnalysis.lib.log.ProgressMeter`</span>
 <span class="sd">             [``True``]</span>
@@ -967,6 +957,9 @@
 <span class="sd">           argument `debug`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># sets self.start/stop/step and _pm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_frames</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;HBond analysis: starting&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;HBond analysis: donors    </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;HBond analysis: acceptors </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">)</span>
@@ -985,19 +978,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_timeseries</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;checking trajectory...&quot;</span><span class="p">)</span>  <span class="c1"># n_frames can take a while!</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="p">]</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Problem reading trajectory or trajectory slice incompatible.&quot;</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span>
-            <span class="k">raise</span>
-        <span class="n">verbose</span> <span class="o">=</span> <span class="n">_set_verbose</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                               <span class="n">quiet</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quiet&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                               <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span>
+        <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
                            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;HBonds frame </span><span class="si">{current_step:5d}</span><span class="s2">: </span><span class="si">{step:5d}</span><span class="s2">/</span><span class="si">{numsteps}</span><span class="s2"> [</span><span class="si">{percentage:5.1f}</span><span class="s2">%]</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span>
-                           <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                           <span class="n">verbose</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">time</span>
@@ -1011,10 +994,9 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;HBond analysis is recording frame number instead of time step&quot;</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting analysis (frame index start=</span><span class="si">%d</span><span class="s2"> stop=</span><span class="si">%d</span><span class="s2">, step=</span><span class="si">%d</span><span class="s2">)&quot;</span><span class="p">,</span>
-                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">),</span>
-                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="o">.</span><span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">progress</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">progress</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">]):</span>
             <span class="c1"># all bonds for this timestep</span>
             <span class="n">frame_results</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="c1"># dict of tuples (atom.index, atom.index) for quick check if</span>

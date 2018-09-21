@@ -269,59 +269,6 @@
         <span class="k">return</span> <span class="n">_legacy_format</span>
 
 
-<span class="k">def</span> <span class="nf">_set_verbose</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="n">quiet</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="n">was</span><span class="o">=</span><span class="s1">&#39;quiet&#39;</span><span class="p">,</span> <span class="n">now</span><span class="o">=</span><span class="s1">&#39;verbose&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the expected value of verbosity</span>
-
-<span class="sd">    This function aims at handling the deprecation of the *quiet* keyword in</span>
-<span class="sd">    versin 0.16.</span>
-
-<span class="sd">    This function issues a deprecation warning if *quiet* was set (is not</span>
-<span class="sd">    None), and raises a ValueError if *verbose* and *quiet* are set to</span>
-<span class="sd">    contradicting values.</span>
-
-<span class="sd">    If *verbose* is set, then the function returns the set value of *verbose*.</span>
-<span class="sd">    If it is not set, but *quiet* is set, then the function returns</span>
-<span class="sd">    `not quiet`. Finally, if none of *verbose* nor *quiet* is set, then</span>
-<span class="sd">    *default* is returned.</span>
-
-<span class="sd">    During the deprecation phase of the *quiet* keyword, this function is</span>
-<span class="sd">    expected to be used as follow:</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">       def method(verbose=None, quiet=None):</span>
-<span class="sd">           # *verbose* and *quiet* are set to None to distinguish explicitly</span>
-<span class="sd">           # set values.</span>
-<span class="sd">           self.verbose = _set_verbose(verbose, quiet, default=True)</span>
-
-<span class="sd">    At the end of the deprecation period, the code above should be replaced by:</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">       def method(verbose=True):</span>
-<span class="sd">           # The *quiet* keyword disapeard and the default value for *verbose*</span>
-<span class="sd">           # is set to the actual default value.</span>
-<span class="sd">           self.verbose = verbose</span>
-
-<span class="sd">    In `MDAnalysis.analysis.hbonds.hbonds_analysis`, the deprecation scheme is</span>
-<span class="sd">    more complex: *quiet* becomes *verbose*, and *verbose* becomes *debug*.</span>
-<span class="sd">    Hence, this function allows to use diffrent argument names to display in</span>
-<span class="sd">    error messages and deprecation warnings.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">quiet</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Keyword *</span><span class="si">{}</span><span class="s2">* is deprecated (from version 0.16); &quot;</span>
-                      <span class="s2">&quot;use *</span><span class="si">{}</span><span class="s2">* instead.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">was</span><span class="p">,</span> <span class="n">now</span><span class="p">),</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">verbose</span> <span class="o">==</span> <span class="n">quiet</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Keywords *</span><span class="si">{}</span><span class="s2">* and *</span><span class="si">{}</span><span class="s2">* are contradicting each other.&quot;</span>
-                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="n">was</span><span class="p">))</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="n">quiet</span>
-    <span class="k">elif</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">default</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">verbose</span>
-
-
 <div class="viewcode-block" id="ProgressMeter"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.ProgressMeter">[docs]</a><span class="k">class</span> <span class="nc">ProgressMeter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Simple progress meter</span>
 
@@ -426,16 +373,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numsteps</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                 <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dynamic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="n">format_handling</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dynamic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">format_handling</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numsteps</span> <span class="o">=</span> <span class="n">numsteps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span> <span class="o">=</span> <span class="n">dynamic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numouts</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-
-        <span class="c1"># The *quiet* keyword argument is deprecated.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">_set_verbose</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="n">quiet</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;Step </span><span class="si">{step:5d}</span><span class="s2">/</span><span class="si">{numsteps}</span><span class="s2"> [</span><span class="si">{percentage:5.1f}</span><span class="s2">%]&quot;</span>

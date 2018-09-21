@@ -379,7 +379,7 @@ simple as</p>
 <h2>4.3.1.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.hbonds.hbond_analysis.</code><code class="descname">HydrogenBondAnalysis</code><span class="sig-paren">(</span><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='all'</em>, <em>selection1_type='both'</em>, <em>update_selection1=True</em>, <em>update_selection2=True</em>, <em>filter_first=True</em>, <em>distance_type='hydrogen'</em>, <em>distance=3.0</em>, <em>angle=120.0</em>, <em>forcefield='CHARMM27'</em>, <em>donors=None</em>, <em>acceptors=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>debug=None</em>, <em>detect_hydrogens='distance'</em>, <em>verbose=None</em>, <em>pbc=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_analysis.html#HydrogenBondAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.hbonds.hbond_analysis.</code><code class="descname">HydrogenBondAnalysis</code><span class="sig-paren">(</span><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='all'</em>, <em>selection1_type='both'</em>, <em>update_selection1=True</em>, <em>update_selection2=True</em>, <em>filter_first=True</em>, <em>distance_type='hydrogen'</em>, <em>distance=3.0</em>, <em>angle=120.0</em>, <em>forcefield='CHARMM27'</em>, <em>donors=None</em>, <em>acceptors=None</em>, <em>debug=False</em>, <em>detect_hydrogens='distance'</em>, <em>verbose=False</em>, <em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_analysis.html#HydrogenBondAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a hydrogen bond analysis</p>
 <p>The analysis of the trajectory is performed with the
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.run"><code class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.run()</span></code></a> method. The result is stored in
@@ -466,12 +466,6 @@ hydrogen interactions and a possibly better value is 150º. [120.0]</li>
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS"><code class="xref py py-attr docutils literal"><span class="pre">DEFAULT_DONORS</span></code></a>), must be a sequence.</li>
 <li><strong>acceptors</strong> (<em>sequence</em><em> (</em><em>optional</em><em>)</em>) – Extra H acceptor atom types (in addition to those in
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS"><code class="xref py py-attr docutils literal"><span class="pre">DEFAULT_ACCEPTORS</span></code></a>), must be a sequence.</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame-index for analysis, <code class="docutils literal"><span class="pre">None</span></code> is the first one, 0.
-<cite>start</cite> and <cite>stop</cite> are 0-based frame indices and are used to slice
-the trajectory (if supported) [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – last trajectory frame for analysis, <code class="docutils literal"><span class="pre">None</span></code> is the last one [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – read every <cite>step</cite> between <cite>start</cite> (included) and <cite>stop</cite> (excluded),
-<code class="docutils literal"><span class="pre">None</span></code> selects 1. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
 <li><strong>detect_hydrogens</strong> (<em>{&quot;distance&quot;</em><em>, </em><em>&quot;heuristic&quot;}</em><em> (</em><em>optional</em><em>)</em>) – Determine the algorithm to find hydrogens connected to donor
 atoms. Can be “distance” (default; finds all hydrogens in the
 donor’s residue within a cutoff of the donor) or “heuristic”
@@ -486,7 +480,7 @@ cutoff to a higher value such as 3.5 Å. [“hydrogen”]</li>
 <li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – If set to <code class="docutils literal"><span class="pre">True</span></code> enables per-frame debug logging. This is disabled
 by default because it generates a very large amount of output in
 the log file. (Note that a logger must have been started to see
-the output, e.g. using <a class="reference internal" href="../lib/log.html#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.start_logging()</span></code></a>.)</li>
+the output, e.g. using <a class="reference internal" href="../lib/log.html#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.start_logging()</span></code></a>.) [<code class="docutils literal"><span class="pre">False</span></code>]</li>
 <li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Toggle progress output. (Can also be given as keyword argument to
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.run"><code class="xref py py-meth docutils literal"><span class="pre">run()</span></code></a>.)</li>
 <li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to consider periodic boundaries in calculations [<code class="docutils literal"><span class="pre">False</span></code>]</li>
@@ -707,7 +701,7 @@ and added <em>kwargs</em> so that it can be used instead of
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OG', 'OH2', 'OE1', 'OC2', 'SG', 'OW', 'OC1', 'O', 'OD2', 'ND1', 'OD1', 'SD', 'NE2', 'OE2', 'OG1', 'OH'), 'GLYCAM06': ('OY', 'O2', 'N', 'OW', 'O', 'NT', 'OS', 'SM', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OH2', 'OE2', 'OG1', 'OD2', 'SD', 'OH', 'OC1', 'ND1', 'OE1', 'OW', 'NE2', 'OC2', 'SG', 'OG', 'OD1', 'O'), 'GLYCAM06': ('OH', 'O2', 'OW', 'SM', 'N', 'OY', 'O', 'OS', 'NT'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -715,7 +709,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('ND2', 'OG1', 'OG', 'OH2', 'N', 'SG', 'OW', 'ND1', 'OH', 'NE', 'NE1', 'NE2', 'NH1', 'NZ', 'NH2'), 'GLYCAM06': ('OW', 'OH', 'N3', 'N', 'NT'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('OH2', 'OG1', 'ND2', 'OH', 'NE', 'ND1', 'OW', 'NE2', 'NH2', 'NH1', 'N', 'SG', 'NZ', 'OG', 'NE1'), 'GLYCAM06': ('N', 'OH', 'NT', 'OW', 'N3'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
@@ -792,7 +786,7 @@ covalently bound at a maximum distance of 1.5 Å.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_analysis.html#HydrogenBondAnalysis.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>verbose=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_analysis.html#HydrogenBondAnalysis.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze trajectory and produce timeseries.</p>
 <p>Stores the hydrogen bond data per frame as
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timeseries"><code class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></code></a> (see there for output
@@ -802,6 +796,12 @@ format).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame-index for analysis, <code class="docutils literal"><span class="pre">None</span></code> is the first one, 0.
+<cite>start</cite> and <cite>stop</cite> are 0-based frame indices and are used to slice
+the trajectory (if supported) [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – last trajectory frame for analysis, <code class="docutils literal"><span class="pre">None</span></code> is the last one [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – read every <cite>step</cite> between <cite>start</cite> (included) and <cite>stop</cite> (excluded),
+<code class="docutils literal"><span class="pre">None</span></code> selects 1. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
 <li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – toggle progress meter output <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressMeter" title="MDAnalysis.lib.log.ProgressMeter"><code class="xref py py-class docutils literal"><span class="pre">ProgressMeter</span></code></a>
 [<code class="docutils literal"><span class="pre">True</span></code>]</li>
 <li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – enable detailed logging of debugging information; this can create
