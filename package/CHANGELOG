@@ -78,7 +78,7 @@ Enhancements
     analysis module (PR #1997, PR #2033)
   * Added the analysis.data module for reference data used in analysis (PR #2033)
   * Added analysis.dihedrals with Ramachandran class to analysis module (PR #1997)
-  * Added augment functionality to create relevant images of particles 
+  * Added augment functionality to create relevant images of particles
   * Most functions in `MDanalysis.lib.distances` previously only accepting
     arrays of coordinates now also accept single coordinates as input (PR #2048,
     Issues #1262 #1938)
@@ -109,6 +109,8 @@ Fixes
   * Fixed SphericalLayer and SphericalZone selections with pbc=True.  Previously
     these shifted all atoms to inside the primary unit cell when calculating the
     center of the reference group (Issue #1795)
+  * PCA analysis now uses start frame as reference frame rather than 0th frame
+    (PR #2055)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)
@@ -130,8 +132,15 @@ Changes
     enforced to be of the form ``[lx, ly, lz, alpha, beta, gamma]`` as required
     by the docs (Issue #2046, PR #2048)
   * Added periodic keyword to select_atoms (#759)
+  * PCA.transform now requires that PCA.run() has already been called
+    otherwise a ValueError is raised (PR #2055)
+  * The quiet keyword has been removed and replaced with verbose (Issue #1975
+    PR #2055)
 
 Deprecations
+  * start/stop/step are deprecated in the initialization of Analysis classes.
+    These parameters should instead be given to the run() method of the class.
+    (Issue #1463 #1979 PR #2055)
   * Almost all "save()", "save_results()", "save_table()" methods in
     analysis classes were deprecated and will be removed in 1.0 (Issue
     #1972 and #1745)
