@@ -530,7 +530,7 @@ class BaseDistanceSelection(object):
 
         r1 = u.select_atoms('resid 1')
         box = u.dimensions if periodic else None
-        cog = r1.center_of_geometry(pbc=periodic).reshape(1, 3)
+        cog = r1.center_of_geometry().reshape(1, 3)
         d = distance_array(u.atoms.positions, cog, box=box)
         ref = set(np.where((d > 2.4) & (d < 6.0))[0])
 
@@ -548,7 +548,7 @@ class BaseDistanceSelection(object):
 
         r1 = u.select_atoms('resid 1')
         box = u.dimensions if periodic else None
-        cog = r1.center_of_geometry(pbc=periodic).reshape(1, 3)
+        cog = r1.center_of_geometry().reshape(1, 3)
         d = distance_array(u.atoms.positions, cog, box=box)
         ref = set(np.where(d < 5.0)[0])
 
@@ -602,6 +602,12 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
         ref = set(u.atoms[mask].indices)
 
         assert ref == set(result.indices)
+
+    @pytest.mark.parametrize('periodic,expected', ([True, 33], [False, 25]))
+    def test_sphzone(self, u, periodic, expected):
+        sel = u.select_atoms('sphzone 5.0 resid 1', periodic=periodic)
+
+        assert len(sel) == expected
 
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):

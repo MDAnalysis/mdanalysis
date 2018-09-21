@@ -106,6 +106,9 @@ Fixes
   * Modifying coordinates by assignation is consistently persistent when using
     the memory reader (Issue #2018)
   * Allow import of WaterBridgeAnalysis from analysis.hbonds (#2064)
+  * Fixed SphericalLayer and SphericalZone selections with pbc=True.  Previously
+    these shifted all atoms to inside the primary unit cell when calculating the
+    center of the reference group (Issue #1795)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)

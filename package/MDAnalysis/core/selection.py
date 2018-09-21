@@ -288,8 +288,7 @@ class SphericalLayerSelection(DistanceSelection):
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
-        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).astype(
-            np.float32)
+        ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.exRadius,
                                           min_cutoff=self.inRadius,
                                           box=box,
@@ -314,8 +313,7 @@ class SphericalZoneSelection(DistanceSelection):
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
-        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).astype(
-            np.float32)
+        ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.cutoff,
                                           box=box,
                                           return_distances=False)
