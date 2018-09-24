@@ -285,7 +285,7 @@ class _Flag(Flag):
 _flags = [
     _Flag(
         'use_periodic_selections',
-        True,
+        False,
         {True: True, False: False},
         """
         Determines if distance selections (AROUND, POINT) respect periodicity.
