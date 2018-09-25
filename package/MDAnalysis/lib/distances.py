@@ -222,8 +222,8 @@ def _check_result_array(result, shape):
     return result
 
 
-@check_coords('reference', 'configuration', enforce_copy=False,
-              reduce_result_if_single=False, check_lengths_match=False)
+@check_coords('reference', 'configuration', reduce_result_if_single=False,
+              check_lengths_match=False)
 def distance_array(reference, configuration, box=None, result=None,
                    backend="serial"):
     """Calculate all possible distances between a reference set and another
@@ -278,6 +278,8 @@ def distance_array(reference, configuration, box=None, result=None,
     refnum = reference.shape[0]
 
     distances = _check_result_array(result, (refnum, confnum))
+    if len(distances) == 0:
+        return distances
 
     if box is not None:
         boxtype, box = _check_box(box)
@@ -297,7 +299,7 @@ def distance_array(reference, configuration, box=None, result=None,
     return distances
 
 
-@check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
+@check_coords('reference', reduce_result_if_single=False)
 def self_distance_array(reference, box=None, result=None, backend="serial"):
     """Calculate all possible distances within a configuration `reference`.
 
@@ -1031,6 +1033,7 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
     return np.asarray(pairs), np.asarray(distance)
 
 
+@check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
 def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
     """Capped distance evaluations using a grid-based search method.
 
@@ -1203,7 +1206,7 @@ def transform_StoR(coords, box, backend="serial"):
     return coords
 
 
-@check_coords('coords1', 'coords2', enforce_copy=False)
+@check_coords('coords1', 'coords2')
 def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
@@ -1284,7 +1287,7 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     return bondlengths
 
 
-@check_coords('coords1', 'coords2', 'coords3', enforce_copy=False)
+@check_coords('coords1', 'coords2', 'coords3')
 def calc_angles(coords1, coords2, coords3, box=None, result=None,
                 backend="serial"):
     """Calculates the angles formed between triplets of atom positions from the
@@ -1376,7 +1379,7 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
     return angles
 
 
-@check_coords('coords1', 'coords2', 'coords3', 'coords4', enforce_copy=False)
+@check_coords('coords1', 'coords2', 'coords3', 'coords4')
 def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
                    backend="serial"):
     """Calculates the dihedral angles formed between quadruplets of positions

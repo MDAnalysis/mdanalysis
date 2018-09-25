@@ -926,6 +926,116 @@ class TestPeriodicAngles(object):
         for val in [test1, test2, test3, test4, test5]:
             assert_almost_equal(ref, val, self.prec, err_msg="Min image in dihedral calculation failed")
 
+class TestInputUnchanged(object):
+    """Tests ensuring that the following functions in MDAnalysis.lib.distances
+    do not alter their input coordinate arrays:
+      * distance_array
+      * self_distance_array
+      * capped_distance
+      * self_capped_distance
+      * transform_RtoS
+      * transform_StoR
+      * calc_bonds
+      * calc_angles
+      * calc_dihedrals
+      * apply_PBC
+    """
+
+    boxes = ([1.0, 1.0, 1.0, 90.0, 90.0, 90.0],  # orthorhombic
+             [1.0, 1.0, 1.0, 80.0, 80.0, 80.0],  # triclinic
+             None)  # no PBC
+
+    @staticmethod
+    @pytest.fixture()
+    def coords():
+        # input coordinates, some outside the [1, 1, 1] box:
+        return [np.array([[0.1, 0.1, 0.1], [-0.9, -0.9, -0.9]], dtype=np.float32),
+                np.array([[0.1, 0.1, 1.9], [-0.9, -0.9,  0.9]], dtype=np.float32),
+                np.array([[0.1, 1.9, 1.9], [-0.9,  0.9,  0.9]], dtype=np.float32),
+                np.array([[0.1, 1.9, 0.1], [-0.9,  0.9, -0.9]], dtype=np.float32)]
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_distance_array(self, coords, box, backend):
+        crds = coords[:2]
+        refs = [crd.copy() for crd in crds]
+        res = distances.distance_array(crds[0], crds[1], box=box,
+                                       backend=backend)
+        assert_equal(crds, refs)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_self_distance_array(self, coords, box, backend):
+        crd = coords[0]
+        ref = crd.copy()
+        res = distances.self_distance_array(crd, box=box, backend=backend)
+        assert_equal(crd, ref)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    def test_input_unchanged_capped_distance(self, coords, box, met):
+        crds = coords[:2]
+        refs = [crd.copy() for crd in crds]
+        res = distances.capped_distance(crds[0], crds[1], max_cutoff=0.3,
+                                        box=box, method=met)
+        assert_equal(crds, refs)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    def test_input_unchanged_self_capped_distance(self, coords, box, met):
+        crd = coords[0]
+        ref = crd.copy()
+        r_cut = 0.25
+        res = distances.self_capped_distance(crd, max_cutoff=r_cut, box=box,
+                                             method=met)
+        assert_equal(crd, ref)
+
+    @pytest.mark.parametrize('box', boxes[:2])
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_transform_RtoS_and_StoR(self, coords, box, backend):
+        crd = coords[0]
+        ref = crd.copy()
+        res = distances.transform_RtoS(crd, box, backend=backend)
+        assert_equal(crd, ref)
+        crd = res
+        ref = crd.copy()
+        res = distances.transform_StoR(crd, box, backend=backend)
+        assert_equal(crd, ref)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_calc_bonds(self, coords, box, backend):
+        crds = coords[:2]
+        refs = [crd.copy() for crd in crds]
+        res = distances.calc_bonds(crds[0], crds[1], box=box, backend=backend)
+        assert_equal(crds, refs)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_calc_angles(self, coords, box, backend):
+        crds = coords[:3]
+        refs = [crd.copy() for crd in crds]
+        res = distances.calc_angles(crds[0], crds[1], crds[2], box=box,
+                                    backend=backend)
+        assert_equal(crds, refs)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_calc_dihedrals(self, coords, box, backend):
+        crds = coords
+        refs = [crd.copy() for crd in crds]
+        res = distances.calc_dihedrals(crds[0], crds[1], crds[2], crds[3],
+                                       box=box, backend=backend)
+        assert_equal(crds, refs)
+
+    @pytest.mark.parametrize('box', boxes[:2])
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_apply_PBC(self, coords, box, backend):
+        crd = coords[0]
+        ref = crd.copy()
+        res = distances.apply_PBC(crd, box, backend=backend)
+        assert_equal(crd, ref)
+
 
 class TestDistanceBackendSelection(object):
     @staticmethod
