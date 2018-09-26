@@ -1037,6 +1037,108 @@ class TestInputUnchanged(object):
         assert_equal(crd, ref)
 
 
+class TestEmptyInputCoordinates(object):
+    """Tests ensuring that the following functions in MDAnalysis.lib.distances
+    do not choke on empty input coordinate arrays:
+      * distance_array
+      * self_distance_array
+      * capped_distance
+      * self_capped_distance
+      * transform_RtoS
+      * transform_StoR
+      * calc_bonds
+      * calc_angles
+      * calc_dihedrals
+      * apply_PBC
+    """
+
+    boxes = ([1.0, 1.0, 1.0, 90.0, 90.0, 90.0],  # orthorhombic
+             [1.0, 1.0, 1.0, 80.0, 80.0, 80.0],  # triclinic
+             None)  # no PBC
+
+    @staticmethod
+    @pytest.fixture()
+    def empty_coord():
+        # empty coordinate array:
+        return np.empty((0, 3), dtype=np.float32)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_empty_input_distance_array(self, empty_coord, box, backend):
+        res = distances.distance_array(empty_coord, empty_coord, box=box,
+                                       backend=backend)
+        assert_equal(res, np.empty((0, 0), dtype=np.float64))
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_empty_input_self_distance_array(self, empty_coord, box, backend):
+        res = distances.self_distance_array(empty_coord, box=box,
+                                            backend=backend)
+        assert_equal(res, np.empty((0,), dtype=np.float64))
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize('ret_dist', [False, True])
+    def test_empty_input_capped_distance(self, empty_coord, box, met, ret_dist):
+        r_cut = 0.25
+        res = distances.capped_distance(empty_coord, empty_coord,
+                                        max_cutoff=r_cut, box=box, method=met,
+                                        return_distances=ret_dist)
+        if ret_dist:
+            assert_equal(res[0], np.empty((0, 2), dtype=np.int64))
+            assert_equal(res[1], np.empty((0,), dtype=np.float64))
+        else:
+            assert_equal(res, np.empty((0, 2), dtype=np.int64))
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    def test_empty_input_self_capped_distance(self, empty_coord, box, met):
+        r_cut = 0.25
+        res = distances.self_capped_distance(empty_coord, max_cutoff=r_cut,
+                                             box=box, method=met)
+        assert_equal(res[0], np.empty((0, 2), dtype=np.int64))
+        assert_equal(res[1], np.empty((0,), dtype=np.float64))
+    
+    @pytest.mark.parametrize('box', boxes[:2])
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_empty_input_transform_RtoS(self, empty_coord, box, backend):
+        res = distances.transform_RtoS(empty_coord, box, backend=backend)
+        assert_equal(res, empty_coord)
+
+    @pytest.mark.parametrize('box', boxes[:2])
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_empty_input_transform_StoR(self, empty_coord, box, backend):
+        res = distances.transform_StoR(empty_coord, box, backend=backend)
+        assert_equal(res, empty_coord)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_empty_input_calc_bonds(self, empty_coord, box, backend):
+        res = distances.calc_bonds(empty_coord, empty_coord, box=box,
+                                   backend=backend)
+        assert_equal(res, np.empty((0,), dtype=np.float64))
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_empty_input_calc_angles(self, empty_coord, box, backend):
+        res = distances.calc_angles(empty_coord, empty_coord, empty_coord,
+                                    box=box, backend=backend)
+        assert_equal(res, np.empty((0,), dtype=np.float64))
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_empty_input_calc_dihedrals(self, empty_coord, box, backend):
+        res = distances.calc_dihedrals(empty_coord, empty_coord, empty_coord,
+                                       empty_coord, box=box, backend=backend)
+        assert_equal(res, np.empty((0,), dtype=np.float64))
+
+    @pytest.mark.parametrize('box', boxes[:2])
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_empty_input_apply_PBC(self, empty_coord, box, backend):
+        res = distances.apply_PBC(empty_coord, box, backend=backend)
+        assert_equal(res, empty_coord)
+
+
 class TestDistanceBackendSelection(object):
     @staticmethod
     @pytest.fixture()
