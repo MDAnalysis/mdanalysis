@@ -461,13 +461,14 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
         pairs, dist = method(reference, configuration, max_cutoff,
                          min_cutoff=min_cutoff, box=box,
                          return_distances=return_distances)
-        return np.asarray(pairs), np.asarray(dist)
+        return (np.asarray(pairs, dtype=np.int64),
+                np.asarray(dist, dtype=np.float64))
     else:
         pairs = method(reference, configuration, max_cutoff,
                          min_cutoff=min_cutoff, box=box,
                          return_distances=return_distances)
 
-        return np.asarray(pairs)
+        return np.asarray(pairs, dtype=np.int64)
 
 
 def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
@@ -587,19 +588,22 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
     """
-    distances = distance_array(reference, configuration, box=box)
-    if min_cutoff is not None:
-        mask = np.where((distances <= max_cutoff) & (distances > min_cutoff))
-    else:
-        mask = np.where((distances <= max_cutoff))
+    pairs = np.empty((0, 2), dtype=np.int64)
+    distances = np.empty((0,), dtype=np.float64)
 
-    if mask[0].size > 0:
-        pairs = np.c_[mask[0], mask[1]]
-    else:
-        pairs = np.empty((0, 2), dtype=np.int64)
+    if len(reference) > 0 and len(configuration) > 0:
+        distances = distance_array(reference, configuration, box=box)
+        if min_cutoff is not None:
+            mask = np.where((distances <= max_cutoff) & \
+                            (distances > min_cutoff))
+        else:
+            mask = np.where((distances < max_cutoff))
+        if mask[0].size > 0:
+            pairs = np.c_[mask[0], mask[1]]
+            if return_distances:
+                distances = distances[mask]
 
     if return_distances:
-        distances = distances[mask]
         return pairs, distances
     else:
         return pairs
@@ -662,18 +666,23 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
     """
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
-    kdtree = PeriodicKDTree(box=box)
-    cut = max_cutoff if box is not None else None
-    kdtree.set_coords(configuration, cutoff=cut)
-    pairs = kdtree.search_tree(reference, max_cutoff)
-    if (return_distances or (min_cutoff is not None)) and pairs.size > 0:
-        refA, refB = pairs[:, 0], pairs[:, 1]
-        distances = calc_bonds(reference[refA], configuration[refB], box=box)
-        if min_cutoff is not None:
-            mask = np.where(distances > min_cutoff)
-            pairs, distances = pairs[mask], distances[mask]
-    else:
-        distances = np.zeros((0, 1), dtype=np.float64)
+    pairs = np.empty((0, 2), dtype=np.int64)
+    distances = np.empty((0,), dtype=np.float64)
+
+    if len(reference) > 0 and len(configuration) > 0:
+        kdtree = PeriodicKDTree(box=box)
+        cut = max_cutoff if box is not None else None
+        kdtree.set_coords(configuration, cutoff=cut)
+        _pairs = kdtree.search_tree(reference, max_cutoff)
+        if _pairs.size > 0:
+            pairs = _pairs
+            if (return_distances or (min_cutoff is not None)):
+                refA, refB = pairs[:, 0], pairs[:, 1]
+                distances = calc_bonds(reference[refA], configuration[refB],
+                                       box=box)
+                if min_cutoff is not None:
+                    mask = np.where(distances > min_cutoff)
+                    pairs, distances = pairs[mask], distances[mask]
 
     if return_distances:
         return pairs, distances
@@ -736,45 +745,49 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
     """
-    if box is None:
-        # create a pseudobox
-        # define the max range
-        # and supply the pseudobox
-        # along with only one set of coordinates
-        pseudobox = np.zeros(6, dtype=np.float32)
-        all_coords = np.concatenate([reference, configuration])
-        lmax = all_coords.max(axis=0)
-        lmin = all_coords.min(axis=0)
-        # Using maximum dimension as the box size
-        boxsize = (lmax-lmin).max()
-        # to avoid failures of very close particles
-        # but with larger cutoff
-        if boxsize < 2*max_cutoff:
-            # just enough box size so that NSGrid doesnot fails
-            sizefactor = 2.2*max_cutoff/boxsize
-        else:
-            sizefactor = 1.2
-        pseudobox[:3] = sizefactor*boxsize
-        pseudobox[3:] = 90.
-        shiftref, shiftconf = reference.copy(), configuration.copy()
-        # Extra padding near the origin
-        shiftref -= lmin - 0.1*boxsize
-        shiftconf -= lmin - 0.1*boxsize
-        gridsearch = FastNS(max_cutoff, shiftconf, box=pseudobox, pbc=False)
-        results = gridsearch.search(shiftref)
-    else:
-        gridsearch = FastNS(max_cutoff, configuration, box=box)
-        results = gridsearch.search(reference)
+    pairs = np.empty((0, 2), dtype=np.int64)
+    distances = np.empty((0,), dtype=np.float64)
 
-    pairs = results.get_pairs()
-    if return_distances or (min_cutoff is not None):
-        pair_distance = results.get_pair_distances()
-        if min_cutoff is not None:
-            idx = pair_distance > min_cutoff
-            pairs, pair_distance = pairs[idx], pair_distance[idx]
+    if len(reference) > 0 and len(configuration) > 0:
+        if box is None:
+            # create a pseudobox
+            # define the max range
+            # and supply the pseudobox
+            # along with only one set of coordinates
+            pseudobox = np.zeros(6, dtype=np.float32)
+            all_coords = np.concatenate([reference, configuration])
+            lmax = all_coords.max(axis=0)
+            lmin = all_coords.min(axis=0)
+            # Using maximum dimension as the box size
+            boxsize = (lmax-lmin).max()
+            # to avoid failures of very close particles
+            # but with larger cutoff
+            if boxsize < 2*max_cutoff:
+                # just enough box size so that NSGrid doesnot fails
+                sizefactor = 2.2*max_cutoff/boxsize
+            else:
+                sizefactor = 1.2
+            pseudobox[:3] = sizefactor*boxsize
+            pseudobox[3:] = 90.
+            shiftref, shiftconf = reference.copy(), configuration.copy()
+            # Extra padding near the origin
+            shiftref -= lmin - 0.1*boxsize
+            shiftconf -= lmin - 0.1*boxsize
+            gridsearch = FastNS(max_cutoff, shiftconf, box=pseudobox, pbc=False)
+            results = gridsearch.search(shiftref)
+        else:
+            gridsearch = FastNS(max_cutoff, configuration, box=box)
+            results = gridsearch.search(reference)
+
+        pairs = results.get_pairs()
+        if return_distances or (min_cutoff is not None):
+            distances = results.get_pair_distances()
+            if min_cutoff is not None:
+                idx = distances > min_cutoff
+                pairs, distances = pairs[idx], distances[idx]
 
     if return_distances:
-        return pairs, pair_distance
+        return pairs, distances
     else:
         return pairs
 
@@ -857,7 +870,8 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
                                     box=box, method=method)
     pairs, dist = method(reference,  max_cutoff, min_cutoff=min_cutoff, box=box)
 
-    return np.asarray(pairs), np.asarray(dist)
+    return (np.asarray(pairs, dtype=np.int64),
+            np.asarray(dist, dtype=np.float64))
 
 
 def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
@@ -895,6 +909,9 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
     if method is not None:
         return methods[method.lower()]
 
+    if len(reference) < 100:
+        return methods['bruteforce']
+
     if box is None:
         min_dim = np.array([reference.min(axis=0)])
         max_dim = np.array([reference.max(axis=0)])
@@ -905,9 +922,7 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
         tribox = triclinic_vectors(box)
         size = tribox.max(axis=0) - tribox.min(axis=0)
 
-    if len(reference) < 100:
-        return methods['bruteforce']
-    elif max_cutoff < 0.03*size.min():
+    if max_cutoff < 0.03*size.min():
         return methods['pkdtree']
     else:
         return methods['nsgrid']
@@ -955,24 +970,24 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         distance between the coordinates ``reference[pairs[k, 0]]`` and
         ``reference[pairs[k, 1]]``.
     """
-    pairs, distance = [], []
+    pairs = np.empty((0, 2), dtype=np.int64)
+    distances = np.empty((0,), dtype=np.float64)
 
     N = len(reference)
-    distvec = np.zeros((N*(N-1)//2), dtype=np.float64)
-    self_distance_array(reference, box=box, result=distvec)
+    if N > 1:
+        distvec = self_distance_array(reference, box=box)
+        dist = np.full((N, N), max_cutoff, dtype=np.float64)
+        dist[np.triu_indices(N, 1)] = distvec
 
-    distance = np.ones((N, N), dtype=np.float32)*max_cutoff
-    distance[np.triu_indices(N, 1)] = distvec
+        if min_cutoff is not None:
+            mask = np.where((dist < max_cutoff) & (dist > min_cutoff))
+        else:
+            mask = np.where((dist < max_cutoff))
 
-    if min_cutoff is not None:
-        mask = np.where((distance < max_cutoff) & (distance > min_cutoff))
-    else:
-        mask = np.where((distance < max_cutoff))
-
-    if mask[0].size > 0:
-        pairs = np.c_[mask[0], mask[1]]
-        distance = distance[mask]
-    return np.asarray(pairs), np.asarray(distance)
+        if mask[0].size > 0:
+            pairs = np.c_[mask[0], mask[1]]
+            distances = dist[mask]
+    return pairs, distances
 
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
@@ -1019,19 +1034,22 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
     """
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
-    pairs, distance = [], []
-    kdtree = PeriodicKDTree(box=box)
-    cut = max_cutoff if box is not None else None
-    kdtree.set_coords(reference, cutoff=cut)
-    pairs = kdtree.search_pairs(max_cutoff)
-    if pairs.size > 0:
-        refA, refB = pairs[:, 0], pairs[:, 1]
-        distance = calc_bonds(reference[refA], reference[refB], box=box)
-        if min_cutoff is not None:
-            mask = np.where(distance > min_cutoff)[0]
-            pairs, distance = pairs[mask], distance[mask]
-    return np.asarray(pairs), np.asarray(distance)
+    pairs = np.empty((0, 2), dtype=np.int64)
+    distances = np.empty((0,), dtype=np.float64)
 
+    if len(reference) > 1:
+        kdtree = PeriodicKDTree(box=box)
+        cut = max_cutoff if box is not None else None
+        kdtree.set_coords(reference, cutoff=cut)
+        _pairs = kdtree.search_pairs(max_cutoff)
+        if _pairs.size > 0:
+            pairs = _pairs
+            refA, refB = pairs[:, 0], pairs[:, 1]
+            distances = calc_bonds(reference[refA], reference[refB], box=box)
+            if min_cutoff is not None:
+                idx = distances > min_cutoff
+                pairs, distances = pairs[idx], distances[idx]
+    return pairs, distances
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
 def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
@@ -1075,45 +1093,44 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         distance between the coordinates ``reference[pairs[k, 0]]`` and
         ``reference[pairs[k, 1]]``.
     """
-    reference = np.asarray(reference, dtype=np.float32)
-    if reference.shape == (3, ) or len(reference) == 1:
-        return [], []
-
-    if box is None:
-        # create a pseudobox
-        # define the max range
-        # and supply the pseudobox
-        # along with only one set of coordinates
-        pseudobox = np.zeros(6, dtype=np.float32)
-        lmax = reference.max(axis=0)
-        lmin = reference.min(axis=0)
-        # Using maximum dimension as the box size
-        boxsize = (lmax-lmin).max()
-        # to avoid failures of very close particles
-        # but with larger cutoff
-        if boxsize < 2*max_cutoff:
-            # just enough box size so that NSGrid doesnot fails
-            sizefactor = 2.2*max_cutoff/boxsize
+    pairs = np.empty((0, 2), dtype=np.int64)
+    distances = np.empty((0,), dtype=np.float64)
+    if len(reference) > 1:
+        if box is None:
+            # create a pseudobox
+            # define the max range
+            # and supply the pseudobox
+            # along with only one set of coordinates
+            pseudobox = np.zeros(6, dtype=np.float32)
+            lmax = reference.max(axis=0)
+            lmin = reference.min(axis=0)
+            # Using maximum dimension as the box size
+            boxsize = (lmax-lmin).max()
+            # to avoid failures of very close particles
+            # but with larger cutoff
+            if boxsize < 2*max_cutoff:
+                # just enough box size so that NSGrid doesnot fails
+                sizefactor = 2.2*max_cutoff/boxsize
+            else:
+                sizefactor = 1.2
+            pseudobox[:3] = sizefactor*boxsize
+            pseudobox[3:] = 90.
+            shiftref = reference.copy()
+            # Extra padding near the origin
+            shiftref -= lmin - 0.1*boxsize
+            gridsearch = FastNS(max_cutoff, shiftref, box=pseudobox, pbc=False)
+            results = gridsearch.self_search()
         else:
-            sizefactor = 1.2
-        pseudobox[:3] = sizefactor*boxsize
-        pseudobox[3:] = 90.
-        shiftref = reference.copy()
-        # Extra padding near the origin
-        shiftref -= lmin - 0.1*boxsize
-        gridsearch = FastNS(max_cutoff, shiftref, box=pseudobox, pbc=False)
-        results = gridsearch.self_search()
-    else:
-        gridsearch = FastNS(max_cutoff, reference, box=box)
-        results = gridsearch.self_search()
+            gridsearch = FastNS(max_cutoff, reference, box=box)
+            results = gridsearch.self_search()
 
-    pairs = results.get_pairs()[::2, :]
-    pair_distance = results.get_pair_distances()[::2]
+        pairs = results.get_pairs()[::2, :]
+        distances = results.get_pair_distances()[::2]
+        if min_cutoff is not None:
+            idx = distances > min_cutoff
+            pairs, distances = pairs[idx], distances[idx]
 
-    if min_cutoff is not None:
-        idx = pair_distance > min_cutoff
-        pairs, pair_distance = pairs[idx], pair_distance[idx]
-    return pairs, pair_distance
+    return pairs, distances
 
 
 @check_coords('coords')
@@ -1151,6 +1168,8 @@ def transform_RtoS(coords, box, backend="serial"):
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts (and, likewise, returns) a single coordinate.
     """
+    if len(coords) == 0:
+        return coords
     boxtype, box = _check_box(box)
     if boxtype == 'ortho':
         box = np.diag(box)
@@ -1198,6 +1217,8 @@ def transform_StoR(coords, box, backend="serial"):
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts (and, likewise, returns) a single coordinate.
     """
+    if len(coords) == 0:
+        return coords
     boxtype, box = _check_box(box)
     if boxtype == 'ortho':
         box = np.diag(box)
@@ -1269,20 +1290,21 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
 
-    if box is not None:
-        boxtype, box = _check_box(box)
-        if boxtype == 'ortho':
-            _run("calc_bond_distance_ortho",
-                 args=(coords1, coords2, box, bondlengths),
-                 backend=backend)
+    if numatom > 0:
+        if box is not None:
+            boxtype, box = _check_box(box)
+            if boxtype == 'ortho':
+                _run("calc_bond_distance_ortho",
+                     args=(coords1, coords2, box, bondlengths),
+                     backend=backend)
+            else:
+                _run("calc_bond_distance_triclinic",
+                     args=(coords1, coords2, box, bondlengths),
+                     backend=backend)
         else:
-            _run("calc_bond_distance_triclinic",
-                 args=(coords1, coords2, box, bondlengths),
+            _run("calc_bond_distance",
+                 args=(coords1, coords2, bondlengths),
                  backend=backend)
-    else:
-        _run("calc_bond_distance",
-             args=(coords1, coords2, bondlengths),
-             backend=backend)
 
     return bondlengths
 
@@ -1361,20 +1383,21 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
     numatom = coords1.shape[0]
     angles = _check_result_array(result, (numatom,))
 
-    if box is not None:
-        boxtype, box = _check_box(box)
-        if boxtype == 'ortho':
-            _run("calc_angle_ortho",
-                   args=(coords1, coords2, coords3, box, angles),
-                   backend=backend)
+    if numatom > 0:
+        if box is not None:
+            boxtype, box = _check_box(box)
+            if boxtype == 'ortho':
+                _run("calc_angle_ortho",
+                       args=(coords1, coords2, coords3, box, angles),
+                       backend=backend)
+            else:
+                _run("calc_angle_triclinic",
+                       args=(coords1, coords2, coords3, box, angles),
+                       backend=backend)
         else:
-            _run("calc_angle_triclinic",
-                   args=(coords1, coords2, coords3, box, angles),
+            _run("calc_angle",
+                   args=(coords1, coords2, coords3, angles),
                    backend=backend)
-    else:
-        _run("calc_angle",
-               args=(coords1, coords2, coords3, angles),
-               backend=backend)
 
     return angles
 
@@ -1465,20 +1488,21 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     numatom = coords1.shape[0]
     dihedrals = _check_result_array(result, (numatom,))
 
-    if box is not None:
-        boxtype, box = _check_box(box)
-        if boxtype == 'ortho':
-            _run("calc_dihedral_ortho",
-                 args=(coords1, coords2, coords3, coords4, box, dihedrals),
-                 backend=backend)
+    if numatom > 0:
+        if box is not None:
+            boxtype, box = _check_box(box)
+            if boxtype == 'ortho':
+                _run("calc_dihedral_ortho",
+                     args=(coords1, coords2, coords3, coords4, box, dihedrals),
+                     backend=backend)
+            else:
+                _run("calc_dihedral_triclinic",
+                     args=(coords1, coords2, coords3, coords4, box, dihedrals),
+                     backend=backend)
         else:
-            _run("calc_dihedral_triclinic",
-                 args=(coords1, coords2, coords3, coords4, box, dihedrals),
+            _run("calc_dihedral",
+                 args=(coords1, coords2, coords3, coords4, dihedrals),
                  backend=backend)
-    else:
-        _run("calc_dihedral",
-             args=(coords1, coords2, coords3, coords4, dihedrals),
-             backend=backend)
 
     return dihedrals
 
@@ -1514,6 +1538,8 @@ def apply_PBC(coords, box, backend="serial"):
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts (and, likewise, returns) single coordinates.
     """
+    if len(coords) == 0:
+        return coords
     boxtype, box = _check_box(box)
     if boxtype == 'ortho':
         box_inv = box ** (-1)
