@@ -452,22 +452,10 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
             raise ValueError("Box Argument is of incompatible type. The "
                              "dimension should be either None or of the form "
                              "[lx, ly, lz, alpha, beta, gamma]")
-    method = _determine_method(reference, configuration,
-                               max_cutoff, min_cutoff=min_cutoff,
-                               box=box, method=method)
-
-    if return_distances:
-        pairs, dist = method(reference, configuration, max_cutoff,
-                         min_cutoff=min_cutoff, box=box,
-                         return_distances=return_distances)
-        return (np.asarray(pairs, dtype=np.int64),
-                np.asarray(dist, dtype=np.float64))
-    else:
-        pairs = method(reference, configuration, max_cutoff,
-                         min_cutoff=min_cutoff, box=box,
-                         return_distances=return_distances)
-
-        return np.asarray(pairs, dtype=np.int64)
+    method = _determine_method(reference, configuration, max_cutoff,
+                               min_cutoff=min_cutoff, box=box, method=method)
+    return method(reference, configuration, max_cutoff, min_cutoff=min_cutoff,
+                  box=box, return_distances=return_distances)
 
 
 def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
@@ -587,6 +575,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
     """
+    # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.int64)
     distances = np.empty((0,), dtype=np.float64)
 
@@ -665,6 +654,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
     """
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
+    # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.int64)
     distances = np.empty((0,), dtype=np.float64)
 
@@ -744,6 +734,7 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
     """
+    # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.int64)
     distances = np.empty((0,), dtype=np.float64)
 
@@ -863,10 +854,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
     method = _determine_method_self(reference, max_cutoff,
                                     min_cutoff=min_cutoff,
                                     box=box, method=method)
-    pairs, dist = method(reference,  max_cutoff, min_cutoff=min_cutoff, box=box)
-
-    return (np.asarray(pairs, dtype=np.int64),
-            np.asarray(dist, dtype=np.float64))
+    return method(reference,  max_cutoff, min_cutoff=min_cutoff, box=box)
 
 
 def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
@@ -965,10 +953,13 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         distance between the coordinates ``reference[pairs[k, 0]]`` and
         ``reference[pairs[k, 1]]``.
     """
+    # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.int64)
     distances = np.empty((0,), dtype=np.float64)
 
     N = len(reference)
+    # We're searching within a single coordinate set, so we need at least two
+    # coordinates to find distances between them.
     if N > 1:
         distvec = self_distance_array(reference, box=box)
         dist = np.full((N, N), max_cutoff, dtype=np.float64)
@@ -1029,9 +1020,12 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
     """
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
+    # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.int64)
     distances = np.empty((0,), dtype=np.float64)
 
+    # We're searching within a single coordinate set, so we need at least two
+    # coordinates to find distances between them.
     if len(reference) > 1:
         kdtree = PeriodicKDTree(box=box)
         cut = max_cutoff if box is not None else None
@@ -1088,8 +1082,12 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         distance between the coordinates ``reference[pairs[k, 0]]`` and
         ``reference[pairs[k, 1]]``.
     """
+    # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.int64)
     distances = np.empty((0,), dtype=np.float64)
+
+    # We're searching within a single coordinate set, so we need at least two
+    # coordinates to find distances between them.
     if len(reference) > 1:
         if box is None:
             # create a pseudobox
