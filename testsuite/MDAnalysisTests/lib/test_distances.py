@@ -1187,7 +1187,8 @@ class TestOutputTypes(object):
 
     coords = [np.empty((0, 3), dtype=np.float32),  # empty coord array
               np.array([[0.1, 0.1, 0.1]], dtype=np.float32),  # coord array
-              np.array([0.1, 0.1, 0.1], dtype=np.float32)]  # single coord
+              np.array([0.1, 0.1, 0.1], dtype=np.float32),  # single coord
+              np.array([[-1.1, -1.1, -1.1]], dtype=np.float32)]  # outside box
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('incoords', list(comb(coords, 2)))
