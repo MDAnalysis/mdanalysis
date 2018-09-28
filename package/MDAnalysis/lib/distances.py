@@ -592,16 +592,16 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
     distances = np.empty((0,), dtype=np.float64)
 
     if len(reference) > 0 and len(configuration) > 0:
-        distances = distance_array(reference, configuration, box=box)
+        _distances = distance_array(reference, configuration, box=box)
         if min_cutoff is not None:
-            mask = np.where((distances <= max_cutoff) & \
-                            (distances > min_cutoff))
+            mask = np.where((_distances <= max_cutoff) & \
+                            (_distances > min_cutoff))
         else:
-            mask = np.where((distances < max_cutoff))
+            mask = np.where((_distances < max_cutoff))
         if mask[0].size > 0:
             pairs = np.c_[mask[0], mask[1]]
             if return_distances:
-                distances = distances[mask]
+                distances = _distances[mask]
 
     if return_distances:
         return pairs, distances
@@ -760,14 +760,10 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
             lmin = all_coords.min(axis=0)
             # Using maximum dimension as the box size
             boxsize = (lmax-lmin).max()
-            # to avoid failures of very close particles
-            # but with larger cutoff
-            if boxsize < 2*max_cutoff:
-                # just enough box size so that NSGrid doesnot fails
-                sizefactor = 2.2*max_cutoff/boxsize
-            else:
-                sizefactor = 1.2
-            pseudobox[:3] = sizefactor*boxsize
+            # to avoid failures for very close particles but with
+            # larger cutoff
+            boxsize = np.maximum(boxsize, 2 * max_cutoff)
+            pseudobox[:3] = 1.2 * boxsize
             pseudobox[3:] = 90.
             shiftref, shiftconf = reference.copy(), configuration.copy()
             # Extra padding near the origin
