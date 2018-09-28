@@ -24,6 +24,7 @@ from __future__ import division, absolute_import
 import pytest
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal
+from itertools import combinations_with_replacement as comb
 
 import MDAnalysis
 from MDAnalysis.lib import distances
@@ -1052,6 +1053,9 @@ class TestEmptyInputCoordinates(object):
       * apply_PBC
     """
 
+    max_cut = 0.25  # max_cutoff parameter for *capped_distance()
+    min_cut = 0.0  # optional min_cutoff parameter for *capped_distance()
+
     boxes = ([1.0, 1.0, 1.0, 90.0, 90.0, 90.0],  # orthorhombic
              [1.0, 1.0, 1.0, 80.0, 80.0, 80.0],  # triclinic
              None)  # no PBC
@@ -1077,12 +1081,14 @@ class TestEmptyInputCoordinates(object):
         assert_equal(res, np.empty((0,), dtype=np.float64))
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize('min_cut', [min_cut, None])
     @pytest.mark.parametrize('ret_dist', [False, True])
-    def test_empty_input_capped_distance(self, empty_coord, box, met, ret_dist):
-        r_cut = 0.25
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    def test_empty_input_capped_distance(self, empty_coord, min_cut, box, met,
+                                         ret_dist):
         res = distances.capped_distance(empty_coord, empty_coord,
-                                        max_cutoff=r_cut, box=box, method=met,
+                                        max_cutoff=self.max_cut,
+                                        min_cutoff=min_cut, box=box, method=met,
                                         return_distances=ret_dist)
         if ret_dist:
             assert_equal(res[0], np.empty((0, 2), dtype=np.int64))
@@ -1091,11 +1097,14 @@ class TestEmptyInputCoordinates(object):
             assert_equal(res, np.empty((0, 2), dtype=np.int64))
 
     @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('min_cut', [min_cut, None])
     @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
-    def test_empty_input_self_capped_distance(self, empty_coord, box, met):
-        r_cut = 0.25
-        res = distances.self_capped_distance(empty_coord, max_cutoff=r_cut,
-                                             box=box, method=met)
+    def test_empty_input_self_capped_distance(self, empty_coord, min_cut, box,
+                                              met):
+        res = distances.self_capped_distance(empty_coord,
+                                             max_cutoff=self.max_cut,
+                                             min_cutoff=min_cut, box=box,
+                                             method=met)
         assert_equal(res[0], np.empty((0, 2), dtype=np.int64))
         assert_equal(res[1], np.empty((0,), dtype=np.float64))
     
@@ -1137,6 +1146,179 @@ class TestEmptyInputCoordinates(object):
     def test_empty_input_apply_PBC(self, empty_coord, box, backend):
         res = distances.apply_PBC(empty_coord, box, backend=backend)
         assert_equal(res, empty_coord)
+
+
+class TestOutputTypes(object):
+    """Tests ensuring that the following functions in MDAnalysis.lib.distances
+    return results of the types stated in the docs:
+      * distance_array:
+        - numpy.ndarray (shape=(n, m), dtype=numpy.float64)
+      * self_distance_array:
+        - numpy.ndarray (shape=(n*(n-1)//2,), dtype=numpy.float64)
+      * capped_distance:
+        - numpy.ndarray (shape=(n, 2), dtype=numpy.int64)
+        - numpy.ndarray (shape=(n,), dtype=numpy.float64) (optional)
+      * self_capped_distance:
+        - numpy.ndarray (shape=(n, 2), dtype=numpy.int64)
+        - numpy.ndarray (shape=(n,), dtype=numpy.float64)
+      * transform_RtoS:
+        - numpy.ndarray (shape=input.shape, dtype=numpy.float32)
+      * transform_StoR:
+        - numpy.ndarray (shape=input.shape, dtype=numpy.float32)
+      * calc_bonds:
+        - numpy.ndarray (shape=(n,), dtype=numpy.float64) for at least one
+          shape (n,3) input, or numpy.float64 if all inputs are of shape (3,)
+      * calc_angles:
+        - numpy.ndarray (shape=(n,), dtype=numpy.float64) for at least one
+          shape (n,3) input, or numpy.float64 if all inputs are of shape (3,)
+      * calc_dihedrals:
+        - numpy.ndarray (shape=(n,), dtype=numpy.float64) for at least one
+          shape (n,3) input, or numpy.float64 for if all inputs are of
+          shape (3,)
+      * apply_PBC:
+        - numpy.ndarray (shape=input.shape, dtype=numpy.float32)
+    """
+    max_cut = 0.25  # max_cutoff parameter for *capped_distance()
+    min_cut = 0.0  # optional min_cutoff parameter for *capped_distance()
+
+    boxes = ([1.0, 1.0, 1.0, 90.0, 90.0, 90.0],  # orthorhombic
+             [1.0, 1.0, 1.0, 80.0, 80.0, 80.0],  # triclinic
+             None)  # no PBC
+
+    coords = [np.empty((0, 3), dtype=np.float32),  # empty coord array
+              np.array([[0.1, 0.1, 0.1]], dtype=np.float32),  # coord array
+              np.array([0.1, 0.1, 0.1], dtype=np.float32)]  # single coord
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('incoords', list(comb(coords, 2)))
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_output_type_distance_array(self, incoords, box, backend):
+        res = distances.distance_array(*incoords, box=box, backend=backend)
+        assert type(res) == np.ndarray
+        assert res.shape == (incoords[0].shape[0] % 2, incoords[1].shape[0] % 2)
+        assert res.dtype.type == np.float64
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('incoords', coords)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_output_type_self_distance_array(self, incoords, box, backend):
+        res = distances.self_distance_array(incoords, box=box, backend=backend)
+        assert type(res) == np.ndarray
+        assert res.shape == (0,)
+        assert res.dtype.type == np.float64
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('min_cut', [min_cut, None])
+    @pytest.mark.parametrize('ret_dist', [False, True])
+    @pytest.mark.parametrize('incoords', list(comb(coords, 2)))
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    def test_output_type_capped_distance(self, incoords, min_cut, box, met,
+                                         ret_dist):
+        res = distances.capped_distance(*incoords, max_cutoff=self.max_cut,
+                                        min_cutoff=min_cut, box=box, method=met,
+                                        return_distances=ret_dist)
+        if ret_dist:
+            pairs, dist = res
+        else:
+            pairs = res
+        assert type(pairs) == np.ndarray
+        assert pairs.dtype.type == np.int64
+        assert pairs.ndim == 2
+        assert pairs.shape[1] == 2
+        if ret_dist:
+            assert type(dist) == np.ndarray
+            assert dist.dtype.type == np.float64
+            assert dist.shape == (pairs.shape[0],)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('min_cut', [min_cut, None])
+    @pytest.mark.parametrize('incoords', coords)
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    def test_output_type_self_capped_distance(self, incoords, min_cut, box,
+                                              met):
+        pairs, dist = distances.self_capped_distance(incoords,
+                                                     max_cutoff=self.max_cut,
+                                                     min_cutoff=min_cut,
+                                                     box=box, method=met)
+        assert type(pairs) == np.ndarray
+        assert type(dist) == np.ndarray
+        assert pairs.dtype.type == np.int64
+        assert dist.dtype.type == np.float64
+        assert pairs.ndim == 2
+        assert pairs.shape[1] == 2
+        assert dist.shape == (pairs.shape[0],)
+
+    @pytest.mark.parametrize('box', boxes[:2])
+    @pytest.mark.parametrize('incoords', coords)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_output_dtype_transform_RtoS(self, incoords, box, backend):
+        res = distances.transform_RtoS(incoords, box, backend=backend)
+        assert type(res) == np.ndarray
+        assert res.dtype.type == np.float32
+        assert res.shape == incoords.shape
+
+    @pytest.mark.parametrize('box', boxes[:2])
+    @pytest.mark.parametrize('incoords', coords)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_output_dtype_transform_RtoS(self, incoords, box, backend):
+        res = distances.transform_RtoS(incoords, box, backend=backend)
+        assert type(res) == np.ndarray
+        assert res.dtype.type == np.float32
+        assert res.shape == incoords.shape
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('incoords',
+                             [2 * [coords[0]]] + list(comb(coords[1:], 2)))
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_output_type_calc_bonds(self, incoords, box, backend):
+        res = distances.calc_bonds(*incoords, box=box, backend=backend)
+        maxdim = max([crd.ndim for crd in incoords])
+        if maxdim == 1:
+            assert type(res) == np.float64
+        else:
+            assert type(res) == np.ndarray
+            assert res.dtype.type == np.float64
+            coord = [crd for crd in incoords if crd.ndim == maxdim][0]
+            assert res.shape == (coord.shape[0],)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('incoords',
+                             [3 * [coords[0]]] + list(comb(coords[1:], 3)))
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_output_type_calc_angles(self, incoords, box, backend):
+        res = distances.calc_angles(*incoords, box=box, backend=backend)
+        maxdim = max([crd.ndim for crd in incoords])
+        if maxdim == 1:
+            assert type(res) == np.float64
+        else:
+            assert type(res) == np.ndarray
+            assert res.dtype.type == np.float64
+            coord = [crd for crd in incoords if crd.ndim == maxdim][0]
+            assert res.shape == (coord.shape[0],)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('incoords',
+                             [4 * [coords[0]]] + list(comb(coords[1:], 4)))
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_output_type_calc_dihedrals(self, incoords, box, backend):
+        res = distances.calc_dihedrals(*incoords, box=box, backend=backend)
+        maxdim = max([crd.ndim for crd in incoords])
+        if maxdim == 1:
+            assert type(res) == np.float64
+        else:
+            assert type(res) == np.ndarray
+            assert res.dtype.type == np.float64
+            coord = [crd for crd in incoords if crd.ndim == maxdim][0]
+            assert res.shape == (coord.shape[0],)
+
+    @pytest.mark.parametrize('box', boxes[:2])
+    @pytest.mark.parametrize('incoords', coords)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_output_type_apply_PBC(self, incoords, box, backend):
+        res = distances.apply_PBC(incoords, box, backend=backend)
+        assert type(res) == np.ndarray
+        assert res.dtype.type == np.float32
+        assert res.shape == incoords.shape
 
 
 class TestDistanceBackendSelection(object):
