@@ -144,8 +144,8 @@ def _check_box(box):
         * ``'ortho'`` orthogonal box
         * ``'tri_vecs'`` triclinic box vectors
 
-    checked_box : numpy.ndarray
-        Array of dtype ``numpy.float32`` containing box information:
+    checked_box : numpy.ndarray (``dtype=numpy.float32``)
+        Array containing box information:
         * If `boxtype` is ``'ortho'``, `cecked_box` will have the shape ``(3,)``
           containing the x-, y-, and z-dimensions of the orthogonal box.
         * If  `boxtype` is ``'tri_vecs'``, `cecked_box` will have the shape
@@ -198,7 +198,7 @@ def _check_result_array(result, shape):
 
     Returns
     -------
-    result : numpy.ndarray
+    result : numpy.ndarray (``dtype=numpy.float64``, ``shape=shape``)
         The input array or a newly created array if the input was ``None``.
 
     Raises
@@ -263,9 +263,9 @@ def distance_array(reference, configuration, box=None, result=None,
 
     Returns
     -------
-    d : numpy.ndarray
-        Array with shape ``(n, m)`` containing the distances ``d[i,j]`` between
-        reference coordinates ``i`` and configuration coordinates ``j``.
+    d : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n, m)``)
+        Array containing the distances ``d[i,j]`` between reference coordinates
+        ``i`` and configuration coordinates ``j``.
 
 
     .. versionchanged:: 0.13.0
@@ -330,10 +330,9 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
 
     Returns
     -------
-    d : numpy.ndarray
-        Array with shape ``(n*(n-1)/2,)`` containing the distances ``dist[i,j]``
-        between reference coordinates ``i`` and ``j`` at position ``d[k]``. Loop
-        through ``d``:
+    d : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n*(n-1)/2,)``)
+        Array containing the distances ``dist[i,j]`` between reference
+        coordinates ``i`` and ``j`` at position ``d[k]``. Loop through ``d``:
 
         .. code-block:: python
 
@@ -413,14 +412,14 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
 
     Returns
     -------
-    pairs : numpy.ndarray
+    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` and
         `configuration` arrays such that the distance between them lies within
         the interval (`min_cutoff`, `max_cutoff`].
         Each row in `pairs` is an index pair ``[i, j]`` corresponding to the
         ``i``-th coordinate in `reference` and the ``j``-th coordinate in
         `configuration`.
-    distances : numpy.ndarray, optional
+    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional
         Distances corresponding to each pair of indices. Only returned if
         `return_distances` is ``True``. ``distances[k]`` corresponds to the
         ``k``-th pair returned in `pairs` and gives the distance between the
@@ -574,14 +573,14 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
     Returns
     -------
-    pairs : numpy.ndarray
+    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` and
         `configuration` arrays such that the distance between them lies within
         the interval (`min_cutoff`, `max_cutoff`].
         Each row in `pairs` is an index pair ``[i, j]`` corresponding to the
         ``i``-th coordinate in `reference` and the ``j``-th coordinate in
         `configuration`.
-    distances : numpy.ndarray, optional
+    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional
         Distances corresponding to each pair of indices. Only returned if
         `return_distances` is ``True``. ``distances[k]`` corresponds to the
         ``k``-th pair returned in `pairs` and gives the distance between the
@@ -650,14 +649,14 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
     Returns
     -------
-    pairs : numpy.ndarray
+    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` and
         `configuration` arrays such that the distance between them lies within
         the interval (`min_cutoff`, `max_cutoff`].
         Each row in `pairs` is an index pair ``[i, j]`` corresponding to the
         ``i``-th coordinate in `reference` and the ``j``-th coordinate in
         `configuration`.
-    distances : numpy.ndarray, optional
+    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional
         Distances corresponding to each pair of indices. Only returned if
         `return_distances` is ``True``. ``distances[k]`` corresponds to the
         ``k``-th pair returned in `pairs` and gives the distance between the
@@ -721,7 +720,7 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
     min_cutoff : float, optional
         Minimum cutoff distance between `reference` and `configuration`
         coordinates.
-    box : numpy.ndarray, optional
+    box : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
@@ -731,7 +730,7 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
     Returns
     -------
-    pairs : numpy.ndarray
+    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` and
         `configuration` arrays such that the distance between them lies within
         the interval (`min_cutoff`, `max_cutoff`].
@@ -823,13 +822,13 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
 
     Returns
     -------
-    pairs : numpy.ndarray
+    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` array
         such that the distance between them lies within the interval
         (`min_cutoff`, `max_cutoff`].
         Each row in `pairs` is an index pair ``[i, j]`` corresponding to the
         ``i``-th and the ``j``-th coordinate in `reference`.
-    distances : numpy.ndarray
+    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)
         Distances corresponding to each pair of indices. ``distances[k]``
         corresponds to the ``k``-th pair returned in `pairs` and gives the
         distance between the coordinates ``reference[pairs[k, 0]]`` and
@@ -954,13 +953,13 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
 
     Returns
     -------
-    pairs : numpy.ndarray
+    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` array
         such that the distance between them lies within the interval
         (`min_cutoff`, `max_cutoff`].
         Each row in `pairs` is an index pair ``[i, j]`` corresponding to the
         ``i``-th and the ``j``-th coordinate in `reference`.
-    distances : numpy.ndarray
+    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)
         Distances corresponding to each pair of indices. ``distances[k]``
         corresponds to the ``k``-th pair returned in `pairs` and gives the
         distance between the coordinates ``reference[pairs[k, 0]]`` and
@@ -1016,13 +1015,13 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
 
     Returns
     -------
-    pairs : numpy.ndarray
+    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` array
         such that the distance between them lies within the interval
         (`min_cutoff`, `max_cutoff`].
         Each row in `pairs` is an index pair ``[i, j]`` corresponding to the
         ``i``-th and the ``j``-th coordinate in `reference`.
-    distances : numpy.ndarray
+    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)
         Distances corresponding to each pair of indices. ``distances[k]``
         corresponds to the ``k``-th pair returned in `pairs` and gives the
         distance between the coordinates ``reference[pairs[k, 0]]`` and
@@ -1077,13 +1076,13 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
 
     Returns
     -------
-    pairs : numpy.ndarray
+    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` array
         such that the distance between them lies within the interval
         (`min_cutoff`, `max_cutoff`].
         Each row in `pairs` is an index pair ``[i, j]`` corresponding to the
         ``i``-th and the ``j``-th coordinate in `reference`.
-    distances : numpy.ndarray
+    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)
         Distances corresponding to each pair of indices. ``distances[k]``
         corresponds to the ``k``-th pair returned in `pairs` and gives the
         distance between the coordinates ``reference[pairs[k, 0]]`` and
@@ -1153,9 +1152,8 @@ def transform_RtoS(coords, box, backend="serial"):
 
     Returns
     -------
-    newcoords : numpy.ndarray
-        An array of dtype ``numpy.float32`` with the same shape as `coords`
-        containing fractional coordiantes.
+    newcoords : numpy.ndarray (``dtype=numpy.float32``, ``shape=coords.shape``)
+        An array containing fractional coordiantes.
 
 
     .. versionchanged:: 0.13.0
@@ -1202,9 +1200,8 @@ def transform_StoR(coords, box, backend="serial"):
 
     Returns
     -------
-    newcoords : numpy.ndarray
-        An array of dtype ``numpy.float32`` with the same shape as `coords`
-        containing real space coordiantes.
+    newcoords : numpy.ndarray (``dtype=numpy.float32``, ``shape=coords.shape``)
+        An array containing real space coordiantes.
 
 
     .. versionchanged:: 0.13.0
@@ -1270,10 +1267,10 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
 
     Returns
     -------
-    bondlengths : numpy.ndarray or float
-        Array of dtype ``numpy.float64`` containing the bond lengths between
-        each pair of coordinates. If two single coordinates were supplied, their
-        distance is returned as a single number instead of an array.
+    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64
+        Array containing the bond lengths between each pair of coordinates. If
+        two single coordinates were supplied, their distance is returned as a
+        single number instead of an array.
 
 
     .. versionadded:: 0.8
@@ -1359,11 +1356,10 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
 
     Returns
     -------
-    angles : numpy.ndarray or float
-        Array of dtype ``numpy.float64`` containing the angles between each
-        triplet of coordinates. Values are returned in radians (rad). If three
-        single coordinates were supplied, the angle is returned as a single
-        number instead of an array.
+    angles : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64
+        Array containing the angles between each triplet of coordinates. Values
+        are returned in radians (rad). If three single coordinates were
+        supplied, the angle is returned as a single number instead of an array.
 
 
     .. versionadded:: 0.8
@@ -1462,11 +1458,11 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
 
     Returns
     -------
-    dihedrals : numpy.ndarray or float
-        Array of dtype ``numpy.float64`` containing the dihedral angles formed
-        by each quadruplet of coordinates. Values are returned in radians (rad).
-        If four single coordinates were supplied, the dihedral angle is returned
-        as a single number instead of an array.
+    dihedrals : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64
+        Array containing the dihedral angles formed by each quadruplet of
+        coordinates. Values are returned in radians (rad). If four single
+        coordinates were supplied, the dihedral angle is returned as a single
+        number instead of an array.
 
 
     .. versionadded:: 0.8
@@ -1522,9 +1518,9 @@ def apply_PBC(coords, box, backend="serial"):
 
     Returns
     -------
-    newcoords : numpy.ndarray
-        Array of dtype ``numpy.float32`` containing coordinates that all lie
-        within the primary unit cell as defined by `box`.
+    newcoords : numpy.ndarray  (``dtype=numpy.float32``, ``shape=coords.shape``)
+        Array containing coordinates that all lie within the primary unit cell
+        as defined by `box`.
 
 
     .. versionadded:: 0.8
