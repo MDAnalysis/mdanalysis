@@ -125,11 +125,11 @@ is called repeatedly.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>d</strong> – Array with shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">m)</span></code> containing the distances <code class="docutils literal"><span class="pre">d[i,j]</span></code> between
-reference coordinates <code class="docutils literal"><span class="pre">i</span></code> and configuration coordinates <code class="docutils literal"><span class="pre">j</span></code>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>d</strong> – Array containing the distances <code class="docutils literal"><span class="pre">d[i,j]</span></code> between reference coordinates
+<code class="docutils literal"><span class="pre">i</span></code> and configuration coordinates <code class="docutils literal"><span class="pre">j</span></code>.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n,</span> <span class="pre">m)</span></code>)</p>
 </td>
 </tr>
 </tbody>
@@ -172,9 +172,8 @@ the function is called repeatedly.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p><strong>d</strong> – Array with shape <code class="docutils literal"><span class="pre">(n*(n-1)/2,)</span></code> containing the distances <code class="docutils literal"><span class="pre">dist[i,j]</span></code>
-between reference coordinates <code class="docutils literal"><span class="pre">i</span></code> and <code class="docutils literal"><span class="pre">j</span></code> at position <code class="docutils literal"><span class="pre">d[k]</span></code>. Loop
-through <code class="docutils literal"><span class="pre">d</span></code>:</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p><strong>d</strong> – Array containing the distances <code class="docutils literal"><span class="pre">dist[i,j]</span></code> between reference
+coordinates <code class="docutils literal"><span class="pre">i</span></code> and <code class="docutils literal"><span class="pre">j</span></code> at position <code class="docutils literal"><span class="pre">d[k]</span></code>. Loop through <code class="docutils literal"><span class="pre">d</span></code>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -184,7 +183,7 @@ through <code class="docutils literal"><span class="pre">d</span></code>:</p>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n*(n-1)/2,)</span></code>)</p>
 </td>
 </tr>
 </tbody>
@@ -233,14 +232,14 @@ method.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul>
-<li><p class="first"><strong>pairs</strong> (<em>numpy.ndarray</em>) – Pairs of indices, corresponding to coordinates in the <cite>reference</cite> and
+<li><p class="first"><strong>pairs</strong> (numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.int64</span></code>, <code class="docutils literal"><span class="pre">shape=(n_pairs,</span> <span class="pre">2)</span></code>)) – Pairs of indices, corresponding to coordinates in the <cite>reference</cite> and
 <cite>configuration</cite> arrays such that the distance between them lies within
 the interval (<cite>min_cutoff</cite>, <cite>max_cutoff</cite>].
 Each row in <cite>pairs</cite> is an index pair <code class="docutils literal"><span class="pre">[i,</span> <span class="pre">j]</span></code> corresponding to the
 <code class="docutils literal"><span class="pre">i</span></code>-th coordinate in <cite>reference</cite> and the <code class="docutils literal"><span class="pre">j</span></code>-th coordinate in
 <cite>configuration</cite>.</p>
 </li>
-<li><p class="first"><strong>distances</strong> (<em>numpy.ndarray, optional</em>) – Distances corresponding to each pair of indices. Only returned if
+<li><p class="first"><strong>distances</strong> (numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n_pairs,)</span></code>), optional) – Distances corresponding to each pair of indices. Only returned if
 <cite>return_distances</cite> is <code class="docutils literal"><span class="pre">True</span></code>. <code class="docutils literal"><span class="pre">distances[k]</span></code> corresponds to the
 <code class="docutils literal"><span class="pre">k</span></code>-th pair returned in <cite>pairs</cite> and gives the distance between the
 coordinates <code class="docutils literal"><span class="pre">reference[pairs[k,</span> <span class="pre">0]]</span></code> and
@@ -304,13 +303,13 @@ method.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul>
-<li><p class="first"><strong>pairs</strong> (<em>numpy.ndarray</em>) – Pairs of indices, corresponding to coordinates in the <cite>reference</cite> array
+<li><p class="first"><strong>pairs</strong> (numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.int64</span></code>, <code class="docutils literal"><span class="pre">shape=(n_pairs,</span> <span class="pre">2)</span></code>)) – Pairs of indices, corresponding to coordinates in the <cite>reference</cite> array
 such that the distance between them lies within the interval
 (<cite>min_cutoff</cite>, <cite>max_cutoff</cite>].
 Each row in <cite>pairs</cite> is an index pair <code class="docutils literal"><span class="pre">[i,</span> <span class="pre">j]</span></code> corresponding to the
 <code class="docutils literal"><span class="pre">i</span></code>-th and the <code class="docutils literal"><span class="pre">j</span></code>-th coordinate in <cite>reference</cite>.</p>
 </li>
-<li><p class="first"><strong>distances</strong> (<em>numpy.ndarray</em>) – Distances corresponding to each pair of indices. <code class="docutils literal"><span class="pre">distances[k]</span></code>
+<li><p class="first"><strong>distances</strong> (numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n_pairs,)</span></code>)) – Distances corresponding to each pair of indices. <code class="docutils literal"><span class="pre">distances[k]</span></code>
 corresponds to the <code class="docutils literal"><span class="pre">k</span></code>-th pair returned in <cite>pairs</cite> and gives the
 distance between the coordinates <code class="docutils literal"><span class="pre">reference[pairs[k,</span> <span class="pre">0]]</span></code> and
 <code class="docutils literal"><span class="pre">reference[pairs[k,</span> <span class="pre">1]]</span></code>.</p>
@@ -383,12 +382,12 @@ function calls.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>bondlengths</strong> – Array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> containing the bond lengths between
-each pair of coordinates. If two single coordinates were supplied, their
-distance is returned as a single number instead of an array.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>bondlengths</strong> – Array containing the bond lengths between each pair of coordinates. If
+two single coordinates were supplied, their distance is returned as a
+single number instead of an array.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)">float</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n,)</span></code>) or numpy.float64</p>
 </td>
 </tr>
 </tbody>
@@ -453,13 +452,12 @@ function calls.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>angles</strong> – Array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> containing the angles between each
-triplet of coordinates. Values are returned in radians (rad). If three
-single coordinates were supplied, the angle is returned as a single
-number instead of an array.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>angles</strong> – Array containing the angles between each triplet of coordinates. Values
+are returned in radians (rad). If three single coordinates were
+supplied, the angle is returned as a single number instead of an array.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)">float</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n,)</span></code>) or numpy.float64</p>
 </td>
 </tr>
 </tbody>
@@ -537,13 +535,13 @@ repeated function calls.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dihedrals</strong> – Array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> containing the dihedral angles formed
-by each quadruplet of coordinates. Values are returned in radians (rad).
-If four single coordinates were supplied, the dihedral angle is returned
-as a single number instead of an array.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dihedrals</strong> – Array containing the dihedral angles formed by each quadruplet of
+coordinates. Values are returned in radians (rad). If four single
+coordinates were supplied, the dihedral angle is returned as a single
+number instead of an array.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)">float</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n,)</span></code>) or numpy.float64</p>
 </td>
 </tr>
 </tbody>
@@ -587,11 +585,11 @@ triclinic and must be provided in the same format as returned by
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newcoords</strong> – Array of dtype <code class="docutils literal"><span class="pre">numpy.float32</span></code> containing coordinates that all lie
-within the primary unit cell as defined by <cite>box</cite>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newcoords</strong> – Array containing coordinates that all lie within the primary unit cell
+as defined by <cite>box</cite>.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray  (<code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code>, <code class="docutils literal"><span class="pre">shape=coords.shape</span></code>)</p>
 </td>
 </tr>
 </tbody>
@@ -631,11 +629,10 @@ triclinic and must be provided in the same format as returned by
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newcoords</strong> – An array of dtype <code class="docutils literal"><span class="pre">numpy.float32</span></code> with the same shape as <cite>coords</cite>
-containing fractional coordiantes.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newcoords</strong> – An array containing fractional coordiantes.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code>, <code class="docutils literal"><span class="pre">shape=coords.shape</span></code>)</p>
 </td>
 </tr>
 </tbody>
@@ -671,11 +668,10 @@ triclinic and must be provided in the same format as returned by
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newcoords</strong> – An array of dtype <code class="docutils literal"><span class="pre">numpy.float32</span></code> with the same shape as <cite>coords</cite>
-containing real space coordiantes.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newcoords</strong> – An array containing real space coordiantes.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code>, <code class="docutils literal"><span class="pre">shape=coords.shape</span></code>)</p>
 </td>
 </tr>
 </tbody>

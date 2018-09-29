@@ -192,8 +192,8 @@
 <span class="sd">        * ``&#39;ortho&#39;`` orthogonal box</span>
 <span class="sd">        * ``&#39;tri_vecs&#39;`` triclinic box vectors</span>
 
-<span class="sd">    checked_box : numpy.ndarray</span>
-<span class="sd">        Array of dtype ``numpy.float32`` containing box information:</span>
+<span class="sd">    checked_box : numpy.ndarray (``dtype=numpy.float32``)</span>
+<span class="sd">        Array containing box information:</span>
 <span class="sd">        * If `boxtype` is ``&#39;ortho&#39;``, `cecked_box` will have the shape ``(3,)``</span>
 <span class="sd">          containing the x-, y-, and z-dimensions of the orthogonal box.</span>
 <span class="sd">        * If  `boxtype` is ``&#39;tri_vecs&#39;``, `cecked_box` will have the shape</span>
@@ -246,7 +246,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    result : numpy.ndarray</span>
+<span class="sd">    result : numpy.ndarray (``dtype=numpy.float64``, ``shape=shape``)</span>
 <span class="sd">        The input array or a newly created array if the input was ``None``.</span>
 
 <span class="sd">    Raises</span>
@@ -270,8 +270,8 @@
     <span class="k">return</span> <span class="n">result</span>
 
 
-<div class="viewcode-block" id="distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.distance_array">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.distance_array">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate all possible distances between a reference set and another</span>
@@ -311,9 +311,9 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    d : numpy.ndarray</span>
-<span class="sd">        Array with shape ``(n, m)`` containing the distances ``d[i,j]`` between</span>
-<span class="sd">        reference coordinates ``i`` and configuration coordinates ``j``.</span>
+<span class="sd">    d : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n, m)``)</span>
+<span class="sd">        Array containing the distances ``d[i,j]`` between reference coordinates</span>
+<span class="sd">        ``i`` and configuration coordinates ``j``.</span>
 
 
 <span class="sd">    .. versionchanged:: 0.13.0</span>
@@ -326,6 +326,8 @@
     <span class="n">refnum</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">distances</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">refnum</span><span class="p">,</span> <span class="n">confnum</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">distances</span>
 
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">_check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
@@ -345,7 +347,7 @@
     <span class="k">return</span> <span class="n">distances</span></div>
 
 
-<div class="viewcode-block" id="self_distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_distance_array">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="self_distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_distance_array">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate all possible distances within a configuration `reference`.</span>
 
@@ -376,10 +378,9 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    d : numpy.ndarray</span>
-<span class="sd">        Array with shape ``(n*(n-1)/2,)`` containing the distances ``dist[i,j]``</span>
-<span class="sd">        between reference coordinates ``i`` and ``j`` at position ``d[k]``. Loop</span>
-<span class="sd">        through ``d``:</span>
+<span class="sd">    d : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n*(n-1)/2,)``)</span>
+<span class="sd">        Array containing the distances ``dist[i,j]`` between reference</span>
+<span class="sd">        coordinates ``i`` and ``j`` at position ``d[k]``. Loop through ``d``:</span>
 
 <span class="sd">        .. code-block:: python</span>
 
@@ -459,14 +460,14 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pairs : numpy.ndarray</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
 <span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` and</span>
 <span class="sd">        `configuration` arrays such that the distance between them lies within</span>
 <span class="sd">        the interval (`min_cutoff`, `max_cutoff`].</span>
 <span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
 <span class="sd">        ``i``-th coordinate in `reference` and the ``j``-th coordinate in</span>
 <span class="sd">        `configuration`.</span>
-<span class="sd">    distances : numpy.ndarray, optional</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional</span>
 <span class="sd">        Distances corresponding to each pair of indices. Only returned if</span>
 <span class="sd">        `return_distances` is ``True``. ``distances[k]`` corresponds to the</span>
 <span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
@@ -499,21 +500,10 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Box Argument is of incompatible type. The &quot;</span>
                              <span class="s2">&quot;dimension should be either None or of the form &quot;</span>
                              <span class="s2">&quot;[lx, ly, lz, alpha, beta, gamma]&quot;</span><span class="p">)</span>
-    <span class="n">method</span> <span class="o">=</span> <span class="n">_determine_method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span>
-                               <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
-                               <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
-        <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
-                         <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
-                         <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">pairs</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
-                         <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
-                         <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span></div>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">_determine_method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
+                               <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
+                  <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_determine_method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -619,33 +609,37 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pairs : numpy.ndarray</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
 <span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` and</span>
 <span class="sd">        `configuration` arrays such that the distance between them lies within</span>
 <span class="sd">        the interval (`min_cutoff`, `max_cutoff`].</span>
 <span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
 <span class="sd">        ``i``-th coordinate in `reference` and the ``j``-th coordinate in</span>
 <span class="sd">        `configuration`.</span>
-<span class="sd">    distances : numpy.ndarray, optional</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional</span>
 <span class="sd">        Distances corresponding to each pair of indices. Only returned if</span>
 <span class="sd">        `return_distances` is ``True``. ``distances[k]`` corresponds to the</span>
 <span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
 <span class="sd">        coordinates ``reference[pairs[k, 0]]`` and</span>
 <span class="sd">        ``configuration[pairs[k, 1]]``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">distances</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">distances</span> <span class="o">&lt;=</span> <span class="n">max_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">distances</span> <span class="o">&lt;=</span> <span class="n">max_cutoff</span><span class="p">))</span>
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mask</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">_distances</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">_distances</span> <span class="o">&lt;=</span> <span class="n">max_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> \
+                            <span class="p">(</span><span class="n">_distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">_distances</span> <span class="o">&lt;</span> <span class="n">max_cutoff</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mask</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+                <span class="n">distances</span> <span class="o">=</span> <span class="n">_distances</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
-        <span class="n">distances</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pairs</span>
@@ -692,14 +686,14 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pairs : numpy.ndarray</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
 <span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` and</span>
 <span class="sd">        `configuration` arrays such that the distance between them lies within</span>
 <span class="sd">        the interval (`min_cutoff`, `max_cutoff`].</span>
 <span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
 <span class="sd">        ``i``-th coordinate in `reference` and the ``j``-th coordinate in</span>
 <span class="sd">        `configuration`.</span>
-<span class="sd">    distances : numpy.ndarray, optional</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional</span>
 <span class="sd">        Distances corresponding to each pair of indices. Only returned if</span>
 <span class="sd">        `return_distances` is ``True``. ``distances[k]`` corresponds to the</span>
 <span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
@@ -708,18 +702,24 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.pkdtree</span> <span class="k">import</span> <span class="n">PeriodicKDTree</span>  <span class="c1"># must be here to avoid circular import</span>
 
-    <span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-    <span class="n">cut</span> <span class="o">=</span> <span class="n">max_cutoff</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cut</span><span class="p">)</span>
-    <span class="n">pairs</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">search_tree</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">and</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">distances</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="n">reference</span><span class="p">[</span><span class="n">refA</span><span class="p">],</span> <span class="n">configuration</span><span class="p">[</span><span class="n">refB</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">)</span>
-            <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">distances</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">cut</span> <span class="o">=</span> <span class="n">max_cutoff</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cut</span><span class="p">)</span>
+        <span class="n">_pairs</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">search_tree</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">_pairs</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
+                <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">distances</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="n">reference</span><span class="p">[</span><span class="n">refA</span><span class="p">],</span> <span class="n">configuration</span><span class="p">[</span><span class="n">refB</span><span class="p">],</span>
+                                       <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">)</span>
+                    <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">distances</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
@@ -758,7 +758,7 @@
 <span class="sd">    min_cutoff : float, optional</span>
 <span class="sd">        Minimum cutoff distance between `reference` and `configuration`</span>
 <span class="sd">        coordinates.</span>
-<span class="sd">    box : numpy.ndarray, optional</span>
+<span class="sd">    box : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
 <span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n</span>
@@ -768,7 +768,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pairs : numpy.ndarray</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
 <span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` and</span>
 <span class="sd">        `configuration` arrays such that the distance between them lies within</span>
 <span class="sd">        the interval (`min_cutoff`, `max_cutoff`].</span>
@@ -782,45 +782,46 @@
 <span class="sd">        coordinates ``reference[pairs[k, 0]]`` and</span>
 <span class="sd">        ``configuration[pairs[k, 1]]``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># create a pseudobox</span>
-        <span class="c1"># define the max range</span>
-        <span class="c1"># and supply the pseudobox</span>
-        <span class="c1"># along with only one set of coordinates</span>
-        <span class="n">pseudobox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">all_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">])</span>
-        <span class="n">lmax</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">lmin</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="c1"># Using maximum dimension as the box size</span>
-        <span class="n">boxsize</span> <span class="o">=</span> <span class="p">(</span><span class="n">lmax</span><span class="o">-</span><span class="n">lmin</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-        <span class="c1"># to avoid failures of very close particles</span>
-        <span class="c1"># but with larger cutoff</span>
-        <span class="k">if</span> <span class="n">boxsize</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="p">:</span>
-            <span class="c1"># just enough box size so that NSGrid doesnot fails</span>
-            <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">2.2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="o">/</span><span class="n">boxsize</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">1.2</span>
-        <span class="n">pseudobox</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">sizefactor</span><span class="o">*</span><span class="n">boxsize</span>
-        <span class="n">pseudobox</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span>
-        <span class="n">shiftref</span><span class="p">,</span> <span class="n">shiftconf</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">configuration</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="c1"># Extra padding near the origin</span>
-        <span class="n">shiftref</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">boxsize</span>
-        <span class="n">shiftconf</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">boxsize</span>
-        <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">shiftconf</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pseudobox</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">shiftref</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
-    <span class="n">pairs</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">pair_distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
-            <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">pair_distance</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># create a pseudobox</span>
+            <span class="c1"># define the max range</span>
+            <span class="c1"># and supply the pseudobox</span>
+            <span class="c1"># along with only one set of coordinates</span>
+            <span class="n">pseudobox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">all_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">])</span>
+            <span class="n">lmax</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">lmin</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># Using maximum dimension as the box size</span>
+            <span class="n">boxsize</span> <span class="o">=</span> <span class="p">(</span><span class="n">lmax</span><span class="o">-</span><span class="n">lmin</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="c1"># to avoid failures for very close particles but with</span>
+            <span class="c1"># larger cutoff</span>
+            <span class="n">boxsize</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">boxsize</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">max_cutoff</span><span class="p">)</span>
+            <span class="n">pseudobox</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.2</span> <span class="o">*</span> <span class="n">boxsize</span>
+            <span class="n">pseudobox</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span>
+            <span class="n">shiftref</span><span class="p">,</span> <span class="n">shiftconf</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">configuration</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># Extra padding near the origin</span>
+            <span class="n">shiftref</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">boxsize</span>
+            <span class="n">shiftconf</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">boxsize</span>
+            <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">shiftconf</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pseudobox</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">shiftref</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">distances</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
+                <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">distances</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span>
+        <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pairs</span>
 
@@ -860,13 +861,13 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pairs : numpy.ndarray</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
 <span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` array</span>
 <span class="sd">        such that the distance between them lies within the interval</span>
 <span class="sd">        (`min_cutoff`, `max_cutoff`].</span>
 <span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
 <span class="sd">        ``i``-th and the ``j``-th coordinate in `reference`.</span>
-<span class="sd">    distances : numpy.ndarray</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)</span>
 <span class="sd">        Distances corresponding to each pair of indices. ``distances[k]``</span>
 <span class="sd">        corresponds to the ``k``-th pair returned in `pairs` and gives the</span>
 <span class="sd">        distance between the coordinates ``reference[pairs[k, 0]]`` and</span>
@@ -901,9 +902,7 @@
     <span class="n">method</span> <span class="o">=</span> <span class="n">_determine_method_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
                                     <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
                                     <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
-    <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span>  <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span>  <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_determine_method_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -941,6 +940,9 @@
     <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
 
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
+
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">min_dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reference</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
         <span class="n">max_dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reference</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
@@ -951,9 +953,7 @@
         <span class="n">tribox</span> <span class="o">=</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
         <span class="n">size</span> <span class="o">=</span> <span class="n">tribox</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">tribox</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">max_cutoff</span> <span class="o">&lt;</span> <span class="mf">0.03</span><span class="o">*</span><span class="n">size</span><span class="o">.</span><span class="n">min</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">max_cutoff</span> <span class="o">&lt;</span> <span class="mf">0.03</span><span class="o">*</span><span class="n">size</span><span class="o">.</span><span class="n">min</span><span class="p">():</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;pkdtree&#39;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;nsgrid&#39;</span><span class="p">]</span>
@@ -989,36 +989,39 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pairs : numpy.ndarray</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
 <span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` array</span>
 <span class="sd">        such that the distance between them lies within the interval</span>
 <span class="sd">        (`min_cutoff`, `max_cutoff`].</span>
 <span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
 <span class="sd">        ``i``-th and the ``j``-th coordinate in `reference`.</span>
-<span class="sd">    distances : numpy.ndarray</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)</span>
 <span class="sd">        Distances corresponding to each pair of indices. ``distances[k]``</span>
 <span class="sd">        corresponds to the ``k``-th pair returned in `pairs` and gives the</span>
 <span class="sd">        distance between the coordinates ``reference[pairs[k, 0]]`` and</span>
 <span class="sd">        ``reference[pairs[k, 1]]``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">pairs</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
     <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
-    <span class="n">distvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-    <span class="n">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">distvec</span><span class="p">)</span>
+    <span class="c1"># We&#39;re searching within a single coordinate set, so we need at least two</span>
+    <span class="c1"># coordinates to find distances between them.</span>
+    <span class="k">if</span> <span class="n">N</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">distvec</span> <span class="o">=</span> <span class="n">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">distvec</span>
 
-    <span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">*</span><span class="n">max_cutoff</span>
-    <span class="n">distance</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">distvec</span>
+        <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dist</span> <span class="o">&lt;</span> <span class="n">max_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dist</span> <span class="o">&lt;</span> <span class="n">max_cutoff</span><span class="p">))</span>
 
-    <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">distance</span> <span class="o">&lt;</span> <span class="n">max_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">distance</span> <span class="o">&lt;</span> <span class="n">max_cutoff</span><span class="p">))</span>
-
-    <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mask</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-        <span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mask</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">distances</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
 
 
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1051,13 +1054,13 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pairs : numpy.ndarray</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
 <span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` array</span>
 <span class="sd">        such that the distance between them lies within the interval</span>
 <span class="sd">        (`min_cutoff`, `max_cutoff`].</span>
 <span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
 <span class="sd">        ``i``-th and the ``j``-th coordinate in `reference`.</span>
-<span class="sd">    distances : numpy.ndarray</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)</span>
 <span class="sd">        Distances corresponding to each pair of indices. ``distances[k]``</span>
 <span class="sd">        corresponds to the ``k``-th pair returned in `pairs` and gives the</span>
 <span class="sd">        distance between the coordinates ``reference[pairs[k, 0]]`` and</span>
@@ -1065,20 +1068,27 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.pkdtree</span> <span class="k">import</span> <span class="n">PeriodicKDTree</span>  <span class="c1"># must be here to avoid circular import</span>
 
-    <span class="n">pairs</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
-    <span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-    <span class="n">cut</span> <span class="o">=</span> <span class="n">max_cutoff</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cut</span><span class="p">)</span>
-    <span class="n">pairs</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">search_pairs</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">distance</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="n">reference</span><span class="p">[</span><span class="n">refA</span><span class="p">],</span> <span class="n">reference</span><span class="p">[</span><span class="n">refB</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">pairs</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">distance</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
+    <span class="c1"># We&#39;re searching within a single coordinate set, so we need at least two</span>
+    <span class="c1"># coordinates to find distances between them.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">cut</span> <span class="o">=</span> <span class="n">max_cutoff</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cut</span><span class="p">)</span>
+        <span class="n">_pairs</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">search_pairs</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">_pairs</span>
+            <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">distances</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="n">reference</span><span class="p">[</span><span class="n">refA</span><span class="p">],</span> <span class="n">reference</span><span class="p">[</span><span class="n">refB</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
+                <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">distances</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
 
+<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_nsgrid_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a grid-based search method.</span>
 
@@ -1108,57 +1118,60 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pairs : numpy.ndarray</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
 <span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` array</span>
 <span class="sd">        such that the distance between them lies within the interval</span>
 <span class="sd">        (`min_cutoff`, `max_cutoff`].</span>
 <span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
 <span class="sd">        ``i``-th and the ``j``-th coordinate in `reference`.</span>
-<span class="sd">    distances : numpy.ndarray</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)</span>
 <span class="sd">        Distances corresponding to each pair of indices. ``distances[k]``</span>
 <span class="sd">        corresponds to the ``k``-th pair returned in `pairs` and gives the</span>
 <span class="sd">        distance between the coordinates ``reference[pairs[k, 0]]`` and</span>
 <span class="sd">        ``reference[pairs[k, 1]]``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">reference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># create a pseudobox</span>
-        <span class="c1"># define the max range</span>
-        <span class="c1"># and supply the pseudobox</span>
-        <span class="c1"># along with only one set of coordinates</span>
-        <span class="n">pseudobox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">lmax</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">lmin</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="c1"># Using maximum dimension as the box size</span>
-        <span class="n">boxsize</span> <span class="o">=</span> <span class="p">(</span><span class="n">lmax</span><span class="o">-</span><span class="n">lmin</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-        <span class="c1"># to avoid failures of very close particles</span>
-        <span class="c1"># but with larger cutoff</span>
-        <span class="k">if</span> <span class="n">boxsize</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="p">:</span>
-            <span class="c1"># just enough box size so that NSGrid doesnot fails</span>
-            <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">2.2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="o">/</span><span class="n">boxsize</span>
+    <span class="c1"># We&#39;re searching within a single coordinate set, so we need at least two</span>
+    <span class="c1"># coordinates to find distances between them.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># create a pseudobox</span>
+            <span class="c1"># define the max range</span>
+            <span class="c1"># and supply the pseudobox</span>
+            <span class="c1"># along with only one set of coordinates</span>
+            <span class="n">pseudobox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">lmax</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">lmin</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># Using maximum dimension as the box size</span>
+            <span class="n">boxsize</span> <span class="o">=</span> <span class="p">(</span><span class="n">lmax</span><span class="o">-</span><span class="n">lmin</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="c1"># to avoid failures of very close particles</span>
+            <span class="c1"># but with larger cutoff</span>
+            <span class="k">if</span> <span class="n">boxsize</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="p">:</span>
+                <span class="c1"># just enough box size so that NSGrid doesnot fails</span>
+                <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">2.2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="o">/</span><span class="n">boxsize</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">1.2</span>
+            <span class="n">pseudobox</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">sizefactor</span><span class="o">*</span><span class="n">boxsize</span>
+            <span class="n">pseudobox</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span>
+            <span class="n">shiftref</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># Extra padding near the origin</span>
+            <span class="n">shiftref</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">boxsize</span>
+            <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">shiftref</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pseudobox</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">self_search</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">1.2</span>
-        <span class="n">pseudobox</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">sizefactor</span><span class="o">*</span><span class="n">boxsize</span>
-        <span class="n">pseudobox</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span>
-        <span class="n">shiftref</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="c1"># Extra padding near the origin</span>
-        <span class="n">shiftref</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">boxsize</span>
-        <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">shiftref</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pseudobox</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">self_search</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">self_search</span><span class="p">()</span>
+            <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">self_search</span><span class="p">()</span>
 
-    <span class="n">pairs</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">()[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span>
-    <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()[::</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">()[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()[::</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
+            <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">distances</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">pair_distance</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
-        <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">pair_distance</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">pair_distance</span>
+    <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
 
 
 <div class="viewcode-block" id="transform_RtoS"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_RtoS">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords&#39;</span><span class="p">)</span>
@@ -1185,9 +1198,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    newcoords : numpy.ndarray</span>
-<span class="sd">        An array of dtype ``numpy.float32`` with the same shape as `coords`</span>
-<span class="sd">        containing fractional coordiantes.</span>
+<span class="sd">    newcoords : numpy.ndarray (``dtype=numpy.float32``, ``shape=coords.shape``)</span>
+<span class="sd">        An array containing fractional coordiantes.</span>
 
 
 <span class="sd">    .. versionchanged:: 0.13.0</span>
@@ -1196,6 +1208,8 @@
 <span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">       Now also accepts (and, likewise, returns) a single coordinate.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coords</span>
     <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">_check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
@@ -1232,9 +1246,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    newcoords : numpy.ndarray</span>
-<span class="sd">        An array of dtype ``numpy.float32`` with the same shape as `coords`</span>
-<span class="sd">        containing real space coordiantes.</span>
+<span class="sd">    newcoords : numpy.ndarray (``dtype=numpy.float32``, ``shape=coords.shape``)</span>
+<span class="sd">        An array containing real space coordiantes.</span>
 
 
 <span class="sd">    .. versionchanged:: 0.13.0</span>
@@ -1243,6 +1256,8 @@
 <span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">       Now also accepts (and, likewise, returns) a single coordinate.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coords</span>
     <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">_check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
@@ -1251,7 +1266,7 @@
     <span class="k">return</span> <span class="n">coords</span></div>
 
 
-<div class="viewcode-block" id="calc_bonds"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_bonds">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="calc_bonds"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_bonds">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">calc_bonds</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculates the bond lengths between pairs of atom positions from the two</span>
 <span class="sd">    coordinate arrays `coords1` and `coords2`, which must contain the same</span>
@@ -1298,10 +1313,10 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    bondlengths : numpy.ndarray or float</span>
-<span class="sd">        Array of dtype ``numpy.float64`` containing the bond lengths between</span>
-<span class="sd">        each pair of coordinates. If two single coordinates were supplied, their</span>
-<span class="sd">        distance is returned as a single number instead of an array.</span>
+<span class="sd">    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64</span>
+<span class="sd">        Array containing the bond lengths between each pair of coordinates. If</span>
+<span class="sd">        two single coordinates were supplied, their distance is returned as a</span>
+<span class="sd">        single number instead of an array.</span>
 
 
 <span class="sd">    .. versionadded:: 0.8</span>
@@ -1314,25 +1329,26 @@
     <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
 
-    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">_check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
-            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance_ortho&quot;</span><span class="p">,</span>
-                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
-                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">numatom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">_check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance_ortho&quot;</span><span class="p">,</span>
+                     <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
+                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance_triclinic&quot;</span><span class="p">,</span>
+                     <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
+                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance_triclinic&quot;</span><span class="p">,</span>
-                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
+            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance&quot;</span><span class="p">,</span>
+                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
                  <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance&quot;</span><span class="p">,</span>
-             <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
-             <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">bondlengths</span></div>
 
 
-<div class="viewcode-block" id="calc_angles"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_angles">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="s1">&#39;coords3&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="calc_angles"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_angles">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="s1">&#39;coords3&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">calc_angles</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculates the angles formed between triplets of atom positions from the</span>
@@ -1386,11 +1402,10 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    angles : numpy.ndarray or float</span>
-<span class="sd">        Array of dtype ``numpy.float64`` containing the angles between each</span>
-<span class="sd">        triplet of coordinates. Values are returned in radians (rad). If three</span>
-<span class="sd">        single coordinates were supplied, the angle is returned as a single</span>
-<span class="sd">        number instead of an array.</span>
+<span class="sd">    angles : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64</span>
+<span class="sd">        Array containing the angles between each triplet of coordinates. Values</span>
+<span class="sd">        are returned in radians (rad). If three single coordinates were</span>
+<span class="sd">        supplied, the angle is returned as a single number instead of an array.</span>
 
 
 <span class="sd">    .. versionadded:: 0.8</span>
@@ -1406,25 +1421,26 @@
     <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">angles</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
 
-    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">_check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
-            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_angle_ortho&quot;</span><span class="p">,</span>
-                   <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span>
-                   <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">numatom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">_check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_angle_ortho&quot;</span><span class="p">,</span>
+                       <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span>
+                       <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_angle_triclinic&quot;</span><span class="p">,</span>
+                       <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span>
+                       <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_angle_triclinic&quot;</span><span class="p">,</span>
-                   <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span>
+            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_angle&quot;</span><span class="p">,</span>
+                   <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span>
                    <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_angle&quot;</span><span class="p">,</span>
-               <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span>
-               <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">angles</span></div>
 
 
-<div class="viewcode-block" id="calc_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_dihedrals">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="s1">&#39;coords3&#39;</span><span class="p">,</span> <span class="s1">&#39;coords4&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="calc_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_dihedrals">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="s1">&#39;coords3&#39;</span><span class="p">,</span> <span class="s1">&#39;coords4&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">calc_dihedrals</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculates the dihedral angles formed between quadruplets of positions</span>
@@ -1488,11 +1504,11 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    dihedrals : numpy.ndarray or float</span>
-<span class="sd">        Array of dtype ``numpy.float64`` containing the dihedral angles formed</span>
-<span class="sd">        by each quadruplet of coordinates. Values are returned in radians (rad).</span>
-<span class="sd">        If four single coordinates were supplied, the dihedral angle is returned</span>
-<span class="sd">        as a single number instead of an array.</span>
+<span class="sd">    dihedrals : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64</span>
+<span class="sd">        Array containing the dihedral angles formed by each quadruplet of</span>
+<span class="sd">        coordinates. Values are returned in radians (rad). If four single</span>
+<span class="sd">        coordinates were supplied, the dihedral angle is returned as a single</span>
+<span class="sd">        number instead of an array.</span>
 
 
 <span class="sd">    .. versionadded:: 0.8</span>
@@ -1510,20 +1526,21 @@
     <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">dihedrals</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
 
-    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">_check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
-            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_dihedral_ortho&quot;</span><span class="p">,</span>
-                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">dihedrals</span><span class="p">),</span>
-                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">numatom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">_check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_dihedral_ortho&quot;</span><span class="p">,</span>
+                     <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">dihedrals</span><span class="p">),</span>
+                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_dihedral_triclinic&quot;</span><span class="p">,</span>
+                     <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">dihedrals</span><span class="p">),</span>
+                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_dihedral_triclinic&quot;</span><span class="p">,</span>
-                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">dihedrals</span><span class="p">),</span>
+            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_dihedral&quot;</span><span class="p">,</span>
+                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">dihedrals</span><span class="p">),</span>
                  <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_dihedral&quot;</span><span class="p">,</span>
-             <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">dihedrals</span><span class="p">),</span>
-             <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">dihedrals</span></div>
 
@@ -1547,9 +1564,9 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    newcoords : numpy.ndarray</span>
-<span class="sd">        Array of dtype ``numpy.float32`` containing coordinates that all lie</span>
-<span class="sd">        within the primary unit cell as defined by `box`.</span>
+<span class="sd">    newcoords : numpy.ndarray  (``dtype=numpy.float32``, ``shape=coords.shape``)</span>
+<span class="sd">        Array containing coordinates that all lie within the primary unit cell</span>
+<span class="sd">        as defined by `box`.</span>
 
 
 <span class="sd">    .. versionadded:: 0.8</span>
@@ -1559,6 +1576,8 @@
 <span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">       Now also accepts (and, likewise, returns) single coordinates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coords</span>
     <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">_check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
         <span class="n">box_inv</span> <span class="o">=</span> <span class="n">box</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
