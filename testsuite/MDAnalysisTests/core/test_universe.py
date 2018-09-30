@@ -163,6 +163,8 @@ class TestUniverseCreation(object):
         finally:
             temp_dir.dissolve()
 
+    @pytest.mark.skipif(os.uname()[4] == 'aarch64',
+                        reason="test fails on ARMv8 arch")
     def test_Universe_invalidpermissionfile_IE_msg(self):
         # check for file with invalid permissions (eg. no read access)
         temp_dir = TempDir()

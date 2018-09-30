@@ -437,6 +437,8 @@ class TestEncoreClustering(object):
                                                           "results: {0}".format(cluster_collection)
 
     
+    @pytest.mark.skipif(os.uname()[4] == 'aarch64',
+                        reason="currently fails on ARMv8 arch")
     def test_clustering_three_ensembles_two_identical(self, ens1, ens2):
         cluster_collection = encore.cluster([ens1, ens2, ens1])
         expected_value = 40

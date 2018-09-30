@@ -1,0 +1,64 @@
+branches:
+    only:
+       - mda_arm_ci_shippable
+
+language: python
+
+python:
+    # NOTE: Docker options in pre_ci_boot section 
+    # are not allowed on restricted shared node pools.
+    # so haven't had luck getting Python 3.6 working
+    # on ARM; try 2.7 for now
+    - 2.7
+    # NOTE: some pretty major issues with our test infrastructure
+    # / dependencies on 3.7 it seems, so hold off on that for now
+
+runtime:
+    # use the free open source pool of nodes
+    # only for ARM platform
+    nodePool: shippable_shared_aarch64
+
+build:
+    ci:
+    # install dependencies
+    - sudo apt-get install libfreetype6-dev pkg-config libpng12-dev build-essential
+    - sudo apt-get install gcc gfortran libblas-dev liblapack-dev
+
+    - pip install --upgrade pip pytest
+    - pip install cython --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install numpy --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install scipy --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install matplotlib --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install mmtf-python --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install biopython --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install GridDataFormats --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install pytest-xdist --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install gsd==1.5.2 --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install duecredit --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install joblib --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install networkx --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+    - pip install hypothesis --cache-dir=/root/.cache/pip/wheels/$SHIPPABLE_PYTHON_VERSION
+
+    # build and test MDAnalysis
+    - cd package
+    - python setup.py develop --no-deps
+
+    - cd ../testsuite
+    - python setup.py develop --no-deps
+    # NOTE: lscpu suggests 96 cores available on ARMv8 nodes
+    - pytest --disable-pytest-warnings -n 96 --junit-xml=$SHIPPABLE_REPO_DIR/shippable/testresults/tests.xml -rsx
+
+    cache: true
+    cache_dir_list:
+        - /root/.cache/pip/wheels
+
+# disable email notification
+# of CI job result
+integrations:
+  notifications:
+    - integrationName: email
+      type: email
+      on_success: never
+      on_failure: never
+      on_cancel: never
+      on_pull_request: never

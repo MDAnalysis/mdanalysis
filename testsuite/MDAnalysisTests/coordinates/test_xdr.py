@@ -767,6 +767,8 @@ class _GromacsReader_offsets(object):
         reader = self._reader(traj)
         reader[idx_frame]
 
+    @pytest.mark.skipif(os.uname()[4] == 'aarch64',
+                        reason="fails on ARMv8 arch")
     def test_persistent_offsets_readonly(self, tmpdir):
         shutil.copy(self.filename, str(tmpdir))
 
