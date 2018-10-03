@@ -18,6 +18,7 @@ mm/dd/18 orbeckst, arm61
     - skip tests for duecredit when duecredit is not installed (#1906)
     - updated meta data for PyPi and updated README and INSTALL
     - added test for fix to issue #1897
+    - add tests for the new water bridge analysis (PR #2087)
 
 
 04/15/18 tylerjereddy, zemanj

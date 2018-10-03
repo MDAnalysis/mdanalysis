@@ -20,6 +20,8 @@ The rules for this file:
   * 0.18.1
 
 Enhancements
+  * Move the water bridge analysis to the new analysis class, add high 
+    Order water bridge support. (PR #2087)
   * Added bond/angle/dihedral reading in PARM7 TOPParser (PR #2052)
   * Replaced multiple apply (_apply_distmat, _apply_kdtree)
     methods in distance based selections with
