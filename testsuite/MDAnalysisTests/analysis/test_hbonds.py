@@ -95,7 +95,7 @@ class TestHydrogenBondAnalysis(object):
         h.generate_table()
         assert len(h.table) == values['num_bb_hbonds'], "wrong number of backbone hydrogen bonds in table"
         assert isinstance(h.table, np.core.records.recarray)
-        assert_array_equal(sorted(h.table.donor_resid), values['donor_resid'])
+        assert_array_equal(h.table.donor_resid, values['donor_resid'])
         assert_array_equal(h.table.acceptor_resnm, values['acceptor_resnm'])
 
     def test_atoms_too_far(self):
