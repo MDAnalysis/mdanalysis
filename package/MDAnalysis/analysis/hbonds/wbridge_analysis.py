@@ -461,16 +461,17 @@ Classes
       of a water bridge existence.
 
 """
+from __future__ import print_function, absolute_import
 
 from collections import defaultdict
 import logging
 import warnings
-
+import six
 import numpy as np
 
 from ..base import AnalysisBase
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
-from MDAnalysis import NoDataError
+from MDAnalysis import NoDataError, MissingDataWarning, SelectionError
 from MDAnalysis.lib import distances
 
 logger = logging.getLogger('MDAnalysis.analysis.wbridges')
@@ -654,6 +655,11 @@ class WaterBridgeAnalysis(AnalysisBase):
         self.selection1 = selection1
         self.selection2 = selection2
         self.selection1_type = selection1_type
+
+        # if the selection 1 and selection 2 are the same
+        if selection1 == selection2:
+            # eliminate the duplication
+            self.selection1_type = "donor"
         self.update_selection = update_selection
         self.filter_first = filter_first
         self.distance = distance
@@ -696,15 +702,13 @@ class WaterBridgeAnalysis(AnalysisBase):
         acceptor names", self.forcefield)
 
     def _update_selection(self):
-        box = self.u.dimensions if self.pbc else None
-
         self._s1 = self.u.select_atoms(self.selection1)
         self._s2 = self.u.select_atoms(self.selection2)
 
         if self.filter_first and self._s1:
             self.logger_debug('Size of selection 1 before filtering:'
                               ' {} atoms'.format(len(self._s1)))
-            ns_selection_1 = AtomNeighborSearch(self._s1)
+            ns_selection_1 = AtomNeighborSearch(self._s1, box=self.box)
             self._s1 = ns_selection_1.search(self._s2, self.selection_distance)
         self.logger_debug("Size of selection 1: {0} atoms".format(len(self._s1)))
 
@@ -718,7 +722,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         if self.filter_first and self._s2:
             self.logger_debug('Size of selection 2 before filtering:'
                               ' {} atoms'.format(len(self._s2)))
-            ns_selection_2 = AtomNeighborSearch(self._s2, box)
+            ns_selection_2 = AtomNeighborSearch(self._s2, box=self.box)
             self._s2 = ns_selection_2.search(self._s1, self.selection_distance)
         self.logger_debug('Size of selection 2: {0} atoms'.format(len(self._s2)))
 
@@ -765,10 +769,10 @@ class WaterBridgeAnalysis(AnalysisBase):
         self.logger_debug('Size of water selection before filtering:'
                           ' {} atoms'.format(len(self._water)))
         if self._water and self.filter_first:
-            filtered_s1 = AtomNeighborSearch(self._water).search(self._s1,
+            filtered_s1 = AtomNeighborSearch(self._water, box=self.box).search(self._s1,
                                                     self.selection_distance)
             if filtered_s1:
-                self._water = AtomNeighborSearch(filtered_s1).search(self._s2,
+                self._water = AtomNeighborSearch(filtered_s1, box=self.box).search(self._s2,
                                                         self.selection_distance)
 
         self.logger_debug("Size of water selection: {0} atoms".format(len(self._water)))
@@ -789,6 +793,26 @@ class WaterBridgeAnalysis(AnalysisBase):
             self._water_acceptors = self._water.select_atoms(
                 'name {0}'.format(' '.join(self.acceptors)))
             self.logger_debug("Water acceptors: {0}".format(len(self._water_acceptors)))
+
+    def _sanity_check(self):
+        """sanity check the selections 1 and 2
+        *selection* is 1 or 2, *htype* is "donors" or "acceptors"
+        If selections do not update and the required donor and acceptor
+        selections are empty then a :exc:`SelectionError` is immediately
+        raised.
+        If selections update dynamically then it is possible that the selection
+        will yield donors/acceptors at a later step and we only issue a
+        warning.
+        .. versionadded:: 0.11.0
+        """
+
+        for s in (1,2):
+            for htype in ('donors', "acceptors"):
+                atoms = getattr(self, "_s{0}_{1}".format(s, htype))
+                if not atoms and not getattr(self, "update_selection") and not getattr(self, "update_water_selection"):
+                    errmsg = '''No {1} found in selection {0}. \
+You might have to specify a custom '{1}' keyword.'''.format(s, htype)
+                    raise SelectionError(errmsg)
 
     def _get_bonded_hydrogens(self, atom):
         """Find hydrogens bonded within cutoff to `atom`.
@@ -841,6 +865,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         self._s2_donors_h = {}
         self._s2_acceptors = {}
 
+        self.box = self.u.dimensions if self.pbc else None
         self._update_selection()
 
         self._water_donors = {}
@@ -848,7 +873,6 @@ class WaterBridgeAnalysis(AnalysisBase):
         self._water_acceptors = {}
 
         self.timesteps = []
-
         if self._s1 and self._s2:
             self._update_water_selection()
             logger.info("WBridge analysis: no atoms found in the selection.")
@@ -868,9 +892,11 @@ class WaterBridgeAnalysis(AnalysisBase):
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
                     self.start, self.stop, self.step)
 
+        self._sanity_check()
+
     def _donor2acceptor(self, donors, donor_hs, acceptor):
         result = []
-        ns_acceptors = AtomNeighborSearch(acceptor)
+        ns_acceptors = AtomNeighborSearch(acceptor, self.box)
         for i, donor_h_set in donor_hs.items():
             d = donors[i]
             for h in donor_h_set:
@@ -878,10 +904,10 @@ class WaterBridgeAnalysis(AnalysisBase):
                 for a in res:
                     donor_atom = h if self.distance_type != 'heavy' else d
                     dist = distances.calc_bonds(donor_atom.position,
-                                                a.position)
+                                                a.position, box=self.box)
                     if dist <= self.distance:
                         angle = distances.calc_angles(d.position, h.position,
-                                                      a.position)
+                                                      a.position, box=self.box)
                         angle = np.rad2deg(angle)
                         if angle >= self.angle:
                             self.logger_debug(
@@ -897,6 +923,8 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _single_frame(self):
         self.timesteps.append(self._ts.time)
+        self.box = self.u.dimensions if self.pbc else None
+
         if self.update_selection:
             self._update_selection()
         if self._s1 and self._s2:
@@ -904,22 +932,33 @@ class WaterBridgeAnalysis(AnalysisBase):
                 self._update_water_selection()
         else:
             self._network.append(defaultdict(dict))
+            return
+
 
         selection_1 = []
         water_pool = defaultdict(list)
         next_round_water = set([])
         selection_2 = []
 
-        if (self.selection1_type in ('donor', 'both') and
-                self._water_acceptors):
+        if self.selection1_type in ('donor', 'both'):
+            # check for direct hbond from s1 to s2
+            if self._s2_acceptors:
+                self.logger_debug("Selection 1 Donors <-> Selection 2 Acceptors")
+                results = self._donor2acceptor(self._s1_donors, self._s1_donors_h, self._s2_acceptors)
+                for line in results:
+                    h_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
+                    water_pool[(a_resname, a_resid)] = None
+                    selection_1.append(line)
+                    selection_2.append((a_resname, a_resid))
+            if self._water_acceptors:
+                self.logger_debug("Selection 1 Donors <-> Water Acceptors")
+                results = self._donor2acceptor(self._s1_donors, self._s1_donors_h, self._water_acceptors)
+                for line in results:
+                    h_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
+                    next_round_water.add((a_resname, a_resid))
+                    selection_1.append(line)
 
-            self.logger_debug("Selection 1 Donors <-> Water Acceptors")
-            results = self._donor2acceptor(self._s1_donors, self._s1_donors_h, self._water_acceptors)
-            for line in results:
-                h_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
 
-                next_round_water.add((a_resname, a_resid))
-                selection_1.append(line)
 
         if (self.selection1_type in ('acceptor', 'both') and
                 self._s1_acceptors):
@@ -930,6 +969,15 @@ class WaterBridgeAnalysis(AnalysisBase):
                 line = (a_index, h_index, (a_resname, a_resid, a_name), (h_resname, h_resid, h_name), dist, angle)
                 next_round_water.add((h_resname, h_resid))
                 selection_1.append(line)
+
+            self.logger_debug("Selection 2 Donors <-> Selection 1 Acceptors")
+            results = self._donor2acceptor(self._s2_donors, self._s2_donors_h, self._s1_acceptors)
+            for line in results:
+                h_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
+                line = (a_index, h_index, (a_resname, a_resid, a_name), (h_resname, h_resid, h_name), dist, angle)
+                water_pool[(h_resname, h_resid)] = None
+                selection_1.append(line)
+                selection_2.append((h_resname, h_resid))
 
         for i in range(self.order):
             # Narrow down the water selection
@@ -967,7 +1015,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                     for line in results:
                         h_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
                         water_pool[(h_resname, h_resid)].append(line)
-                        selection_2.append((a_resname, a_resid, a_name))
+                        selection_2.append((a_resname, a_resid))
 
                 # Finding the hydrogen bonds between water bridge and selection 2
                 if water_bridges_acceptors:
@@ -977,7 +1025,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                         h_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
                         line = (a_index, h_index, (a_resname, a_resid, a_name), (h_resname, h_resid, h_name), dist, angle)
                         water_pool[(a_resname, a_resid)].append(line)
-                        selection_2.append((h_resname, h_resid, h_name))
+                        selection_2.append((h_resname, h_resid))
 
                 # find the water water hydrogen bond
                 if water_bridges_acceptors:
@@ -1001,34 +1049,38 @@ class WaterBridgeAnalysis(AnalysisBase):
         result = {'start': defaultdict(dict), 'water': defaultdict(dict)}
 
         def add_route(result, route):
-            # exclude the the selection which goes back to itself
-            if sorted(route[0][:2]) == sorted(route[-1][:2]):
-                return
+            if len(route) == 1:
+                result['start'][route[0]] = None
+            else:
+                # exclude the the selection which goes back to itself
+                if (sorted(route[0][:2]) == sorted(route[-1][:2])):
+                    return
 
-            # selection 2 to water
-            result['water'][route[-1]] = None
-            # water to water
-            for i in range(1, len(route) - 1):
-                result['water'][route[i]][route[i+1]] = result['water'][route[i+1]]
-            # selection 1 to water
-            result['start'][route[0]][route[1]] = result['water'][route[1]]
+                # selection 2 to water
+                result['water'][route[-1]] = None
+                # water to water
+                for i in range(1, len(route) - 1):
+                    result['water'][route[i]][route[i+1]] = result['water'][route[i+1]]
+                # selection 1 to water
+                result['start'][route[0]][route[1]] = result['water'][route[1]]
 
         def traverse_water_network(graph, node, end, route, maxdepth, result):
             if len(route) > self.order + 1:
                 return
             else:
-                for new_node in graph[node]:
-                    new_route = route[:]
-                    new_route.append(new_node)
-                    if new_node[3] in end:
-                        # check if any duplication happens
-                        if len(new_route) == len(set(new_route)):
-                            add_route(result, new_route)
-                    else:
+                if node in end:
+                    # check if any duplication happens
+                    if len(route) == len(set(route)):
+                        add_route(result, route)
+                else:
+                    for new_node in graph[node]:
+                        new_route = route[:]
+                        new_route.append(new_node)
                         new_node = new_node[3][:2]
                         traverse_water_network(graph, new_node, end, new_route, maxdepth, result)
 
         for s1 in selection_1:
+
             route = [s1, ]
             next_mol = s1[3][:2]
             traverse_water_network(water_pool, next_mol, selection_2, route[:], self.order, result)
@@ -1046,8 +1098,23 @@ class WaterBridgeAnalysis(AnalysisBase):
             # make sure no loop can occur
             if len(current) <= self.order:
                 for node in graph:
-                    new = link_func(current, node, **kwargs)
-                    self._traverse_water_network(graph[node], new, analysis_func, output, link_func)
+                    new = link_func(current, node)
+                    self._traverse_water_network(graph[node], new, analysis_func, output, link_func, **kwargs)
+
+    @staticmethod
+    def _reformat_hb(hb, atomformat="{0[0]!s}{0[1]!s}:{0[2]!s}"):
+        """Convert 0.16.1 _timeseries hbond item to 0.16.0 hbond item.
+        In 0.16.1, donor and acceptor are stored as a tuple(resname,
+        resid, atomid). In 0.16.0 and earlier they were stored as a string.
+        .. deprecated:: 1.0
+           This is a compatibility layer so that we can provide the same output
+           in timeseries as before. However, for 1.0 we should make timeseries
+           just return _timeseries, i.e., change the format of timeseries to
+           the un-ambiguous representation provided in _timeseries.
+        """
+        return (list(hb[:2])
+                + [atomformat.format(hb[2]), atomformat.format(hb[3])]
+                + list(hb[4:]))
 
     @property
     def timeseries(self):
@@ -1076,14 +1143,16 @@ class WaterBridgeAnalysis(AnalysisBase):
         '''
 
         def analysis(current, output):
-            output.append(current)
+            output.extend(current)
 
         timeseries = []
         for frame in self._network:
             new_frame = []
             self._traverse_water_network(frame, [], analysis_func=analysis, output=new_frame, link_func=self._full_link)
             timeseries.append(new_frame)
-        return timeseries
+        self._timeseries = timeseries
+        # after 1.0 will be return the unformated _timeseries
+        return [[self._reformat_hb(hb) for hb in hframe] for hframe in self._timeseries]
 
     @classmethod
     def _full_link(self, output, node):
@@ -1104,7 +1173,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         key = (s1_index, s2_index, s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
         output[key] += 1
 
-    def count_by_type(self, analysis_func=None, **kwargs):
+    def count_by_type(self, analysis_func=None, output='expand', **kwargs):
         """Counts the frequency of water bridge of a specific type.
 
         If one atom *A* from *selection 1* is linked to atom *B* from
@@ -1136,7 +1205,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             for frame in self._network:
                 self._traverse_water_network(frame, [], analysis_func=analysis_func, output=result_dict,
                                              link_func=self._full_link, **kwargs)
-            result = [(*key, result_dict[key]*1.0/length) for key in result_dict]
+            result = [[i for i in key] for key in result_dict]
+            [result[i].append(result_dict[key]*1.0/length) for i, key in enumerate(result_dict)]
             return result
         else:
             return None
@@ -1167,11 +1237,102 @@ class WaterBridgeAnalysis(AnalysisBase):
             analysis_func = self._count_by_time_analysis
         if self._network:
             result = []
-            for frame in self._network:
+            for time, frame in zip(self.timesteps, self._network):
                 result_dict = defaultdict(int)
                 self._traverse_water_network(frame, [], analysis_func=analysis_func, output=result_dict,
                                              link_func=self._full_link, **kwargs)
-                result.append(sum([result_dict[key] for key in result_dict]))
+                result.append((time, sum([result_dict[key] for key in result_dict])))
             return result
         else:
             return None
+
+    @classmethod
+    def _timesteps_by_type_analysis(self, current, output, **kwargs):
+        s1_index, to_index, (s1_resname, s1_resid, s1_name), (to_resname, to_resid, to_name), dist, angle = \
+            current[0]
+        from_index, s2_index, (from_resname, from_resid, from_name), (s2_resname, s2_resid, s2_name), dist, angle = \
+            current[-1]
+        key = (s1_index, s2_index, s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
+        output[key].append(kwargs.pop('time'))
+
+    def timesteps_by_type(self, analysis_func=None, **kwargs):
+        """Frames during which each water bridges existed, sorted by each water bridges.
+
+        Processes :attr:`WaterBridgeAnalysis._network` and returns a
+        :class:`numpy.recarray` containing atom indices, residue names, residue
+        numbers (for donors and acceptors) and each timestep at which the
+        hydrogen bond was detected.
+
+        In principle, this is the same as :attr:`~WaterBridgeAnalysis.table`
+        but sorted by hydrogen bond and with additional data for the
+        *donor_heavy_atom* and angle and distance omitted.
+
+
+        Returns
+        -------
+        data : numpy.recarray
+
+
+
+        """
+        if analysis_func is None:
+            analysis_func = self._timesteps_by_type_analysis
+
+        if self._network:
+            result = defaultdict(list)
+            for time, frame in zip(self.timesteps, self._network):
+                self._traverse_water_network(frame, [], analysis_func=analysis_func, output=result,
+                                             link_func=self._full_link, time=time, **kwargs)
+
+            result_list = []
+            for key, time_list in six.iteritems(result):
+                for time in time_list:
+                    key = list(key)
+                    key.append(time)
+                    result_list.append(key)
+            return result_list
+        else:
+            return None
+
+    def generate_table(self):
+        """Generate a normalised table of the results.
+
+        The table is stored as a :class:`numpy.recarray` in the
+        attribute :attr:`~HydrogenBondAnalysis.table`.
+
+        See Also
+        --------
+        HydrogenBondAnalysis.table
+
+        """
+        if self._network is None:
+            msg = "No data computed, do run() first."
+            warnings.warn(msg, category=MissingDataWarning)
+            logger.warning(msg)
+            return
+        if not hasattr(self, '_timeseries'):
+            self.timeseries
+        timeseries = self._timeseries
+
+        num_records = np.sum([len(hframe) for hframe in timeseries])
+        # build empty output table
+        dtype = [
+            ("time", float),
+            ("donor_index", int),  ("acceptor_index", int),
+            ("donor_resnm", "|U4"), ("donor_resid", int), ("donor_atom", "|U4"),
+            ("acceptor_resnm", "|U4"), ("acceptor_resid", int), ("acceptor_atom", "|U4"),
+            ("distance", float), ("angle", float)]
+        # according to Lukas' notes below, using a recarray at this stage is ineffective
+        # and speedups of ~x10 can be achieved by filling a standard array, like this:
+        out = np.empty((num_records,), dtype=dtype)
+        cursor = 0  # current row
+        for t, hframe in zip(self.timesteps, timeseries):
+            for (donor_index, acceptor_index, donor,
+                 acceptor, distance, angle) in hframe:
+                # donor|acceptor = (resname, resid, atomid)
+                out[cursor] = (t, donor_index, acceptor_index) + \
+                donor + acceptor + (distance, angle)
+                cursor += 1
+        assert cursor == num_records, "Internal Error: Not all HB records stored"
+        self.table = out.view(np.recarray)
+        logger.debug("HBond: Stored results as table with %(num_records)d entries.", vars())
