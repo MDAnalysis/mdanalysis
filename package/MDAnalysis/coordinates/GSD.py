@@ -47,9 +47,11 @@ Classes
 from __future__ import absolute_import, division
 
 import numpy as np
-from . import base
-import gsd.hoomd
+import os
+if os.name != 'nt':
+    import gsd.hoomd
 
+from . import base
 
 class GSDReader(base.ReaderBase):
     """Reader for the GSD format.
@@ -70,6 +72,9 @@ class GSDReader(base.ReaderBase):
 
         .. versionadded:: 0.17.0
         """
+        if os.name == 'nt':
+            raise NotImplementedError("GSD format not supported on Windows")
+
         super(GSDReader, self).__init__(filename, **kwargs)
         self.filename = filename
         self.open_trajectory()

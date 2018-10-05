@@ -52,7 +52,10 @@ Classes
 """
 from __future__ import absolute_import
 
-import gsd.hoomd
+import os
+if os.name != 'nt':
+    # not supported on windows
+    import gsd.hoomd
 import numpy as np
 
 from . import guessers
@@ -106,6 +109,9 @@ class GSDParser(TopologyReaderBase):
 
         .. versionadded:: 0.17.0
         """
+        if os.name == 'nt':
+            raise NotImplementedError("GSD format not supported on Windows")
+
         attrs = {}
 
         with gsd.hoomd.open(self.filename,mode='rb') as t :
