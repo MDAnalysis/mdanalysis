@@ -92,34 +92,34 @@ indicates comments that are not part of the output.)::
         [ # frame 1
            # hbonds linking the selection 1 and selection 2 to the bridging
            # water 1
-           [[ # hbond 1 from selection 1 to the bridging water 1
-              <donor index (0-based)>,
-              <acceptor index (0-based)>, <donor identifer>, <acceptor identifer>,
-              <distance>, <angle>
-            ],
-            [ # hbond 2 from bridging water 1 to the selection 2
-              <donor index (0-based)>,
-              <acceptor index (0-based)>, <donor identifer>, <acceptor identifer>,
-              <distance>, <angle>
-            ]],
+           [ # hbond 1 from selection 1 to the bridging water 1
+             <donor index (0-based)>,
+             <acceptor index (0-based)>, <donor identifer>, <acceptor identifer>,
+             <distance>, <angle>
+           ],
+           [ # hbond 2 from bridging water 1 to the selection 2
+             <donor index (0-based)>,
+             <acceptor index (0-based)>, <donor identifer>, <acceptor identifer>,
+             <distance>, <angle>
+           ],
 
            # hbonds linking the selection 1 and selection 2 to the bridging
            # water 1 and bridging water 2
-           [[ # hbond 3 from selection 1 to the bridging water 1
-              <donor index (0-based)>,
-              <acceptor index (0-based)>, <donor identifer>, <acceptor identifer>,
-              <distance>, <angle>
-            ],
-            [ # hbond 4 from bridging water 1 to the bridging water 2
-              <donor index (0-based)>,
-              <acceptor index (0-based)>, <donor identifer>, <acceptor identifer>,
-              <distance>, <angle>
-            ],
-            [ # hbond 5 from bridging water 2 to the selection 2
-              <donor index (0-based)>,
-              <acceptor index (0-based)>, <donor identifer>, <acceptor identifer>,
-              <distance>, <angle>
-            ]],
+           [ # hbond 3 from selection 1 to the bridging water 1
+             <donor index (0-based)>,
+             <acceptor index (0-based)>, <donor identifer>, <acceptor identifer>,
+             <distance>, <angle>
+           ],
+           [ # hbond 4 from bridging water 1 to the bridging water 2
+             <donor index (0-based)>,
+             <acceptor index (0-based)>, <donor identifer>, <acceptor identifer>,
+             <distance>, <angle>
+           ],
+           [ # hbond 5 from bridging water 2 to the selection 2
+             <donor index (0-based)>,
+             <acceptor index (0-based)>, <donor identifer>, <acceptor identifer>,
+             <distance>, <angle>
+           ],
            ....
         ],
         [ # frame 2
@@ -191,14 +191,14 @@ prints out. ::
 
   [ # frame 1
     # A water bridge SOL2 links O from ARG1 to the carboxylic group OD1 of ASP3
-   [[[0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180],
-     [2,3,('SOL',2,'HW2'),('ASP',3,'OD1'),  3.0,180],],
+   [[0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180],
+    [2,3,('SOL',2,'HW2'),('ASP',3,'OD1'),  3.0,180],
    ],
     # frame 2
     # Another water bridge SOL2 links O from ARG1 to the other oxygen of the
     # carboxylic group OD2 of ASP3
-   [[[0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180],
-     [2,4,('SOL',2,'HW2'),('ASP',3,'OD2'),  3.0,180],],
+   [[0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180],
+    [2,4,('SOL',2,'HW2'),('ASP',3,'OD2'),  3.0,180],
    ],
   ]
 
@@ -255,8 +255,10 @@ bridge can be customised by supplying an analsysis function to
 
 Returns ::
 
-  [('ARG', 1, 'O', 'ASP', 3, 'OD', 1.0),]
+  [(('ARG', 1, 'O', 'ASP', 3, 'OD'), 1.0),]
 
+Note that the result is arranged in the format of (key, proportion of time). When no
+custom analysis function is supplied, the key is expended for backward compatibility.
 Some people might only interested in contacts between residues and pay no attention
 to the details regarding the atom name. This can also be achieved by supplying an analysis
 function to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
@@ -286,7 +288,7 @@ function to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
 
 Returns ::
 
-  [('ARG', 1, 'ASP', 3, 1.0),]
+  [(('ARG', 1, 'ASP', 3), 1.0),]
 
 On the other hand, other people may insist that first order and second order water
 bridges shouldn't be mixed together, which can also be achieved by supplying an analysis
@@ -320,7 +322,7 @@ function to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
 
 The extra number 1 precede the 1.0 indicate that this is a first order water bridge ::
 
-  [('ARG', 1, 'ASP', 3, 1, 1.0),]
+  [(('ARG', 1, 'ASP', 3, 1), 1.0),]
 
 Some people might not be interested in the interactions related to arginine. The undesirable
 interactions can be discarded by supplying an analysis function to
@@ -378,7 +380,7 @@ bridge for example:  ::
 
 As one water bridge is found in both frames, the method returns ::
 
-  [1, 1, ]
+  [(1.0, 1), (2.0, 1), ]
 
 Similar to :meth:`~WaterBridgeAnalysis.count_by_type`
 The behaviour of :meth:`~WaterBridgeAnalysis.count_by_time` can also be modified by supplying
@@ -446,7 +448,7 @@ The analysis function can be written as::
 
 Returns ::
 
-  [1, 0,]
+  [(1.0, 1), (2.0, 0),]
 
 Classes
 -------
@@ -717,8 +719,6 @@ class WaterBridgeAnalysis(AnalysisBase):
                            .format(str(self.selection1)[:80]))
             return
 
-
-
         if self.filter_first and self._s2:
             self.logger_debug('Size of selection 2 before filtering:'
                               ' {} atoms'.format(len(self._s2)))
@@ -730,7 +730,6 @@ class WaterBridgeAnalysis(AnalysisBase):
             logger.warning('Selection 2 "{0}" did not select any atoms.'
                            .format(str(self.selection2)[:80]))
             return
-
 
         if self.selection1_type in ('donor', 'both'):
             self._s1_donors = self._s1.select_atoms(
@@ -793,26 +792,6 @@ class WaterBridgeAnalysis(AnalysisBase):
             self._water_acceptors = self._water.select_atoms(
                 'name {0}'.format(' '.join(self.acceptors)))
             self.logger_debug("Water acceptors: {0}".format(len(self._water_acceptors)))
-
-    def _sanity_check(self):
-        """sanity check the selections 1 and 2
-        *selection* is 1 or 2, *htype* is "donors" or "acceptors"
-        If selections do not update and the required donor and acceptor
-        selections are empty then a :exc:`SelectionError` is immediately
-        raised.
-        If selections update dynamically then it is possible that the selection
-        will yield donors/acceptors at a later step and we only issue a
-        warning.
-        .. versionadded:: 0.11.0
-        """
-
-        for s in (1,2):
-            for htype in ('donors', "acceptors"):
-                atoms = getattr(self, "_s{0}_{1}".format(s, htype))
-                if not atoms and not getattr(self, "update_selection") and not getattr(self, "update_water_selection"):
-                    errmsg = '''No {1} found in selection {0}. \
-You might have to specify a custom '{1}' keyword.'''.format(s, htype)
-                    raise SelectionError(errmsg)
 
     def _get_bonded_hydrogens(self, atom):
         """Find hydrogens bonded within cutoff to `atom`.
@@ -892,8 +871,6 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
                     self.start, self.stop, self.step)
 
-        self._sanity_check()
-
     def _donor2acceptor(self, donors, donor_hs, acceptor):
         result = []
         ns_acceptors = AtomNeighborSearch(acceptor, self.box)
@@ -919,8 +896,6 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
                                      dist, angle))
         return result
 
-
-
     def _single_frame(self):
         self.timesteps.append(self._ts.time)
         self.box = self.u.dimensions if self.pbc else None
@@ -933,7 +908,6 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
         else:
             self._network.append(defaultdict(dict))
             return
-
 
         selection_1 = []
         water_pool = defaultdict(list)
@@ -957,8 +931,6 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
                     h_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
                     next_round_water.add((a_resname, a_resid))
                     selection_1.append(line)
-
-
 
         if (self.selection1_type in ('acceptor', 'both') and
                 self._s1_acceptors):
@@ -1078,7 +1050,6 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
                         new_route.append(new_node)
                         new_node = new_node[3][:2]
                         traverse_water_network(graph, new_node, end, new_route, maxdepth, result)
-
         for s1 in selection_1:
 
             route = [s1, ]
@@ -1120,9 +1091,8 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
     def timeseries(self):
         r'''Time series of water bridges.
 
-        The output is arranged based on each individual link from selection 1
-        to selection 2 allowing the later reconstruction of the water network.
-        Each entity is a list of hydrogen bonds from selection 1 to selection 2.
+        The output is arranged so that every individual link from selection 1
+        to selection 2 is appended to the resulting list.
         An example of the output is given in :ref:`wb_Analysis_Output`.
 
         Note
@@ -1173,7 +1143,7 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
         key = (s1_index, s2_index, s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
         output[key] += 1
 
-    def count_by_type(self, analysis_func=None, output='expand', **kwargs):
+    def count_by_type(self, analysis_func=None, **kwargs):
         """Counts the frequency of water bridge of a specific type.
 
         If one atom *A* from *selection 1* is linked to atom *B* from
@@ -1196,8 +1166,10 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
 
 
         """
+        output = None
         if analysis_func is None:
             analysis_func = self._count_by_type_analysis
+            output = 'combined'
 
         if self._network:
             length = len(self._network)
@@ -1205,8 +1177,12 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
             for frame in self._network:
                 self._traverse_water_network(frame, [], analysis_func=analysis_func, output=result_dict,
                                              link_func=self._full_link, **kwargs)
-            result = [[i for i in key] for key in result_dict]
-            [result[i].append(result_dict[key]*1.0/length) for i, key in enumerate(result_dict)]
+
+            if output is 'combined':
+                result = [[i for i in key] for key in result_dict]
+                [result[i].append(result_dict[key]/length) for i, key in enumerate(result_dict)]
+            else:
+                result = [(key, result_dict[key]/length) for key in result_dict]
             return result
         else:
             return None
@@ -1259,24 +1235,23 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
         """Frames during which each water bridges existed, sorted by each water bridges.
 
         Processes :attr:`WaterBridgeAnalysis._network` and returns a
-        :class:`numpy.recarray` containing atom indices, residue names, residue
-        numbers (for donors and acceptors) and each timestep at which the
-        hydrogen bond was detected.
+        :class:`list` containing atom indices, residue names, residue
+        numbers (from selection 1 and selection 2) and each timestep at which the
+        water bridge was detected.
 
-        In principle, this is the same as :attr:`~WaterBridgeAnalysis.table`
-        but sorted by hydrogen bond and with additional data for the
-        *donor_heavy_atom* and angle and distance omitted.
-
+        Similar to :meth:`~WaterBridgeAnalysis.count_by_type` and
+        :meth:`~WaterBridgeAnalysis.count_by_time`, the behavior can be adjusted by
+        supplying an analysis_func.
 
         Returns
         -------
-        data : numpy.recarray
-
-
+        data : list
 
         """
+        output = None
         if analysis_func is None:
             analysis_func = self._timesteps_by_type_analysis
+            output = 'combined'
 
         if self._network:
             result = defaultdict(list)
@@ -1287,9 +1262,12 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
             result_list = []
             for key, time_list in six.iteritems(result):
                 for time in time_list:
-                    key = list(key)
-                    key.append(time)
-                    result_list.append(key)
+                    if output is 'combined':
+                        key = list(key)
+                        key.append(time)
+                        result_list.append(key)
+                    else:
+                        result_list.append((key, time))
             return result_list
         else:
             return None
@@ -1298,11 +1276,11 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
         """Generate a normalised table of the results.
 
         The table is stored as a :class:`numpy.recarray` in the
-        attribute :attr:`~HydrogenBondAnalysis.table`.
+        attribute :attr:`~WaterBridgeAnalysis.table`.
 
         See Also
         --------
-        HydrogenBondAnalysis.table
+        WaterBridgeAnalysis.table
 
         """
         if self._network is None:
@@ -1335,4 +1313,4 @@ You might have to specify a custom '{1}' keyword.'''.format(s, htype)
                 cursor += 1
         assert cursor == num_records, "Internal Error: Not all HB records stored"
         self.table = out.view(np.recarray)
-        logger.debug("HBond: Stored results as table with %(num_records)d entries.", vars())
+        logger.debug("WBridge: Stored results as table with %(num_records)d entries.", vars())
