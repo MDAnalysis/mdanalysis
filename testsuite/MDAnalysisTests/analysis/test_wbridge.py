@@ -1027,13 +1027,3 @@ class TestHydrogenBondAnalysisTIP3P(object):
         # https://github.com/MDAnalysis/mdanalysis/issues/801)
         for name, ref in reference_table.items():
             assert_array_equal(h.table.field(name), ref, err_msg="resname for {0} do not match (Issue #801)")
-
-b=TestHydrogenBondAnalysis()
-b.test_helix_backbone(b.values(b.universe()), b.h(b.universe()))
-b.test_generate_table(b.values(b.universe()), b.h(b.universe()))
-b.test_atoms_too_far()
-b.test_acceptor_OC1_OC2()
-b.test_true_traj()
-b.test_count_by_time(b.values(b.universe()), b.h(b.universe()))
-b.test_count_by_type(b.values(b.universe()), b.h(b.universe()))
-b.test_timesteps_by_type(b.values(b.universe()), b.h(b.universe()))
