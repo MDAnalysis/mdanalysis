@@ -511,6 +511,21 @@ if __name__ == '__main__':
     config = Config()
     exts, cythonfiles = extensions(config)
 
+    install_requires = [
+          'numpy>=1.10.4',
+          'biopython>=1.71',
+          'networkx>=1.0',
+          'GridDataFormats>=0.4.0',
+          'six>=1.4.0',
+          'mmtf-python>=1.0.0',
+          'joblib',
+          'scipy>=1.0.0',
+          'matplotlib>=1.5.1',
+          'mock',
+    ]
+    if not os.name == 'nt':
+        install_requires.append('gsd>=1.4.0')
+
     setup(name='MDAnalysis',
           version=RELEASE,
           description=('An object-oriented toolkit to analyze molecular dynamics '
@@ -545,19 +560,7 @@ if __name__ == '__main__':
           setup_requires=[
               'numpy>=1.10.4',
           ],
-          install_requires=[
-              'gsd>=1.4.0',
-              'numpy>=1.10.4',
-              'biopython>=1.71',
-              'networkx>=1.0',
-              'GridDataFormats>=0.4.0',
-              'six>=1.4.0',
-              'mmtf-python>=1.0.0',
-              'joblib',
-              'scipy>=1.0.0',
-              'matplotlib>=1.5.1',
-              'mock',
-          ],
+          install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
           # packaging system
