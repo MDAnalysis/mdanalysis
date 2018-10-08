@@ -1700,7 +1700,7 @@ class PSAnalysis(object):
         self.paths = [np.load(pname) for pname in self.path_names]
         if os.path.exists(self._labels_pkl):
             self.labels = np.load(self._labels_pkl)
-        logger.info("Loaded paths from " + self._paths_pkl)
+        logger.info("Loaded paths from %r", self._paths_pkl)
 
 
     def plot(self, filename=None, linkage='ward', count_sort=False,
