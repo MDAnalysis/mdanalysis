@@ -33,6 +33,7 @@ inline int sqmIndex(int colsn, int row, int col) { // array index for square mat
 	return row*colsn + col;
 }
 
+#ifndef _WIN32
 float min(float * values, int length) { //array min
 	float min = values[0];
 	for (int i=1;i<length;i++) {
@@ -52,6 +53,7 @@ float max(float * values, int length) { //array max
 	}
 	return max;
 }
+#endif
 
 void printarray(float* array, int lenarray) { //print an array, for debug purposes
 	for (int i=0;i<lenarray;i++) {

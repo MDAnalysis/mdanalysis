@@ -220,18 +220,10 @@ due.cite(BibTeX((
             "note={Austin, TX, SciPy.} "
             "}"
             )),
-         description=
-         "Description of recent updates and new functionality "
-         "in MDAnalysis since release 0.7.2 (March 2011) up to "
-         "release 0.16.0 (April 2017). Please cite together with "
-         "Michaud-Agrawal et al 2011. ",
-         path="MDAnalysis/", cite_module=True)
+         description="Molecular simulation analysis library",
+         path="MDAnalysis", cite_module=True)
 due.cite(Doi("10.1002/jcc.21787"),
-         description=
-         "Description of MDAnalysis up to release 0.7.2 (March 2011), "
-         "including the basic philosophy of the library and the "
-         "LeafletFinder algorithm. Please cite together with "
-         "Gowers et al 2016. ",
-         path="MDAnalysis/", cite_module=True)
+         description="Molecular simulation analysis library",
+         path="MDAnalysis", cite_module=True)
 
 del Doi, BibTeX

@@ -21,7 +21,7 @@
 #
 
 
-from __future__ import print_function, absolute_import
+from __future__ import print_function, absolute_import, division
 
 import pytest
 import scipy
@@ -51,7 +51,7 @@ class TestContactMatrix(object):
     @staticmethod
     @pytest.fixture()
     def box():
-        return np.array([10, 10, 10], dtype=np.float32)
+        return np.array([10, 10, 10, 90, 90, 90], dtype=np.float32)
     
     @staticmethod
     @pytest.fixture()

@@ -28,9 +28,10 @@ r"""Generation and Analysis of HOLE pore profiles --- :mod:`MDAnalysis.analysis.
 :Copyright: GNU Public License v2
 
 With the help of this module, the :program:`hole` program from the HOLE_ suite
-of tools [Smart1993]_ [Smart1996]_ can be run on frames in a trajectory. Data
-can be combined and analyzed.
-
+of tools [Smart1993]_ [Smart1996]_ can be run on frames in an MD trajectory or
+NMR ensemble in order to analyze an ion channel pore or transporter pathway
+[Stelzl2014]_ as a function of time or arbitrary order parameters. Data can be
+combined and analyzed.
 
 HOLE_ must be installed separately and can be obtained in binary form
 from http://www.holeprogram.org/ or as source from
@@ -224,10 +225,16 @@ References
 
 .. [Smart1993] O.S. Smart, J.M. Goodfellow and B.A. Wallace.
                The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.
+               DOI: 10.1016/S0006-3495(93)81293-1
 .. [Smart1996] O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.
                HOLE: A program for the analysis of the pore dimensions of ion channel
                structural models. J.Mol.Graph., 14:354–360, 1996.
+               DOI: 10.1016/S0263-7855(97)00009-X
                URL http://www.holeprogram.org/
+.. [Stelzl2014] L. S. Stelzl, P. W. Fowler, M. S. P. Sansom, and O. Beckstein.
+               Flexible gates generate occluded intermediates in the transport cycle
+               of LacY. J Mol Biol, 426:735–751, 2014.
+               DOI: 10.1016/j.jmb.2013.10.024
 
 .. Footnotes
 
@@ -272,8 +279,24 @@ import matplotlib.pyplot as plt
 
 from MDAnalysis import Universe
 from MDAnalysis.exceptions import ApplicationError
-from MDAnalysis.lib.util import which, realpath, asiterable
-from MDAnalysis.lib.util import FORTRANReader
+from MDAnalysis.lib.util import (which, realpath, asiterable,
+                                 FORTRANReader, deprecate)
+
+from ..due import due, Doi
+
+due.cite(Doi("10.1016/S0006-3495(93)81293-1"),
+         description="HOLE program",
+         path="MDAnalysis.analysis.hole",
+         cite_module=True)
+due.cite(Doi("10.1016/S0263-7855(97)00009-X"),
+         description="HOLE program",
+         path="MDAnalysis.analysis.hole",
+         cite_module=True)
+due.cite(Doi("10.1016/j.jmb.2013.10.024"),
+         description="HOLE trajectory analysis with orderparameters",
+         path="MDAnalysis.analysis.hole",
+         cite_module=True)
+del Doi
 
 
 logger = logging.getLogger("MDAnalysis.analysis.hole")
@@ -369,6 +392,9 @@ def seq2str(v):
 class BaseHOLE(object):
     """Baseclass for HOLE analysis, providing plotting and utility functions"""
 
+    @deprecate(release="0.19.0", remove="1.0.0",
+               message="You can instead use "
+               "``cPickle.dump(HOLE.profiles, open(filename, 'wb'))``.")
     def save(self, filename="hole.pickle"):
         """Save :attr:`profiles` as a Python pickle file *filename*.
 
@@ -376,6 +402,7 @@ class BaseHOLE(object):
 
            import cPickle
            profiles = cPickle.load(open(filename))
+
 
         """
 

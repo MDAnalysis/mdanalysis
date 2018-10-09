@@ -20,6 +20,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+from six.moves import zip
+
+import bz2
+import gzip
 import os
 import numpy as np
 import pytest
@@ -34,7 +38,7 @@ from MDAnalysisTests.coordinates.reference import (
     RefLAMMPSData, RefLAMMPSDataMini, RefLAMMPSDataDCD,
 )
 from MDAnalysisTests.datafiles import (
-    LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini
+    LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini, LAMMPSDUMP
 )
 
 
@@ -275,11 +279,13 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
     def test_Writer(self, u, tmpdir, n_frames=3):
         ext = os.path.splitext(self.trajectory)[1]
         outfile = str(tmpdir.join('lammps-writer-test' + ext))
-        W = mda.Writer(outfile, n_atoms=u.atoms.n_atoms,
-                       format=self.format)
-        with u.trajectory.OtherWriter(outfile) as w:
+
+        with mda.Writer(outfile,
+                        n_atoms=u.atoms.n_atoms,
+                        format=self.format) as w:
             for ts in u.trajectory[:n_frames]:
                 w.write(ts)
+
         short = mda.Universe(self.topology, outfile)
         assert_equal(short.trajectory.n_frames, n_frames,
                      err_msg="number of frames mismatch")
@@ -393,3 +399,98 @@ class TestDataWriterErrors(object):
             assert 'must be convertible to integers' in e.args[0]
         else:
             raise pytest.fail()
+
+
+class TestLammpsDumpReader(object):
+    @pytest.fixture(
+        params=['ascii', 'bz2', 'gzip']
+    )
+    def u(self, tmpdir, request):
+        trjtype = request.param
+        if trjtype == 'bz2':
+            # no conversion needed
+            f = LAMMPSDUMP
+        else:
+            f = str(tmpdir.join('lammps.' + trjtype))
+            with bz2.BZ2File(LAMMPSDUMP, 'rb') as datain:
+                data = datain.read()
+            if trjtype == 'ascii':
+                with open(f, 'wb') as fout:
+                    fout.write(data)
+            elif trjtype == 'gzip':
+                with gzip.GzipFile(f, 'wb') as fout:
+                    fout.write(data)
+
+        yield mda.Universe(f, format='LAMMPSDUMP')
+
+    @pytest.fixture()
+    def reference_positions(self):
+        # manually copied from traj file
+        data = {}
+
+        # at timestep 500
+        lo, hi = float(2.1427867124774069e-01), float(5.9857213287522608e+00)
+        length1 = hi - lo
+        # at timestep 1000
+        lo, hi = float(-5.4458069063278991e-03), float(6.2054458069063330e+00)
+        length2 = hi - lo
+        boxes = [
+            np.array([6.2, 6.2, 6.2, 90., 90., 90.]),
+            np.array([length1, length1, length1, 90., 90., 90.]),
+            np.array([length2, length2, length2, 90., 90., 90.]),
+        ]
+        data['box'] = boxes
+
+        # data for atom id 1 in traj (ie first in frame)
+        # isn't sensitive to required sorting
+        atom1_pos1 = np.array([0.25, 0.25, 0.241936]) * boxes[0][:3]
+        atom1_pos2 = np.array([0.278215, 0.12611, 0.322087]) * boxes[1][:3]
+        atom1_pos3 = np.array([0.507123, 1.00424, 0.280972]) * boxes[2][:3]
+        data['atom1_pos'] = [atom1_pos1, atom1_pos2, atom1_pos3]
+        # data for atom id 13
+        # *is* sensitive to reordering of positions
+        # normally appears 4th in traj data
+        atom13_pos1 = np.array([0.25, 0.25, 0.741936]) * boxes[0][:3]
+        atom13_pos2 = np.array([0.394618, 0.263115, 0.798295]) * boxes[1][:3]
+        atom13_pos3 = np.array([0.332363, 0.30544, 0.641589]) * boxes[2][:3]
+        data['atom13_pos'] = [atom13_pos1, atom13_pos2, atom13_pos3]
+
+        return data
+
+    def test_n_atoms(self, u):
+        assert len(u.atoms) == 24
+
+    def test_length(self, u):
+        assert len(u.trajectory) == 3
+        for i, ts in enumerate(u.trajectory):
+            assert ts.frame == i
+            assert ts.data['step'] == i * 500
+        for i, ts in enumerate(u.trajectory):
+            assert ts.frame == i
+            assert ts.data['step'] == i * 500
+
+    def test_seeking(self, u, reference_positions):
+        u.trajectory[1]
+
+        assert_almost_equal(u.dimensions, reference_positions['box'][1],
+                            decimal=5)
+        assert_almost_equal(u.atoms[0].position,
+                            reference_positions['atom1_pos'][1],
+                            decimal=5)
+        assert_almost_equal(u.atoms[12].position,
+                            reference_positions['atom13_pos'][1],
+                            decimal=5)
+
+    def test_boxsize(self, u, reference_positions):
+        for ts, box in zip(u.trajectory,
+                           reference_positions['box']):
+            assert_almost_equal(ts.dimensions, box, decimal=5)
+
+    def test_atom_reordering(self, u, reference_positions):
+        atom1 = u.atoms[0]
+        atom13 = u.atoms[12]
+        for ts, atom1_pos, atom13_pos in zip(u.trajectory,
+                                             reference_positions['atom1_pos'],
+                                             reference_positions['atom13_pos']):
+            assert_almost_equal(atom1.position, atom1_pos, decimal=5)
+            assert_almost_equal(atom13.position, atom13_pos, decimal=5)

@@ -96,13 +96,10 @@ class RmsfTrajBench(object):
         self.u = MDAnalysis.Universe(PSF, DCD)
         self.ag = self.u.atoms[:n_atoms]
         self.RMSF_inst = rms.RMSF(atomgroup=self.ag,
-                                  start=None,
-                                  stop=None,
-                                  step=step,
                                   weights=weights)
 
     def time_RMSF(self, n_atoms, step, weights):
         """Benchmark RMSF.run() method, which parses
         over the entire trajectory.
         """
-        self.RMSF_inst.run()
+        self.RMSF_inst.run(step=step)

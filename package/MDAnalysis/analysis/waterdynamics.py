@@ -283,23 +283,24 @@ the zone, on the other hand, a fast decay means a short permanence time::
 
   import MDAnalysis
   from MDAnalysis.analysis.waterdynamics import SurvivalProbability as SP
+  import matplotlib.pyplot as plt
 
-  u = MDAnalysis.Universe(pdb, trajectory)
+  universe = MDAnalysis.Universe(pdb, trajectory)
   selection = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26 or resid 34 or resid 80) "
-  SP_analysis = SP(universe, selection, 0, 100, 20)
-  SP_analysis.run()
-  #now we print data ready to graph. The graph
-  #represents SP vs t
-  time = 0
-  for sp in SP_analysis.timeseries:
-        print("{time} {sp}".format(time=time, sp=sp))
-        time += 1
+  sp = SP(universe, selection, verbose=True)
+  sp.run(start=0, stop=100, tau_max=20)
+  tau_timeseries = sp.tau_timeseries
+  sp_timeseries = sp.sp_timeseries
 
-  #Plot
-  plt.xlabel('time')
+  # print in console
+  for tau, sp in zip(tau_timeseries, sp_timeseries):
+        print("{time} {sp}".format(time=tau, sp=sp))
+
+  # plot
+  plt.xlabel('Time')
   plt.ylabel('SP')
   plt.title('Survival Probability')
-  plt.plot(range(0,time),MSD_analysis.timeseries)
+  plt.plot(taus, sp_timeseries)
   plt.show()
 
 
@@ -376,16 +377,13 @@ represents a MSD value in its respective window timestep. Data is stored in
 SurvivalProbability
 ~~~~~~~~~~~~~~~~~~~
 
-Survival Probability (SP) data is returned in a list, which each element
-represents a SP value in its respective window timestep. Data is stored in
-:attr:`SurvivalProbability.timeseries`::
+Survival Probability (SP) computes two lists: a list of taus (:attr:`SurvivalProbability.tau_timeseries`) and a list of their corresponding mean survival
+probabilities (:attr:`SurvivalProbability.sp_timeseries`). Additionally, a list :attr:`SurvivalProbability.sp_timeseries_data` is provided which contains
+a list of SPs for each tau, which can be used to compute their distribution, etc.
 
-    results = [
-         # SP values order by window timestep
-            <SP_t0>, <SP_t1>, ...
-     ]
+    results = [ tau1, tau2, ..., tau_n ], [ sp_tau1, sp_tau2, ..., sp_tau_n]
 
-
+Additionally, for each
 
 Classes
 --------
@@ -412,13 +410,16 @@ Classes
 
 """
 from __future__ import print_function, division, absolute_import
+
+import warnings
+
 from six.moves import range, zip_longest
 
 import numpy as np
 import multiprocessing
 
 import MDAnalysis.analysis.hbonds
-from MDAnalysis.lib.log import _set_verbose, ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter
 
 
 class HydrogenBondLifetimes(object):
@@ -595,11 +596,10 @@ class HydrogenBondLifetimes(object):
         return a
 
     def _HBA(self, ts, conn, universe, selAtom1, selAtom2,
-             verbose=None, quiet=None):
+             verbose=False):
         """
         Main function for calculate C_i and C_c in parallel.
         """
-        verbose = _set_verbose(verbose, quiet, default=False)
         finalGetResidue1 = selAtom1
         finalGetResidue2 = selAtom2
         frame = ts.frame
@@ -1185,7 +1185,8 @@ class SurvivalProbability(object):
         P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}
 
     where :math:`T` is the maximum time of simulation, :math:`\tau` is the
-    timestep and :math:`N` the number of particles in certain time.
+    timestep, :math:`N(t)` the number of particles at time t, and
+    :math:`N(t, t+\tau)` is the number of particles at every frame from t to `\tau`.
 
 
     Parameters
@@ -1194,99 +1195,111 @@ class SurvivalProbability(object):
       Universe object
     selection : str
       Selection string; any selection is allowed. With this selection you
-      define the region/zone where to analyze, e.g.: "selection_a" and "zone"
-      (see `SP-examples`_ )
-    t0 : int
-      frame  where analysis begins
-    tf : int
-      frame where analysis ends
-    dtmax : int
-      Maximum dt size, `dtmax` < `tf` or it will crash.
+      define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resname LIPID)"
+      and "resname ION and around 10 (resid 20)" (see `SP-examples`_ )
+    verbose : Boolean
+      If True, prints progress and comments to the console.
 
 
     .. versionadded:: 0.11.0
 
     """
 
-    def __init__(self, universe, selection, t0, tf, dtmax):
+    def __init__(self, universe, selection, t0=None, tf=None, dtmax=None, verbose=False):
         self.universe = universe
         self.selection = selection
-        self.t0 = t0
-        self.tf = tf
-        self.dtmax = dtmax
-        self.timeseries = []
+        self.verbose = verbose
 
+        # backward compatibility
+        self.start = self.stop = self.tau_max = None
+        if t0 is not None:
+            self.start = t0
+            warnings.warn("t0 is deprecated, use run(start=t0) instead", category=DeprecationWarning)
 
-    def run(self):
-        """Analyze trajectory and produce timeseries"""
+        if tf is not None:
+            self.stop = tf
+            warnings.warn("tf is deprecated, use run(stop=tf) instead", category=DeprecationWarning)
 
-        # select all frames to an array
-        selected = self._selection_serial(self.universe, self.selection)
+        if dtmax is not None:
+            self.tau_max = dtmax
+            warnings.warn("dtmax is deprecated, use run(tau_max=dtmax) instead", category=DeprecationWarning)
 
-        if len(selected) < self.dtmax:
-            print ("ERROR: Cannot select fewer frames than dtmax")
-            return
+    def print(self, verbose, *args):
+        if self.verbose:
+            print(args)
+        elif verbose:
+            print(args)
 
-        for window_size in list(range(1, self.dtmax + 1)):
-            output = self._getMeanOnePoint(selected, window_size)
-            self.timeseries.append(output)
-
-
-    def _selection_serial(self, universe, selection_str):
-        selected = []
-        pm = ProgressMeter(self.tf-self.t0, interval=10,
-                           verbose=True, offset=-self.t0)
-        for ts in universe.trajectory[self.t0:self.tf]:
-            selected.append(universe.select_atoms(selection_str))
-            pm.echo(ts.frame)
-        return selected
-
-
-    def _getMeanOnePoint(self, selected, window_size):
+    def run(self, tau_max=20, start=0, stop=None, step=1, verbose=False):
         """
-        This function gets one point of the plot P(t) vs t. It uses the
-        _getOneDeltaPoint() function to calculate the average.
-        """
-        n = 0
-        sumDeltaP = 0.0
-        for frame_no in range(len(selected) - window_size):
-            delta = self._getOneDeltaPoint(selected, frame_no, window_size)
-            sumDeltaP += delta
-            n += 1
+        Computes and returns the survival probability timeseries
 
-        return sumDeltaP/n
+        Parameters
+        ----------
+        start : int
+            Zero-based index of the first frame to be analysed
+        stop : int
+            Zero-based index of the last frame to be analysed (inclusive)
+        step : int
+            Jump every `step`'th frame
+        tau_max : int
+            Survival probability is calculated for the range :math:`1 <= \tau <= tau_max`
+        verbose : Boolean
+            Overwrite the constructor's verbosity
 
-
-    def _getOneDeltaPoint(self, selected, t, tau):
-        """
-        Gives one point to calculate the mean and
-        gets one point of the plot C_vect vs t.
-        - Ex: t=1 and tau=1 calculates
-        how many selected water molecules survive from the frame 1 to 2
-        - Ex: t=5 and tau=3 calculates
-        how many selected water molecules survive from the frame 5 to 8
+        Returns
+        -------
+        tau_timeseries : list
+            tau from 1 to tau_max. Saved in the field tau_timeseries.
+        sp_timeseries : list
+            survival probability for each value of `tau`. Saved in the field sp_timeseries.
         """
 
-        Nt = len(selected[t])
-        if Nt == 0:
-            return 0
+        # backward compatibility (and priority)
+        start = self.start if self.start is not None else start
+        stop = self.stop if self.stop is not None else stop
+        tau_max = self.tau_max if self.tau_max is not None else tau_max
 
-        # fraction of water molecules that survived
-        Ntau = self._NumPart_tau(selected, t, tau)
-        return Ntau/Nt
+        # sanity checks
+        if stop is not None and stop >= len(self.universe.trajectory):
+            raise ValueError("\"stop\" must be smaller than the number of frames in the trajectory.")
 
+        if stop is None:
+            stop = len(self.universe.trajectory)
+        else:
+            stop = stop + 1
 
-    def _NumPart_tau(self, selected, t, tau):
-        """
-        Compares the molecules in t selection and t+tau selection and
-        select only the particles that remain from t to t+tau and
-        at each point in between.
-        It returns the number of remaining particles.
-        """
-        survivors = set(selected[t])
-        i = 0
-        while (t + i) < t + tau and (t + i) < len(selected):
-            next = set(selected[t + i])
-            survivors = survivors.intersection(next)
-            i += 1
-        return len(survivors)
+        if tau_max > (stop - start):
+            raise ValueError("Too few frames selected for given tau_max.")
+
+        # load all frames to an array of sets
+        selected_ids = []
+        for ts in self.universe.trajectory[start:stop]:
+            self.print(verbose, "Loading frame:", ts)
+            selected_ids.append(set(self.universe.select_atoms(self.selection).ids))
+
+        tau_timeseries = np.arange(1, tau_max + 1)
+        sp_timeseries_data = [[] for _ in range(tau_max)]
+
+        for t in range(0, len(selected_ids), step):
+            Nt = len(selected_ids[t])
+
+            if Nt == 0:
+                self.print(verbose,
+                           "At frame {} the selection did not find any molecule. Moving on to the next frame".format(t))
+                continue
+
+            for tau in tau_timeseries:
+                if t + tau >= len(selected_ids):
+                    break
+
+                # ids that survive from t to t + tau and at every frame in between
+                Ntau = len(set.intersection(*selected_ids[t:t + tau + 1]))
+                sp_timeseries_data[tau - 1].append(Ntau / float(Nt))
+
+        # user can investigate the distribution and sample size
+        self.sp_timeseries_data = sp_timeseries_data
+
+        self.tau_timeseries = tau_timeseries
+        self.sp_timeseries = [np.mean(sp) for sp in sp_timeseries_data]
+        return self

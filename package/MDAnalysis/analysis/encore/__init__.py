@@ -34,3 +34,10 @@ from .confdistmatrix import get_distance_matrix
 from .utils import merge_universes
 
 __all__ = ['covariance', 'similarity', 'confdistmatrix', 'clustering']
+
+from ...due import due, Doi
+
+due.cite(Doi("10.1371/journal.pcbi.1004415"),
+         description="ENCORE Ensemble Comparison",
+         path="MDAnalysis.analysis.encore",
+         cite_module=True)

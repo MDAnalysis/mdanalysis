@@ -26,6 +26,7 @@ warning under MPI(see PR #1794 for rationale)
 
 """
 
+from __future__ import absolute_import
 __version__ = '0.0.5'
 
 
@@ -67,7 +68,11 @@ try:
                  as (os_dot_fork, os_dot_popen):
                 import duecredit
         else:
-            with patch('os.fork') as os_dot_fork, patch('os.popen') as os_dot_popen:
+            if not os.name == 'nt':
+                with patch('os.fork') as os_dot_fork, patch('os.popen') as os_dot_popen:
+                    import duecredit
+            else:
+                # Windows doesn't have os.fork
                 import duecredit
 
     from duecredit import due, BibTeX, Doi, Url
@@ -82,10 +87,10 @@ except Exception as err:
         warnings.warn(errmsg)
         logging.getLogger("duecredit").error(
             "Failed to import duecredit due to {}".format(str(err)))
-    else:
-        # for debugging
-        import warnings
-        warnings.warn(str(err))
+    # else:
+    #   Do not issue any warnings if duecredit is not installed;
+    #   this is the user's choice (Issue #1872)
+
     # Initiate due stub
     due = InactiveDueCreditCollector()
     BibTeX = Doi = Url = _donothing_func

@@ -45,7 +45,14 @@
 #endif
 
 #include <sys/types.h>
-#include <unistd.h>
+#define _FILE_OFFSET_BITS 64
+
+#ifdef _WIN32
+#  include <io.h>
+#else /* __unix__ */
+#  include <unistd.h>
+#endif
+
 
 #ifdef HAVE_RPC_XDR_H
 #  include <rpc/rpc.h>
@@ -2512,8 +2519,8 @@ static int xdrstdio_getlong (XDR *, int32_t *);
 static int xdrstdio_putlong (XDR *, int32_t *);
 static int xdrstdio_getbytes (XDR *, char *, unsigned int);
 static int xdrstdio_putbytes (XDR *, char *, unsigned int);
-static off_t xdrstdio_getpos (XDR *);
-static int xdrstdio_setpos (XDR *, off_t, int);
+static int64_t xdrstdio_getpos (XDR *);
+static int xdrstdio_setpos (XDR *, int64_t, int);
 static void xdrstdio_destroy (XDR *);
 
 /*
@@ -2595,14 +2602,18 @@ xdrstdio_putbytes (XDR *xdrs, char *addr, unsigned int len)
 }
 
 
-static off_t
+static int64_t
 xdrstdio_getpos (XDR *xdrs)
 {
+    #ifdef _WIN32
+    return _ftelli64((FILE *) xdrs->x_private);
+    #else /* __unix__ */
     return ftello((FILE *) xdrs->x_private);
+    #endif
 }
 
 static int
-xdrstdio_setpos (XDR *xdrs, off_t pos, int whence)
+xdrstdio_setpos (XDR *xdrs, int64_t pos, int whence)
 {
     /* A reason for failure can be filesystem limits on allocation units,
      * before the actual off_t overflow (ext3, with a 4K clustersize,
@@ -2610,7 +2621,13 @@ xdrstdio_setpos (XDR *xdrs, off_t pos, int whence)
     /* We return errno relying on the fact that it is never set to 0 on
      * success, which means that if an error occurrs it'll never be the same
      * as exdrOK, and xdr_seek won't be confused.*/
+    #ifdef _WIN32
+	return _fseeki64((FILE *) xdrs->x_private, pos, whence) < 0 ? errno : exdrOK;
+    #else /*  __unix__ */
 	return fseeko((FILE *) xdrs->x_private, pos, whence) < 0 ? errno : exdrOK;
+    #endif
+
+
 }
 
 
@@ -2624,7 +2641,7 @@ int xdr_seek(XDRFILE *xd, int64_t pos, int whence)
 /* Seeks to position in file */
 {
     int result;
-    if ((result = xdrstdio_setpos(xd->xdr, (off_t) pos, whence)) != 0)
+    if ((result = xdrstdio_setpos(xd->xdr, (int64_t) pos, whence)) != 0)
         return result;
 
     return exdrOK;

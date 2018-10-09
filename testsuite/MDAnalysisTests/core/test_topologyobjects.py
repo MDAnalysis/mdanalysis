@@ -154,18 +154,23 @@ class TestTopologyObjects(object):
         assert_almost_equal(angle.angle(), 107.20893, self.precision)
         assert_almost_equal(angle.value(), 107.20893, self.precision)
 
+    def test_angle_repr(self, PSFDCD):
+        angle = PSFDCD.atoms[[30, 10, 20]].angle
+
+        assert_equal(repr(angle), '<Angle between: Atom 20, Atom 10, Atom 30>')
+
     def test_angle_180(self):
         # we edit the coordinates, so make our own universe
         u = mda.Universe(PSF, DCD)
         angle = u.atoms[210].angles[0]
-        coords = np.array([[ 83.37363434,  65.01402283,  35.03564835],
-                           [ 82.28535461,  59.99816513,  34.94399261],
-                           [ 81.19387817,  54.97631073,  34.85218048]],
+        coords = np.array([[1, 1, 1],
+                           [2, 1, 1],
+                           [3, 1, 1]],
                           dtype=np.float32)
 
         angle.atoms.positions = coords
 
-        assert_almost_equal(angle.value(), -180.0, self.precision)
+        assert_almost_equal(angle.value(), 180.0, self.precision)
 
     # Dihedral class check
     def test_dihedral(self, PSFDCD):
@@ -174,6 +179,12 @@ class TestTopologyObjects(object):
         assert_almost_equal(dihedral.dihedral(), 18.317778, self.precision)
         assert_almost_equal(dihedral.value(), 18.317778, self.precision)
 
+    def test_dihedral_repr(self, PSFDCD):
+        dihedral = PSFDCD.atoms[[4, 7, 8, 1]].dihedral
+
+        assert_equal(repr(dihedral),
+                     '<Dihedral between: Atom 1, Atom 8, Atom 7, Atom 4>')
+
     # Improper_Dihedral class check
     def test_improper(self, PSFDCD):
         imp = PSFDCD.atoms[4].impropers[0]
@@ -181,6 +192,12 @@ class TestTopologyObjects(object):
         assert_almost_equal(imp.improper(), -3.8370631, self.precision)
         assert_almost_equal(imp.value(), -3.8370631, self.precision)
 
+    def test_improper_repr(self, PSFDCD):
+        imp = PSFDCD.atoms[[4, 7, 8, 1]].improper
+
+        assert_equal(
+            repr(imp),
+            '<ImproperDihedral between: Atom 1, Atom 8, Atom 7, Atom 4>')
 
 class TestTopologyGroup(object):
     """Tests TopologyDict and TopologyGroup classes with psf input"""
@@ -703,3 +720,27 @@ def test_cross_universe_eq():
     u2 = mda.Universe(PSF)
 
     assert not (u1.bonds[0] == u2.bonds[0])
+
+def test_zero_size_TG_indices_bonds():
+    u = mda.Universe.empty(10)
+
+    u.add_TopologyAttr('bonds', values=[(1, 2), (2, 3)])
+
+    ag = u.atoms[[0]]
+
+    idx = ag.bonds.to_indices()
+
+    assert idx.shape == (0, 2)
+    assert idx.dtype == np.int32
+
+def test_zero_size_TG_indices_angles():
+    u = mda.Universe.empty(10)
+
+    u.add_TopologyAttr('angles', values=[(1, 2, 3), (2, 3, 4)])
+
+    ag = u.atoms[[0]]
+
+    idx = ag.angles.to_indices()
+
+    assert idx.shape == (0, 3)
+    assert idx.dtype == np.int32

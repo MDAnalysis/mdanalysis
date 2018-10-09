@@ -24,8 +24,8 @@
 """LAMMPS DCD trajectory and DATA I/O  --- :mod:`MDAnalysis.coordinates.LAMMPS`
 ===============================================================================
 
-Classes to read and write LAMMPS_ DCD binary trajectories and LAMMPS DATA
-files. Trajectories can be read regardless of system-endianness
+Classes to read and write LAMMPS_ DCD binary trajectories, LAMMPS DATA files
+and LAMMPS dump files.  Trajectories can be read regardless of system-endianness
 as this is auto-detected.
 
 LAMMPS can `write DCD`_ trajectories but unlike a `CHARMM trajectory`_
@@ -50,6 +50,12 @@ Data file formats
 
 By default either the `atomic` or `full` atom styles are expected,
 however this can be customised, see :ref:`atom_style_kwarg`.
+
+Dump files
+----------
+
+The DumpReader expects ascii dump files written with the default
+`LAMMPS dump format`_ of 'atom'
 
 
 Example: Loading a LAMMPS simulation
@@ -95,6 +101,7 @@ See Also
 .. _units command: http://lammps.sandia.gov/doc/units.html
 .. _`Issue 64`: https://github.com/MDAnalysis/mdanalysis/issues/64
 .. _`Issue 84`: https://github.com/MDAnalysis/mdanalysis/issues/84
+.. _`LAMMPS dump format`: http://lammps.sandia.gov/doc/dump.html
 
 Classes
 -------
@@ -115,12 +122,14 @@ Classes
 """
 from __future__ import absolute_import
 
-from six.moves import zip, range
+from six.moves import zip, range, map
+import os
 import numpy as np
 
 from ..core import flags
 from ..core.groups import requires
-from ..lib import util, mdamath
+from ..lib import util, mdamath, distances
+from ..lib.util import cached
 from . import DCD
 from .. import units
 from ..topology.LAMMPSParser import DATAParser
@@ -443,3 +452,124 @@ class DATAWriter(base.WriterBase):
 
             if has_velocities:
                 self._write_velocities(atoms)
+
+
+class DumpReader(base.ReaderBase):
+    """Reads the default `LAMMPS dump format`_
+
+    Expects trajectories produced by the default 'atom' style dump.
+
+    Will automatically convert positions from their scaled/fractional
+    representation to their real values.
+
+    .. versionadded:: 0.19.0
+    """
+    format = 'LAMMPSDUMP'
+
+    def __init__(self, filename, **kwargs):
+        super(DumpReader, self).__init__(filename, **kwargs)
+
+        root, ext = os.path.splitext(self.filename)
+        self._cache = {}
+
+        self._reopen()
+
+        self._read_next_timestep()
+
+    def _reopen(self):
+        self.close()
+        self._file = util.anyopen(self.filename)
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts.frame = -1
+
+    @property
+    @cached('n_atoms')
+    def n_atoms(self):
+        with util.anyopen(self.filename) as f:
+            f.readline()
+            f.readline()
+            f.readline()
+            n_atoms = int(f.readline())
+        return n_atoms
+
+    @property
+    @cached('n_frames')
+    def n_frames(self):
+        # 2(timestep) + 2(natoms info) + 4(box info) + 1(atom header) + n_atoms
+        lines_per_frame = self.n_atoms + 9
+        offsets = []
+        counter = 0
+        with util.anyopen(self.filename) as f:
+            line = True
+            while line:
+                if not counter % lines_per_frame:
+                    offsets.append(f.tell())
+                line = f.readline()
+                counter += 1
+        self._offsets = offsets[:-1]  # last is EOF
+        return len(self._offsets)
+
+    def close(self):
+        if hasattr(self, '_file'):
+            self._file.close()
+
+    def _read_frame(self, frame):
+        self._file.seek(self._offsets[frame])
+        self.ts.frame = frame - 1  # gets +1'd in next
+
+        return self._read_next_timestep()
+
+    def _read_next_timestep(self):
+        f = self._file
+        ts = self.ts
+        ts.frame += 1
+        if ts.frame >= len(self):
+            raise EOFError
+
+        f.readline() # ITEM TIMESTEP
+        step_num = int(f.readline())
+        ts.data['step'] = step_num
+
+        f.readline() # ITEM NUMBER OF ATOMS
+        n_atoms = int(f.readline())
+        if n_atoms != self.n_atoms:
+            raise ValueError("Number of atoms in trajectory changed "
+                             "this is not suported in MDAnalysis")
+
+        triclinic = len(f.readline().split()) == 9  # ITEM BOX BOUNDS
+        if triclinic:
+            xlo, xhi, xy = map(float, f.readline().split())
+            ylo, yhi, xz = map(float, f.readline().split())
+            zlo, zhi, yz = map(float, f.readline().split())
+
+            box = np.zeros((3, 3), dtype=np.float64)
+            box[0] = xhi - xlo, 0.0, 0.0
+            box[1] = xy, yhi - ylo, 0.0
+            box[2] = xz, yz, zhi - zlo
+
+            xlen, ylen, zlen, alpha, beta, gamma = mdamath.triclinic_box(*box)
+        else:
+            xlo, xhi = map(float, f.readline().split())
+            ylo, yhi = map(float, f.readline().split())
+            zlo, zhi = map(float, f.readline().split())
+            xlen = xhi - xlo
+            ylen = yhi - ylo
+            zlen = zhi - zlo
+            alpha = beta = gamma = 90.
+        ts.dimensions = xlen, ylen, zlen, alpha, beta, gamma
+
+        indices = np.zeros(self.n_atoms, dtype=int)
+
+        f.readline()  # ITEM ATOMS etc
+        for i in range(self.n_atoms):
+            idx, _, xs, ys, zs = f.readline().split()
+
+            indices[i] = idx
+            ts.positions[i] = xs, ys, zs
+
+        order = np.argsort(indices)
+        ts.positions = ts.positions[order]
+        # by default coordinates are given in scaled format, undo that
+        ts.positions = distances.transform_StoR(ts.positions, ts.dimensions)
+
+        return ts

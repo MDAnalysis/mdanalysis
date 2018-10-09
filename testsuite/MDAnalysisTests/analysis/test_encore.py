@@ -28,6 +28,7 @@ import importlib
 import tempfile
 import numpy as np
 import sys
+import os
 import warnings
 
 import pytest
@@ -114,6 +115,9 @@ class TestEncore(object):
                         err_msg="Error in TriangularMatrix: multiplication by scalar gave\
 inconsistent results")
 
+    @pytest.mark.xfail(os.name == 'nt',
+                       strict=True,
+                       reason="Not yet supported on Windows.")
     def test_parallel_calculation(self):
 
         def function(x):
@@ -305,10 +309,27 @@ inconsistent results")
                                 err_msg="Unexpected value for Clustering Ensemble similarity in convergence estimation")
 
     def test_dres_convergence(self, ens1):
-        expected_values = [ 0.3, 0.]
+        # Due to encore.dres_convergence() involving random numbers, the
+        # following assertion is allowed to fail once. This significantly
+        # reduces the probability of a random test failure.
+        expected_values = [0.3, 0.]
         results = encore.dres_convergence(ens1, 10)
-        assert_almost_equal(results[:,0], expected_values, decimal=1,
-                            err_msg="Unexpected value for Dim. reduction Ensemble similarity in convergence estimation")
+        try:
+            assert_almost_equal(results[:,0], expected_values, decimal=1)
+        except AssertionError:
+            # Random test failure is very rare, but repeating the failed test
+            # just once would only assert that the test passes with 50%
+            # probability. To be a little safer, we raise a warning and repeat
+            # the test 10 times:
+            warnings.warn(message="Test 'test_dres_convergence' failed, "
+                                  "repeating test 10 times.",
+                          category=RuntimeWarning)
+            for i in range(10):
+                results = encore.dres_convergence(ens1, 10)
+                assert_almost_equal(results[:,0], expected_values, decimal=1,
+                                    err_msg="Unexpected value for Dim. "
+                                            "reduction Ensemble similarity in "
+                                            "convergence estimation")
 
     def test_hes_error_estimation(self, ens1):
         expected_average = 10

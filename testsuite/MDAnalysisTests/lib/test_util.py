@@ -24,6 +24,10 @@ from __future__ import absolute_import, division
 
 from six.moves import range, StringIO
 import pytest
+import os
+import warnings
+import re
+import textwrap
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
@@ -32,12 +36,15 @@ from numpy.testing import (assert_equal, assert_almost_equal,
 import MDAnalysis as mda
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
-from MDAnalysis.lib.util import cached
+from MDAnalysis.lib.util import (cached, static_variables, warn_if_not_unique,
+                                 check_coords)
 from MDAnalysis.core.topologyattrs import Bonds
-from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.exceptions import NoDataError, DuplicateWarning
 
 
-from MDAnalysisTests.datafiles import Make_Whole
+from MDAnalysisTests.datafiles import (
+    Make_Whole, TPR, GRO, fullerene, two_water_gro,
+)
 
 
 def convert_aa_code_long_data():
@@ -105,7 +112,10 @@ class TestStringFunctions(object):
 
 
 def test_greedy_splitext(inp="foo/bar/boing.2.pdb.bz2",
-                         ref=("foo/bar/boing", ".2.pdb.bz2")):
+                         ref=["foo/bar/boing", ".2.pdb.bz2"]):
+    inp = os.path.normpath(inp)
+    ref[0] = os.path.normpath(ref[0])
+    ref[1] = os.path.normpath(ref[1])
     root, ext = util.greedy_splitext(inp)
     assert root == ref[0], "root incorrect"
     assert ext == ref[1], "extension incorrect"
@@ -234,12 +244,37 @@ class TestMakeWhole(object):
     +-----------+
     """
 
+    prec = 5
+
     @pytest.fixture()
     def universe(self):
         universe = mda.Universe(Make_Whole)
         bondlist = [(0, 1), (1, 2), (1, 3), (1, 4), (4, 5), (4, 6), (4, 7)]
         universe.add_TopologyAttr(Bonds(bondlist))
         return universe
+
+    def test_single_atom_no_bonds(self):
+        # Call make_whole on single atom with no bonds, shouldn't move
+        u = mda.Universe(Make_Whole)
+        # Atom0 is isolated
+        bondlist = [(1, 2), (1, 3), (1, 4), (4, 5), (4, 6), (4, 7)]
+        u.add_TopologyAttr(Bonds(bondlist))
+
+        ag = u.atoms[[0]]
+        refpos = ag.positions.copy()
+        mdamath.make_whole(ag)
+
+        assert_array_almost_equal(ag.positions, refpos)
+
+    def test_scrambled_ag(self, universe):
+        # if order of atomgroup is mixed
+        ag = universe.atoms[[1, 3, 2, 4, 0, 6, 5, 7]]
+
+        mdamath.make_whole(ag)
+
+        # artificial system which uses 1nm bonds, so
+        # largest bond should be 20A
+        assert ag.bonds.values().max() < 20.1
 
     @staticmethod
     @pytest.fixture()
@@ -253,22 +288,8 @@ class TestMakeWhole(object):
         with pytest.raises(NoDataError):
             mdamath.make_whole(ag)
 
-    def test_not_orthogonal(self, universe, ag):
-        # Not an orthogonal unit cell
-
-        universe.dimensions = [10., 10., 10., 80., 80., 80]
-        with pytest.raises(ValueError):
-            mdamath.make_whole(ag)
-
     def test_zero_box_size(self, universe, ag):
         universe.dimensions = [0., 0., 0., 90., 90., 90.]
-        with pytest.raises(ValueError):
-            mdamath.make_whole(ag)
-
-    def test_too_small_box_size(self, universe, ag):
-        # Set the z dimensions to 0.5, which is small compared to the
-        # bonds (1-2)
-        universe.dimensions = [100.0, 100.0, 0.5, 90., 90., 90.]
         with pytest.raises(ValueError):
             mdamath.make_whole(ag)
 
@@ -282,15 +303,6 @@ class TestMakeWhole(object):
         with pytest.raises(ValueError):
             mdamath.make_whole(universe.atoms)
 
-    def test_walk_1(self, universe, ag):
-        # self.ag is contiguous
-        assert mdamath._is_contiguous(ag, universe.residues[0].atoms[0])
-
-    def test_walk_2(self, universe):
-        # u.atoms isnt all contiguous
-        assert not mdamath._is_contiguous(universe.atoms,
-                                          universe.residues[0].atoms[0])
-
     def test_solve_1(self, universe, ag):
         # regular usage of function
 
@@ -300,13 +312,13 @@ class TestMakeWhole(object):
 
         assert_array_almost_equal(universe.atoms[:4].positions, refpos)
         assert_array_almost_equal(universe.atoms[4].position,
-                                  np.array([110.0, 50.0, 0.0]))
+                                  np.array([110.0, 50.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[5].position,
-                                  np.array([110.0, 60.0, 0.0]))
+                                  np.array([110.0, 60.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[6].position,
-                                  np.array([110.0, 40.0, 0.0]))
+                                  np.array([110.0, 40.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[7].position,
-                                  np.array([120.0, 50.0, 0.0]))
+                                  np.array([120.0, 50.0, 0.0]), decimal=self.prec)
 
     def test_solve_2(self, universe, ag):
         # use but specify the center atom
@@ -317,13 +329,13 @@ class TestMakeWhole(object):
 
         assert_array_almost_equal(universe.atoms[4:8].positions, refpos)
         assert_array_almost_equal(universe.atoms[0].position,
-                                  np.array([-20.0, 50.0, 0.0]))
+                                  np.array([-20.0, 50.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[1].position,
-                                  np.array([-10.0, 50.0, 0.0]))
+                                  np.array([-10.0, 50.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[2].position,
-                                  np.array([-10.0, 60.0, 0.0]))
+                                  np.array([-10.0, 60.0, 0.0]), decimal=self.prec)
         assert_array_almost_equal(universe.atoms[3].position,
-                                  np.array([-10.0, 40.0, 0.0]))
+                                  np.array([-10.0, 40.0, 0.0]), decimal=self.prec)
 
     def test_solve_3(self, universe):
         # put in a chunk that doesn't need any work
@@ -359,6 +371,39 @@ class TestMakeWhole(object):
         with pytest.raises(ValueError):
             mdamath.make_whole(universe.atoms)
 
+    def test_make_whole_triclinic(self):
+        u = mda.Universe(TPR, GRO)
+        thing = u.select_atoms('not resname SOL NA+')
+        mdamath.make_whole(thing)
+
+        blengths = thing.bonds.values()
+
+        assert blengths.max() < 2.0
+
+    def test_make_whole_fullerene(self):
+        # lots of circular bonds as a nice pathological case
+        u = mda.Universe(fullerene)
+
+        bbox = u.atoms.bbox()
+        u.dimensions[:3] = bbox[1] - bbox[0]
+        u.dimensions[3:] = 90.0
+
+        blengths = u.atoms.bonds.values()
+        # kaboom
+        u.atoms[::2].translate([u.dimensions[0], -2 * u.dimensions[1], 0.0])
+        u.atoms[1::2].translate([0.0, 7 * u.dimensions[1], -5 * u.dimensions[2]])
+
+        mdamath.make_whole(u.atoms)
+
+        assert_array_almost_equal(u.atoms.bonds.values(), blengths, decimal=self.prec)
+
+    def test_make_whole_multiple_molecules(self):
+        u = mda.Universe(two_water_gro, guess_bonds=True)
+
+        for f in u.atoms.fragments:
+            mdamath.make_whole(f)
+
+        assert u.atoms.bonds.values().max() < 2.0
 
 class Class_with_Caches(object):
     def __init__(self):
@@ -926,8 +971,6 @@ class TestBlocksOf(object):
 
         view = util.blocks_of(arr, 1, 1)
 
-        # should return a (4, 1, 1) view
-        # ie 4 lots of 1x1
         assert view.shape == (4, 1, 1)
         assert_array_almost_equal(view,
                                   np.array([[[0]], [[5]], [[10]], [[15]]]))
@@ -946,7 +989,6 @@ class TestBlocksOf(object):
 
         view = util.blocks_of(arr, 2, 2)
 
-        # should return (2, 2, 2)
         assert view.shape == (2, 2, 2)
         assert_array_almost_equal(view, np.array([[[0, 1], [4, 5]],
                                                   [[10, 11], [14, 15]]]))
@@ -968,10 +1010,20 @@ class TestBlocksOf(object):
 
         assert view.shape == (4, 2, 1)
 
+    def test_blocks_of_4(self):
+        # testing block exceeding array size results in empty view
+        arr = np.arange(4).reshape(2, 2)
+        view = util.blocks_of(arr, 3, 3)
+        assert view.shape == (0, 3, 3)
+        view[:] = 100
+        assert_array_equal(arr, np.arange(4).reshape(2, 2))
+
     def test_blocks_of_ValueError(self):
         arr = np.arange(16).reshape(4, 4)
         with pytest.raises(ValueError):
-            util.blocks_of(arr, 2, 1)
+            util.blocks_of(arr, 2, 1)  # blocks don't fit
+        with pytest.raises(ValueError):
+            util.blocks_of(arr[:, ::2], 2, 1)  # non-contiguous input
 
 
 class TestNamespace(object):
@@ -1076,5 +1128,543 @@ class TestFlattenDict(object):
             assert k[0] in d
             assert k[1] in d[k[0]]
             assert result[k] in d[k[0]].values()
-            
-            
+
+class TestStaticVariables(object):
+    """Tests concerning the decorator @static_variables
+    """
+
+    def test_static_variables(self):
+        x = [0]
+
+        @static_variables(foo=0, bar={'test': x})
+        def myfunc():
+            assert myfunc.foo is 0
+            assert type(myfunc.bar) is type(dict())
+            if 'test2' not in myfunc.bar:
+                myfunc.bar['test2'] = "a"
+            else:
+                myfunc.bar['test2'] += "a"
+            myfunc.bar['test'][0] += 1
+            return myfunc.bar['test']
+
+        assert hasattr(myfunc, 'foo')
+        assert hasattr(myfunc, 'bar')
+
+        y = myfunc()
+        assert y is x
+        assert x[0] is 1
+        assert myfunc.bar['test'][0] is 1
+        assert myfunc.bar['test2'] == "a"
+
+        x = [0]
+        y = myfunc()
+        assert y is not x
+        assert myfunc.bar['test'][0] is 2
+        assert myfunc.bar['test2'] == "aa"
+
+class TestWarnIfNotUnique(object):
+    """Tests concerning the decorator @warn_if_not_uniue
+    """
+
+    @pytest.fixture()
+    def warn_msg(self, func, group, group_name):
+        msg = ("{}.{}(): {} {} contains duplicates. Results might be "
+               "biased!".format(group.__class__.__name__, func.__name__,
+                                group_name, group.__repr__()))
+        return msg
+
+    def test_warn_if_not_unique(self, atoms):
+        # Check that the warn_if_not_unique decorator has a "static variable"
+        # warn_if_not_unique.warned:
+        assert hasattr(warn_if_not_unique, 'warned')
+        assert warn_if_not_unique.warned is False
+
+    def test_warn_if_not_unique_once_outer(self, atoms):
+
+        # Construct a scenario with two nested functions, each one decorated
+        # with @warn_if_not_unique:
+
+        @warn_if_not_unique
+        def inner(group):
+            if not group.isunique:
+                # The inner function should not trigger a warning, and the state
+                # of warn_if_not_unique.warned should reflect that:
+                assert warn_if_not_unique.warned is True
+            return 0
+
+        @warn_if_not_unique
+        def outer(group):
+            return inner(group)
+
+        # Check that no warning is raised for a unique group:
+        assert atoms.isunique
+        with pytest.warns(None) as w:
+            x = outer(atoms)
+            assert x is 0
+            assert not w.list
+
+        # Check that a warning is raised for a group with duplicates:
+        ag = atoms + atoms[0]
+        msg = self.warn_msg(outer, ag, "'ag'")
+        with pytest.warns(DuplicateWarning) as w:
+            assert warn_if_not_unique.warned is False
+            x = outer(ag)
+            # Assert that the "warned" state is restored:
+            assert warn_if_not_unique.warned is False
+            # Check correct function execution:
+            assert x is 0
+            # Only one warning must have been raised:
+            assert len(w) == 1
+            # For whatever reason pytest.warns(DuplicateWarning, match=msg)
+            # doesn't work, so we compare the recorded warning message instead:
+            assert w[0].message.args[0] == msg
+            # Make sure the warning uses the correct stacklevel and references
+            # this file instead of MDAnalysis/lib/util.py:
+            assert w[0].filename == __file__
+
+    def test_warned_state_restored_on_failure(self, atoms):
+
+        # A decorated function raising an exception:
+        @warn_if_not_unique
+        def thisfails(group):
+            raise ValueError()
+
+        ag = atoms + atoms[0]
+        msg = self.warn_msg(thisfails, ag, "'ag'")
+        with pytest.warns(DuplicateWarning) as w:
+            assert warn_if_not_unique.warned is False
+            with pytest.raises(ValueError):
+                thisfails(ag)
+            # Assert that the "warned" state is restored despite `thisfails`
+            # raising an exception:
+            assert warn_if_not_unique.warned is False
+            assert len(w) == 1
+            assert w[0].message.args[0] == msg
+            assert w[0].filename == __file__
+
+    def test_warn_if_not_unique_once_inner(self, atoms):
+
+        # Construct a scenario with two nested functions, each one decorated
+        # with @warn_if_not_unique, but the outer function adds a duplicate
+        # to the group:
+
+        @warn_if_not_unique
+        def inner(group):
+            return 0
+
+        @warn_if_not_unique
+        def outer(group):
+            dupgroup = group + group[0]
+            return inner(dupgroup)
+
+        # Check that even though outer() is called the warning is raised for
+        # inner():
+        msg = self.warn_msg(inner, atoms + atoms[0], "'dupgroup'")
+        with pytest.warns(DuplicateWarning) as w:
+            assert warn_if_not_unique.warned is False
+            x = outer(atoms)
+            # Assert that the "warned" state is restored:
+            assert warn_if_not_unique.warned is False
+            # Check correct function execution:
+            assert x is 0
+            # Only one warning must have been raised:
+            assert len(w) == 1
+            assert w[0].message.args[0] == msg
+            assert w[0].filename == __file__
+
+    def test_warn_if_not_unique_multiple_references(self, atoms):
+        ag = atoms + atoms[0]
+        aag = ag
+        aaag = aag
+
+        @warn_if_not_unique
+        def func(group):
+            return group.isunique
+
+        # Check that the warning message contains the names of all references to
+        # the group in alphabetic order:
+        msg = self.warn_msg(func, ag, "'aaag' a.k.a. 'aag' a.k.a. 'ag'")
+        with pytest.warns(DuplicateWarning) as w:
+            x = func(ag)
+            # Assert that the "warned" state is restored:
+            assert warn_if_not_unique.warned is False
+            # Check correct function execution:
+            assert x is False
+            # Check warning message:
+            assert w[0].message.args[0] == msg
+            # Check correct file referenced:
+            assert w[0].filename == __file__
+
+    def test_warn_if_not_unique_unnamed(self, atoms):
+
+        @warn_if_not_unique
+        def func(group):
+            pass
+
+        msg = self.warn_msg(func, atoms + atoms[0],
+                            "'unnamed {}'".format(atoms.__class__.__name__))
+        with pytest.warns(DuplicateWarning) as w:
+            func(atoms + atoms[0])
+            # Check warning message:
+            assert w[0].message.args[0] == msg
+
+    def test_warn_if_not_unique_fails_for_non_groupmethods(self):
+
+        @warn_if_not_unique
+        def func(group):
+            pass
+
+        class dummy(object):
+            pass
+
+        with pytest.raises(AttributeError):
+            func(dummy())
+
+    def test_filter_duplicate_with_userwarning(self, atoms):
+
+        @warn_if_not_unique
+        def func(group):
+            pass
+
+        with warnings.catch_warnings(record=True) as record:
+            warnings.resetwarnings()
+            warnings.filterwarnings("ignore", category=UserWarning)
+            with pytest.warns(None) as w:
+                func(atoms)
+                assert not w.list
+            assert len(record) == 0
+
+class TestCheckCoords(object):
+    """Tests concerning the decorator @check_coords
+    """
+
+    prec = 6
+
+    def test_default_options(self):
+        a_in = np.zeros(3, dtype=np.float32)
+        b_in = np.ones(3, dtype=np.float32)
+        b_in2 = np.ones((2, 3), dtype=np.float32)
+
+        @check_coords('a','b')
+        def func(a, b):
+            # check that enforce_copy is True by default:
+            assert a is not a_in
+            assert b is not b_in
+            # check that convert_single is True by default:
+            assert a.shape == (1, 3)
+            assert b.shape == (1, 3)
+            return a + b
+
+        # check that allow_single is True by default:
+        res = func(a_in, b_in)
+        # check that reduce_result_if_single is True by default:
+        assert res.shape == (3,)
+        # check correct function execution:
+        assert_array_equal(res, b_in)
+
+        # check that check_lenghts_match is True by default:
+        with pytest.raises(ValueError):
+            res = func(a_in, b_in2)
+
+    def test_enforce_copy(self):
+
+        a_2d = np.ones((1, 3), dtype=np.float32)
+        b_1d = np.zeros(3, dtype=np.float32)
+        c_2d = np.zeros((1, 6), dtype=np.float32)[:, ::2]
+        d_2d = np.zeros((1, 3), dtype=np.int64)
+
+        @check_coords('a', 'b', 'c', 'd', enforce_copy=False)
+        def func(a, b, c, d):
+            # Assert that if enforce_copy is False:
+            # no copy is made if input shape, order, and dtype are correct:
+            assert a is a_2d
+            # a copy is made if input shape has to be changed:
+            assert b is not b_1d
+            # a copy is made if input order has to be changed:
+            assert c is not c_2d
+            # a copy is made if input dtype has to be changed:
+            assert d is not d_2d
+            # Assert correct dtype conversion:
+            assert d.dtype == np.float32
+            assert_almost_equal(d, d_2d, self.prec)
+            # Assert all shapes are converted to (1, 3):
+            assert a.shape == b.shape == c.shape == d.shape == (1, 3)
+            return a + b + c + d
+
+        # Call func() to:
+        # - test the above assertions
+        # - ensure that input of single coordinates is simultaneously possible
+        #   with different shapes (3,) and (1, 3)
+        res = func(a_2d, b_1d, c_2d, d_2d)
+        # Since some inputs are not 1d, even though reduce_result_if_single is
+        # True, the result must have shape (1, 3):
+        assert res.shape == (1, 3)
+        # check correct function execution:
+        assert_array_equal(res, a_2d)
+
+    def test_no_allow_single(self):
+
+        @check_coords('a', allow_single=False)
+        def func(a):
+            pass
+
+        with pytest.raises(ValueError) as err:
+            func(np.zeros(3, dtype=np.float32))
+            assert err.msg == ("func(): a.shape must be (n, 3), got (3,).")
+
+    def test_no_convert_single(self):
+
+        a_1d = np.arange(-3, 0, dtype=np.float32)
+
+        @check_coords('a', enforce_copy=False, convert_single=False)
+        def func(a):
+            # assert no conversion and no copy were performed:
+            assert a is a_1d
+            return a
+
+        res = func(a_1d)
+        # Assert result has been reduced:
+        assert res == a_1d[0]
+        assert type(res) is np.float32
+
+    def test_no_reduce_result_if_single(self):
+
+        a_1d = np.zeros(3, dtype=np.float32)
+
+        # Test without shape conversion:
+        @check_coords('a', enforce_copy=False, convert_single=False,
+                      reduce_result_if_single=False)
+        def func(a):
+            return a
+
+        res = func(a_1d)
+        # make sure the input array is just passed through:
+        assert res is a_1d
+
+        # Test with shape conversion:
+        @check_coords('a', enforce_copy=False, reduce_result_if_single=False)
+        def func(a):
+            return a
+
+        res = func(a_1d)
+        assert res.shape == (1, 3)
+        assert_array_equal(res[0], a_1d)
+
+    def test_no_check_lengths_match(self):
+
+        a_2d = np.zeros((1, 3), dtype=np.float32)
+        b_2d = np.zeros((3, 3), dtype=np.float32)
+
+        @check_coords('a', 'b', enforce_copy=False, check_lengths_match=False)
+        def func(a, b):
+            return a, b
+
+        res_a, res_b = func(a_2d, b_2d)
+        # Assert arrays are just passed through:
+        assert res_a is a_2d
+        assert res_b is b_2d
+
+    def test_invalid_input(self):
+
+        a_inv_dtype = np.array([['hello', 'world', '!']])
+        a_inv_type = [[0., 0., 0.]]
+        a_inv_shape_1d = np.zeros(6, dtype=np.float32)
+        a_inv_shape_2d = np.zeros((3, 2), dtype=np.float32)
+
+        @check_coords('a')
+        def func(a):
+            pass
+
+        with pytest.raises(TypeError) as err:
+            func(a_inv_dtype)
+            assert err.msg.startswith("func(): a.dtype must be convertible to "
+                                      "float32, got ")
+
+        with pytest.raises(TypeError) as err:
+            func(a_inv_type)
+            assert err.msg == ("func(): Parameter 'a' must be a numpy.ndarray, "
+                               "got <class 'list'>.")
+
+        with pytest.raises(ValueError) as err:
+            func(a_inv_shape_1d)
+            assert err.msg == ("func(): a.shape must be (3,) or (n, 3), got "
+                               "(6,).")
+
+        with pytest.raises(ValueError) as err:
+            func(a_inv_shape_2d)
+            assert err.msg == ("func(): a.shape must be (3,) or (n, 3), got "
+                               "(3, 2).")
+
+    def test_usage_with_kwargs(self):
+
+        a_2d = np.zeros((1, 3), dtype=np.float32)
+
+        @check_coords('a', enforce_copy=False)
+        def func(a, b, c=0):
+            return a, b, c
+
+        # check correct functionality if passed as keyword argument:
+        a, b, c = func(a=a_2d, b=0, c=1)
+        assert a is a_2d
+        assert b == 0
+        assert c == 1
+
+    def test_wrong_func_call(self):
+
+        @check_coords('a', enforce_copy=False)
+        def func(a, b, c=0):
+            pass
+
+        # Make sure invalid call marker is present:
+        func._invalid_call = False
+
+        # usage with posarg doubly defined:
+        assert not func._invalid_call
+        with pytest.raises(TypeError):
+            func(0, a=0)  # pylint: disable=redundant-keyword-arg
+        assert func._invalid_call
+        func._invalid_call = False
+
+        # usage with missing posargs:
+        assert not func._invalid_call
+        with pytest.raises(TypeError):
+            func(0)
+        assert func._invalid_call
+        func._invalid_call = False
+
+        # usage with missing posargs (supplied as kwargs):
+        assert not func._invalid_call
+        with pytest.raises(TypeError):
+            func(a=0, c=1)
+        assert func._invalid_call
+        func._invalid_call = False
+
+        # usage with too many posargs:
+        assert not func._invalid_call
+        with pytest.raises(TypeError):
+            func(0, 0, 0, 0)
+        assert func._invalid_call
+        func._invalid_call = False
+
+        # usage with unexpected kwarg:
+        assert not func._invalid_call
+        with pytest.raises(TypeError):
+            func(a=0, b=0, c=1, d=1)  # pylint: disable=unexpected-keyword-arg
+        assert func._invalid_call
+        func._invalid_call = False
+
+    def test_wrong_decorator_usage(self):
+
+        # usage without parantheses:
+        @check_coords
+        def func():
+            pass
+
+        with pytest.raises(TypeError):
+            func()
+
+        # usage without arguments:
+        with pytest.raises(ValueError) as err:
+            @check_coords()
+            def func():
+                pass
+
+            assert err.msg == ("Decorator check_coords() cannot be used "
+                               "without positional arguments.")
+
+        # usage with defaultarg:
+        with pytest.raises(ValueError) as err:
+            @check_coords('a')
+            def func(a=1):
+                pass
+
+            assert err.msg == ("In decorator check_coords(): Name 'a' doesn't "
+                               "correspond to any positional argument of the "
+                               "decorated function func().")
+
+        # usage with invalid parameter name:
+        with pytest.raises(ValueError) as err:
+            @check_coords('b')
+            def func(a):
+                pass
+
+            assert err.msg == ("In decorator check_coords(): Name 'b' doesn't "
+                               "correspond to any positional argument of the "
+                               "decorated function func().")
+
+
+@pytest.mark.parametrize("old_name", (None, "MDAnalysis.Universe"))
+@pytest.mark.parametrize("new_name", (None, "Multiverse"))
+@pytest.mark.parametrize("remove", (None, "99.0.0", 2099))
+@pytest.mark.parametrize("message", (None, "use the new stuff"))
+def test_deprecate(old_name, new_name, remove, message, release="2.7.1"):
+    def AlternateUniverse(anything):
+        # important: first line needs to be """\ so that textwrap.dedent()
+        # works
+        """\
+        AlternateUniverse provides a true view of the Universe.
+
+        Parameters
+        ----------
+        anything : object
+
+        Returns
+        -------
+        truth
+
+        """
+        return True
+
+    oldfunc = util.deprecate(AlternateUniverse, old_name=old_name,
+                             new_name=new_name,
+                             release=release, remove=remove,
+                             message=message)
+    with pytest.warns(DeprecationWarning, match_expr="`.+` is deprecated"):
+        oldfunc(42)
+
+    doc = oldfunc.__doc__
+    name = old_name if old_name else AlternateUniverse.__name__
+
+    deprecation_line_1 = ".. deprecated:: {0}".format(release)
+    assert re.search(deprecation_line_1, doc)
+
+    if message:
+        deprecation_line_2 = message
+    else:
+        if new_name is None:
+            default_message = "`{0}` is deprecated!".format(name)
+        else:
+            default_message = "`{0}` is deprecated, use `{1}` instead!".format(
+                name, new_name)
+        deprecation_line_2 = default_message
+    assert re.search(deprecation_line_2, doc)
+
+    if remove:
+        deprecation_line_3 = "`{0}` will be removed in release {1}".format(
+            name,  remove)
+        assert re.search(deprecation_line_3, doc)
+
+    # check that the old docs are still present
+    assert re.search(textwrap.dedent(AlternateUniverse.__doc__), doc)
+
+
+def test_deprecate_missing_release_ValueError():
+    with pytest.raises(ValueError):
+        util.deprecate(mda.Universe)
+
+def test_set_function_name(name="bar"):
+    def foo():
+        pass
+    util._set_function_name(foo, name)
+    assert foo.__name__ == name
+
+@pytest.mark.parametrize("text",
+                         ("",
+                          "one line text",
+                          "  one line with leading space",
+                          "multiline\n\n   with some\n   leading space",
+                          "   multiline\n\n   with all\n   leading space"))
+def test_dedent_docstring(text):
+    doc = util.dedent_docstring(text)
+    for line in doc.splitlines():
+        assert line == line.lstrip()

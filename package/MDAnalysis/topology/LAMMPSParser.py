@@ -24,10 +24,11 @@
 LAMMPSParser
 ============
 
-Parses data_ files produced by LAMMPS_.
+Parses data_ or dump_ files produced by LAMMPS_.
 
 .. _LAMMPS: http://lammps.sandia.gov/
 .. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
+.. _dump: http://lammps.sandia.gov/doc/dump.html
 
 
 .. _atom_style_kwarg:
@@ -65,6 +66,9 @@ Classes
    :members:
    :inherited-members:
 
+.. autoclass:: LammpsDumpParser
+   :members:
+
 Deprecated classes
 ------------------
 
@@ -80,6 +84,7 @@ import numpy as np
 import logging
 import string
 import functools
+import warnings
 
 from . import guessers
 from ..lib.util import openany, conv_float
@@ -573,6 +578,54 @@ class DATAParser(TopologyReaderBase):
             unitcell[3:] = 90., 90., 90.
 
         return unitcell
+
+
+class LammpsDumpParser(TopologyReaderBase):
+    """Parses Lammps ascii dump files in 'atom' format
+
+    Only reads atom ids.  Sets all masses to 1.0.
+
+    .. versionadded:: 0.19.0
+    """
+    format = 'LAMMPSDUMP'
+
+    def parse(self, **kwargs):
+        with openany(self.filename) as fin:
+            fin.readline()  # ITEM TIMESTEP
+            fin.readline()  # 0
+
+            fin.readline()  # ITEM NUMBER OF ATOMS
+            natoms = int(fin.readline())
+
+            fin.readline()  # ITEM BOX
+            fin.readline()  # x
+            fin.readline()  # y
+            fin.readline()  # z
+
+            indices = np.zeros(natoms, dtype=int)
+            types = np.zeros(natoms, dtype=object)
+            
+            fin.readline()  # ITEM ATOMS
+            for i in range(natoms):
+                idx, atype, _, _, _ = fin.readline().split()
+
+                indices[i] = idx
+                types[i] = atype
+
+        order = np.argsort(indices)
+        indices = indices[order]
+        types = types[order]
+
+        attrs = []
+        attrs.append(Atomids(indices))
+        attrs.append(Atomtypes(types))
+        attrs.append(Masses(np.ones(natoms, dtype=np.float64), guessed=True))
+        warnings.warn('Guessed all Masses to 1.0')
+        attrs.append(Resids(np.array([1], dtype=int)))
+        attrs.append(Resnums(np.array([1], dtype=int)))
+        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+
+        return Topology(natoms, 1, 1, attrs=attrs)
 
 
 @functools.total_ordering

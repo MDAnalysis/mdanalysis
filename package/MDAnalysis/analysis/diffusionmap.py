@@ -170,11 +170,12 @@ from six.moves import range
 import logging
 import warnings
 
-from MDAnalysis.core.universe import Universe
 import numpy as np
 
+from MDAnalysis.core.universe import Universe
 from .rms import rmsd
 from .base import AnalysisBase
+from MDAnalysis.lib.util import deprecate
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
@@ -195,14 +196,9 @@ class DistanceMatrix(AnalysisBase):
         Array of all possible ij metric distances between frames in trajectory.
         This matrix is symmetric with zeros on the diagonal.
 
-    Methods
-    -------
-    save(filename)
-        Save the `dist_matrix` to a given filename
     """
     def __init__(self, u, select='all', metric=rmsd, cutoff=1E0-5,
-                 weights=None, start=None, stop=None, step=None,
-                 **kwargs):
+                 weights=None, **kwargs):
         """
         Parameters
         ----------
@@ -229,14 +225,6 @@ class DistanceMatrix(AnalysisBase):
             Default: 1EO-5
         weights : array, optional
             Weights to be given to coordinates for metric calculation
-        start : int, optional
-            First frame of trajectory to analyse, Default: None becomes 0.
-        stop : int, optional
-            Frame index to stop analysis. Default: None becomes
-            n_frames. Iteration stops *before* this frame number,
-            which means that the trajectory would be read until the end.
-        step : int, optional
-            Step between frames to analyse, Default: None becomes 1.
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
@@ -245,8 +233,7 @@ class DistanceMatrix(AnalysisBase):
         traj = self._u.trajectory
 
         # remember that this must be called before referencing self.n_frames
-        super(DistanceMatrix, self).__init__(self._u.trajectory,
-                                           start=start, stop=stop, step=step, **kwargs)
+        super(DistanceMatrix, self).__init__(self._u.trajectory, **kwargs)
 
         self.atoms = self._u.select_atoms(select)
         self._metric = metric
@@ -276,7 +263,17 @@ class DistanceMatrix(AnalysisBase):
     def _conclude(self):
         self._calculated = True
 
+    @deprecate(release="0.19.0", remove="1.0.0",
+               message="Use ``np.save(filename, DistanceMatrix.dist_matrix)`` instead.")
     def save(self, filename):
+        """save squared distance matrix
+
+        Parameters
+        ----------
+        outfile : str
+            file to save distance matrix
+
+        """
         np.save(filename, self.dist_matrix)
         logger.info("Wrote the distance-squared matrix to file %r", filename)
 
@@ -318,7 +315,7 @@ class DiffusionMap(object):
         **kwargs
             Parameters to be passed for the initialization of a
             :class:`DistanceMatrix`.
-            """
+        """
         if isinstance(u, Universe):
             self._dist_matrix = DistanceMatrix(u, **kwargs)
         elif isinstance(u, DistanceMatrix):
@@ -327,20 +324,32 @@ class DiffusionMap(object):
             raise ValueError("U is not a Universe or DistanceMatrix and"
                              " so the DiffusionMap has no data to work with.")
         self._epsilon = epsilon
+
+    def run(self, start=None, stop=None, step=None):
+        """ Create and decompose the diffusion matrix in preparation
+        for a diffusion map.
+
+        Parameters
+        ----------
+        start : int, optional
+            start frame of analysis
+        stop : int, optional
+            stop frame of analysis
+        step : int, optional
+            number of frames to skip between each analysed frame
+
+        .. versionchanged:: 0.19.0
+           Added start/stop/step kwargs
+        """
+        # run only if distance matrix not already calculated
+        if not self._dist_matrix._calculated:
+            self._dist_matrix.run(start=start, stop=stop, step=step)
         # important for transform function and length of .run() method
         self._n_frames = self._dist_matrix.n_frames
         if self._n_frames > 5000:
             warnings.warn("The distance matrix is very large, and can "
                           "be very slow to compute. Consider picking a larger "
                           "step size in distance matrix initialization.")
-
-
-    def run(self):
-        """ Create and decompose the diffusion matrix in preparation
-        for a diffusion map."""
-        # run only if distance matrix not already calculated
-        if not self._dist_matrix._calculated:
-            self._dist_matrix.run()
         self._scaled_matrix = (self._dist_matrix.dist_matrix ** 2 /
                                self._epsilon)
         # take negative exponent of scaled matrix to create Isotropic kernel

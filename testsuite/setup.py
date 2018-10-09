@@ -65,7 +65,7 @@ def dynamic_author_list():
         # authors". We first want move the cursor down to the title of
         # interest.
         for line_no, line in enumerate(infile, start=1):
-            if line[:-1] == "Chronological list of authors":
+            if line.rstrip() == "Chronological list of authors":
                 break
         else:
             # If we did not break, it means we did not find the authors.
@@ -132,28 +132,26 @@ if __name__ == '__main__':
         warnings.warn('Cannot write the list of authors.')
 
     # this must be in-sync with MDAnalysis
-    RELEASE = "0.18.0"
+    RELEASE = "0.19.0"
+    with open("README") as summary:
+        LONG_DESCRIPTION = summary.read()
 
-    LONG_DESCRIPTION = \
-        """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
-
-This package (MDAnalysisTests) contains the test code and the trajectory data
-that are used for the test cases. In order to make downloads and binary package
-maintenance more efficient, these tests were moved into this package.
-
-For details see the report for `Issue 87`_.
-
-.. _`Issue 87`: https://github.com/MDAnalysis/mdanalysis/issues/87
-"""
     CLASSIFIERS = [
         'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: C',
+        'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Topic :: Scientific/Engineering :: Chemistry',
         'Topic :: Software Development :: Libraries :: Python Modules',
@@ -161,14 +159,24 @@ For details see the report for `Issue 87`_.
 
     setup(name='MDAnalysisTests',
           version=RELEASE,
-          description='MDAnalysis http://mdanalysis.org testsuite',
+          description='MDAnalysis testsuite',
+          long_description=LONG_DESCRIPTION,
+          long_description_content_type='text/x-rst',
           author='Naveen Michaud-Agrawal',
           author_email='naveen.michaudagrawal@gmail.com',
           maintainer='Richard Gowers',
           maintainer_email='mdnalysis-discussion@googlegroups.com',
           url='https://www.mdanalysis.org',
           download_url='https://github.com/MDAnalysis/mdanalysis/releases',
+          project_urls={'Documentation': 'https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests',
+                        'CI Tests': 'https://travis-ci.org/MDAnalysis/mdanalysis',
+                        'CI Coverage': 'https://codecov.io/gh/MDAnalysis/mdanalysis',
+                        'Developer Group': 'https://groups.google.com/forum/#!forum/mdnalysis-devel',
+                        'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
+                        'Source': 'https://github.com/mdanalysis/mdanalysis',
+                        },
           license='GPL 2',
+          classifiers=CLASSIFIERS,
           packages=find_packages(),
           package_dir={'MDAnalysisTests': 'MDAnalysisTests',
                        'MDAnalysisTests.plugins': 'MDAnalysisTests/plugins'},
@@ -196,10 +204,7 @@ For details see the report for `Issue 87`_.
                          'data/mol2/*.mol2',
                          'data/contacts/*.gro.bz2', 'data/contacts/*.dat',
                          'data/capping/*.gro', 'data/capping/*.pdb',
-                         'data/lammps/*.data', 'data/lammps/*.data.bz2',
-                         'data/lammps/*.data2',
-                         'data/lammps/*.dcd', 'data/lammps/*.trz',
-                         'data/lammps/*.inp',
+                         'data/lammps/*',
                          'data/gms/*.xyz', 'data/gms/*.gms',
                          'data/gms/*.gms.gz',
                          'data/*.inpcrd',
@@ -208,12 +213,11 @@ For details see the report for `Issue 87`_.
                          'data/*.xml',
                          'data/coordinates/*',
                          'data/*xvg',
-                         'data/*.mmtf', 'data/*.mmtf.gz', 'data/analysis/*',
+                         'data/*.mmtf', 'data/*.mmtf.gz',
+                         'data/analysis/*',
                          'data/*.gsd',
                         ],
           },
-          classifiers=CLASSIFIERS,
-          long_description=LONG_DESCRIPTION,
           install_requires=[
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
               'pytest>=3.1.2',

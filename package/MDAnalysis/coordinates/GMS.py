@@ -264,5 +264,3 @@ class GMSReader(base.ReaderBase):
             return
         self.outfile.close()
         self.outfile = None
-
-

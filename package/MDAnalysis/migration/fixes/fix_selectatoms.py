@@ -20,4 +20,3 @@ class FixSelectatoms(BaseFix):
     def transform(self, node, results):
         node.value = 'select_atoms'
         node.changed()
-

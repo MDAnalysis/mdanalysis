@@ -101,7 +101,10 @@ import sys
 # A clean solution is therefore simply to disable os.fork() prior to importing
 # the uuid module and to re-enable it afterwards.
 import os
-if sys.version_info >= (3, 7):
+
+# Windows doesn't have os.fork so can ignore
+# the issue for that platform
+if sys.version_info >= (3, 7) or os.name == 'nt':
     import uuid
 else:
     _os_dot_fork, os.fork = os.fork, None
@@ -112,8 +115,9 @@ else:
 from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
 from ..lib import util
-from ..lib.log import ProgressMeter, _set_verbose
+from ..lib.log import ProgressMeter
 from ..lib.util import cached, NamedStream, isstream
+from ..lib.mdamath import find_fragments
 from . import groups
 from ._get_readers import get_reader_for, get_parser_for
 from .groups import (ComponentBase, GroupBase,
@@ -210,11 +214,20 @@ class Universe(object):
         Universe to only unpickle if a compatible Universe with matching
         *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will
         still be honored when unpickling.
+    transformations: function or list, optional
+        Provide a list of transformations that you wish to apply to the 
+        trajectory upon reading. Transformations can be found in 
+        :mod:`MDAnalysis.transformations`, or can be user-created.
     in_memory
         After reading in the trajectory, transfer it to an in-memory
         representations, which allow for manipulation of coordinates.
     in_memory_step
         Only read every nth frame into in-memory representation.
+    continuous : bool, optional
+        The `continuous` option is used by the
+        :mod:`ChainReader<MDAnalysis.coordinates.chain>`, which contains the
+        functionality to treat independent trajectory files as a single virtual
+        trajectory.
 
     Attributes
     ----------
@@ -318,7 +331,13 @@ class Universe(object):
 
             if not coordinatefile:
                 coordinatefile = None
+                
             self.load_new(coordinatefile, **kwargs)
+            # parse transformations
+            trans_arg = kwargs.pop('transformations', None)
+            if trans_arg:
+                transforms =[trans_arg] if callable(trans_arg) else trans_arg
+                self.trajectory.add_transformations(*transforms)
 
         # Check for guess_bonds
         if kwargs.pop('guess_bonds', False):
@@ -330,6 +349,7 @@ class Universe(object):
         self._anchor_name = kwargs.get('anchor_name', None)
         # Universes are anchors by default
         self.is_anchor = kwargs.get('is_anchor', True)
+        
 
     def copy(self):
         """Return an independent copy of this Universe"""
@@ -397,6 +417,10 @@ class Universe(object):
         Useful for building a Universe without requiring existing files,
         for example for system building.
 
+        If `trajectory` is set to True, a
+        :class:`MDAnalysis.coordinates.memory.MemoryReader` will be
+        attached to the Universe.
+
         Parameters
         ----------
         n_atoms : int
@@ -405,17 +429,19 @@ class Universe(object):
           number of Residues in the Universe, defaults to 1
         n_segments : int, optional
           number of Segments in the Universe, defaults to 1
-        atom_resindex : numpy.array, optional
-          mapping of atoms to residues
-        residue_segindex : numpy.array, optional
+        atom_resindex : array like, optional
+          mapping of atoms to residues, e.g. with 6 atoms,
+          `atom_resindex=[0, 0, 1, 1, 2, 2]` would put 2 atoms
+          into each of 3 residues.
+        residue_segindex : array like, optional
           mapping of residues to segments
         trajectory : bool, optional
-          if True, attaches a dummy reader to the Universe, therefore
+          if True, attaches a :class:`MDAnalysis.coordinates.memory.MemoryReader`
           allowing coordinates to be set and written.  Default is False
         velocities : bool, optional
-          include velocities in the dummy Reader
+          include velocities in the :class:`MDAnalysis.coordinates.memory.MemoryReader`
         forces : bool, optional
-          include forces in the dummy Reader
+          include forces in the :class:`MDAnalysis.coordinates.memory.MemoryReader`
 
         Returns
         -------
@@ -433,6 +459,8 @@ class Universe(object):
         >>> u.add_TopologyAttr('masses')
 
         .. versionadded:: 0.17.0
+        .. versionchanged:: 0.19.0
+           The attached Reader when trajectory=True is now a MemoryReader
         """
         if n_residues is None:
             n_residues = 1
@@ -457,9 +485,15 @@ class Universe(object):
         u = cls(top)
 
         if trajectory:
-            u.trajectory = get_reader_for('', format='dummy')(
-                n_atoms=n_atoms,
-                velocities=velocities, forces=forces)
+            coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
+            dims = np.zeros(6, dtype=np.float64)
+            vels = np.zeros_like(coords) if velocities else None
+            forces = np.zeros_like(coords) if forces else None
+
+            # grab and attach a MemoryReader
+            u.trajectory = get_reader_for(coords)(
+                coords, order='fac', n_atoms=n_atoms,
+                dimensions=dims, velocities=vels, forces=forces)
 
         return u
 
@@ -582,7 +616,7 @@ class Universe(object):
         return self
 
     def transfer_to_memory(self, start=None, stop=None, step=None,
-                           verbose=None, quiet=None):
+                           verbose=False):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -606,29 +640,34 @@ class Universe(object):
         """
         from ..coordinates.memory import MemoryReader
 
-        verbose = _set_verbose(verbose, quiet, default=False)
-
         if not isinstance(self.trajectory, MemoryReader):
-            # Try to extract coordinates using Timeseries object
-            # This is significantly faster, but only implemented for certain
-            # trajectory file formats
-            try:
-                coordinates = self.trajectory.timeseries(
-                    self.atoms, start=start, stop=stop, step=step, order='fac')
-            # if the Timeseries extraction fails,
-            # fall back to a slower approach
-            except AttributeError:
-                n_frames = len(range(
-                    *self.trajectory.check_slice_indices(start, stop, step)
-                ))
-                pm_format = '{step}/{numsteps} frames copied to memory (frame {frame})'
-                pm = ProgressMeter(n_frames, interval=1,
-                                   verbose=verbose, format=pm_format)
-                coordinates = []  # TODO: use pre-allocated array
-                for i, ts in enumerate(self.trajectory[start:stop:step]):
-                    coordinates.append(np.copy(ts.positions))
-                    pm.echo(i, frame=ts.frame)
-                coordinates = np.array(coordinates)
+            n_frames = len(range(
+                *self.trajectory.check_slice_indices(start, stop, step)
+            ))
+            n_atoms = len(self.atoms)
+            pm_format = '{step}/{numsteps} frames copied to memory (frame {frame})'
+            pm = ProgressMeter(n_frames, interval=1,
+                               verbose=verbose, format=pm_format)
+            coordinates = np.zeros((n_frames, n_atoms, 3), dtype=np.float32)
+            ts = self.trajectory.ts
+            has_vels = ts.has_velocities
+            has_fors = ts.has_forces
+            has_dims = ts.dimensions is not None
+
+            velocities = np.zeros_like(coordinates) if has_vels else None
+            forces = np.zeros_like(coordinates) if has_fors else None
+            dimensions = (np.zeros((n_frames, 6), dtype=np.float64)
+                          if has_dims else None)
+
+            for i, ts in enumerate(self.trajectory[start:stop:step]):
+                np.copyto(coordinates[i], ts.positions)
+                if has_vels:
+                    np.copyto(velocities[i], ts.velocities)
+                if has_fors:
+                    np.copyto(forces[i], ts.forces)
+                if has_dims:
+                    np.copyto(dimensions[i], ts.dimensions)
+                pm.echo(i, frame=ts.frame)
 
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
@@ -637,9 +676,12 @@ class Universe(object):
                 step = 1
             self.trajectory = MemoryReader(
                 coordinates,
-                dimensions=self.trajectory.ts.dimensions,
+                dimensions=dimensions,
                 dt=self.trajectory.ts.dt * step,
-                filename=self.trajectory.filename)
+                filename=self.trajectory.filename,
+                velocities=velocities,
+                forces=forces,
+            )
 
     # python 2 doesn't allow an efficient splitting of kwargs in function
     # argument signatures.
@@ -959,58 +1001,14 @@ class Universe(object):
         .. versionchanged:: 0.16.0
            Fragment atoms are sorted by their index, and framgents are sorted
            by their first atom index so their order is predictable.
+        .. versionchanged:: 0.19.0
+           Uses faster C++ implementation
         """
-        bonds = self.atoms.bonds
+        atoms = self.atoms.ix
+        bonds = self.atoms.bonds.to_indices()
 
-        class _fragset(object):
-            __slots__ = ['ats']
-            """Normal sets aren't hashable, this is"""
-
-            def __init__(self, ats):
-                self.ats = set(ats)
-
-            def __iter__(self):
-                return iter(self.ats)
-
-            def add(self, other):
-                self.ats.add(other)
-
-            def update(self, other):
-                self.ats.update(other.ats)
-
-        # each atom starts with its own list
-        f = dict.fromkeys(self.atoms, None)
-
-        for a1, a2 in bonds:
-            if not (f[a1] or f[a2]):
-                # New set made here
-                new = _fragset([a1, a2])
-                f[a1] = f[a2] = new
-            elif f[a1] and not f[a2]:
-                # If a2 isn't in a fragment, add it to a1's
-                f[a1].add(a2)
-                f[a2] = f[a1]
-            elif not f[a1] and f[a2]:
-                # If a1 isn't in a fragment, add it to a2's
-                f[a2].add(a1)
-                f[a1] = f[a2]
-            elif f[a1] is f[a2]:
-                # If they're in the same fragment, do nothing
-                continue
-            else:
-                # If they are both in different fragments, combine fragments
-                f[a1].update(f[a2])
-                f.update(dict((a, f[a1]) for a in f[a2]))
-
-        # Lone atoms get their own fragment
-        f.update(dict((a, _fragset((a,)))
-                      for a, val in f.items() if not val))
-
-        # All the unique values in f are the fragments
-        frags = tuple(
-            [AtomGroup(np.sort(np.array([at.index for at in ag])), self)
-             for ag in set(f.values())],
-        )
+        frag_indices = find_fragments(atoms, bonds)
+        frags = tuple([AtomGroup(np.sort(ix), self) for ix in frag_indices])
 
         fragdict = {}
         for f in frags:

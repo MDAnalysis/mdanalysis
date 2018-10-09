@@ -51,6 +51,7 @@ import sys
 import shutil
 import tempfile
 import warnings
+import platform
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
@@ -66,7 +67,7 @@ else:
 
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.18.0"
+RELEASE = "0.19.0"
 
 is_release = 'dev' not in RELEASE
 
@@ -255,6 +256,12 @@ def extensions(config):
     if arch:
         extra_compile_args.append('-march={}'.format(arch))
 
+    cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
+    cpp_extra_compile_args.append('-std=c++11')
+    # needed to specify c++ runtime library on OSX
+    if platform.system() == 'Darwin':
+        cpp_extra_compile_args.append('-stdlib=libc++')
+
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
     largefile_macros = [
@@ -282,10 +289,17 @@ def extensions(config):
         print('Will not attempt to use Cython.')
 
     source_suffix = '.pyx' if use_cython else '.c'
+    cpp_source_suffix = '.pyx' if use_cython else '.cpp'
 
     # The callable is passed so that it is only evaluated at install time.
 
     include_dirs = [get_numpy_include]
+    # Windows automatically handles math library linking
+    # and will not build MDAnalysis if we try to specify one
+    if os.name == 'nt':
+        mathlib = []
+    else:
+        mathlib = ['m']
 
     libdcd = MDAExtension('MDAnalysis.lib.formats.libdcd',
                           ['MDAnalysis/lib/formats/libdcd' + source_suffix],
@@ -295,13 +309,13 @@ def extensions(config):
     distances = MDAExtension('MDAnalysis.lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
-                             libraries=['m'],
+                             libraries=mathlib,
                              define_macros=define_macros,
                              extra_compile_args=extra_compile_args)
     distances_omp = MDAExtension('MDAnalysis.lib.c_distances_openmp',
                                  ['MDAnalysis/lib/c_distances_openmp' + source_suffix],
                                  include_dirs=include_dirs + ['MDAnalysis/lib/include'],
-                                 libraries=['m'] + parallel_libraries,
+                                 libraries=mathlib + parallel_libraries,
                                  define_macros=define_macros + parallel_macros,
                                  extra_compile_args=parallel_args + extra_compile_args,
                                  extra_link_args=parallel_args)
@@ -312,7 +326,7 @@ def extensions(config):
                           extra_compile_args=extra_compile_args)
     transformation = MDAExtension('MDAnalysis.lib._transformations',
                                   ['MDAnalysis/lib/src/transformations/transformations.c'],
-                                  libraries=['m'],
+                                  libraries=mathlib,
                                   define_macros=define_macros,
                                   include_dirs=include_dirs,
                                   extra_compile_args=extra_compile_args)
@@ -333,6 +347,20 @@ def extensions(config):
                         include_dirs=include_dirs,
                         define_macros=define_macros,
                         extra_compile_args=extra_compile_args)
+    cutil = MDAExtension('MDAnalysis.lib._cutil',
+                         sources=['MDAnalysis/lib/_cutil' + cpp_source_suffix],
+                         language='c++',
+                         libraries=mathlib,
+                         include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                         define_macros=define_macros,
+                         extra_compile_args=cpp_extra_compile_args)
+    augment = MDAExtension('MDAnalysis.lib._augment',
+                         sources=['MDAnalysis/lib/_augment' + cpp_source_suffix],
+                         language='c++',
+                         include_dirs=include_dirs,
+                         define_macros=define_macros,
+                         extra_compile_args=cpp_extra_compile_args)
+
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
                                 sources=['MDAnalysis/analysis/encore/cutils' + source_suffix],
@@ -343,19 +371,26 @@ def extensions(config):
                                  sources=['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix,
                                           'MDAnalysis/analysis/encore/clustering/src/ap.c'],
                                  include_dirs=include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
-                                 libraries=["m"],
+                                 libraries=mathlib,
                                  define_macros=define_macros,
                                  extra_compile_args=extra_compile_args)
     spe_dimred = MDAExtension('MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed',
                               sources=['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix,
                                        'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
                               include_dirs=include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
-                              libraries=["m"],
+                              libraries=mathlib,
                               define_macros=define_macros,
                               extra_compile_args=extra_compile_args)
+    nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
+                             ['MDAnalysis/lib/nsgrid' + cpp_source_suffix],
+                             include_dirs=include_dirs,
+                             language='c++',
+                             define_macros=define_macros,
+                             extra_compile_args=cpp_extra_compile_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred]
+                ap_clustering, spe_dimred, cutil, augment, nsgrid]
+
 
     cython_generated = []
     if use_cython:
@@ -394,7 +429,7 @@ def dynamic_author_list():
         # authors". We first want move the cursor down to the title of
         # interest.
         for line_no, line in enumerate(infile, start=1):
-            if line[:-1] == "Chronological list of authors":
+            if line.rstrip() == "Chronological list of authors":
                 break
         else:
             # If we did not break, it means we did not find the authors.
@@ -458,35 +493,66 @@ if __name__ == '__main__':
         'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: C',
+        'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Topic :: Scientific/Engineering :: Chemistry',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]
-
     config = Config()
     exts, cythonfiles = extensions(config)
 
+    install_requires = [
+          'numpy>=1.10.4',
+          'biopython>=1.71',
+          'networkx>=1.0',
+          'GridDataFormats>=0.4.0',
+          'six>=1.4.0',
+          'mmtf-python>=1.0.0',
+          'joblib',
+          'scipy>=1.0.0',
+          'matplotlib>=1.5.1',
+          'mock',
+    ]
+    if not os.name == 'nt':
+        install_requires.append('gsd>=1.4.0')
+
     setup(name='MDAnalysis',
           version=RELEASE,
-          description='An object-oriented toolkit to analyze molecular dynamics '
-          'trajectories generated by CHARMM, Gromacs, NAMD, LAMMPS, or Amber.',
+          description=('An object-oriented toolkit to analyze molecular dynamics '
+                       'trajectories generated by CHARMM, Gromacs, NAMD, LAMMPS, or Amber.'),
           long_description=LONG_DESCRIPTION,
+          long_description_content_type='text/x-rst',
           author='Naveen Michaud-Agrawal',
           author_email='naveen.michaudagrawal@gmail.com',
           maintainer='Richard Gowers',
           maintainer_email='mdnalysis-discussion@googlegroups.com',
           url='https://www.mdanalysis.org',
           download_url='https://github.com/MDAnalysis/mdanalysis/releases',
-          provides=['MDAnalysis'],
+          project_urls={'Documentation': 'https://www.mdanalysis.org/docs/',
+                        'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
+                        'User Group': 'https://groups.google.com/forum/#!forum/mdnalysis-discussion',
+                        'Source': 'https://github.com/mdanalysis/mdanalysis',
+                        },
           license='GPL 2',
-          packages=find_packages(),
-          ext_modules=exts,
           classifiers=CLASSIFIERS,
+          provides=['MDAnalysis'],
+          packages=find_packages(),
+          package_data={'MDAnalysis':
+                        ['analysis/data/*.npy',
+                        ],
+          },
+          ext_modules=exts,
           requires=['numpy (>=1.10.4)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
                     'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)'],
@@ -495,19 +561,7 @@ if __name__ == '__main__':
           setup_requires=[
               'numpy>=1.10.4',
           ],
-          install_requires=[
-              'gsd>=1.4.0',
-              'numpy>=1.10.4',
-              'biopython>=1.71',
-              'networkx>=1.0',
-              'GridDataFormats>=0.4.0',
-              'six>=1.4.0',
-              'mmtf-python>=1.0.0',
-              'joblib',
-              'scipy>=1.0.0',
-              'matplotlib>=1.5.1',
-              'mock',
-          ],
+          install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
           # packaging system

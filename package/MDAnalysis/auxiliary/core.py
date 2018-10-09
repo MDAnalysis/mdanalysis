@@ -105,4 +105,3 @@ def auxreader(auxdata, format=None, **kwargs):
     """
     reader = get_auxreader_for(auxdata, format=format)
     return reader(auxdata, **kwargs)
-
