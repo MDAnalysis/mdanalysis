@@ -109,6 +109,7 @@ Containers and lists
 .. autofunction:: asiterable
 .. autofunction:: hasmethod
 .. autoclass:: Namespace
+.. autofunction:: unique_int_1d(values)
 
 File parsing
 ------------
@@ -116,7 +117,6 @@ File parsing
 .. autoclass:: FORTRANReader
    :members:
 .. autodata:: FORTRAN_format_regex
-
 
 Data manipulation and handling
 ------------------------------
@@ -131,11 +131,24 @@ Strings
 .. autofunction:: parse_residue
 .. autofunction:: conv_float
 
-
 Class decorators
 ----------------
 
 .. autofunction:: cached
+
+Function decorators
+-------------------
+
+.. autofunction:: static_variables
+.. autofunction:: warn_if_not_unique
+.. autofunction:: check_coords
+
+Code management
+---------------
+
+.. autofunction:: deprecate
+.. autoclass:: _Deprecate
+.. autofunction:: dedent_docstring
 
 .. Rubric:: Footnotes
 
@@ -149,8 +162,6 @@ Class decorators
    order to make :meth:`NamedStream.close` actually close the
    underlying stream and ``NamedStream.close(force=True)`` will also
    close it.
-
-
 """
 from __future__ import division, absolute_import
 import six
@@ -170,13 +181,18 @@ import re
 import io
 import warnings
 import collections
+import functools
 from functools import wraps
+import textwrap
+
 import mmtf
 import numpy as np
-import functools
-from numpy.testing import assert_equal
 
-from ..exceptions import StreamWarning
+from numpy.testing import assert_equal
+import inspect
+
+from ..exceptions import StreamWarning, DuplicateWarning
+from ._cutil import unique_int_1d
 
 
 # Python 3.0, 3.1 do not have the builtin callable()
@@ -1562,28 +1578,29 @@ def unique_rows(arr, return_index=False):
 
 
 def blocks_of(a, n, m):
-    """Extract a view of (n, m) blocks along the diagonal of the array `a`
+    """Extract a view of ``(n, m)`` blocks along the diagonal of the array `a`.
 
     Parameters
     ----------
-    a : array_like
-        starting array
+    a : numpy.ndarray
+        Input array, must be C contiguous and at least 2D.
     n : int
-        size of block in first dimension
+        Size of block in first dimension.
     m : int
-        size of block in second dimension
+        Size of block in second dimension.
 
     Returns
     -------
-    (nblocks, n, m) : tuple
-          view of the original array, where nblocks is the number of times the
-          miniblock fits in the original.
+    view : numpy.ndarray
+        A view of the original array with shape ``(nblocks, n, m)``, where
+        ``nblocks`` is the number of times the miniblocks of shape ``(n, m)``
+        fit in the original.
 
     Raises
     ------
     ValueError
         If the supplied `n` and `m` don't divide `a` into an integer number
-        of blocks.
+        of blocks or if `a` is not C contiguous.
 
     Examples
     --------
@@ -1598,9 +1615,11 @@ def blocks_of(a, n, m):
 
     Notes
     -----
-    n, m must divide a into an identical integer number of blocks.
+    `n`, `m` must divide `a` into an identical integer number of blocks. Please
+    note that if the block size is larger than the input array, this number will
+    be zero, resulting in an empty view!
 
-    Uses strides so probably requires that the array is C contiguous.
+    Uses strides and therefore requires that the array is C contiguous.
 
     Returns a view, so editing this modifies the original array.
 
@@ -1611,6 +1630,8 @@ def blocks_of(a, n, m):
     # based on:
     # http://stackoverflow.com/a/10862636
     # but generalised to handle non square blocks.
+    if not a.flags['C_CONTIGUOUS']:
+        raise ValueError("Input array is not C contiguous.")
 
     nblocks = a.shape[0] // n
     nblocks2 = a.shape[1] // m
@@ -1693,8 +1714,9 @@ def flatten_dict(d, parent_key=tuple()):
 
     Note
     -----
-    Based on https://stackoverflow.com/a/6027615/ by user https://stackoverflow.com/users/1897/imran
-    
+    Based on https://stackoverflow.com/a/6027615/
+    by user https://stackoverflow.com/users/1897/imran
+
     .. versionadded:: 0.18.0
     """
 
@@ -1709,3 +1731,527 @@ def flatten_dict(d, parent_key=tuple()):
         else:
             items.append((new_key, v))
     return dict(items)
+
+
+def static_variables(**kwargs):
+    """Decorator equipping functions or methods with static variables.
+
+    Static variables are declared and initialized by supplying keyword arguments
+    and initial values to the decorator.
+
+    Example
+    -------
+
+    >>> @static_variables(msg='foo calls', calls=0)
+    ... def foo():
+    ...     foo.calls += 1
+    ...     print("{}: {}".format(foo.msg, foo.calls))
+    ...
+    >>> foo()
+    foo calls: 1
+    >>> foo()
+    foo calls: 2
+
+
+    .. note:: Based on https://stackoverflow.com/a/279586
+        by `Claudiu <https://stackoverflow.com/users/15055/claudiu>`_
+
+    .. versionadded:: 0.19.0
+    """
+    def static_decorator(func):
+        for kwarg in kwargs:
+            setattr(func, kwarg, kwargs[kwarg])
+        return func
+    return static_decorator
+
+
+# In a lot of Atom/Residue/SegmentGroup methods such as center_of_geometry() and
+# the like, results are biased if the calling group is not unique, i.e., if it
+# contains duplicates.
+# We therefore raise a `DuplicateWarning` whenever an affected method is called
+# from a non-unique group. Since several of the affected methods involve calls
+# to other affected methods, simply raising a warning in every affected method
+# would potentially lead to a massive amount of warnings. This is exactly where
+# the `warn_if_unique` decorator below comes into play. It ensures that a
+# warning is only raised once for a method using this decorator, and suppresses
+# all such warnings that would potentially be raised in methods called by that
+# method. Of course, as it is generally the case with Python warnings, this is
+# *not threadsafe*.
+
+@static_variables(warned=False)
+def warn_if_not_unique(groupmethod):
+    """Decorator triggering a :class:`~MDAnalysis.exceptions.DuplicateWarning`
+    if the underlying group is not unique.
+
+    Assures that during execution of the decorated method only the first of
+    potentially multiple warnings concerning the uniqueness of groups is shown.
+
+    Raises
+    ------
+    :class:`~MDAnalysis.exceptions.DuplicateWarning`
+        If the :class:`~MDAnalysis.core.groups.AtomGroup`,
+        :class:`~MDAnalysis.core.groups.ResidueGroup`, or
+        :class:`~MDAnalysis.core.groups.SegmentGroup` of which the decorated
+        method is a member contains duplicates.
+
+
+    .. versionadded:: 0.19.0
+    """
+    @wraps(groupmethod)
+    def wrapper(group, *args, **kwargs):
+        # Proceed as usual if the calling group is unique or a DuplicateWarning
+        # has already been thrown:
+        if group.isunique or warn_if_not_unique.warned:
+            return groupmethod(group, *args, **kwargs)
+        # Otherwise, throw a DuplicateWarning and execute the method.
+        method_name = ".".join((group.__class__.__name__, groupmethod.__name__))
+        # Try to get the group's variable name(s):
+        caller_locals = inspect.currentframe().f_back.f_locals.items()
+        group_names = []
+        for name, obj in caller_locals:
+            try:
+                if obj is group:
+                    group_names.append("'{}'".format(name))
+            except:
+                pass
+        if not group_names:
+            group_name = "'unnamed {}'".format(group.__class__.__name__)
+        elif len(group_names) == 1:
+            group_name = group_names[0]
+        else:
+            group_name = " a.k.a. ".join(sorted(group_names))
+        group_repr = repr(group)
+        msg = ("{}(): {} {} contains duplicates. Results might be biased!"
+               "".format(method_name, group_name, group_repr))
+        warnings.warn(message=msg, category=DuplicateWarning, stacklevel=2)
+        warn_if_not_unique.warned = True
+        try:
+            result = groupmethod(group, *args, **kwargs)
+        finally:
+            warn_if_not_unique.warned = False
+        return result
+    return wrapper
+
+
+def check_coords(*coord_names, **options):
+    """Decorator for automated coordinate array checking.
+
+    This decorator is intended for use especially in
+    :mod:`MDAnalysis.lib.distances`.
+    It takes an arbitrary number of positional arguments which must correspond
+    to names of positional arguments of the decorated function.
+    It then checks if the corresponding values are valid coordinate arrays.
+    If all these arrays are single coordinates (i.e., their shape is ``(3,)``),
+    the decorated function can optionally return a single coordinate (or angle)
+    instead of an array of coordinates (or angles). This can be used to enable
+    computations of single observables using functions originally designed to
+    accept only 2-d coordinate arrays.
+
+    The checks performed on each individual coordinate array are:
+
+    * Check that coordinate arrays are of type :class:`numpy.ndarray`.
+    * Check that coordinate arrays have a shape of ``(n, 3)`` (or ``(3,)`` if
+      single coordinates are allowed; see keyword argument `allow_single`).
+    * Automatic dtype conversion to ``numpy.float32``.
+    * Optional replacement by a copy; see keyword argument `enforce_copy` .
+    * If coordinate arrays aren't C-contiguous, they will be automatically
+      replaced by a C-contiguous copy.
+    * Optional check for equal length of all coordinate arrays; see optional
+      keyword argument `check_lengths_match`.
+
+    Parameters
+    ----------
+    *coord_names : tuple
+        Arbitrary number of strings corresponding to names of positional
+        arguments of the decorated function.
+    **options : dict, optional
+        * **enforce_copy** (:class:`bool`, optional) -- Enforce working on a
+          copy of the coordinate arrays. This is useful to ensure that the input
+          arrays are left unchanged. Default: ``True``
+        * **allow_single** (:class:`bool`, optional) -- Allow the input
+          coordinate array to be a single coordinate with shape ``(3,)``.
+        * **convert_single** (:class:`bool`, optional) -- If ``True``, single
+          coordinate arrays will be converted to have a shape of ``(1, 3)``.
+          Only has an effect if `allow_single` is ``True``. Default: ``True``
+        * **reduce_result_if_single** (:class:`bool`, optional) -- If ``True``
+          and *all* input coordinates are single, a decorated function ``func``
+          will return ``func()[0]`` instead of ``func()``. Only has an effect if
+          `allow_single` is ``True``. Default: ``True``
+        * **check_lengths_match** (:class:`bool`, optional) -- If ``True``, a
+          :class:`ValueError` is raised if not all coordinate arrays contain the
+          same number of coordinates. Default: ``True``
+
+    Raises
+    ------
+    ValueError
+        If the decorator is used without positional arguments (for development
+        purposes only).
+
+        If any of the positional arguments supplied to the decorator doesn't
+        correspond to a name of any of the decorated function's positional
+        arguments.
+
+        If any of the coordinate arrays has a wrong shape.
+    TypeError
+        If any of the coordinate arrays is not a :class:`numpy.ndarray`.
+
+        If the dtype of any of the coordinate arrays is not convertible to
+          ``numpy.float32``.
+
+    Example
+    -------
+
+    >>> @check_coords('coords1', 'coords2')
+    ... def coordsum(coords1, coords2):
+    ...     assert coords1.dtype == np.float32
+    ...     assert coords2.flags['C_CONTIGUOUS']
+    ...     return coords1 + coords2
+    ...
+    >>> # automatic dtype conversion:
+    >>> coordsum(np.zeros(3, dtype=np.int64), np.ones(3))
+    array([1., 1., 1.], dtype=float32)
+    >>>
+    >>> # automatic handling of non-contiguous arrays:
+    >>> coordsum(np.zeros(3), np.ones(6)[::2])
+    array([1., 1., 1.], dtype=float32)
+    >>>
+    >>> # automatic shape checking:
+    >>> coordsum(np.zeros(3), np.ones(6))
+    ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).
+
+
+    .. versionadded:: 0.19.0
+    """
+    enforce_copy = options.get('enforce_copy', True)
+    allow_single = options.get('allow_single', True)
+    convert_single = options.get('convert_single', True)
+    reduce_result_if_single = options.get('reduce_result_if_single', True)
+    check_lengths_match = options.get('check_lengths_match',
+                                     len(coord_names) > 1)
+    if not coord_names:
+        raise ValueError("Decorator check_coords() cannot be used without "
+                         "positional arguments.")
+    def check_coords_decorator(func):
+        fname = func.__name__
+        code = func.__code__
+        argnames = code.co_varnames
+        nargs = len(code.co_varnames)
+        ndefaults = len(func.__defaults__) if func.__defaults__ else 0
+        # Create a tuple of positional argument names:
+        nposargs = code.co_argcount - ndefaults
+        posargnames = argnames[:nposargs]
+        # The check_coords() decorator is designed to work only for positional
+        # arguments:
+        for name in coord_names:
+            if name not in posargnames:
+                raise ValueError("In decorator check_coords(): Name '{}' "
+                                 "doesn't correspond to any positional "
+                                 "argument of the decorated function {}()."
+                                 "".format(name, func.__name__))
+
+        def _check_coords(coords, argname):
+            if not isinstance(coords, np.ndarray):
+                raise TypeError("{}(): Parameter '{}' must be a numpy.ndarray, "
+                                "got {}.".format(fname, argname, type(coords)))
+            is_single = False
+            if allow_single:
+                if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
+                    raise ValueError("{}(): {}.shape must be (3,) or (n, 3), "
+                                     "got {}.".format(fname, argname,
+                                                      coords.shape))
+                if coords.ndim == 1:
+                    is_single = True
+                    if convert_single:
+                        coords = coords[None, :]
+            else:
+                if (coords.ndim != 2) or (coords.shape[1] != 3):
+                    raise ValueError("{}(): {}.shape must be (n, 3), got {}."
+                                     "".format(fname, argname, coords.shape))
+            try:
+                coords = coords.astype(np.float32, order='C', copy=enforce_copy)
+            except ValueError:
+                raise TypeError("{}(): {}.dtype must be convertible to float32,"
+                                " got {}.".format(fname, argname, coords.dtype))
+            return coords, is_single
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # Check for invalid function call:
+            if len(args) != nposargs:
+                # set marker for testing purposes:
+                wrapper._invalid_call = True
+                if len(args) > nargs:
+                    # too many arguments, invoke call:
+                    return func(*args, **kwargs)
+                for name in posargnames[:len(args)]:
+                    if name in kwargs:
+                        # duplicate argument, invoke call:
+                        return func(*args, **kwargs)
+                for name in posargnames[len(args):]:
+                    if name not in kwargs:
+                        # missing argument, invoke call:
+                        return func(*args, **kwargs)
+                for name in kwargs:
+                    if name not in argnames:
+                        # unexpected kwarg, invoke call:
+                        return func(*args, **kwargs)
+                # call is valid, unset test marker:
+                wrapper._invalid_call = False
+            args = list(args)
+            ncoords = []
+            all_single = allow_single
+            for name in coord_names:
+                idx = posargnames.index(name)
+                if idx < len(args):
+                    args[idx], is_single = _check_coords(args[idx], name)
+                    all_single &= is_single
+                    ncoords.append(args[idx].shape[0])
+                else:
+                    kwargs[name], is_single = _check_coords(kwargs[name],
+                                                            name)
+                    all_single &= is_single
+                    ncoords.append(kwargs[name].shape[0])
+            if check_lengths_match and ncoords:
+                if ncoords.count(ncoords[0]) != len(ncoords):
+                    raise ValueError("{}(): {} must contain the same number of "
+                                     "coordinates, got {}."
+                                     "".format(fname, ", ".join(coord_names),
+                                               ncoords))
+            # If all input coordinate arrays were 1-d, so should be the output:
+            if all_single and reduce_result_if_single:
+                return func(*args, **kwargs)[0]
+            return func(*args, **kwargs)
+        return wrapper
+    return check_coords_decorator
+
+
+#------------------------------------------------------------------
+#
+# our own deprecate function, derived from numpy (see
+# https://github.com/MDAnalysis/mdanalysis/pull/1763#issuecomment-403231136)
+#
+# From numpy/lib/utils.py 1.14.5 (used under the BSD 3-clause licence,
+# https://www.numpy.org/license.html#license) and modified
+
+def _set_function_name(func, name):
+    func.__name__ = name
+    return func
+
+class _Deprecate(object):
+    """
+    Decorator class to deprecate old functions.
+
+    Refer to `deprecate` for details.
+
+    See Also
+    --------
+    deprecate
+
+
+    .. versionadded:: 0.19.0
+    """
+
+    def __init__(self, old_name=None, new_name=None,
+                 release=None, remove=None, message=None):
+        self.old_name = old_name
+        self.new_name = new_name
+        if release is None:
+            raise ValueError("deprecate: provide release in which "
+                             "feature was deprecated.")
+        self.release = str(release)
+        self.remove = str(remove) if remove is not None else remove
+        self.message = message
+
+    def __call__(self, func, *args, **kwargs):
+        """
+        Decorator call.  Refer to ``decorate``.
+
+        """
+        old_name = self.old_name
+        new_name = self.new_name
+        message = self.message
+        release = self.release
+        remove = self.remove
+
+        if old_name is None:
+            try:
+                old_name = func.__name__
+            except AttributeError:
+                old_name = func.__name__
+        if new_name is None:
+            depdoc = "`{0}` is deprecated!".format(old_name)
+        else:
+            depdoc = "`{0}` is deprecated, use `{1}` instead!".format(
+                old_name, new_name)
+
+        warn_message = depdoc
+
+        remove_text = ""
+        if remove is not None:
+            remove_text = "`{0}` will be removed in release {1}.".format(
+                old_name, remove)
+            warn_message += "\n" + remove_text
+        if message is not None:
+            warn_message += "\n" + message
+
+        def newfunc(*args, **kwds):
+            """This function is deprecated."""
+            warnings.warn(warn_message, DeprecationWarning, stacklevel=2)
+            return func(*args, **kwds)
+
+        newfunc = _set_function_name(newfunc, old_name)
+
+        # Build the doc string
+        # First line: func is deprecated, use newfunc instead!
+        # Normal docs follows.
+        # Last: .. deprecated::
+
+        # make sure that we do not mess up indentation, otherwise sphinx
+        # docs do not build properly
+        try:
+            doc = dedent_docstring(func.__doc__)
+        except TypeError:
+            doc = ""
+
+        deprecation_text = dedent_docstring("""\n\n
+        .. deprecated:: {0}
+           {1}
+           {2}
+        """.format(release,
+                   message if message else depdoc,
+                   remove_text))
+
+        doc = "{0}\n\n{1}\n{2}\n".format(depdoc, doc, deprecation_text)
+
+        newfunc.__doc__ = doc
+        try:
+            d = func.__dict__
+        except AttributeError:
+            pass
+        else:
+            newfunc.__dict__.update(d)
+        return newfunc
+
+def deprecate(*args, **kwargs):
+    """Issues a DeprecationWarning, adds warning to `old_name`'s
+    docstring, rebinds ``old_name.__name__`` and returns the new
+    function object.
+
+    This function may also be used as a decorator.
+
+    It adds a restructured text ``.. deprecated:: release`` block with
+    the sphinx deprecated role to the end of the docs. The `message`
+    is added under the deprecation block and contains the `release` in
+    which the function was deprecated.
+
+    Parameters
+    ----------
+    func : function
+        The function to be deprecated.
+    old_name : str, optional
+        The name of the function to be deprecated. Default is None, in
+        which case the name of `func` is used.
+    new_name : str, optional
+        The new name for the function. Default is None, in which case the
+        deprecation message is that `old_name` is deprecated. If given, the
+        deprecation message is that `old_name` is deprecated and `new_name`
+        should be used instead.
+    release : str
+        Release in which the function was deprecated. This is given as
+        a keyword argument for technical reasons but is required; a
+        :exc:`ValueError` is raised if it is missing.
+    remove : str, optional
+        Release for which removal of the feature is planned.
+    message : str, optional
+        Additional explanation of the deprecation.  Displayed in the
+        docstring after the warning.
+
+    Returns
+    -------
+    old_func : function
+        The deprecated function.
+
+    Examples
+    --------
+    When :func:`deprecate` is used as a function as in the following
+    example,
+
+    .. code-block:: python
+
+       oldfunc = deprecate(func, release="0.19.0", remove="1.0",
+                           message="Do it yourself instead.")
+
+    then ``oldfunc`` will return a value after printing
+    :exc:`DeprecationWarning`; ``func`` is still available as it was
+    before.
+
+    When used as a decorator, ``func`` will be changed and issue the
+    warning and contain the deprecation note in the do string.
+
+    .. code-block:: python
+
+       @deprecate(release="0.19.0", remove="1.0",
+                  message="Do it yourself instead.")
+       def func():
+           \"\"\"Just pass\"\"\"
+           pass
+
+    The resulting doc string (``help(func)``) will look like:
+
+    .. code-block:: reST
+
+       `func` is deprecated!
+
+       Just pass.
+
+       .. deprecated:: 0.19.0
+          Do it yourself instead.
+          `func` will be removed in 1.0.
+
+    (It is possible but confusing to change the name of ``func`` with
+    the decorator so it is not recommended to use the `new_func`
+    keyword argument with the decorator.)
+
+    .. versionadded:: 0.19.0
+
+    """
+    # Deprecate may be run as a function or as a decorator
+    # If run as a function, we initialise the decorator class
+    # and execute its __call__ method.
+
+    if args:
+        fn = args[0]
+        args = args[1:]
+        return _Deprecate(*args, **kwargs)(fn)
+    else:
+        return _Deprecate(*args, **kwargs)
+#
+#------------------------------------------------------------------
+
+def dedent_docstring(text):
+    """Dedent typical python doc string.
+
+    Parameters
+    ----------
+    text : str
+        string, typically something like ``func.__doc__``.
+
+    Returns
+    -------
+    str
+        string with the leading common whitespace removed from each
+        line
+
+    See Also
+    --------
+    textwrap.dedent
+
+
+    .. versionadded:: 0.19.0
+    """
+    lines = text.splitlines()
+    if len(lines) < 2:
+        return text.lstrip()
+
+    # treat first line as special (typically no leading whitespace!) which messes up dedent
+    return lines[0].lstrip() + "\n" + textwrap.dedent("\n".join(lines[1:]))

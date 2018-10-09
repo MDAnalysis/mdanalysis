@@ -48,7 +48,7 @@ import warnings
 from numpy.lib.utils import deprecate
 
 from . import flags
-from ..lib.util import cached, convert_aa_code, iterable
+from ..lib.util import cached, convert_aa_code, iterable, warn_if_not_unique
 from ..lib import transformations, mdamath
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
@@ -198,6 +198,8 @@ class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
         name for the attribute on a singular object (Atom/Residue/Segment)
     per_object : str
         If there is a strict mapping between Component and Attribute
+    dtype : int/float/object
+        Type to coerce this attribute to be.  For string use 'object'
     top : Topology
         handle for the Topology object TopologyAttr is associated with
 
@@ -211,9 +213,13 @@ class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
 
     groupdoc = None
     singledoc = None
+    dtype = None
 
     def __init__(self, values, guessed=False):
-        self.values = values
+        if self.dtype is None:
+            self.values = values
+        else:
+            self.values = np.asarray(values, dtype=self.dtype)
         self._guessed = guessed
 
     @staticmethod
@@ -244,6 +250,9 @@ class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
         """
         if values is None:
             values = cls._gen_initial_values(n_atoms, n_residues, n_segments)
+        elif cls.dtype is not None:
+            # if supplied starting values and statically typed
+            values = np.asarray(values, dtype=cls.dtype)
         return cls(values)
 
     def copy(self):
@@ -450,6 +459,7 @@ class Atomids(AtomAttr):
     attrname = 'ids'
     singular = 'id'
     per_object = 'atom'
+    dtype = int
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -463,6 +473,7 @@ class Atomnames(AtomAttr):
     attrname = 'names'
     singular = 'name'
     per_object = 'atom'
+    dtype = object
     transplants = defaultdict(list)
 
     @staticmethod
@@ -627,6 +638,7 @@ class Atomtypes(AtomAttr):
     attrname = 'types'
     singular = 'type'
     per_object = 'atom'
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -638,6 +650,7 @@ class Elements(AtomAttr):
     """Element for each atom"""
     attrname = 'elements'
     singular = 'element'
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -650,6 +663,7 @@ class Radii(AtomAttr):
     attrname = 'radii'
     singular = 'radius'
     per_object = 'atom'
+    dtype = float
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -698,6 +712,7 @@ class ChainIDs(AtomAttr):
     attrname = 'chainIDs'
     singular = 'chainID'
     per_object = 'atom'
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -709,6 +724,7 @@ class Tempfactors(AtomAttr):
     attrname = 'tempfactors'
     singular = 'tempfactor'
     per_object = 'atom'
+    dtype = float
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -722,6 +738,7 @@ class Masses(AtomAttr):
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
+    dtype = np.float64
 
     groupdoc = """Mass of each component in the Group.
 
@@ -732,10 +749,6 @@ class Masses(AtomAttr):
     """
 
     singledoc = """Mass of the component."""
-
-    def __init__(self, values, guessed=False):
-        self.values = np.asarray(values, dtype=np.float64)
-        self._guessed = guessed
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -767,19 +780,41 @@ class Masses(AtomAttr):
 
         return masses
 
-    def center_of_mass(group, pbc=None):
-        """Center of mass of the Group.
+    @warn_if_not_unique
+    def center_of_mass(group, pbc=None, compound='group'):
+        """Center of mass of (compounds of) the group.
+
+        Computes the center of mass of atoms in the group.
+        Centers of mass per residue or per segment can be obtained by setting
+        the `compound` parameter accordingly.
 
         Parameters
         ----------
         pbc : bool, optional
-            If ``True``, move all atoms within the primary unit cell before
-            calculation. [``False``]
+            If ``True`` and `compound` is 'group', move all atoms to the primary
+            unit cell before calculation.
+            If ``True`` and `compound` is 'segments' or 'residues', the centers
+            of mass of each compound will be calculated without moving any
+            atoms to keep the compounds intact. Instead, the resulting
+            center-of-mass position vectors will be moved to the primary unit
+            cell after calculation.
+        compound : {'group', 'segments', 'residues'}, optional
+            If 'group', the center of mass of all atoms in the atomgroup will
+            be returned as a single position vector. Else, the centers of mass
+            of each segment or residue will be returned as an array of position
+            vectors, i.e. a 2d array. Note that, in any case, *only* the
+            positions of atoms *belonging to the atomgroup* will be
+            taken into account.
 
         Returns
         -------
-        center : ndarray
-            center of group given masses as weights
+        center : numpy.ndarray
+            Position vector(s) of the center(s) of mass of the group.
+            If `compound` was set to 'group', the output will be a single
+            position vector.
+            If `compound` was set to 'segments' or 'residues', the output will
+            be a 2d array of shape ``(n, 3)`` where ``n`` is the number
+            compounds.
 
         Note
         ----
@@ -788,13 +823,15 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added `pbc` parameter
+        .. versionchanged:: 0.19.0 Added `compound` parameter
         """
-        return group.atoms.center(weights=group.atoms.masses,
-                                  pbc=pbc)
+        atoms = group.atoms
+        return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound)
 
     transplants[GroupBase].append(
         ('center_of_mass', center_of_mass))
 
+    @warn_if_not_unique
     def total_mass(group):
         """Total mass of the Group.
 
@@ -804,6 +841,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('total_mass', total_mass))
 
+    @warn_if_not_unique
     def moment_of_inertia(group, **kwargs):
         """Tensor moment of inertia relative to center of mass as 3x3 numpy
         array.
@@ -862,6 +900,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('moment_of_inertia', moment_of_inertia))
 
+    @warn_if_not_unique
     def radius_of_gyration(group, **kwargs):
         """Radius of gyration.
 
@@ -898,6 +937,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('radius_of_gyration', radius_of_gyration))
 
+    @warn_if_not_unique
     def shape_parameter(group, **kwargs):
         """Shape parameter.
 
@@ -951,6 +991,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('shape_parameter', shape_parameter))
 
+    @warn_if_not_unique
     def asphericity(group, pbc=None):
         """Asphericity.
 
@@ -1011,6 +1052,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('asphericity', asphericity))
 
+    @warn_if_not_unique
     def principal_axes(group, pbc=None):
         """Calculate the principal axes from the moment of inertia.
 
@@ -1092,6 +1134,7 @@ class Charges(AtomAttr):
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
+    dtype = float
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1121,6 +1164,7 @@ class Charges(AtomAttr):
 
         return charges
 
+    @warn_if_not_unique
     def total_charge(group):
         """Total charge of the Group.
 
@@ -1137,6 +1181,7 @@ class Bfactors(AtomAttr):
     attrname = 'bfactors'
     singular = 'bfactor'
     per_object = 'atom'
+    dtype = float
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1148,6 +1193,7 @@ class Occupancies(AtomAttr):
     attrname = 'occupancies'
     singular = 'occupancy'
     per_object = 'atom'
+    dtype = float
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1160,6 +1206,7 @@ class AltLocs(AtomAttr):
     attrname = 'altLocs'
     singular = 'altLoc'
     per_object = 'atom'
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1205,6 +1252,7 @@ class Resids(ResidueAttr):
     attrname = 'resids'
     singular = 'resid'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
+    dtype = int
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1217,6 +1265,7 @@ class Resnames(ResidueAttr):
     singular = 'resname'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
     transplants = defaultdict(list)
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1378,6 +1427,7 @@ class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
+    dtype = int
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1388,6 +1438,7 @@ class ICodes(ResidueAttr):
     """Insertion code for Atoms"""
     attrname = 'icodes'
     singular = 'icode'
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1402,6 +1453,7 @@ class Moltypes(ResidueAttr):
     attrname = 'moltypes'
     singular = 'moltype'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
+    dtype = object
 
 
 class Molnums(ResidueAttr):
@@ -1412,7 +1464,7 @@ class Molnums(ResidueAttr):
     attrname = 'molnums'
     singular = 'molnum'
     target_classes = [AtomGroup, ResidueGroup, Atom, Residue]
-
+    dtype = int
 
 # segment attributes
 
@@ -1454,6 +1506,7 @@ class Segids(SegmentAttr):
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):

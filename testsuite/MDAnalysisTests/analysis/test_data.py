@@ -20,28 +20,13 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-import os
+
+from numpy.testing import assert_equal
 import pytest
 
-# environment variable DUECREDIT_ENABLE is set to yes in MDAnalysisTests/__init__.py
-# (if set to 'no', the tests will be SKIPPED; has to be yes, true, or 1 for duecredit
-# to work; duecredit must also be installed)
-import MDAnalysis as mda
-
-
-@pytest.mark.skipif((os.environ.get('DUECREDIT_ENABLE', 'yes').lower()
-                     in ('no', '0', 'false')),
-                    reason=
-                    "duecredit is explicitly disabled with DUECREDIT_ENABLE=no")
-class TestDuecredits(object):
-
-    def test_duecredit_active(self):
-        assert mda.due.active == True
-
-
-    def test_duecredit_collector_citations(self):
-
-        assert mda.due.citations[('MDAnalysis/',
-                                  'gowers2016')].cites_module == True
-        assert mda.due.citations[('MDAnalysis/',
-                                  '10.1002/jcc.21787')].cites_module == True
+def test_all_exports():
+    from MDAnalysis.analysis.data import filenames
+    missing = [name for name in dir(filenames)
+               if
+               not name.startswith('_') and name not in filenames.__all__ and name != 'absolute_import']
+    assert_equal(missing, [], err_msg="Variables need to be added to __all__.")

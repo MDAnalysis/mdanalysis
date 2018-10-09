@@ -25,11 +25,13 @@ import pytest
 from numpy.testing import assert_equal
 import numpy as np
 
+import MDAnalysis as mda
 from MDAnalysis.topology import guessers
 from MDAnalysis.core.topologyattrs import Angles
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.core.test_fragments import make_starshape
+from MDAnalysisTests.datafiles import two_water_gro
 
 
 class TestGuessMasses(object):
@@ -99,3 +101,12 @@ def test_guess_impropers():
 
     vals = guessers.guess_improper_dihedrals(ag.angles)
     assert_equal(len(vals), 12)
+
+
+def test_guess_bonds():
+    u = mda.Universe(two_water_gro)
+    bonds = guessers.guess_bonds(u.atoms, u.atoms.positions, u.dimensions)
+    assert_equal(bonds, ((0, 1),
+                         (0, 2),
+                         (3, 4),
+                         (3, 5)))

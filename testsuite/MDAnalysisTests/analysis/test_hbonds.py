@@ -28,7 +28,10 @@ import itertools
 import pytest
 from MDAnalysis import SelectionError
 
-from numpy.testing import assert_equal, assert_array_equal, assert_almost_equal, assert_array_almost_equal,assert_allclose
+from numpy.testing import (
+    assert_equal, assert_array_equal, assert_almost_equal,
+    assert_array_almost_equal, assert_allclose,
+)
 import numpy as np
 
 
@@ -140,6 +143,40 @@ ATOM      2  OW  SOL     2       3.024   4.456   4.147  1.00  0.00      SYST H 0
 
         t = h.timesteps_by_type()
         assert_equal(t.time, values['num_bb_hbonds'] * [0.0])
+
+class TestHydrogenBondAnalysisPBC(TestHydrogenBondAnalysis):
+    # This system is identical to above class
+    # But has a box introduced, and atoms moved into neighbouring images
+    # The results however should remain identical if PBC is used
+    # If pbc:True in kwargs is changed, these tests should fail
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        u = MDAnalysis.Universe(PDB_helix)
+        # transfer to memory to changes to coordinates are reset
+        u.transfer_to_memory()
+        # place in huge oversized box
+        # real system is about 30A wide at most
+        boxsize = 150.
+        box = np.array([boxsize, boxsize, boxsize, 90., 90., 90.])
+        u.dimensions = box
+
+        # then scatter the atoms throughout various images of this box
+        u.atoms[::4].translate([boxsize * 2, 0, 0])
+        u.atoms[1::4].translate([0, boxsize *4, 0])
+        u.atoms[2::4].translate([-boxsize * 5, 0, -boxsize * 2])
+
+        return u
+
+    kwargs = {
+        'selection1': 'protein',
+        'selection2': 'protein',
+        'detect_hydrogens': "distance",
+        'distance': 3.0,
+        'angle': 150.0,
+        'pbc': True,
+    }
+
 
 
 class TestHydrogenBondAnalysisHeuristic(TestHydrogenBondAnalysis):
@@ -359,4 +396,3 @@ class TestHydrogenBondAnalysisTIP3P(object):
         # https://github.com/MDAnalysis/mdanalysis/issues/801)
         for name, ref in reference_table.items():
             assert_array_equal(h.table.field(name), ref, err_msg="resname for {0} do not match (Issue #801)")
-

@@ -13,6 +13,149 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+10/09/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
+         VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta,
+         sebastien.buchoux, arm61, p-j-smith, IAlibay
+
+  * 0.19.0
+
+Enhancements
+  * Added bond/angle/dihedral reading in PARM7 TOPParser (PR #2052)
+  * Replaced multiple apply (_apply_distmat, _apply_kdtree)
+    methods in distance based selections with
+    lib.distances.capped_distance for automatic selection of
+    distance evaluation method. (PR #2035)
+  * Modified analysis.rdf.InterRDF to use lib.distances.capped_distance
+    to handle rdf calculations for large systems. (PR #2013)
+  * Added return_distances argument in lib.distances.capped_distances
+    to evaluate and return distances only when required. Modified
+    the optimization rules in lib.distances._determine_method for
+    faster computations. (PR #2041)
+  * Added method search_tree in lib.pkdtree to find all the pairs between
+    two kdtrees. (PR #2041)
+  * Added a wrapper of lib.nsgrid in lib.distances.self_capped_distance
+    and lib.distances.capped_distanceto automatically chose the fastest
+    method for distance based calculations. (PR #2008)
+  * Added Grid search functionality in lib.nsgrid for faster distance based
+    calculations. (PR #2008)
+  * Modified around selections to work with KDTree and periodic boundary
+    conditions.  Should reduce memory usage (#974 PR #2022)
+  * Modified topology.guessers.guess_bonds to automatically select the
+    fastest method for guessing bonds using
+    lib.distance.self_capped_distance (PR # 2006)
+  * Added lib.distances.self_capped_distance to internally select the
+    optimized method for distance evaluations of coordinates with itself. (PR # 2006)
+  * Added augment functionality to create relevant images of particles
+    in the vicinity of central cell to handle periodic boundary
+    conditions (PR #1977)
+  * Added lib.distances.capped_distance function to quickly calculate all distances
+    up to a given maximum distance (PR #1941)
+  * Added a rotation coordinate transformation (PR #1937)
+  * Added a box centering trajectory transformation (PR #1946)
+  * Added a on-the-fly trajectory transformations API and a coordinate translation
+    function (Issue #786)
+  * Added various duecredit stubs
+  * Import time reduced by a factor two (PR #1881)
+  * Added compound kwarg to center, centroid, center_of_geometry, center_of_mass (PR #1903)
+  * Added rdf.InterRDF_s to calculate site-specific pair distribution
+    functions (PR #1815)
+  * Increased performance of (repeated) calls to AtomGroup.pack_into_box()
+    (PR #1922)
+  * Added boolean property *Group.isunique (PR #1922)
+  * Added *Group.copy() methods returning an identical copy of the respective
+    group (PR #1922)
+  * Use a faster function to deduplicate indices (PR #1951)
+  * Calculations in *Group.center() are performed in double precision (#PR1936)
+  * Functions in lib.distances accept coordinate arrays of arbitrary dtype
+    (PR #1936)
+  * Added pbc kwarg to Bond/Angle/Dihedral/Improper object value method,
+    default True. (Issue #1938)
+  * ChainReader can correctly handle continuous trajectories split into multiple files,
+    generated with gromacs -noappend (PR #1728)
+  * MDAnalysis.lib.mdamath now supports triclinic boxes and rewrote in Cython (PR #1965)
+  * AtomGroup.write can write a trajectory of selected frames (Issue #1037)
+  * Added dihedrals.py with Dihedral, Ramachandran, and Janin classes to
+    analysis module (PR #1997, PR #2033)
+  * Added the analysis.data module for reference data used in analysis (PR #2033)
+  * Added analysis.dihedrals with Ramachandran class to analysis module (PR #1997)
+  * Added augment functionality to create relevant images of particles
+  * Most functions in `MDanalysis.lib.distances` previously only accepting
+    arrays of coordinates now also accept single coordinates as input (PR #2048,
+    Issues #1262 #1938)
+  * Performance improvements to make_whole (PR #1965)
+  * Performance improvements to fragment finding (PR #2028)
+  * Added user-defined boxes in density code (PR #2005)
+  * MemoryReader now can accept velocities and forces (PR #2080)
+  * Universe.transfer_to_memory now copies dimensions, velocities and forces
+    (where possible) (Issue #1041 PR #2080)
+
+Fixes
+  * Rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
+  * Fixed order of indices in Angle/Dihedral/Improper repr
+  * coordinates.memory.MemoryReader now takes np.ndarray only (Issue #1685)
+  * Silenced warning when duecredit is not installed (Issue #1872)
+  * Fixed HBondAnalysis not considering PBC for distances (Issue #1878)
+  * Adding new TopologyAttrs with values defined always coerces this into
+    a numpy array (Issue #1876)
+  * Groups passed to select_atoms() are now type checked (Issue #1852)
+  * Fixed inconsistent handling of groups with/without duplicates in
+    pack_into_box() (Issue #1911)
+  * Fixed format of MODEL number in PDB file writing (Issue #1950)
+  * PDBWriter now properly sets start value
+  * Introduced compatibility for pbd files hybrid36 format encoding (Issue #1897)
+  * Zero length TopologyGroup now return proper shape array via to_indices
+    (Issue #1974)
+  * Added periodic boundary box support to the Tinker file reader (Issue #2001)
+  * Modifying coordinates by assignation is consistently persistent when using
+    the memory reader (Issue #2018)
+  * Allow import of WaterBridgeAnalysis from analysis.hbonds (#2064)
+  * Fixed SphericalLayer and SphericalZone selections with pbc=True.  Previously
+    these shifted all atoms to inside the primary unit cell when calculating the
+    center of the reference group (Issue #1795)
+  * PCA analysis now uses start frame as reference frame rather than 0th frame
+    (PR #2055)
+  * Fixed trajectory iteration from a MDAnalysis.Universe.empty (#2076)
+  * Fixed copies MemoryReader not linking to the underlying coordinate array
+    on initial Timestep (Issue #2081 PR #2080)
+
+Changes
+  * TopologyAttrs are now statically typed (Issue #1876)
+  * updated meta data for new PyPi (#1837)
+  * AtomGroup.atoms, ResidueGroup.residues, and SegmentGroup.segments now return
+    themselves instead of a new object to increase performance (PR #1922)
+  * *Group.unique now returns a new object only if the respective group contains
+    duplicates. Otherwise, the group itself is returned. Repeated access of
+    *Group.unique will always return the same object unless the group is
+    updated or modified. (PR #1922)
+  * SurvivalProbability does not dilute SP anymore when the reference frame (t0)
+    cannot find any molecules in the first place. (PR #1995)
+  * The TPR parser reads SETTLE constraints as bonds. (Issue #1949)
+  * Indexing a trajectory with a slice or an array now returns an iterable
+    (Issue #1894)
+  * Removed unused function MDAnalysis.lb.mdamath.one_to_many_pointers()
+    (issue #2010)
+  * Box input for functions in `MDAnalysis.lib.distances` is now consistently
+    enforced to be of the form ``[lx, ly, lz, alpha, beta, gamma]`` as required
+    by the docs (Issue #2046, PR #2048)
+  * Added periodic keyword to select_atoms (#759)
+  * PCA.transform now requires that PCA.run() has already been called
+    otherwise a ValueError is raised (PR #2055)
+  * The quiet keyword has been removed and replaced with verbose (Issue #1975
+    PR #2055)
+  * MDAnalysis.Universe.empty now creates a MemoryReader trajectory (#2076 #2077)
+
+Deprecations
+  * start/stop/step are deprecated in the initialization of Analysis classes.
+    These parameters should instead be given to the run() method of the class.
+    (Issue #1463 #1979 PR #2055)
+  * Almost all "save()", "save_results()", "save_table()" methods in
+    analysis classes were deprecated and will be removed in 1.0 (Issue
+    #1972 and #1745)
+  * Deprecated use of core.flags. For use_pbc, the pbc keyword should
+    be used, use_KDTree_routines is obsolete as all distance calculations
+    select the fastest method, all other uses of flags are deprecated.
+    (#782)
+
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
          orbeckst, xiki-tempula, navyakhare, zemanj, ayushsuhane, davidercruz,
          jbarnoud

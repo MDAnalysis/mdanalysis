@@ -23,8 +23,9 @@ from __future__ import absolute_import
 
 import pytest
 from numpy.testing import assert_almost_equal
+from six.moves import zip
 
-from MDAnalysisTests.datafiles import TXYZ, ARC
+from MDAnalysisTests.datafiles import TXYZ, ARC, ARC_PBC
 
 import MDAnalysis as mda
 
@@ -37,6 +38,11 @@ def TXYZ_U():
 @pytest.fixture
 def ARC_U():
     return mda.Universe(ARC)
+
+
+@pytest.fixture
+def ARC_PBC_U():
+    return mda.Universe(ARC_PBC)
 
 
 def test_txyz_positions(TXYZ_U):
@@ -56,5 +62,19 @@ def test_arc_positions_frame_2(ARC_U):
                         [-0.231579, -0.350841, -0.037475])
 
 
-def test_arc_traj_legnth(ARC_U):
+def test_arc_traj_length(ARC_U):
     assert len(ARC_U.trajectory) == 2
+
+
+def test_arcpbc_traj_length(ARC_PBC_U):
+    assert len(ARC_PBC_U.trajectory) == 3
+
+
+def test_pbc_boxsize(ARC_PBC_U):
+    ref_dimensions=[[ 38.860761,  38.860761,  38.860761,  90.000000,  90.000000,  90.000000],
+                    [ 39.860761,  39.860761,  39.860761,  90.000000,  90.000000,  90.000000],
+                    [ 40.860761,  40.860761,  40.860761,  90.000000,  90.000000,  90.000000]]
+
+    for ref_box, ts in zip(ref_dimensions, ARC_PBC_U.trajectory):
+        assert_almost_equal(ref_box, ts.dimensions, decimal=5)
+

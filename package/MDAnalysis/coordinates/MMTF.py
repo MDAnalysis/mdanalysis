@@ -44,6 +44,7 @@ import mmtf
 
 from . import base
 from ..core.universe import Universe
+from ..due import due, Doi
 
 
 def _parse_mmtf(fn):
@@ -57,6 +58,11 @@ class MMTFReader(base.SingleFrameReaderBase):
     """Coordinate reader for the Macromolecular Transmission Format format (MMTF_)."""
     format = 'MMTF'
 
+    @due.dcite(
+        Doi('10.1371/journal.pcbi.1005575'),
+        description="MMTF Reader",
+        path='MDAnalysis.coordinates.MMTF',
+    )
     def _read_first_frame(self):
         # TOOD: Check units?
         if isinstance(self.filename, mmtf.MMTFDecoder):

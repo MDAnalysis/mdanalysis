@@ -59,7 +59,7 @@ Distances and contacts
    analysis/rms
    analysis/psa
    analysis/encore
-   
+
 Hydrogen bonding
 ================
 
@@ -67,7 +67,7 @@ Hydrogen bonding
    :maxdepth: 1
 
    analysis/hbond_analysis
-   analysis/hbond_autocorrel   
+   analysis/hbond_autocorrel
    analysis/wbridge_analysis
 
 Membranes and membrane proteins
@@ -105,6 +105,7 @@ Structure
    analysis/gnm
    analysis/helanal
    analysis/rdf
+   analysis/dihedrals
 
 
 Volumetric analysis
@@ -136,3 +137,11 @@ analysis modules. *Use with care.*
    :maxdepth: 1
 
    analysis/legacy_modules
+
+Data
+====
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/data

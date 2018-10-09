@@ -26,7 +26,14 @@
 #include <math.h>
 #include <time.h>
 #include <sys/types.h>
-#include <unistd.h>
+
+#ifdef __unix__
+    #include <unistd.h>
+#endif
+
+#ifdef _WIN32
+    #include <io.h>
+#endif
 
 #define EPSILON 1e-8
 
@@ -186,10 +193,8 @@ double CStochasticProximityEmbedding(
     double t = 0.0;
     double finalstress = 0.0;
 
-    srand(time(NULL)+getpid()*getpid());
     /* random init of d */
-
-
+    srand(time(NULL)+getpid()*getpid());
     for (int i=0; i<nelem*dim; i++) {
         d_coords[i] = (double) rand() / (double) RAND_MAX;
     }
@@ -221,8 +226,8 @@ double CStochasticProximityEmbedding(
             }
         }
         lam = lam - (maxlam - minlam) / (double)(ncycle - 1);
-        if (i % stressfreq == 0 && i != 0 && stressfreq > 0)
-	  printf("Cycle %d - Residual stress: %.3f, lambda %.3f\n", i, neighbours_stress(s, d_coords, dim, nelem, rco),lam);
+        //if (i % stressfreq == 0 && i != 0 && stressfreq > 0)
+	    //printf("Cycle %d - Residual stress: %.3f, lambda %.3f\n", i, neighbours_stress(s, d_coords, dim, nelem, rco),lam);
     }
     finalstress = neighbours_stress(s, d_coords, dim, nelem, rco);
     //printf("Calculation finished. - Residual stress: %.3f\n", finalstress);

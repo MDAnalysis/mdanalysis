@@ -292,6 +292,8 @@ cdef class DCDFile:
             self.close()
 
         if mode == 'r':
+            if not path.isfile(self.fname):
+                raise IOError("DCD file does not exist")
             fio_mode = FIO_READ
         elif mode == 'w':
             fio_mode = FIO_WRITE
@@ -653,7 +655,7 @@ cdef class DCDFile:
 
         cdef np.ndarray[np.int64_t, ndim=1] c_indices
         if indices is None:
-            c_indices = np.arange(self.natoms)
+            c_indices = np.arange(self.natoms, dtype=np.int64)
             natoms = self.natoms
         else:
             natoms = len(indices)

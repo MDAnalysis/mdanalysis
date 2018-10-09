@@ -90,7 +90,7 @@ static int fio_open(const char *filename, int mode, fio_fd *fd) {
   access = FILE_ALL_ACCESS; /* XXX hack if above modes fail */
 #endif
 
-  sharing = 0;       /* disallow sharing with other processes  */
+  sharing = 1;       /* allow sharing with other processes  */
   security = NULL;   /* child processes don't inherit anything */
 
   /* since we never append, blow away anything that's already there */

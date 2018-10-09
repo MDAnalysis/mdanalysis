@@ -30,10 +30,11 @@ This module contains classes that allow neighbor searches directly with
 from __future__ import absolute_import
 
 import numpy as np
-from Bio.KDTree import KDTree
-from MDAnalysis.lib.pkdtree import PeriodicKDTree
+from MDAnalysis.lib.distances import capped_distance
+from MDAnalysis.lib.util import unique_int_1d
 
 from MDAnalysis.core.groups import AtomGroup, Atom
+
 
 class AtomNeighborSearch(object):
     """This class can be used to find all atoms/residues/segments within the
@@ -64,11 +65,7 @@ class AtomNeighborSearch(object):
         self.atom_group = atom_group
         self._u = atom_group.universe
         self._box = box
-        if box is None:
-            self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
-        else:
-            self.kdtree = PeriodicKDTree(box, bucket_size=bucket_size)
-        self.kdtree.set_coords(atom_group.positions)
+        #self.kdtree = PeriodicKDTree(box=box, leafsize=bucket_size)
 
     def search(self, atoms, radius, level='A'):
         """
@@ -85,16 +82,17 @@ class AtomNeighborSearch(object):
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
         """
+        unique_idx = []
         if isinstance(atoms, Atom):
             positions = atoms.position.reshape(1, 3)
         else:
             positions = atoms.positions
+        
+        pairs = capped_distance(positions, self.atom_group.positions,
+                                radius, box=self._box, return_distances=False)
 
-        indices = []
-        for pos in positions:
-            self.kdtree.search(pos, radius)
-            indices.append(self.kdtree.get_indices())
-        unique_idx = np.unique([i for l in indices for i in l]).astype(np.int64)
+        if pairs.size > 0:
+            unique_idx = unique_int_1d(np.asarray(pairs[:, 1], dtype=np.int64))
         return self._index2level(unique_idx, level)
 
     def _index2level(self, indices, level):

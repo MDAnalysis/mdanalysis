@@ -279,6 +279,7 @@ class Timestep(object):
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
 
+
     @classmethod
     def from_timestep(cls, other, **kwargs):
         """Create a copy of another Timestep, in the format of this Timestep
@@ -588,7 +589,7 @@ class Timestep(object):
 
 
         .. versionchanged:: 0.11.0
-           Now can raise :exc`NoDataError` when no position data present
+           Now can raise :exc:`NoDataError` when no position data present
         """
         if self.has_positions:
             return self._pos
@@ -856,6 +857,205 @@ class Timestep(object):
     @time.deleter
     def time(self):
         del self.data['time']
+
+
+class FrameIteratorBase(object):
+    """
+    Base iterable over the frames of a trajectory.
+
+    A frame iterable has a length that can be accessed with the :func:`len`
+    function, and can be indexed similarly to a full trajectory. When indexed,
+    indices are resolved relative to the iterable and not relative to the
+    trajectory.
+
+    Parameters
+    ----------
+    trajectory: ProtoReader
+        The trajectory over which to iterate.
+
+    .. versionadded:: 0.19.0
+
+    """
+    def __init__(self, trajectory):
+        self._trajectory = trajectory
+
+    def __len__(self):
+        raise NotImplementedError()
+
+    @staticmethod
+    def _avoid_bool_list(frames):
+        if isinstance(frames, list) and frames and isinstance(frames[0], bool):
+            return np.array(frames, dtype=bool)
+        return frames
+
+    @property
+    def trajectory(self):
+        return self._trajectory
+
+
+class FrameIteratorSliced(FrameIteratorBase):
+    """
+    Iterable over the frames of a trajectory on the basis of a slice.
+
+    Parameters
+    ----------
+    trajectory: ProtoReader
+        The trajectory over which to iterate.
+    frames: slice
+        A slice to select the frames of interest.
+
+    See Also
+    --------
+    FrameIteratorBase
+
+    .. versionadded:: 0.19.0
+
+    """
+    def __init__(self, trajectory, frames):
+        # It would be easier to store directly a range object, as it would
+        # store its parameters in a single place, calculate its length, and
+        # take care of most the indexing. Though, doing so is not compatible
+        # with python 2 where xrange (or range with six) is only an iterator.
+        super(FrameIteratorSliced, self).__init__(trajectory)
+        self._start, self._stop, self._step = trajectory.check_slice_indices(
+            frames.start, frames.stop, frames.step,
+        )
+
+    def __len__(self):
+        start, stop, step = self.start, self.stop, self.step
+        if (step > 0 and start < stop):
+            # We go from a lesser number to a larger one.
+            return int(1 + (stop - 1 - start) // step)
+        elif (step < 0 and start > stop):
+            # We count backward from a larger number to a lesser one.
+            return int(1 + (start - 1 - stop) // (-step))
+        else:
+            # The range is empty.
+            return 0
+
+    def __iter__(self):
+        for i in range(self.start, self.stop, self.step):
+            yield self.trajectory[i]
+        self.trajectory.rewind()
+
+    def __getitem__(self, frame):
+        if isinstance(frame, numbers.Integral):
+            length = len(self)
+            if not -length < frame < length:
+                raise IndexError('Index {} is out of range of the range of length {}.'
+                                 .format(frame, length))
+            if frame < 0:
+                frame = len(self) + frame
+            frame = self.start + frame * self.step
+            return self.trajectory._read_frame_with_aux(frame)
+        elif isinstance(frame, slice):
+            start = self.start + (frame.start or 0) * self.step
+            if frame.stop is None:
+                stop = self.stop
+            else:
+                stop = self.start + (frame.stop or 0) * self.step
+            step = (frame.step or 1) * self.step
+
+            if step > 0:
+                start = max(0, start)
+            else:
+                stop = max(0, stop)
+
+            new_slice = slice(start, stop, step)
+            return FrameIteratorSliced(self.trajectory, new_slice)
+        else:
+            # Indexing with a lists of bools does not behave the same in all
+            # version of numpy.
+            frame = self._avoid_bool_list(frame)
+            frames = np.array(list(range(self.start, self.stop, self.step)))[frame]
+            return FrameIteratorIndices(self.trajectory, frames)
+
+    @property
+    def start(self):
+        return self._start
+
+    @property
+    def stop(self):
+        return self._stop
+
+    @property
+    def step(self):
+        return self._step
+
+
+class FrameIteratorAll(FrameIteratorBase):
+    """
+    Iterable over all the frames of a trajectory.
+
+    Parameters
+    ----------
+    trajectory: ProtoReader
+        The trajectory over which to iterate.
+
+    See Also
+    --------
+    FrameIteratorBase
+
+    .. versionadded:: 0.19.0
+
+    """
+    def __init__(self, trajectory):
+        super(FrameIteratorAll, self).__init__(trajectory)
+
+    def __len__(self):
+        return self.trajectory.n_frames
+
+    def __iter__(self):
+        return iter(self.trajectory)
+
+    def __getitem__(self, frame):
+        return self.trajectory[frame]
+
+
+class FrameIteratorIndices(FrameIteratorBase):
+    """
+    Iterable over the frames of a trajectory listed in a sequence of indices.
+
+    Parameters
+    ----------
+    trajectory: ProtoReader
+        The trajectory over which to iterate.
+    frames: sequence
+        A sequence of indices.
+
+    See Also
+    --------
+    FrameIteratorBase
+    """
+    def __init__(self, trajectory, frames):
+        super(FrameIteratorIndices, self).__init__(trajectory)
+        self._frames = []
+        for frame in frames:
+            if not isinstance(frame, numbers.Integral):
+                raise TypeError("Frames indices must be integers.")
+            frame = trajectory._apply_limits(frame)
+            self._frames.append(frame)
+        self._frames = tuple(self._frames)
+
+    def __len__(self):
+        return len(self.frames)
+
+    def __iter__(self):
+        for frame in self.frames:
+            yield self.trajectory._read_frame_with_aux(frame)
+
+    def __getitem__(self, frame):
+        if isinstance(frame, numbers.Integral):
+            frame = self.frames[frame]
+            return self.trajectory._read_frame_with_aux(frame)
+        else:
+            frame = self._avoid_bool_list(frame)
+            frames = np.array(self.frames)[frame]
+            return FrameIteratorIndices(self.trajectory, frames)
+
+    @property
+    def frames(self):
+        return self._frames
 
 
 class IOBase(object):
@@ -1170,6 +1370,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         # initialise list to store added auxiliary readers in
         # subclasses should now call super
         self._auxs = {}
+        self._transformations=[]
 
     def __len__(self):
         return self.n_frames
@@ -1201,6 +1402,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         else:
             for auxname in self.aux_list:
                 ts = self._auxs[auxname].update_ts(ts)
+
+            ts = self._apply_transformations(ts)
+
         return ts
 
     def __next__(self):
@@ -1245,6 +1449,11 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         time = :attr:`Timestep.frame` * :attr:`Timestep.dt`
         """
         return self.ts.time
+
+    @property
+    def trajectory(self):
+        # Makes a reader effectively commpatible with a FrameIteratorBase
+        return self
 
     def Writer(self, filename, **kwargs):
         """A trajectory writer with the same properties as this trajectory."""
@@ -1294,6 +1503,14 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         """
         pass
 
+    def _apply_limits(self, frame):
+        if frame < 0:
+            frame += len(self)
+        if frame < 0 or frame >= len(self):
+            raise IndexError("Index {} exceeds length of trajectory ({})."
+                             "".format(frame, len(self)))
+        return frame
+
     def __getitem__(self, frame):
         """Return the Timestep corresponding to *frame*.
 
@@ -1307,39 +1524,23 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         ----
         *frame* is a 0-based frame index.
         """
-
-        def apply_limits(frame):
-            if frame < 0:
-                frame += len(self)
-            if frame < 0 or frame >= len(self):
-                raise IndexError("Index {} exceeds length of trajectory ({})."
-                                 "".format(frame, len(self)))
-            return frame
-
         if isinstance(frame, numbers.Integral):
-            frame = apply_limits(frame)
+            frame = self._apply_limits(frame)
             return self._read_frame_with_aux(frame)
         elif isinstance(frame, (list, np.ndarray)):
-            if isinstance(frame[0], (bool, np.bool_)):
+            if len(frame) != 0 and isinstance(frame[0], (bool, np.bool_)):
                 # Avoid having list of bools
                 frame = np.asarray(frame, dtype=np.bool)
                 # Convert bool array to int array
                 frame = np.arange(len(self))[frame]
-
-            def listiter(frames):
-                for f in frames:
-                    if not isinstance(f, numbers.Integral):
-                        raise TypeError("Frames indices must be integers")
-                    yield self._read_frame_with_aux(apply_limits(f))
-
-            return listiter(frame)
+            return FrameIteratorIndices(self, frame)
         elif isinstance(frame, slice):
             start, stop, step = self.check_slice_indices(
                 frame.start, frame.stop, frame.step)
             if start == 0 and stop == len(self) and step == 1:
-                return self.__iter__()
+                return FrameIteratorAll(self)
             else:
-                return self._sliced_iter(start, stop, step)
+                return FrameIteratorSliced(self, frame)
         else:
             raise TypeError("Trajectories must be an indexed using an integer,"
                             " slice or list of indices")
@@ -1356,10 +1557,13 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         # return ts
 
     def _read_frame_with_aux(self, frame):
-        """Move to *frame*, updating ts with trajectory and auxiliary data."""
-        ts = self._read_frame(frame)
+        """Move to *frame*, updating ts with trajectory, transformations and auxiliary data."""
+        ts = self._read_frame(frame)  # pylint: disable=assignment-from-no-return
         for aux in self.aux_list:
             ts = self._auxs[aux].update_ts(ts)
+
+        ts = self._apply_transformations(ts)
+
         return ts
 
     def _sliced_iter(self, start, stop, step):
@@ -1456,7 +1660,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         if start < 0:
             start = 0
 
-        if step < 0 and start > nframes:
+        if step < 0 and start >= nframes:
             start = nframes - 1
 
         if stop is None:
@@ -1742,6 +1946,66 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         descriptions = [self._auxs[aux].get_description() for aux in auxnames]
         return descriptions
 
+    @property
+    def transformations(self):
+        """ Returns the list of transformations"""
+        return self._transformations
+
+    @transformations.setter
+    def transformations(self, transformations):
+        if not self._transformations:
+            self._transformations = transformations
+        else:
+            raise ValueError("Transformations are already set")
+
+    def add_transformations(self, *transformations):
+        """ Add all transformations to be applied to the trajectory.
+
+        This function take as list of transformations as an argument. These
+        transformations are functions that will be called by the Reader and given
+        a :class:`Timestep` object as argument, which will be transformed and returned
+        to the Reader.
+        The transformations can be part of the :mod:`~MDAnalysis.transformations`
+        module, or created by the user, and are stored as a list `transformations`.
+        This list can only be modified once, and further calls of this function will
+        raise an exception.
+
+        .. code-block:: python
+
+          u = MDAnalysis.Universe(topology, coordinates)
+          workflow = [some_transform, another_transform, this_transform]
+          u.trajectory.add_transformations(*workflow)
+
+        Parameters
+        ----------
+        transform_list : list
+            list of all the transformations that will be applied to the coordinates
+
+        See Also
+        --------
+        :mod:`MDAnalysis.transformations`
+        """
+
+        try:
+            self.transformations = transformations
+        except ValueError:
+            raise ValueError("Can't add transformations again. Please create new Universe object")
+        else:
+            self.ts = self._apply_transformations(self.ts)
+
+
+        # call reader here to apply the newly added transformation on the
+        # current loaded frame?
+
+    def _apply_transformations(self, ts):
+        """Applies all the transformations given by the user """
+
+        for transform in self.transformations:
+            ts = transform(ts)
+
+        return ts
+
+
 
 class ReaderBase(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
@@ -1802,6 +2066,8 @@ class ReaderBase(ProtoReader):
         """
         new = self.__class__(self.filename,
                              n_atoms=self.n_atoms)
+        if self.transformations:
+            new.add_transformations(*self.transformations)
         # seek the new reader to the same frame we started with
         new[self.ts.frame]
         # then copy over the current Timestep in case it has
@@ -1976,6 +2242,10 @@ class SingleFrameReaderBase(ProtoReader):
         new.ts = self.ts.copy()
         for auxname, auxread in self._auxs.items():
             new.add_auxiliary(auxname, auxread.copy())
+        # since the transformations have already been applied to the frame
+        # simply copy the property
+        new.transformations = self.transformations
+
         return new
 
     def _read_first_frame(self):  # pragma: no cover
@@ -1983,7 +2253,10 @@ class SingleFrameReaderBase(ProtoReader):
         pass
 
     def rewind(self):
-        pass
+        self._read_first_frame()
+        for auxname, auxread in self._auxs.items():
+            self.ts = auxread.update_ts(self.ts)
+        super(SingleFrameReaderBase, self)._apply_transformations(self.ts)
 
     def _reopen(self):
         pass
@@ -2006,3 +2279,46 @@ class SingleFrameReaderBase(ProtoReader):
         # self.filename. Explicitly setting it to the null action in case
         # the IOBase.close method is ever changed from that.
         pass
+
+    def add_transformations(self, *transformations):
+        """ Add all transformations to be applied to the trajectory.
+
+        This function take as list of transformations as an argument. These
+        transformations are functions that will be called by the Reader and given
+        a :class:`Timestep` object as argument, which will be transformed and returned
+        to the Reader.
+        The transformations can be part of the :mod:`~MDAnalysis.transformations`
+        module, or created by the user, and are stored as a list `transformations`.
+        This list can only be modified once, and further calls of this function will
+        raise an exception.
+
+        .. code-block:: python
+
+          u = MDAnalysis.Universe(topology, coordinates)
+          workflow = [some_transform, another_transform, this_transform]
+          u.trajectory.add_transformations(*workflow)
+
+        Parameters
+        ----------
+        transform_list : list
+            list of all the transformations that will be applied to the coordinates
+
+        See Also
+        --------
+        :mod:`MDAnalysis.transformations`
+        """
+        #Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        #to avoid unintended behaviour where the coordinates of each frame are transformed
+        #multiple times when iterating over the trajectory.
+        #In this method, the trajectory is modified all at once and once only.
+
+        super(SingleFrameReaderBase, self).add_transformations(*transformations)
+        for transform in self.transformations:
+            self.ts = transform(self.ts)
+
+    def _apply_transformations(self, ts):
+        """ Applies the transformations to the timestep."""
+        # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        # to avoid applying the same transformations multiple times on each frame
+
+        return ts

@@ -44,7 +44,7 @@ cdef extern from "calc_distances.h":
     void _calc_self_distance_array(coordinate* ref, int numref, double* distances, int distnum)
     void _calc_self_distance_array_ortho(coordinate* ref, int numref, float* box, double* distances, int distnum)
     void _calc_self_distance_array_triclinic(coordinate* ref, int numref, coordinate* box, double* distances, int distnum)
-    void _coord_transform(coordinate* coords, int numCoords, coordinate* box)
+    void _coord_transform(float* coords, int numCoords, float* box)
     void _calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
     void _calc_bond_distance_ortho(coordinate* atom1, coordinate* atom2, int numatom, float*box, double* distances)
     void _calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2, int numatom, coordinate* box, double* distances)
@@ -125,13 +125,15 @@ def calc_self_distance_array_triclinic(numpy.ndarray ref,
                                         <coordinate*>box.data,
                                         <double*>result.data, distnum)
 
-def coord_transform(numpy.ndarray coords,
-                    numpy.ndarray box):
-    cdef int numcoords
+def coord_transform(float[:,:] coords,
+                    float[:,:] box):
+    cdef int numcoords, size
     numcoords = coords.shape[0]
+    size = coords.size
 
-    _coord_transform(<coordinate*> coords.data, numcoords,
-                     <coordinate*> box.data)
+    if size >  0:
+        _coord_transform( &coords[0,0], numcoords,
+                          &box[0,0])
 
 def calc_bond_distance(numpy.ndarray coords1,
                        numpy.ndarray coords2,

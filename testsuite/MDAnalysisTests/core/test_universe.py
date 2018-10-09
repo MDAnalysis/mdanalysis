@@ -25,6 +25,7 @@ from __future__ import absolute_import, print_function
 from six.moves import cPickle
 
 import os
+import subprocess
 
 try:
     from cStringIO import StringIO
@@ -55,6 +56,7 @@ from MDAnalysisTests.datafiles import (
 import MDAnalysis as mda
 import MDAnalysis.coordinates
 from MDAnalysis.topology.base import TopologyReaderBase
+from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 
 
@@ -167,7 +169,12 @@ class TestUniverseCreation(object):
         temp_file = os.path.join(temp_dir.name, 'permission.denied.tpr')
         with open(temp_file, 'w'):
             pass
-        os.chmod(temp_file, 0o200)
+
+        if os.name == 'nt':
+            subprocess.call("icacls {filename} /deny Users:RX".format(filename=temp_file),
+                            shell=True)
+        else:
+            os.chmod(temp_file, 0o200)
         try:
             mda.Universe(os.path.join(temp_dir.name, 'permission.denied.tpr'))
         except IOError as e:
@@ -182,6 +189,22 @@ class TestUniverseCreation(object):
 
         with pytest.raises(TypeError):
             u.load_new('thisfile', format = 'soup')
+
+    def test_load_new_memory_reader_success(self):
+        u = mda.Universe(GRO)
+        prot = u.select_atoms('protein')
+        u2 = mda.Merge(prot)
+        assert u2.load_new( [ prot.positions ], format=mda.coordinates.memory.MemoryReader) is u2
+
+    def test_load_new_memory_reader_fails(self):
+        def load():
+            u = mda.Universe(GRO)
+            prot = u.select_atoms('protein')
+            u2 = mda.Merge(prot)
+            u2.load_new( [[ prot.positions ]], format=mda.coordinates.memory.MemoryReader)
+
+        with pytest.raises(TypeError):
+            load()
 
     def test_universe_kwargs(self):
         u = mda.Universe(PSF, PDB_small, fake_kwarg=True)
@@ -287,6 +310,21 @@ def test_chainid_quick_select():
         assert len(u.C.atoms) == 5
         assert len(u.D.atoms) == 7
 
+class TestTransformations(object):
+    """Tests the transformations keyword
+    """
+    def test_callable(self):
+        u = mda.Universe(PSF,DCD, transformations=translate([10,10,10]))
+        uref = mda.Universe(PSF,DCD)
+        ref = translate([10,10,10])(uref.trajectory.ts)
+        assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
+
+    def test_list(self):
+        workflow = [translate([10,10,0]), translate([0,0,10])]
+        u = mda.Universe(PSF,DCD, transformations=workflow)
+        uref = mda.Universe(PSF,DCD)
+        ref = translate([10,10,10])(uref.trajectory.ts)
+        assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
 
 class TestGuessMasses(object):
     """Tests the Mass Guesser in topology.guessers
@@ -652,3 +690,30 @@ class TestEmpty(object):
         with pytest.warns(UserWarning):
             u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=1,
                                    atom_resindex=res)
+
+    def test_trajectory(self):
+        u = mda.Universe.empty(10, trajectory=True)
+
+        assert len(u.atoms) == 10
+        assert u.atoms.positions.shape == (10, 3)
+
+    def test_trajectory_iteration(self):
+        u = mda.Universe.empty(10, trajectory=True)
+
+        assert len(u.trajectory) == 1
+        timesteps =[]
+        for ts in u.trajectory:
+            timesteps.append(ts.frame)
+        assert len(timesteps) == 1
+
+    def test_velocities(self):
+        u = mda.Universe.empty(10, trajectory=True, velocities=True)
+
+        assert u.atoms.positions.shape == (10, 3)
+        assert u.atoms.velocities.shape == (10, 3)
+
+    def test_forces(self):
+        u = mda.Universe.empty(10, trajectory=True, forces=True)
+
+        assert u.atoms.positions.shape == (10, 3)
+        assert u.atoms.forces.shape == (10, 3)

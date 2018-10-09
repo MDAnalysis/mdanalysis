@@ -23,9 +23,12 @@ from __future__ import absolute_import, print_function
 import sys
 import os
 import subprocess
+import pytest
 
 """Test if importing MDAnalysis has unwanted side effects (PR #1794)."""
 
+@pytest.mark.skipif(os.name == 'nt',
+                    reason="fork-related import checks irrelevant on Windows")
 class TestMDAImport(object):
     # Tests concerning importing MDAnalysis.
     def test_os_dot_fork_not_called(self):

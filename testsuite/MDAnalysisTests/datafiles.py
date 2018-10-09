@@ -44,7 +44,7 @@ __all__ = [
     "PSF_TRICLINIC", "DCD_TRICLINIC",  # CHARMM c36 new unitcell, NPT 125 TIP3P (box vectors, see Issue 187 for details)
     "PSF_NAMD", "PDB_NAMD",  # NAMD
     "PSF_NAMD_TRICLINIC", "DCD_NAMD_TRICLINIC", # NAMD, triclinic unitcell (Issue 187)
-    "PSF_NAMD_GBIS", "DCD_NAMD_GBIS",  # NAMD, implicit solvent, 100 steps, #1819  
+    "PSF_NAMD_GBIS", "DCD_NAMD_GBIS",  # NAMD, implicit solvent, 100 steps, #1819
     "PSF_nosegid",  # psf without a segid, Issue 121
     "PDB_small",  # PDB
     "PDB_closed",
@@ -85,7 +85,7 @@ __all__ = [
     "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
-    "TXYZ", "ARC", 	      # Tinker files
+    "TXYZ", "ARC", "ARC_PBC",       # Tinker files
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
@@ -94,6 +94,8 @@ __all__ = [
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
     "PRMcs", # Amber (format, Issue 1331)
+    "PRMNCRST", # Amber ncrst with positions/forces/velocities
+    "PRMErr1", "PRMErr2", "PRMErr3", # Amber TOP files to check raised errors
     "PQR",  # PQR v1
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
@@ -118,6 +120,7 @@ __all__ = [
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
     "LAMMPShyd", "LAMMPShyd2",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
+    "LAMMPSDUMP",
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -129,6 +132,7 @@ __all__ = [
     "waterPSF","waterDCD","rmsfArray",
     "HoomdXMLdata",
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
+    "fullerene",  # for make_whole, a nice friendly C60 with bonds
     "Plength",
     "COORDINATES_XYZ",
     "COORDINATES_XYZ_BZ2",
@@ -153,6 +157,11 @@ __all__ = [
     "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
     "GSD",
+    "GRO_MEMPROT", "XTC_MEMPROT", # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
+    "DihedralArray", "DihedralsArray", # time series of single dihedral
+    "RamaArray", "GLYRamaArray", # time series of phi/psi angles
+    "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
+    "PDB_rama", "PDB_janin" # for testing failures of Ramachandran and Janin classes
 ]
 
 from pkg_resources import resource_filename
@@ -239,6 +248,8 @@ TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
 XTC_sub_sol = resource_filename(__name__, 'data/cobrotoxin.xtc')
 PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
 PDB_xlserial = resource_filename(__name__, 'data/xl_serial.pdb')
+GRO_MEMPROT = resource_filename(__name__, 'data/analysis/YiiP_lipids.gro.gz')
+XTC_MEMPROT = resource_filename(__name__, 'data/analysis/YiiP_lipids.xtc')
 XTC_multi_frame = resource_filename(
     __name__, 'data/xtc_test_only_10_frame_10_atoms.xtc'
 )
@@ -288,6 +299,7 @@ XYZ_mini = resource_filename(__name__, 'data/mini.xyz')
 XYZ_five = resource_filename(__name__, 'data/five.xyz')
 TXYZ = resource_filename(__name__, 'data/coordinates/test.txyz')
 ARC = resource_filename(__name__, 'data/coordinates/test.arc')
+ARC_PBC = resource_filename(__name__, 'data/coordinates/new_hexane.arc')
 
 PRM = resource_filename(__name__, 'data/Amber/ache.prmtop')
 TRJ = resource_filename(__name__, 'data/Amber/ache.mdcrd')
@@ -310,6 +322,12 @@ PRM7 =  resource_filename(__name__, 'data/Amber/tz2.truncoct.parm7.bz2')
 NCDFtruncoct =  resource_filename(__name__, 'data/Amber/tz2.truncoct.nc')
 
 PRMcs = resource_filename(__name__, 'data/Amber/chitosan.prmtop')
+
+PRMNCRST = resource_filename(__name__, 'data/Amber/ace_mbondi3.parm7')
+
+PRMErr1 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error1.parm7')
+PRMErr2 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error2.parm7')
+PRMErr3 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error3.parm7')
 
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 PQR_icodes = resource_filename(__name__, 'data/1A2C.pqr')
@@ -364,6 +382,7 @@ LAMMPScnt2 = resource_filename(__name__, "data/lammps/cnt-hexagonal-class1.data2
 LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
 LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
 LAMMPSdata_deletedatoms = resource_filename(__name__, 'data/lammps/deletedatoms.data')
+LAMMPSDUMP = resource_filename(__name__, "data/lammps/wat.lammpstrj.bz2")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 
@@ -390,6 +409,7 @@ rmsfArray = resource_filename(__name__, 'data/adk_oplsaa_CA_rmsf.npy')
 HoomdXMLdata = resource_filename(__name__, 'data/C12x64.xml.bz2')
 
 Make_Whole = resource_filename(__name__, 'data/make_whole.gro')
+fullerene = resource_filename(__name__, 'data/fullerene.pdb.gz')
 
 Plength = resource_filename(__name__, 'data/plength.gro')
 Martini_membrane_gro = resource_filename(__name__, 'data/martini_dppc_chol_bilayer.gro')
@@ -407,6 +427,15 @@ ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
 ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')
 
 GSD = resource_filename(__name__, 'data/example.gsd')
+
+DihedralArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral.npy')
+DihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral_list.npy')
+RamaArray = resource_filename(__name__, 'data/adk_oplsaa_rama.npy')
+GLYRamaArray = resource_filename(__name__, 'data/adk_oplsaa_GLY_rama.npy')
+JaninArray = resource_filename(__name__, 'data/adk_oplsaa_janin.npy')
+LYSJaninArray = resource_filename(__name__, 'data/adk_oplsaa_LYS_janin.npy')
+PDB_rama = resource_filename(__name__, 'data/19hc.pdb.gz')
+PDB_janin = resource_filename(__name__, 'data/1a28.pdb.gz')
 
 # This should be the last line: clean up namespace
 del resource_filename

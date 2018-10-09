@@ -170,7 +170,7 @@ class TestContacts(object):
     def universe():
         return mda.Universe(PSF, DCD)
 
-    def _run_Contacts(self, universe, **kwargs):
+    def _run_Contacts(self, universe, start=None, stop=None, step=None, **kwargs):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
         return contacts.Contacts(
@@ -178,7 +178,7 @@ class TestContacts(object):
             selection=(self.sel_acidic, self.sel_basic),
             refgroup=(acidic, basic),
             radius=6.0,
-            **kwargs).run()
+            **kwargs).run(start=start, stop=stop, step=step)
 
     def test_startframe(self, universe):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of

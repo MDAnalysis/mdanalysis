@@ -171,4 +171,3 @@ def test_weights():
     assert_almost_equal(p, 32.798779202159416)
     q = np.array([0.99861395, .022982, .04735006, -.02409085, .99944556, .022982, -.04679564, -.02409085, .99861395])
     np.testing.assert_almost_equal(q, o)
-

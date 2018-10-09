@@ -212,3 +212,26 @@ def test_all_impropers(topology, impr):
 
     impr_type, elements = impr
     impr_type_in_topology(impr_type, elements, topology)
+
+
+@pytest.fixture(params=(
+    TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407, TPR450, TPR451,
+    TPR452, TPR453, TPR454, TPR502, TPR504, TPR505, TPR510, TPR2016, TPR2018,
+))
+def bonds_water(request):
+    parser = MDAnalysis.topology.TPRParser.TPRParser(request.param).parse()
+    # The index of the first water atom is 1960
+    first = 1960
+    bonds = [
+        bond
+        for bond in parser.bonds.values
+        if bond[0] >= first and bond[1] >= first
+    ]
+    return bonds
+
+
+def test_settle(bonds_water):
+    # There are 101 water molecule with 2 bonds each
+    assert len(bonds_water) == 202
+    # The last index corresponds to the last water atom
+    assert bonds_water[-1][1] == 2262

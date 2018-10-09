@@ -124,7 +124,7 @@ import numpy as np
 
 import MDAnalysis
 from MDAnalysis import FinishTimeException
-from MDAnalysis.lib.log import ProgressMeter, _set_verbose
+from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib import mdamath
 
 import logging
@@ -168,7 +168,7 @@ def helanal_trajectory(universe, selection="name CA",
                        bend_filename="local_bend.xvg",
                        twist_filename="unit_twist.xvg",
                        prefix="helanal_", ref_axis=None,
-                       verbose=None, quiet=None):
+                       verbose=False):
     """Perform HELANAL helix analysis on all frames in `universe`.
 
     Parameters
@@ -236,7 +236,6 @@ def helanal_trajectory(universe, selection="name CA",
        `verbose` one.
 
     """
-    verbose = _set_verbose(verbose, quiet, default=True)
     if ref_axis is None:
         ref_axis = np.array([0., 0., 1.])
     else:
