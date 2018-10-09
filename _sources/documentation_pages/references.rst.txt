@@ -12,12 +12,30 @@
  References
 ************
 
+MDAnalysis and the included algorithms are scientific software that
+are described in academic publications. **Please cite these papers when you use
+MDAnalysis in published work.**
+
+It is possible to :ref:`automatically generate a list of references
+<citations-using-duecredit>` for any program that uses
+MDAnalysis. This list (in common reference manager formats) contains
+the citations associated with the specific algorithms and libraries
+that were used in the program.
+
 
 Citations for the whole MDAnalysis library
 ==========================================
 
 When using MDAnalysis in published work, please cite
 [Michaud-Agrawal2011]_ and [Gowers2016]_.
+
+(We are currently asking you to cite *both* papers if at all possible
+because the 2016 paper describes many updates to the original 2011
+paper and neither paper on its own provides a comprehensive
+description of the library. We will publish a complete self-contained
+paper with the upcoming 1.0 release of MDAnalysis, which will then
+supersede these two citations.)
+
 
 .. [Michaud-Agrawal2011] N. Michaud-Agrawal, E. J. Denning, T. B. Woolf,
    and O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics
@@ -28,7 +46,7 @@ When using MDAnalysis in published work, please cite
    Melo, S. L. Seyler, D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney,
    and O. Beckstein. `MDAnalysis: A Python package for the rapid analysis of
    molecular dynamics simulations`_. In S. Benthall and S. Rostrup, editors,
-   *Proceedings of the 15th Python in Science Conference*, pages 102 – 109,
+   *Proceedings of the 15th Python in Science Conference*, pages 98-105,
    Austin, TX, 2016. SciPy.
 
 .. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
@@ -36,7 +54,7 @@ When using MDAnalysis in published work, please cite
 .. _`MDAnalysis: A Python package for the rapid analysis of molecular
    dynamics simulations`:
    http://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html
-
+   
 
 .. _references-components:
 
@@ -111,6 +129,8 @@ If you use the streamline visualization in
 
 .. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
 
+
+.. _citations-using-duecredit:
 
 Citations using Duecredit
 =========================

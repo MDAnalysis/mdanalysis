@@ -465,6 +465,10 @@
 <span class="sd">        Useful for building a Universe without requiring existing files,</span>
 <span class="sd">        for example for system building.</span>
 
+<span class="sd">        If `trajectory` is set to True, a</span>
+<span class="sd">        :class:`MDAnalysis.coordinates.memory.MemoryReader` will be</span>
+<span class="sd">        attached to the Universe.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        n_atoms : int</span>
@@ -473,17 +477,19 @@
 <span class="sd">          number of Residues in the Universe, defaults to 1</span>
 <span class="sd">        n_segments : int, optional</span>
 <span class="sd">          number of Segments in the Universe, defaults to 1</span>
-<span class="sd">        atom_resindex : numpy.array, optional</span>
-<span class="sd">          mapping of atoms to residues</span>
-<span class="sd">        residue_segindex : numpy.array, optional</span>
+<span class="sd">        atom_resindex : array like, optional</span>
+<span class="sd">          mapping of atoms to residues, e.g. with 6 atoms,</span>
+<span class="sd">          `atom_resindex=[0, 0, 1, 1, 2, 2]` would put 2 atoms</span>
+<span class="sd">          into each of 3 residues.</span>
+<span class="sd">        residue_segindex : array like, optional</span>
 <span class="sd">          mapping of residues to segments</span>
 <span class="sd">        trajectory : bool, optional</span>
-<span class="sd">          if True, attaches a dummy reader to the Universe, therefore</span>
+<span class="sd">          if True, attaches a :class:`MDAnalysis.coordinates.memory.MemoryReader`</span>
 <span class="sd">          allowing coordinates to be set and written.  Default is False</span>
 <span class="sd">        velocities : bool, optional</span>
-<span class="sd">          include velocities in the dummy Reader</span>
+<span class="sd">          include velocities in the :class:`MDAnalysis.coordinates.memory.MemoryReader`</span>
 <span class="sd">        forces : bool, optional</span>
-<span class="sd">          include forces in the dummy Reader</span>
+<span class="sd">          include forces in the :class:`MDAnalysis.coordinates.memory.MemoryReader`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -501,6 +507,8 @@
 <span class="sd">        &gt;&gt;&gt; u.add_TopologyAttr(&#39;masses&#39;)</span>
 
 <span class="sd">        .. versionadded:: 0.17.0</span>
+<span class="sd">        .. versionchanged:: 0.19.0</span>
+<span class="sd">           The attached Reader when trajectory=True is now a MemoryReader</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">n_residues</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_residues</span> <span class="o">=</span> <span class="mi">1</span>
@@ -525,9 +533,15 @@
         <span class="n">u</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">trajectory</span><span class="p">:</span>
-            <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;dummy&#39;</span><span class="p">)(</span>
-                <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span>
-                <span class="n">velocities</span><span class="o">=</span><span class="n">velocities</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">)</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">dims</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="n">vels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="k">if</span> <span class="n">velocities</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">forces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="k">if</span> <span class="n">forces</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="c1"># grab and attach a MemoryReader</span>
+            <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">coords</span><span class="p">)(</span>
+                <span class="n">coords</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span>
+                <span class="n">dimensions</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="n">vels</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">u</span></div>
 
@@ -675,26 +689,33 @@
         <span class="kn">from</span> <span class="nn">..coordinates.memory</span> <span class="k">import</span> <span class="n">MemoryReader</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">MemoryReader</span><span class="p">):</span>
-            <span class="c1"># Try to extract coordinates using Timeseries object</span>
-            <span class="c1"># This is significantly faster, but only implemented for certain</span>
-            <span class="c1"># trajectory file formats</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
-            <span class="c1"># if the Timeseries extraction fails,</span>
-            <span class="c1"># fall back to a slower approach</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span>
-                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-                <span class="p">))</span>
-                <span class="n">pm_format</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{step}</span><span class="s1">/</span><span class="si">{numsteps}</span><span class="s1"> frames copied to memory (frame </span><span class="si">{frame}</span><span class="s1">)&#39;</span>
-                <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                   <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">pm_format</span><span class="p">)</span>
-                <span class="n">coordinates</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># TODO: use pre-allocated array</span>
-                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]):</span>
-                    <span class="n">coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">))</span>
-                    <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-                <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+            <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span>
+                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+            <span class="p">))</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+            <span class="n">pm_format</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{step}</span><span class="s1">/</span><span class="si">{numsteps}</span><span class="s1"> frames copied to memory (frame </span><span class="si">{frame}</span><span class="s1">)&#39;</span>
+            <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                               <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">pm_format</span><span class="p">)</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+            <span class="n">has_vels</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span>
+            <span class="n">has_fors</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_forces</span>
+            <span class="n">has_dims</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+            <span class="n">velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span> <span class="k">if</span> <span class="n">has_vels</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">forces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span> <span class="k">if</span> <span class="n">has_fors</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">dimensions</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                          <span class="k">if</span> <span class="n">has_dims</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]):</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">has_vels</span><span class="p">:</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">has_fors</span><span class="p">:</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">forces</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">has_dims</span><span class="p">:</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+                <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
 
             <span class="c1"># Overwrite trajectory in universe with an MemoryReader</span>
             <span class="c1"># object, to provide fast access and allow coordinates</span>
@@ -703,9 +724,12 @@
                 <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">MemoryReader</span><span class="p">(</span>
                 <span class="n">coordinates</span><span class="p">,</span>
-                <span class="n">dimensions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
+                <span class="n">dimensions</span><span class="o">=</span><span class="n">dimensions</span><span class="p">,</span>
                 <span class="n">dt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="n">step</span><span class="p">,</span>
-                <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span></div>
+                <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                <span class="n">velocities</span><span class="o">=</span><span class="n">velocities</span><span class="p">,</span>
+                <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">,</span>
+            <span class="p">)</span></div>
 
     <span class="c1"># python 2 doesn&#39;t allow an efficient splitting of kwargs in function</span>
     <span class="c1"># argument signatures.</span>

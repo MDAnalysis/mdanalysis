@@ -493,7 +493,7 @@ weren’t originally present.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.memory.MemoryReader">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.memory.</code><code class="descname">MemoryReader</code><span class="sig-paren">(</span><em>coordinate_array</em>, <em>order='fac'</em>, <em>dimensions=None</em>, <em>dt=1</em>, <em>filename=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/memory.html#MemoryReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.MemoryReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.memory.</code><code class="descname">MemoryReader</code><span class="sig-paren">(</span><em>coordinate_array</em>, <em>order='fac'</em>, <em>dimensions=None</em>, <em>dt=1</em>, <em>filename=None</em>, <em>velocities=None</em>, <em>forces=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/memory.html#MemoryReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.MemoryReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>MemoryReader works with trajectories represented as numpy arrays.</p>
 <p>A trajectory reader interface to a numpy array of the coordinates.
 For compatibility with the timeseries interface, support is provided for
@@ -515,11 +515,16 @@ where the shape is (frame, number of atoms,
 coordinates).</li>
 <li><strong>dimensions</strong> (<em>[</em><em>A</em><em>, </em><em>B</em><em>, </em><em>C</em><em>, </em><em>alpha</em><em>, </em><em>beta</em><em>, </em><em>gamma</em><em>] </em><em>(</em><em>optional</em><em>)</em>) – unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)
 lengths <em>A</em>, <em>B</em>, <em>C</em> are in the MDAnalysis length unit (Å), and
-angles are in degrees.</li>
+angles are in degrees. An array of dimensions can be given,
+which must then be shape (nframes, 6)</li>
 <li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader.time" title="MDAnalysis.coordinates.memory.MemoryReader.time"><code class="xref py py-attr docutils literal"><span class="pre">time</span></code></a>
 is set, then <cite>dt</cite> will be ignored.</li>
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/string.html#module-string" title="(in Python v3.7)"><em>string</em></a><em> (</em><em>optional</em><em>)</em>) – The name of the file from which this instance is created. Set to <code class="docutils literal"><span class="pre">None</span></code>
 when created from an array</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em> (</em><em>optional</em><em>)</em>) – Atom velocities.  Must match shape of coordinate_array.  Will share order
+with coordinates.</li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em> (</em><em>optional</em><em>)</em>) – Atom forces.  Must match shape of coordinate_array  Will share order
+with coordinates</li>
 </ul>
 </td>
 </tr>
@@ -534,7 +539,8 @@ when created from an array</li>
 unit cell for all frames in <cite>coordinate_array</cite>. See issue <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/1041">#1041</a>.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.18.1: </span>The input to the MemoryReader now must be a np.ndarray</p>
+<p><span class="versionmodified">Changed in version 0.18.1: </span>The input to the MemoryReader now must be a np.ndarray
+Added optional velocities and forces</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.memory.MemoryReader.OtherWriter">
@@ -1316,11 +1322,10 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.23. Null output — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="dummy.html">6.24. Dummy coordinate reader</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.25. Base classes — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.26. Common functions for coordinate reading — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.27. ChainReader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.28. XDR based trajectory files — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.24. Base classes — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.25. Common functions for coordinate reading — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.26. ChainReader — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.27. XDR based trajectory files — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations</a></li>

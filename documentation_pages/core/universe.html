@@ -353,6 +353,9 @@ the Universe as a numpy array: <code class="xref py py-meth docutils literal"><s
 <dd><p>Create a blank Universe</p>
 <p>Useful for building a Universe without requiring existing files,
 for example for system building.</p>
+<p>If <cite>trajectory</cite> is set to True, a
+<a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a> will be
+attached to the Universe.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -361,12 +364,14 @@ for example for system building.</p>
 <li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of Atoms in the Universe</li>
 <li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – number of Residues in the Universe, defaults to 1</li>
 <li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – number of Segments in the Universe, defaults to 1</li>
-<li><strong>atom_resindex</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a><em>, </em><em>optional</em>) – mapping of atoms to residues</li>
-<li><strong>residue_segindex</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a><em>, </em><em>optional</em>) – mapping of residues to segments</li>
-<li><strong>trajectory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, attaches a dummy reader to the Universe, therefore
+<li><strong>atom_resindex</strong> (<em>array like</em><em>, </em><em>optional</em>) – mapping of atoms to residues, e.g. with 6 atoms,
+<cite>atom_resindex=[0, 0, 1, 1, 2, 2]</cite> would put 2 atoms
+into each of 3 residues.</li>
+<li><strong>residue_segindex</strong> (<em>array like</em><em>, </em><em>optional</em>) – mapping of residues to segments</li>
+<li><strong>trajectory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, attaches a <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a>
 allowing coordinates to be set and written.  Default is False</li>
-<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – include velocities in the dummy Reader</li>
-<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – include forces in the dummy Reader</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – include velocities in the <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a></li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – include forces in the <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a></li>
 </ul>
 </td>
 </tr>
@@ -390,6 +395,9 @@ positions for the atoms and a mass attribute:</p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.17.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>The attached Reader when trajectory=True is now a MemoryReader</p>
 </div>
 </dd></dl>
 
