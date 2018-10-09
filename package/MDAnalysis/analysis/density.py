@@ -682,7 +682,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       (It should be noted that the `padding` keyword is not used when a user
       defined grid is assigned).
 
-    .. versionchanged:: 0.18.1
+    .. versionchanged:: 0.19.0
        *gridcenter*, *xdim*, *ydim* and *zdim* keywords added to allow for user
        defined boxes
     .. versionchanged:: 0.13.0

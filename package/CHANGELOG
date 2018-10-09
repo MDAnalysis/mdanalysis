@@ -13,11 +13,23 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
+mm/dd/18
+  * 0.19.1
+
+Enhancements
+
+Fixes
+
+Changes
+
+Deprecations
+
+
+10/09/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
          VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta,
          sebastien.buchoux, arm61, p-j-smith, IAlibay
 
-  * 0.18.1
+  * 0.19.0
 
 Enhancements
   * Added bond/angle/dihedral reading in PARM7 TOPParser (PR #2052)

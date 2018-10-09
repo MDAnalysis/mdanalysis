@@ -26,7 +26,7 @@ r"""Dihedral angles analysis --- :mod:`MDAnalysis.analysis.dihedrals`
 :Year: 2018
 :Copyright: GNU Public License v2
 
-.. versionadded:: 0.18.1
+.. versionadded:: 0.19.0
 
 This module contains classes for calculating dihedral angles for a given set of
 atoms or residues. This can be done for selected frames or whole trajectories.

@@ -585,7 +585,7 @@ class LammpsDumpParser(TopologyReaderBase):
 
     Only reads atom ids.  Sets all masses to 1.0.
 
-    .. versionadded:: 0.18.1
+    .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
 
