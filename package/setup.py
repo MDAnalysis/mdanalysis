@@ -289,6 +289,7 @@ def extensions(config):
         print('Will not attempt to use Cython.')
 
     source_suffix = '.pyx' if use_cython else '.c'
+    cpp_source_suffix = '.pyx' if use_cython else '.cpp'
 
     # The callable is passed so that it is only evaluated at install time.
 
@@ -347,14 +348,14 @@ def extensions(config):
                         define_macros=define_macros,
                         extra_compile_args=extra_compile_args)
     cutil = MDAExtension('MDAnalysis.lib._cutil',
-                         sources=['MDAnalysis/lib/_cutil' + source_suffix],
+                         sources=['MDAnalysis/lib/_cutil' + cpp_source_suffix],
                          language='c++',
                          libraries=mathlib,
                          include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                          define_macros=define_macros,
                          extra_compile_args=cpp_extra_compile_args)
     augment = MDAExtension('MDAnalysis.lib._augment',
-                         sources=['MDAnalysis/lib/_augment' + source_suffix],
+                         sources=['MDAnalysis/lib/_augment' + cpp_source_suffix],
                          language='c++',
                          include_dirs=include_dirs,
                          define_macros=define_macros,
@@ -381,7 +382,7 @@ def extensions(config):
                               define_macros=define_macros,
                               extra_compile_args=extra_compile_args)
     nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
-                             ['MDAnalysis/lib/nsgrid' + source_suffix],
+                             ['MDAnalysis/lib/nsgrid' + cpp_source_suffix],
                              include_dirs=include_dirs,
                              language='c++',
                              define_macros=define_macros,
