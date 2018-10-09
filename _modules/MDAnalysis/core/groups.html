@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>MDAnalysis.core.groups &#8212; MDAnalysis 0.18.1-dev documentation</title>
+    <title>MDAnalysis.core.groups &#8212; MDAnalysis 0.19.1-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.18.1-dev',
+        VERSION:     '0.19.1-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.18.1-dev documentation"
+          title="Search within MDAnalysis 0.19.1-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -2409,8 +2409,9 @@
 <span class="sd">        .. versionchanged:: 0.16.0 Updating selections now possible by setting</span>
 <span class="sd">            the `updating` argument.</span>
 <span class="sd">        .. versionchanged:: 0.17.0 Added *moltype* and *molnum* selections.</span>
-<span class="sd">        .. versionchanged:: 0.18.1 Added strict type checking for passed groups.</span>
-<span class="sd">        .. versionchanged:: 0.19.0 Added periodic kwarg (default True)</span>
+<span class="sd">        .. versionchanged:: 0.19.0</span>
+<span class="sd">           Added strict type checking for passed groups.</span>
+<span class="sd">           Added periodic kwarg (default True)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># once flags removed, replace with default=True</span>
         <span class="n">periodic</span> <span class="o">=</span> <span class="n">selgroups</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;periodic&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_periodic_selections&#39;</span><span class="p">])</span>
