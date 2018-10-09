@@ -2361,8 +2361,9 @@ class AtomGroup(GroupBase):
         .. versionchanged:: 0.16.0 Updating selections now possible by setting
             the `updating` argument.
         .. versionchanged:: 0.17.0 Added *moltype* and *molnum* selections.
-        .. versionchanged:: 0.18.1 Added strict type checking for passed groups.
-        .. versionchanged:: 0.19.0 Added periodic kwarg (default True)
+        .. versionchanged:: 0.19.0
+           Added strict type checking for passed groups.
+           Added periodic kwarg (default True)
         """
         # once flags removed, replace with default=True
         periodic = selgroups.pop('periodic', flags['use_periodic_selections'])

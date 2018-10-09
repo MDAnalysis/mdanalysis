@@ -462,7 +462,7 @@ class DumpReader(base.ReaderBase):
     Will automatically convert positions from their scaled/fractional
     representation to their real values.
 
-    .. versionadded:: 0.18.1
+    .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
 

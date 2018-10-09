@@ -299,7 +299,7 @@ class MemoryReader(base.ProtoReader):
 
         .. _`#1041`: https://github.com/MDAnalysis/mdanalysis/issues/1041
 
-        .. versionchanged:: 0.18.1
+        .. versionchanged:: 0.19.0
             The input to the MemoryReader now must be a np.ndarray
             Added optional velocities and forces
         """

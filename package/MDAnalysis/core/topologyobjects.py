@@ -196,7 +196,7 @@ class Bond(TopologyObject):
 
         .. versionchanged:: 0.11.0
            Added pbc keyword
-        .. versionchanged:: 0.18.1
+        .. versionchanged:: 0.19.0
            Changed default of pbc to True
         """
         box = self.universe.dimensions if pbc else None
@@ -236,7 +236,7 @@ class Angle(TopologyObject):
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.17.0
            Fixed angles close to 180 giving NaN
-        .. versionchanged:: 0.18.1
+        .. versionchanged:: 0.19.0
            Added pbc keyword, default True
         """
         box = self.universe.dimensions if pbc else None
@@ -285,7 +285,7 @@ class Dihedral(TopologyObject):
         4 decimals (and is only tested to 3 decimals).
 
         .. versionadded:: 0.9.0
-        .. versionchanged:: 0.18.1
+        .. versionchanged:: 0.19.0
            Added pbc keyword, default True
         """
         box = self.universe.dimensions if pbc else None
@@ -518,7 +518,7 @@ class TopologyGroup(object):
     .. versionchanged:: 0.11.0
        Added `values` method to return the size of each object in this group
        Deprecated selectBonds method in favour of select_bonds
-    .. versionchanged:: 0.18.1
+    .. versionchanged:: 0.19.0
        Empty TopologyGroup now returns correctly shaped empty array via
        indices property and to_indices()
     """

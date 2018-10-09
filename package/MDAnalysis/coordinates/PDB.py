@@ -1002,7 +1002,7 @@ class PDBWriter(base.WriterBase):
         .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
 
 
-        .. versionchanged:: 0.18.1
+        .. versionchanged:: 0.19.0
            Maximum model number is enforced.
 
         """

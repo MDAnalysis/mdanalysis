@@ -132,7 +132,7 @@ if __name__ == '__main__':
         warnings.warn('Cannot write the list of authors.')
 
     # this must be in-sync with MDAnalysis
-    RELEASE = "0.18.1-dev"
+    RELEASE = "0.19.0"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 

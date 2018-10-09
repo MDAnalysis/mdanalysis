@@ -97,7 +97,7 @@ import pytest
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
 # keep in sync with RELEASE in setup.py
-__version__ = "0.18.1-dev"
+__version__ = "0.19.0"
 try:
     from MDAnalysisTests.authors import __authors__
 except ImportError:
