@@ -1959,7 +1959,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             raise ValueError("Transformations are already set")
 
     def add_transformations(self, *transformations):
-        """ Add all transformations to be applied to the trajectory.
+        """Add all transformations to be applied to the trajectory.
 
         This function take as list of transformations as an argument. These
         transformations are functions that will be called by the Reader and given
@@ -1976,14 +1976,27 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
           workflow = [some_transform, another_transform, this_transform]
           u.trajectory.add_transformations(*workflow)
 
+        The transformations are applied in the order given in the list
+        `transformations`, i.e., the first transformation is the first
+        or innermost one to be applied to the :class:`Timestep`. The
+        example above would be equivalent to
+
+        .. code-block:: python
+
+          for ts in u.trajectory:
+             ts = this_transform(another_transform(some_transform(ts)))
+
+
         Parameters
         ----------
         transform_list : list
             list of all the transformations that will be applied to the coordinates
+            in the order given in the list
 
         See Also
         --------
         :mod:`MDAnalysis.transformations`
+
         """
 
         try:
