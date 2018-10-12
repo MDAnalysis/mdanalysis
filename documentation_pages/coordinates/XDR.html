@@ -171,11 +171,20 @@ raise an exception.</p>
 <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">workflow</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The transformations are applied in the order given in the list
+<cite>transformations</cite>, i.e., the first transformation is the first
+or innermost one to be applied to the <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code>. The
+example above would be equivalent to</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+   <span class="n">ts</span> <span class="o">=</span> <span class="n">this_transform</span><span class="p">(</span><span class="n">another_transform</span><span class="p">(</span><span class="n">some_transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)))</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates
+in the order given in the list</td>
 </tr>
 </tbody>
 </table>

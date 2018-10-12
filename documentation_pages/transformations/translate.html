@@ -50,9 +50,69 @@
   <span class="target" id="module-MDAnalysis.transformations.translate"></span><div class="section" id="trajectory-translation-mdanalysis-transformations-translate">
 <h1>7.1. Trajectory translation — <a class="reference internal" href="#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.transformations.translate</span></code></a><a class="headerlink" href="#trajectory-translation-mdanalysis-transformations-translate" title="Permalink to this headline">¶</a></h1>
 <p>Translate the coordinates of a given trajectory by a given vector.
-The vector can either be user defined, using the function <code class="xref py py-func docutils literal"><span class="pre">translate()</span></code>
+The vector can either be user defined, using the function <a class="reference internal" href="#MDAnalysis.transformations.translate.translate" title="MDAnalysis.transformations.translate.translate"><code class="xref py py-func docutils literal"><span class="pre">translate()</span></code></a>
 or defined by centering an AtomGroup in the unit cell using the function
-<code class="xref py py-func docutils literal"><span class="pre">center_in_box()</span></code></p>
+<a class="reference internal" href="#MDAnalysis.transformations.translate.center_in_box" title="MDAnalysis.transformations.translate.center_in_box"><code class="xref py py-func docutils literal"><span class="pre">center_in_box()</span></code></a></p>
+<dl class="function">
+<dt id="MDAnalysis.transformations.translate.translate">
+<code class="descclassname">MDAnalysis.transformations.translate.</code><code class="descname">translate</code><span class="sig-paren">(</span><em>vector</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translates the coordinates of a given <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a>
+instance by a given vector.</p>
+<p class="rubric">Example</p>
+<p>ts = MDAnalysis.transformations.translate([1,2,3])(ts)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vector</strong> (<em>array-like</em>) – coordinates of the vector to which the coordinates will be translated</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.transformations.translate.center_in_box">
+<code class="descclassname">MDAnalysis.transformations.translate.</code><code class="descname">center_in_box</code><span class="sig-paren">(</span><em>ag</em>, <em>center='geometry'</em>, <em>point=None</em>, <em>wrap=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#center_in_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.center_in_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translates the coordinates of a given <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a>
+instance so that the center of geometry/mass of the given <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a>
+is centered on the unit cell. The unit cell dimensions are taken from the input Timestep object.
+If a point is given, the center of the atomgroup will be translated to this point instead.</p>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span><span class="n">center</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atom group to be centered on the unit cell.</li>
+<li><strong>center</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – used to choose the method of centering on the given atom group. Can be ‘geometry’
+or ‘mass’</li>
+<li><strong>point</strong> (<em>array-like</em><em>, </em><em>optional</em>) – overrides the unit cell center - the coordinates of the Timestep are translated so
+that the center of mass/geometry of the given AtomGroup is aligned to this position
+instead. Defined as an array of size 3.</li>
+<li><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite>, all the atoms from the given AtomGroup will be moved to the unit cell
+before calculating the center of mass or geometry. Default is <cite>False</cite>, no changes
+to the atom coordinates are done before calculating the center of the AtomGroup.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 

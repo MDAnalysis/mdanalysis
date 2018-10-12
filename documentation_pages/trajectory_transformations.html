@@ -49,16 +49,37 @@
             
   <div class="section" id="module-MDAnalysis.transformations">
 <span id="trajectory-transformations"></span><span id="transformations"></span><h1>7. Trajectory transformations<a class="headerlink" href="#module-MDAnalysis.transformations" title="Permalink to this headline">¶</a></h1>
-<p>The transformations submodule contains a collection of functions to modify the
-trajectory. Coordinate transformations, such as PBC corrections and molecule fitting
-are often required for some analyses and visualization, and the functions in this
-module allow transformations to be applied on-the-fly.
-These transformation functions can be called by the user for any given
-timestep of the trajectory, added as a workflow using <code class="xref py py-meth docutils literal"><span class="pre">add_transformations()</span></code>
-of the <a class="reference internal" href="coordinates/base.html#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal"><span class="pre">base</span></code></a> module, or upon Universe creation using
-the keyword argument <cite>transformations</cite>. Note that in the two latter cases, the
-workflow cannot be changed after being defined.</p>
-<p>A simple transformation that takes no other arguments but the <cite>Timestep</cite> can be defined
+<p>The transformations submodule <a class="reference internal" href="#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.transformations</span></code></a> contains a
+collection of functions to modify the trajectory. Coordinate transformations,
+such as PBC corrections and molecule fitting are often required for some
+analyses and visualization, and the functions in this module allow
+transformations to be applied on-the-fly.  These transformation functions
+(<code class="docutils literal"><span class="pre">transformation_1</span></code> and <code class="docutils literal"><span class="pre">transformation_2</span></code> in the following example) can be
+called by the user for any given <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code> of the trajectory,</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+   <span class="n">ts</span> <span class="o">=</span> <span class="n">transformation_2</span><span class="p">(</span><span class="n">transformation_1</span><span class="p">(</span><span class="n">ts</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>where they change the coordinates of the timestep <code class="docutils literal"><span class="pre">ts</span></code> in place.  However, it
+is much more convenient to associate a whole workflow of transformations with a
+trajectory and have the transformations be called automatically. One can add a
+workflow (a sequence of transformations) using the
+<a class="reference internal" href="coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.add_transformations" title="MDAnalysis.coordinates.base.ReaderBase.add_transformations"><code class="xref py py-meth docutils literal"><span class="pre">Universe.trajectory.add_transformations</span></code></a> method of a
+trajectory,</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">workflow</span> <span class="o">=</span> <span class="p">[</span><span class="n">transformation_1</span><span class="p">,</span> <span class="n">transformation_2</span><span class="p">]</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">workflow</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or upon <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a>
+creation using the keyword argument <cite>transformations</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="n">workflow</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that in the two latter cases, the workflow cannot be changed after having
+being added.</p>
+<p>A simple transformation that takes no other arguments but a <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code> can be defined
 as the following example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">up_by_2</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -68,8 +89,8 @@ as the following example:</p>
     <span class="k">return</span> <span class="n">ts</span>
 </pre></div>
 </div>
-<p>If the transformation requires other arguments besides the <cite>Timestep</cite>, the transformation
-takes these arguments, while a wrapped function takes the <cite>Timestep</cite> object as
+<p>If the transformation requires other arguments besides the <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code>, the transformation
+takes these arguments, while a wrapped function takes the <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code> object as
 argument.
 So, a transformation can be roughly defined as follows:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">up_by_x</span><span class="p">(</span><span class="n">distance</span><span class="p">):</span>
@@ -104,13 +125,13 @@ above function can be written as:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 <span class="n">workflow</span> <span class="o">=</span> <span class="p">[</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span>
             <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])]</span>
-<span class="n">u</span><span class="o">.</span><span class="n">trajcetory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">workflow</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">workflow</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>e.g. giving a workflow as a keyword argument when defining the universe:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">workflow</span> <span class="o">=</span> <span class="p">[</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span>
             <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])]</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">transformations</span> <span class="o">=</span> <span class="o">*</span><span class="n">workflow</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="n">workflow</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">Currently implemented transformations</p>

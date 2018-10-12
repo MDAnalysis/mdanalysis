@@ -69,9 +69,14 @@ superposition by minimizing the RMSD.</p>
 <p><a class="reference internal" href="lib/util.html#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a> contains various file and string utility
 functions whereas mathematical functions are to be found in
 <a class="reference internal" href="lib/mdamath.html#module-MDAnalysis.lib.mdamath" title="MDAnalysis.lib.mdamath"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a>.</p>
-<p><a class="reference internal" href="lib/NeighborSearch.html#module-MDAnalysis.lib.NeighborSearch" title="MDAnalysis.lib.NeighborSearch"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a> contains classes to do neighbor
-searches with MDAnalysis objects.</p>
-<p><a class="reference internal" href="lib/nsgrid.html#module-MDAnalysis.lib.nsgrid" title="MDAnalysis.lib.nsgrid"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a> contains a fast implementation of grid neighbor search.</p>
+<p>A number of modules are concerned with finding
+neighbors. <a class="reference internal" href="lib/NeighborSearch.html#module-MDAnalysis.lib.NeighborSearch" title="MDAnalysis.lib.NeighborSearch"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a> contains high-level
+classes to do neighbor searches with MDAnalysis
+objects. <a class="reference internal" href="lib/nsgrid.html#module-MDAnalysis.lib.nsgrid" title="MDAnalysis.lib.nsgrid"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a> contains a fast implementation
+of grid neighbor search whereas <a class="reference internal" href="lib/pkdtree.html#module-MDAnalysis.lib.pkdtree" title="MDAnalysis.lib.pkdtree"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a> uses
+KDTrees (with periodic images) for neighbor searching. Some of the
+functions in <a class="reference internal" href="lib/distances.html#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a> user either of these
+algorithms to speed up distance calculations.</p>
 </div>
 <div class="section" id="list-of-modules">
 <h2>12.2. List of modules<a class="headerlink" href="#list-of-modules" title="Permalink to this headline">¶</a></h2>
@@ -80,12 +85,13 @@ searches with MDAnalysis objects.</p>
 <li class="toctree-l1"><a class="reference internal" href="lib/distances.html">12.2.1. Fast distance array computation — <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="lib/distances.html#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="lib/NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/log.html">12.2.4. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/mdamath.html">12.2.5. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/transformations.html">12.2.6. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/qcprot.html">12.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/util.html">12.2.8. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/nsgrid.html">12.2.9. Neighbor search library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/nsgrid.html">12.2.4. Neighbor search library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/pkdtree.html">12.2.5. PeriodicKDTree — <code class="docutils literal"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/log.html">12.2.6. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/mdamath.html">12.2.7. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/qcprot.html">12.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/util.html">12.2.10. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -153,12 +159,13 @@ Python-based projects.</p>
 <li class="toctree-l3"><a class="reference internal" href="lib/distances.html">12.2.1. Fast distance array computation — <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="lib/distances.html#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="lib/NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/log.html">12.2.4. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/mdamath.html">12.2.5. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/transformations.html">12.2.6. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/qcprot.html">12.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/util.html">12.2.8. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/nsgrid.html">12.2.9. Neighbor search library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/nsgrid.html">12.2.4. Neighbor search library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/pkdtree.html">12.2.5. PeriodicKDTree — <code class="docutils literal"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/log.html">12.2.6. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/mdamath.html">12.2.7. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/qcprot.html">12.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/util.html">12.2.10. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#low-level-file-formats">12.3. Low level file formats</a><ul>

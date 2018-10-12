@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>12.2.4. Setting up logging — MDAnalysis.lib.log &#8212; MDAnalysis 0.19.1-dev documentation</title>
+    <title>12.2.6. Setting up logging — MDAnalysis.lib.log &#8212; MDAnalysis 0.19.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -28,8 +28,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="12.2.5. Mathematical helper functions — MDAnalysis.lib.mdamath" href="mdamath.html" />
-    <link rel="prev" title="12.2.3. Neighbor Search wrapper for MDAnalysis — MDAnalysis.lib.NeighborSearch" href="NeighborSearch.html" />
+    <link rel="next" title="12.2.7. Mathematical helper functions — MDAnalysis.lib.mdamath" href="mdamath.html" />
+    <link rel="prev" title="12.2.5. PeriodicKDTree — MDAnalysis.lib.pkdtree" href="pkdtree.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -48,7 +48,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.lib.log"></span><div class="section" id="setting-up-logging-mdanalysis-lib-log">
-<h1>12.2.4. Setting up logging — <a class="reference internal" href="#module-MDAnalysis.lib.log" title="MDAnalysis.lib.log"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a><a class="headerlink" href="#setting-up-logging-mdanalysis-lib-log" title="Permalink to this headline">¶</a></h1>
+<h1>12.2.6. Setting up logging — <a class="reference internal" href="#module-MDAnalysis.lib.log" title="MDAnalysis.lib.log"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a><a class="headerlink" href="#setting-up-logging-mdanalysis-lib-log" title="Permalink to this headline">¶</a></h1>
 <p>Configure logging for MDAnalysis. Import this module if logging is
 desired in application code.</p>
 <p>Logging to a file and the console is set up by default as described
@@ -81,7 +81,7 @@ optional argument to <a class="reference internal" href="#MDAnalysis.start_loggi
 documentation about using logging.</p>
 </div>
 <div class="section" id="convenience-functions">
-<h2>12.2.4.1. Convenience functions<a class="headerlink" href="#convenience-functions" title="Permalink to this headline">¶</a></h2>
+<h2>12.2.6.1. Convenience functions<a class="headerlink" href="#convenience-functions" title="Permalink to this headline">¶</a></h2>
 <p>Two convenience functions at the top level make it easy to start and
 stop the default <em>MDAnalysis</em> logger.</p>
 <dl class="function">
@@ -100,7 +100,7 @@ logged with the tag <em>MDAnalysis</em>.</p>
 
 </div>
 <div class="section" id="other-functions-and-classes-for-logging-purposes">
-<h2>12.2.4.2. Other functions and classes for logging purposes<a class="headerlink" href="#other-functions-and-classes-for-logging-purposes" title="Permalink to this headline">¶</a></h2>
+<h2>12.2.6.2. Other functions and classes for logging purposes<a class="headerlink" href="#other-functions-and-classes-for-logging-purposes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.lib.log.NullHandler">
 <em class="property">class </em><code class="descclassname">MDAnalysis.lib.log.</code><code class="descname">NullHandler</code><span class="sig-paren">(</span><em>level=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#NullHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.log.NullHandler" title="Permalink to this definition">¶</a></dt>
@@ -358,16 +358,17 @@ logged with the tag <em>MDAnalysis</em>.</p>
 <li class="toctree-l3"><a class="reference internal" href="distances.html">12.2.1. Fast distance array computation — <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.4. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#convenience-functions">12.2.4.1. Convenience functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#other-functions-and-classes-for-logging-purposes">12.2.4.2. Other functions and classes for logging purposes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">12.2.4. Neighbor search library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">12.2.5. PeriodicKDTree — <code class="docutils literal"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.6. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#convenience-functions">12.2.6.1. Convenience functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#other-functions-and-classes-for-logging-purposes">12.2.6.2. Other functions and classes for logging purposes</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="mdamath.html">12.2.5. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations.html">12.2.6. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="qcprot.html">12.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="util.html">12.2.8. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">12.2.9. Neighbor search library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">12.2.7. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">12.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">12.2.10. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">12.3. Low level file formats</a></li>
@@ -384,8 +385,8 @@ logged with the tag <em>MDAnalysis</em>.</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a><ul>
-      <li>Previous: <a href="NeighborSearch.html" title="previous chapter">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-      <li>Next: <a href="mdamath.html" title="next chapter">12.2.5. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+      <li>Previous: <a href="pkdtree.html" title="previous chapter">12.2.5. PeriodicKDTree — <code class="docutils literal"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+      <li>Next: <a href="mdamath.html" title="next chapter">12.2.7. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>

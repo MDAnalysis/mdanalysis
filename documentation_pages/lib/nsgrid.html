@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>12.2.9. Neighbor search library — MDAnalysis.lib.nsgrid &#8212; MDAnalysis 0.19.1-dev documentation</title>
+    <title>12.2.4. Neighbor search library — MDAnalysis.lib.nsgrid &#8212; MDAnalysis 0.19.1-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -28,8 +28,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="12.3.1. Low-level Gromacs XDR trajectory reading — MDAnalysis.lib.formats.libmdaxdr" href="formats/libmdaxdr.html" />
-    <link rel="prev" title="12.2.8. Helper functions — MDAnalysis.lib.util" href="util.html" />
+    <link rel="next" title="12.2.5. PeriodicKDTree — MDAnalysis.lib.pkdtree" href="pkdtree.html" />
+    <link rel="prev" title="12.2.3. Neighbor Search wrapper for MDAnalysis — MDAnalysis.lib.NeighborSearch" href="NeighborSearch.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -48,9 +48,9 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.lib.nsgrid"></span><div class="section" id="neighbor-search-library-mdanalysis-lib-nsgrid">
-<h1>12.2.9. Neighbor search library — <a class="reference internal" href="#module-MDAnalysis.lib.nsgrid" title="MDAnalysis.lib.nsgrid"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><a class="headerlink" href="#neighbor-search-library-mdanalysis-lib-nsgrid" title="Permalink to this headline">¶</a></h1>
+<h1>12.2.4. Neighbor search library — <a class="reference internal" href="#module-MDAnalysis.lib.nsgrid" title="MDAnalysis.lib.nsgrid"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><a class="headerlink" href="#neighbor-search-library-mdanalysis-lib-nsgrid" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="about-the-code">
-<h2>12.2.9.1. About the code<a class="headerlink" href="#about-the-code" title="Permalink to this headline">¶</a></h2>
+<h2>12.2.4.1. About the code<a class="headerlink" href="#about-the-code" title="Permalink to this headline">¶</a></h2>
 <p>This Neighbor search library is a serialized Cython version greatly
 inspired by the NS grid search implemented in
 <a class="reference external" href="http://www.gromacs.org/">GROMACS</a> .</p>
@@ -61,7 +61,7 @@ was used as reference to write this file.</p>
 <p>GROMACS 4.x code is released under the GNU Public Licence v2.</p>
 </div>
 <div class="section" id="about-the-algorithm">
-<h2>12.2.9.2. About the algorithm<a class="headerlink" href="#about-the-algorithm" title="Permalink to this headline">¶</a></h2>
+<h2>12.2.4.2. About the algorithm<a class="headerlink" href="#about-the-algorithm" title="Permalink to this headline">¶</a></h2>
 <p>The neighbor search implemented here is based on
 <a class="reference external" href="https://en.wikipedia.org/wiki/Cell_lists">cell lists</a> which allow
 computation of pairs <a class="footnote-reference" href="#id2" id="id1">[1]</a> with a cost of <span class="math">\(O(N)\)</span>, instead
@@ -507,16 +507,17 @@ as it always called when class is instantiated.</p>
 <li class="toctree-l3"><a class="reference internal" href="distances.html">12.2.1. Fast distance array computation — <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="log.html">12.2.4. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mdamath.html">12.2.5. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations.html">12.2.6. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="qcprot.html">12.2.7. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="util.html">12.2.8. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.9. Neighbor search library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#about-the-code">12.2.9.1. About the code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#about-the-algorithm">12.2.9.2. About the algorithm</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.4. Neighbor search library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#about-the-code">12.2.4.1. About the code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#about-the-algorithm">12.2.4.2. About the algorithm</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">12.2.5. PeriodicKDTree — <code class="docutils literal"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">12.2.6. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">12.2.7. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">12.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">12.2.10. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">12.3. Low level file formats</a></li>
@@ -533,8 +534,8 @@ as it always called when class is instantiated.</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a><ul>
-      <li>Previous: <a href="util.html" title="previous chapter">12.2.8. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
-      <li>Next: <a href="formats/libmdaxdr.html" title="next chapter">12.3.1. Low-level Gromacs XDR trajectory reading — <code class="docutils literal"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
+      <li>Previous: <a href="NeighborSearch.html" title="previous chapter">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+      <li>Next: <a href="pkdtree.html" title="next chapter">12.2.5. PeriodicKDTree — <code class="docutils literal"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
