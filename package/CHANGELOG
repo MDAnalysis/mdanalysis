@@ -13,12 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/18
+mm/dd/18 orbeckst
   * 0.19.1
 
 Enhancements
 
 Fixes
+   * added missing docs for lib.pkdtree (#2104)
 
 Changes
 
