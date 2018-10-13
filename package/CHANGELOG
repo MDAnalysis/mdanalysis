@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/18 orbeckst
+mm/dd/18 orbeckst, PicoCentauri
   * 0.19.1
 
 Enhancements
@@ -24,7 +24,8 @@ Fixes
 Changes
 
 Deprecations
-
+   * Default ``filename`` directory of align.AlignTraj is deprecated and 
+     will change in 1.0 to the current directory.
 
 10/09/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
          VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta,
