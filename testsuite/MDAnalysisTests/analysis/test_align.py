@@ -190,8 +190,11 @@ class TestAlign(object):
         with tempdir.in_tempdir():
             reference.trajectory[-1]
             x = align.AlignTraj(universe, reference)
-            os.remove(x.filename)
-            assert os.path.basename(x.filename) == 'rmsfit_adk_dims.dcd'
+            try:
+                assert os.path.basename(x.filename) == 'rmsfit_adk_dims.dcd'
+            finally:
+                universe.trajectory.close()  # drop file handle
+                os.remove(x.filename)
 
     def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir):
         reference.trajectory[-1]
