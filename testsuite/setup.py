@@ -128,8 +128,9 @@ if sys.version_info[:2] < (2, 7):
 if __name__ == '__main__':
     try:
         dynamic_author_list()
-    except (OSError, IOError):
-        warnings.warn('Cannot write the list of authors.')
+    except (OSError, IOError) as e:
+        warnings.warn('Cannot write the list of authors. '
+                      '{}'.format(e))
 
     # this must be in-sync with MDAnalysis
     RELEASE = "0.19.1-dev"
