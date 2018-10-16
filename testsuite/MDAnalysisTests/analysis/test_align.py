@@ -193,7 +193,7 @@ class TestAlign(object):
             try:
                 assert os.path.basename(x.filename) == 'rmsfit_adk_dims.dcd'
             finally:
-                universe.trajectory.close()  # drop file handle
+                x._writer.close()
                 os.remove(x.filename)
 
     def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir):
