@@ -902,11 +902,3 @@ class TestNCDFWriterErrors(object):
             u = make_Universe(trajectory=True)
             with pytest.raises(IOError):
                 w.write(u.trajectory.ts)
-
-    def test_no_ts(self, outfile):
-        # no ts supplied at any point
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
-        with NCDFWriter(outfile, 100) as w:
-            with pytest.raises(IOError):
-                w.write_next_timestep()

@@ -344,7 +344,7 @@ class GROWriter(base.WriterBase):
 
         Parameters
         -----------
-        obj : AtomGroup or Universe or :class:`Timestep`
+        obj : AtomGroup or Universe
 
         Note
         ----
@@ -357,6 +357,8 @@ class GROWriter(base.WriterBase):
            *resName* and *atomName* are truncated to a maximum of 5 characters
         .. versionchanged:: 0.16.0
            `frame` kwarg has been removed
+        .. versionchanged:: 0.19.1
+           Deprecated calling with Timestep, use AtomGroup or Universe
         """
         # write() method that complies with the Trajectory API
 
@@ -368,6 +370,10 @@ class GROWriter(base.WriterBase):
 
         except AttributeError:
             if isinstance(obj, base.Timestep):
+                warnings.warn(
+                    'Passing a Timestep to write is deprecated, and will be removed in 1.0; '
+                    'use either an AtomGroup or Universe',
+                    DeprecationWarning)
                 ag_or_ts = obj.copy()
             else:
                 raise_from(TypeError("No Timestep found in obj argument"), None)
