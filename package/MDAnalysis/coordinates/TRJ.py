@@ -869,7 +869,6 @@ class NCDFWriter(base.WriterBase):
         self.dt = dt
         self.remarks = remarks or "AMBER NetCDF format (MDAnalysis.coordinates.trj.NCDFWriter)"
 
-        self.ts = None  # when/why would this be assigned??
         self._first_frame = True  # signals to open trajectory
         self.trjfile = None  # open on first write with _init_netcdf()
         self.periodic = None  # detect on first write
@@ -972,39 +971,49 @@ class NCDFWriter(base.WriterBase):
         self._first_frame = False
         self.trjfile = ncfile
 
-    def is_periodic(self, ts=None):
+    def is_periodic(self, ts):
         """Test if `Timestep` contains a periodic trajectory.
 
         Parameters
         ----------
         ts : :class:`Timestep`
              :class:`Timestep` instance containing coordinates to
-             be written to trajectory file; default is the current
-             timestep
+             be written to trajectory file
 
         Returns
         -------
         bool
             Return ``True`` if `ts` contains a valid simulation box
         """
-        ts = ts if ts is not None else self.ts
         return np.all(ts.dimensions > 0)
 
-    def write_next_timestep(self, ts=None):
+    def write_next_timestep(self, ag):
         """write a new timestep to the trj file
 
         Parameters
         ----------
-        ts : :class:`Timestep`
-             :class:`Timestep` instance containing coordinates to
-             be written to trajectory file; default is the current
-             timestep
+        ag : AtomGroup or Universe
+
+        .. versionchanged:: 0.19.1
+           Deprecated using Timestep
+           Added ability to use either AtomGroup or Universe
         """
-        if ts is None:
-            ts = self.ts
-        if ts is None:
-            raise IOError(
-                "NCDFWriter: no coordinate data to write to trajectory file")
+        if isinstance(ag, base.Timestep):
+            warnings.warn(
+                'Passing a Timestep to write is deprecated, '
+                'use either an AtomGroup or Universe',
+                DeprecationWarning)
+            ts = ag
+        else:
+            try:
+                # Atomgroup?
+                ts = ag.ts
+            except AttributeError:
+                try:
+                    # Universe?
+                    ts = ag.trajectory.ts
+                except AttributeError:
+                    raise TypeError("No Timestep found in ag argument")
 
         if ts.n_atoms != self.n_atoms:
             raise IOError(

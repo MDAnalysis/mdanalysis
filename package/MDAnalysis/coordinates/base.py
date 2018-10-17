@@ -2207,23 +2207,13 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
         .. versionchanged:: 0.19.1
            Deprecated the use of Timestep as arguments to write.  Use either a AtomGroup or Universe
         """
-        # TODO: Make this either Universe or AtomGroup
         if isinstance(obj, Timestep):
             warnings.warn(
                 'Passing a Timestep to write is deprecated, and will be removed 1.0; '
                 'use either an AtomGroup or Universe',
                 DeprecationWarning)
-            ts = obj
-        else:
-            try:
-                ts = obj.ts
-            except AttributeError:
-                try:
-                    # special case: can supply a Universe, too...
-                    ts = obj.trajectory.ts
-                except AttributeError:
-                    six.raise_from(TypeError("No Timestep found in obj argument"), None)
-        return self.write_next_timestep(ts)
+
+        return self.write_next_timestep(obj)
 
     def __del__(self):
         self.close()
