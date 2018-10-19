@@ -17,7 +17,8 @@ mm/dd/18 PicoCentauri
   * 0.19.1
 
 Enhancements
-
+   * Added tests for ChainReader __repr__
+   
 Fixes
    * Removed rmsfit_adk_dims.dcd file generation during test (Issue #2099).
 
