@@ -19,6 +19,7 @@ mm/dd/18 orbeckst, PicoCentauri
 Enhancements
 
 Fixes
+   * limit output of Chainreader __repr__ (#2109)
    * added missing docs for lib.pkdtree (#2104)
 
 Changes
