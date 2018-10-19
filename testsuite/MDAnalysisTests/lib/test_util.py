@@ -1668,3 +1668,55 @@ def test_dedent_docstring(text):
     doc = util.dedent_docstring(text)
     for line in doc.splitlines():
         assert line == line.lstrip()
+
+
+class TestCheckBox(object):
+
+    prec = 6
+    ref_ortho = np.ones(3, dtype=np.float32)
+    ref_tri_vecs = np.array([[1, 0, 0], [0, 1, 0], [0, 2 ** 0.5, 2 ** 0.5]],
+                            dtype=np.float32)
+
+    @pytest.mark.parametrize('box',
+        ([1, 1, 1, 90, 90, 90],
+         (1, 1, 1, 90, 90, 90),
+         ['1', '1', 1, 90, '90', '90'],
+         ('1', '1', 1, 90, '90', '90'),
+         np.array(['1', '1', 1, 90, '90', '90']),
+         np.array([1, 1, 1, 90, 90, 90], dtype=np.float32),
+         np.array([1, 1, 1, 90, 90, 90], dtype=np.float64),
+         np.array([1, 1, 1, 1, 1, 1, 90, 90, 90, 90, 90, 90],
+                  dtype=np.float32)[::2]))
+    def test_ckeck_box_ortho(self, box):
+        boxtype, checked_box = util.check_box(box)
+        assert boxtype == 'ortho'
+        assert_equal(checked_box, self.ref_ortho)
+        assert checked_box.dtype == np.float32
+        assert checked_box.flags['C_CONTIGUOUS']
+
+    @pytest.mark.parametrize('box',
+         ([1, 1, 2, 45, 90, 90],
+          (1, 1, 2, 45, 90, 90),
+          ['1', '1', 2, 45, '90', '90'],
+          ('1', '1', 2, 45, '90', '90'),
+          np.array(['1', '1', 2, 45, '90', '90']),
+          np.array([1, 1, 2, 45, 90, 90], dtype=np.float32),
+          np.array([1, 1, 2, 45, 90, 90], dtype=np.float64),
+          np.array([1, 1, 1, 1, 2, 2, 45, 45, 90, 90, 90, 90],
+                   dtype=np.float32)[::2]))
+    def test_check_box_tri_vecs(self, box):
+        boxtype, checked_box = util.check_box(box)
+        assert boxtype == 'tri_vecs'
+        assert_almost_equal(checked_box, self.ref_tri_vecs, self.prec)
+        assert checked_box.dtype == np.float32
+        assert checked_box.flags['C_CONTIGUOUS']
+
+    def test_check_box_wrong_data(self):
+        with pytest.raises(ValueError):
+            wrongbox = ['invalid', 1, 1, 90, 90, 90]
+            boxtype, checked_box = util.check_box(wrongbox)
+
+    def test_check_box_wrong_shape(self):
+        with pytest.raises(ValueError):
+            wrongbox = np.ones((3, 3), dtype=np.float32)
+            boxtype, checked_box = util.check_box(wrongbox)
