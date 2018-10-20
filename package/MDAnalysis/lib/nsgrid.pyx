@@ -65,11 +65,12 @@ neighboring cells only. Care must be taken to ensure that `cellsize` is
 greater than the desired search distance, otherwise all of the neighbours might
 not reflect in the results.
 
-
 .. [#] a pair correspond to two particles that are considered as neighbors .
 
-
 .. versionadded:: 0.19.0
+
+Classes
+-------
 """
 
 # Used to handle memory allocation
@@ -314,10 +315,9 @@ cdef class _PBCBox(object):
 cdef class NSResults(object):
     """Class to store the results
 
-    All the required outputs from :class:`FastNS` is stored in the
-    instance of this class. All the methods of :class:`FastNS` returns
-    an instance of this class, which can be used to  generate the desired
-    results on demand.
+    All outputs from :class:`FastNS` are stored in an instance of this class.
+    All methods of :class:`FastNS` return an instance of this class, which can
+    be used to  generate the desired results on demand.
     """
 
     cdef readonly real cutoff
@@ -403,7 +403,7 @@ cdef class NSResults(object):
 
         See Also
         --------
-        MDAnalysis.lib.nsgrid.NSResults.get_pairs
+        :meth:`~NSResults.get_pairs`
 
         """
 
@@ -457,15 +457,15 @@ cdef class NSResults(object):
             size ``m`` where m is the number of neighbours of
             query atom[i].
 
-        .. code-block:: python
+            .. code-block:: python
 
                 results = NSResults()
                 indices = results.get_indices()
 
-        ``indices[i]`` will output a list of neighboring
-        atoms of ``atom[i]`` from query atoms ``atom``.
-        ``indices[i][j]`` will give the atom-id of initial coordinates
-        such that ``initial_atom[indices[i][j]]`` is a neighbor of ``atom[i]``
+            ``indices[i]`` will be a list of neighboring atoms of
+            ``atom[i]`` from query atoms ``atom``. ``indices[i][j]`` will give
+            the atom-id of initial coordinates such that
+            ``initial_atom[indices[i][j]]`` is a neighbor of ``atom[i]``.
 
         """
 
@@ -491,14 +491,14 @@ cdef class NSResults(object):
             shape ``m`` where m is the number of neighbours of
             query atom[i].
 
-        .. code-block:: python
+            .. code-block:: python
 
                 results = NSResults()
                 distances = results.get_distances()
 
         See Also
         --------
-        MDAnalysis.lib.nsgrid.NSResults.get_indices
+        :meth:`~NSResults.get_indices`
 
         """
 
@@ -757,7 +757,7 @@ cdef class FastNS(object):
           ``[10, 10, 10, 90, 90, 90]``
         * Following operations are advisable for non-PBC calculations
 
-        ..code-block:: python
+        .. code-block:: python
 
             lmax = all_coords.max(axis=0)
             lmin = all_coords.min(axis=0)
@@ -821,21 +821,17 @@ cdef class FastNS(object):
 
         Returns
         -------
-        results : NSResults object
-           The object from :class:NSResults
-           contains ``get_indices``, ``get_distances``.
-           ``get_pairs``, ``get_pair_distances``
+        results : NSResults
+           An :class:`NSResults` object holding neighbor search results, which
+           can be accessed by its methods :meth:`~NSResults.get_indices`,
+           :meth:`~NSResults.get_distances`, :meth:`~NSResults.get_pairs`, and
+           :meth:`~NSResults.get_pair_distances`.
 
         Note
         ----
         For non-PBC aware calculations, the current implementation doesn't work
-        if any of the query coordinates is beyond the range specified in
-        ``box`` in :func:`MDAnalysis.lib.nsgrid.FastNS`.
-
-        See Also
-        --------
-        MDAnalysis.lib.nsgrid.NSResults
-
+        if any of the query coordinates lies outside the `box` supplied to
+        :class:`~MDAnalysis.lib.nsgrid.FastNS`.
         """
 
         cdef ns_int i, j, size_search
@@ -926,15 +922,11 @@ cdef class FastNS(object):
 
         Returns
         -------
-        results : NSResults object
-           The object from :class:NSResults
-           contains ``get_indices``, ``get_distances``.
-           ``get_pairs``, ``get_pair_distances``
-
-        See Also
-        --------
-        MDAnalysis.lib.nsgrid.NSResults
-
+        results : NSResults
+           An :class:`NSResults` object holding neighbor search results, which
+           can be accessed by its methods :meth:`~NSResults.get_indices`,
+           :meth:`~NSResults.get_distances`, :meth:`~NSResults.get_pairs`, and
+           :meth:`~NSResults.get_pair_distances`.
         """
 
         cdef ns_int i, j, size_search
