@@ -38,6 +38,9 @@ Files and directories
 .. autofunction:: greedy_splitext
 .. autofunction:: which
 .. autofunction:: realpath
+.. autofunction:: get_ext
+.. autofunction:: check_compressed_format
+.. autofunction:: format_from_filename_extension
 .. autofunction:: guess_format
 
 Streams
@@ -108,7 +111,13 @@ Containers and lists
 .. autofunction:: asiterable
 .. autofunction:: hasmethod
 .. autoclass:: Namespace
+
+Arrays
+------
+
 .. autofunction:: unique_int_1d(values)
+.. autofunction:: unique_rows
+.. autofunction:: blocks_of
 
 File parsing
 ------------
@@ -122,6 +131,8 @@ Data manipulation and handling
 
 .. autofunction:: fixedwidth_bins
 .. autofunction:: get_weights
+.. autofunction:: ltruncate_int
+.. autofunction:: flatten_dict
 
 Strings
 -------
@@ -148,6 +159,11 @@ Code management
 .. autofunction:: deprecate
 .. autoclass:: _Deprecate
 .. autofunction:: dedent_docstring
+
+Data format checks
+------------------
+
+.. autofunction:: check_box
 
 .. Rubric:: Footnotes
 
@@ -1524,25 +1540,28 @@ def cached(key):
 
 
 def unique_rows(arr, return_index=False):
-    """Return the unique rows from an array
+    """Return the unique rows of an array.
 
     Arguments
     ---------
-    arr : np.array of shape (n1, m)
+    arr : numpy.ndarray
+        Array of shape ``(n1, m)``.
     return_index : bool, optional
       If ``True``, returns indices of array that formed answer (see
       :func:`numpy.unique`)
 
     Returns
     -------
-    unique_rows : numpy.array
-         shape (n2, m)
-    r_idx : numpy.array (optional)
-          index (if `return_index` was ``True``)
+    unique_rows : numpy.ndarray
+         Array of shape ``(n2, m)`` containing only the unique rows of `arr`.
+    r_idx : numpy.ndarray (optional)
+          Array containing the corresponding row indices (if `return_index`
+          is ``True``).
 
     Examples
     --------
     Remove dupicate rows from an array:
+    
     >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
     >>> b = unique_rows(a)
     >>> b
@@ -2271,18 +2290,16 @@ def check_box(box):
 
     Returns
     -------
-    boxtype : str
-        * ``'ortho'`` orthogonal box
-        * ``'tri_vecs'`` triclinic box vectors
-
-    checked_box : numpy.ndarray (``dtype=numpy.float32``)
-        Array containing box information:
-        * If `boxtype` is ``'ortho'``, `cecked_box` will have the shape ``(3,)``
-          containing the x-, y-, and z-dimensions of the orthogonal box.
-        * If  `boxtype` is ``'tri_vecs'``, `cecked_box` will have the shape
-          ``(3, 3)`` containing the triclinic box vectors in a lower triangular
-          matrix as returned by
-          :meth:`~MDAnalysis.lib.mdamath.triclinic_vectors`.
+    boxtype : {``'ortho'``, ``'tri_vecs'``}
+        String indicating the box type (orthogonal or triclinic).
+    checked_box : numpy.ndarray
+        Array of dtype ``numpy.float32`` containing box information:
+          * If `boxtype` is ``'ortho'``, `cecked_box` will have the shape ``(3,)``
+            containing the x-, y-, and z-dimensions of the orthogonal box.
+          * If  `boxtype` is ``'tri_vecs'``, `cecked_box` will have the shape
+            ``(3, 3)`` containing the triclinic box vectors in a lower triangular
+            matrix as returned by
+            :meth:`~MDAnalysis.lib.mdamath.triclinic_vectors`.
 
     Raises
     ------
