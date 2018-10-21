@@ -17,6 +17,7 @@ mm/dd/18 orbeckst, PicoCentauri
   * 0.19.1
 
 Enhancements
+   * Added sphinx markup for FrameIterator
 
 Fixes
    * limit output of Chainreader __repr__ (#2109)

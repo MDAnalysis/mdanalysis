@@ -25,8 +25,8 @@
 Base classes --- :mod:`MDAnalysis.coordinates.base`
 ===================================================
 
-Derive other Timestep, Reader and Writer classes from the classes in
-this module. The derived classes must follow the :ref:`Trajectory API`
+Derive other Timestep, FrameIterator, Reader and Writer classes from the classes 
+in this module. The derived classes must follow the :ref:`Trajectory API`
 in :mod:`MDAnalysis.coordinates.__init__`.
 
 Timestep
@@ -113,6 +113,20 @@ MDAnalysis.
    .. automethod:: __iter__
    .. automethod:: copy
    .. automethod:: copy_slice
+
+
+FrameIterators
+--------------
+
+Iterator classes used by the by the :class:`ProtoReader`.
+
+.. autoclass:: FrameIteratorBase
+    
+.. autoclass:: FrameIteratorSliced
+    
+.. autoclass:: FrameIteratorAll
+    
+.. autoclass:: FrameIteratorIndices
 
 
 Readers
@@ -867,11 +881,6 @@ class FrameIteratorBase(object):
     function, and can be indexed similarly to a full trajectory. When indexed,
     indices are resolved relative to the iterable and not relative to the
     trajectory.
-
-    Parameters
-    ----------
-    trajectory: ProtoReader
-        The trajectory over which to iterate.
 
     .. versionadded:: 0.19.0
 
