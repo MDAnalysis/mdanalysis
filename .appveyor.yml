@@ -31,6 +31,7 @@ environment:
 
         - PYTHON_VERSION: 2.7
           PYTHON_ARCH: 64
+          MSVC_VERSION: "Visual Studio 10 Win64"
 
 init:
     - ps: Write-Host ${env:PYTHON} ${env:PYTHON_VERSION} ${env:PYTHON_ARCH}
