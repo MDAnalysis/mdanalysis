@@ -151,7 +151,12 @@ import warnings
 
 logger = logging.getLogger("MDAnalysis.__init__")
 
-from .version import __version__
+from ._version import get_versions
+#: Version information for MDAnalysis, following :pep:`440`
+#: and `semantic versioning <http://semver.org/>`_.
+__version__ = get_versions()['version']
+del get_versions
+
 try:
     from .authors import __authors__
 except ImportError:

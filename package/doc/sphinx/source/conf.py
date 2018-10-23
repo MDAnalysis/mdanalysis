@@ -75,7 +75,7 @@ copyright = u'2005-2017, ' + authors
 # built documents.
 #
 # Dynamically calculate the version
-packageversion = __import__('MDAnalysis').__version__
+packageversion = __import__('MDAnalysis._version').get_versions()['version']
 # The short X.Y version.
 version = '.'.join(packageversion.split('.')[:2])
 # The full version, including alpha/beta/rc tags.

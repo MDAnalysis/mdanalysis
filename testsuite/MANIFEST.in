@@ -4,3 +4,5 @@ include setup.py
 include MDAnalysisTests/data/*/*
 global-exclude *~
 global-exclude *.pkl
+include versioneer.py
+include MDAnalysisTests/_version.py

@@ -47,6 +47,8 @@ import codecs
 import sys
 import warnings
 
+import versioneer
+
 
 def dynamic_author_list():
     """Generate __authors__ from AUTHORS
@@ -132,7 +134,7 @@ if __name__ == '__main__':
         warnings.warn('Cannot write the list of authors.')
 
     # this must be in-sync with MDAnalysis
-    RELEASE = "0.19.1-dev"
+    RELEASE = versioneer.get_version()
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
@@ -158,6 +160,7 @@ if __name__ == '__main__':
     ]
 
     setup(name='MDAnalysisTests',
+          cmdclass=versioneer.get_cmdclass(),
           version=RELEASE,
           description='MDAnalysis testsuite',
           long_description=LONG_DESCRIPTION,

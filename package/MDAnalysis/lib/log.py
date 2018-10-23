@@ -86,10 +86,11 @@ import logging
 import re
 import warnings
 
-from .. import version
+from .. import _version
 
 
-def start_logging(logfile="MDAnalysis.log", version=version.__version__):
+def start_logging(logfile="MDAnalysis.log",
+                  version=_version.get_versions()['version']):
     """Start logging of messages to file and console.
 
     The default logfile is named `MDAnalysis.log` and messages are

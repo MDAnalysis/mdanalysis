@@ -96,7 +96,7 @@ from ..core import flags
 from ..lib import util
 from ..lib.util import cached
 from ..exceptions import NoDataError
-from ..version import __version__
+from .. import __version__
 
 
 class XYZWriter(base.WriterBase):

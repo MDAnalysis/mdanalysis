@@ -12,3 +12,6 @@ global-exclude *.pyc
 global-exclude *.pyo
 global-exclude *.pyd
 global-exclude *~
+include versioneer.py
+include MDAnalysis/_version.py
+

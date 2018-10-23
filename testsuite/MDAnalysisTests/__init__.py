@@ -20,7 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""=========================
+"""
+=========================
 Test cases for MDAnalysis
 =========================
 
@@ -96,8 +97,10 @@ import pytest
 
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
-# keep in sync with RELEASE in setup.py
-__version__ = "0.19.1-dev"
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
+
 try:
     from MDAnalysisTests.authors import __authors__
 except ImportError:
@@ -124,7 +127,7 @@ os.environ['DUECREDIT_ENABLE'] = 'yes'
 # Any tests that plot with matplotlib need to run with the simple agg backend
 # because on Travis there is no DISPLAY set. This doesn't warn if we import
 # files from the tests after loading matplotlib. This will remove unnecessary
-# user warnings. 
+# user warnings.
 try:
     import matplotlib
     matplotlib.use('agg', warn=False)
