@@ -37,7 +37,7 @@ class TestUnitEncoding(object):
 
     def test_unicode_encoding_with_symbol(self):
         try:
-            assert_equal(units.lengthUnit_factor[u"Å"], 1.0)
+            assert_equal(units.lengthUnit_factor[u"Å"], 1.0)
         except KeyError:
             raise AssertionError("UTF-8-encoded symbol for Angtrom not supported")
 
@@ -51,8 +51,8 @@ class TestConstants(object):
         ('N_Avogadro', 6.02214129e+23),  # mol**-1
         ('elementary_charge', 1.602176565e-19),  # As
         ('calorie', 4.184),  # J
-        ('Boltzman_constant': 8.314462159e-3), # KJ (mol K)**-1
-        ('electric_constant': 5.526350e-3), # As (Angstroms Volts)**-1
+        ('Boltzman_constant', 8.314462159e-3), # KJ (mol K)**-1
+        ('electric_constant', 5.526350e-3), # As (Angstroms Volts)**-1
     )
 
     @pytest.mark.parametrize('name, value', constants_reference)
