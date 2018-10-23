@@ -6,13 +6,24 @@ omit =
     */MDAnalysis/tests/*
     */legacy/*
     */due.py
+    # omit the versioneer-installed _version.py
+    */MDAnalysis/_version.py
 
 [report]
 exclude_lines =
+    # omit lines marked with: # pragma: no cover
     pragma: no cover
+
+    # Don't complain about missing debug-only code:
+    def __unicode__
     def __repr__
+
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
     raise NotImplementedError
-    if __name__ == .__main__.:
+
+    # pass are like empty lines
+    pass
 
 
 
