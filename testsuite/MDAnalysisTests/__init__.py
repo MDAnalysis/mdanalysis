@@ -97,7 +97,7 @@ import pytest
 
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
-from ._version import get_versions
+from MDAnalysisTests._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
 
