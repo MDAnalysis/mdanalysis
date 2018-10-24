@@ -16,11 +16,10 @@ The rules for this file:
 mm/dd/18 orbeckst, PicoCentauri
   * 0.19.1
 
-Enhancements
-
 Fixes
    * limit output of Chainreader __repr__ (#2109)
    * added missing docs for lib.pkdtree (#2104)
+   * Added sphinx markup for FrameIterator (#2106)
 
 Changes
 
