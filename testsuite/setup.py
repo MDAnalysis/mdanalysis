@@ -48,75 +48,6 @@ import sys
 import warnings
 
 
-def dynamic_author_list():
-    """Generate __authors__ from AUTHORS
-
-    This function generates authors.py that contains the list of the
-    authors from the AUTHORS file. This avoids having that list maintained in
-    several places. Note that AUTHORS is sorted chronologically while we want
-    __authors__ in authors.py to be sorted alphabetically.
-
-    The authors are written in AUTHORS as bullet points under the
-    "Chronological list of authors" title.
-    """
-    authors = []
-    with codecs.open('AUTHORS', encoding='utf-8') as infile:
-        # An author is a bullet point under the title "Chronological list of
-        # authors". We first want move the cursor down to the title of
-        # interest.
-        for line_no, line in enumerate(infile, start=1):
-            if line.rstrip() == "Chronological list of authors":
-                break
-        else:
-            # If we did not break, it means we did not find the authors.
-            raise IOError('EOF before the list of authors')
-        # Skip the next line as it is the title underlining
-        line = next(infile)
-        line_no += 1
-        if line[:4] != '----':
-            raise IOError('Unexpected content on line {0}, '
-                          'should be a string of "-".'.format(line_no))
-        # Add each bullet point as an author until the next title underlining
-        for line in infile:
-            if line[:4] in ('----', '====', '~~~~'):
-                # The previous line was a title, hopefully it did not start as
-                # a bullet point so it got ignored. Since we hit a title, we
-                # are done reading the list of authors.
-                break
-            elif line.strip()[:2] == '- ':
-                # This is a bullet point, so it should be an author name.
-                name = line.strip()[2:].strip()
-                authors.append(name)
-
-    # So far, the list of authors is sorted chronologically. We want it
-    # sorted alphabetically of the last name.
-    authors.sort(key=lambda name: name.split()[-1])
-    # Move Naveen and Elizabeth first, and Oliver last.
-    authors.remove('Naveen Michaud-Agrawal')
-    authors.remove('Elizabeth J. Denning')
-    authors.remove('Oliver Beckstein')
-    authors = (['Naveen Michaud-Agrawal', 'Elizabeth J. Denning'] +
-               authors + ['Oliver Beckstein'])
-
-    # Write the authors.py file.
-    out_path = 'MDAnalysisTests/authors.py'
-    with codecs.open(out_path, 'w', encoding='utf-8') as outfile:
-        # Write the header
-        header = '''\
-#-*- coding:utf-8 -*-
-
-# This file is generated from the AUTHORS file during the installation process.
-# Do not edit it as your changes will be overwritten.
-'''
-        print(header, file=outfile)
-
-        # Write the list of authors as a python list
-        template = u'__authors__ = [\n{}\n]'
-        author_string = u',\n'.join(u'    u"{}"'.format(name)
-                                    for name in authors)
-        print(template.format(author_string), file=outfile)
-
-
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
     print("MDAnalysis requires Python 2.7 or better. "
@@ -126,12 +57,6 @@ if sys.version_info[:2] < (2, 7):
 
 
 if __name__ == '__main__':
-    try:
-        dynamic_author_list()
-    except (OSError, IOError) as e:
-        warnings.warn('Cannot write the list of authors. '
-                      '{}'.format(e))
-
     # this must be in-sync with MDAnalysis
     RELEASE = "0.19.1-dev"
     with open("README") as summary:
