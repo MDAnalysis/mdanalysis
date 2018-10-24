@@ -37,7 +37,7 @@ class TestUnitEncoding(object):
 
     def test_unicode_encoding_with_symbol(self):
         try:
-            assert_equal(units.lengthUnit_factor[u"Å"], 1.0)
+            assert_equal(units.lengthUnit_factor[u"Å"], 1.0)
         except KeyError:
             raise AssertionError("UTF-8-encoded symbol for Angtrom not supported")
 
