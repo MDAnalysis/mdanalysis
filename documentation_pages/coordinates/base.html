@@ -49,8 +49,8 @@
             
   <span class="target" id="module-MDAnalysis.coordinates.base"></span><div class="section" id="base-classes-mdanalysis-coordinates-base">
 <h1>6.24. Base classes — <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline">¶</a></h1>
-<p>Derive other Timestep, Reader and Writer classes from the classes in
-this module. The derived classes must follow the <a class="reference internal" href="init.html#trajectory-api"><span class="std std-ref">Trajectory API</span></a>
+<p>Derive other Timestep, FrameIterator, Reader and Writer classes from the classes
+in this module. The derived classes must follow the <a class="reference internal" href="init.html#trajectory-api"><span class="std std-ref">Trajectory API</span></a>
 in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></code></a>.</p>
 <div class="section" id="timestep">
 <h2>6.24.1. Timestep<a class="headerlink" href="#timestep" title="Permalink to this headline">¶</a></h2>
@@ -448,8 +448,87 @@ copy official attributes of the Timestep.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="frameiterators">
+<h2>6.24.2. FrameIterators<a class="headerlink" href="#frameiterators" title="Permalink to this headline">¶</a></h2>
+<p>Iterator classes used by the by the <a class="reference internal" href="#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></code></a>.</p>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.base.FrameIteratorBase">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">FrameIteratorBase</code><span class="sig-paren">(</span><em>trajectory</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#FrameIteratorBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.FrameIteratorBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base iterable over the frames of a trajectory.</p>
+<p>A frame iterable has a length that can be accessed with the <a class="reference external" href="https://docs.python.org/3/library/functions.html#len" title="(in Python v3.7)"><code class="xref py py-func docutils literal"><span class="pre">len()</span></code></a>
+function, and can be indexed similarly to a full trajectory. When indexed,
+indices are resolved relative to the iterable and not relative to the
+trajectory.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.19.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.base.FrameIteratorSliced">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">FrameIteratorSliced</code><span class="sig-paren">(</span><em>trajectory</em>, <em>frames</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#FrameIteratorSliced"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.FrameIteratorSliced" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterable over the frames of a trajectory on the basis of a slice.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>trajectory</strong> (<a class="reference internal" href="#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><em>ProtoReader</em></a>) – The trajectory over which to iterate.</li>
+<li><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.7)"><em>slice</em></a>) – A slice to select the frames of interest.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.base.FrameIteratorBase" title="MDAnalysis.coordinates.base.FrameIteratorBase"><code class="xref py py-class docutils literal"><span class="pre">FrameIteratorBase</span></code></a>, <code class="xref py py-class docutils literal"></code></p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.base.FrameIteratorAll">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">FrameIteratorAll</code><span class="sig-paren">(</span><em>trajectory</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#FrameIteratorAll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.FrameIteratorAll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterable over all the frames of a trajectory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>trajectory</strong> (<a class="reference internal" href="#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><em>ProtoReader</em></a>) – The trajectory over which to iterate.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.base.FrameIteratorBase" title="MDAnalysis.coordinates.base.FrameIteratorBase"><code class="xref py py-class docutils literal"><span class="pre">FrameIteratorBase</span></code></a>, <code class="xref py py-class docutils literal"></code></p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.base.FrameIteratorIndices">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">FrameIteratorIndices</code><span class="sig-paren">(</span><em>trajectory</em>, <em>frames</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#FrameIteratorIndices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.FrameIteratorIndices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterable over the frames of a trajectory listed in a sequence of indices.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>trajectory</strong> (<a class="reference internal" href="#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><em>ProtoReader</em></a>) – The trajectory over which to iterate.</li>
+<li><strong>frames</strong> (<em>sequence</em>) – A sequence of indices.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.base.FrameIteratorBase" title="MDAnalysis.coordinates.base.FrameIteratorBase"><code class="xref py py-class docutils literal"><span class="pre">FrameIteratorBase</span></code></a></p>
+</div>
+</dd></dl>
+
+</div>
 <div class="section" id="readers">
-<h2>6.24.2. Readers<a class="headerlink" href="#readers" title="Permalink to this headline">¶</a></h2>
+<h2>6.24.3. Readers<a class="headerlink" href="#readers" title="Permalink to this headline">¶</a></h2>
 <p>Readers know how to take trajectory data in a given format and present it in a
 common API to the user in MDAnalysis. There are two types of readers:</p>
 <ol class="arabic simple">
@@ -2177,7 +2256,7 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 
 </div>
 <div class="section" id="writers">
-<h2>6.24.3. Writers<a class="headerlink" href="#writers" title="Permalink to this headline">¶</a></h2>
+<h2>6.24.4. Writers<a class="headerlink" href="#writers" title="Permalink to this headline">¶</a></h2>
 <p>Writers know how to write information in a <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> to a trajectory
 file.</p>
 <dl class="class">
@@ -2481,7 +2560,7 @@ when setting up the trajectory.</p>
 
 </div>
 <div class="section" id="helper-classes">
-<h2>6.24.4. Helper classes<a class="headerlink" href="#helper-classes" title="Permalink to this headline">¶</a></h2>
+<h2>6.24.5. Helper classes<a class="headerlink" href="#helper-classes" title="Permalink to this headline">¶</a></h2>
 <p>The following classes contain basic functionality that all readers and
 writers share.</p>
 <dl class="class">
@@ -2801,9 +2880,10 @@ is avoided.</p>
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.23. Null output — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">6.24. Base classes — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#timestep">6.24.1. Timestep</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#readers">6.24.2. Readers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#writers">6.24.3. Writers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#helper-classes">6.24.4. Helper classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#frameiterators">6.24.2. FrameIterators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#readers">6.24.3. Readers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writers">6.24.4. Writers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#helper-classes">6.24.5. Helper classes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">6.25. Common functions for coordinate reading — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>

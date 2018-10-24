@@ -73,8 +73,8 @@
 <span class="sd">Base classes --- :mod:`MDAnalysis.coordinates.base`</span>
 <span class="sd">===================================================</span>
 
-<span class="sd">Derive other Timestep, Reader and Writer classes from the classes in</span>
-<span class="sd">this module. The derived classes must follow the :ref:`Trajectory API`</span>
+<span class="sd">Derive other Timestep, FrameIterator, Reader and Writer classes from the classes </span>
+<span class="sd">in this module. The derived classes must follow the :ref:`Trajectory API`</span>
 <span class="sd">in :mod:`MDAnalysis.coordinates.__init__`.</span>
 
 <span class="sd">Timestep</span>
@@ -161,6 +161,20 @@
 <span class="sd">   .. automethod:: __iter__</span>
 <span class="sd">   .. automethod:: copy</span>
 <span class="sd">   .. automethod:: copy_slice</span>
+
+
+<span class="sd">FrameIterators</span>
+<span class="sd">--------------</span>
+
+<span class="sd">Iterator classes used by the by the :class:`ProtoReader`.</span>
+
+<span class="sd">.. autoclass:: FrameIteratorBase</span>
+<span class="sd">    </span>
+<span class="sd">.. autoclass:: FrameIteratorSliced</span>
+<span class="sd">    </span>
+<span class="sd">.. autoclass:: FrameIteratorAll</span>
+<span class="sd">    </span>
+<span class="sd">.. autoclass:: FrameIteratorIndices</span>
 
 
 <span class="sd">Readers</span>
@@ -907,7 +921,7 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span></div>
 
 
-<span class="k">class</span> <span class="nc">FrameIteratorBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="FrameIteratorBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.FrameIteratorBase">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base iterable over the frames of a trajectory.</span>
 
@@ -915,11 +929,6 @@
 <span class="sd">    function, and can be indexed similarly to a full trajectory. When indexed,</span>
 <span class="sd">    indices are resolved relative to the iterable and not relative to the</span>
 <span class="sd">    trajectory.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    trajectory: ProtoReader</span>
-<span class="sd">        The trajectory over which to iterate.</span>
 
 <span class="sd">    .. versionadded:: 0.19.0</span>
 
@@ -938,10 +947,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span></div>
 
 
-<span class="k">class</span> <span class="nc">FrameIteratorSliced</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
+<div class="viewcode-block" id="FrameIteratorSliced"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.FrameIteratorSliced">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorSliced</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterable over the frames of a trajectory on the basis of a slice.</span>
 
@@ -1028,10 +1037,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span></div>
 
 
-<span class="k">class</span> <span class="nc">FrameIteratorAll</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
+<div class="viewcode-block" id="FrameIteratorAll"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.FrameIteratorAll">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorAll</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterable over all the frames of a trajectory.</span>
 
@@ -1057,10 +1066,10 @@
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span></div>
 
 
-<span class="k">class</span> <span class="nc">FrameIteratorIndices</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
+<div class="viewcode-block" id="FrameIteratorIndices"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.FrameIteratorIndices">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorIndices</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterable over the frames of a trajectory listed in a sequence of indices.</span>
 
@@ -1103,7 +1112,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames</span></div>
 
 
 <div class="viewcode-block" id="IOBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IOBase">[docs]</a><span class="k">class</span> <span class="nc">IOBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
