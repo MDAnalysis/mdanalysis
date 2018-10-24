@@ -42,10 +42,24 @@ Google groups forbids any name that contains the string `anal'.)
 """
 from __future__ import print_function
 from setuptools import setup, find_packages
+from setuptools.command import sdist
 
+import os
+import shutil
 import codecs
 import sys
 import warnings
+
+
+class MDA_SDist(sdist.sdist):
+    def run(self):
+        try:
+            print('copying AUTHORS')
+            shutil.copyfile('../package/AUTHORS', './AUTHORS')
+            super(MDA_SDist, self).run()
+        finally:
+            print('removing AUTHORS')
+            os.remove('AUTHORS')
 
 
 # Make sure I have the right Python version.
@@ -154,4 +168,5 @@ if __name__ == '__main__':
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)
           zip_safe=False,
+          cmdclass={'sdist': MDA_SDist},
           )
