@@ -26,7 +26,7 @@ env:
     - PYTEST_LIST="testsuite/MDAnalysisTests"
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
-    - BUILD_CMD="pip install -v package/ && pip install -v testsuite/"
+    - BUILD_CMD="(cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py develop)"
     - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython joblib matplotlib scipy griddataformats hypothesis gsd codecov"
     - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn"
     - CONDA_CHANNELS='biobuilds conda-forge'
@@ -95,7 +95,7 @@ install:
         HOLE_BINDIR="${HOME}/hole2/exe"; \
         export PATH=${PATH}:${HOLE_BINDIR}; \
     fi
-  - git clone git://github.com/astropy/ci-helpers.git
+  - git clone --depth 1 git://github.com/astropy/ci-helpers.git
   - source ci-helpers/travis/setup_conda.sh
   - eval $BUILD_CMD
 
