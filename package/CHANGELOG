@@ -20,7 +20,7 @@ Fixes
    * limit output of Chainreader __repr__ (#2109)
    * added missing docs for lib.pkdtree (#2104)
    * Added sphinx markup for FrameIterator (#2106)
-
+   * fixed error for residues and segments containing 0 atoms (#1999)
 Changes
 
 Deprecations

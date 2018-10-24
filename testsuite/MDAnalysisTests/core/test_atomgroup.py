@@ -967,9 +967,15 @@ class TestAtomGroup(object):
 
     def test_n_residues(self, ag):
         assert ag.n_residues == 214
+        
+    def test_zero_atoms_residues(self, ag):
+        ag[[]].residues.atoms
 
     def test_n_segments(self, ag):
         assert ag.n_segments == 1
+        
+    def test_zero_atoms_segments(self, ag):
+        ag[[]].segments.atoms
 
     def test_resids_dim(self, ag):
         assert len(ag.resids) == len(ag)
