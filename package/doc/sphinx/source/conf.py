@@ -14,6 +14,7 @@
 import sys
 import os
 import platform
+import importlib
 
 # http://alabaster.readthedocs.io/en/latest/
 import alabaster
@@ -65,7 +66,7 @@ master_doc = 'index'
 # (take the list from AUTHORS)
 # Ordering: (1) Naveen (2) Elizabeth, then all contributors in alphabetical order
 #           (last) Oliver
-author_list = __import__('MDAnalysis').__authors__
+author_list = importlib.import_module('MDAnalysis').__authors__
 authors = u', '.join(author_list[:-1]) + u', and ' + author_list[-1]
 project = u'MDAnalysis'
 copyright = u'2005-2017, ' + authors
@@ -75,7 +76,7 @@ copyright = u'2005-2017, ' + authors
 # built documents.
 #
 # Dynamically calculate the version
-packageversion = __import__('MDAnalysis._version').get_versions()['version']
+packageversion =importlib.import_module('MDAnalysis').__version__
 # The short X.Y version.
 version = '.'.join(packageversion.split('.')[:2])
 # The full version, including alpha/beta/rc tags.
