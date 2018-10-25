@@ -228,6 +228,78 @@ all extensions.</td>
 </dd></dl>
 
 <dl class="function">
+<dt id="MDAnalysis.lib.util.get_ext">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">get_ext</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#get_ext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.get_ext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the lower-cased extension of <cite>filename</cite> without a leading dot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>root</strong> (<em>str</em>)</li>
+<li><strong>ext</strong> (<em>str</em>)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.util.check_compressed_format">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">check_compressed_format</code><span class="sig-paren">(</span><em>root</em>, <em>ext</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_compressed_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_compressed_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – path of a file, without extension <cite>ext</cite></li>
+<li><strong>ext</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – extension (currently only “bz2” and “gz” are recognized as compressed formats)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>format</strong> – upper case format extension <em>if</em> the compression can be handled by
+<a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal"><span class="pre">openany()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal"><span class="pre">openany()</span></code></a></dt>
+<dd>function that is used to open and decompress formats on the fly; only compression formats implemented in <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal"><span class="pre">openany()</span></code></a> are recognized</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.util.format_from_filename_extension">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">format_from_filename_extension</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#format_from_filename_extension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.format_from_filename_extension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Guess file format from the file extension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>format</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code></a> – if the file format cannot be determined</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="MDAnalysis.lib.util.guess_format">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">guess_format</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#guess_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.guess_format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the format of <cite>filename</cite></p>
@@ -563,6 +635,9 @@ with a single element.</p>
 <dd><p>Class to allow storing attributes in new namespace.</p>
 </dd></dl>
 
+</div>
+<div class="section" id="arrays">
+<h2>12.2.10.4. Arrays<a class="headerlink" href="#arrays" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.unique_int_1d">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">unique_int_1d</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.util.unique_int_1d" title="Permalink to this definition">¶</a></dt>
@@ -585,9 +660,99 @@ with a single element.</p>
 </div>
 </dd></dl>
 
+<dl class="function">
+<dt id="MDAnalysis.lib.util.unique_rows">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">unique_rows</code><span class="sig-paren">(</span><em>arr</em>, <em>return_index=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#unique_rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.unique_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the unique rows of an array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>arr</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Array of shape <code class="docutils literal"><span class="pre">(n1,</span> <span class="pre">m)</span></code>.</li>
+<li><strong>return_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal"><span class="pre">True</span></code>, returns indices of array that formed answer (see
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.unique.html#numpy.unique" title="(in NumPy v1.15)"><code class="xref py py-func docutils literal"><span class="pre">numpy.unique()</span></code></a>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>unique_rows</strong> (<em>numpy.ndarray</em>) – Array of shape <code class="docutils literal"><span class="pre">(n2,</span> <span class="pre">m)</span></code> containing only the unique rows of <cite>arr</cite>.</li>
+<li><strong>r_idx</strong> (<em>numpy.ndarray (optional)</em>) – Array containing the corresponding row indices (if <cite>return_index</cite>
+is <code class="docutils literal"><span class="pre">True</span></code>).</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>Remove dupicate rows from an array:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">unique_rows</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">array([[0, 1], [1, 2], [2, 3]])</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.unique.html#numpy.unique" title="(in NumPy v1.15)"><code class="xref py py-func docutils literal"><span class="pre">numpy.unique()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.util.blocks_of">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">blocks_of</code><span class="sig-paren">(</span><em>a</em>, <em>n</em>, <em>m</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#blocks_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.blocks_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a view of <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">m)</span></code> blocks along the diagonal of the array <cite>a</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Input array, must be C contiguous and at least 2D.</li>
+<li><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Size of block in first dimension.</li>
+<li><strong>m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Size of block in second dimension.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>view</strong> – A view of the original array with shape <code class="docutils literal"><span class="pre">(nblocks,</span> <span class="pre">n,</span> <span class="pre">m)</span></code>, where
+<code class="docutils literal"><span class="pre">nblocks</span></code> is the number of times the miniblocks of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">m)</span></code>
+fit in the original.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If the supplied <cite>n</cite> and <cite>m</cite> don’t divide <cite>a</cite> into an integer number
+of blocks or if <cite>a</cite> is not C contiguous.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">blocks_of</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span>
+<span class="go">array([[100, 100,   2,   3],</span>
+<span class="go">       [100, 100,   6,   7],</span>
+<span class="go">       [  8,   9, 100, 100],</span>
+<span class="go">       [ 12,  13, 100, 100]])</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p><cite>n</cite>, <cite>m</cite> must divide <cite>a</cite> into an identical integer number of blocks. Please
+note that if the block size is larger than the input array, this number will
+be zero, resulting in an empty view!</p>
+<p>Uses strides and therefore requires that the array is C contiguous.</p>
+<p>Returns a view, so editing this modifies the original array.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.12.0.</span></p>
+</div>
+</dd></dl>
+
 </div>
 <div class="section" id="file-parsing">
-<h2>12.2.10.4. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
+<h2>12.2.10.5. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.lib.util.FORTRANReader">
 <em class="property">class </em><code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">FORTRANReader</code><span class="sig-paren">(</span><em>fmt</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader" title="Permalink to this definition">¶</a></dt>
@@ -682,7 +847,7 @@ and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 
 </div>
 <div class="section" id="data-manipulation-and-handling">
-<h2>12.2.10.5. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
+<h2>12.2.10.6. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.fixedwidth_bins">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">fixedwidth_bins</code><span class="sig-paren">(</span><em>delta</em>, <em>xmin</em>, <em>xmax</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#fixedwidth_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.fixedwidth_bins" title="Permalink to this definition">¶</a></dt>
@@ -760,9 +925,66 @@ also raised if <code class="docutils literal"><span class="pre">atoms.masses</sp
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="MDAnalysis.lib.util.ltruncate_int">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">ltruncate_int</code><span class="sig-paren">(</span><em>value</em>, <em>ndigits</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#ltruncate_int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.ltruncate_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Truncate an integer, retaining least significant digits</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – value to truncate</li>
+<li><strong>ndigits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of digits to keep</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>truncated</strong> – only the <cite>ndigits</cite> least significant digits from <cite>value</cite></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ltruncate_int</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">23</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ltruncate_int</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">1234</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.util.flatten_dict">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">flatten_dict</code><span class="sig-paren">(</span><em>d</em>, <em>parent_key=()</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#flatten_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.flatten_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flatten a nested dict <cite>d</cite> into a shallow dict with tuples as keys.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Based on <a class="reference external" href="https://stackoverflow.com/a/6027615/">https://stackoverflow.com/a/6027615/</a>
+by user <a class="reference external" href="https://stackoverflow.com/users/1897/imran">https://stackoverflow.com/users/1897/imran</a></p>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 0.18.0.</span></p>
+</div>
+</div>
+</dd></dl>
+
 </div>
 <div class="section" id="strings">
-<h2>12.2.10.6. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<h2>12.2.10.7. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.convert_aa_code">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">convert_aa_code</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#convert_aa_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.convert_aa_code" title="Permalink to this definition">¶</a></dt>
@@ -829,7 +1051,7 @@ otherwise the original object is passed back.</p>
 
 </div>
 <div class="section" id="class-decorators">
-<h2>12.2.10.7. Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline">¶</a></h2>
+<h2>12.2.10.8. Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.cached">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">cached</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Permalink to this definition">¶</a></dt>
@@ -858,7 +1080,7 @@ decorator:</p>
 
 </div>
 <div class="section" id="function-decorators">
-<h2>12.2.10.8. Function decorators<a class="headerlink" href="#function-decorators" title="Permalink to this headline">¶</a></h2>
+<h2>12.2.10.9. Function decorators<a class="headerlink" href="#function-decorators" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.static_variables">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">static_variables</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#static_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.static_variables" title="Permalink to this definition">¶</a></dt>
@@ -1011,7 +1233,7 @@ arguments.</p>
 
 </div>
 <div class="section" id="code-management">
-<h2>12.2.10.9. Code management<a class="headerlink" href="#code-management" title="Permalink to this headline">¶</a></h2>
+<h2>12.2.10.10. Code management<a class="headerlink" href="#code-management" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.deprecate">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">deprecate</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#deprecate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.deprecate" title="Permalink to this definition">¶</a></dt>
@@ -1129,6 +1351,53 @@ line</td>
 </div>
 </dd></dl>
 
+</div>
+<div class="section" id="data-format-checks">
+<h2>12.2.10.11. Data format checks<a class="headerlink" href="#data-format-checks" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.lib.util.check_box">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">check_box</code><span class="sig-paren">(</span><em>box</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take a box input and deduce what type of system it represents based on
+the shape of the array and whether all angles are 90 degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>box</strong> (<em>array_like</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
+triclinic and must be provided in the same format as returned by
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul>
+<li><strong>boxtype</strong> ({<code class="docutils literal"><span class="pre">'ortho'</span></code>, <code class="docutils literal"><span class="pre">'tri_vecs'</span></code>}) – String indicating the box type (orthogonal or triclinic).</li>
+<li><strong>checked_box</strong> (<em>numpy.ndarray</em>) –<dl class="docutils">
+<dt>Array of dtype <code class="docutils literal"><span class="pre">numpy.float32</span></code> containing box information:</dt>
+<dd><ul class="first last simple">
+<li>If <cite>boxtype</cite> is <code class="docutils literal"><span class="pre">'ortho'</span></code>, <cite>cecked_box</cite> will have the shape <code class="docutils literal"><span class="pre">(3,)</span></code>
+containing the x-, y-, and z-dimensions of the orthogonal box.</li>
+<li>If  <cite>boxtype</cite> is <code class="docutils literal"><span class="pre">'tri_vecs'</span></code>, <cite>cecked_box</cite> will have the shape
+<code class="docutils literal"><span class="pre">(3,</span> <span class="pre">3)</span></code> containing the triclinic box vectors in a lower triangular
+matrix as returned by
+<a class="reference internal" href="mdamath.html#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-meth docutils literal"><span class="pre">triclinic_vectors()</span></code></a>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code></a> – If <cite>box</cite> is not of the form <code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>
+or contains data that is not convertible to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="mdamath.html#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.mdamath.triclinic_vectors()</span></code></a></p>
+</div>
+</dd></dl>
+
 <p class="rubric">Footnotes</p>
 <table class="docutils footnote" frame="void" id="namedstreamclose" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -1205,12 +1474,14 @@ close it.</td></tr>
 <li class="toctree-l4"><a class="reference internal" href="#files-and-directories">12.2.10.1. Files and directories</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#streams">12.2.10.2. Streams</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#containers-and-lists">12.2.10.3. Containers and lists</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#file-parsing">12.2.10.4. File parsing</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#data-manipulation-and-handling">12.2.10.5. Data manipulation and handling</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#strings">12.2.10.6. Strings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#class-decorators">12.2.10.7. Class decorators</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#function-decorators">12.2.10.8. Function decorators</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#code-management">12.2.10.9. Code management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#arrays">12.2.10.4. Arrays</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file-parsing">12.2.10.5. File parsing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-manipulation-and-handling">12.2.10.6. Data manipulation and handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strings">12.2.10.7. Strings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#class-decorators">12.2.10.8. Class decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#function-decorators">12.2.10.9. Function decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#code-management">12.2.10.10. Code management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-format-checks">12.2.10.11. Data format checks</a></li>
 </ul>
 </li>
 </ul>

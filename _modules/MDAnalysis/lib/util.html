@@ -67,7 +67,6 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Helper functions --- :mod:`MDAnalysis.lib.util`</span>
 <span class="sd">====================================================</span>
@@ -87,6 +86,9 @@
 <span class="sd">.. autofunction:: greedy_splitext</span>
 <span class="sd">.. autofunction:: which</span>
 <span class="sd">.. autofunction:: realpath</span>
+<span class="sd">.. autofunction:: get_ext</span>
+<span class="sd">.. autofunction:: check_compressed_format</span>
+<span class="sd">.. autofunction:: format_from_filename_extension</span>
 <span class="sd">.. autofunction:: guess_format</span>
 
 <span class="sd">Streams</span>
@@ -157,7 +159,13 @@
 <span class="sd">.. autofunction:: asiterable</span>
 <span class="sd">.. autofunction:: hasmethod</span>
 <span class="sd">.. autoclass:: Namespace</span>
+
+<span class="sd">Arrays</span>
+<span class="sd">------</span>
+
 <span class="sd">.. autofunction:: unique_int_1d(values)</span>
+<span class="sd">.. autofunction:: unique_rows</span>
+<span class="sd">.. autofunction:: blocks_of</span>
 
 <span class="sd">File parsing</span>
 <span class="sd">------------</span>
@@ -171,6 +179,8 @@
 
 <span class="sd">.. autofunction:: fixedwidth_bins</span>
 <span class="sd">.. autofunction:: get_weights</span>
+<span class="sd">.. autofunction:: ltruncate_int</span>
+<span class="sd">.. autofunction:: flatten_dict</span>
 
 <span class="sd">Strings</span>
 <span class="sd">-------</span>
@@ -197,6 +207,11 @@
 <span class="sd">.. autofunction:: deprecate</span>
 <span class="sd">.. autoclass:: _Deprecate</span>
 <span class="sd">.. autofunction:: dedent_docstring</span>
+
+<span class="sd">Data format checks</span>
+<span class="sd">------------------</span>
+
+<span class="sd">.. autofunction:: check_box</span>
 
 <span class="sd">.. Rubric:: Footnotes</span>
 
@@ -941,7 +956,7 @@
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="get_ext"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.contacts.get_ext">[docs]</a><span class="k">def</span> <span class="nf">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the lower-cased extension of `filename` without a leading dot.</span>
 
 <span class="sd">    Parameters</span>
@@ -956,10 +971,10 @@
     <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ext</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">extsep</span><span class="p">):</span>
         <span class="n">ext</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-    <span class="k">return</span> <span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
 
 
-<span class="k">def</span> <span class="nf">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
+<div class="viewcode-block" id="check_compressed_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.contacts.check_compressed_format">[docs]</a><span class="k">def</span> <span class="nf">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format.</span>
 
 <span class="sd">    Parameters</span>
@@ -990,10 +1005,10 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Cannot determine coordinate format for &#39;</span><span class="si">{0}</span><span class="s2">.</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span>
                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
 
 
-<span class="k">def</span> <span class="nf">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="format_from_filename_extension"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.contacts.format_from_filename_extension">[docs]</a><span class="k">def</span> <span class="nf">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Guess file format from the file extension.</span>
 
 <span class="sd">    Parameters</span>
@@ -1017,7 +1032,7 @@
             <span class="s2">&quot;           You can set the format explicitly with &quot;</span>
             <span class="s2">&quot;&#39;Universe(..., format=FORMAT)&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="n">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">format</span>
+    <span class="k">return</span> <span class="nb">format</span></div>
 
 
 <div class="viewcode-block" id="guess_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.contacts.guess_format">[docs]</a><span class="k">def</span> <span class="nf">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
@@ -1572,26 +1587,29 @@
     <span class="k">return</span> <span class="n">cached_lookup</span></div>
 
 
-<span class="k">def</span> <span class="nf">unique_rows</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the unique rows from an array</span>
+<div class="viewcode-block" id="unique_rows"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.contacts.unique_rows">[docs]</a><span class="k">def</span> <span class="nf">unique_rows</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the unique rows of an array.</span>
 
 <span class="sd">    Arguments</span>
 <span class="sd">    ---------</span>
-<span class="sd">    arr : np.array of shape (n1, m)</span>
+<span class="sd">    arr : numpy.ndarray</span>
+<span class="sd">        Array of shape ``(n1, m)``.</span>
 <span class="sd">    return_index : bool, optional</span>
 <span class="sd">      If ``True``, returns indices of array that formed answer (see</span>
 <span class="sd">      :func:`numpy.unique`)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    unique_rows : numpy.array</span>
-<span class="sd">         shape (n2, m)</span>
-<span class="sd">    r_idx : numpy.array (optional)</span>
-<span class="sd">          index (if `return_index` was ``True``)</span>
+<span class="sd">    unique_rows : numpy.ndarray</span>
+<span class="sd">         Array of shape ``(n2, m)`` containing only the unique rows of `arr`.</span>
+<span class="sd">    r_idx : numpy.ndarray (optional)</span>
+<span class="sd">          Array containing the corresponding row indices (if `return_index`</span>
+<span class="sd">          is ``True``).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Remove dupicate rows from an array:</span>
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])</span>
 <span class="sd">    &gt;&gt;&gt; b = unique_rows(a)</span>
 <span class="sd">    &gt;&gt;&gt; b</span>
@@ -1622,10 +1640,10 @@
         <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">)])</span>
         <span class="p">))</span>
-        <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">blocks_of</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+<div class="viewcode-block" id="blocks_of"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.contacts.blocks_of">[docs]</a><span class="k">def</span> <span class="nf">blocks_of</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Extract a view of ``(n, m)`` blocks along the diagonal of the array `a`.</span>
 
 <span class="sd">    Parameters</span>
@@ -1693,7 +1711,7 @@
     <span class="n">new_strides</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">a</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">m</span> <span class="o">*</span> <span class="n">a</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                    <span class="n">a</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">a</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">stride_tricks</span><span class="o">.</span><span class="n">as_strided</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">new_shape</span><span class="p">,</span> <span class="n">new_strides</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">stride_tricks</span><span class="o">.</span><span class="n">as_strided</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">new_shape</span><span class="p">,</span> <span class="n">new_strides</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Namespace"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.contacts.Namespace">[docs]</a><span class="k">class</span> <span class="nc">Namespace</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class to allow storing attributes in new namespace. &quot;&quot;&quot;</span>
@@ -1724,7 +1742,7 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<span class="k">def</span> <span class="nf">ltruncate_int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">):</span>
+<div class="viewcode-block" id="ltruncate_int"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.contacts.ltruncate_int">[docs]</a><span class="k">def</span> <span class="nf">ltruncate_int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Truncate an integer, retaining least significant digits</span>
 
 <span class="sd">    Parameters</span>
@@ -1746,10 +1764,10 @@
 <span class="sd">    &gt;&gt;&gt; ltruncate_int(1234, 5)</span>
 <span class="sd">    1234</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)[</span><span class="o">-</span><span class="n">ndigits</span><span class="p">:])</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)[</span><span class="o">-</span><span class="n">ndigits</span><span class="p">:])</span></div>
 
 
-<span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">parent_key</span><span class="o">=</span><span class="nb">tuple</span><span class="p">()):</span>
+<div class="viewcode-block" id="flatten_dict"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.contacts.flatten_dict">[docs]</a><span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">parent_key</span><span class="o">=</span><span class="nb">tuple</span><span class="p">()):</span>
     <span class="sd">&quot;&quot;&quot;Flatten a nested dict `d` into a shallow dict with tuples as keys.</span>
 
 <span class="sd">    Parameters</span>
@@ -1778,7 +1796,7 @@
             <span class="n">items</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">new_key</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">new_key</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">items</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="static_variables"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.contacts.static_variables">[docs]</a><span class="k">def</span> <span class="nf">static_variables</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1979,6 +1997,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">coord_names</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Decorator check_coords() cannot be used without &quot;</span>
                          <span class="s2">&quot;positional arguments.&quot;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">check_coords_decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="n">fname</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="n">code</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__code__</span>
@@ -2303,6 +2322,60 @@
 
     <span class="c1"># treat first line as special (typically no leading whitespace!) which messes up dedent</span>
     <span class="k">return</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></div>
+
+
+<div class="viewcode-block" id="check_box"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.contacts.check_box">[docs]</a><span class="k">def</span> <span class="nf">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Take a box input and deduce what type of system it represents based on</span>
+<span class="sd">    the shape of the array and whether all angles are 90 degrees.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    box : array_like</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    boxtype : {``&#39;ortho&#39;``, ``&#39;tri_vecs&#39;``}</span>
+<span class="sd">        String indicating the box type (orthogonal or triclinic).</span>
+<span class="sd">    checked_box : numpy.ndarray</span>
+<span class="sd">        Array of dtype ``numpy.float32`` containing box information:</span>
+<span class="sd">          * If `boxtype` is ``&#39;ortho&#39;``, `cecked_box` will have the shape ``(3,)``</span>
+<span class="sd">            containing the x-, y-, and z-dimensions of the orthogonal box.</span>
+<span class="sd">          * If  `boxtype` is ``&#39;tri_vecs&#39;``, `cecked_box` will have the shape</span>
+<span class="sd">            ``(3, 3)`` containing the triclinic box vectors in a lower triangular</span>
+<span class="sd">            matrix as returned by</span>
+<span class="sd">            :meth:`~MDAnalysis.lib.mdamath.triclinic_vectors`.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If `box` is not of the form ``[lx, ly, lz, alpha, beta, gamma]``</span>
+<span class="sd">        or contains data that is not convertible to ``numpy.float32``.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    MDAnalysis.lib.mdamath.triclinic_vectors</span>
+
+
+<span class="sd">    .. versionchanged: 0.19.0</span>
+<span class="sd">       * Enforced correspondence of `box` with specified format.</span>
+<span class="sd">       * Added automatic conversion of input to :class:`numpy.ndarray` with</span>
+<span class="sd">         dtype ``numpy.float32``.</span>
+<span class="sd">       * Now also returns the box in the format expected by low-level functions</span>
+<span class="sd">         in :mod:`~MDAnalysis.lib.c_distances`.</span>
+<span class="sd">       * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.mdamath</span> <span class="k">import</span> <span class="n">triclinic_vectors</span>  <span class="c1"># avoid circular import</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid box information. Must be of the form &quot;</span>
+                         <span class="s2">&quot;[lx, ly, lz, alpha, beta, gamma].&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="mf">90.</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;ortho&#39;</span><span class="p">,</span> <span class="n">box</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s1">&#39;tri_vecs&#39;</span><span class="p">,</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

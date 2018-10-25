@@ -84,19 +84,22 @@ not reflect in the results.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.19.0.</span></p>
 </div>
+</div>
+<div class="section" id="classes">
+<h2>12.2.4.3. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.lib.nsgrid.FastNS">
 <em class="property">class </em><code class="descclassname">MDAnalysis.lib.nsgrid.</code><code class="descname">FastNS</code><span class="sig-paren">(</span><em>cutoff</em>, <em>coords</em>, <em>box</em>, <em>max_gridsize=5000</em>, <em>pbc=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grid based search between two group of atoms</p>
-<p>Instantiates a class object which uses <a class="reference internal" href="#MDAnalysis.lib.nsgrid.PBCBox" title="MDAnalysis.lib.nsgrid.PBCBox"><code class="xref py py-class docutils literal"><span class="pre">PBCBox</span></code></a> and
-<a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSGrid" title="MDAnalysis.lib.nsgrid.NSGrid"><code class="xref py py-class docutils literal"><span class="pre">NSGrid</span></code></a> to construct a cuboidal
+<p>Instantiates a class object which uses <code class="xref py py-class docutils literal"><span class="pre">_PBCBox</span></code> and
+<code class="xref py py-class docutils literal"><span class="pre">_NSGrid</span></code> to construct a cuboidal
 grid in an orthogonal brick shaped box.</p>
 <p>Minimum image convention is used for distance evaluations
 if pbc is set to <code class="docutils literal"><span class="pre">True</span></code>.</p>
 <p>Initialize the grid and sort the coordinates in respective
 cells by shifting the coordinates in a brick shaped box.
-The brick shaped box is defined by <a class="reference internal" href="#MDAnalysis.lib.nsgrid.PBCBox" title="MDAnalysis.lib.nsgrid.PBCBox"><code class="xref py py-class docutils literal"><span class="pre">PBCBox</span></code></a>
-and cuboidal grid is initialize by <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSGrid" title="MDAnalysis.lib.nsgrid.NSGrid"><code class="xref py py-class docutils literal"><span class="pre">NSGrid</span></code></a>.
+The brick shaped box is defined by <code class="xref py py-class docutils literal"><span class="pre">_PBCBox</span></code>
+and cuboidal grid is initialize by <code class="xref py py-class docutils literal"><span class="pre">_NSGrid</span></code>.
 If box is supplied, periodic shifts along box vectors are used
 to contain all the coordinates inside the brick shaped box.
 If box is not supplied, the range of coordinates i.e.
@@ -143,15 +146,15 @@ for <code class="docutils literal"><span class="pre">box</span></code> for the c
 <code class="docutils literal"><span class="pre">[10,</span> <span class="pre">10,</span> <span class="pre">10,</span> <span class="pre">90,</span> <span class="pre">90,</span> <span class="pre">90]</span></code></li>
 <li>Following operations are advisable for non-PBC calculations</li>
 </ul>
-<p>..code-block:: python</p>
-<blockquote class="last">
-<div>lmax = all_coords.max(axis=0)
-lmin = all_coords.min(axis=0)
-pseudobox[:3] = 1.1*(lmax - lmin)
-pseudobox[3:] = 90.
-shift = all_coords.copy()
-shift -= lmin
-gridsearch = FastNS(max_cutoff, shift, box=pseudobox, pbc=False)</div></blockquote>
+<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="n">lmax</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">lmin</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">pseudobox</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.1</span><span class="o">*</span><span class="p">(</span><span class="n">lmax</span> <span class="o">-</span> <span class="n">lmin</span><span class="p">)</span>
+<span class="n">pseudobox</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span>
+<span class="n">shift</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">shift</span> <span class="o">-=</span> <span class="n">lmin</span>
+<span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pseudobox</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.lib.nsgrid.FastNS.search">
@@ -171,23 +174,20 @@ the instantiation of :class:FastNS.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>search_coords</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Query coordinates of shape <code class="docutils literal"><span class="pre">(N,</span> <span class="pre">3)</span></code> where
 <code class="docutils literal"><span class="pre">N</span></code> is the number of queries</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>results</strong> – The object from :class:NSResults
-contains <code class="docutils literal"><span class="pre">get_indices</span></code>, <code class="docutils literal"><span class="pre">get_distances</span></code>.
-<code class="docutils literal"><span class="pre">get_pairs</span></code>, <code class="docutils literal"><span class="pre">get_pair_distances</span></code></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>results</strong> – An <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults"><code class="xref py py-class docutils literal"><span class="pre">NSResults</span></code></a> object holding neighbor search results, which
+can be accessed by its methods <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_indices" title="MDAnalysis.lib.nsgrid.NSResults.get_indices"><code class="xref py py-meth docutils literal"><span class="pre">get_indices()</span></code></a>,
+<a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_distances"><code class="xref py py-meth docutils literal"><span class="pre">get_distances()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="MDAnalysis.lib.nsgrid.NSResults.get_pairs"><code class="xref py py-meth docutils literal"><span class="pre">get_pairs()</span></code></a>, and
+<a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_pair_distances"><code class="xref py py-meth docutils literal"><span class="pre">get_pair_distances()</span></code></a>.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">NSResults object</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults">NSResults</a></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">For non-PBC aware calculations, the current implementation doesn’t work
-if any of the query coordinates is beyond the range specified in
-<code class="docutils literal"><span class="pre">box</span></code> in <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.nsgrid.FastNS()</span></code></a>.</p>
-</div>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults"><code class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.lib.nsgrid.NSResults()</span></code></a></p>
+if any of the query coordinates lies outside the <cite>box</cite> supplied to
+<a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal"><span class="pre">FastNS</span></code></a>.</p>
 </div>
 </dd></dl>
 
@@ -203,72 +203,26 @@ as every pair need not be evaluated twice.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>results</strong> – The object from :class:NSResults
-contains <code class="docutils literal"><span class="pre">get_indices</span></code>, <code class="docutils literal"><span class="pre">get_distances</span></code>.
-<code class="docutils literal"><span class="pre">get_pairs</span></code>, <code class="docutils literal"><span class="pre">get_pair_distances</span></code></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>results</strong> – An <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults"><code class="xref py py-class docutils literal"><span class="pre">NSResults</span></code></a> object holding neighbor search results, which
+can be accessed by its methods <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_indices" title="MDAnalysis.lib.nsgrid.NSResults.get_indices"><code class="xref py py-meth docutils literal"><span class="pre">get_indices()</span></code></a>,
+<a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_distances"><code class="xref py py-meth docutils literal"><span class="pre">get_distances()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="MDAnalysis.lib.nsgrid.NSResults.get_pairs"><code class="xref py py-meth docutils literal"><span class="pre">get_pairs()</span></code></a>, and
+<a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_pair_distances"><code class="xref py py-meth docutils literal"><span class="pre">get_pair_distances()</span></code></a>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">NSResults object</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults"><code class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.lib.nsgrid.NSResults()</span></code></a></p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="MDAnalysis.lib.nsgrid.NSGrid">
-<em class="property">class </em><code class="descclassname">MDAnalysis.lib.nsgrid.</code><code class="descname">NSGrid</code><span class="sig-paren">(</span><em>ncoords</em>, <em>cutoff</em>, <em>PBCBox box</em>, <em>max_size</em>, <em>force=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs a uniform cuboidal grid for a brick-shaped box</p>
-<p>This class uses <a class="reference internal" href="#MDAnalysis.lib.nsgrid.PBCBox" title="MDAnalysis.lib.nsgrid.PBCBox"><code class="xref py py-class docutils literal"><span class="pre">PBCBox</span></code></a> to define the brick shaped box
-It is essential to initialize the box with <a class="reference internal" href="#MDAnalysis.lib.nsgrid.PBCBox" title="MDAnalysis.lib.nsgrid.PBCBox"><code class="xref py py-class docutils literal"><span class="pre">PBCBox</span></code></a>
-inorder to form the grid.</p>
-<p>The domain is subdivided into number of cells based on the desired search
-radius. Ideally cellsize should be equal to the search radius, but small
-search radius leads to large cell-list data strucutres.
-An optimization of cutoff is imposed to limit the size of data
-structure such that the cellsize is always greater than or
-equal to cutoff distance.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p>This class assumes that all the coordinates are already
-inside the brick shaped box. Care must be taken to ensure
-all the particles are within the brick shaped box as
-defined by <a class="reference internal" href="#MDAnalysis.lib.nsgrid.PBCBox" title="MDAnalysis.lib.nsgrid.PBCBox"><code class="xref py py-class docutils literal"><span class="pre">PBCBox</span></code></a>. This can be ensured by using
-<code class="xref py py-func docutils literal"><span class="pre">fast_put_atoms_in_bbox()</span></code></p>
-<div class="last admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This class is not meant to be used by end users.</p>
-</div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ncoords</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of coordinates to fill inside the brick shaped box</li>
-<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Desired cutoff radius</li>
-<li><strong>box</strong> (<a class="reference internal" href="#MDAnalysis.lib.nsgrid.PBCBox" title="MDAnalysis.lib.nsgrid.PBCBox"><em>PBCBox</em></a>) – Instance of <a class="reference internal" href="#MDAnalysis.lib.nsgrid.PBCBox" title="MDAnalysis.lib.nsgrid.PBCBox"><code class="xref py py-class docutils literal"><span class="pre">PBCBox</span></code></a></li>
-<li><strong>max_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Maximum total number of cells</li>
-<li><strong>force</strong> (<em>boolean</em>) – Optimizes cutoff if set to <code class="docutils literal"><span class="pre">False</span></code> [False]</li>
-</ul>
-</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults">NSResults</a></td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.lib.nsgrid.NSResults">
-<em class="property">class </em><code class="descclassname">MDAnalysis.lib.nsgrid.</code><code class="descname">NSResults</code><span class="sig-paren">(</span><em>real cutoff</em>, <em>__Pyx_memviewslice coords</em>, <em>__Pyx_memviewslice searchcoords</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.lib.nsgrid.</code><code class="descname">NSResults</code><span class="sig-paren">(</span><em>dreal cutoff</em>, <em>__Pyx_memviewslice coords</em>, <em>__Pyx_memviewslice searchcoords</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to store the results</p>
-<p>All the required outputs from <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal"><span class="pre">FastNS</span></code></a> is stored in the
-instance of this class. All the methods of <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal"><span class="pre">FastNS</span></code></a> returns
-an instance of this class, which can be used to  generate the desired
-results on demand.</p>
+<p>All outputs from <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal"><span class="pre">FastNS</span></code></a> are stored in an instance of this class.
+All methods of <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal"><span class="pre">FastNS</span></code></a> return an instance of this class, which can
+be used to  generate the desired results on demand.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -299,23 +253,21 @@ by <code class="docutils literal"><span class="pre">get_indices()</span></code><
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
-<li><strong>distances</strong> (<em>np.ndarray</em>) – Every element i.e. <code class="docutils literal"><span class="pre">distances[i]</span></code> will be an array of
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>distances</strong> – Every element i.e. <code class="docutils literal"><span class="pre">distances[i]</span></code> will be an array of
 shape <code class="docutils literal"><span class="pre">m</span></code> where m is the number of neighbours of
-query atom[i].</li>
-<li><em>.. code-block:: python</em> – results = NSResults()
-distances = results.get_distances()</li>
-</ul>
+query atom[i].<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">NSResults</span><span class="p">()</span>
+<span class="n">distances</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_distances</span><span class="p">()</span>
+</pre></div>
+</div>
 </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></td>
 </tr>
 </tbody>
 </table>
-<p>atoms of <code class="docutils literal"><span class="pre">atom[i]</span></code> and query atoms <code class="docutils literal"><span class="pre">atom</span></code>.
-<code class="docutils literal"><span class="pre">indices[i][j]</span></code> will give the atom-id of initial coordinates
-such that <code class="docutils literal"><span class="pre">initial_atom[indices[i][j]]</span></code> is a neighbor of <code class="docutils literal"><span class="pre">atom[i]</span></code></p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_indices" title="MDAnalysis.lib.nsgrid.NSResults.get_indices"><code class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.lib.nsgrid.NSResults.get_indices()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_indices" title="MDAnalysis.lib.nsgrid.NSResults.get_indices"><code class="xref py py-meth docutils literal"><span class="pre">get_indices()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -329,19 +281,20 @@ indices can be obtained from <code class="docutils literal"><span class="pre">ge
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
-<li><strong>indices</strong> (<em>list</em>) – Indices of neighboring atoms.
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>indices</strong> – Indices of neighboring atoms.
 Every element i.e. <code class="docutils literal"><span class="pre">indices[i]</span></code> will be a list of
 size <code class="docutils literal"><span class="pre">m</span></code> where m is the number of neighbours of
-query atom[i].</li>
-<li><em>.. code-block:: python</em> – results = NSResults()
-indices = results.get_indices()</li>
-<li><code class="docutils literal"><span class="pre">indices[i]</span></code> will output a list of neighboring</li>
-<li>atoms of <code class="docutils literal"><span class="pre">atom[i]</span></code> from query atoms <code class="docutils literal"><span class="pre">atom</span></code>.</li>
-<li><code class="docutils literal"><span class="pre">indices[i][j]</span></code> will give the atom-id of initial coordinates</li>
-<li>such that <code class="docutils literal"><span class="pre">initial_atom[indices[i][j]]</span></code> is a neighbor of <code class="docutils literal"><span class="pre">atom[i]</span></code></li>
-</ul>
+query atom[i].<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">NSResults</span><span class="p">()</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_indices</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">indices[i]</span></code> will be a list of neighboring atoms of
+<code class="docutils literal"><span class="pre">atom[i]</span></code> from query atoms <code class="docutils literal"><span class="pre">atom</span></code>. <code class="docutils literal"><span class="pre">indices[i][j]</span></code> will give
+the atom-id of initial coordinates such that
+<code class="docutils literal"><span class="pre">initial_atom[indices[i][j]]</span></code> is a neighbor of <code class="docutils literal"><span class="pre">atom[i]</span></code>.</p>
 </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -369,7 +322,7 @@ atom coordinates of shape <code class="docutils literal"><span class="pre">N</sp
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="MDAnalysis.lib.nsgrid.NSResults.get_pairs"><code class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.lib.nsgrid.NSResults.get_pairs()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="MDAnalysis.lib.nsgrid.NSResults.get_pairs"><code class="xref py py-meth docutils literal"><span class="pre">get_pairs()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -394,65 +347,6 @@ and initial atom coordinates of shape <code class="docutils literal"><span class
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="MDAnalysis.lib.nsgrid.PBCBox">
-<em class="property">class </em><code class="descclassname">MDAnalysis.lib.nsgrid.</code><code class="descname">PBCBox</code><span class="sig-paren">(</span><em>__Pyx_memviewslice box</em>, <em>bool periodic</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.PBCBox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cython implementation of
-<a class="reference external" href="https://en.wikipedia.org/wiki/Periodic_boundary_conditions">PBC-related</a>
-operations. This class is used by classes <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal"><span class="pre">FastNS</span></code></a>
-and <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSGrid" title="MDAnalysis.lib.nsgrid.NSGrid"><code class="xref py py-class docutils literal"><span class="pre">NSGrid</span></code></a> to put all particles inside a brick-shaped box
-and to compute PBC-aware distance. The class can also handle
-non-PBC aware distance evaluations through <code class="docutils literal"><span class="pre">periodic</span></code> argument.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This class is not meant to be used by end users.</p>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Even if MD triclinic boxes can be handled by this class,
-internal optimization is made based on the assumption that
-particles are inside a brick-shaped box. When this is not
-the case, calculated distances are not
-warranted to be exact.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – box vectors of shape <code class="docutils literal"><span class="pre">(3,</span> <span class="pre">3)</span></code> or
-as returned by <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath.triclinic_vectors</span></code>
-<code class="docutils literal"><span class="pre">dtype</span></code> must be <code class="docutils literal"><span class="pre">numpy.float32</span></code></li>
-<li><strong>periodic</strong> (<em>boolean</em>) – <code class="docutils literal"><span class="pre">True</span></code> for PBC-aware calculations
-<code class="docutils literal"><span class="pre">False</span></code> for non PBC aware calculations</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="MDAnalysis.lib.nsgrid.PBCBox.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>self</em>, <em>__Pyx_memviewslice box</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.PBCBox.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates internal MD box representation and parameters used for calculations.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Describes the MD box vectors as returned by
-<a class="reference internal" href="mdamath.html#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.mdamath.triclinic_vectors()</span></code></a>.
-<cite>dtype</cite> must be <code class="xref py py-class docutils literal"><span class="pre">numpy.float32</span></code></td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Call to this method is only needed when the MD box is changed
-as it always called when class is instantiated.</p>
-</div>
 </dd></dl>
 
 </dd></dl>
@@ -510,6 +404,7 @@ as it always called when class is instantiated.</p>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.4. Neighbor search library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#about-the-code">12.2.4.1. About the code</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#about-the-algorithm">12.2.4.2. About the algorithm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes">12.2.4.3. Classes</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pkdtree.html">12.2.5. PeriodicKDTree — <code class="docutils literal"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
