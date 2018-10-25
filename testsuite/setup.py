@@ -52,14 +52,29 @@ import warnings
 
 
 class MDA_SDist(sdist.sdist):
+    # To avoid having duplicate AUTHORS file...
     def run(self):
+        here = os.path.dirname(os.path.abspath(__file__))
+        has_authors = os.path.exists(os.path.join(here, 'AUTHORS'))
+
+        if not has_authors:
+            # If there is no AUTHORS file here, lets hope we're in
+            # a repo checkout and grab from '../package'
+            print("Grabbing AUTHORS file...")
+            repo_root = os.path.split(here)[0]
+            try:
+                shutil.copyfile(
+                    os.path.join(repo_root, 'package', 'AUTHORS'),
+                    os.path.join(here, 'AUTHORS'))
+            except:
+                raise IOError("Couldn't grab AUTHORS file")
+            else:
+                copied_authors = True
         try:
-            print('copying AUTHORS')
-            shutil.copyfile('../package/AUTHORS', './AUTHORS')
             super(MDA_SDist, self).run()
         finally:
-            print('removing AUTHORS')
-            os.remove('AUTHORS')
+            if not has_authors and copied_authors:
+                os.remove(os.path.join(here, 'AUTHORS'))
 
 
 # Make sure I have the right Python version.
