@@ -241,6 +241,9 @@ class PDBReader(base.ReaderBase):
         read as a trajectory where the MODEL numbers correspond to
         frame numbers.
         """
+        if os.name == 'nt':
+            raise NotImplementedError("PDB Reading doesn't work on Windows")
+
         super(PDBReader, self).__init__(filename, **kwargs)
 
         try:
