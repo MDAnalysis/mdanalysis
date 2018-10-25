@@ -2703,6 +2703,7 @@ class ResidueGroup(GroupBase):
         The :class:`Atoms<Atom>` are ordered locally by :class:`Residue` in the
         :class:`ResidueGroup`.  Duplicates are *not* removed.
         """
+        # If indices is an empty list np.concatenate will fail (Issue #1999).
         try:
             ag = self.universe.atoms[np.concatenate(self.indices)]
         except ValueError:
@@ -2865,6 +2866,7 @@ class SegmentGroup(GroupBase):
         are further ordered by :class:`Segment` in the :class:`SegmentGroup`.
         Duplicates are *not* removed.
         """
+        # If indices is an empty list np.concatenate will fail (Issue #1999).
         try:
             ag = self.universe.atoms[np.concatenate(self.indices)]
         except ValueError:
