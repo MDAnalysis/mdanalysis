@@ -2751,7 +2751,11 @@
 <span class="sd">        The :class:`Atoms&lt;Atom&gt;` are ordered locally by :class:`Residue` in the</span>
 <span class="sd">        :class:`ResidueGroup`.  Duplicates are *not* removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
+        <span class="c1"># If indices is an empty list np.concatenate will fail (Issue #1999).</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
         <span class="c1"># If the ResidueGroup is known to be unique, this also holds for the</span>
         <span class="c1"># atoms therein, since atoms can only belong to one residue at a time.</span>
         <span class="c1"># On the contrary, if the ResidueGroup is not unique, this does not</span>
@@ -2910,7 +2914,11 @@
 <span class="sd">        are further ordered by :class:`Segment` in the :class:`SegmentGroup`.</span>
 <span class="sd">        Duplicates are *not* removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
+        <span class="c1"># If indices is an empty list np.concatenate will fail (Issue #1999).</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
         <span class="c1"># If the SegmentGroup is known to be unique, this also holds for the</span>
         <span class="c1"># residues therein, and thus, also for the atoms in those residues.</span>
         <span class="c1"># On the contrary, if the SegmentGroup is not unique, this does not</span>
