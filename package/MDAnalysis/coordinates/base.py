@@ -501,9 +501,8 @@ class Timestep(object):
            copy official attributes of the Timestep.
 
         """
-        # Detect the size of the Timestep by doing a dummy slice
         try:
-            pos = self.positions[sel]
+            pos = self.positions[sel, :]
         except NoDataError:
             # It's cool if there's no Data, we'll live
             pos = None
@@ -511,14 +510,14 @@ class Timestep(object):
             raise TypeError("Selection type must be compatible with slicing"
                             " the coordinates")
         try:
-            vel = self.velocities[sel]
+            vel = self.velocities[sel, :]
         except NoDataError:
             vel = None
         except:
             raise TypeError("Selection type must be compatible with slicing"
                             " the coordinates")
         try:
-            force = self.forces[sel]
+            force = self.forces[sel, :]
         except NoDataError:
             force = None
         except:
