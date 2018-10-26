@@ -1,5 +1,5 @@
 graft scripts
-include README INSTALL CHANGELOG LICENSE AUTHORS TODO SUMMARY.txt
+include README INSTALL LICENSE AUTHORS TODO SUMMARY.txt
 include setup.py
 include MDAnalysisTests/data/*/*
 global-exclude *~
