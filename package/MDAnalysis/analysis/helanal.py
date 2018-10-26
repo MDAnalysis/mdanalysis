@@ -749,15 +749,14 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
 def vector_of_best_fit(origins):
     origins = np.asarray(origins)
     centroids = center(origins)
-    M = np.matrix(origins - centroids)
-    A = M.transpose() * M
+    M = np.array(origins - centroids)
+    A = np.dot(M.transpose(), M)
     u, s, vh = np.linalg.linalg.svd(A)
-    vector = vh[0].tolist()[0]
+    vector = vh[0]
     #Correct vector to face towards first residues
     rough_helix = origins[0] - centroids
     agreement = mdamath.angle(rough_helix, vector)
     if not (-np.pi / 2 < agreement < np.pi / 2):
-        vector = vh[0] * -1
-        vector = vector.tolist()[0]
+        vector *= -1
     best_fit_tilt = mdamath.angle(vector, [0, 0, 1])
     return vector, best_fit_tilt

@@ -285,7 +285,7 @@ def rotation_matrix(a, b, weights=None):
     # so that R acts **to the left** and can be broadcasted; we're saving
     # one transpose. [orbeckst])
     rmsd = qcp.CalcRMSDRotationalMatrix(a, b, N, rot, weights)
-    return np.matrix(rot.reshape(3, 3)), rmsd
+    return np.array(rot.reshape(3, 3)), rmsd
 
 
 def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
