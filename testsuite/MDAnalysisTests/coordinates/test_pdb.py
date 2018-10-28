@@ -333,26 +333,23 @@ class TestPDBWriter(object):
             assert int(line[10:14]) == model % 10000
 
 
-@pytest.mark.xfail(os.name == 'nt',
-                   strict=True,
-                   reason="PDB multiframe reading not yet supported "
-                          "on Windows.")
-class TestMultiPDBReader(TestCase):
-    def setUp(self):
-        self.multiverse = mda.Universe(PDB_multiframe,
-                                       guess_bonds=True)
-        self.conect = mda.Universe(CONECT, guess_bonds=True)
+class TestMultiPDBReader(object):
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def multiverse():
+        return mda.Universe(PDB_multiframe, guess_bonds=True)
 
-    def tearDown(self):
-        del self.multiverse
-        del self.conect
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def conect():
+        return mda.Universe(CONECT, guess_bonds=True)
 
-    def test_n_frames(self):
-        assert_equal(self.multiverse.trajectory.n_frames, 24,
+    def test_n_frames(self, multiverse):
+        assert_equal(multiverse.trajectory.n_frames, 24,
                      "Wrong number of frames read from PDB muliple model file")
 
-    def test_n_atoms_frame(self):
-        u = self.multiverse
+    def test_n_atoms_frame(self, multiverse):
+        u = multiverse
         desired = 392
         for frame in u.trajectory:
             assert_equal(len(u.atoms), desired, err_msg="The number of atoms "
@@ -360,8 +357,8 @@ class TestMultiPDBReader(TestCase):
                                                         "of atoms in the test case (%d) at frame %d" % (
                                                             len(u.atoms), desired, u.trajectory.frame))
 
-    def test_rewind(self):
-        u = self.multiverse
+    def test_rewind(self, multiverse):
+        u = multiverse
         u.trajectory[11]
         assert_equal(u.trajectory.ts.frame, 11,
                      "Failed to forward to 11th frame (frame index 11)")
@@ -369,8 +366,8 @@ class TestMultiPDBReader(TestCase):
         assert_equal(u.trajectory.ts.frame, 0,
                      "Failed to rewind to 0th frame (frame index 0)")
 
-    def test_iteration(self):
-        u = self.multiverse
+    def test_iteration(self, multiverse):
+        u = multiverse
         frames = []
         for frame in u.trajectory:
             pass
@@ -384,8 +381,8 @@ class TestMultiPDBReader(TestCase):
             "trajectory iterator fails to rewind" %
             (len(frames), u.trajectory.n_frames))
 
-    def test_slice_iteration(self):
-        u = self.multiverse
+    def test_slice_iteration(self, multiverse):
+        u = multiverse
         frames = []
         for ts in u.trajectory[4:-2:4]:
             frames.append(ts.frame)
@@ -393,24 +390,19 @@ class TestMultiPDBReader(TestCase):
                      np.arange(u.trajectory.n_frames)[4:-2:4],
                      err_msg="slicing did not produce the expected frames")
 
-    def test_conect_bonds_conect(self):
-        conect = self.conect
+    def test_conect_bonds_conect(self, tmpdir, conect):
         assert_equal(len(conect.atoms), 1890)
         assert_equal(len(conect.bonds), 1922)
 
-        with tempdir.in_tempdir():
-            try:
-                outfile = 'test-pdb-hbonds.pdb'
-                self.conect.atoms.write(outfile, bonds="conect")
-                u1 = mda.Universe(outfile, guess_bonds=True)
-            finally:
-                os.unlink(outfile)
-            assert_equal(len(u1.atoms), 1890)
-            assert_equal(len(u1.bonds), 1922)
+        outfile = str(tmpdir.join('test-pdb-hbonds.pdb'))
+        conect.atoms.write(outfile, bonds="conect")
+        u1 = mda.Universe(outfile, guess_bonds=True)
 
+        assert_equal(len(u1.atoms), 1890)
+        assert_equal(len(u1.bonds), 1922)
 
-    def test_numconnections(self):
-        u = self.multiverse
+    def test_numconnections(self, multiverse):
+        u = multiverse
 
         # the bond list is sorted - so swaps in input pdb sequence should not
         # be a problem
@@ -462,8 +454,7 @@ class TestMultiPDBReader(TestCase):
 
             return conect
 
-        conect = helper(self.multiverse.atoms, [b for b in u.bonds
-                                                if not b.is_guessed])
+        conect = helper(u.atoms, [b for b in u.bonds if not b.is_guessed])
         assert_equal(conect, desired, err_msg="The bond list does not match "
                                               "the test reference; len(actual) is %d, len(desired) "
                                               "is %d" % (len(u._topology.bonds.values), len(desired)))
@@ -483,10 +474,7 @@ def test_conect_bonds_all(tmpdir):
 
     # assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
 
-@pytest.mark.xfail(os.name == 'nt',
-                   strict=True,
-                   reason="PDB multiframe reading not yet supported "
-                          "on Windows.")
+
 class TestMultiPDBWriter(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small)
@@ -544,8 +532,8 @@ class TestMultiPDBWriter(TestCase):
         desired_group = 56
         desired_frames = 6
 
-        pdb = mda.Writer(self.outfile, multiframe=True, start=12, step=2)
-        pdb.write_all_timesteps(group)
+        with mda.Writer(self.outfile, multiframe=True, start=12, step=2) as W:
+            W.write_all_timesteps(group)
         u2 = mda.Universe(self.outfile)
         assert_equal(len(u2.atoms), desired_group,
                      err_msg="MultiPDBWriter trajectory written for an "
@@ -559,11 +547,11 @@ class TestMultiPDBWriter(TestCase):
 
     def test_write_atoms(self):
         u = self.universe2
-        W = mda.Writer(self.outfile, multiframe=True)
-        # 2 frames expceted
-        for ts in u.trajectory[-2:]:
-            W.write(u.atoms)
-        W.close()
+        with mda.Writer(self.outfile, multiframe=True) as W:
+            # 2 frames expceted
+            for ts in u.trajectory[-2:]:
+                W.write(u.atoms)
+
         u0 = mda.Universe(self.outfile)
         assert_equal(u0.trajectory.n_frames,
                      2,
