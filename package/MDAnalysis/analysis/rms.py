@@ -101,7 +101,7 @@ The trajectory is included with the test data files. The data in
    ax.plot(time, rmsd[5], 'b--', label="NMP")
    ax.legend(loc="best")
    ax.set_xlabel("time (ps)")
-   ax.set_ylabel(r"RMSD ($\\\\AA$)")
+   ax.set_ylabel(r"RMSD ($\\AA$)")
    fig.savefig("rmsd_all_CORE_LID_NMP_ref1AKE.pdf")
 
 
@@ -587,7 +587,7 @@ class RMSD(AnalysisBase):
             #    (x~: selected coordinates, x: all coordinates)
             # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
             self._rot = np.zeros(9, dtype=np.float64)  # allocate space
-            self._R = np.array(self._rot.reshape(3, 3))
+            self._R = self._rot.reshape(3, 3)
         else:
             self._rot = None
 

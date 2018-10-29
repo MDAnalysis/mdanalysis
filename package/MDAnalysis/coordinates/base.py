@@ -501,6 +501,7 @@ class Timestep(object):
            copy official attributes of the Timestep.
 
         """
+        # Detect the size of the Timestep by doing a dummy slice
         try:
             pos = self.positions[sel, :]
         except NoDataError:

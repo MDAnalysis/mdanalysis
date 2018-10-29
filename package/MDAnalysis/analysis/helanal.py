@@ -749,7 +749,7 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
 def vector_of_best_fit(origins):
     origins = np.asarray(origins)
     centroids = center(origins)
-    M = np.array(origins - centroids)
+    M = origins - centroids
     A = np.dot(M.transpose(), M)
     u, s, vh = np.linalg.linalg.svd(A)
     vector = vh[0]
