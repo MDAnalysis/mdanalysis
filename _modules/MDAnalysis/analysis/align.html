@@ -333,7 +333,7 @@
     <span class="c1"># so that R acts **to the left** and can be broadcasted; we&#39;re saving</span>
     <span class="c1"># one transpose. [orbeckst])</span>
     <span class="n">rmsd</span> <span class="o">=</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">rmsd</span></div>
+    <span class="k">return</span> <span class="n">rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">rmsd</span></div>
 
 
 <div class="viewcode-block" id="_fit_to"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align._fit_to">[docs]</a><span class="k">def</span> <span class="nf">_fit_to</span><span class="p">(</span><span class="n">mobile_coordinates</span><span class="p">,</span> <span class="n">ref_coordinates</span><span class="p">,</span> <span class="n">mobile_atoms</span><span class="p">,</span>
