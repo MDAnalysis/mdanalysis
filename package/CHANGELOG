@@ -21,6 +21,7 @@ Fixes
    * added missing docs for lib.pkdtree (#2104)
    * Added sphinx markup for FrameIterator (#2106)
    * fixed error for residues and segments containing 0 atoms (#1999)
+   * fixed numpy deprecation warnings (#2122, #2123)
 Changes
 
 Deprecations

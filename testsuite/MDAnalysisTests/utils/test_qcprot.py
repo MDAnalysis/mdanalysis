@@ -121,7 +121,7 @@ def test_CalcRMSDRotationalMatrix():
     #print rot.reshape((3,3))
 
     # rotate frag_b to obtain optimal alignment
-    frag_br = frag_b.T * np.matrix(rot.reshape((3, 3)))
+    frag_br = np.dot(frag_b.T, rot.reshape((3, 3)))
     aligned_rmsd = rmsd(frag_br.T, frag_a)
     #print 'rmsd after applying rotation: ',rmsd
 
