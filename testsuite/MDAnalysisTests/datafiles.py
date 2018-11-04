@@ -161,7 +161,7 @@ __all__ = [
     "DihedralArray", "DihedralsArray", # time series of single dihedral
     "RamaArray", "GLYRamaArray", # time series of phi/psi angles
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
-    "PDB_rama", "PDB_janin" # for testing failures of Ramachandran and Janin classes
+    "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
 
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
