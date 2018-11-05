@@ -161,10 +161,24 @@ __all__ = [
     "DihedralArray", "DihedralsArray", # time series of single dihedral
     "RamaArray", "GLYRamaArray", # time series of phi/psi angles
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
-    "PDB_rama", "PDB_janin" # for testing failures of Ramachandran and Janin classes
+    "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
+
+    # DOS line endings
+    "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
 ]
 
 from pkg_resources import resource_filename
+
+WIN_PDB_multiframe = resource_filename(__name__,
+                                       'data/windows/WIN_nmr_neopetrosiamide.pdb')
+WIN_DLP_HISTORY = resource_filename(__name__,
+                                    'data/windows/WIN_HISTORY')
+WIN_TRJ = resource_filename(__name__,
+                            'data/windows/WIN_ache.mdcrd')
+WIN_ARC = resource_filename(__name__,
+                            'data/windows/WIN_test.arc')
+WIN_LAMMPSDUMP = resource_filename(__name__,
+                                   'data/windows/WIN_wat.lammpstrj')
 
 legacy_DCD_NAMD_coords = resource_filename(__name__,
 'data/legacy_DCD_NAMD_coords.npy')

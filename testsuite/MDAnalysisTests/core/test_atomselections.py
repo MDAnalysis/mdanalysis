@@ -344,9 +344,6 @@ class TestSelectionsAMBER(object):
         assert_equal(sel.names, ['HH31', 'HH32', 'HH33', 'HB1', 'HB2', 'HB3'])
 
 
-@pytest.mark.xfail(os.name == 'nt',
-                   strict=True,
-                   reason="Not supported on Windows yet.")
 class TestSelectionsNAMD(object):
     @pytest.fixture()
     def universe(self):
