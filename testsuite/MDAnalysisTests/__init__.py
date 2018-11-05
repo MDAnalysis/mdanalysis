@@ -97,7 +97,7 @@ import pytest
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
 # keep in sync with RELEASE in setup.py
-__version__ = "0.19.1"
+__version__ = "0.19.2-dev"
 
 
 # Do NOT import MDAnalysis at this level. Tests should do it themselves.

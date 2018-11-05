@@ -13,6 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+mm/dd/yy
+  * 0.19.2
+
+Fixes
+
+Deprecations
+
+
 11/05/18 orbeckst, PicoCentauri, richardjgowers, zemanj
   * 0.19.1
 
