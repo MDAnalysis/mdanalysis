@@ -190,7 +190,9 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">StringIO</span><span class="p">,</span> <span class="n">BytesIO</span>
 
+<span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -275,7 +277,8 @@
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       * Frames now 0-based instead of 1-based</span>
 <span class="sd">       * New :attr:`title` (list with all TITLE lines).</span>
-
+<span class="sd">    .. versionchanged:: 0.19.1</span>
+<span class="sd">       Can now read PDB files with DOS line endings</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PDB&#39;</span><span class="p">,</span> <span class="s1">&#39;ENT&#39;</span><span class="p">]</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
@@ -320,41 +323,34 @@
         <span class="n">models</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">crysts</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">pdbfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdbfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="c1"># hack for streamIO</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">util</span><span class="o">.</span><span class="n">NamedStream</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">stream</span><span class="p">,</span> <span class="n">StringIO</span><span class="p">):</span>
+            <span class="n">filename</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+
+        <span class="n">pdbfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdbfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
 
         <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;magical&quot;</span>
-        <span class="c1"># we handle windows file striding uniquely</span>
-        <span class="c1"># because file.tell() is not reliable on Windows</span>
-        <span class="c1"># for a text file and binary mode is not compatible</span>
-        <span class="c1"># with i.e., our use of anyopen for zip files</span>
-        <span class="n">windows_overbyte</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
             <span class="c1"># need to use readline so tell gives end of line</span>
             <span class="c1"># (rather than end of current chunk)</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">pdbfile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="c1"># the tell() text opaque number striding is not portable</span>
-            <span class="c1"># to windows so compensate accordingly</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;nt&#39;</span><span class="p">:</span>
-                <span class="c1"># for a text file mode these aren&#39;t necessarily</span>
-                <span class="c1"># bytes; var name for simplicity only</span>
-                <span class="n">windows_overbyte</span> <span class="o">+=</span> <span class="mi">1</span>
 
-            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;MODEL&#39;</span><span class="p">):</span>
-                <span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="n">windows_overbyte</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;CRYST1&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;MODEL&#39;</span><span class="p">:</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">tell</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;CRYST&#39;</span><span class="p">:</span>
                 <span class="c1"># remove size of line to get **start** of CRYST line</span>
-                <span class="n">crysts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="n">windows_overbyte</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;HEADER&#39;</span><span class="p">):</span>
+                <span class="n">crysts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;HEADER&#39;</span><span class="p">:</span>
                 <span class="c1"># classification = line[10:50]</span>
                 <span class="c1"># date = line[50:59]</span>
                 <span class="c1"># idCode = line[62:66]</span>
-                <span class="n">header</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">66</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;TITLE&#39;</span><span class="p">):</span>
-                <span class="n">title</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">80</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;COMPND&#39;</span><span class="p">):</span>
-                <span class="n">compound</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">80</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;REMARK&#39;</span><span class="p">):</span>
-                <span class="n">remarks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">66</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;TITLE&#39;</span><span class="p">:</span>
+                <span class="n">title</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">80</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;COMPND&#39;</span><span class="p">:</span>
+                <span class="n">compound</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">80</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;REMARK&#39;</span><span class="p">:</span>
+                <span class="n">remarks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
 
         <span class="n">end</span> <span class="o">=</span> <span class="n">pdbfile</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>  <span class="c1"># where the file ends</span>
 
@@ -394,7 +390,7 @@
         <span class="c1"># Pretend the current TS is -1 (in 0 based) so &quot;next&quot; is the</span>
         <span class="c1"># 0th frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pdbfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pdbfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -421,7 +417,7 @@
 
         <span class="c1"># Seek to start and read until start of next frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pdbfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
-        <span class="n">chunk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdbfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdbfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
 
         <span class="n">tmp_buf</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">chunk</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
