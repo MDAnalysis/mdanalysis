@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/18 orbeckst, PicoCentauri, richardjgowers
+11/05/18 orbeckst, PicoCentauri, richardjgowers
   * 0.19.1
 
 Fixes
@@ -23,8 +23,6 @@ Fixes
    * fixed error for residues and segments containing 0 atoms (#1999)
    * fixed numpy deprecation warnings (#2122, #2123)
    * Fixed reading PDB files with DOS line ending (#2128)
-
-Changes
 
 Deprecations
    * Default ``filename`` directory of align.AlignTraj is deprecated and 
