@@ -28,7 +28,7 @@ import os
 import numpy as np
 import pytest
 from MDAnalysis import SelectionError, SelectionWarning
-from MDAnalysisTests import executable_not_found
+from MDAnalysisTests import executable_not_found, tempdir
 from MDAnalysisTests.datafiles import PSF, DCD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
 from numpy.testing import (
     assert_almost_equal,
@@ -185,9 +185,16 @@ class TestAlign(object):
         assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
 
     def test_AlignTraj_outfile_default(self, universe, reference):
-        reference.trajectory[-1]
-        x = align.AlignTraj(universe, reference)
-        assert os.path.basename(x.filename) == 'rmsfit_adk_dims.dcd'
+        # NOTE: Remove the line os.remove() with release 1.0,
+        #       when the default behavior of AlignTraj changes.
+        with tempdir.in_tempdir():
+            reference.trajectory[-1]
+            x = align.AlignTraj(universe, reference)
+            try:
+                assert os.path.basename(x.filename) == 'rmsfit_adk_dims.dcd'
+            finally:
+                x._writer.close()
+                os.remove(x.filename)
 
     def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir):
         reference.trajectory[-1]

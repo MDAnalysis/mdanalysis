@@ -2703,7 +2703,11 @@ class ResidueGroup(GroupBase):
         The :class:`Atoms<Atom>` are ordered locally by :class:`Residue` in the
         :class:`ResidueGroup`.  Duplicates are *not* removed.
         """
-        ag = self.universe.atoms[np.concatenate(self.indices)]
+        # If indices is an empty list np.concatenate will fail (Issue #1999).
+        try:
+            ag = self.universe.atoms[np.concatenate(self.indices)]
+        except ValueError:
+            ag = self.universe.atoms[self.indices]
         # If the ResidueGroup is known to be unique, this also holds for the
         # atoms therein, since atoms can only belong to one residue at a time.
         # On the contrary, if the ResidueGroup is not unique, this does not
@@ -2862,7 +2866,11 @@ class SegmentGroup(GroupBase):
         are further ordered by :class:`Segment` in the :class:`SegmentGroup`.
         Duplicates are *not* removed.
         """
-        ag = self.universe.atoms[np.concatenate(self.indices)]
+        # If indices is an empty list np.concatenate will fail (Issue #1999).
+        try:
+            ag = self.universe.atoms[np.concatenate(self.indices)]
+        except ValueError:
+            ag = self.universe.atoms[self.indices]
         # If the SegmentGroup is known to be unique, this also holds for the
         # residues therein, and thus, also for the atoms in those residues.
         # On the contrary, if the SegmentGroup is not unique, this does not

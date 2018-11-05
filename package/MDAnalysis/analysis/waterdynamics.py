@@ -964,9 +964,9 @@ class AngularDistribution(object):
         lencosThetaHH = len(cosThetaHH)
         lencosThetadip = len(cosThetadip)
         histInterval = bins
-        histcosThetaOH = np.histogram(cosThetaOH, histInterval, normed=True)
-        histcosThetaHH = np.histogram(cosThetaHH, histInterval, normed=True)
-        histcosThetadip = np.histogram(cosThetadip, histInterval, normed=True)
+        histcosThetaOH = np.histogram(cosThetaOH, histInterval, density=True)
+        histcosThetaHH = np.histogram(cosThetaHH, histInterval, density=True)
+        histcosThetadip = np.histogram(cosThetadip, histInterval, density=True)
 
         return (histcosThetaOH, histcosThetaHH, histcosThetadip)
 

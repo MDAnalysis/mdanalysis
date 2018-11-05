@@ -285,7 +285,7 @@ def rotation_matrix(a, b, weights=None):
     # so that R acts **to the left** and can be broadcasted; we're saving
     # one transpose. [orbeckst])
     rmsd = qcp.CalcRMSDRotationalMatrix(a, b, N, rot, weights)
-    return np.matrix(rot.reshape(3, 3)), rmsd
+    return rot.reshape(3, 3), rmsd
 
 
 def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
@@ -600,6 +600,8 @@ class AlignTraj(AnalysisBase):
           already a :class:`MemoryReader` then it is *always* treated as if
           ``in_memory`` had been set to ``True``.
 
+        .. deprecated:: 0.19.1
+           Default ``filename`` directory will change in 1.0 to the current directory.
 
         .. versionchanged:: 0.16.0
            new general ``weights`` kwarg replace ``mass_weights``
@@ -620,6 +622,11 @@ class AlignTraj(AnalysisBase):
             logger.info("Moved mobile trajectory to in-memory representation")
         else:
             if filename is None:
+                # DEPRECATED in 0.19.1
+                # Change in 1.0
+                #
+                # fn = os.path.split(mobile.trajectory.filename)[1]
+                # filename = prefix + fn
                 path, fn = os.path.split(mobile.trajectory.filename)
                 filename = os.path.join(path, prefix + fn)
                 logger.info('filename of rms_align with no filename given'

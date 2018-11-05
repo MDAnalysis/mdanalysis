@@ -33,10 +33,16 @@ superposition by minimizing the RMSD.
 functions whereas mathematical functions are to be found in
 :mod:`MDAnalysis.lib.mdamath`.
 
-:mod:`MDAnalysis.lib.NeighborSearch` contains classes to do neighbor
-searches with MDAnalysis objects.
+A number of modules are concerned with finding
+neighbors. :mod:`MDAnalysis.lib.NeighborSearch` contains high-level
+classes to do neighbor searches with MDAnalysis
+objects. :mod:`MDAnalysis.lib.nsgrid` contains a fast implementation
+of grid neighbor search whereas :mod:`MDAnalysis.lib.pkdtree` uses
+KDTrees (with periodic images) for neighbor searching. Some of the
+functions in :mod:`MDAnalysis.lib.distances` user either of these
+algorithms to speed up distance calculations.
 
-:mod:`MDAnalysis.lib.nsgrid` contains a fast implementation of grid neighbor search.
+
 
 List of modules
 ---------------
@@ -46,12 +52,13 @@ List of modules
 
    ./lib/distances
    ./lib/NeighborSearch
+   ./lib/nsgrid
+   ./lib/pkdtree	      
    ./lib/log
    ./lib/mdamath
    ./lib/transformations
    ./lib/qcprot
    ./lib/util
-   ./lib/nsgrid
 
 Low level file formats
 ----------------------

@@ -541,7 +541,7 @@ class MemoryReader(base.ProtoReader):
         # Return a view if either:
         #   1) asel is None
         #   2) asel corresponds to the selection of all atoms.
-        array = array[basic_slice]
+        array = array[tuple(basic_slice)]
         if (asel is None or asel is asel.universe.atoms):
             return array
         else:
@@ -560,12 +560,12 @@ class MemoryReader(base.ProtoReader):
         basic_slice = ([slice(None)]*(f_index) +
                        [self.ts.frame] +
                        [slice(None)]*(2-f_index))
-        ts._replace_positions_array(self.coordinate_array[basic_slice])
+        ts._replace_positions_array(self.coordinate_array[tuple(basic_slice)])
         ts._replace_dimensions(self.dimensions_array[self.ts.frame])
         if self.velocity_array is not None:
-            ts._replace_velocities_array(self.velocity_array[basic_slice])
+            ts._replace_velocities_array(self.velocity_array[tuple(basic_slice)])
         if self.force_array is not None:
-            ts._replace_forces_array(self.force_array[basic_slice])
+            ts._replace_forces_array(self.force_array[tuple(basic_slice)])
 
         ts.time = self.ts.frame * self.dt
         return ts

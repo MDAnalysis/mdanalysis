@@ -71,7 +71,7 @@ from six.moves import range
 import numpy as np
 from numpy.lib.utils import deprecate
 
-from .util import check_coords
+from .util import check_coords, check_box
 from .mdamath import triclinic_vectors, triclinic_box
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
@@ -124,61 +124,6 @@ from .c_distances import (calc_distance_array,
                           triclinic_pbc)
 
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
-
-
-def _check_box(box):
-    """Take a box input and deduce what type of system it represents based on
-    the shape of the array and whether all angles are 90 degrees.
-
-    Parameters
-    ----------
-    box : array_like
-        The unitcell dimensions of the system, which can be orthogonal or
-        triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
-        ``[lx, ly, lz, alpha, beta, gamma]``.
-
-    Returns
-    -------
-    boxtype : str
-        * ``'ortho'`` orthogonal box
-        * ``'tri_vecs'`` triclinic box vectors
-
-    checked_box : numpy.ndarray (``dtype=numpy.float32``)
-        Array containing box information:
-        * If `boxtype` is ``'ortho'``, `cecked_box` will have the shape ``(3,)``
-          containing the x-, y-, and z-dimensions of the orthogonal box.
-        * If  `boxtype` is ``'tri_vecs'``, `cecked_box` will have the shape
-          ``(3, 3)`` containing the triclinic box vectors in a lower triangular
-          matrix as returned by
-          :meth:`~MDAnalysis.lib.mdamath.triclinic_vectors`.
-
-    Raises
-    ------
-    ValueError
-        If `box` is not of the form ``[lx, ly, lz, alpha, beta, gamma]``
-        or contains data that is not convertible to ``numpy.float32``.
-
-    See Also
-    --------
-    MDAnalysis.lib.mdamath.triclinic_vectors
-
-
-    .. versionchanged: 0.19.0
-       * Enforced correspondence of `box` with specified format.
-       * Added automatic conversion of input to :class:`numpy.ndarray` with
-         dtype ``numpy.float32``.
-       * Now also returns the box in the format expected by low-level functions
-         in :mod:`~MDAnalysis.lib.c_distances`.
-       * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
-    """
-    box = np.asarray(box, dtype=np.float32, order='C')
-    if box.shape != (6,):
-        raise ValueError("Invalid box information. Must be of the form "
-                         "[lx, ly, lz, alpha, beta, gamma].")
-    if np.all(box[3:] == 90.):
-        return 'ortho', box[:3]
-    return 'tri_vecs', triclinic_vectors(box)
 
 
 def _check_result_array(result, shape):
@@ -282,7 +227,7 @@ def distance_array(reference, configuration, box=None, result=None,
         return distances
 
     if box is not None:
-        boxtype, box = _check_box(box)
+        boxtype, box = check_box(box)
         if boxtype == 'ortho':
             _run("calc_distance_array_ortho",
                  args=(reference, configuration, box, distances),
@@ -355,7 +300,7 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
         return distances
 
     if box is not None:
-        boxtype, box = _check_box(box)
+        boxtype, box = check_box(box)
         if boxtype == 'ortho':
             _run("calc_self_distance_array_ortho",
                  args=(reference, box, distances),
@@ -509,7 +454,7 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
             max_dim = np.array([reference.max(axis=0),
                                 configuration.max(axis=0)])
             size = max_dim.max(axis=0) - min_dim.min(axis=0)
-        elif np.allclose(box[3:], 90):
+        elif np.all(box[3:] == 90.0):
             size = box[:3]
         else:
             tribox = triclinic_vectors(box)
@@ -585,7 +530,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
             mask = np.where((_distances <= max_cutoff) & \
                             (_distances > min_cutoff))
         else:
-            mask = np.where((_distances < max_cutoff))
+            mask = np.where((_distances <= max_cutoff))
         if mask[0].size > 0:
             pairs = np.c_[mask[0], mask[1]]
             if return_distances:
@@ -899,7 +844,7 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
         min_dim = np.array([reference.min(axis=0)])
         max_dim = np.array([reference.max(axis=0)])
         size = max_dim.max(axis=0) - min_dim.min(axis=0)
-    elif np.allclose(box[3:], 90):
+    elif np.all(box[3:] == 90.0):
         size = box[:3]
     else:
         tribox = triclinic_vectors(box)
@@ -962,13 +907,13 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
     # coordinates to find distances between them.
     if N > 1:
         distvec = self_distance_array(reference, box=box)
-        dist = np.full((N, N), max_cutoff, dtype=np.float64)
+        dist = np.full((N, N), np.finfo(np.float64).max, dtype=np.float64)
         dist[np.triu_indices(N, 1)] = distvec
 
         if min_cutoff is not None:
-            mask = np.where((dist < max_cutoff) & (dist > min_cutoff))
+            mask = np.where((dist <= max_cutoff) & (dist > min_cutoff))
         else:
-            mask = np.where((dist < max_cutoff))
+            mask = np.where((dist <= max_cutoff))
 
         if mask[0].size > 0:
             pairs = np.c_[mask[0], mask[1]]
@@ -1162,7 +1107,7 @@ def transform_RtoS(coords, box, backend="serial"):
     """
     if len(coords) == 0:
         return coords
-    boxtype, box = _check_box(box)
+    boxtype, box = check_box(box)
     if boxtype == 'ortho':
         box = np.diag(box)
 
@@ -1210,7 +1155,7 @@ def transform_StoR(coords, box, backend="serial"):
     """
     if len(coords) == 0:
         return coords
-    boxtype, box = _check_box(box)
+    boxtype, box = check_box(box)
     if boxtype == 'ortho':
         box = np.diag(box)
 
@@ -1283,7 +1228,7 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
 
     if numatom > 0:
         if box is not None:
-            boxtype, box = _check_box(box)
+            boxtype, box = check_box(box)
             if boxtype == 'ortho':
                 _run("calc_bond_distance_ortho",
                      args=(coords1, coords2, box, bondlengths),
@@ -1375,7 +1320,7 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
 
     if numatom > 0:
         if box is not None:
-            boxtype, box = _check_box(box)
+            boxtype, box = check_box(box)
             if boxtype == 'ortho':
                 _run("calc_angle_ortho",
                        args=(coords1, coords2, coords3, box, angles),
@@ -1480,7 +1425,7 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
 
     if numatom > 0:
         if box is not None:
-            boxtype, box = _check_box(box)
+            boxtype, box = check_box(box)
             if boxtype == 'ortho':
                 _run("calc_dihedral_ortho",
                      args=(coords1, coords2, coords3, coords4, box, dihedrals),
@@ -1530,7 +1475,7 @@ def apply_PBC(coords, box, backend="serial"):
     """
     if len(coords) == 0:
         return coords
-    boxtype, box = _check_box(box)
+    boxtype, box = check_box(box)
     if boxtype == 'ortho':
         box_inv = box ** (-1)
         _run("ortho_pbc", args=(coords, box, box_inv), backend=backend)

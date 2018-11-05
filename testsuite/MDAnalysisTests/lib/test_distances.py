@@ -31,57 +31,6 @@ from MDAnalysis.lib import distances
 from MDAnalysis.lib import mdamath
 from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 
-class TestCheckBox(object):
-
-    prec = 6
-    ref_ortho = np.ones(3, dtype=np.float32)
-    ref_tri_vecs = np.array([[1, 0, 0], [0, 1, 0], [0, 2 ** 0.5, 2 ** 0.5]],
-                            dtype=np.float32)
-
-    @pytest.mark.parametrize('box',
-        ([1, 1, 1, 90, 90, 90],
-         (1, 1, 1, 90, 90, 90),
-         ['1', '1', 1, 90, '90', '90'],
-         ('1', '1', 1, 90, '90', '90'),
-         np.array(['1', '1', 1, 90, '90', '90']),
-         np.array([1, 1, 1, 90, 90, 90], dtype=np.float32),
-         np.array([1, 1, 1, 90, 90, 90], dtype=np.float64),
-         np.array([1, 1, 1, 1, 1, 1, 90, 90, 90, 90, 90, 90],
-                  dtype=np.float32)[::2]))
-    def test_ckeck_box_ortho(self, box):
-        boxtype, checked_box = distances._check_box(box)
-        assert boxtype == 'ortho'
-        assert_equal(checked_box, self.ref_ortho)
-        assert checked_box.dtype == np.float32
-        assert checked_box.flags['C_CONTIGUOUS']
-
-    @pytest.mark.parametrize('box',
-         ([1, 1, 2, 45, 90, 90],
-          (1, 1, 2, 45, 90, 90),
-          ['1', '1', 2, 45, '90', '90'],
-          ('1', '1', 2, 45, '90', '90'),
-          np.array(['1', '1', 2, 45, '90', '90']),
-          np.array([1, 1, 2, 45, 90, 90], dtype=np.float32),
-          np.array([1, 1, 2, 45, 90, 90], dtype=np.float64),
-          np.array([1, 1, 1, 1, 2, 2, 45, 45, 90, 90, 90, 90],
-                   dtype=np.float32)[::2]))
-    def test_check_box_tri_vecs(self, box):
-        boxtype, checked_box = distances._check_box(box)
-        assert boxtype == 'tri_vecs'
-        assert_almost_equal(checked_box, self.ref_tri_vecs, self.prec)
-        assert checked_box.dtype == np.float32
-        assert checked_box.flags['C_CONTIGUOUS']
-
-    def test_check_box_wrong_data(self):
-        with pytest.raises(ValueError):
-            wrongbox = ['invalid', 1, 1, 90, 90, 90]
-            boxtype, checked_box = distances._check_box(wrongbox)
-
-    def test_check_box_wrong_shape(self):
-        with pytest.raises(ValueError):
-            wrongbox = np.ones((3, 3), dtype=np.float32)
-            boxtype, checked_box = distances._check_box(wrongbox)
-
 
 class TestCheckResultArray(object):
 
@@ -179,7 +128,7 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
 
     if min_cutoff is None:
         min_cutoff = 0.
-    indices = np.where((dists < max_cutoff) & (dists > min_cutoff))
+    indices = np.where((dists <= max_cutoff) & (dists > min_cutoff))
 
     assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
 
@@ -212,7 +161,7 @@ def test_capped_distance_return(npoints, box, query, method, min_cutoff):
 
     if min_cutoff is None:
         min_cutoff = 0.
-    indices = np.where((dists < max_cutoff) & (dists > min_cutoff))
+    indices = np.where((dists <= max_cutoff) & (dists > min_cutoff))
 
     assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
 
@@ -233,7 +182,7 @@ def test_self_capped_distance(npoints, box, method, min_cutoff):
     for i, coord in enumerate(points):
         dist = distances.distance_array(coord, points[i+1:], box=box)
         if min_cutoff is not None:
-            idx = np.where((dist < max_cutoff) & (dist > min_cutoff))[1]
+            idx = np.where((dist <= max_cutoff) & (dist > min_cutoff))[1]
         else:
             idx = np.where((dist < max_cutoff))[1]
         for other_idx in idx:

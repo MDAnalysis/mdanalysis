@@ -67,7 +67,7 @@ else:
 
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.19.0"
+RELEASE = "0.19.1"
 
 is_release = 'dev' not in RELEASE
 
