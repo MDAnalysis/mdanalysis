@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-11/05/18 orbeckst, PicoCentauri, richardjgowers
+11/05/18 orbeckst, PicoCentauri, richardjgowers, zemanj
   * 0.19.1
 
 Fixes
