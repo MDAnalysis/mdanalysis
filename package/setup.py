@@ -67,7 +67,7 @@ else:
 
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.19.1"
+RELEASE = "0.19.2"
 
 is_release = 'dev' not in RELEASE
 
@@ -496,6 +496,7 @@ if __name__ == '__main__':
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',

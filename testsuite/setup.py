@@ -87,7 +87,7 @@ if sys.version_info[:2] < (2, 7):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "0.19.1"
+    RELEASE = "0.19.2"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
@@ -98,6 +98,7 @@ if __name__ == '__main__':
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',

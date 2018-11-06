@@ -13,6 +13,12 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+11/06/18 richardjgowers
+  * 0.19.2
+
+Changes
+  * Added Windows support
+
 11/05/18 orbeckst, PicoCentauri, richardjgowers, zemanj
   * 0.19.1
 
