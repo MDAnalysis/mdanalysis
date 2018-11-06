@@ -773,7 +773,7 @@ class Masses(AtomAttr):
 
         if isinstance(sg._ix, numbers.Integral):
             # for a single segment
-            masses = self.values[segatoms].sum()
+            masses = self.values[tuple(segatoms)].sum()
         else:
             # for a segmentgroup
             masses = np.array([self.values[row].sum() for row in segatoms])
@@ -1157,7 +1157,7 @@ class Charges(AtomAttr):
 
         if isinstance(sg._ix, numbers.Integral):
             # for a single segment
-            charges = self.values[segatoms].sum()
+            charges = self.values[tuple(segatoms)].sum()
         else:
             # for a segmentgroup
             charges = np.array([self.values[row].sum() for row in segatoms])

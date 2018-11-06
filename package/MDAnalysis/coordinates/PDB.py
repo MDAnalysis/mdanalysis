@@ -142,7 +142,9 @@ Classes
 from __future__ import absolute_import
 
 from six.moves import range, zip
+from six import StringIO, BytesIO
 
+import io
 import os
 import errno
 import itertools
@@ -227,7 +229,8 @@ class PDBReader(base.ReaderBase):
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based
        * New :attr:`title` (list with all TITLE lines).
-
+    .. versionchanged:: 0.19.1
+       Can now read PDB files with DOS line endings
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
@@ -272,41 +275,34 @@ class PDBReader(base.ReaderBase):
         models = []
         crysts = []
 
-        pdbfile = self._pdbfile = util.anyopen(filename)
+        # hack for streamIO
+        if isinstance(filename, util.NamedStream) and isinstance(filename.stream, StringIO):
+            filename.stream = BytesIO(filename.stream.getvalue().encode())
+
+        pdbfile = self._pdbfile = util.anyopen(filename, 'rb')
 
         line = "magical"
-        # we handle windows file striding uniquely
-        # because file.tell() is not reliable on Windows
-        # for a text file and binary mode is not compatible
-        # with i.e., our use of anyopen for zip files
-        windows_overbyte = 0
         while line:
             # need to use readline so tell gives end of line
             # (rather than end of current chunk)
             line = pdbfile.readline()
-            # the tell() text opaque number striding is not portable
-            # to windows so compensate accordingly
-            if os.name == 'nt':
-                # for a text file mode these aren't necessarily
-                # bytes; var name for simplicity only
-                windows_overbyte += 1
 
-            if line.startswith('MODEL'):
-                models.append(pdbfile.tell() - windows_overbyte)
-            elif line.startswith('CRYST1'):
+            if line[:5] == b'MODEL':
+                models.append(pdbfile.tell())
+            elif line[:5] == b'CRYST':
                 # remove size of line to get **start** of CRYST line
-                crysts.append(pdbfile.tell() - len(line) - windows_overbyte)
-            elif line.startswith('HEADER'):
+                crysts.append(pdbfile.tell() - len(line))
+            elif line[:6] == b'HEADER':
                 # classification = line[10:50]
                 # date = line[50:59]
                 # idCode = line[62:66]
-                header = line[10:66]
-            elif line.startswith('TITLE'):
-                title.append(line[8:80].strip())
-            elif line.startswith('COMPND'):
-                compound.append(line[7:80].strip())
-            elif line.startswith('REMARK'):
-                remarks.append(line[6:].strip())
+                header = line[10:66].decode()
+            elif line[:5] == b'TITLE':
+                title.append(line[8:80].strip().decode())
+            elif line[:6] == b'COMPND':
+                compound.append(line[7:80].strip().decode())
+            elif line[:6] == b'REMARK':
+                remarks.append(line[6:].strip().decode())
 
         end = pdbfile.tell()  # where the file ends
 
@@ -346,7 +342,7 @@ class PDBReader(base.ReaderBase):
         # Pretend the current TS is -1 (in 0 based) so "next" is the
         # 0th frame
         self.close()
-        self._pdbfile = util.anyopen(self.filename)
+        self._pdbfile = util.anyopen(self.filename, 'rb')
         self.ts.frame = -1
 
     def _read_next_timestep(self, ts=None):
@@ -373,7 +369,7 @@ class PDBReader(base.ReaderBase):
 
         # Seek to start and read until start of next frame
         self._pdbfile.seek(start)
-        chunk = self._pdbfile.read(stop - start)
+        chunk = self._pdbfile.read(stop - start).decode()
 
         tmp_buf = []
         for line in chunk.splitlines():

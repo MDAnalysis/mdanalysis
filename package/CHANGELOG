@@ -13,6 +13,21 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+11/05/18 orbeckst, PicoCentauri, richardjgowers, zemanj
+  * 0.19.1
+
+Fixes
+   * limit output of Chainreader __repr__ (#2109)
+   * added missing docs for lib.pkdtree (#2104)
+   * Added sphinx markup for FrameIterator (#2106)
+   * fixed error for residues and segments containing 0 atoms (#1999)
+   * fixed numpy deprecation warnings (#2122, #2123)
+   * Fixed reading PDB files with DOS line ending (#2128)
+
+Deprecations
+   * Default ``filename`` directory of align.AlignTraj is deprecated and 
+     will change in 1.0 to the current directory.
+
 10/09/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
          VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta,
          sebastien.buchoux, arm61, p-j-smith, IAlibay
@@ -156,6 +171,10 @@ Deprecations
     select the fastest method, all other uses of flags are deprecated.
     (#782)
 
+Testsuite
+  * skip tests for duecredit when duecredit is not installed (#1906)
+  * updated meta data for PyPi and updated README and INSTALL
+
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
          orbeckst, xiki-tempula, navyakhare, zemanj, ayushsuhane, davidercruz,
          jbarnoud
@@ -218,6 +237,9 @@ Changes
 Deprecations
   * undeprecated creating Groups from list of Components (Issue #1847)
 
+Testsuite
+  * Unit tests for unwanted side effects when importing MDAnalysis
+  * MDAnalysis.visualization is now tested
 
 01/24/18 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
          jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow, sseyler, rcortini,
@@ -335,6 +357,9 @@ Changes
 Changes
   * scipy and matplotlib are now required dependencies (Issue #1159)
 
+Testsuite
+  * Port to pytest - removed nose as a dependency (Issue #884)
+
 
 06/03/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma,
          richardjgowers, Shtkddud123, QuantumEntangledAndy, orbeckst,
@@ -386,7 +411,7 @@ Changes
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
          dotsdl, manuel.nuno.melo, utkbansal, vedantrathore, shobhitagarwal1612,
-         xiki-tempula
+         xiki-tempula, kash1102, vedantrathore
 
   * 0.16.0
 
@@ -541,8 +566,22 @@ Deprecations (Issue #599)
   * MassWeight=True parameter in analysis.gnm.closeContactGNMAnalysis
     deprecated in favor of weights="size".
 
+Testsuite
+  * Make knownfailure work even without parentheses.
+  * Added a plugin to list the non-closed file handle (Issue #853, PR #874).
+    The plugin can be disabled with --no-open-files.
+  * The test_failure test can be made fail by setting the MDA_FAILURE_TEST
+    environment variable (PR #874)
+  * replaced XTC_HOLE test trajectory with more meaningful one MULTIPDB_HOLE
+  * install external packages on Travis (SETUP == full: HOLE, clustalw)
+    to test additional analysis code (Issue #898)
+  * removed usage of random numbers from tests (Issue #958)
+  * test_imports now always uses the correct source directory (Issue #939).
+
+
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
-         dotsdl, richardjgowers, BartBruininks, jdetle
+         dotsdl, richardjgowers, BartBruininks, jdetle, pedrishi,
+         fiona-naughton, jdetle
 
   * 0.15.0
 
@@ -613,6 +652,16 @@ Deprecations (Issue #599)
   * Deprecated as_Universe function; not needed
   * Deprecated ContactAnalysis and ContactAnalysis1 classes
 
+Testsuite
+  * metadata update: link download_url to GitHub releases so that
+    Depsy recognizes contributors (issue #749) and added
+    @richardjgowers as maintainer
+  * a __version__ variable is now exposed; it is built by setup.py from the
+    AUTHORS file (Issue #784)
+  * Removed all bare assert (Issue #724)
+  * added tempdir module
+
+
 02/28/16 tyler.je.reddy, kain88-de, jbarnoud, richardjgowers, orbeckst
          manuel.nuno.melo, Balasubra, Saxenauts, mattihappy
 
@@ -666,6 +715,13 @@ Fixes
   * Fixed cyzone selection failing in orthogonal systems (Issue #710)
   * Fixed Error in calculation of average grid density (Issue #716)
   * Fixed indexing an AtomGroup using a list of bools now working (Issue #729)
+
+Testsuite
+  * Added the cleanup plugin (--with-mda_cleanup) to delete offset files
+    after tests have run (Issue 669)
+  * Made memleak testing python 3 compliant (Issue 662). It may be a moot
+    point since python 3.4 now cleverly deals with leaks.
+
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
          orbeckst, Balasubra
@@ -753,6 +809,9 @@ Fixes
     (Issue #521)
   * Fixed MOL2Writer rereading frames when writing them (Issue #521)
   * Fixed PDBWriter not writing occupancies from atoms (Issue #620)
+
+Testsuite
+  * removed ez_setup.py
 
 
 10/08/15
@@ -1004,6 +1063,12 @@ Fixes
     (Issue #409)
   * Fixed TopologyGroup.__contains__ failing if different instance of
     same bond was queried. (Issue #409)
+
+Testsuite
+  * Overhaul of the test subsystem.
+  * Tests now implement nose plugins, as a submodule. (Issue 331)
+    Available plugins are: memleak testing, stderr capturing (for quieter
+    test runs), and proper knownfailure implementation (Issue 338).
 
 
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst,
@@ -1405,14 +1470,23 @@ Fixes
   * fixed Issue 113 (replaced outdated Biopython to call ClustalW)
 
 
-02/16/12 sebastien.buchoux
+02/16/12 sebastien.buchoux, orbeckst
 
   * 0.7.5.1
 
-  Fixes
-
+Fixes
   * added: missing files (Issue 95)
   * removed: unused delaunay-related files
+
+Testsuite
+  * test package is now called 'MDAnalysisTests'
+  * tests AND data are now bundled together in MDAnalysisTests
+  * MDAnalysis and MDAnalysisTests packages MUST have the same
+    release number (they need to stay in sync); MDAnalysisTests
+    will NOT run if a release mismatch is detected
+  * see Issue #87 and
+    https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
+
 
 02/11/12 orbeckst, sebastien.buchoux, jandom, hallben, lukasgrossar
 
@@ -1524,6 +1598,14 @@ Fixes
     releases of MDAnalysis will also use these test data unless a
     MDAnalysisTestData package with a higher release number is available.
 
+  Testsuite
+  
+   * Split off test data trajectories and structures from
+     MDAnalaysis/tests/data into separate package. (Issue 28)
+   * Numbering matches the earliest MDAnalysis release for which the data is
+     needed. Any later releases of MDAnalysis will also use these test data
+     unless a MDAnalysisTestData package with a higher release number is
+     available.
 
 
 05/22/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, dcaplan,
