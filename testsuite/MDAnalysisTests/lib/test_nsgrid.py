@@ -47,7 +47,6 @@ def run_grid_search(u, ref_id, cutoff=3):
 
     return searcher.search(searchcoords)
 
-
 def test_pbc_box():
     """Check that PBC box accepts only well-formated boxes"""
     pbc = True
@@ -214,3 +213,14 @@ def test_nsgrid_selfsearch(box, result):
         searchresults = searcher.self_search()
     pairs = searchresults.get_pairs()
     assert_equal(len(pairs)//2, result)
+
+def test_nsgrid_probe_close_to_box_boundary():
+    # FastNS.search used to segfault with this box, cutoff and reference
+    # coordinate prior to PR #2136, so we ensure that this remains fixed.
+    # See Issue #2132 for further information.
+    ref = np.array([[55.783722, 44.190044, -54.16671]], dtype=np.float32)
+    box = np.array([53.785854, 43.951054, 57.17597, 90., 90., 90.], dtype=np.float32)
+    cutoff = 3.0
+    conf = np.zeros((1, 3), dtype=np.float32)
+    searcher = nsgrid.FastNS(cutoff, conf, box)
+    pairs, dists = searcher.search(ref)
