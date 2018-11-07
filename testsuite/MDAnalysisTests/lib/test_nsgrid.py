@@ -223,4 +223,4 @@ def test_nsgrid_probe_close_to_box_boundary():
     cutoff = 3.0
     conf = np.zeros((1, 3), dtype=np.float32)
     searcher = nsgrid.FastNS(cutoff, conf, box)
-    pairs, dists = searcher.search(ref)
+    results = searcher.search(ref)
