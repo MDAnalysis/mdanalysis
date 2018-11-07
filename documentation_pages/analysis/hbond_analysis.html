@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>4.3.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis &#8212; MDAnalysis 0.19.1-dev documentation</title>
+    <title>4.3.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis &#8212; MDAnalysis 0.19.3-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.19.1-dev',
+        VERSION:     '0.19.3-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.19.1-dev documentation"
+          title="Search within MDAnalysis 0.19.3-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -701,7 +701,7 @@ and added <em>kwargs</em> so that it can be used instead of
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OE2', 'ND1', 'OG', 'OD2', 'SD', 'OW', 'OD1', 'OC1', 'O', 'OG1', 'OH', 'NE2', 'SG', 'OH2', 'OE1', 'OC2'), 'GLYCAM06': ('NT', 'O2', 'SM', 'OW', 'OY', 'O', 'N', 'OH', 'OS'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OW', 'OD1', 'OD2', 'OE1', 'ND1', 'SD', 'O', 'OG', 'OH', 'OC2', 'OC1', 'OH2', 'OE2', 'OG1', 'NE2', 'SG'), 'GLYCAM06': ('SM', 'OW', 'OY', 'OS', 'O2', 'NT', 'O', 'OH', 'N'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -709,7 +709,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('ND2', 'ND1', 'OG', 'NZ', 'OW', 'NH1', 'OG1', 'N', 'OH', 'NE', 'NE2', 'SG', 'OH2', 'NE1', 'NH2'), 'GLYCAM06': ('NT', 'OH', 'OW', 'N', 'N3'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('OW', 'NH1', 'ND1', 'OG', 'NZ', 'OH', 'NE', 'NH2', 'ND2', 'OH2', 'N', 'NE1', 'OG1', 'NE2', 'SG'), 'GLYCAM06': ('NT', 'OW', 'OH', 'N', 'N3'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
