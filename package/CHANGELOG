@@ -17,6 +17,8 @@ mm/dd/yy
   * 0.19.3
 
 Fixes
+  * fixed lib.nsgrid segfault for coordinates very close to the box boundary
+    (Issue #2132, PR #2136)
 
 Deprecations
 
