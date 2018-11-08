@@ -701,7 +701,7 @@ and added <em>kwargs</em> so that it can be used instead of
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OW', 'OD1', 'OD2', 'OE1', 'ND1', 'SD', 'O', 'OG', 'OH', 'OC2', 'OC1', 'OH2', 'OE2', 'OG1', 'NE2', 'SG'), 'GLYCAM06': ('SM', 'OW', 'OY', 'OS', 'O2', 'NT', 'O', 'OH', 'N'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OH2', 'NE2', 'SG', 'OD1', 'OH', 'OC2', 'OW', 'ND1', 'SD', 'OG', 'OG1', 'O', 'OE2', 'OE1', 'OD2', 'OC1'), 'GLYCAM06': ('SM', 'OS', 'N', 'O2', 'OH', 'OW', 'NT', 'O', 'OY'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -709,7 +709,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('OW', 'NH1', 'ND1', 'OG', 'NZ', 'OH', 'NE', 'NH2', 'ND2', 'OH2', 'N', 'NE1', 'OG1', 'NE2', 'SG'), 'GLYCAM06': ('NT', 'OW', 'OH', 'N', 'N3'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('NE1', 'OH2', 'NE2', 'N', 'SG', 'OW', 'NE', 'NZ', 'NH2', 'ND2', 'ND1', 'OG', 'OH', 'NH1', 'OG1'), 'GLYCAM06': ('N3', 'OW', 'NT', 'OH', 'N'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
