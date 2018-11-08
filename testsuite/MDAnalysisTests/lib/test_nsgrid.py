@@ -221,6 +221,12 @@ def test_nsgrid_probe_close_to_box_boundary():
     ref = np.array([[55.783722, 44.190044, -54.16671]], dtype=np.float32)
     box = np.array([53.785854, 43.951054, 57.17597, 90., 90., 90.], dtype=np.float32)
     cutoff = 3.0
-    conf = np.zeros((1, 3), dtype=np.float32)
+    # search within a configuration where we know the expected outcome:
+    conf = np.ones((1, 3), dtype=np.float32)
     searcher = nsgrid.FastNS(cutoff, conf, box)
     results = searcher.search(ref)
+    # check if results are as expected:
+    expected_pairs = np.zeros((1, 2), dtype=np.int64)
+    expected_dists = np.array([2.3689647], dtype=np.float64)
+    assert_equal(results.get_pairs(), expected_pairs)
+    assert_allclose(results.get_pair_distances(), expected_dists, rtol=1.e-6)
