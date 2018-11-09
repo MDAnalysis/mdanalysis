@@ -47,9 +47,11 @@ supersede these two citations.)
    and O. Beckstein. `MDAnalysis: A Python package for the rapid analysis of
    molecular dynamics simulations`_. In S. Benthall and S. Rostrup, editors,
    *Proceedings of the 15th Python in Science Conference*, pages 98-105,
-   Austin, TX, 2016. SciPy.
+   Austin, TX, 2016. SciPy. doi:`10.25080/Majora-629e541a-00e`_
 
 .. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
+.. _`10.25080/Majora-629e541a-00e`:
+   https://doi.org/10.25080/Majora-629e541a-00e
 
 .. _`MDAnalysis: A Python package for the rapid analysis of molecular
    dynamics simulations`:
