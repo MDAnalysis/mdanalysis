@@ -46,7 +46,7 @@ class TestDuecredit(object):
         assert mda.due.active == True
 
     @pytest.mark.parametrize("module,path,citekey", [
-        ("MDAnalysis", "MDAnalysis", "gowers2016"),
+        ("MDAnalysis", "MDAnalysis", "10.25080/majora-629e541a-00e"),
         ("MDAnalysis", "MDAnalysis", "10.1002/jcc.21787"),
     ])
     def test_duecredit_collector_primary(self, module, path, citekey):
