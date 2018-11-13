@@ -301,7 +301,7 @@ the zone, on the other hand, a fast decay means a short permanence time::
   plt.xlabel('Time')
   plt.ylabel('SP')
   plt.title('Survival Probability')
-  plt.plot(taus, sp_timeseries)
+  plt.plot(tau_timeseries, sp_timeseries)
   plt.show()
 
 
