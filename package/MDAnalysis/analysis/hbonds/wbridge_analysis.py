@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -967,10 +968,10 @@ class WaterBridgeAnalysis(AnalysisBase):
             water_bridges_donors = water_bridges.select_atoms(
                 'name {0}'.format(' '.join(self.donors)))
             water_bridges_donors_h = {}
-            for i, d in enumerate(water_bridges_donors):
+            for j, d in enumerate(water_bridges_donors):
                 tmp = self._get_bonded_hydrogens(d)
                 if tmp:
-                    water_bridges_donors_h[i] = tmp
+                    water_bridges_donors_h[j] = tmp
             self.logger_debug("water bridge donors: {0}".format(len(water_bridges_donors)))
             self.logger_debug("water bridge donor hydrogens: {0}".format(len(water_bridges_donors_h)))
             water_bridges_acceptors = water_bridges.select_atoms(
