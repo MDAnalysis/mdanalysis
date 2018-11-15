@@ -768,11 +768,15 @@ class Universe(object):
         return "<Universe with {n_atoms} atoms>".format(
             n_atoms=len(self.atoms))
 
-    def __getstate__(self):
-        raise NotImplementedError
+    @classmethod
+    def _unpickle_U(cls, top, traj, anchor):
+        u = cls(top, anchor_name=anchor)
+        u.load_new(traj)
 
-    def __setstate__(self, state):
-        raise NotImplementedError
+        return u
+
+    def __reduce__(self):
+        return (self._unpickle_U, (self._topology, self.trajectory.filename, self.anchor_name))
 
     # Properties
     @property
