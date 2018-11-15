@@ -386,7 +386,7 @@ def generate_streamlines_3d(topology_file_path, trajectory_file_path, grid_spaci
     --------
     Generate 3D streamlines and visualize in `mayavi`_::
 
-        import np as np
+        import numpy as np
 
         import MDAnalysis
         import MDAnalysis.visualization.streamlines_3D
