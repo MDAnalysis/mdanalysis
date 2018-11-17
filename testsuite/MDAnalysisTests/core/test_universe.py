@@ -283,10 +283,14 @@ class TestUniverse(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
-    def test_pickle_raises_NotImplementedError(self):
+    def test_pickle(self):
         u = mda.Universe(PSF, DCD)
-        with pytest.raises(NotImplementedError):
-            cPickle.dumps(u, protocol = cPickle.HIGHEST_PROTOCOL)
+
+        s = cPickle.dumps(u, protocol = cPickle.HIGHEST_PROTOCOL)
+
+        new_u = cPickle.loads(s)
+
+        assert_equal(u.atoms.names, new_u.atoms.names)
 
     def test_set_dimensions(self):
         u = mda.Universe(PSF, DCD)
