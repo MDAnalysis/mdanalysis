@@ -2078,6 +2078,20 @@ class ReaderBase(ProtoReader):
 
         self._ts_kwargs = ts_kwargs
 
+    @classmethod
+    def _unpickle_Reader(cls, filename, timestep, auxs, trans):
+        new_R = cls(filename)
+        new_R.add_transformations(trans)
+        for auxname, auxdata in auxs.items():
+            new_R.add_aux(auxname, auxdata)
+
+    def __reduce__(self):
+        return (self._unpickle_Reader,
+                (self.filename, self.ts, self._auxs, self._transformations))
+
+    def __len__(self):
+        return self.n_frames
+
     def copy(self):
         """Return independent copy of this Reader.
 
