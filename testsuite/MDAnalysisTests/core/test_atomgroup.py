@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -967,9 +968,21 @@ class TestAtomGroup(object):
 
     def test_n_residues(self, ag):
         assert ag.n_residues == 214
+        
+    def test_zero_atoms_residues(self, ag):
+        new_ag = ag[[]].residues.atoms
+
+        assert isinstance(new_ag, mda.AtomGroup)
+        assert len(new_ag) == 0
 
     def test_n_segments(self, ag):
         assert ag.n_segments == 1
+        
+    def test_zero_atoms_segments(self, ag):
+        new_ag = ag[[]].segments.atoms
+
+        assert isinstance(new_ag, mda.AtomGroup)
+        assert len(new_ag) == 0
 
     def test_resids_dim(self, ag):
         assert len(ag.resids) == len(ag)

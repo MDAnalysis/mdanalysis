@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -28,7 +29,12 @@ Translate the coordinates of a given trajectory by a given vector.
 The vector can either be user defined, using the function :func:`translate`
 or defined by centering an AtomGroup in the unit cell using the function
 :func:`center_in_box`
-    
+
+.. autofunction:: translate
+
+.. autofunction:: center_in_box
+
+
 """
 from __future__ import absolute_import, division
 
@@ -41,31 +47,31 @@ def translate(vector):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance by a given vector.
-    
+
     Example
     -------
-        ts = MDAnalysis.transformations.translate([1,2,3])(ts)    
-    
+        ts = MDAnalysis.transformations.translate([1,2,3])(ts)
+
     Parameters
     ----------
     vector: array-like
         coordinates of the vector to which the coordinates will be translated
-        
+
     Returns
     -------
     :class:`~MDAnalysis.coordinates.base.Timestep` object
-    
+
     """
     if len(vector)>2:
         vector = np.float32(vector)
     else:
         raise ValueError("{} vector is too short".format(vector))
-    
+
     def wrapped(ts):
         ts.positions += vector
-        
+
         return ts
-    
+
     return wrapped
 
 
@@ -74,16 +80,16 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
     is centered on the unit cell. The unit cell dimensions are taken from the input Timestep object.
-    If a point is given, the center of the atomgroup will be translated to this point instead. 
-    
+    If a point is given, the center of the atomgroup will be translated to this point instead.
+
     Example
     -------
-    
+
     .. code-block:: python
-    
+
         ag = u.residues[1].atoms
         ts = MDAnalysis.transformations.center(ag,center='mass')(ts)
-    
+
     Parameters
     ----------
     ag: AtomGroup
@@ -98,14 +104,14 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
     wrap: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry. Default is `False`, no changes
-        to the atom coordinates are done before calculating the center of the AtomGroup. 
-    
+        to the atom coordinates are done before calculating the center of the AtomGroup.
+
     Returns
     -------
     :class:`~MDAnalysis.coordinates.base.Timestep` object
-    
+
     """
-    
+
     pbc_arg = wrap
     if point:
         point = np.asarray(point, np.float32)
@@ -123,19 +129,19 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
             raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
         else:
             raise ValueError('{} is not an AtomGroup object'.format(ag))
-  
+
     def wrapped(ts):
         if point is None:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
         else:
             boxcenter = point
-    
+
         ag_center = center_method()
 
         vector = boxcenter - ag_center
         ts.positions += vector
-        
+
         return ts
-    
+
     return wrapped
-    
+

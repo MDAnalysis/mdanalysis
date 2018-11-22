@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -2361,8 +2362,9 @@ class AtomGroup(GroupBase):
         .. versionchanged:: 0.16.0 Updating selections now possible by setting
             the `updating` argument.
         .. versionchanged:: 0.17.0 Added *moltype* and *molnum* selections.
-        .. versionchanged:: 0.18.1 Added strict type checking for passed groups.
-        .. versionchanged:: 0.19.0 Added periodic kwarg (default True)
+        .. versionchanged:: 0.19.0
+           Added strict type checking for passed groups.
+           Added periodic kwarg (default True)
         """
         # once flags removed, replace with default=True
         periodic = selgroups.pop('periodic', flags['use_periodic_selections'])
@@ -2702,7 +2704,11 @@ class ResidueGroup(GroupBase):
         The :class:`Atoms<Atom>` are ordered locally by :class:`Residue` in the
         :class:`ResidueGroup`.  Duplicates are *not* removed.
         """
-        ag = self.universe.atoms[np.concatenate(self.indices)]
+        # If indices is an empty list np.concatenate will fail (Issue #1999).
+        try:
+            ag = self.universe.atoms[np.concatenate(self.indices)]
+        except ValueError:
+            ag = self.universe.atoms[self.indices]
         # If the ResidueGroup is known to be unique, this also holds for the
         # atoms therein, since atoms can only belong to one residue at a time.
         # On the contrary, if the ResidueGroup is not unique, this does not
@@ -2861,7 +2867,11 @@ class SegmentGroup(GroupBase):
         are further ordered by :class:`Segment` in the :class:`SegmentGroup`.
         Duplicates are *not* removed.
         """
-        ag = self.universe.atoms[np.concatenate(self.indices)]
+        # If indices is an empty list np.concatenate will fail (Issue #1999).
+        try:
+            ag = self.universe.atoms[np.concatenate(self.indices)]
+        except ValueError:
+            ag = self.universe.atoms[self.indices]
         # If the SegmentGroup is known to be unique, this also holds for the
         # residues therein, and thus, also for the atoms in those residues.
         # On the contrary, if the SegmentGroup is not unique, this does not

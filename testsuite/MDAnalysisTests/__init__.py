@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -97,12 +98,7 @@ import pytest
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
 # keep in sync with RELEASE in setup.py
-__version__ = "0.18.1-dev"
-try:
-    from MDAnalysisTests.authors import __authors__
-except ImportError:
-    logger.info('Could not find authors.py, __authors__ will be empty.')
-    __authors__ = []
+__version__ = "0.19.3-dev"
 
 
 # Do NOT import MDAnalysis at this level. Tests should do it themselves.

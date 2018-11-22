@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -200,3 +201,177 @@ class TestMemoryReader(MultiframeReaderTest):
         reader.ts.positions = new_positions
         reader[0]
         assert_almost_equal(reader.ts.positions, new_positions)
+
+
+class TestMemoryReaderVelsForces(object):
+    @staticmethod
+    @pytest.fixture(params=['2d', '3d'])
+    def ref_pos(request):
+        if request.param == '2d':
+            return np.arange(30).reshape(10, 3)
+        elif request.param == '3d':
+            return np.arange(30).reshape(1, 10, 3)
+
+    @staticmethod
+    @pytest.fixture(params=['2d', '3d'])
+    def ref_vels(request):
+        if request.param == '2d':
+            return np.arange(30).reshape(10, 3) + 100
+        elif request.param == '3d':
+            return np.arange(30).reshape(1, 10, 3) + 100
+
+    @staticmethod
+    @pytest.fixture(params=['2d', '3d'])
+    def ref_forces(request):
+        if request.param == '2d':
+            return np.arange(30).reshape(10, 3) + 1000
+        elif request.param == '3d':
+            return np.arange(30).reshape(1, 10, 3) + 1000
+
+    @staticmethod
+    def assert_equal_dims(arr1, arr2):
+        if arr2.ndim == 3:
+            assert_equal(arr1, arr2[0])
+        elif arr2.ndim == 2:
+            assert_equal(arr1, arr2)
+
+    def test_velocities(self, ref_pos, ref_vels):
+        mr = MemoryReader(ref_pos,
+                          velocities=ref_vels)
+
+        assert mr.ts.has_velocities
+        self.assert_equal_dims(mr.ts.velocities, ref_vels)
+        assert not mr.ts.has_forces
+
+    def test_forces(self, ref_pos, ref_forces):
+        mr = MemoryReader(ref_pos,
+                          forces=ref_forces)
+
+        assert not mr.ts.has_velocities
+        assert mr.ts.has_forces
+        self.assert_equal_dims(mr.ts.forces, ref_forces)
+
+    def test_both(self, ref_pos, ref_vels, ref_forces):
+        mr = MemoryReader(ref_pos,
+                          velocities=ref_vels,
+                          forces=ref_forces)
+        assert mr.ts.has_velocities
+        self.assert_equal_dims(mr.ts.velocities, ref_vels)
+        assert mr.ts.has_forces
+        self.assert_equal_dims(mr.ts.forces, ref_forces)
+
+    @pytest.mark.parametrize('param', ['velocities', 'forces'])
+    def test_wrongshape(self, ref_pos, param):
+        with pytest.raises(ValueError):
+            mr = MemoryReader(ref_pos, **{param: np.zeros((3, 2, 1))})
+
+
+class TestDimensions(object):
+    @staticmethod
+    @pytest.fixture
+    def ref_pos():
+        return np.arange(270).reshape(3, 30, 3)
+
+    @staticmethod
+    @pytest.fixture
+    def ref_box():
+        return np.arange(18).reshape(3, 6)
+
+    def test_single_box(self, ref_pos):
+        box = np.array([3, 4, 5, 90, 90, 90])
+
+        mr = MemoryReader(ref_pos, dimensions=box)
+
+        for ts in mr:
+            assert_equal(ts.dimensions, box)
+
+    def test_varying_box(self, ref_pos, ref_box):
+        mr = MemoryReader(ref_pos, dimensions=ref_box)
+
+        for i, ts in enumerate(mr):
+            assert_equal(ts.dimensions, ref_box[i])
+
+    def test_wrong_length(self, ref_pos):
+        bad_box = np.arange(12).reshape(2, 6)
+
+        with pytest.raises(ValueError):
+            mr = MemoryReader(ref_pos, dimensions=bad_box)
+
+    def test_wrong_shape(self, ref_pos):
+        bad_box = np.arange(15).reshape(3, 5)
+
+        with pytest.raises(ValueError):
+            mr = MemoryReader(ref_pos, dimensions=bad_box)
+
+
+class TestMemoryReaderModifications(object):
+    # check that modifying MR things behaves as expected
+    # in general, modifying the Timestep should be *permanent*
+    # this is unlike other Readers!
+    n_atoms = 10
+    n_frames = 4
+
+    @pytest.fixture()
+    def mr_reader(self):
+        pos = np.arange(self.n_frames * self.n_atoms * 3).reshape(
+            self.n_frames, self.n_atoms, 3)
+        vel = np.arange(self.n_frames * self.n_atoms * 3).reshape(
+            self.n_frames, self.n_atoms, 3) + 200
+        frc = np.arange(self.n_frames * self.n_atoms * 3).reshape(
+            self.n_frames, self.n_atoms, 3) + 400
+        box = np.arange(self.n_frames * 6).reshape(self.n_frames, 6) + 600
+
+        return MemoryReader(pos,
+                            velocities=vel,
+                            forces=frc,
+                            dimensions=box)
+
+    @pytest.fixture()
+    def mr_universe(self, mr_reader):
+        u = mda.Universe.empty(self.n_atoms)
+        u.trajectory = mr_reader
+
+        return u
+
+    @pytest.mark.parametrize('attr', ['positions', 'velocities', 'forces', 'dimensions'])
+    def test_copying(self, mr_reader, attr):
+        mr2 = mr_reader.copy()
+        # update the attribute
+        ts = mr2.ts
+        setattr(ts, attr, 7)
+        # check the change worked
+        assert_almost_equal(getattr(ts, attr), 7)
+        assert ts.positions.shape == (self.n_atoms, 3)
+        assert ts.velocities.shape == (self.n_atoms, 3)
+        assert ts.forces.shape == (self.n_atoms, 3)
+        assert ts.dimensions.shape == (6,)
+        # move the Reader around, forcing updates of ts
+        ts = mr2[2]
+        ts = mr2[0]
+        # check our old change is still there
+        assert_almost_equal(getattr(ts, attr), 7)
+
+    @pytest.mark.parametrize('attr', ['positions', 'velocities', 'forces', 'dimensions'])
+    def test_attr_set(self, mr_universe, attr):
+        # same as above, but via a Universe/AtomGroup
+        u = mr_universe
+        ts = u.trajectory[0]
+
+        setattr(ts, attr, 7)
+
+        assert_almost_equal(getattr(ts, attr), 7)
+
+        ts = u.trajectory[2]
+        ts = u.trajectory[0]
+
+        assert_almost_equal(getattr(ts, attr), 7)
+        assert u.atoms.positions.shape == (self.n_atoms, 3)
+        assert u.atoms.velocities.shape == (self.n_atoms, 3)
+        assert u.atoms.forces.shape == (self.n_atoms, 3)
+        assert u.atoms.dimensions.shape == (6,)
+
+    @pytest.mark.parametrize('attr', ['velocities', 'forces', 'dimensions'])
+    def test_non_numpy_arr(self, attr):
+        with pytest.raises(TypeError):
+            mr = MemoryReader(np.zeros((10, 30, 3)),
+                              **{attr: 'not an array'})

@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -773,7 +774,7 @@ class Masses(AtomAttr):
 
         if isinstance(sg._ix, numbers.Integral):
             # for a single segment
-            masses = self.values[segatoms].sum()
+            masses = self.values[tuple(segatoms)].sum()
         else:
             # for a segmentgroup
             masses = np.array([self.values[row].sum() for row in segatoms])
@@ -1157,7 +1158,7 @@ class Charges(AtomAttr):
 
         if isinstance(sg._ix, numbers.Integral):
             # for a single segment
-            charges = self.values[segatoms].sum()
+            charges = self.values[tuple(segatoms)].sum()
         else:
             # for a segmentgroup
             charges = np.array([self.values[row].sum() for row in segatoms])

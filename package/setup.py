@@ -15,6 +15,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -67,7 +68,7 @@ else:
 
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.18.1-dev"
+RELEASE = "0.19.3-dev"
 
 is_release = 'dev' not in RELEASE
 
@@ -289,6 +290,7 @@ def extensions(config):
         print('Will not attempt to use Cython.')
 
     source_suffix = '.pyx' if use_cython else '.c'
+    cpp_source_suffix = '.pyx' if use_cython else '.cpp'
 
     # The callable is passed so that it is only evaluated at install time.
 
@@ -347,14 +349,14 @@ def extensions(config):
                         define_macros=define_macros,
                         extra_compile_args=extra_compile_args)
     cutil = MDAExtension('MDAnalysis.lib._cutil',
-                         sources=['MDAnalysis/lib/_cutil' + source_suffix],
+                         sources=['MDAnalysis/lib/_cutil' + cpp_source_suffix],
                          language='c++',
                          libraries=mathlib,
                          include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                          define_macros=define_macros,
                          extra_compile_args=cpp_extra_compile_args)
     augment = MDAExtension('MDAnalysis.lib._augment',
-                         sources=['MDAnalysis/lib/_augment' + source_suffix],
+                         sources=['MDAnalysis/lib/_augment' + cpp_source_suffix],
                          language='c++',
                          include_dirs=include_dirs,
                          define_macros=define_macros,
@@ -381,7 +383,7 @@ def extensions(config):
                               define_macros=define_macros,
                               extra_compile_args=extra_compile_args)
     nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
-                             ['MDAnalysis/lib/nsgrid' + source_suffix],
+                             ['MDAnalysis/lib/nsgrid' + cpp_source_suffix],
                              include_dirs=include_dirs,
                              language='c++',
                              define_macros=define_macros,
@@ -495,6 +497,7 @@ if __name__ == '__main__':
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
@@ -510,6 +513,21 @@ if __name__ == '__main__':
     ]
     config = Config()
     exts, cythonfiles = extensions(config)
+
+    install_requires = [
+          'numpy>=1.10.4',
+          'biopython>=1.71',
+          'networkx>=1.0',
+          'GridDataFormats>=0.4.0',
+          'six>=1.4.0',
+          'mmtf-python>=1.0.0',
+          'joblib',
+          'scipy>=1.0.0',
+          'matplotlib>=1.5.1',
+          'mock',
+    ]
+    if not os.name == 'nt':
+        install_requires.append('gsd>=1.4.0')
 
     setup(name='MDAnalysis',
           version=RELEASE,
@@ -545,19 +563,7 @@ if __name__ == '__main__':
           setup_requires=[
               'numpy>=1.10.4',
           ],
-          install_requires=[
-              'gsd>=1.4.0',
-              'numpy>=1.10.4',
-              'biopython>=1.71',
-              'networkx>=1.0',
-              'GridDataFormats>=0.4.0',
-              'six>=1.4.0',
-              'mmtf-python>=1.0.0',
-              'joblib',
-              'scipy>=1.0.0',
-              'matplotlib>=1.5.1',
-              'mock',
-          ],
+          install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
           # packaging system

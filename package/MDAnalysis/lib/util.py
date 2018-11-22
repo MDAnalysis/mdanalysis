@@ -14,12 +14,12 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
 """
 Helper functions --- :mod:`MDAnalysis.lib.util`
 ====================================================
@@ -39,6 +39,9 @@ Files and directories
 .. autofunction:: greedy_splitext
 .. autofunction:: which
 .. autofunction:: realpath
+.. autofunction:: get_ext
+.. autofunction:: check_compressed_format
+.. autofunction:: format_from_filename_extension
 .. autofunction:: guess_format
 
 Streams
@@ -109,7 +112,13 @@ Containers and lists
 .. autofunction:: asiterable
 .. autofunction:: hasmethod
 .. autoclass:: Namespace
+
+Arrays
+------
+
 .. autofunction:: unique_int_1d(values)
+.. autofunction:: unique_rows
+.. autofunction:: blocks_of
 
 File parsing
 ------------
@@ -123,6 +132,8 @@ Data manipulation and handling
 
 .. autofunction:: fixedwidth_bins
 .. autofunction:: get_weights
+.. autofunction:: ltruncate_int
+.. autofunction:: flatten_dict
 
 Strings
 -------
@@ -149,6 +160,11 @@ Code management
 .. autofunction:: deprecate
 .. autoclass:: _Deprecate
 .. autofunction:: dedent_docstring
+
+Data format checks
+------------------
+
+.. autofunction:: check_box
 
 .. Rubric:: Footnotes
 
@@ -1525,25 +1541,28 @@ def cached(key):
 
 
 def unique_rows(arr, return_index=False):
-    """Return the unique rows from an array
+    """Return the unique rows of an array.
 
     Arguments
     ---------
-    arr : np.array of shape (n1, m)
+    arr : numpy.ndarray
+        Array of shape ``(n1, m)``.
     return_index : bool, optional
       If ``True``, returns indices of array that formed answer (see
       :func:`numpy.unique`)
 
     Returns
     -------
-    unique_rows : numpy.array
-         shape (n2, m)
-    r_idx : numpy.array (optional)
-          index (if `return_index` was ``True``)
+    unique_rows : numpy.ndarray
+         Array of shape ``(n2, m)`` containing only the unique rows of `arr`.
+    r_idx : numpy.ndarray (optional)
+          Array containing the corresponding row indices (if `return_index`
+          is ``True``).
 
     Examples
     --------
     Remove dupicate rows from an array:
+    
     >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
     >>> b = unique_rows(a)
     >>> b
@@ -1931,6 +1950,7 @@ def check_coords(*coord_names, **options):
     if not coord_names:
         raise ValueError("Decorator check_coords() cannot be used without "
                          "positional arguments.")
+
     def check_coords_decorator(func):
         fname = func.__name__
         code = func.__code__
@@ -2255,3 +2275,57 @@ def dedent_docstring(text):
 
     # treat first line as special (typically no leading whitespace!) which messes up dedent
     return lines[0].lstrip() + "\n" + textwrap.dedent("\n".join(lines[1:]))
+
+
+def check_box(box):
+    """Take a box input and deduce what type of system it represents based on
+    the shape of the array and whether all angles are 90 degrees.
+
+    Parameters
+    ----------
+    box : array_like
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+
+    Returns
+    -------
+    boxtype : {``'ortho'``, ``'tri_vecs'``}
+        String indicating the box type (orthogonal or triclinic).
+    checked_box : numpy.ndarray
+        Array of dtype ``numpy.float32`` containing box information:
+          * If `boxtype` is ``'ortho'``, `cecked_box` will have the shape ``(3,)``
+            containing the x-, y-, and z-dimensions of the orthogonal box.
+          * If  `boxtype` is ``'tri_vecs'``, `cecked_box` will have the shape
+            ``(3, 3)`` containing the triclinic box vectors in a lower triangular
+            matrix as returned by
+            :meth:`~MDAnalysis.lib.mdamath.triclinic_vectors`.
+
+    Raises
+    ------
+    ValueError
+        If `box` is not of the form ``[lx, ly, lz, alpha, beta, gamma]``
+        or contains data that is not convertible to ``numpy.float32``.
+
+    See Also
+    --------
+    MDAnalysis.lib.mdamath.triclinic_vectors
+
+
+    .. versionchanged: 0.19.0
+       * Enforced correspondence of `box` with specified format.
+       * Added automatic conversion of input to :class:`numpy.ndarray` with
+         dtype ``numpy.float32``.
+       * Now also returns the box in the format expected by low-level functions
+         in :mod:`~MDAnalysis.lib.c_distances`.
+       * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
+    """
+    from .mdamath import triclinic_vectors  # avoid circular import
+    box = np.asarray(box, dtype=np.float32, order='C')
+    if box.shape != (6,):
+        raise ValueError("Invalid box information. Must be of the form "
+                         "[lx, ly, lz, alpha, beta, gamma].")
+    if np.all(box[3:] == 90.):
+        return 'ortho', box[:3]
+    return 'tri_vecs', triclinic_vectors(box)

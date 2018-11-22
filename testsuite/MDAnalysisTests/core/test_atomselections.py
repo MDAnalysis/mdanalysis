@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -344,9 +345,6 @@ class TestSelectionsAMBER(object):
         assert_equal(sel.names, ['HH31', 'HH32', 'HH33', 'HB1', 'HB2', 'HB3'])
 
 
-@pytest.mark.xfail(os.name == 'nt',
-                   strict=True,
-                   reason="Not supported on Windows yet.")
 class TestSelectionsNAMD(object):
     @pytest.fixture()
     def universe(self):
