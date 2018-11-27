@@ -803,6 +803,107 @@ class TestWaterBridgeAnalysis(object):
             pass
         assert_equal(wb.count_by_time(analysis_func=analysis), [(0,0), ])
 
+    def test_generate_table(self):
+        '''Test generate table'''
+        grofile = '''Test gro file
+5
+    1ALA      N    1   0.000   0.000   0.000
+    1ALA      H    2   0.100   0.000   0.000
+    2SOL     OW    3   0.300   0.000   0.000
+    2SOL    HW2    4   0.400   0.000   0.000
+    4ALA      O    5   0.600   0.000   0.000
+ 1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
+
+        # Build an dummy WaterBridgeAnalysis object for testing
+        wb._network = []
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
+        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
+        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
+            (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
+                    (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O'), 2.0, 180.0): None}}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
+                    (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW'), 2.0, 180.0): {
+                        (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O'), 1.0, 180.0): None}}}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None,
+                (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'), 2.0, 180.0): None}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None},
+            (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'), 2.0, 180.0): {
+                (8, 9, ('SOL', 6, 'HW2'), ('SOL', 7, 'OW'), 2.0, 180.0): {
+                    (10, 11, ('SOL', 7, 'HW1'), ('ALA', 8, 'O'), 2.0, 180.0): None}}})
+        wb.timesteps = range(len(wb._network))
+        wb.generate_table()
+        table = wb.table
+        assert_array_equal(sorted(wb.table.donor_resid), [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+                                                          2, 2, 3, 3, 3, 3, 3, 4, 4, 5, 5, 6, 7])
+
+    def test_timesteps_by_type(self):
+        grofile = '''Test gro file
+5
+    1ALA      N    1   0.000   0.000   0.000
+    1ALA      H    2   0.100   0.000   0.000
+    2SOL     OW    3   0.300   0.000   0.000
+    2SOL    HW2    4   0.400   0.000   0.000
+    4ALA      O    5   0.600   0.000   0.000
+ 1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
+        # Build an dummy WaterBridgeAnalysis object for testing
+        wb._network = []
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
+        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
+        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
+            (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
+                    (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O'), 2.0, 180.0): None}}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
+                    (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW'), 2.0, 180.0): {
+                        (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O'), 1.0, 180.0): None}}}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None,
+                (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'), 2.0, 180.0): None}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None},
+            (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'), 2.0, 180.0): {
+                (8, 9, ('SOL', 6, 'HW2'), ('SOL', 7, 'OW'), 2.0, 180.0): {
+                    (10, 11, ('SOL', 7, 'HW1'), ('ALA', 8, 'O'), 2.0, 180.0): None}}})
+        wb.timesteps = range(len(wb._network))
+        timesteps = sorted(wb.timesteps_by_type())
+        assert_array_equal(timesteps[3], [0, 4, 'ALA', 1, 'O', 'ALA', 4, 'O', 0, 1, 9])
+
+
 def guess_types(names):
     """GRO doesn't supply types, this returns an Attr"""
     return Atomtypes(np.array([guess_atom_type(name) for name in names], dtype=object))
