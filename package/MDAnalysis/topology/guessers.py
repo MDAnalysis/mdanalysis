@@ -203,7 +203,7 @@ def guess_bonds(atoms, coords, box=None, **kwargs):
     if len(atoms) != len(coords):
         raise ValueError("'atoms' and 'coord' must be the same length")
 
-    fudge_factor = kwargs.get('fudge_factor', 0.72)
+    fudge_factor = kwargs.get('fudge_factor', 0.55)
 
     vdwradii = tables.vdwradii.copy()  # so I don't permanently change it
     user_vdwradii = kwargs.get('vdwradii', None)
