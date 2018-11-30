@@ -28,6 +28,7 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import GSD
+from MDAnalysisTests.datafiles import GSD_bonds
 from numpy.testing import assert_equal
 import os
 
@@ -47,3 +48,36 @@ class TestGSDParser(ParserBase):
         assert len(top.names) == top.n_atoms
         assert len(top.resids) == top.n_residues
         assert len(top.resnames) == top.n_residues
+    
+    
+class TestGSDParserBonds(ParserBase):
+    parser = mda.topology.GSDParser.GSDParser
+    ref_filename = GSD_bonds
+    expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses']
+    expected_n_atoms = 490
+    expected_n_bonds = 441
+    expected_n_angles = 392
+    expected_n_dihedrals = 343
+    expected_n_residues = 1
+    expected_n_segments = 1
+
+    def test_attr_size(self, top):
+        assert len(top.ids) == top.n_atoms
+        assert len(top.names) == top.n_atoms
+        assert len(top.resids) == top.n_residues
+        assert len(top.resnames) == top.n_residues
+        
+    def test_atoms(self, top):
+        assert top.n_atoms == self.expected_n_atoms
+        
+    def test_bonds(self, top):
+        assert len(top.bonds.values) == self.expected_n_bonds
+        assert isinstance(top.bonds.values[0], tuple)
+
+    def test_angles(self, top):
+        assert len(top.angles.values) == self.expected_n_angles
+        assert isinstance(top.angles.values[0], tuple)
+
+    def test_dihedrals(self, top):
+        assert len(top.dihedrals.values) == self.expected_n_dihedrals
+        assert isinstance(top.angles.values[0], tuple)

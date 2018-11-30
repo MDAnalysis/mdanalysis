@@ -442,6 +442,7 @@ ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
 ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')
 
 GSD = resource_filename(__name__, 'data/example.gsd')
+GSD_bonds = resource_filename(__name__, 'data/example_bonds.gsd')
 
 DihedralArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral.npy')
 DihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral_list.npy')
