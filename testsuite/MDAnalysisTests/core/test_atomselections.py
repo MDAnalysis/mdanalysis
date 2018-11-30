@@ -1030,3 +1030,11 @@ def test_arbitrary_atom_group_raises_error():
     u = make_Universe(trajectory=True)
     with pytest.raises(TypeError):
         u.select_atoms('around 2.0 group this', this=u.atoms[0])
+
+
+def test_empty_sel():
+    u = make_Universe(trajectory=True)
+    ag = u.atoms.select_atoms("")
+    assert_equal(len(ag), 0)
+    assert isinstance(ag, mda.AtomGroup)
+
