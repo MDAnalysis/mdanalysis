@@ -17,6 +17,10 @@ mm/dd/yy
   * 0.19.3
 
 Fixes
+  * fixed error when reading bonds/angles/dihedrals from gsd file (Issue #2152,
+    PR #2154))
+  * fixed error when reading bonds/angles/dihedrals from hoomdxml file 
+    (Issue #2151, PR #2153))
   * fixed lib.nsgrid segfault for coordinates very close to the box boundary
     (Issue #2132, PR #2136)
 
