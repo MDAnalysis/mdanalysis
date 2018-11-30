@@ -259,9 +259,12 @@ def extensions(config):
 
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
+    cpp_extra_link_args=[]
     # needed to specify c++ runtime library on OSX
     if platform.system() == 'Darwin':
         cpp_extra_compile_args.append('-stdlib=libc++')
+        cpp_extra_compile_args.append('-mmacosx-version-min=10.9')
+        cpp_extra_link_args.append('-stdlib=libc++')
 
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
@@ -354,13 +357,15 @@ def extensions(config):
                          libraries=mathlib,
                          include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                          define_macros=define_macros,
-                         extra_compile_args=cpp_extra_compile_args)
+                         extra_compile_args=cpp_extra_compile_args,
+                         extra_link_args= cpp_extra_link_args)
     augment = MDAExtension('MDAnalysis.lib._augment',
                          sources=['MDAnalysis/lib/_augment' + cpp_source_suffix],
                          language='c++',
                          include_dirs=include_dirs,
                          define_macros=define_macros,
-                         extra_compile_args=cpp_extra_compile_args)
+                         extra_compile_args=cpp_extra_compile_args,
+                         extra_link_args= cpp_extra_link_args)
 
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
@@ -387,7 +392,8 @@ def extensions(config):
                              include_dirs=include_dirs,
                              language='c++',
                              define_macros=define_macros,
-                             extra_compile_args=cpp_extra_compile_args)
+                             extra_compile_args=cpp_extra_compile_args,
+                             extra_link_args= cpp_extra_link_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
                 ap_clustering, spe_dimred, cutil, augment, nsgrid]
