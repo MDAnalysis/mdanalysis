@@ -45,9 +45,12 @@ class TestHoomdXMLParser(ParserBase):
 
     def test_bonds(self, top):
         assert len(top.bonds.values) == 704
+        assert isinstance(top.bonds.values[0], tuple)
 
     def test_angles(self, top):
         assert len(top.angles.values) == 640
+        assert isinstance(top.angles.values[0], tuple)
 
     def test_dihedrals(self, top):
         assert len(top.dihedrals.values) == 576
+        assert isinstance(top.dihedrals.values[0], tuple)
