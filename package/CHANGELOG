@@ -13,10 +13,12 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy
+mm/dd/yy micaela-matta
   * 0.19.3
 
 Fixes
+  * fixed MacOS (XCode) library compatibility 
+    (Issue #2144)
   * fixed lib.nsgrid segfault for coordinates very close to the box boundary
     (Issue #2132, PR #2136)
 
