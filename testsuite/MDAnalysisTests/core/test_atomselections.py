@@ -1034,7 +1034,7 @@ def test_arbitrary_atom_group_raises_error():
 
 def test_empty_sel():
     u = make_Universe(trajectory=True)
-    ag = u.atoms.select_atoms("")
+    with pytest.warns(UserWarning):
+        ag = u.atoms.select_atoms("")
     assert_equal(len(ag), 0)
     assert isinstance(ag, mda.AtomGroup)
-
