@@ -40,4 +40,4 @@ from . import distances  # distances relies on mdamath
 from . import NeighborSearch
 from . import formats
 from . import pkdtree
-from . import nsgrid # pylint: disable=import-self
+from . import nsgrid

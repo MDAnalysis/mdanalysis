@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from . import libmdaxdr # pylint: disable=import-self
-from . import libdcd # pylint: disable=import-self
+from . import libmdaxdr
+from . import libdcd
 
 __all__ = ['libmdaxdr', 'libdcd']
