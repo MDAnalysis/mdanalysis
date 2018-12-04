@@ -74,7 +74,7 @@
 <span class="sd">Base classes --- :mod:`MDAnalysis.coordinates.base`</span>
 <span class="sd">===================================================</span>
 
-<span class="sd">Derive other Timestep, FrameIterator, Reader and Writer classes from the classes </span>
+<span class="sd">Derive other Timestep, FrameIterator, Reader and Writer classes from the classes</span>
 <span class="sd">in this module. The derived classes must follow the :ref:`Trajectory API`</span>
 <span class="sd">in :mod:`MDAnalysis.coordinates.__init__`.</span>
 
@@ -170,11 +170,11 @@
 <span class="sd">Iterator classes used by the by the :class:`ProtoReader`.</span>
 
 <span class="sd">.. autoclass:: FrameIteratorBase</span>
-<span class="sd">    </span>
+
 <span class="sd">.. autoclass:: FrameIteratorSliced</span>
-<span class="sd">    </span>
+
 <span class="sd">.. autoclass:: FrameIteratorAll</span>
-<span class="sd">    </span>
+
 <span class="sd">.. autoclass:: FrameIteratorIndices</span>
 
 
@@ -1374,7 +1374,7 @@
 
 <div class="viewcode-block" id="IOBase.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IOBase.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the trajectory file.&quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+        <span class="k">pass</span> <span class="c1"># pylint: disable=unnecessary-pass</span></div>
 
     <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
@@ -1559,7 +1559,7 @@
 
 <span class="sd">        Calling next after this should return the first frame</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
+        <span class="k">pass</span> <span class="c1"># pylint: disable=unnecessary-pass</span>
 
     <span class="k">def</span> <span class="nf">_apply_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
