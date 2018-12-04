@@ -159,14 +159,14 @@ class AnalysisBase(object):
 
     def _prepare(self):
         """Set things up before the analysis loop begins"""
-        pass
+        pass # pylint: disable=unnecessary-pass
 
     def _conclude(self):
         """Finalise the results you've gathered.
 
         Called at the end of the run() method to finish everything up.
         """
-        pass
+        pass # pylint: disable=unnecessary-pass
 
     def run(self, start=None, stop=None, step=None, verbose=None):
         """Perform the calculation
