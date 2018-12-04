@@ -137,7 +137,7 @@ class HoomdXMLParser(TopologyReaderBase):
         ):
             try:
                 val = configuration.find(attrname)
-                vals = [(int(el) for el in line.split()[1:])
+                vals = [tuple(int(el) for el in line.split()[1:])
                         for line in val.text.strip().split('\n')
                         if line.strip()]
             except:
