@@ -1,0 +1,42 @@
+trigger:
+  # start a new build for every push
+  batch: False
+  branches:
+    include:
+      - develop
+jobs:
+- job: Windows
+  pool:
+    vmIMage: 'VS2017-Win2016'
+  strategy:
+    maxParallel: 6
+    matrix:
+        Python35-64bit:
+          PYTHON_VERSION: '3.5'
+          PYTHON_ARCH: 'x64'
+        Python36-64bit:
+          PYTHON_VERSION: '3.6'
+          PYTHON_ARCH: 'x64'
+        Python37-64bit:
+          PYTHON_VERSION: '3.7'
+          PYTHON_ARCH: 'x64'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: $(PYTHON_VERSION)
+      addToPath: true
+      architecture: $(PYTHON_ARCH)
+  - script: python -m pip install --upgrade pip setuptools wheel
+    displayName: 'Install tools'
+  - script: python -m pip install cython mock six biopython networkx joblib matplotlib scipy pytest mmtf-python GridDataFormats hypothesis pytest-cov codecov gsd==1.5.2 duecredit scikit-learn
+    displayName: 'Install dependencies'
+  - script: cd package && python setup.py develop --no-deps --user
+    displayName: 'Build MDAnalysis'
+  - script: cd testsuite && python setup.py develop --no-deps --user
+    displayName: 'Install MDAnalysis Test Suite'
+  - script: cd testsuite/MDAnalysisTests && pytest --cov=MDAnalysis -rsx --junitxml=junit/test-results.xml --disable-pytest-warnings
+    displayName: 'Run MDAnalysis Test Suite'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/test-*.xml'
+      testRunTitle: 'Publish test results for Python $(python.version)'
