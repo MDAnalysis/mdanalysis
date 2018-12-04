@@ -2365,7 +2365,15 @@ class AtomGroup(GroupBase):
         .. versionchanged:: 0.19.0
            Added strict type checking for passed groups.
            Added periodic kwarg (default True)
+        .. versionchanged:: 0.19.2
+           Empty sel string now returns an empty Atom group.
         """
+
+        if not sel:
+            warnings.warn("Empty string to select atoms, empty group returned.",
+                          UserWarning)
+            return self[[]]
+
         # once flags removed, replace with default=True
         periodic = selgroups.pop('periodic', flags['use_periodic_selections'])
 
@@ -2541,7 +2549,7 @@ class AtomGroup(GroupBase):
         """Write `AtomGroup` to a file.
 
         The output can either be a coordinate file or a selection, depending on
-        the format. 
+        the format.
 
         Examples
         --------
@@ -2628,7 +2636,7 @@ class AtomGroup(GroupBase):
             raise ValueError(
                 'Cannot explicitely set "multiframe" to False and request '
                 'more than 1 frame with the "frames" keyword argument.'
-            ) 
+            )
         elif multiframe is None:
             if frames is None:
                 # By default we only write the current frame.

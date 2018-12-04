@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen
+mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
+         dpadula85
   * 0.19.3
 
 Fixes
@@ -27,8 +28,8 @@ Fixes
     (Issue #2132, PR #2136)
   * fixed Lint error
     (Issue #2148, PR #2149)
-
-Deprecations
+  * Fixed Empty select_atoms string, now raises warning and returns empty
+    AtomGroup (Issue #2112)
 
 
 11/06/18 richardjgowers
