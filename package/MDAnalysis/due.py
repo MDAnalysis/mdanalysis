@@ -34,7 +34,7 @@ class InactiveDueCreditCollector(object):
     """Just a stub at the Collector which would not do anything"""
     def _donothing(self, *args, **kwargs):
         """Perform no good and no bad"""
-        pass
+        pass # pylint: disable=unnecessary-pass
 
     def dcite(self, *args, **kwargs):
         """If I could cite I would"""
@@ -50,7 +50,7 @@ class InactiveDueCreditCollector(object):
 
 def _donothing_func(*args, **kwargs):
     """Perform no good and no bad"""
-    pass
+    pass # pylint: disable=unnecessary-pass
 
 
 try:

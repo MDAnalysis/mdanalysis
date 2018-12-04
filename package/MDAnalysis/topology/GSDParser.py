@@ -137,14 +137,14 @@ class GSDParser(TopologyReaderBase):
 
             # set bonds, angles, dihedrals, impropers
             for attrname, attr, in (
-                    ('bond', Bonds),
-                    ('angle', Angles),
-                    ('dihedral', Dihedrals),
-                    ('improper', Impropers),
+                    ('bonds', Bonds),
+                    ('angles', Angles),
+                    ('dihedrals', Dihedrals),
+                    ('impropers', Impropers),
             ):
                 try:
                     val = getattr(snap,attrname)
-                    vals = val.group
+                    vals = [tuple(b_instance) for b_instance in val.group]
                 except:
                     pass
                 else:
