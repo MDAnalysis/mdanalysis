@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy micaela-matta
+mm/dd/yy micaela-matta, jbarnoud
   * 0.19.3
 
 Fixes
@@ -21,6 +21,8 @@ Fixes
     (Issue #2144)
   * fixed lib.nsgrid segfault for coordinates very close to the box boundary
     (Issue #2132, PR #2136)
+Enhancements
+  * Read TPR files from Gromacs 2019 (PR #2161)
 
 Deprecations
 
