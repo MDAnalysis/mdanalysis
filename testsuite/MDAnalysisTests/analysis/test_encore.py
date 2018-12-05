@@ -333,6 +333,7 @@ inconsistent results")
                                             "reduction Ensemble similarity in "
                                             "convergence estimation")
 
+    @pytest.mark.xfail  # sporadically fails, see Issue #2158
     def test_hes_error_estimation(self, ens1):
         expected_average = 10
         expected_stdev = 12
