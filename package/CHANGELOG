@@ -13,8 +13,9 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
-         dpadula85
+         dpadula85, jbarnoud
   * 0.19.3
 
 Fixes
@@ -30,6 +31,7 @@ Fixes
     (Issue #2148, PR #2149)
   * Fixed Empty select_atoms string, now raises warning and returns empty
     AtomGroup (Issue #2112)
+  * Read TPR files from Gromacs 2019 (PR #2161)
 
 
 11/06/18 richardjgowers
