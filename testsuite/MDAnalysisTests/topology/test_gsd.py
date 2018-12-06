@@ -49,7 +49,8 @@ class TestGSDParser(ParserBase):
         assert len(top.resids) == top.n_residues
         assert len(top.resnames) == top.n_residues
     
-    
+@pytest.mark.skipif(os.name == 'nt',
+                    reason="gsd not windows compatible")
 class TestGSDParserBonds(ParserBase):
     parser = mda.topology.GSDParser.GSDParser
     ref_filename = GSD_bonds
