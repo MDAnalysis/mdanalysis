@@ -18,6 +18,8 @@ mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
   * 0.19.3
 
 Fixes
+  * Move the water bridge analysis to the new analysis class, add high 
+    Order water bridge support. (PR #2087)
   * fixed error when reading bonds/angles/dihedrals from gsd file (Issue #2152,
     PR #2154))
   * fixed error when reading bonds/angles/dihedrals from hoomdxml file 
@@ -29,7 +31,9 @@ Fixes
   * fixed Lint error
     (Issue #2148, PR #2149)
   * Fixed Empty select_atoms string, now raises warning and returns empty
-    AtomGroup (Issue #2112)
+
+Testsuite
+  * Add tests for the new water bridge analysis (PR #2087)
 
 
 11/06/18 richardjgowers
@@ -61,8 +65,6 @@ Deprecations
   * 0.19.0
 
 Enhancements
-  * Move the water bridge analysis to the new analysis class, add high 
-    Order water bridge support. (PR #2087)
   * Added bond/angle/dihedral reading in PARM7 TOPParser (PR #2052)
   * Replaced multiple apply (_apply_distmat, _apply_kdtree)
     methods in distance based selections with
