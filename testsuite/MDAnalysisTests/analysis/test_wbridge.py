@@ -26,6 +26,63 @@ def test_import_from_hbonds():
                              "MDAnalysis.analysis.hbonds failed.'")
 
 class TestWaterBridgeAnalysis(object):
+    def test_nodata(self):
+        grofile = '''Test gro file
+3
+    1ALA      N    1   0.000   0.000   0.000
+    1ALA      H    2   0.100   0.000   0.000
+    4ALA      O    3   0.300   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
+        wb.generate_table()
+        assert_equal(wb.table, None)
+        assert_equal(wb.timesteps_by_type(), None)
+        assert_equal(wb.count_by_time(), None)
+        assert_equal(wb.count_by_type(), None)
+
+    def test_selection_type_error(self):
+        grofile = '''Test gro file
+3
+    1ALA      N    1   0.000   0.000   0.000
+    1ALA      H    2   0.100   0.000   0.000
+    4ALA      O    3   0.300   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        try:
+            wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=0, selection1_type='aaa')
+        except ValueError:
+            pass
+        else:
+            raise pytest.fail("selection_type aaa should rasie error")
+
+    def test_empty_selection(self):
+        grofile = '''Test gro file
+3
+    1ALA      A    9   0.000   0.000   0.000
+    1ALA      A    9   0.100   0.000   0.000
+    4ALA      A    9   0.300   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
+        wb.run()
+        assert wb._network == [{}]
+
+    def test_loop(self):
+        '''Test if loop can be handled correctly'''
+        grofile = '''Test gro file
+5
+    1ALA      O    1   0.000   0.001   0.000
+    2SOL     OW    2   0.300   0.001   0.000
+    2SOL    HW1    3   0.200   0.002   0.000
+    2SOL    HW2    4   0.200   0.000   0.000
+    4ALA      O    5   0.600   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 1 or resid 4)')
+        wb.run()
+        assert_equal(len(wb._network[0].keys()), 2)
+
     def test_donor_accepter(self):
         '''Test zeroth order donor to acceptor hydrogen bonding'''
         grofile = '''Test gro file
@@ -35,7 +92,7 @@ class TestWaterBridgeAnalysis(object):
     4ALA      O    3   0.300   0.000   0.000
   1.0   1.0   1.0'''
         u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
+        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=0, update_selection=True, debug=True)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('ALA', 4, 'O')))

@@ -680,9 +680,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         self.donors = tuple(set(self.DEFAULT_DONORS[forcefield]).union(donors))
         self.acceptors = tuple(set(self.DEFAULT_ACCEPTORS[forcefield]).union(acceptors))
 
-        if not (self.selection1 and self.selection2):
-            raise ValueError('HydrogenBondAnalysis: invalid selections')
-        elif self.selection1_type not in ('both', 'donor', 'acceptor'):
+        if self.selection1_type not in ('both', 'donor', 'acceptor'):
             raise ValueError('HydrogenBondAnalysis: Invalid selection type {0!s}'.format(self.selection1_type))
 
         self._network = []  # final result accessed as self.network
@@ -1284,10 +1282,11 @@ class WaterBridgeAnalysis(AnalysisBase):
         WaterBridgeAnalysis.table
 
         """
-        if self._network is None:
+        if self._network == []:
             msg = "No data computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
             logger.warning(msg)
+            self.table = None
             return
         if not hasattr(self, '_timeseries'):
             self.timeseries
