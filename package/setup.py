@@ -46,6 +46,7 @@ Google groups forbids any name that contains the string `anal'.)
 from __future__ import print_function
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
+from distutils.sysconfig import customize_compiler
 import codecs
 import os
 import sys
@@ -66,6 +67,10 @@ if sys.version_info[0] < 3:
 else:
     import configparser
 
+if sys.version_info[0] >= 3:
+    from subprocess import getoutput
+else:
+    from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
 RELEASE = "0.19.3-dev"
@@ -228,6 +233,7 @@ def detect_openmp():
     """Does this compiler support OpenMP parallelization?"""
     print("Attempting to autodetect OpenMP support... ", end="")
     compiler = new_compiler()
+    customize_compiler(compiler)
     compiler.add_library('gomp')
     include = '<omp.h>'
     extra_postargs = ['-fopenmp']
@@ -238,6 +244,14 @@ def detect_openmp():
     else:
         print("Did not detect OpenMP support.")
     return hasopenmp
+
+
+def using_clang():
+    """Will we be using a clang compiler?"""
+    compiler = new_compiler()
+    customize_compiler(compiler)
+    compiler_ver = getoutput("{0} -v".format(compiler.compiler[0]))
+    return 'clang' in compiler_ver
 
 
 def extensions(config):
@@ -261,7 +275,7 @@ def extensions(config):
     cpp_extra_compile_args.append('-std=c++11')
     cpp_extra_link_args=[]
     # needed to specify c++ runtime library on OSX
-    if platform.system() == 'Darwin':
+    if platform.system() == 'Darwin' and using_clang():
         cpp_extra_compile_args.append('-stdlib=libc++')
         cpp_extra_compile_args.append('-mmacosx-version-min=10.9')
         cpp_extra_link_args.append('-stdlib=libc++')
