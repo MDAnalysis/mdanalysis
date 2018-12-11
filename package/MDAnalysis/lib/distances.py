@@ -697,13 +697,12 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
                           axis=0)
             # Using maximum dimension as the box size
             boxsize = (lmax-lmin).max()
-            # to avoid failures for very close particles but with
-            # larger cutoff
             boxsize = np.maximum(boxsize, 2 * max_cutoff)
+
             pseudobox[:3] = 1.01 * boxsize
             pseudobox[3:] = 90.
-            shiftref, shiftconf = reference.copy(), configuration.copy()
 
+            shiftref, shiftconf = reference.copy(), configuration.copy()
             shiftref -= lmin
             shiftconf -= lmin
             gridsearch = FastNS(max_cutoff, shiftconf, box=pseudobox, pbc=False)
@@ -1044,20 +1043,17 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
             pseudobox = np.zeros(6, dtype=np.float32)
             lmax = reference.max(axis=0)
             lmin = reference.min(axis=0)
+
             # Using maximum dimension as the box size
             boxsize = (lmax-lmin).max()
-            # to avoid failures of very close particles
-            # but with larger cutoff
-            if boxsize < 2*max_cutoff:
-                # just enough box size so that NSGrid doesnot fails
-                sizefactor = 2.2*max_cutoff/boxsize
-            else:
-                sizefactor = 1.2
-            pseudobox[:3] = sizefactor*boxsize
+            boxsize = np.maximum(boxsize, 2 * max_cutoff)
+
+            pseudobox[:3] = 1.01 * boxsize
             pseudobox[3:] = 90.
             shiftref = reference.copy()
             # Extra padding near the origin
-            shiftref -= lmin - 0.1*boxsize
+            shiftref -= lmin
+
             gridsearch = FastNS(max_cutoff, shiftref, box=pseudobox, pbc=False)
             results = gridsearch.self_search()
         else:
