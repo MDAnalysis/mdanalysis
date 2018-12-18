@@ -500,8 +500,7 @@ class TestWaterBridgeAnalysis(object):
         '''Test if the time series data is correctly generated'''
         wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)', 'protein and (resid 4 or resid 5)', order=2)
         wb.run(verbose=False)
-        wb.timeseries
-        timeseries = sorted(wb._timeseries[0])
+        timeseries = sorted(wb.timeseries[0])
         assert_equal(timeseries[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
         assert_equal(timeseries[1][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
         assert_equal(timeseries[2][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
@@ -739,7 +738,7 @@ ATOM      2  OW  SOL     2       3.024   4.456   4.147  1.00  0.00      SYST H 0
         u = MDAnalysis.Universe(StringIO(gro), format="gro")
         h = WaterBridgeAnalysis(u, 'protein', 'protein', order=0)
         h.run(verbose=False)
-        assert h.timeseries[0][0][2] == 'ALA2:H1'
+        assert h.timeseries[0][0][2] == ('ALA',2,'H1')
 
     def test_true_traj(self):
         u = MDAnalysis.Universe(GRO, XTC)

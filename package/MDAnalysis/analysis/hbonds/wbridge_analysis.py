@@ -1329,9 +1329,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             logger.warning(msg)
             self.table = None
             return
-        if not hasattr(self, '_timeseries'):
-            self.timeseries
-        timeseries = self._timeseries
+        timeseries = self.timeseries
 
         num_records = np.sum([len(hframe) for hframe in timeseries])
         # build empty output table
