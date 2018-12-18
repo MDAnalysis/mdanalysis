@@ -154,6 +154,23 @@ class TestWaterBridgeAnalysis(object):
     def universe_AWWA():
         '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through two waters'''
         grofile = '''Test gro file
+7
+    1ALA      O    1   0.000   0.000   0.000
+    2SOL     OW    2   0.300   0.000   0.000
+    2SOL    HW1    3   0.200   0.000   0.000
+    2SOL    HW2    4   0.400   0.000   0.000
+    3SOL     OW    5   0.600   0.000   0.000
+    3SOL    HW1    6   0.700   0.000   0.000
+    4ALA      O    7   0.900   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_AWWWA():
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through three waters'''
+        grofile = '''Test gro file
 9
     1ALA      O    1   0.000   0.000   0.000
     2SOL     OW    2   0.300   0.000   0.000
@@ -164,27 +181,6 @@ class TestWaterBridgeAnalysis(object):
     4SOL     OW    7   0.900   0.000   0.000
     4SOL    HW1    8   1.000   0.000   0.000
     5ALA      O    9   1.200   0.000   0.000
-  10.0   10.0   10.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        return u
-
-    @staticmethod
-    @pytest.fixture(scope='class')
-    def universe_AWWWA():
-        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through three waters'''
-        grofile = '''Test gro file
-11
-    1ALA      O    1   0.000   0.000   0.000
-    2SOL     OW    2   0.300   0.000   0.000
-    2SOL    HW1    3   0.200   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    3SOL     OW    5   0.600   0.000   0.000
-    3SOL    HW1    6   0.700   0.000   0.000
-    4SOL     OW    7   0.900   0.000   0.000
-    4SOL    HW1    8   1.000   0.000   0.000
-    5SOL     OW    9   1.200   0.000   0.000
-    5SOL    HW1   10   1.300   0.000   0.000
-    6ALA      O   11   1.400   0.000   0.000
   10.0   10.0   10.0'''
         u = MDAnalysis.Universe(StringIO(grofile), format='gro')
         return u
