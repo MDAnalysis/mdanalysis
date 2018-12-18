@@ -2,20 +2,13 @@ from __future__ import print_function, absolute_import
 from six import StringIO
 from collections import defaultdict
 
-import numpy as np
 from numpy.testing import (
-    assert_equal, assert_array_equal, assert_almost_equal,
-    assert_array_almost_equal, assert_allclose,)
+    assert_equal, assert_array_equal,)
 import pytest
 
 import MDAnalysis
 import MDAnalysis.analysis.hbonds
 from MDAnalysis.analysis.hbonds.wbridge_analysis import WaterBridgeAnalysis
-from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC, waterPSF, waterDCD
-
-# For type guessing:
-from MDAnalysis.topology.core import guess_atom_type
-from MDAnalysis.core.topologyattrs import Atomtypes
 
 def test_import_from_hbonds():
     try:
@@ -161,21 +154,44 @@ class TestWaterBridgeAnalysis(object):
     def universe_AWWA():
         '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through two waters'''
         grofile = '''Test gro file
-7
+9
     1ALA      O    1   0.000   0.000   0.000
     2SOL     OW    2   0.300   0.000   0.000
     2SOL    HW1    3   0.200   0.000   0.000
     2SOL    HW2    4   0.400   0.000   0.000
     3SOL     OW    5   0.600   0.000   0.000
     3SOL    HW1    6   0.700   0.000   0.000
-    4ALA      O    7   0.900   0.000   0.000
-  1.0   1.0   1.0'''
+    4SOL     OW    7   0.900   0.000   0.000
+    4SOL    HW1    8   1.000   0.000   0.000
+    5ALA      O    9   1.200   0.000   0.000
+  10.0   10.0   10.0'''
         u = MDAnalysis.Universe(StringIO(grofile), format='gro')
         return u
 
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_AWWWA():
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through three waters'''
+        grofile = '''Test gro file
+11
+    1ALA      O    1   0.000   0.000   0.000
+    2SOL     OW    2   0.300   0.000   0.000
+    2SOL    HW1    3   0.200   0.000   0.000
+    2SOL    HW2    4   0.400   0.000   0.000
+    3SOL     OW    5   0.600   0.000   0.000
+    3SOL    HW1    6   0.700   0.000   0.000
+    4SOL     OW    7   0.900   0.000   0.000
+    4SOL    HW1    8   1.000   0.000   0.000
+    5SOL     OW    9   1.200   0.000   0.000
+    5SOL    HW1   10   1.300   0.000   0.000
+    6ALA      O   11   1.400   0.000   0.000
+  10.0   10.0   10.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_AWWWWA():
         '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through three waters'''
         grofile = '''Test gro file
 11
@@ -661,229 +677,3 @@ class TestWaterBridgeAnalysis(object):
         '''Test the timesteps_by_type function'''
         timesteps = sorted(wb_multiframe.timesteps_by_type())
         assert_array_equal(timesteps[3], [0, 4, 'ALA', 1, 'O', 'ALA', 4, 'O', 0, 1, 9])
-
-
-def guess_types(names):
-    """GRO doesn't supply types, this returns an Attr"""
-    return Atomtypes(np.array([guess_atom_type(name) for name in names], dtype=object))
-
-
-class TestHydrogenBondAnalysis(object):
-    @staticmethod
-    @pytest.fixture(scope='class')
-    def universe():
-        return MDAnalysis.Universe(PDB_helix)
-
-    @staticmethod
-    @pytest.fixture(scope='class')
-    def values(universe):
-        return {
-            'num_bb_hbonds': universe.atoms.n_residues - universe.select_atoms('resname PRO').n_residues - 4,
-            'donor_resid': np.array([5, 6, 8, 9, 10, 11, 12, 13]),
-            'acceptor_resnm': np.array(['ALA', 'ALA', 'ALA', 'ALA', 'ALA', 'PRO', 'ALA', 'ALA'], dtype='U4'),
-        }
-
-    kwargs = {
-        'selection1': 'protein',
-        'selection2': 'protein',
-        'detect_hydrogens': "distance",
-        'distance': 3.0,
-        'angle': 150.0,
-    }
-
-    @pytest.fixture(scope='class')
-    def h(self, universe):
-        kw = self.kwargs.copy()
-        # kw.update(kwargs)
-        h = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(universe, order=0, **kw)
-        # remove in 1.0
-        if kw['detect_hydrogens'] == 'heuristic':
-            with pytest.warns(DeprecationWarning):
-                h.run(verbose=False)
-        else:
-            h.run(verbose=False)
-        return h
-
-    def test_helix_backbone(self, values, h):
-        assert len(h.timeseries[0]) == values['num_bb_hbonds'], "wrong number of backbone hydrogen bonds"
-        assert h.timesteps, [0.0]
-
-    def test_generate_table(self, values, h):
-
-        h.generate_table()
-        assert len(h.table) == values['num_bb_hbonds'], "wrong number of backbone hydrogen bonds in table"
-        assert isinstance(h.table, np.core.records.recarray)
-        h.table.sort(order='donor_resid')
-        assert_array_equal(h.table.donor_resid, values['donor_resid'])
-        assert_array_equal(h.table.acceptor_resnm, values['acceptor_resnm'])
-
-    def test_atoms_too_far(self):
-        pdb = '''
-ATOM      1  N   LEU     1      32.310  13.778  14.372  1.00  0.00      SYST N 0
-ATOM      2  OW  SOL     2       3.024   4.456   4.147  1.00  0.00      SYST H 0'''
-
-        u = MDAnalysis.Universe(StringIO(pdb), format="pdb")
-        h = WaterBridgeAnalysis(u, 'resname SOL', 'protein', order=0)
-        h.run(verbose=False)
-        assert h.timeseries == [[]]
-
-    def test_acceptor_OC1_OC2(self):
-        gro = '''test
-3
-    1ALA    OC1    1   0.000   0.000   0.000
-    2ALA      N    2   0.300   0.000   0.000
-    2ALA     H1    3   0.200   0.000   0.000
-7.29748 7.66094 9.82962'''
-
-        u = MDAnalysis.Universe(StringIO(gro), format="gro")
-        h = WaterBridgeAnalysis(u, 'protein', 'protein', order=0)
-        h.run(verbose=False)
-        assert h.timeseries[0][0][2] == ('ALA',2,'H1')
-
-    def test_true_traj(self):
-        u = MDAnalysis.Universe(GRO, XTC)
-        u.add_TopologyAttr(guess_types(u.atoms.names))
-        h = WaterBridgeAnalysis(u, 'protein', 'resname ASP', distance=3.0, angle=120.0, order=0)
-        h.run()
-        assert len(h.timeseries) == 10
-
-    def test_count_by_time(self, values, h):
-
-        c = h.count_by_time()
-        assert c, [(0.0, values['num_bb_hbonds'])]
-
-    def test_count_by_type(self, values, h):
-
-        c = h.count_by_type()
-        assert_equal([line[-1] for line in c][:8], values['num_bb_hbonds'] * [1.0])
-
-    def test_timesteps_by_type(self, values, h):
-
-        t = h.timesteps_by_type()
-        assert_equal([i[-1] for i in t][:8], values['num_bb_hbonds'] * [0.0])
-
-
-class TestHydrogenBondAnalysisPBC(TestHydrogenBondAnalysis):
-    # This system is identical to above class
-    # But has a box introduced, and atoms moved into neighbouring images
-    # The results however should remain identical if PBC is used
-    # If pbc:True in kwargs is changed, these tests should fail
-    @staticmethod
-    @pytest.fixture(scope='class')
-    def universe():
-        u = MDAnalysis.Universe(PDB_helix)
-        # transfer to memory to changes to coordinates are reset
-        u.transfer_to_memory()
-        # place in huge oversized box
-        # real system is about 30A wide at most
-        boxsize = 150.
-        box = np.array([boxsize, boxsize, boxsize, 90., 90., 90.])
-        u.dimensions = box
-
-        # then scatter the atoms throughout various images of this box
-        u.atoms[::4].translate([boxsize * 2, 0, 0])
-        u.atoms[1::4].translate([0, boxsize * 4, 0])
-        u.atoms[2::4].translate([-boxsize * 5, 0, -boxsize * 2])
-
-        return u
-
-    kwargs = {
-        'selection1': 'protein',
-        'selection2': 'protein',
-        'detect_hydrogens': "distance",
-        'distance': 3.0,
-        'angle': 150.0,
-        'pbc': True,
-    }
-
-class TestHydrogenBondAnalysisTIP3P(object):
-    @staticmethod
-    @pytest.fixture()
-    def universe():
-        return MDAnalysis.Universe(waterPSF, waterDCD)
-
-    kwargs = {
-        'selection1': 'all',
-        'selection2': 'all',
-        'detect_hydrogens': "distance",
-        'distance': 3.0,
-        'angle': 120.0,
-    }
-
-    @pytest.fixture()
-    def h(self, universe):
-        h = WaterBridgeAnalysis(universe, order=0, **self.kwargs)
-        h.run(verbose=False)
-        h.generate_table()
-        return h
-
-    @pytest.fixture()
-    def normalized_timeseries(self, h):
-        # timeseries in normalized form: (t, d_indx1, a_indx1, d_index0, a_index0, donor, acceptor, dist, angle)
-        #                   array index:  0     1        2        3         4        5      6        7      8
-        timeseries = [[t] + item
-                      for t, hframe in zip(h.timesteps, h.timeseries)
-                      for item in hframe]
-        return timeseries
-
-    # keys are the names in the h.table
-    reference = {
-        'distance': {'mean': 2.0208776, 'std': 0.31740859},
-        'angle': {'mean': 155.13521, 'std': 12.98955},
-    }
-
-    @pytest.fixture()
-    def reference_table(self, normalized_timeseries):
-        # reference values for the table only
-        return {
-            'donor_resnm': ["TIP3"] * len(normalized_timeseries),
-            'acceptor_resnm': ["TIP3"] * len(normalized_timeseries),
-        }
-
-    # index into timeseries (ADJUST ONCE donor_idx and acceptor_ndx are removed)
-    # with keys being field names in h.table
-    columns = {
-        'time': 0,
-        'donor_index': 1,
-        'acceptor_index': 2,
-        'distance': 5,
-        'angle': 6,
-    }
-
-    # hackish way to allow looping over self.reference and generating tests
-    _functions = {
-        'mean': np.mean,
-        'std': np.std,
-    }
-
-    def test_timeseries(self, h, normalized_timeseries):
-        h = h
-        assert len(h.timeseries) == 10
-        assert len(normalized_timeseries) == 29
-
-        for observable in self.reference:
-            idx = self.columns[observable]
-            for quantity, reference in self.reference[observable].items():
-                func = self._functions[quantity]
-                assert_allclose(
-                    func([item[idx] for item in normalized_timeseries]), reference,
-                    rtol=1e-5, atol=0,
-                    err_msg="{quantity}({observable}) does not match reference".format(**vars())
-                )
-
-    def test_table_atoms(self, h, normalized_timeseries, reference_table):
-        h = h
-        table = h.table
-
-        assert len(h.table) == len(normalized_timeseries)
-
-        # test that timeseries and table agree on index data and
-        # hydrogen bond information at atom level
-        for name, idx in self.columns.items():
-            assert_array_almost_equal(table.field(name), [data[idx] for data in normalized_timeseries],
-                                      err_msg="table[{name}] and timeseries[{idx} do not agree".format(**vars()))
-
-        # test at residue level (issue #801
-        # https://github.com/MDAnalysis/mdanalysis/issues/801)
-        for name, ref in reference_table.items():
-            assert_array_equal(h.table.field(name), ref, err_msg="resname for {0} do not match (Issue #801)")
