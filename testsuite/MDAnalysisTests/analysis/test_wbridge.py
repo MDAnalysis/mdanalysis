@@ -26,187 +26,10 @@ def test_import_from_hbonds():
                              "MDAnalysis.analysis.hbonds failed.'")
 
 class TestWaterBridgeAnalysis(object):
-    def test_nodata(self):
-        grofile = '''Test gro file
-3
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    4ALA      O    3   0.300   0.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
-        wb.generate_table()
-        assert_equal(wb.table, None)
-        assert_equal(wb.timesteps_by_type(), None)
-        assert_equal(wb.count_by_time(), None)
-        assert_equal(wb.count_by_type(), None)
-
-    def test_selection_type_error(self):
-        grofile = '''Test gro file
-3
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    4ALA      O    3   0.300   0.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        try:
-            wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=0, selection1_type='aaa')
-        except ValueError:
-            pass
-        else:
-            raise pytest.fail("selection_type aaa should rasie error")
-
-    def test_empty_selection(self):
-        grofile = '''Test gro file
-3
-    1ALA      A    9   0.000   0.000   0.000
-    1ALA      A    9   0.100   0.000   0.000
-    4ALA      A    9   0.300   0.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
-        wb.run()
-        assert wb._network == [{}]
-
-    def test_loop(self):
-        '''Test if loop can be handled correctly'''
-        grofile = '''Test gro file
-5
-    1ALA      O    1   0.000   0.001   0.000
-    2SOL     OW    2   0.300   0.001   0.000
-    2SOL    HW1    3   0.200   0.002   0.000
-    2SOL    HW2    4   0.200   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 1 or resid 4)')
-        wb.run()
-        assert_equal(len(wb._network[0].keys()), 2)
-
-    def test_donor_accepter(self):
-        '''Test zeroth order donor to acceptor hydrogen bonding'''
-        grofile = '''Test gro file
-3
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    4ALA      O    3   0.300   0.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=0, update_selection=True, debug=True)
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('ALA', 4, 'O')))
-
-    def test_donor_accepter_pbc(self):
-            '''Test zeroth order donor to acceptor hydrogen bonding'''
-            grofile = '''Test gro file
-3
-    1ALA      N    1   0.800   0.000   0.000
-    1ALA      H    2   0.900   0.000   0.000
-    4ALA      O    3   0.100   0.000   0.000
-  1.0   1.0   1.0'''
-            u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-            wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=0, pbc=True)
-            wb.run(verbose=False)
-            network = wb._network[0]
-            assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('ALA', 4, 'O')))
-
-    def test_accepter_donor(self):
-        '''Test zeroth order acceptor to donor hydrogen bonding'''
-        grofile = '''Test gro file
-3
-    1ALA      O    1   0.000   0.000   0.000
-    4ALA      H    2   0.200   0.000   0.000
-    4ALA      N    3   0.300   0.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 1, ('ALA', 1, 'O'), ('ALA', 4, 'H')))
-
-    def test_acceptor_water_accepter(self):
-        '''Test case where the hydrogen bond acceptor from selection 1 form
-        water bridge with hydrogen bond acceptor from selection 2'''
-        grofile = '''Test gro file
-5
-    1ALA      O    1   0.000   0.000   0.000
-    2SOL     OW    2   0.300   0.000   0.000
-    2SOL    HW1    3   0.200   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)')
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
-        second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O')))
-        assert_equal(second[list(second.keys())[0]], None)
-
-    def test_donor_water_accepter(self):
-        '''Test case where the hydrogen bond donor from selection 1 form
-        water bridge with hydrogen bond acceptor from selection 2'''
-        grofile = '''Test gro file
-5
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    2SOL     OW    3   0.300   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)')
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW')))
-        second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O')))
-        assert_equal(second[list(second.keys())[0]], None)
-
-    def test_acceptor_water_donor(self):
-        '''Test case where the hydrogen bond acceptor from selection 1 form
-        water bridge with hydrogen bond donor from selection 2'''
-        grofile = '''Test gro file
-5
-    1ALA      O    1   0.000   0.000   0.000
-    2SOL     OW    2   0.300   0.000   0.000
-    2SOL    HW1    3   0.200   0.000   0.000
-    4ALA      H    4   0.500   0.000   0.000
-    4ALA      N    5   0.600   0.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)')
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
-        second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H')))
-        assert_equal(second[list(second.keys())[0]], None)
-
-    def test_donor_water_donor(self):
-        '''Test case where the hydrogen bond donor from selection 1 form
-        water bridge with hydrogen bond donor from selection 2'''
-        grofile = '''Test gro file
-5
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    2SOL     OW    3   0.300   0.000   0.000
-    4ALA      H    4   0.500   0.000   0.000
-    4ALA      N    5   0.600   0.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)')
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW')))
-        second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H')))
-        assert_equal(second[list(second.keys())[0]], None)
-
-    def test_empty(self):
-        '''Test case where no water bridge exists'''
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_empty():
+        '''A universe with no hydrogen bonds'''
         grofile = '''Test gro file
 5
     1ALA      N    1   0.000   0.000   0.000
@@ -216,31 +39,127 @@ class TestWaterBridgeAnalysis(object):
     4ALA      N    5   0.600   0.000   0.000
   1.0   1.0   1.0'''
         u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein', 'protein')
-        wb.run(verbose=False)
-        assert_equal(wb._network[0], defaultdict(dict))
+        return u
 
-    def test_same_selection(self):
-        '''
-        This test tests that if the selection 1 and selection 2 are both protein.
-        However, the protein only forms one hydrogen bond with the water.
-        This entry won't be included.
-        :return:
-        '''
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_DA():
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond donor'''
         grofile = '''Test gro file
 3
     1ALA      N    1   0.000   0.000   0.000
     1ALA      H    2   0.100   0.000   0.000
-    2SOL     OW    3   0.300   0.000   0.000
+    4ALA      O    3   0.300   0.000   0.000
   1.0   1.0   1.0'''
         u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein', 'protein')
-        wb.run(verbose=False)
-        assert_equal(wb._network[0], defaultdict(dict))
+        return u
 
-    def test_acceptor_2water_accepter(self):
-        '''Test case where the hydrogen bond acceptor from selection 1 form second order
-        water bridge with hydrogen bond acceptor from selection 2'''
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_DA_PBC():
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond donor but in a PBC condition'''
+        grofile = '''Test gro file
+3
+    1ALA      N    1   0.800   0.000   0.000
+    1ALA      H    2   0.900   0.000   0.000
+    4ALA      O    3   0.100   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_AD():
+        '''A universe with one hydrogen bond donor bonding to a hydrogen bond acceptor'''
+        grofile = '''Test gro file
+3
+    1ALA      O    1   0.000   0.000   0.000
+    4ALA      H    2   0.200   0.000   0.000
+    4ALA      N    3   0.300   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_loop():
+        '''A universe with one hydrogen bond acceptor bonding to a water which bonds back to the first hydrogen bond
+        acceptor and thus form a loop'''
+        grofile = '''Test gro file
+5
+    1ALA      O    1   0.000   0.001   0.000
+    2SOL     OW    2   0.300   0.001   0.000
+    2SOL    HW1    3   0.200   0.002   0.000
+    2SOL    HW2    4   0.200   0.000   0.000
+    4ALA      O    5   0.600   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_DWA():
+        '''A universe with one hydrogen bond donor bonding to a hydrogen bond acceptor through a water'''
+        grofile = '''Test gro file
+5
+    1ALA      N    1   0.000   0.000   0.000
+    1ALA      H    2   0.100   0.000   0.000
+    2SOL     OW    3   0.300   0.000   0.000
+    2SOL    HW2    4   0.400   0.000   0.000
+    4ALA      O    5   0.600   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_DWD():
+        '''A universe with one hydrogen bond donor bonding to a hydrogen bond donor through a water'''
+        grofile = '''Test gro file
+5
+    1ALA      N    1   0.000   0.000   0.000
+    1ALA      H    2   0.100   0.000   0.000
+    2SOL     OW    3   0.300   0.000   0.000
+    4ALA      H    4   0.500   0.000   0.000
+    4ALA      N    5   0.600   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_AWA():
+        '''A universe with two hydrogen bond acceptor are joined by a water'''
+        grofile = '''Test gro file
+5
+    1ALA      O    1   0.000   0.000   0.000
+    2SOL     OW    2   0.300   0.000   0.000
+    2SOL    HW1    3   0.200   0.000   0.000
+    2SOL    HW2    4   0.400   0.000   0.000
+    4ALA      O    5   0.600   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_AWD():
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond donor through a water'''
+        grofile = '''Test gro file
+5
+    1ALA      O    1   0.000   0.000   0.000
+    2SOL     OW    2   0.300   0.000   0.000
+    2SOL    HW1    3   0.200   0.000   0.000
+    4ALA      H    4   0.500   0.000   0.000
+    4ALA      N    5   0.600   0.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_AWWA():
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through two waters'''
         grofile = '''Test gro file
 7
     1ALA      O    1   0.000   0.000   0.000
@@ -252,78 +171,12 @@ class TestWaterBridgeAnalysis(object):
     4ALA      O    7   0.900   0.000   0.000
   1.0   1.0   1.0'''
         u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        # test first order
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)')
-        wb.run(verbose=False)
-        assert_equal(wb._network[0], defaultdict(dict))
-        # test second order
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=2)
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
-        second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
-        third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')))
-        assert_equal(third[list(third.keys())[0]], None)
-        # test third order
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=3)
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
-        second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
-        third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')))
-        assert_equal(third[list(third.keys())[0]], None)
+        return u
 
-    def test_acceptor_3water_accepter(self):
-        '''Test case where the hydrogen bond acceptor from selection 1 form third order
-        water bridge with hydrogen bond acceptor from selection 2'''
-        grofile = '''Test gro file
-9
-    1ALA      O    1   0.000   0.000   0.000
-    2SOL     OW    2   0.300   0.000   0.000
-    2SOL    HW1    3   0.200   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    3SOL     OW    5   0.600   0.000   0.000
-    3SOL    HW1    6   0.700   0.000   0.000
-    4SOL     OW    7   0.900   0.000   0.000
-    4SOL    HW1    8   1.000   0.000   0.000
-    5ALA      O    9   1.200   0.000   0.000
-  10.0   10.0   10.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 5)', order=2)
-        wb.run(verbose=False)
-        assert_equal(wb._network[0], defaultdict(dict))
-
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 5)', order=3)
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
-        second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
-        third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
-        fourth = third[list(third.keys())[0]]
-        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O')))
-        assert_equal(fourth[list(fourth.keys())[0]], None)
-
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 5)', order=4)
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
-        second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
-        third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
-        fourth = third[list(third.keys())[0]]
-        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O')))
-        assert_equal(fourth[list(fourth.keys())[0]], None)
-
-    def test_acceptor_4water_accepter(self):
-        '''Test case where the hydrogen bond acceptor from selection 1 form fourth order
-        water bridge with hydrogen bond acceptor from selection 2'''
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_AWWWA():
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through three waters'''
         grofile = '''Test gro file
 11
     1ALA      O    1   0.000   0.000   0.000
@@ -339,42 +192,12 @@ class TestWaterBridgeAnalysis(object):
     6ALA      O   11   1.400   0.000   0.000
   10.0   10.0   10.0'''
         u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 6)', order=3)
-        wb.run(verbose=False)
-        assert_equal(wb._network[0], defaultdict(dict))
+        return u
 
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 6)', order=4)
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
-        second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
-        third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
-        fourth = third[list(third.keys())[0]]
-        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW')))
-        fifth = fourth[list(fourth.keys())[0]]
-        assert_equal(list(fifth.keys())[0][:4], (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O')))
-        assert_equal(fifth[list(fifth.keys())[0]], None)
-
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 6)', order=5)
-        wb.run(verbose=False)
-        network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
-        second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
-        third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
-        fourth = third[list(third.keys())[0]]
-        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW')))
-        fifth = fourth[list(fourth.keys())[0]]
-        assert_equal(list(fifth.keys())[0][:4], (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O')))
-        assert_equal(fifth[list(fifth.keys())[0]], None)
-
-    def test_acceptor_22water_accepter(self):
-        '''Test case where the hydrogen bond acceptor from selection 1 form a second order
-        water bridge with hydrogen bond acceptor from selection 2
-        and the last water is linked to two residues in selection 2'''
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_branch():
+        '''A universe with one hydrogen bond acceptor bonding to two hydrogen bond acceptor in selection 2'''
         grofile = '''Test gro file
 9
     1ALA      O    1   0.000   0.000   0.000
@@ -388,7 +211,282 @@ class TestWaterBridgeAnalysis(object):
     5ALA      O    9   0.600   0.300   0.000
   1.0   1.0   1.0'''
         u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4 or resid 5)', order=2)
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe_AWA_AWWA():
+        '''A universe with one hydrogen bond acceptors are bonded through one or two water'''
+        grofile = '''Test gro file
+12
+    1ALA      O    1   0.000   0.000   0.000
+    2SOL     OW    2   0.300   0.000   0.000
+    2SOL    HW1    3   0.200   0.000   0.000
+    2SOL    HW2    4   0.400   0.000   0.000
+    4ALA      O    5   0.600   0.000   0.000
+    5ALA      O    6   0.000   1.000   0.000
+    6SOL     OW    7   0.300   1.000   0.000
+    6SOL    HW1    8   0.200   1.000   0.000
+    6SOL    HW2    9   0.400   1.000   0.000
+    7SOL     OW   10   0.600   1.000   0.000
+    7SOL    HW1   11   0.700   1.000   0.000
+    8ALA      O   12   0.900   1.000   0.000
+  1.0   1.0   1.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def wb_multiframe(universe_DWA):
+        '''A water bridge object with multipley frames'''
+        wb = WaterBridgeAnalysis(universe_DWA, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
+        # Build an dummy WaterBridgeAnalysis object for testing
+        wb._network = []
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
+        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
+        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
+            (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
+                    (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O'), 2.0, 180.0): None}}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
+                    (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW'), 2.0, 180.0): {
+                        (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O'), 1.0, 180.0): None}}}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
+                (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None,
+                (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'), 2.0, 180.0): None}}})
+        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
+            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None},
+            (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'), 2.0, 180.0): {
+                (8, 9, ('SOL', 6, 'HW2'), ('SOL', 7, 'OW'), 2.0, 180.0): {
+                    (10, 11, ('SOL', 7, 'HW1'), ('ALA', 8, 'O'), 2.0, 180.0): None}}})
+        wb.timesteps = range(len(wb._network))
+        return wb
+
+    def test_nodata(self, universe_DA):
+        '''Test if the funtions can run when there is no data.
+        This is achieved by not runing the run() first.'''
+        wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
+        wb.generate_table()
+        assert_equal(wb.table, None)
+        assert_equal(wb.timesteps_by_type(), None)
+        assert_equal(wb.count_by_time(), None)
+        assert_equal(wb.count_by_type(), None)
+
+    def test_selection_type_error(self, universe_DA):
+        '''Test the case when the wrong selection1_type is given'''
+        try:
+            wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)', 'protein and (resid 4)', order=0, selection1_type='aaa')
+        except ValueError:
+            pass
+        else:
+            raise pytest.fail("selection_type aaa should rasie error")
+
+    def test_empty_selection(self, universe_DA):
+        '''Test the case when selection yields empty result'''
+        wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 9)', 'protein and (resid 10)', order=0)
+        wb.run()
+        assert wb._network == [{}]
+
+    def test_loop(self, universe_loop):
+        '''Test if loop can be handled correctly'''
+        wb = WaterBridgeAnalysis(universe_loop, 'protein and (resid 1)', 'protein and (resid 1 or resid 4)')
+        wb.run()
+        assert_equal(len(wb._network[0].keys()), 2)
+
+    def test_donor_accepter(self, universe_DA):
+        '''Test zeroth order donor to acceptor hydrogen bonding'''
+        wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)', 'protein and (resid 4)', order=0, update_selection=True, debug=True)
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('ALA', 4, 'O')))
+
+    def test_donor_accepter_pbc(self, universe_DA_PBC):
+        '''Test zeroth order donor to acceptor hydrogen bonding in PBC conditions'''
+        wb = WaterBridgeAnalysis(universe_DA_PBC, 'protein and (resid 1)', 'protein and (resid 4)', order=0, pbc=True)
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('ALA', 4, 'O')))
+
+    def test_accepter_donor(self, universe_AD):
+        '''Test zeroth order acceptor to donor hydrogen bonding'''
+        wb = WaterBridgeAnalysis(universe_AD, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (0, 1, ('ALA', 1, 'O'), ('ALA', 4, 'H')))
+
+    def test_acceptor_water_accepter(self, universe_AWA):
+        '''Test case where the hydrogen bond acceptor from selection 1 form
+        water bridge with hydrogen bond acceptor from selection 2'''
+        wb = WaterBridgeAnalysis(universe_AWA, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        second = network[list(network.keys())[0]]
+        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O')))
+        assert_equal(second[list(second.keys())[0]], None)
+
+    def test_donor_water_accepter(self, universe_DWA):
+        '''Test case where the hydrogen bond donor from selection 1 form
+        water bridge with hydrogen bond acceptor from selection 2'''
+        wb = WaterBridgeAnalysis(universe_DWA, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW')))
+        second = network[list(network.keys())[0]]
+        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O')))
+        assert_equal(second[list(second.keys())[0]], None)
+
+    def test_acceptor_water_donor(self, universe_AWD):
+        '''Test case where the hydrogen bond acceptor from selection 1 form
+        water bridge with hydrogen bond donor from selection 2'''
+        wb = WaterBridgeAnalysis(universe_AWD, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        second = network[list(network.keys())[0]]
+        assert_equal(list(second.keys())[0][:4], (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H')))
+        assert_equal(second[list(second.keys())[0]], None)
+
+    def test_donor_water_donor(self, universe_DWD):
+        '''Test case where the hydrogen bond donor from selection 1 form
+        water bridge with hydrogen bond donor from selection 2'''
+        wb = WaterBridgeAnalysis(universe_DWD, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW')))
+        second = network[list(network.keys())[0]]
+        assert_equal(list(second.keys())[0][:4], (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H')))
+        assert_equal(second[list(second.keys())[0]], None)
+
+    def test_empty(self, universe_empty):
+        '''Test case where no water bridge exists'''
+        wb = WaterBridgeAnalysis(universe_empty, 'protein', 'protein')
+        wb.run(verbose=False)
+        assert_equal(wb._network[0], defaultdict(dict))
+
+    def test_same_selection(self, universe_DWA):
+        '''
+        This test tests that if the selection 1 and selection 2 are both protein.
+        However, the protein only forms one hydrogen bond with the water.
+        This entry won't be included.
+        '''
+        wb = WaterBridgeAnalysis(universe_DWA, 'protein and resid 1', 'protein and resid 1')
+        wb.run(verbose=False)
+        assert_equal(wb._network[0], defaultdict(dict))
+
+    def test_acceptor_2water_accepter(self, universe_AWWA):
+        '''Test case where the hydrogen bond acceptor from selection 1 form second order
+        water bridge with hydrogen bond acceptor from selection 2'''
+        # test first order
+        wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb.run(verbose=False)
+        assert_equal(wb._network[0], defaultdict(dict))
+        # test second order
+        wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)', 'protein and (resid 4)', order=2)
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        second = network[list(network.keys())[0]]
+        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        third = second[list(second.keys())[0]]
+        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')))
+        assert_equal(third[list(third.keys())[0]], None)
+        # test third order
+        wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)', 'protein and (resid 4)', order=3)
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        second = network[list(network.keys())[0]]
+        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        third = second[list(second.keys())[0]]
+        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')))
+        assert_equal(third[list(third.keys())[0]], None)
+
+    def test_acceptor_3water_accepter(self, universe_AWWWA):
+        '''Test case where the hydrogen bond acceptor from selection 1 form third order
+        water bridge with hydrogen bond acceptor from selection 2'''
+        wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)', 'protein and (resid 5)', order=2)
+        wb.run(verbose=False)
+        assert_equal(wb._network[0], defaultdict(dict))
+
+        wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)', 'protein and (resid 5)', order=3)
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        second = network[list(network.keys())[0]]
+        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        third = second[list(second.keys())[0]]
+        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
+        fourth = third[list(third.keys())[0]]
+        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O')))
+        assert_equal(fourth[list(fourth.keys())[0]], None)
+
+        wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)', 'protein and (resid 5)', order=4)
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        second = network[list(network.keys())[0]]
+        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        third = second[list(second.keys())[0]]
+        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
+        fourth = third[list(third.keys())[0]]
+        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O')))
+        assert_equal(fourth[list(fourth.keys())[0]], None)
+
+    def test_acceptor_4water_accepter(self, universe_AWWWWA):
+        '''Test case where the hydrogen bond acceptor from selection 1 form fourth order
+        water bridge with hydrogen bond acceptor from selection 2'''
+        wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)', 'protein and (resid 6)', order=3)
+        wb.run(verbose=False)
+        assert_equal(wb._network[0], defaultdict(dict))
+
+        wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)', 'protein and (resid 6)', order=4)
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        second = network[list(network.keys())[0]]
+        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        third = second[list(second.keys())[0]]
+        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
+        fourth = third[list(third.keys())[0]]
+        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW')))
+        fifth = fourth[list(fourth.keys())[0]]
+        assert_equal(list(fifth.keys())[0][:4], (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O')))
+        assert_equal(fifth[list(fifth.keys())[0]], None)
+
+        wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)', 'protein and (resid 6)', order=5)
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        second = network[list(network.keys())[0]]
+        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        third = second[list(second.keys())[0]]
+        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
+        fourth = third[list(third.keys())[0]]
+        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW')))
+        fifth = fourth[list(fourth.keys())[0]]
+        assert_equal(list(fifth.keys())[0][:4], (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O')))
+        assert_equal(fifth[list(fifth.keys())[0]], None)
+
+    def test_acceptor_22water_accepter(self, universe_branch):
+        '''Test case where the hydrogen bond acceptor from selection 1 form a second order
+        water bridge with hydrogen bond acceptor from selection 2
+        and the last water is linked to two residues in selection 2'''
+        wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)', 'protein and (resid 4 or resid 5)', order=2)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
@@ -398,22 +496,9 @@ class TestWaterBridgeAnalysis(object):
         assert_equal([(5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')), (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'))],
                      sorted([key[:4] for key in list(third.keys())]))
 
-    def test_timeseries(self):
+    def test_timeseries(self, universe_branch):
         '''Test if the time series data is correctly generated'''
-        grofile = '''Test gro file
-9
-    1ALA      O    1   0.000   0.000   0.000
-    2SOL     OW    2   0.300   0.000   0.000
-    2SOL    HW1    3   0.200   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    3SOL     OW    5   0.600   0.000   0.000
-    3SOL    HW1    6   0.700   0.000   0.000
-    3SOL    HW2    7   0.600   0.100   0.000
-    4ALA      O    8   0.900   0.000   0.000
-    5ALA      O    9   0.600   0.300   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4 or resid 5)', order=2)
+        wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)', 'protein and (resid 4 or resid 5)', order=2)
         wb.run(verbose=False)
         wb.timeseries
         timeseries = sorted(wb._timeseries[0])
@@ -424,25 +509,9 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(timeseries[4][:4], (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')))
         assert_equal(timeseries[5][:4], (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O')))
 
-    def test_acceptor_12water_accepter(self):
+    def test_acceptor_12water_accepter(self, universe_AWA_AWWA):
         '''Test of independent first order and second can be recognised correctely'''
-        grofile = '''Test gro file
-12
-    1ALA      O    1   0.000   0.000   0.000
-    2SOL     OW    2   0.300   0.000   0.000
-    2SOL    HW1    3   0.200   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
-    5ALA      O    6   0.000   1.000   0.000
-    6SOL     OW    7   0.300   1.000   0.000
-    6SOL    HW1    8   0.200   1.000   0.000
-    6SOL    HW2    9   0.400   1.000   0.000
-    7SOL     OW   10   0.600   1.000   0.000
-    7SOL    HW1   11   0.700   1.000   0.000
-    8ALA      O   12   0.900   1.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=1)
+        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=1)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
@@ -450,104 +519,34 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O')))
         assert_equal(second[list(second.keys())[0]], None)
         network = wb._network[0]
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
+        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal([(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')), (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'))],
                      sorted([key[:4] for key in list(network.keys())]))
 
-    def test_count_by_type_single_link(self):
+    def test_count_by_type_single_link(self, universe_DWA):
         '''
         This test tests the simplest water bridge to see if count_by_type() works.
-        :return:
         '''
-        grofile = '''Test gro file
-5
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    2SOL     OW    3   0.300   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
- 1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb = WaterBridgeAnalysis(universe_DWA, 'protein and (resid 1)', 'protein and (resid 4)')
         wb.run(verbose=False)
         assert_equal(wb.count_by_type(), [(1, 4, 'ALA', 1, 'H', 'ALA', 4, 'O',  1.)])
 
-    def test_count_by_type_multiple_link(self):
+    def test_count_by_type_multiple_link(self, universe_AWA_AWWA):
         '''
         This test tests if count_by_type() can give the correct result for more than 1 links.
-        :return:
         '''
-        grofile = '''Test gro file
-12
-    1ALA      O    1   0.000   0.000   0.000
-    2SOL     OW    2   0.300   0.000   0.000
-    2SOL    HW1    3   0.200   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
-    5ALA      O    6   0.000   1.000   0.000
-    6SOL     OW    7   0.300   1.000   0.000
-    6SOL    HW1    8   0.200   1.000   0.000
-    6SOL    HW2    9   0.400   1.000   0.000
-    7SOL     OW   10   0.600   1.000   0.000
-    7SOL    HW1   11   0.700   1.000   0.000
-    8ALA      O   12   0.900   1.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
+        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
         assert_equal(sorted(wb.count_by_type()), [[0, 4, 'ALA', 1, 'O', 'ALA', 4, 'O', 1.0], [5, 11, 'ALA', 5, 'O', 'ALA', 8, 'O', 1.0]])
 
 
-    def test_count_by_type_multiple_frame(self):
+    def test_count_by_type_multiple_frame(self, wb_multiframe):
         '''
         This test tests if count_by_type() works in multiply situations.
         :return:
         '''
-        grofile = '''Test gro file
-5
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    2SOL     OW    3   0.300   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
- 1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
-        # Build an dummy WaterBridgeAnalysis object for testing
-        wb._network = []
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O'), 2.0, 180.0): None}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW'), 2.0, 180.0): {
-                        (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O'), 1.0, 180.0): None}}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None,
-                (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None},
-            (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'), 2.0, 180.0): {
-                (8, 9, ('SOL', 6, 'HW2'), ('SOL', 7, 'OW'), 2.0, 180.0): {
-                    (10, 11, ('SOL', 7, 'HW1'), ('ALA', 8, 'O'), 2.0, 180.0): None}}})
         result = [(0, 3, 'ALA', 1, 'O', 'ALA', 4, 'H', 0.1),
                   (0, 4, 'ALA', 1, 'O', 'ALA', 4, 'O', 0.3),
                   (0, 6, 'ALA', 1, 'O', 'ALA', 4, 'O', 0.1),
@@ -557,58 +556,14 @@ class TestWaterBridgeAnalysis(object):
                   (1, 3, 'ALA', 1, 'H', 'ALA', 4, 'H', 0.1),
                   (1, 4, 'ALA', 1, 'H', 'ALA', 4, 'O', 0.1),
                   (5, 11, 'ALA', 5, 'O', 'ALA', 8, 'O', 0.1)]
-        assert_equal(sorted(wb.count_by_type()), result)
+        assert_equal(sorted(wb_multiframe.count_by_type()), result)
 
-    def test_count_by_type_filter(self):
+    def test_count_by_type_filter(self, wb_multiframe):
         '''
         This test tests if modifying analysis_func
         allows some results to be filtered out in count_by_type().
         :return:
         '''
-        grofile = '''Test gro file
-5
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    2SOL     OW    3   0.300   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
- 1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
-        # Build an dummy WaterBridgeAnalysis object for testing
-        wb._network = []
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O'), 2.0, 180.0): None}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW'), 2.0, 180.0): {
-                        (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O'), 1.0, 180.0): None}}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None,
-                (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None},
-            (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'), 2.0, 180.0): {
-                (8, 9, ('SOL', 6, 'HW2'), ('SOL', 7, 'OW'), 2.0, 180.0): {
-                    (10, 11, ('SOL', 7, 'HW1'), ('ALA', 8, 'O'), 2.0, 180.0): None}}})
-
         def analysis(current, output):
             s1_index, to_index, (s1_resname, s1_resid, s1_name), (to_resname, to_resid, to_name), dist, angle = \
                 current[0]
@@ -619,57 +574,13 @@ class TestWaterBridgeAnalysis(object):
                 output[key] += 1
         result = [((0, 3, 'ALA', 1, 'O', 'ALA', 4, 'H'), 0.1),
                   ((1, 3, 'ALA', 1, 'H', 'ALA', 4, 'H'), 0.1)]
-        assert_equal(sorted(wb.count_by_type(analysis_func=analysis)), result)
+        assert_equal(sorted(wb_multiframe.count_by_type(analysis_func=analysis)), result)
 
-    def test_count_by_type_merge(self):
+    def test_count_by_type_merge(self, wb_multiframe):
         '''
         This test tests if modifying analysis_func
         allows some same residue to be merged in count_by_type().
-        :return:
         '''
-        grofile = '''Test gro file
-5
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    2SOL     OW    3   0.300   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
- 1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
-        # Build an dummy WaterBridgeAnalysis object for testing
-        wb._network = []
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O'), 2.0, 180.0): None}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW'), 2.0, 180.0): {
-                        (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O'), 1.0, 180.0): None}}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None,
-                (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None},
-            (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'), 2.0, 180.0): {
-                (8, 9, ('SOL', 6, 'HW2'), ('SOL', 7, 'OW'), 2.0, 180.0): {
-                    (10, 11, ('SOL', 7, 'HW1'), ('ALA', 8, 'O'), 2.0, 180.0): None}}})
         def analysis(current, output):
             s1_index, to_index, (s1_resname, s1_resid, s1_name), (to_resname, to_resid, to_name), dist, angle = \
                 current[0]
@@ -681,57 +592,14 @@ class TestWaterBridgeAnalysis(object):
                   (('ALA', 1, 'ALA', 5), 0.2),
                   (('ALA', 1, 'ALA', 6), 0.1),
                   (('ALA', 5, 'ALA', 8), 0.1)]
-        assert_equal(sorted(wb.count_by_type(analysis_func=analysis)), result)
+        assert_equal(sorted(wb_multiframe.count_by_type(analysis_func=analysis)), result)
 
-    def test_count_by_type_order(self):
+    def test_count_by_type_order(self, wb_multiframe):
         '''
         This test tests if modifying analysis_func
         allows the order of water bridge to be separated in count_by_type().
         :return:
         '''
-        grofile = '''Test gro file
-5
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    2SOL     OW    3   0.300   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
- 1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
-        # Build an dummy WaterBridgeAnalysis object for testing
-        wb._network = []
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O'), 2.0, 180.0): None}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW'), 2.0, 180.0): {
-                        (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O'), 1.0, 180.0): None}}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None,
-                (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None},
-            (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'), 2.0, 180.0): {
-                (8, 9, ('SOL', 6, 'HW2'), ('SOL', 7, 'OW'), 2.0, 180.0): {
-                    (10, 11, ('SOL', 7, 'HW1'), ('ALA', 8, 'O'), 2.0, 180.0): None}}})
         def analysis(current, output):
             s1_index, to_index, (s1_resname, s1_resid, s1_name), (to_resname, to_resid, to_name), dist, angle = \
                 current[0]
@@ -745,84 +613,23 @@ class TestWaterBridgeAnalysis(object):
                   (('ALA', 1, 'ALA', 5, 3), 0.1),
                   (('ALA', 1, 'ALA', 6, 4), 0.1),
                   (('ALA', 5, 'ALA', 8, 2), 0.1)]
-        assert_equal(sorted(wb.count_by_type(analysis_func=analysis)), result)
+        assert_equal(sorted(wb_multiframe.count_by_type(analysis_func=analysis)), result)
 
-    def test_count_by_time(self):
+    def test_count_by_time(self, wb_multiframe):
         '''
         This test tests if count_by_times() works.
         :return:
         '''
-        grofile = '''Test gro file
-5
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    2SOL     OW    3   0.300   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
- 1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
-
-        # Build an dummy WaterBridgeAnalysis object for testing
-        wb._network = []
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O'), 2.0, 180.0): None}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW'), 2.0, 180.0): {
-                        (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O'), 1.0, 180.0): None}}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None,
-                (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None},
-            (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'), 2.0, 180.0): {
-                (8, 9, ('SOL', 6, 'HW2'), ('SOL', 7, 'OW'), 2.0, 180.0): {
-                    (10, 11, ('SOL', 7, 'HW1'), ('ALA', 8, 'O'), 2.0, 180.0): None}}})
-        wb.timesteps = range(len(wb._network))
-        assert_equal(wb.count_by_time(), [(0,1), (1,1), (2,1), (3,1), (4,1), (5,1), (6,1), (7,1), (8,2), (9,2)])
+        assert_equal(wb_multiframe.count_by_time(), [(0,1), (1,1), (2,1), (3,1), (4,1), (5,1), (6,1), (7,1), (8,2), (9,2)])
 
 
-    def test_count_by_time_weight(self):
+    def test_count_by_time_weight(self, universe_AWA_AWWA):
         '''
         This test tests if modyfing the analysis_func allows the weight to be changed
         in count_by_type().
         :return:
         '''
-        grofile = '''Test gro file
-12
-    1ALA      O    1   0.000   0.000   0.000
-    2SOL     OW    2   0.300   0.000   0.000
-    2SOL    HW1    3   0.200   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
-    5ALA      O    6   0.000   1.000   0.000
-    6SOL     OW    7   0.300   1.000   0.000
-    6SOL    HW1    8   0.200   1.000   0.000
-    6SOL    HW2    9   0.400   1.000   0.000
-    7SOL     OW   10   0.600   1.000   0.000
-    7SOL    HW1   11   0.700   1.000   0.000
-    8ALA      O   12   0.900   1.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
+        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
         def analysis(current, output):
             s1_index, to_index, (s1_resname, s1_resid, s1_name), (to_resname, to_resid, to_name), dist, angle = \
@@ -833,131 +640,27 @@ class TestWaterBridgeAnalysis(object):
             output[key] += len(current)-1
         assert_equal(wb.count_by_time(analysis_func=analysis), [(0,3), ])
 
-    def test_count_by_time_empty(self):
+    def test_count_by_time_empty(self, universe_AWA_AWWA):
         '''
         See if count_by_type() can handle zero well.
         :return:
         '''
-        grofile = '''Test gro file
-12
-    1ALA      O    1   0.000   0.000   0.000
-    2SOL     OW    2   0.300   0.000   0.000
-    2SOL    HW1    3   0.200   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
-    5ALA      O    6   0.000   1.000   0.000
-    6SOL     OW    7   0.300   1.000   0.000
-    6SOL    HW1    8   0.200   1.000   0.000
-    6SOL    HW2    9   0.400   1.000   0.000
-    7SOL     OW   10   0.600   1.000   0.000
-    7SOL    HW1   11   0.700   1.000   0.000
-    8ALA      O   12   0.900   1.000   0.000
-  1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
+        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
         def analysis(current, output):
             pass
         assert_equal(wb.count_by_time(analysis_func=analysis), [(0,0), ])
 
-    def test_generate_table(self):
+    def test_generate_table(self, wb_multiframe):
         '''Test generate table'''
-        grofile = '''Test gro file
-5
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    2SOL     OW    3   0.300   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
- 1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
-
-        # Build an dummy WaterBridgeAnalysis object for testing
-        wb._network = []
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O'), 2.0, 180.0): None}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW'), 2.0, 180.0): {
-                        (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O'), 1.0, 180.0): None}}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None,
-                (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None},
-            (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'), 2.0, 180.0): {
-                (8, 9, ('SOL', 6, 'HW2'), ('SOL', 7, 'OW'), 2.0, 180.0): {
-                    (10, 11, ('SOL', 7, 'HW1'), ('ALA', 8, 'O'), 2.0, 180.0): None}}})
-        wb.timesteps = range(len(wb._network))
-        wb.generate_table()
-        table = wb.table
-        assert_array_equal(sorted(wb.table.donor_resid), [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        wb_multiframe.generate_table()
+        table = wb_multiframe.table
+        assert_array_equal(sorted(wb_multiframe.table.donor_resid), [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2,
                                                           2, 2, 3, 3, 3, 3, 3, 4, 4, 5, 5, 6, 7])
 
-    def test_timesteps_by_type(self):
-        grofile = '''Test gro file
-5
-    1ALA      N    1   0.000   0.000   0.000
-    1ALA      H    2   0.100   0.000   0.000
-    2SOL     OW    3   0.300   0.000   0.000
-    2SOL    HW2    4   0.400   0.000   0.000
-    4ALA      O    5   0.600   0.000   0.000
- 1.0   1.0   1.0'''
-        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
-        # Build an dummy WaterBridgeAnalysis object for testing
-        wb._network = []
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O'), 2.0, 180.0): None}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW'), 2.0, 180.0): {
-                        (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O'), 1.0, 180.0): None}}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None,
-                (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None},
-            (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'), 2.0, 180.0): {
-                (8, 9, ('SOL', 6, 'HW2'), ('SOL', 7, 'OW'), 2.0, 180.0): {
-                    (10, 11, ('SOL', 7, 'HW1'), ('ALA', 8, 'O'), 2.0, 180.0): None}}})
-        wb.timesteps = range(len(wb._network))
-        timesteps = sorted(wb.timesteps_by_type())
+    def test_timesteps_by_type(self, wb_multiframe):
+        '''Test the timesteps_by_type function'''
+        timesteps = sorted(wb_multiframe.timesteps_by_type())
         assert_array_equal(timesteps[3], [0, 4, 'ALA', 1, 'O', 'ALA', 4, 'O', 0, 1, 9])
 
 

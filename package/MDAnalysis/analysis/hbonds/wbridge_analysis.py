@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
-# Copyright (c) 2006-2018 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -129,9 +129,12 @@ indicates comments that are not part of the output.)::
         ...
     ]
 
+Using the :meth:`WaterBridgeAnalysis.generate_table` method one can reformat
+the results as a flat "normalised" table that is easier to import into a
+database or dataframe for further processing.
 
 Detection of water bridges
----------------------------
+--------------------------
 Water bridges are recorded if a bridging water simultaneously forms
 hydrogen bonds with selection 1 and selection 2.
 
@@ -156,7 +159,7 @@ Then simply use the new class instead of the parent class and call it with
 atom names to MDAnalysis.
 
 How to perform WaterBridgeAnalysis
------------------------------------
+----------------------------------
 
 All water bridges between arginine and aspartic acid can be analysed with ::
 
@@ -207,7 +210,7 @@ prints out. ::
 .. _wb_count_by_type:
 
 Use count_by_type
----------------------------
+-----------------
 
 To calculate the percentage, we can use the :meth:`~WaterBridgeAnalysis.count_by_type` to
 generate the frequence of all water bridges in the simulation. ::
@@ -235,6 +238,8 @@ bridge can be customised by supplying an analsysis function to
         output : dict
             A dictionary where the key is the type of the water bridge and the value
             is the number of this type of water bridge.
+            Acknowledging the new water bridge, this variable will be *modified* in place
+            so that this function is not retruning any variable.
       '''
 
       # decompose the first hydrogen bond.
@@ -275,6 +280,8 @@ function to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
         output : dict
             A dictionary where the key is the type of the water bridge and the value
             is the number of this type of water bridge.
+            Acknowledging the new water bridge, this variable will be *modified* in place
+            so that this function is not retruning any variable.
       '''
 
       s1_index, to_index, (s1_resname, s1_resid, s1_name),
@@ -306,6 +313,8 @@ function to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
         output : dict
             A dictionary where the key is the type of the water bridge and the value
             is the number of this type of water bridge.
+            Acknowledging the new water bridge, this variable will be *modified* in place
+            so that this function is not retruning any variable.
       '''
 
       s1_index, to_index, (s1_resname, s1_resid, s1_name),
@@ -340,6 +349,8 @@ interactions can be discarded by supplying an analysis function to
         output : dict
             A dictionary where the key is the type of the water bridge and the value
             is the number of this type of water bridge.
+            Acknowledging the new water bridge, this variable will be *modified* in place
+            so that this function is not retruning any variable.
       '''
 
       s1_index, to_index, (s1_resname, s1_resid, s1_name),
@@ -367,7 +378,7 @@ Additional key words can be supplied to the analysis function by passing through
 .. _wb_count_by_time:
 
 Use count_by_time
----------------------------
+-----------------
 
 :meth:`~WaterBridgeAnalysis.count_by_type` aggregates data across frames, which
 might be desirable in some cases but not the others. :meth:`~WaterBridgeAnalysis.count_by_time`
@@ -406,6 +417,8 @@ The analysis function can be written as::
         output : dict
             A dictionary where the key is the type of the water bridge and the value
             is the number of this type of water bridge.
+            Acknowledging the new water bridge, this variable will be *modified* in place
+            so that this function is not retruning any variable.
             The output of this frame is the sum of all the values in this dictionary.
       '''
 
@@ -477,7 +490,7 @@ from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis import NoDataError, MissingDataWarning, SelectionError
 from MDAnalysis.lib import distances
 
-logger = logging.getLogger('MDAnalysis.analysis.wbridges')
+logger = logging.getLogger('MDAnalysis.analysis.WaterBridgeAnalysis')
 
 class WaterBridgeAnalysis(AnalysisBase):
     """Perform a water bridge analysis
@@ -493,6 +506,11 @@ class WaterBridgeAnalysis(AnalysisBase):
 
 
     .. versionadded:: 0.17.0
+
+    The :attr:`WaterBridgeAnalysis.timeseries` has been updated to cope with
+    higher order water bridge and zero-order hydrogen bonds.
+
+    .. versionchanged 0.20.0
     """
     # use tuple(set()) here so that one can just copy&paste names from the
     # table; set() takes care for removing duplicates. At the end the
@@ -595,8 +613,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             ``True`` so as to filter out water not residing between the two
             selections. [``True``]
         filter_first : bool (optional)
-            Filter the water selection to only include water within 4Å + `order` *
-            (2Å + `distance`) away from `both` selection 1 and selection 2.
+            Filter the water selection to only include water within 4 Å + `order` *
+            (2 Å + `distance`) away from `both` selection 1 and selection 2.
             Selection 1 and selection 2 are both filtered to only include atoms
             with the same distance away from the other selection. [``True``]
         distance : float (optional)
@@ -643,7 +661,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         If selection 1 and selection 2 are very mobile during the simulation
         and the contact surface is constantly changing (i.e. residues are
-        moving farther than 4Å + `order` * (2Å + `distance`)), you might
+        moving farther than 4 Å + `order` * (2 Å + `distance`)), you might
         consider setting the `update_selection` keywords to ``True``
         to ensure correctness.
         """
@@ -690,16 +708,16 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _log_parameters(self):
         """Log important parameters to the logfile."""
-        logger.info("WBridge analysis: selection = %r (update: %r)",
+        logger.info("WaterBridgeAnalysis: selection = %r (update: %r)",
         self.selection2, self.update_selection)
-        logger.info("WBridge analysis: water selection = %r (update: %r)",
+        logger.info("WaterBridgeAnalysis: water selection = %r (update: %r)",
         self.water_selection, self.update_water_selection)
-        logger.info("WBridge analysis: criterion: donor %s atom and acceptor \
+        logger.info("WaterBridgeAnalysis: criterion: donor %s atom and acceptor \
         atom distance <= %.3f A", self.distance_type,
                     self.distance)
-        logger.info("WBridge analysis: criterion: angle D-H-A >= %.3f degrees",
+        logger.info("WaterBridgeAnalysis: criterion: angle D-H-A >= %.3f degrees",
         self.angle)
-        logger.info("WBridge analysis: force field %s to guess donor and \
+        logger.info("WaterBridgeAnalysis: force field %s to guess donor and \
         acceptor names", self.forcefield)
 
     def _update_selection(self):
@@ -833,7 +851,7 @@ class WaterBridgeAnalysis(AnalysisBase):
     def _prepare(self):
         # The distance for selection is defined as twice the maximum bond length of an O-H bond (2A)
         # plus order of water bridge times the length of OH bond plus hydrogne bond distance
-        self.selection_distance = 1.0 * (2 * 2 + self.order * (2 + self.distance))
+        self.selection_distance = (2 * 2 + self.order * (2 + self.distance))
 
         self._s1_donors = {}
         self._s1_donors_h = {}
@@ -853,19 +871,19 @@ class WaterBridgeAnalysis(AnalysisBase):
         self.timesteps = []
         if self._s1 and self._s2:
             self._update_water_selection()
-            logger.info("WBridge analysis: no atoms found in the selection.")
+            logger.info("WaterBridgeAnalysis: no atoms found in the selection.")
 
-        logger.info("WBridge analysis: initial checks passed.")
+        logger.info("WaterBridgeAnalysis: initial checks passed.")
 
-        logger.info("WBridge analysis: starting")
-        logger.debug("WBridge analysis: donors    %r", self.donors)
-        logger.debug("WBridge analysis: acceptors %r", self.acceptors)
-        logger.debug("WBridge analysis: water bridge %r", self.water_selection)
+        logger.info("WaterBridgeAnalysis: starting")
+        logger.debug("WaterBridgeAnalysis: donors    %r", self.donors)
+        logger.debug("WaterBridgeAnalysis: acceptors %r", self.acceptors)
+        logger.debug("WaterBridgeAnalysis: water bridge %r", self.water_selection)
 
         if self.debug:
             logger.debug("Toggling debug to %r", self.debug)
         else:
-            logger.debug("WBridge analysis: For full step-by-step debugging output use debug=True")
+            logger.debug("WaterBridgeAnalysis: For full step-by-step debugging output use debug=True")
 
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
                     self.start, self.stop, self.step)
@@ -1017,6 +1035,17 @@ class WaterBridgeAnalysis(AnalysisBase):
                         next_round_water.add((a_resname, a_resid))
 
         # solve the connectivity network
+        # The following code attempt to generate a water network which is formed by the class dict.
+        # Suppose we have a water bridge connection ARG1 to ASP3 via the two hydrogen bonds.
+        #     [0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180],
+        #     [2,3,('SOL',2,'HW2'),('ASP',3,'OD1'),  3.0,180],
+        # The resulting network will be
+        #{(0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180): {(2,3,('SOL',2,'HW2'),('ASP',3,'OD1'),  3.0,180): None}}
+        # Where the key of the a dict will be all the hydrogen bonds starting from this nodes.
+        # The corresponding value of a certain key will be a dictionary whose key will be all the hydrogen bonds from
+        # the destination of in the key.
+        # If the value of a certain key is None, which means it is reaching selection 2.
+
         result = {'start': defaultdict(dict), 'water': defaultdict(dict)}
 
         def add_route(result, route):
@@ -1050,7 +1079,6 @@ class WaterBridgeAnalysis(AnalysisBase):
                         new_node = new_node[3][:2]
                         traverse_water_network(graph, new_node, end, new_route, maxdepth, result)
         for s1 in selection_1:
-
             route = [s1, ]
             next_mol = s1[3][:2]
             traverse_water_network(water_pool, next_mol, selection_2, route[:], self.order, result)
@@ -1058,33 +1086,36 @@ class WaterBridgeAnalysis(AnalysisBase):
         self._network.append(result['start'])
 
     def _traverse_water_network(self, graph, current, analysis_func=None, output=None, link_func=None, **kwargs):
+        '''
+        This function recursively traverses the water network self._network and finds the hydrogen bonds which connect
+        the current atom to the next atom. The newly found hydrogen bond will be appended to the hydrogen bonds
+        connecting the selection 1 to the current atom via link_func. When selection 2 is reached, the full list of
+        hydrogen bonds connecting the selection 1 to selection 2 will be fed into analysis_func, which will then modify
+        the output in place.
+        :param graph: The connection network describes the connection between the atoms in the water network.
+        :param current: The hydrogen bonds from selection 1 until now.
+        :param analysis_func: The analysis function which is called to analysis the hydrogen bonds.
+        :param output: where the result is stored.
+        :param link_func: The new hydrogen bonds will be appended to current.
+        :param kwargs: the keywords which are passed into the analysis_func.
+        :return:
+        '''
         if link_func is None:
+            # If no link_func is provided, the default link_func will be used
             link_func = self._full_link
 
         if graph is None:
+            # if selection 2 is reached
             if not analysis_func is None:
+                # the result is analysed by analysis_func which will change the output
                 analysis_func(current, output, **kwargs)
         else:
             # make sure no loop can occur
             if len(current) <= self.order:
                 for node in graph:
+                    # the new hydrogen bond will be added to the existing bonds
                     new = link_func(current, node)
                     self._traverse_water_network(graph[node], new, analysis_func, output, link_func, **kwargs)
-
-    @staticmethod
-    def _reformat_hb(hb, atomformat="{0[0]!s}{0[1]!s}:{0[2]!s}"):
-        """Convert 0.16.1 _timeseries hbond item to 0.16.0 hbond item.
-        In 0.16.1, donor and acceptor are stored as a tuple(resname,
-        resid, atomid). In 0.16.0 and earlier they were stored as a string.
-        .. deprecated:: 1.0
-           This is a compatibility layer so that we can provide the same output
-           in timeseries as before. However, for 1.0 we should make timeseries
-           just return _timeseries, i.e., change the format of timeseries to
-           the un-ambiguous representation provided in _timeseries.
-        """
-        return (list(hb[:2])
-                + [atomformat.format(hb[2]), atomformat.format(hb[3])]
-                + list(hb[4:]))
 
     @property
     def timeseries(self):
@@ -1109,6 +1140,12 @@ class WaterBridgeAnalysis(AnalysisBase):
            w.run()
            timeseries = w.timeseries
 
+
+        The output format of :attr:`WaterBridgeAnalysis.timeseries` has changed
+        so that it has the same format as
+        :attr:`~HydrogenBondAnalysis.timeseries`.
+
+        .. versionchanged:: 0.20.0
         '''
 
         def analysis(current, output):
@@ -1119,12 +1156,16 @@ class WaterBridgeAnalysis(AnalysisBase):
             new_frame = []
             self._traverse_water_network(frame, [], analysis_func=analysis, output=new_frame, link_func=self._full_link)
             timeseries.append(new_frame)
-        self._timeseries = timeseries
-        # after 1.0 will be return the unformated _timeseries
-        return [[self._reformat_hb(hb) for hb in hframe] for hframe in self._timeseries]
+        return timeseries
 
     @classmethod
     def _full_link(self, output, node):
+        '''
+        A function used in _traverse_water_network to add the new hydrogen bond to the existing bonds.
+        :param output: The existing hydrogen bonds from selection 1
+        :param node: The new hydrogen bond
+        :return: The hydrogen bonds from selection 1 with the new hydrogen bond added
+        '''
         result = output[:]
         result.append(node)
         return result
