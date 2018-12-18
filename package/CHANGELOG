@@ -13,17 +13,26 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
-         dpadula85
+         dpadula85, jbarnoud, manuel.nuno.melo
+         
+  * 0.20.0
+  
+  Enhancements
+  * add high order water bridge support to water bridge analysis. (PR #2087)
+  
+  Testsuite
+  * Add tests for the new water bridge analysis (PR #2087)
+  
   * 0.19.3
 
 Fixes
-  * Move the water bridge analysis to the new analysis class, add high 
-    Order water bridge support. (PR #2087)
+  * fixed gcc support in MacOS (Issue #2162, PR #2163)
   * fixed error when reading bonds/angles/dihedrals from gsd file (Issue #2152,
-    PR #2154))
+    PR #2154)
   * fixed error when reading bonds/angles/dihedrals from hoomdxml file 
-    (Issue #2151, PR #2153))
+    (Issue #2151, PR #2153)
   * fixed MacOS (XCode) library compatibility 
     (Issue #2144)
   * fixed lib.nsgrid segfault for coordinates very close to the box boundary
@@ -31,9 +40,8 @@ Fixes
   * fixed Lint error
     (Issue #2148, PR #2149)
   * Fixed Empty select_atoms string, now raises warning and returns empty
-
-Testsuite
-  * Add tests for the new water bridge analysis (PR #2087)
+    AtomGroup (Issue #2112)
+  * Read TPR files from Gromacs 2019 (PR #2161)
 
 
 11/06/18 richardjgowers
