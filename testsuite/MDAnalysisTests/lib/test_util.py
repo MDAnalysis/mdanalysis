@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -36,7 +37,8 @@ from numpy.testing import (assert_equal, assert_almost_equal,
 import MDAnalysis as mda
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
-from MDAnalysis.lib.util import cached, static_variables, warn_if_not_unique
+from MDAnalysis.lib.util import (cached, static_variables, warn_if_not_unique,
+                                 check_coords)
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError, DuplicateWarning
 
@@ -970,8 +972,6 @@ class TestBlocksOf(object):
 
         view = util.blocks_of(arr, 1, 1)
 
-        # should return a (4, 1, 1) view
-        # ie 4 lots of 1x1
         assert view.shape == (4, 1, 1)
         assert_array_almost_equal(view,
                                   np.array([[[0]], [[5]], [[10]], [[15]]]))
@@ -990,7 +990,6 @@ class TestBlocksOf(object):
 
         view = util.blocks_of(arr, 2, 2)
 
-        # should return (2, 2, 2)
         assert view.shape == (2, 2, 2)
         assert_array_almost_equal(view, np.array([[[0, 1], [4, 5]],
                                                   [[10, 11], [14, 15]]]))
@@ -1012,10 +1011,20 @@ class TestBlocksOf(object):
 
         assert view.shape == (4, 2, 1)
 
+    def test_blocks_of_4(self):
+        # testing block exceeding array size results in empty view
+        arr = np.arange(4).reshape(2, 2)
+        view = util.blocks_of(arr, 3, 3)
+        assert view.shape == (0, 3, 3)
+        view[:] = 100
+        assert_array_equal(arr, np.arange(4).reshape(2, 2))
+
     def test_blocks_of_ValueError(self):
         arr = np.arange(16).reshape(4, 4)
         with pytest.raises(ValueError):
-            util.blocks_of(arr, 2, 1)
+            util.blocks_of(arr, 2, 1)  # blocks don't fit
+        with pytest.raises(ValueError):
+            util.blocks_of(arr[:, ::2], 2, 1)  # non-contiguous input
 
 
 class TestNamespace(object):
@@ -1326,6 +1335,265 @@ class TestWarnIfNotUnique(object):
                 assert not w.list
             assert len(record) == 0
 
+class TestCheckCoords(object):
+    """Tests concerning the decorator @check_coords
+    """
+
+    prec = 6
+
+    def test_default_options(self):
+        a_in = np.zeros(3, dtype=np.float32)
+        b_in = np.ones(3, dtype=np.float32)
+        b_in2 = np.ones((2, 3), dtype=np.float32)
+
+        @check_coords('a','b')
+        def func(a, b):
+            # check that enforce_copy is True by default:
+            assert a is not a_in
+            assert b is not b_in
+            # check that convert_single is True by default:
+            assert a.shape == (1, 3)
+            assert b.shape == (1, 3)
+            return a + b
+
+        # check that allow_single is True by default:
+        res = func(a_in, b_in)
+        # check that reduce_result_if_single is True by default:
+        assert res.shape == (3,)
+        # check correct function execution:
+        assert_array_equal(res, b_in)
+
+        # check that check_lenghts_match is True by default:
+        with pytest.raises(ValueError):
+            res = func(a_in, b_in2)
+
+    def test_enforce_copy(self):
+
+        a_2d = np.ones((1, 3), dtype=np.float32)
+        b_1d = np.zeros(3, dtype=np.float32)
+        c_2d = np.zeros((1, 6), dtype=np.float32)[:, ::2]
+        d_2d = np.zeros((1, 3), dtype=np.int64)
+
+        @check_coords('a', 'b', 'c', 'd', enforce_copy=False)
+        def func(a, b, c, d):
+            # Assert that if enforce_copy is False:
+            # no copy is made if input shape, order, and dtype are correct:
+            assert a is a_2d
+            # a copy is made if input shape has to be changed:
+            assert b is not b_1d
+            # a copy is made if input order has to be changed:
+            assert c is not c_2d
+            # a copy is made if input dtype has to be changed:
+            assert d is not d_2d
+            # Assert correct dtype conversion:
+            assert d.dtype == np.float32
+            assert_almost_equal(d, d_2d, self.prec)
+            # Assert all shapes are converted to (1, 3):
+            assert a.shape == b.shape == c.shape == d.shape == (1, 3)
+            return a + b + c + d
+
+        # Call func() to:
+        # - test the above assertions
+        # - ensure that input of single coordinates is simultaneously possible
+        #   with different shapes (3,) and (1, 3)
+        res = func(a_2d, b_1d, c_2d, d_2d)
+        # Since some inputs are not 1d, even though reduce_result_if_single is
+        # True, the result must have shape (1, 3):
+        assert res.shape == (1, 3)
+        # check correct function execution:
+        assert_array_equal(res, a_2d)
+
+    def test_no_allow_single(self):
+
+        @check_coords('a', allow_single=False)
+        def func(a):
+            pass
+
+        with pytest.raises(ValueError) as err:
+            func(np.zeros(3, dtype=np.float32))
+            assert err.msg == ("func(): a.shape must be (n, 3), got (3,).")
+
+    def test_no_convert_single(self):
+
+        a_1d = np.arange(-3, 0, dtype=np.float32)
+
+        @check_coords('a', enforce_copy=False, convert_single=False)
+        def func(a):
+            # assert no conversion and no copy were performed:
+            assert a is a_1d
+            return a
+
+        res = func(a_1d)
+        # Assert result has been reduced:
+        assert res == a_1d[0]
+        assert type(res) is np.float32
+
+    def test_no_reduce_result_if_single(self):
+
+        a_1d = np.zeros(3, dtype=np.float32)
+
+        # Test without shape conversion:
+        @check_coords('a', enforce_copy=False, convert_single=False,
+                      reduce_result_if_single=False)
+        def func(a):
+            return a
+
+        res = func(a_1d)
+        # make sure the input array is just passed through:
+        assert res is a_1d
+
+        # Test with shape conversion:
+        @check_coords('a', enforce_copy=False, reduce_result_if_single=False)
+        def func(a):
+            return a
+
+        res = func(a_1d)
+        assert res.shape == (1, 3)
+        assert_array_equal(res[0], a_1d)
+
+    def test_no_check_lengths_match(self):
+
+        a_2d = np.zeros((1, 3), dtype=np.float32)
+        b_2d = np.zeros((3, 3), dtype=np.float32)
+
+        @check_coords('a', 'b', enforce_copy=False, check_lengths_match=False)
+        def func(a, b):
+            return a, b
+
+        res_a, res_b = func(a_2d, b_2d)
+        # Assert arrays are just passed through:
+        assert res_a is a_2d
+        assert res_b is b_2d
+
+    def test_invalid_input(self):
+
+        a_inv_dtype = np.array([['hello', 'world', '!']])
+        a_inv_type = [[0., 0., 0.]]
+        a_inv_shape_1d = np.zeros(6, dtype=np.float32)
+        a_inv_shape_2d = np.zeros((3, 2), dtype=np.float32)
+
+        @check_coords('a')
+        def func(a):
+            pass
+
+        with pytest.raises(TypeError) as err:
+            func(a_inv_dtype)
+            assert err.msg.startswith("func(): a.dtype must be convertible to "
+                                      "float32, got ")
+
+        with pytest.raises(TypeError) as err:
+            func(a_inv_type)
+            assert err.msg == ("func(): Parameter 'a' must be a numpy.ndarray, "
+                               "got <class 'list'>.")
+
+        with pytest.raises(ValueError) as err:
+            func(a_inv_shape_1d)
+            assert err.msg == ("func(): a.shape must be (3,) or (n, 3), got "
+                               "(6,).")
+
+        with pytest.raises(ValueError) as err:
+            func(a_inv_shape_2d)
+            assert err.msg == ("func(): a.shape must be (3,) or (n, 3), got "
+                               "(3, 2).")
+
+    def test_usage_with_kwargs(self):
+
+        a_2d = np.zeros((1, 3), dtype=np.float32)
+
+        @check_coords('a', enforce_copy=False)
+        def func(a, b, c=0):
+            return a, b, c
+
+        # check correct functionality if passed as keyword argument:
+        a, b, c = func(a=a_2d, b=0, c=1)
+        assert a is a_2d
+        assert b == 0
+        assert c == 1
+
+    def test_wrong_func_call(self):
+
+        @check_coords('a', enforce_copy=False)
+        def func(a, b, c=0):
+            pass
+
+        # Make sure invalid call marker is present:
+        func._invalid_call = False
+
+        # usage with posarg doubly defined:
+        assert not func._invalid_call
+        with pytest.raises(TypeError):
+            func(0, a=0)  # pylint: disable=redundant-keyword-arg
+        assert func._invalid_call
+        func._invalid_call = False
+
+        # usage with missing posargs:
+        assert not func._invalid_call
+        with pytest.raises(TypeError):
+            func(0)
+        assert func._invalid_call
+        func._invalid_call = False
+
+        # usage with missing posargs (supplied as kwargs):
+        assert not func._invalid_call
+        with pytest.raises(TypeError):
+            func(a=0, c=1)
+        assert func._invalid_call
+        func._invalid_call = False
+
+        # usage with too many posargs:
+        assert not func._invalid_call
+        with pytest.raises(TypeError):
+            func(0, 0, 0, 0)
+        assert func._invalid_call
+        func._invalid_call = False
+
+        # usage with unexpected kwarg:
+        assert not func._invalid_call
+        with pytest.raises(TypeError):
+            func(a=0, b=0, c=1, d=1)  # pylint: disable=unexpected-keyword-arg
+        assert func._invalid_call
+        func._invalid_call = False
+
+    def test_wrong_decorator_usage(self):
+
+        # usage without parantheses:
+        @check_coords
+        def func():
+            pass
+
+        with pytest.raises(TypeError):
+            func()
+
+        # usage without arguments:
+        with pytest.raises(ValueError) as err:
+            @check_coords()
+            def func():
+                pass
+
+            assert err.msg == ("Decorator check_coords() cannot be used "
+                               "without positional arguments.")
+
+        # usage with defaultarg:
+        with pytest.raises(ValueError) as err:
+            @check_coords('a')
+            def func(a=1):
+                pass
+
+            assert err.msg == ("In decorator check_coords(): Name 'a' doesn't "
+                               "correspond to any positional argument of the "
+                               "decorated function func().")
+
+        # usage with invalid parameter name:
+        with pytest.raises(ValueError) as err:
+            @check_coords('b')
+            def func(a):
+                pass
+
+            assert err.msg == ("In decorator check_coords(): Name 'b' doesn't "
+                               "correspond to any positional argument of the "
+                               "decorated function func().")
+
+
 @pytest.mark.parametrize("old_name", (None, "MDAnalysis.Universe"))
 @pytest.mark.parametrize("new_name", (None, "Multiverse"))
 @pytest.mark.parametrize("remove", (None, "99.0.0", 2099))
@@ -1401,3 +1669,55 @@ def test_dedent_docstring(text):
     doc = util.dedent_docstring(text)
     for line in doc.splitlines():
         assert line == line.lstrip()
+
+
+class TestCheckBox(object):
+
+    prec = 6
+    ref_ortho = np.ones(3, dtype=np.float32)
+    ref_tri_vecs = np.array([[1, 0, 0], [0, 1, 0], [0, 2 ** 0.5, 2 ** 0.5]],
+                            dtype=np.float32)
+
+    @pytest.mark.parametrize('box',
+        ([1, 1, 1, 90, 90, 90],
+         (1, 1, 1, 90, 90, 90),
+         ['1', '1', 1, 90, '90', '90'],
+         ('1', '1', 1, 90, '90', '90'),
+         np.array(['1', '1', 1, 90, '90', '90']),
+         np.array([1, 1, 1, 90, 90, 90], dtype=np.float32),
+         np.array([1, 1, 1, 90, 90, 90], dtype=np.float64),
+         np.array([1, 1, 1, 1, 1, 1, 90, 90, 90, 90, 90, 90],
+                  dtype=np.float32)[::2]))
+    def test_ckeck_box_ortho(self, box):
+        boxtype, checked_box = util.check_box(box)
+        assert boxtype == 'ortho'
+        assert_equal(checked_box, self.ref_ortho)
+        assert checked_box.dtype == np.float32
+        assert checked_box.flags['C_CONTIGUOUS']
+
+    @pytest.mark.parametrize('box',
+         ([1, 1, 2, 45, 90, 90],
+          (1, 1, 2, 45, 90, 90),
+          ['1', '1', 2, 45, '90', '90'],
+          ('1', '1', 2, 45, '90', '90'),
+          np.array(['1', '1', 2, 45, '90', '90']),
+          np.array([1, 1, 2, 45, 90, 90], dtype=np.float32),
+          np.array([1, 1, 2, 45, 90, 90], dtype=np.float64),
+          np.array([1, 1, 1, 1, 2, 2, 45, 45, 90, 90, 90, 90],
+                   dtype=np.float32)[::2]))
+    def test_check_box_tri_vecs(self, box):
+        boxtype, checked_box = util.check_box(box)
+        assert boxtype == 'tri_vecs'
+        assert_almost_equal(checked_box, self.ref_tri_vecs, self.prec)
+        assert checked_box.dtype == np.float32
+        assert checked_box.flags['C_CONTIGUOUS']
+
+    def test_check_box_wrong_data(self):
+        with pytest.raises(ValueError):
+            wrongbox = ['invalid', 1, 1, 90, 90, 90]
+            boxtype, checked_box = util.check_box(wrongbox)
+
+    def test_check_box_wrong_shape(self):
+        with pytest.raises(ValueError):
+            wrongbox = np.ones((3, 3), dtype=np.float32)
+            boxtype, checked_box = util.check_box(wrongbox)

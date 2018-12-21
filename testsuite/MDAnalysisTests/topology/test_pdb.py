@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -42,6 +43,29 @@ from MDAnalysis.topology.PDBParser import PDBParser
 
 _PDBPARSER = mda.topology.PDBParser.PDBParser
 
+hybrid36 = [
+    ("A0000", 100000),
+    ("MEGAN", 20929695),
+    ("J0NNY", 15247214),
+    ("DREW6", 6417862),
+    ("ST3V3", 31691119),
+    ("ADA8M", 719798),
+    ("a0000", 43770016),
+    ("megan", 64599711),
+    ("j0nny", 58917230),
+    ("drew6", 50087878),
+    ("st3v3", 75361135),
+    ("ada8m", 44389814),
+    ("    6", 6),
+    ("   24", 24),
+    ("  645", 645),
+    (" 4951", 4951),
+    ("10267", 10267)
+]
+
+@pytest.mark.parametrize('hybrid, integer', hybrid36)
+def test_hy36decode(hybrid, integer):
+    assert mda.topology.PDBParser.hy36decode(5, hybrid) == integer
 
 class TestPDBParser(ParserBase):
     """This one has neither chainids or segids"""
@@ -183,3 +207,25 @@ def test_PDB_no_resid():
     assert len(u.residues) == 1
     # should have default resid of 1
     assert u.residues[0].resid == 1
+
+PDB_hex = """\
+REMARK For testing reading of hex atom numbers
+REMARK This has MODELs then hex atom numbers entries
+CRYST1   80.000   80.017   80.017  90.00  90.00  90.00 P 1           1
+MODEL        1
+HETATM    1  H     2 L 400      20.168  00.034  40.428
+HETATMA0000  H     2 L 400      40.168  50.034  40.428
+HETATMA0001  H     2 L 400      30.453  60.495  50.132
+HETATMA0002  H     2 L 400      20.576  40.354  60.483
+HETATMA0003  H     2 L 400      10.208  30.067  70.045
+END
+"""
+
+def test_PDB_hex():
+    u = mda.Universe(StringIO(PDB_hex), format='PDB')
+    assert len(u.atoms) == 5
+    assert u.atoms[0].id == 1
+    assert u.atoms[1].id == 100000
+    assert u.atoms[2].id == 100001
+    assert u.atoms[3].id == 100002
+    assert u.atoms[4].id == 100003

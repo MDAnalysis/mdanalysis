@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -196,12 +197,12 @@ class Bond(TopologyObject):
 
         .. versionchanged:: 0.11.0
            Added pbc keyword
-        .. versionchanged:: 0.18.1
+        .. versionchanged:: 0.19.0
            Changed default of pbc to True
         """
         box = self.universe.dimensions if pbc else None
 
-        return distances.calc_distance(self[0].position, self[1].position, box)
+        return distances.calc_bonds(self[0].position, self[1].position, box)
 
     value = length
 
@@ -236,13 +237,13 @@ class Angle(TopologyObject):
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.17.0
            Fixed angles close to 180 giving NaN
-        .. versionchanged:: 0.18.1
+        .. versionchanged:: 0.19.0
            Added pbc keyword, default True
         """
         box = self.universe.dimensions if pbc else None
 
-        return distances.calc_angle(
-            self[0].position, self[1].position, self[2].position, box)
+        return np.rad2deg(distances.calc_angles(
+            self[0].position, self[1].position, self[2].position, box))
 
     value = angle
 
@@ -285,14 +286,14 @@ class Dihedral(TopologyObject):
         4 decimals (and is only tested to 3 decimals).
 
         .. versionadded:: 0.9.0
-        .. versionchanged:: 0.18.1
+        .. versionchanged:: 0.19.0
            Added pbc keyword, default True
         """
         box = self.universe.dimensions if pbc else None
         A, B, C, D = self.atoms
 
-        return distances.calc_dihedral(
-            A.position, B.position, C.position, D.position, box)
+        return np.rad2deg(distances.calc_dihedrals(
+            A.position, B.position, C.position, D.position, box))
 
     value = dihedral
 
@@ -518,7 +519,7 @@ class TopologyGroup(object):
     .. versionchanged:: 0.11.0
        Added `values` method to return the size of each object in this group
        Deprecated selectBonds method in favour of select_bonds
-    .. versionchanged:: 0.18.1
+    .. versionchanged:: 0.19.0
        Empty TopologyGroup now returns correctly shaped empty array via
        indices property and to_indices()
     """

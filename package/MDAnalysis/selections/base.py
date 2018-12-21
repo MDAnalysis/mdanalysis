@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -237,11 +238,11 @@ class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
 
     def _write_head(self, out, **kwargs):
         """Initial output to open file object *out*."""
-        pass
+        pass # pylint: disable=unnecessary-pass
 
     def _write_tail(self, out, **kwargs):
         """Last output to open file object *out*."""
-        pass
+        pass # pylint: disable=unnecessary-pass
 
     # Context manager support to match Coordinate writers
     # all file handles use a with block in their write method, so these do nothing special

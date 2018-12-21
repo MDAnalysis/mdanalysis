@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -189,6 +190,8 @@ class ChainReader(base.ProtoReader):
        frames and individual :attr:`dt`.
     .. versionchanged:: 0.19.0
        added ``continuous`` trajectory option
+    .. versionchanged:: 0.19.0
+       limit output of __repr__
 
     """
     format = 'CHAIN'
@@ -575,10 +578,16 @@ class ChainReader(base.ProtoReader):
             yield ts
 
     def __repr__(self):
-        return ("<{clsname} {fname} with {nframes} frames of {natoms} atoms>"
+        if len(self.filenames) > 3:
+            fnames = "{fname} and {nfanmes} more".format(
+                    fname=os.path.basename(self.filenames[0]), 
+                    nfanmes=len(self.filenames) - 1)
+        else:
+            fnames = ", ".join([os.path.basename(fn) for fn in self.filenames])
+        return ("<{clsname} containing {fname} with {nframes} frames of {natoms} atoms>"
                 "".format(
                     clsname=self.__class__.__name__,
-                    fname=[os.path.basename(fn) for fn in self.filenames],
+                    fname=fnames,
                     nframes=self.n_frames,
                     natoms=self.n_atoms))
 

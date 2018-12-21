@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -101,7 +102,7 @@ The trajectory is included with the test data files. The data in
    ax.plot(time, rmsd[5], 'b--', label="NMP")
    ax.legend(loc="best")
    ax.set_xlabel("time (ps)")
-   ax.set_ylabel(r"RMSD ($\AA$)")
+   ax.set_ylabel(r"RMSD ($\\AA$)")
    fig.savefig("rmsd_all_CORE_LID_NMP_ref1AKE.pdf")
 
 
@@ -145,7 +146,7 @@ import warnings
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.log import ProgressMeter, _set_verbose
+from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.util import asiterable, iterable, get_weights, deprecate
 
 
@@ -370,15 +371,6 @@ class RMSD(AnalysisBase):
 
             .. Note:: Experimental feature. Only limited error checking
                       implemented.
-
-        start : int (optional)
-            starting frame, default None becomes 0.
-        stop : int (optional)
-            Frame index to stop analysis. Default: None becomes
-            n_frames. Iteration stops *before* this frame number,
-            which means that the trajectory would be read until the end.
-        step : int (optional)
-            step between frames, default ``None`` becomes 1.
         filename : str (optional)
             write RMSD into file with :meth:`RMSD.save`
 
@@ -596,7 +588,7 @@ class RMSD(AnalysisBase):
             #    (x~: selected coordinates, x: all coordinates)
             # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
             self._rot = np.zeros(9, dtype=np.float64)  # allocate space
-            self._R = np.matrix(self._rot.reshape(3, 3))
+            self._R = self._rot.reshape(3, 3)
         else:
             self._rot = None
 
@@ -632,7 +624,7 @@ class RMSD(AnalysisBase):
             self._ts.positions[:] -= mobile_com
 
             # R acts to the left & is broadcasted N times.
-            self._ts.positions[:] = self._ts.positions * self._R
+            self._ts.positions[:] = np.dot(self._ts.positions, self._R)
             self._ts.positions += self._ref_com
 
             # 2) calculate secondary RMSDs (without any further
@@ -809,20 +801,6 @@ class RMSF(AnalysisBase):
         """
         super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
-
-    def run(self, start=None, stop=None, step=None, verbose=None, quiet=None):
-        """Perform the analysis."""
-
-        if any([el is not None for el in (start, stop, step, quiet)]):
-            warnings.warn("run arguments are deprecated. Please pass them at "
-                          "class construction. These options will be removed in 0.17.0",
-                          category=DeprecationWarning)
-            verbose = _set_verbose(verbose, quiet, default=False)
-            # regenerate class with correct args
-            super(RMSF, self).__init__(self.atomgroup.universe.trajectory,
-                                       start=start, stop=stop, step=step,
-                                       verbose=verbose)
-        return super(RMSF, self).run()
 
     def _prepare(self):
         self.sumsquares = np.zeros((self.atomgroup.n_atoms, 3))

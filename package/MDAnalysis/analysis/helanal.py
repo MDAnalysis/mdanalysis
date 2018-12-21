@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -124,7 +125,7 @@ import numpy as np
 
 import MDAnalysis
 from MDAnalysis import FinishTimeException
-from MDAnalysis.lib.log import ProgressMeter, _set_verbose
+from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib import mdamath
 
 import logging
@@ -168,7 +169,7 @@ def helanal_trajectory(universe, selection="name CA",
                        bend_filename="local_bend.xvg",
                        twist_filename="unit_twist.xvg",
                        prefix="helanal_", ref_axis=None,
-                       verbose=None, quiet=None):
+                       verbose=False):
     """Perform HELANAL helix analysis on all frames in `universe`.
 
     Parameters
@@ -236,7 +237,6 @@ def helanal_trajectory(universe, selection="name CA",
        `verbose` one.
 
     """
-    verbose = _set_verbose(verbose, quiet, default=True)
     if ref_axis is None:
         ref_axis = np.array([0., 0., 1.])
     else:
@@ -750,15 +750,14 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
 def vector_of_best_fit(origins):
     origins = np.asarray(origins)
     centroids = center(origins)
-    M = np.matrix(origins - centroids)
-    A = M.transpose() * M
+    M = origins - centroids
+    A = np.dot(M.transpose(), M)
     u, s, vh = np.linalg.linalg.svd(A)
-    vector = vh[0].tolist()[0]
+    vector = vh[0]
     #Correct vector to face towards first residues
     rough_helix = origins[0] - centroids
     agreement = mdamath.angle(rough_helix, vector)
     if not (-np.pi / 2 < agreement < np.pi / 2):
-        vector = vh[0] * -1
-        vector = vector.tolist()[0]
+        vector *= -1
     best_fit_tilt = mdamath.angle(vector, [0, 0, 1])
     return vector, best_fit_tilt

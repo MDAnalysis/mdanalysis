@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -92,6 +93,19 @@ Classes
 from __future__ import absolute_import
 
 import six
+import warnings
+_DEPMSG = {
+    'use_KDTree_routines': ('This flag is obsolete, all selections now '
+                            'automatically select the fastest method'),
+    'use_periodic_selections': 'Use periodic=True/False to select_atoms',
+    'convert_lengths': 'This behaviour has been deprecated',
+    'length_unit': 'This behaviour has been deprecated',
+    'time_unit': 'This behaviour has been deprecated',
+    'speed_unit': 'This behaviour has been deprecated',
+    'force_unit': 'This behaviour has been deprecated',
+    'charge_unit': 'This behaviour has been deprecated',
+    'use_pbc': 'Supply a pbc kwarg to the relevant methods',
+}
 
 __all__ = ['AtomGroup', 'Selection']
 
@@ -243,6 +257,10 @@ class Flag(object):
         return self.value
 
     def set(self, value):
+        warnings.warn('MDAnalysis.core.flags is deprecated and will be removed in version 1.0. '
+                      '' + _DEPMSG[self.name],  # custom message for each flag too
+                      DeprecationWarning)
+
         if value is not None:
             try:
                 self.value = self.mapping[value]
@@ -280,9 +298,6 @@ _flags = [
          * False    - periodicity is ignored
 
         The MDAnalysis preset of this flag is %(default)r.
-
-        Note that KD-tree based distance selections always ignore this flag. (For
-        details see the docs for the 'use_KDTree_routines' flag.)
         """
     ),
     _Flag(

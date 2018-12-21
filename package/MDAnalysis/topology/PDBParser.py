@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -59,6 +60,7 @@ from __future__ import absolute_import, print_function
 import numpy as np
 import warnings
 
+from six.moves import range
 from .guessers import guess_masses, guess_types
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
@@ -86,6 +88,63 @@ def float_or_default(val, default):
         return float(val)
     except ValueError:
         return default
+
+DIGITS_UPPER = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+DIGITS_LOWER = DIGITS_UPPER.lower()
+DIGITS_UPPER_VALUES = dict([pair for pair in zip(DIGITS_UPPER, range(36))])
+DIGITS_LOWER_VALUES = dict([pair for pair in zip(DIGITS_LOWER, range(36))])
+
+def decode_pure(digits_values, s):
+    """Decodes the string s using the digit, value associations for each
+    character.
+
+    Parameters
+    ----------
+    digits_values: dict
+        A dictionary containing the base-10 numbers that each hexadecimal
+        number corresponds to.
+    s: str
+        The contents of the pdb index columns.
+
+    Returns
+    -------
+    The integer in base-10 corresponding to traditional base-36.
+    """
+    result = 0
+    n = len(digits_values)
+    for c in s:
+        result *= n
+        result += digits_values[c]
+    return result
+
+
+def hy36decode(width, s):
+    """
+    Decodes base-10/upper-case base-36/lower-case base-36 hybrid.
+
+    Parameters
+    ----------
+    width: int
+        The number of columns in the pdb file store atom index.
+    s: str
+        The contents of the pdb index columns.
+
+    Returns
+    -------
+    int
+        Base-10 integer corresponding to hybrid36.
+    """
+    if (len(s) == width):
+        f = s[0]
+        if (f == "-" or f == " " or f.isdigit()):
+            return int(s)
+        elif (f in DIGITS_UPPER_VALUES):
+            return decode_pure(digits_values=DIGITS_UPPER_VALUES,
+                               s=s) - 10 * 36 ** (width - 1) + 10 ** width
+        elif (f in DIGITS_LOWER_VALUES):
+            return decode_pure(digits_values=DIGITS_LOWER_VALUES,
+                               s=s) + 16 * 36 ** (width - 1) + 10 ** width
+    raise ValueError("invalid number literal.")
 
 
 class PDBParser(TopologyReaderBase):
@@ -167,11 +226,14 @@ class PDBParser(TopologyReaderBase):
                 record_types.append(line[:6].strip())
                 try:
                     serial = int(line[6:11])
-                except ValueError:
-                    # serial can become '***' when they get too high
-                    self._wrapped_serials = True
-                    serial = last_wrapped_serial
-                    last_wrapped_serial += 1
+                except:
+                    try:
+                        serial = hy36decode(5, line[6:11])
+                    except ValueError:
+                        # serial can become '***' when they get too high
+                        self._wrapped_serials = True
+                        serial = last_wrapped_serial
+                        last_wrapped_serial += 1
                 finally:
                     serials.append(serial)
 

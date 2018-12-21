@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -184,7 +185,6 @@ import logging
 
 logger = logging.getLogger("MDAnalysis.analysis.density")
 
-
 class Density(Grid):
     r"""Class representing a density on a regular cartesian grid.
 
@@ -277,7 +277,6 @@ class Density(Grid):
     See Also
     --------
     gridData.core.Grid : the base class of :class:`Density`.
-
 
     Examples
     --------
@@ -497,12 +496,66 @@ class Density(Grid):
             grid_type = 'histogram'
         return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + ' bins>'
 
+
+def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
+    """Helper function to set the grid dimensions to user defined values
+
+    Parameters
+    ----------
+    gridcenter : numpy ndarray, float32
+            3 element ndarray containing the x, y and z coordinates of the grid
+            box center
+    xdim : float
+            Box edge length in the x dimension
+    ydim : float
+            Box edge length in the y dimension
+    zdim : float
+            Box edge length in the y dimension
+    smin : numpy ndarray, float32
+            Minimum x,y,z coordinates for the input selection
+    smax : numpy ndarray, float32
+            Maximum x,y,z coordinates for the input selection
+
+    Returns
+    -------
+    umin : numpy ndarray, float32
+            Minimum x,y,z coordinates of the user defined grid
+    umax : numpy ndarray, float32
+            Maximum x,y,z coordinates of the user defined grid
+    """
+    # Check user inputs
+    try:
+        gridcenter = np.asarray(gridcenter, dtype=np.float32)
+    except ValueError:
+        raise ValueError("Non-number values assigned to gridcenter")
+    if gridcenter.shape != (3,):
+        raise ValueError("gridcenter must be a 3D coordinate")
+    try:
+        xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
+    except ValueError:
+        raise ValueError("xdim, ydim, and zdim must be numbers")
+
+    # Set min/max by shifting by half the edge length of each dimension
+    umin = gridcenter - xyzdim/2
+    umax = gridcenter + xyzdim/2
+
+    # Here we test if coords of selection fall outside of the defined grid
+    # if this happens, we warn users they may want to resize their grids
+    if any(smin < umin) or any(smax > umax):
+        msg = ("Atom selection does not fit grid --- "
+               "you may want to define a larger box")
+        warnings.warn(msg)
+        logger.warning(msg)
+    return umin, umax
+
+
 def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           start=None, stop=None, step=None,
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
                           use_kdtree=True, update_selection=False,
-                          verbose=None, interval=1, quiet=None,
-                          parameters=None):
+                          verbose=False, interval=1, quiet=None,
+                          parameters=None,
+                          gridcenter=None, xdim=None, ydim=None, zdim=None):
     """Create a density grid from a :class:`MDAnalysis.Universe` object.
 
     The trajectory is read, frame by frame, and the atoms selected with `atomselection` are
@@ -527,7 +580,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             are passed through as they are.
     padding : float (optional)
             increase histogram dimensions by padding (on top of initial box size)
-            in Angstroem [2.0]
+            in Angstroem. Padding is ignored when setting a user defined grid. [2.0]
     soluteselection : str (optional)
             MDAnalysis selection for the solute, e.g. "protein" [``None``]
     cutoff : float (optional)
@@ -550,6 +603,18 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
            Show status update every `interval` frame [1]
     parameters : dict (optional)
             `dict` with some special parameters for :class:`Density` (see docs)
+    gridcenter : numpy ndarray, float32 (optional)
+            3 element numpy array detailing the x, y and z coordinates of the
+            center of a user defined grid box in Angstroem [``None``]
+    xdim : float (optional)
+            User defined x dimension box edge in ångström; ignored if
+            gridcenter is ``None``
+    ydim : float (optional)
+            User defined y dimension box edge in ångström; ignored if
+            gridcenter is ``None``
+    zdim : float (optional)
+            User defined z dimension box edge in ångström; ignored if
+            gridcenter is ``None``
 
     Returns
     -------
@@ -595,6 +660,32 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     (Using the special case for the bulk with `soluteselection` and `cutoff`
     improves performance over the simple `update_selection` approach.)
 
+    If you are interested in explicitly setting a grid box of a given edge size
+    and origin, you can use the gridcenter and x/y/zdim arguments. For example
+    to plot the density of waters within 5 Å of a ligand (in this case the
+    ligand has been assigned the residue name "LIG") in a cubic grid with 20 Å
+    edges which is centered on the centre of mass (COM) of the ligand::
+
+      # Create a selection based on the ligand
+      ligand_selection = universe.select_atoms("resname LIG")
+
+      # Extract the COM of the ligand
+      ligand_COM = ligand_selection.center_of_mass()
+
+      # Generate a density of waters on a cubic grid centered on the ligand COM
+      # In this case, we update the atom selection as shown above.
+      water_density = density_from_Universe(universe, delta=1.0,
+                                            atomselection='name OW around 5 resname LIG',
+                                            update_selection=True,
+                                            gridcenter=ligand_COM,
+                                            xdim=20.0, ydim=20.0, zdim=20.0)
+
+      (It should be noted that the `padding` keyword is not used when a user
+      defined grid is assigned).
+
+    .. versionchanged:: 0.19.0
+       *gridcenter*, *xdim*, *ydim* and *zdim* keywords added to allow for user
+       defined boxes
     .. versionchanged:: 0.13.0
        *update_selection* and *quiet* keywords added
 
@@ -632,15 +723,23 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         warnings.warn(msg)
         logger.warning(msg)
 
-    # Make the box bigger to avoid as much as possible 'outlier'. This
-    # is important if the sites are defined at a high density: in this
-    # case the bulk regions don't have to be close to 1 * n0 but can
-    # be less. It's much more difficult to deal with outliers.  The
-    # ideal solution would use images: implement 'looking across the
-    # periodic boundaries' but that gets complicate when the box
-    # rotates due to RMS fitting.
-    smin = np.min(coord, axis=0) - padding
-    smax = np.max(coord, axis=0) + padding
+    if gridcenter is not None:
+        # Generate a copy of smin/smax from coords to later check if the
+        # defined box might be too small for the selection
+        smin = np.min(coord, axis=0)
+        smax = np.max(coord, axis=0)
+        # Overwrite smin/smax with user defined values
+        smin, smax = _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax)
+    else:
+        # Make the box bigger to avoid as much as possible 'outlier'. This
+        # is important if the sites are defined at a high density: in this
+        # case the bulk regions don't have to be close to 1 * n0 but can
+        # be less. It's much more difficult to deal with outliers.  The
+        # ideal solution would use images: implement 'looking across the
+        # periodic boundaries' but that gets complicate when the box
+        # rotates due to RMS fitting.
+        smin = np.min(coord, axis=0) - padding
+        smax = np.max(coord, axis=0) + padding
 
     BINS = fixedwidth_bins(delta, smin, smax)
     arange = np.vstack((BINS['min'], BINS['max']))
@@ -653,7 +752,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     h = grid.copy()
 
     pm = ProgressMeter(u.trajectory.n_frames, interval=interval,
-                       verbose=verbose, quiet=quiet,
+                       verbose=verbose,
                        format="Histogramming %(n_atoms)6d atoms in frame "
                        "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
     start, stop, step = u.trajectory.check_slice_indices(start, stop, step)

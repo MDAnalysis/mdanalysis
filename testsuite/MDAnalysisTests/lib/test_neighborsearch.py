@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -41,8 +42,8 @@ def universe():
 
 
 def test_search(universe):
-    """simply check that for a centered protein in a large box pkdtree
-    and kdtree return the same result"""
+    """simply check that for a centered protein in a large box periodic
+    and non-periodic return the same result"""
     ns = NeighborSearch.AtomNeighborSearch(universe.atoms)
     pns = NeighborSearch.AtomNeighborSearch(universe.atoms,
                                             universe.atoms.dimensions)

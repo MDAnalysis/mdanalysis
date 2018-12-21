@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -326,7 +327,8 @@ from collections import defaultdict
 import numpy as np
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
-from MDAnalysis.lib.log import ProgressMeter, _set_verbose
+from .. import base
+from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib import distances
 from MDAnalysis.lib.util import deprecate
@@ -335,7 +337,7 @@ from MDAnalysis.lib.util import deprecate
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
 
 
-class HydrogenBondAnalysis(object):
+class HydrogenBondAnalysis(base.AnalysisBase):
     """Perform a hydrogen bond analysis
 
     The analysis of the trajectory is performed with the
@@ -406,8 +408,7 @@ class HydrogenBondAnalysis(object):
                  update_selection1=True, update_selection2=True, filter_first=True, distance_type='hydrogen',
                  distance=3.0, angle=120.0,
                  forcefield='CHARMM27', donors=None, acceptors=None,
-                 start=None, stop=None, step=None,
-                 debug=None, detect_hydrogens='distance', verbose=None, pbc=False):
+                 debug=False, detect_hydrogens='distance', verbose=False, pbc=False, **kwargs):
         """Set up calculation of hydrogen bonds between two selections in a universe.
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
@@ -470,15 +471,6 @@ class HydrogenBondAnalysis(object):
         acceptors : sequence (optional)
             Extra H acceptor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.
-        start : int (optional)
-            starting frame-index for analysis, ``None`` is the first one, 0.
-            `start` and `stop` are 0-based frame indices and are used to slice
-            the trajectory (if supported) [``None``]
-        stop : int (optional)
-            last trajectory frame for analysis, ``None`` is the last one [``None``]
-        step : int (optional)
-            read every `step` between `start` (included) and `stop` (excluded),
-            ``None`` selects 1. [``None``]
         detect_hydrogens : {"distance", "heuristic"} (optional)
             Determine the algorithm to find hydrogens connected to donor
             atoms. Can be "distance" (default; finds all hydrogens in the
@@ -496,7 +488,7 @@ class HydrogenBondAnalysis(object):
             If set to ``True`` enables per-frame debug logging. This is disabled
             by default because it generates a very large amount of output in
             the log file. (Note that a logger must have been started to see
-            the output, e.g. using :func:`MDAnalysis.start_logging`.)
+            the output, e.g. using :func:`MDAnalysis.start_logging`.) [``False``]
         verbose : bool (optional)
             Toggle progress output. (Can also be given as keyword argument to
             :meth:`run`.)
@@ -564,6 +556,9 @@ class HydrogenBondAnalysis(object):
         .. _`Issue 138`: https://github.com/MDAnalysis/mdanalysis/issues/138
 
         """
+        super(HydrogenBondAnalysis, self).__init__(universe.trajectory, **kwargs)
+        # per-frame debugging output?
+        self.debug = debug
 
         self._get_bonded_hydrogens_algorithms = {
             "distance": self._get_bonded_hydrogens_dist,  # 0.7.6 default
@@ -584,7 +579,6 @@ class HydrogenBondAnalysis(object):
         self.distance = distance
         self.distance_type = distance_type  # note: everything except 'heavy' will give the default behavior
         self.angle = angle
-        self.traj_slice = slice(start, stop, step)
         self.pbc = pbc and all(self.u.dimensions[:3])
 
         # set up the donors/acceptors lists
@@ -606,19 +600,8 @@ class HydrogenBondAnalysis(object):
 
         self.table = None  # placeholder for output table
 
-        self.debug = True  # always enable debug output for initial selection update
         self._update_selection_1()
         self._update_selection_2()
-        # per-frame debugging output?
-        # This line must be changed at the end of the deprecation period for
-        # the *quiet* keyword argument. Then it must become:
-        # self.debug = debug
-        # In the signature, *verbose* must be removed and the default value
-        # for *debug* must be set to False.
-        # See the docstring for lib.log._set_verbose, the pull request #1150,
-        # and the issue #903.
-        self.debug = _set_verbose(debug, verbose, default=False,
-                                  was='verbose', now='debug')
 
         self._log_parameters()
 
@@ -634,7 +617,6 @@ class HydrogenBondAnalysis(object):
             self._sanity_check(2, 'acceptors')
             self._sanity_check(2, 'donors')
         logger.info("HBond analysis: initial checks passed.")
-
 
     def _sanity_check(self, selection, htype):
         """sanity check the selections 1 and 2
@@ -807,7 +789,7 @@ class HydrogenBondAnalysis(object):
             hydrogens = [
                 a for a in self.u.atoms[atom.index + 1:atom.index + 4]
                 if (a.name.startswith(('H', '1H', '2H', '3H')) and
-                    distances.calc_distance(atom.position, a.position, box) < self.r_cov[atom.name[0]])
+                    distances.calc_bonds(atom.position, a.position, box=box) < self.r_cov[atom.name[0]])
                 ]
         except IndexError:
             hydrogens = []  # weird corner case that atom is the last one in universe
@@ -873,7 +855,7 @@ class HydrogenBondAnalysis(object):
         if self.debug:
             logger.debug(*args)
 
-    def run(self, **kwargs):
+    def run(self, start=None, stop=None, step=None, verbose=None, **kwargs):
         """Analyze trajectory and produce timeseries.
 
         Stores the hydrogen bond data per frame as
@@ -882,6 +864,15 @@ class HydrogenBondAnalysis(object):
 
         Parameters
         ----------
+        start : int (optional)
+            starting frame-index for analysis, ``None`` is the first one, 0.
+            `start` and `stop` are 0-based frame indices and are used to slice
+            the trajectory (if supported) [``None``]
+        stop : int (optional)
+            last trajectory frame for analysis, ``None`` is the last one [``None``]
+        step : int (optional)
+            read every `step` between `start` (included) and `stop` (excluded),
+            ``None`` selects 1. [``None``]
         verbose : bool (optional)
              toggle progress meter output :class:`~MDAnalysis.lib.log.ProgressMeter`
              [``True``]
@@ -919,6 +910,9 @@ class HydrogenBondAnalysis(object):
            argument `debug`.
 
         """
+        # sets self.start/stop/step and _pm
+        self._setup_frames(self._trajectory, start, stop, step)
+
         logger.info("HBond analysis: starting")
         logger.debug("HBond analysis: donors    %r", self.donors)
         logger.debug("HBond analysis: acceptors %r", self.acceptors)
@@ -937,19 +931,9 @@ class HydrogenBondAnalysis(object):
         self._timeseries = []
         self.timesteps = []
 
-        logger.info("checking trajectory...")  # n_frames can take a while!
-        try:
-            frames = np.arange(self.u.trajectory.n_frames)[self.traj_slice]
-        except:
-            logger.error("Problem reading trajectory or trajectory slice incompatible.")
-            logger.exception()
-            raise
-        verbose = _set_verbose(verbose=kwargs.get('verbose', None),
-                               quiet=kwargs.get('quiet', None),
-                               default=True)
-        pm = ProgressMeter(len(frames),
+        pm = ProgressMeter(self.n_frames,
                            format="HBonds frame {current_step:5d}: {step:5d}/{numsteps} [{percentage:5.1f}%]\r",
-                           verbose=verbose)
+                           verbose=kwargs.get('verbose', False))
 
         try:
             self.u.trajectory.time
@@ -963,10 +947,9 @@ class HydrogenBondAnalysis(object):
             logger.warning("HBond analysis is recording frame number instead of time step")
 
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
-                    (self.traj_slice.start or 0),
-                    (self.traj_slice.stop or self.u.trajectory.n_frames), self.traj_slice.step or 1)
+                    self.start, self.stop, self.step)
 
-        for progress, ts in enumerate(self.u.trajectory[self.traj_slice]):
+        for progress, ts in enumerate(self.u.trajectory[self.start:self.stop:self.step]):
             # all bonds for this timestep
             frame_results = []
             # dict of tuples (atom.index, atom.index) for quick check if
@@ -993,10 +976,12 @@ class HydrogenBondAnalysis(object):
                     for h in donor_h_set:
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
-                            angle = distances.calc_angle(d.position, h.position,
-                                                         a.position, box=box)
+                            angle = distances.calc_angles(d.position,
+                                                          h.position,
+                                                          a.position, box=box)
+                            angle = np.rad2deg(angle)
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = distances.calc_distance(donor_atom.position, a.position, box)
+                            dist = distances.calc_bonds(donor_atom.position, a.position, box=box)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
                                     "S1-D: {0!s} <-> S2-A: {1!s} {2:f} A, {3:f} DEG".format(h.index, a.index, dist, angle))
@@ -1019,10 +1004,12 @@ class HydrogenBondAnalysis(object):
                                     (h.index, a.index) in already_found or
                                     (a.index, h.index) in already_found):
                                 continue
-                            angle = distances.calc_angle(d.position, h.position,
-                                                         a.position, box=box)
+                            angle = distances.calc_angles(d.position,
+                                                          h.position,
+                                                          a.position, box=box)
+                            angle = np.rad2deg(angle)
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = distances.calc_distance(donor_atom.position, a.position, box)
+                            dist = distances.calc_bonds(donor_atom.position, a.position, box=box)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
                                     "S1-A: {0!s} <-> S2-D: {1!s} {2:f} A, {3:f} DEG".format(a.index, h.index, dist, angle))

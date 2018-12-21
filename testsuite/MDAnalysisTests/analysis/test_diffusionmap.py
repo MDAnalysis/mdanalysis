@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -56,8 +57,8 @@ def test_eg(dist, dmap):
 def test_dist_weights(u):
     backbone = u.select_atoms('backbone')
     weights_atoms = np.ones(len(backbone.atoms))
-    dist = diffusionmap.DistanceMatrix(u, select='backbone', weights=weights_atoms, step=3)
-    dist.run()
+    dist = diffusionmap.DistanceMatrix(u, select='backbone', weights=weights_atoms)
+    dist.run(step=3)
     dmap = diffusionmap.DiffusionMap(dist)
     dmap.run()
     assert_array_almost_equal(dmap.eigenvalues, [1, 1, 1, 1], 4)
@@ -69,8 +70,8 @@ def test_dist_weights(u):
 
 
 def test_different_steps(u):
-    dmap = diffusionmap.DiffusionMap(u, select='backbone', step=3)
-    dmap.run()
+    dmap = diffusionmap.DiffusionMap(u, select='backbone')
+    dmap.run(step=3)
     assert dmap._eigenvectors.shape == (4, 4)
 
 

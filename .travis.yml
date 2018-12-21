@@ -22,11 +22,11 @@ env:
     - PYTHON_VERSION=3.5
     - BUILD_DOCS=false
     - CODECOV=false
-    - PYTEST_FLAGS="--disable-pytest-warnings --numprocesses 2 --durations=50"
+    - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
     - PYTEST_LIST="testsuite/MDAnalysisTests"
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
-    - BUILD_CMD="pip install -v package/ && pip install testsuite/"
+    - BUILD_CMD="pip install -v package/ && (cd testsuite/ && python setup.py build)"
     - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython joblib matplotlib scipy griddataformats hypothesis gsd codecov"
     - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn"
     - CONDA_CHANNELS='biobuilds conda-forge'
@@ -39,7 +39,7 @@ env:
     # Run a coverage test for most versions
     - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.6 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=3.4 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - PYTHON_VERSION=3.4 NUMPY_VERSION=1.14 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=2.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - NUMPY_VERSION=1.10.4
     - NUMPY_VERSION=dev  EVENT_TYPE="cron"

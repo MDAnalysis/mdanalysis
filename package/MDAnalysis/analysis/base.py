@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -32,11 +33,12 @@ import six
 from six.moves import range, zip
 import inspect
 import logging
+import warnings
 
 import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis.lib.log import ProgressMeter, _set_verbose
+from MDAnalysis.lib.log import ProgressMeter
 
 logger = logging.getLogger(__name__)
 
@@ -84,30 +86,34 @@ class AnalysisBase(object):
 
     .. code-block:: python
 
-       na = NewAnalysis(u.select_atoms('name CA'), 35).run()
+       na = NewAnalysis(u.select_atoms('name CA'), 35).run(start=10, stop=20)
        print(na.result)
 
     """
 
-    def __init__(self, trajectory, start=None,
-                 stop=None, step=None, verbose=None, quiet=None):
+    def __init__(self, trajectory, verbose=False, **kwargs):
         """
         Parameters
         ----------
         trajectory : mda.Reader
             A trajectory Reader
-        start : int, optional
-            start frame of analysis
-        stop : int, optional
-            stop frame of analysis
-        step : int, optional
-            number of frames to skip between each analysed frame
         verbose : bool, optional
-            Turn on verbosity
+           Turn on more logging and debugging, default ``False``
         """
-        self._verbose = _set_verbose(verbose, quiet, default=False)
-        self._quiet = not self._verbose
-        self._setup_frames(trajectory, start, stop, step)
+        self._trajectory = trajectory
+        self._verbose = verbose
+        # do deprecated kwargs
+        # remove in 1.0
+        deps = []
+        for arg in ['start', 'stop', 'step']:
+            if arg in kwargs and not kwargs[arg] is None:
+                deps.append(arg)
+                setattr(self, arg, kwargs[arg])
+        if deps:
+            warnings.warn('Setting the following kwargs should be '
+                          'done in the run() method: {}'.format(
+                              ', '.join(deps)),
+                          DeprecationWarning)
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
         """
@@ -126,6 +132,11 @@ class AnalysisBase(object):
             number of frames to skip between each analysed frame
         """
         self._trajectory = trajectory
+        # TODO: Remove once start/stop/step are deprecated from init
+        # See if these have been set as class attributes, and use that
+        start = getattr(self, 'start', start)
+        stop = getattr(self, 'stop', stop)
+        step = getattr(self, 'step', step)
         start, stop, step = trajectory.check_slice_indices(start, stop, step)
         self.start = start
         self.stop = stop
@@ -135,21 +146,9 @@ class AnalysisBase(object):
         if interval == 0:
             interval = 1
 
-        # ensure _verbose is set when __init__ wasn't called, this is to not
-        # break pre 0.16.0 API usage of AnalysisBase
-        if not hasattr(self, '_verbose'):
-            if hasattr(self, '_quiet'):
-                # Here, we are in the odd case where a children class defined
-                # self._quiet without going through AnalysisBase.__init__.
-                warnings.warn("The *_quiet* attribute of analyses is "
-                              "deprecated (from 0.16)use *_verbose* instead.",
-                              DeprecationWarning)
-                self._verbose = not self._quiet
-            else:
-                self._verbose = True
-                self._quiet = not self._verbose
+        verbose = getattr(self, '_verbose', False)
         self._pm = ProgressMeter(self.n_frames if self.n_frames else 1,
-                                 interval=interval, verbose=self._verbose)
+                                 interval=interval, verbose=verbose)
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
@@ -160,17 +159,34 @@ class AnalysisBase(object):
 
     def _prepare(self):
         """Set things up before the analysis loop begins"""
-        pass
+        pass # pylint: disable=unnecessary-pass
 
     def _conclude(self):
         """Finalise the results you've gathered.
 
         Called at the end of the run() method to finish everything up.
         """
-        pass
+        pass # pylint: disable=unnecessary-pass
 
-    def run(self):
-        """Perform the calculation"""
+    def run(self, start=None, stop=None, step=None, verbose=None):
+        """Perform the calculation
+
+        Parameters
+        ----------
+        start : int, optional
+            start frame of analysis
+        stop : int, optional
+            stop frame of analysis
+        step : int, optional
+            number of frames to skip between each analysed frame
+        verbose : bool, optional
+            Turn on verbosity
+        """
+        logger.info("Choosing frames to analyze")
+        # if verbose unchanged, use class default
+        verbose = getattr(self, '_verbose', False) if verbose is None else verbose
+
+        self._setup_frames(self._trajectory, start, stop, step)
         logger.info("Starting preparation")
         self._prepare()
         for i, ts in enumerate(
@@ -241,10 +257,15 @@ class AnalysisFromFunction(AnalysisBase):
 
         self.function = function
         self.args = args
-        base_kwargs, self.kwargs = _filter_baseanalysis_kwargs(self.function,
-                                                               kwargs)
 
-        super(AnalysisFromFunction, self).__init__(trajectory, **base_kwargs)
+        # TODO: Remove in 1.0
+        my_kwargs = {}
+        for depped_arg in ['start', 'stop', 'step']:
+            if depped_arg in kwargs:
+                my_kwargs[depped_arg] = kwargs.pop(depped_arg)
+        self.kwargs = kwargs
+
+        super(AnalysisFromFunction, self).__init__(trajectory, **my_kwargs)
 
     def _prepare(self):
         self.results = []
@@ -272,7 +293,7 @@ def analysis_class(function):
     >>> def RotationMatrix(mobile, ref):
     >>>     return mda.analysis.align.rotation_matrix(mobile, ref)[0]
 
-    >>> rot = RotationMatrix(u.trajectory, mobile, ref, step=2).run()
+    >>> rot = RotationMatrix(u.trajectory, mobile, ref).run(step=2)
     >>> print(rot.results)
     """
 

@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -37,76 +38,76 @@ __all__ = ['augment_coordinates', 'undo_augment']
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
-    r"""Calculates the relevant images of particles which are within a
-    distance 'r' from the box walls
+    r"""Calculates the periodic images of particles which are within a distance
+    `r` from the box walls.
 
-    The algorithm works by generating explicit periodic images of
-    interior atoms residing close to any of the six box walls. 
-    The steps involved in generating images involves
-    evaluation of reciprocal vectors for the given box vectors 
-    followed by calculation of projection distance of atom along the 
-    reciprocal vectors. If the distance is less than a
-    specified cutoff distance, relevant periodic images are generated
-    using box translation vectors i.e. ``l[a] + m[b] + n[c]``, where 
-    ``[l, m, n]`` are the neighbouring cell indices relative to the central cell, 
-    and ``[a, b, c]`` are the box vectors. For instance, an atom close to
-    ``XY`` plane containing origin will generate a periodic image
-    outside the central cell and close to the opposite `XY` plane
-    of the box i.e. at ``0[a] + 0[b] + 1[c]``. 
-    Similarly, if the particle is close to more than
-    one box walls, images along the diagonals are also generated ::
+    The algorithm works by generating explicit periodic images of atoms residing
+    close to any of the six box walls. The steps involved in generating images
+    involves the evaluation of reciprocal box vectors followed by the
+    calculation of distances of atoms from the walls by means of projection onto
+    the reciprocal vectors. If the distance is less than a specified cutoff
+    distance, relevant periodic images are generated using box translation
+    vectors :math:`\vec{t}` with
 
+    .. math:: \vec{t}=l\cdot\vec{a}+m\cdot\vec{b}+n\cdot \vec{c}\,,
 
-                           |  x               x
-        +---------------+  |    +---------------+
-        |               |  |    |               |
-        |               |  |    |               |
-        |               |  |    |               |
-        |             o |  |  x |             o |
-        +---------------+  |    +---------------+
-                           |
+    where :math:`l,\,m,\,n \in \{-1,\,0,\,1\}` are the neighboring cell indices
+    in :math:`x`-, :math:`y`-, and :math:`z`-direction relative to the central
+    cell with box vectors :math:`\vec{a},\,\vec{b},\,\vec{c}`.
 
+    For instance, an atom close to the :math:`xy`-plane containing the origin
+    will generate a periodic image outside the central cell and close to the
+    opposite :math:`xy`-plane of the box, i.e., shifted by
+    :math:`\vec{t} = 0\cdot\vec{a}+0\cdot\vec{b}+1\cdot\vec{c}=\vec{c}`.
 
+    Likewise, if the particle is close to more than one box walls, images along
+    the diagonals are also generated::
+
+                                    x            x
+        +------------+                +------------+
+        |            |   augment      |            |
+        |            |   ------->     |            |
+        |          o |              x |          o |
+        +------------+                +------------+
 
     Parameters
     ----------
-    coordinates : array
-      Input coordinate array to generate duplicate images
-      in the vicinity of the central cell. All the coordinates
-      must be within the primary unit cell. (dtype = numpy.float32)
-    box : array
-      Box dimension of shape (6, ). The dimensions must be
-      provided in the same format as returned
+    coordinates : numpy.ndarray
+      Input coordinate array of shape ``(n, 3)`` and dtype ``numpy.float32``
+      used to generate duplicate images in the vicinity of the central cell. All
+      coordinates must be within the primary unit cell.
+    box : numpy.ndarray
+      Box dimensions of shape ``(6,)`` and dtype ``numpy.float32``. The
+      dimensions must be provided in the same format as returned
       by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
-      ``[lx, ly, lz, alpha, beta, gamma]`` (dtype = numpy.float32)
+      ``[lx, ly, lz, alpha, beta, gamma]``
     r : float
-      thickness of cutoff region for duplicate image generation
+      Thickness of cutoff region for duplicate image generation.
 
     Returns
     -------
-    output : array
-      coordinates of duplicate(augmented) particles (dtype = numpy.float32)
-    indices : array
-      original indices of the augmented coordinates (dtype = numpy.int64)
-      A map which translates the indices of augmented particles
-      to their original particle index such that
-      ``indices[augmentedindex] = originalindex``
+    output : numpy.ndarray
+      Coordinates of duplicate (augmented) particles (dtype ``numpy.float32``).
+    indices : numpy.ndarray
+      Original indices of the augmented coordinates (dtype ``numpy.int64``).
+      Maps the indices of augmented particles to their original particle index
+      such that ``indices[augmented_index] = original_index``.
 
     Note
     ----
-    Output doesnot return coordinates from the initial array.
-    To merge the particles with their respective images, following operation
-    needs to be superseded after generating the images:
-    
+    Output does not return coordinates from the initial array.
+    To merge the particles with their respective images, the following operation
+    is necessary when generating the images:
+
     .. code-block:: python
 
-            images, mapping = augment_coordinates(coordinates, box, max_cutoff)
-            all_coords = np.concatenate([coordinates, images])
+        images, mapping = augment_coordinates(coordinates, box, max_cutoff)
+        all_coords = numpy.concatenate([coordinates, images])
 
 
     See Also
     --------
-    MDAnalysis.lib._augment.undo_augment
+    :meth:`undo_augment`
 
 
     .. versionadded:: 0.19.0
@@ -299,35 +300,34 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def undo_augment(np.int64_t[:] results, np.int64_t[:] translation, int nreal):
-    """Translate augmented indices back to original indices
+    """Translate augmented indices back to original indices.
 
     Parameters
     ----------
     results : numpy.ndarray
-      indices of coordinates, including "augmented" indices (dtype = numpy.int64)
+      Array of dtype ``numpy.int64`` containing coordinate indices, including
+      "augmented" indices.
     translation : numpy.ndarray
-      Map to link the augmented indices to the original particle indices
-      such that ``translation[augmentedindex] = originalindex``
-      (dtype = numpy.int64)
+      Index map of dtype ``numpy.int64`` linking the augmented indices to the
+      original particle indices such that
+      ``translation[augmented_index] = original_index``.
     nreal : int
-      number of real coordinates, i.e. values in results equal or larger
-      than this need to be translated to their real counterpart
-
+      Number of real coordinates, i.e., indices in `results` equal or larger
+      than this need to be mapped to their real counterpart.
 
     Returns
     -------
     results : numpy.ndarray
-      modified input results with all the augmented indices
-      translated to their corresponding initial original indices
-      (dtype = numpy.int64)
+      Modified input `results` with all the augmented indices translated to
+      their corresponding initial original indices.
 
     Note
     ----
-    Modifies the results array in place
+    Modifies the results array in place.
 
     See Also
     --------
-    'MDAnalysis.lib._augment.augment_coordinates'
+    :meth:`augment_coordinates`
 
 
     .. versionadded:: 0.19.0

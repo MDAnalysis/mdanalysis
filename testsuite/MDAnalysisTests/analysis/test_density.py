@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -26,6 +27,7 @@ from six.moves import zip
 import numpy as np
 import pytest
 import sys
+import warnings
 
 from numpy.testing import assert_equal, assert_almost_equal
 
@@ -128,12 +130,20 @@ class Test_density_from_Universe(object):
                       {'meandensity': 0.016764271713091212, },
                   'static_sliced':
                       {'meandensity': 0.016764270747693617, },
+                  'static_defined':
+                      {'meandensity': 0.0025000000000000005, },
+                  'static_defined_unequal':
+                      {'meandensity': 0.006125, },
                   'dynamic':
                       {'meandensity': 0.0012063418843728784, },
                   'notwithin':
                       {'meandensity': 0.015535385132107926, },
                   }
     cutoffs = {'notwithin': 4.0, }
+    gridcenters = {'static_defined': np.array([56.0, 45.0, 35.0]),
+                   'error1': np.array([56.0, 45.0]),
+                   'error2': [56.0, 45.0, "MDAnalysis"],
+                   }
     precision = 5
     outfile = 'density.dx'
 
@@ -157,7 +167,6 @@ class Test_density_from_Universe(object):
             D2 = MDAnalysis.analysis.density.Density(self.outfile)
             assert_almost_equal(D.grid, D2.grid, decimal=self.precision,
                                 err_msg="DX export failed: different grid sizes")
-
 
     def test_density_from_Universe(self, universe, tmpdir):
         self.check_density_from_Universe(
@@ -194,6 +203,72 @@ class Test_density_from_Universe(object):
             universe=universe,
             tmpdir=tmpdir
         )
+
+    def test_density_from_Universe_userdefn_eqbox(self, universe, tmpdir):
+        self.check_density_from_Universe(
+            self.selections['static'],
+            self.references['static_defined']['meandensity'],
+            gridcenter=self.gridcenters['static_defined'],
+            xdim=10.0,
+            ydim=10.0,
+            zdim=10.0,
+            universe=universe,
+            tmpdir=tmpdir
+        )
+
+    def test_density_from_Universe_userdefn_neqbox(self, universe, tmpdir):
+        self.check_density_from_Universe(
+            self.selections['static'],
+            self.references['static_defined_unequal']['meandensity'],
+            gridcenter=self.gridcenters['static_defined'],
+            xdim=10.0,
+            ydim=15.0,
+            zdim=20.0,
+            universe=universe,
+            tmpdir=tmpdir
+        )
+
+    def test_density_from_Universe_userdefn_boxshape(self, universe):
+        import MDAnalysis.analysis.density
+        D = MDAnalysis.analysis.density.density_from_Universe(
+            universe, atomselection=self.selections['static'],
+            delta=1.0, xdim=8.0, ydim=12.0, zdim=17.0,
+            gridcenter=self.gridcenters['static_defined'])
+        assert D.grid.shape == (8, 12, 17)
+
+    def test_density_from_Universe_userdefn_selwarning(self, universe):
+        import MDAnalysis.analysis.density
+        wmsg = ("Atom selection does not fit grid --- "
+                "you may want to define a larger box")
+        with pytest.warns(UserWarning) as record:
+            D = MDAnalysis.analysis.density.density_from_Universe(
+                universe, atomselection=self.selections['static'],
+                delta=1.0, xdim=1.0, ydim=2.0, zdim=2.0,
+                gridcenter=self.gridcenters['static_defined'])
+
+        assert len(record) == 2
+        assert str(record[1].message.args[0]) == wmsg
+
+    def test_density_from_Universe_userdefn_ValueErrors(self, universe):
+        import MDAnalysis.analysis.density
+        # Test len(gridcenter) != 3
+        with pytest.raises(ValueError):
+            D = MDAnalysis.analysis.density.density_from_Universe(
+                universe, atomselection=self.selections['static'],
+                delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['error1'])
+        # Test gridcenter includes non-numeric strings
+        with pytest.raises(ValueError):
+            D = MDAnalysis.analysis.density.density_from_Universe(
+                universe, atomselection=self.selections['static'],
+                delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['error2'])
+        # Test xdim != int or float
+        with pytest.raises(ValueError):
+            D = MDAnalysis.analysis.density.density_from_Universe(
+                universe, atomselection=self.selections['static'],
+                delta=self.delta, xdim="MDAnalysis", ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['static_defined'])
 
 
 class TestGridImport(object):

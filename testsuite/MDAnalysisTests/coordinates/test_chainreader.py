@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -49,6 +50,14 @@ class TestChainReader(object):
         return mda.Universe(PSF,
                             [DCD, CRD, DCD, CRD, DCD, CRD, CRD],
                             transformations=[translate([10,10,10])])
+                            
+    def test_regular_repr(self):
+        u = mda.Universe(PSF, [DCD, CRD, DCD])
+        assert_equal("<ChainReader containing adk_dims.dcd, adk_open.crd, adk_dims.dcd with 197 frames of 3341 atoms>", u.trajectory.__repr__())
+        
+                                
+    def test_truncated_repr(self, universe):
+        assert_equal("<ChainReader containing adk_dims.dcd and 6 more with 298 frames of 3341 atoms>", universe.trajectory.__repr__())
 
     def test_next_trajectory(self, universe):
         universe.trajectory.rewind()

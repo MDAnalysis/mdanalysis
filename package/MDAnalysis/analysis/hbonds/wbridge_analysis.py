@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -292,7 +293,7 @@ import numpy as np
 
 from .hbond_analysis import HydrogenBondAnalysis
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
-from MDAnalysis.lib.log import ProgressMeter, _set_verbose
+from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib import distances
 from MDAnalysis import SelectionWarning
 
@@ -319,8 +320,7 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                  update_selection2=False, update_water_selection=True,
                  filter_first=True, distance_type='hydrogen', distance=3.0,
                  angle=120.0, forcefield='CHARMM27', donors=None,
-                 acceptors=None, start=None, stop=None, step=None, debug=None,
-                 verbose=None):
+                 acceptors=None, debug=None, verbose=False, **kwargs):
         """Set up the calculation of water bridges between two selections in a
         universe.
 
@@ -406,16 +406,6 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
             Extra H acceptor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a
             sequence.
-        start : int (optional)
-            starting frame-index for analysis, ``None`` is the first one, 0.
-            `start` and `stop` are 0-based frame indices and are used to slice
-            the trajectory (if supported) [``None``]
-        stop : int (optional)
-            last trajectory frame for analysis, ``None`` is the last one
-            [``None``]
-        step : int (optional)
-            read every `step` between `start` (included) and `stop` (excluded),
-            ``None`` selects 1. [``None``]
         distance_type : {"hydrogen", "heavy"} (optional)
             Measure hydrogen bond lengths between donor and acceptor heavy
             attoms ("heavy") or between donor hydrogen and acceptor heavy
@@ -451,7 +441,7 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
             update_selection2=update_selection2, filter_first=filter_first,
             distance_type=distance_type, distance=distance, angle=angle,
             forcefield=forcefield, donors=donors, acceptors=acceptors,
-            start=start, stop=stop, step=step, debug=debug, verbose=verbose)
+            debug=debug, verbose=verbose, **kwargs)
         self._update_water_selection()
 
     def _log_parameters(self):
@@ -547,7 +537,7 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                 'name {0}'.format(' '.join(self.acceptors)))
             self.logger_debug("Water acceptors: {0}".format(len(self._water_acceptors)))
 
-    def run(self, **kwargs):
+    def run(self, start=None, stop=None, step=None, verbose=None, debug=None):
         """Analyze trajectory and produce timeseries.
 
         Stores the water bridge data per frame as
@@ -556,6 +546,16 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
 
         Parameters
         ----------
+        start : int (optional)
+            starting frame-index for analysis, ``None`` is the first one, 0.
+            `start` and `stop` are 0-based frame indices and are used to slice
+            the trajectory (if supported) [``None``]
+        stop : int (optional)
+            last trajectory frame for analysis, ``None`` is the last one
+            [``None``]
+        step : int (optional)
+            read every `step` between `start` (included) and `stop` (excluded),
+            ``None`` selects 1. [``None``]
         verbose : bool (optional)
              toggle progress meter output
              :class:`~MDAnalysis.lib.log.ProgressMeter` [``True``]
@@ -571,12 +571,13 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
         :meth:`WaterBridgeAnalysis.generate_table` :
                processing the data into a different format.
         """
+        self._setup_frames(self.u.trajectory, start, stop, step)
+
         logger.info("WBridge analysis: starting")
         logger.debug("WBridge analysis: donors    %r", self.donors)
         logger.debug("WBridge analysis: acceptors %r", self.acceptors)
         logger.debug("WBridge analysis: water bridge %r", self.water_selection)
 
-        debug = kwargs.pop('debug', None)
         if debug is not None and debug != self.debug:
             self.debug = debug
             logger.debug("Toggling debug to %r", self.debug)
@@ -587,26 +588,16 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
         self.timesteps = []
         self._water_network = []
 
-        logger.info("checking trajectory...")  # n_frames can take a while!
-        try:
-            frames = np.arange(self.u.trajectory.n_frames)[self.traj_slice]
-        except:
-            logger.error("Problem reading trajectory or trajectory slice incompatible.")
-            logger.exception()
-            raise
-        verbose = _set_verbose(verbose=kwargs.get('verbose', None),
-                               quiet=kwargs.get('quiet', None),
-                               default=True)
-        pm = ProgressMeter(len(frames),
+        if verbose is None:
+            verbose = self._verbose
+        pm = ProgressMeter(self.n_frames,
                            format="WBridge frame {current_step:5d}: {step:5d}/{numsteps} [{percentage:5.1f}%]\r",
                            verbose=verbose)
 
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
-                    (self.traj_slice.start or 0),
-                    (self.traj_slice.stop or self.u.trajectory.n_frames),
-                    self.traj_slice.step or 1)
+                    self.start, self.stop, self.step)
 
-        for progress, ts in enumerate(self.u.trajectory[self.traj_slice]):
+        for progress, ts in enumerate(self.u.trajectory[self.start:self.stop:self.step]):
             # all bonds for this timestep
 
             # dict of tuples (atom.index, atom.index) for quick check if
@@ -636,11 +627,12 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = distances.calc_distance(donor_atom.position,
-                                                           a.position)
+                            dist = distances.calc_bonds(donor_atom.position,
+                                                        a.position)
                             if dist <= self.distance:
-                                angle = distances.calc_angle(d.position, h.position,
+                                angle = distances.calc_angles(d.position, h.position,
                                                              a.position)
+                                angle = np.rad2deg(angle)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "S1-D: {0!s} <-> W-A: {1!s} {2:f} A, {3:f} DEG"\
@@ -662,11 +654,12 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = distances.calc_distance(donor_atom.position,
-                                                           a.position)
+                            dist = distances.calc_bonds(donor_atom.position,
+                                                        a.position)
                             if dist <= self.distance:
-                                angle = distances.calc_angle(d.position, h.position,
+                                angle = distances.calc_angles(d.position, h.position,
                                                              a.position)
+                                angle = np.rad2deg(angle)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "S1-A: {0!s} <-> W-D: {1!s} {2:f} A, {3:f} DEG"\
@@ -712,11 +705,12 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy'  else d
-                            dist = distances.calc_distance(donor_atom.position,
-                                                           a.position)
+                            dist = distances.calc_bonds(donor_atom.position,
+                                                        a.position)
                             if dist <= self.distance:
-                                angle = distances.calc_angle(d.position, h.position,
+                                angle = distances.calc_angles(d.position, h.position,
                                                              a.position)
+                                angle = np.rad2deg(angle)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "WB-D: {0!s} <-> S2-A: {1!s} {2:f} A, {3:f} DEG"\
@@ -736,11 +730,12 @@ class WaterBridgeAnalysis(HydrogenBondAnalysis):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             donor_atom = h if self.distance_type != 'heavy' else d
-                            dist = distances.calc_distance(donor_atom.position,
-                                                           a.position)
+                            dist = distances.calc_bonds(donor_atom.position,
+                                                        a.position)
                             if dist <= self.distance:
-                                angle = distances.calc_angle(d.position, h.position,
+                                angle = distances.calc_angles(d.position, h.position,
                                                              a.position)
+                                angle = np.rad2deg(angle)
                                 if angle >= self.angle:
                                     self.logger_debug(
                                         "WB-A: {0!s} <-> S2-D: {1!s} {2:f} A, {3:f} DEG"\

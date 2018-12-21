@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -25,7 +26,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib._cutil import unique_int_1d
+from MDAnalysis.lib._cutil import unique_int_1d, find_fragments
 
 
 @pytest.mark.parametrize('values', (
@@ -39,3 +40,23 @@ from MDAnalysis.lib._cutil import unique_int_1d
 def test_unique_int_1d(values):
     array = np.array(values, dtype=np.int64)
     assert_equal(unique_int_1d(array), np.unique(array))
+
+
+@pytest.mark.parametrize('edges,ref', [
+    ([[0, 1], [1, 2], [2, 3], [3, 4]],
+     [[0, 1, 2, 3, 4]]),  # linear chain
+    ([[0, 1], [1, 2], [2, 3], [3, 4], [4, 10]],
+     [[0, 1, 2, 3, 4]]),  # unused edge (4, 10)
+    ([[0, 1], [1, 2], [2, 3]],
+     [[0, 1, 2, 3], [4]]),  # lone atom
+    ([[0, 1], [1, 2], [2, 0], [3, 4], [4, 3]],
+     [[0, 1, 2], [3, 4]]),  # circular
+])
+def test_find_fragments(edges, ref):
+    atoms = np.arange(5)
+
+    fragments = find_fragments(atoms, edges)
+
+    assert len(fragments) == len(ref)
+    for frag, r in zip(fragments, ref):
+        assert_equal(frag, r)

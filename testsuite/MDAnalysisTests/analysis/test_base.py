@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -72,19 +73,19 @@ def test_default(u):
 
 
 def test_start(u):
-    an = FrameAnalysis(u.trajectory, start=20).run()
+    an = FrameAnalysis(u.trajectory).run(start=20)
     assert an.n_frames == len(u.trajectory) - 20
     assert_equal(an.frames, list(range(20, len(u.trajectory))))
 
 
 def test_stop(u):
-    an = FrameAnalysis(u.trajectory, stop=20).run()
+    an = FrameAnalysis(u.trajectory).run(stop=20)
     assert an.n_frames == 20
     assert_equal(an.frames, list(range(20)))
 
 
 def test_step(u):
-    an = FrameAnalysis(u.trajectory, step=20).run()
+    an = FrameAnalysis(u.trajectory).run(step=20)
     assert an.n_frames == 5
     assert_equal(an.frames, list(range(98))[::20])
 
@@ -92,7 +93,6 @@ def test_step(u):
 def test_verbose(u):
     a = FrameAnalysis(u.trajectory, verbose=True)
     assert a._verbose
-    assert not a._quiet
 
 
 def test_incomplete_defined_analysis(u):
@@ -104,18 +104,8 @@ def test_old_api(u):
     OldAPIAnalysis(u.trajectory).run()
 
 
-def test_start_stop_step_conversion(u):
-    an = FrameAnalysis(u.trajectory)
-    assert an.start == 0
-    assert an.stop == u.trajectory.n_frames
-    assert an.step == 1
-
-
-def test_filter_baseanalysis_kwargs():
-    def bad_f(mobile, step=2):
-        pass
-
-    def good_f(mobile, ref):
+def test_filter_baseanalysis_kwargs_VE():
+    def bad_f(mobile, verbose=2):
         pass
 
     kwargs = {'step': 3, 'foo': None}
@@ -123,17 +113,20 @@ def test_filter_baseanalysis_kwargs():
     with pytest.raises(ValueError):
         base._filter_baseanalysis_kwargs(bad_f, kwargs)
 
+
+def test_filter_baseanalysis_kwargs():
+    def good_f(mobile, ref):
+        pass
+
+    kwargs = {'step': 3, 'foo': None}
+
     base_kwargs, kwargs = base._filter_baseanalysis_kwargs(good_f, kwargs)
 
-    assert 1 == len(kwargs)
+    assert 2 == len(kwargs)
     assert kwargs['foo'] == None
 
-    assert 5 == len(base_kwargs)
-    assert base_kwargs['start'] is None
-    assert base_kwargs['step'] == 3
-    assert base_kwargs['stop'] is None
-    assert base_kwargs['quiet'] is None
-    assert base_kwargs['verbose'] is None
+    assert len(base_kwargs) == 1
+    assert base_kwargs['verbose'] is False
 
 
 def simple_function(mobile):
@@ -144,10 +137,10 @@ def test_AnalysisFromFunction():
     u = mda.Universe(PSF, DCD)
     step = 2
     ana1 = base.AnalysisFromFunction(
-        simple_function, mobile=u.atoms, step=step).run()
-    ana2 = base.AnalysisFromFunction(simple_function, u.atoms, step=step).run()
+        simple_function, mobile=u.atoms).run(step=step)
+    ana2 = base.AnalysisFromFunction(simple_function, u.atoms).run(step=step)
     ana3 = base.AnalysisFromFunction(
-        simple_function, u.trajectory, u.atoms, step=step).run()
+        simple_function, u.trajectory, u.atoms).run(step=step)
 
     results = []
     for ts in u.trajectory[::step]:
@@ -165,7 +158,7 @@ def test_analysis_class():
 
     u = mda.Universe(PSF, DCD)
     step = 2
-    ana = ana_class(u.atoms, step=step).run()
+    ana = ana_class(u.atoms).run(step=step)
 
     results = []
     for ts in u.trajectory[::step]:
@@ -190,3 +183,16 @@ def test_analysis_class_decorator():
 
     with no_deprecated_call():
         d = Distances(u.atoms[:10], u.atoms[10:20]).run()
+
+@pytest.mark.parametrize('param', ['start', 'stop', 'step'])
+def test_runargs_deprecation(param):
+    u = mda.Universe(PSF, DCD)
+
+    class NothingAnalysis(base.AnalysisBase):
+        def _single_frame(self):
+            self.results = []
+
+    with pytest.warns(DeprecationWarning):
+        ana = NothingAnalysis(u.trajectory, **{param: 10})
+
+    ana.run()

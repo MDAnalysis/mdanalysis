@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -49,7 +50,7 @@ import warnings
 import numpy as np
 from numpy.lib.utils import deprecate
 
-from MDAnalysis.lib.pkdtree import PeriodicKDTree
+
 from MDAnalysis.lib.util import unique_int_1d
 from MDAnalysis.core import flags
 from ..lib import distances
@@ -226,23 +227,7 @@ class ByResSelection(UnarySelection):
 
 
 class DistanceSelection(Selection):
-    """Base class for distance search based selections
-
-    Grabs the flags for this selection
-     - 'use_KDTree_routines'
-     - 'use_periodic_selections'
-
-    Populates the `apply` method with either
-     - _apply_KDTree
-     - _apply_distmat
-    """
-    def __init__(self):
-        if flags['use_KDTree_routines'] in (True, 'fast', 'always'):
-            self.apply = self._apply_KDTree
-        else:
-            self.apply = self._apply_distmat
-
-        self.periodic = flags['use_periodic_selections']
+    """Base class for distance search based selections"""
 
     def validate_dimensions(self, dimensions):
         r"""Check if the system is periodic in all three-dimensions.
@@ -267,86 +252,52 @@ class AroundSelection(DistanceSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(AroundSelection, self).__init__()
+        self.periodic = parser.periodic
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
-    def _apply_KDTree(self, group):
-        """KDTree based selection is about 7x faster than distmat
-        for typical problems.
-        """
+    def apply(self, group):
+        indices = []
         sel = self.sel.apply(group)
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
 
-        if not sys:
+        if not sys or not sel:
             return sys[[]]
 
         box = self.validate_dimensions(group.dimensions)
+        pairs = distances.capped_distance(sel.positions, sys.positions,
+                                          self.cutoff, box=box,
+                                          return_distances=False)
+        if pairs.size > 0:
+            indices = np.sort(pairs[:, 1])
 
-        cut = self.cutoff if box is not None else None
-        kdtree = PeriodicKDTree(box=box, leafsize=10)
-        kdtree.set_coords(sys.positions, cutoff=cut)
-        kdtree.search(sel.positions, self.cutoff)
-        unique_idx = np.asarray(kdtree.get_indices())
-
-        return sys[unique_idx.astype(np.int32)].unique
-
-    def _apply_distmat(self, group):
-        sel = self.sel.apply(group)
-        sys = group[~np.in1d(group.indices, sel.indices)]
-
-        box = self.validate_dimensions(group.dimensions)
-        dist = distances.distance_array(
-            sys.positions, sel.positions, box)
-
-        mask = (dist <= self.cutoff).any(axis=1)
-
-        return sys[mask].unique
-
+        return sys[np.asarray(indices, dtype=np.int64)].unique
 
 class SphericalLayerSelection(DistanceSelection):
     token = 'sphlayer'
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(SphericalLayerSelection, self).__init__()
+        self.periodic = parser.periodic
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
-
-    def _apply_KDTree(self, group):
-        """Selection using KDTree and PeriodicKDTree for aperiodic and
-        fully-periodic systems, respectively.
-        """
+    
+    def apply(self, group):
+        indices = []
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
-        ref = sel.center_of_geometry(pbc=periodic)
-        kdtree = PeriodicKDTree(box=box)
+        ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
+        pairs = distances.capped_distance(ref, group.positions, self.exRadius,
+                                          min_cutoff=self.inRadius,
+                                          box=box,
+                                          return_distances=False)
+        if pairs.size > 0:
+            indices = np.sort(pairs[:, 1])
 
-        cutoff = self.exRadius if box is not None else None
-        kdtree.set_coords(group.positions, cutoff=cutoff)
-        kdtree.search(ref, self.exRadius)
-        found_ExtIndices = kdtree.get_indices()
-        kdtree.search(ref, self.inRadius)
-        found_IntIndices = kdtree.get_indices()
-        found_indices = list(set(found_ExtIndices) - set(found_IntIndices))
-        return group[found_indices].unique
-
-    def _apply_distmat(self, group):
-        sel = self.sel.apply(group)
-        box = self.validate_dimensions(group.dimensions)
-        periodic = box is not None
-        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).astype(
-            np.float32)
-        d = distances.distance_array(ref,
-                                     group.positions,
-                                     box=box)[0]
-        mask = d < self.exRadius
-        mask &= d > self.inRadius
-
-        return group[mask].unique
+        return group[np.asarray(indices, dtype=np.int64)].unique
 
 
 class SphericalZoneSelection(DistanceSelection):
@@ -354,43 +305,26 @@ class SphericalZoneSelection(DistanceSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(SphericalZoneSelection, self).__init__()
+        self.periodic = parser.periodic
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
-    def _apply_KDTree(self, group):
-        """Selection using KDTree and PeriodicKDTree for aperiodic and
-        fully-periodic systems, respectively.
-        """
+    def apply(self, group):
+        indices = []
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
-        ref = sel.center_of_geometry(pbc=periodic)
+        ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
+        pairs = distances.capped_distance(ref, group.positions, self.cutoff,
+                                          box=box,
+                                          return_distances=False)
+        if pairs.size > 0:
+            indices = np.sort(pairs[:, 1])
 
-        cut = self.cutoff if box is not None else None
-        kdtree = PeriodicKDTree(box=box)
-        kdtree.set_coords(group.positions, cutoff=cut)
-        kdtree.search(ref, self.cutoff)
-        found_indices = kdtree.get_indices()
-        return group[found_indices].unique
-
-    def _apply_distmat(self, group):
-        sel = self.sel.apply(group)
-        box = self.validate_dimensions(group.dimensions)
-        periodic = box is not None
-        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).\
-            astype(np.float32)
-        d = distances.distance_array(ref,
-                                     group.positions,
-                                     box=box)[0]
-        idx = d < self.cutoff
-        return group[idx].unique
+        return group[np.asarray(indices, dtype=np.int64)].unique
 
 
 class CylindricalSelection(Selection):
-    def __init__(self):
-        self.periodic = flags['use_periodic_selections']
-
     def apply(self, group):
         sel = self.sel.apply(group)
 
@@ -453,7 +387,7 @@ class CylindricalZoneSelection(CylindricalSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(CylindricalZoneSelection, self).__init__()
+        self.periodic = parser.periodic
         self.exRadius = float(tokens.popleft())
         self.zmax = float(tokens.popleft())
         self.zmin = float(tokens.popleft())
@@ -465,7 +399,7 @@ class CylindricalLayerSelection(CylindricalSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
-        super(CylindricalLayerSelection, self).__init__()
+        self.periodic = parser.periodic
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
         self.zmax = float(tokens.popleft())
@@ -477,32 +411,23 @@ class PointSelection(DistanceSelection):
     token = 'point'
 
     def __init__(self, parser, tokens):
-        super(PointSelection, self).__init__()
+        self.periodic = parser.periodic
         x = float(tokens.popleft())
         y = float(tokens.popleft())
         z = float(tokens.popleft())
         self.ref = np.array([x, y, z], dtype=np.float32)
         self.cutoff = float(tokens.popleft())
 
-    def _apply_KDTree(self, group):
+    def apply(self, group):
+        indices = []
         box = self.validate_dimensions(group.dimensions)
-        kdtree = PeriodicKDTree(box=box)
-        cut = self.cutoff if box is not None else None
-        kdtree.set_coords(group.positions, cutoff=cut)
-        kdtree.search(self.ref, self.cutoff)
-        found_indices = kdtree.get_indices()
+        pairs = distances.capped_distance(self.ref[None, :], group.positions, self.cutoff,
+                                          box=box,
+                                          return_distances=False)
+        if pairs.size > 0:
+            indices = np.sort(pairs[:, 1])
 
-        return group[found_indices].unique
-
-    def _apply_distmat(self, group):
-        ref_coor = self.ref[np.newaxis, ...]
-
-        ref_coor = np.asarray(ref_coor, dtype=np.float32)
-        box = self.validate_dimensions(group.dimensions)
-
-        dist = distances.distance_array(group.positions, ref_coor, box)
-        mask = (dist <= self.cutoff).any(axis=1)
-        return group[mask].unique
+        return group[np.asarray(indices, dtype=np.int64)].unique
 
 
 class AtomSelection(Selection):
@@ -1192,7 +1117,7 @@ class SelectionParser(object):
                 "Unexpected token: '{0}' Expected: '{1}'"
                 "".format(self.tokens[0], token))
 
-    def parse(self, selectstr, selgroups):
+    def parse(self, selectstr, selgroups, periodic=None):
         """Create a Selection object from a string.
 
         Parameters
@@ -1201,6 +1126,9 @@ class SelectionParser(object):
             The string that describes the selection
         selgroups : AtomGroups
             AtomGroups to be used in `group` selections
+        periodic : bool, optional
+            for distance based selections, whether to consider
+            periodic boundary conditions
 
         Returns
         -------
@@ -1212,6 +1140,8 @@ class SelectionParser(object):
         SelectionError
             If anything goes wrong in creating the Selection object.
         """
+        self.periodic = periodic
+
         self.selectstr = selectstr
         self.selgroups = selgroups
         tokens = selectstr.replace('(', ' ( ').replace(')', ' ) ')

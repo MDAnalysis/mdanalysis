@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -51,7 +52,7 @@ class TestContactMatrix(object):
     @staticmethod
     @pytest.fixture()
     def box():
-        return np.array([10, 10, 10], dtype=np.float32)
+        return np.array([10, 10, 10, 90, 90, 90], dtype=np.float32)
     
     @staticmethod
     @pytest.fixture()

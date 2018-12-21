@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -81,16 +82,24 @@ def test_transform_different_atoms(pca, u):
 def test_transform_rerun(u):
     atoms = u.select_atoms('bynum 1-10')
     u.transfer_to_memory()
-    pca = PCA(u, select='bynum 1-10', stop=5)
+    pca = PCA(u, select='bynum 1-10').run(stop=5)
     dot = pca.transform(atoms)
     assert_equal(dot.shape, (98, atoms.n_atoms * 3))
+
+
+def test_pca_not_run(u):
+    atoms = u.select_atoms('bynum 1-10')
+    u.transfer_to_memory()
+    pca = PCA(u, select='bynum 1-10')
+    with pytest.raises(ValueError):
+        dot = pca.transform(atoms, stop=5)
 
 
 def test_no_frames(u):
     atoms = u.select_atoms(SELECTION)
     u.transfer_to_memory()
     with pytest.raises(ValueError):
-        PCA(u, select=SELECTION, stop=1).run()
+        PCA(u, select=SELECTION).run(stop=1)
 
 
 def test_transform(pca, u):

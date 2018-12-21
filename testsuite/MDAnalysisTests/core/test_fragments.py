@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -28,11 +29,13 @@ from numpy.testing import (
 )
 import pytest
 
+import MDAnalysis as mda
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.core import groups
 from MDAnalysis import NoDataError
 
 from MDAnalysisTests import make_Universe
+from MDAnalysisTests.datafiles import TPR, XTC
 
 
 # Also used in topology/test_guessers
@@ -175,3 +178,9 @@ class TestFragments(object):
         u = make_Universe()
         with pytest.raises(NoDataError):
             getattr(u.atoms[10], 'fragment')
+
+
+def test_tpr_fragments():
+    frags = mda.Universe(TPR, XTC).atoms.fragments
+
+    assert len(frags[0]) == 3341

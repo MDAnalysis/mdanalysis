@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -22,7 +23,7 @@
 from __future__ import absolute_import
 
 import pytest
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_equal
 
 
 def test_import():
@@ -37,7 +38,7 @@ def test_all_exports():
     missing = [name for name in dir(MDAnalysisTests.datafiles)
                if
                not name.startswith('_') and name not in MDAnalysisTests.datafiles.__all__ and name != 'absolute_import']
-    assert_array_equal(missing, [], err_msg="Variables need to be added to __all__.")
+    assert_equal(missing, [], err_msg="Variables need to be added to __all__.")
 
 
 def test_export_variables():
@@ -45,4 +46,4 @@ def test_export_variables():
     import MDAnalysis.tests.datafiles
     missing = [name for name in MDAnalysisTests.datafiles.__all__
                if name not in dir(MDAnalysis.tests.datafiles)]
-    assert_array_equal(missing, [], err_msg="Variables not exported to MDAnalysis.tests.datafiles")
+    assert_equal(missing, [], err_msg="Variables not exported to MDAnalysis.tests.datafiles")

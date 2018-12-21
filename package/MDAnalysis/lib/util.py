@@ -14,12 +14,12 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
 """
 Helper functions --- :mod:`MDAnalysis.lib.util`
 ====================================================
@@ -39,6 +39,9 @@ Files and directories
 .. autofunction:: greedy_splitext
 .. autofunction:: which
 .. autofunction:: realpath
+.. autofunction:: get_ext
+.. autofunction:: check_compressed_format
+.. autofunction:: format_from_filename_extension
 .. autofunction:: guess_format
 
 Streams
@@ -109,7 +112,13 @@ Containers and lists
 .. autofunction:: asiterable
 .. autofunction:: hasmethod
 .. autoclass:: Namespace
-.. autofunction:: unique_int_1d
+
+Arrays
+------
+
+.. autofunction:: unique_int_1d(values)
+.. autofunction:: unique_rows
+.. autofunction:: blocks_of
 
 File parsing
 ------------
@@ -118,12 +127,13 @@ File parsing
    :members:
 .. autodata:: FORTRAN_format_regex
 
-
 Data manipulation and handling
 ------------------------------
 
 .. autofunction:: fixedwidth_bins
 .. autofunction:: get_weights
+.. autofunction:: ltruncate_int
+.. autofunction:: flatten_dict
 
 Strings
 -------
@@ -132,12 +142,17 @@ Strings
 .. autofunction:: parse_residue
 .. autofunction:: conv_float
 
-
 Class decorators
 ----------------
 
 .. autofunction:: cached
 
+Function decorators
+-------------------
+
+.. autofunction:: static_variables
+.. autofunction:: warn_if_not_unique
+.. autofunction:: check_coords
 
 Code management
 ---------------
@@ -145,6 +160,11 @@ Code management
 .. autofunction:: deprecate
 .. autoclass:: _Deprecate
 .. autofunction:: dedent_docstring
+
+Data format checks
+------------------
+
+.. autofunction:: check_box
 
 .. Rubric:: Footnotes
 
@@ -158,8 +178,6 @@ Code management
    order to make :meth:`NamedStream.close` actually close the
    underlying stream and ``NamedStream.close(force=True)`` will also
    close it.
-
-
 """
 from __future__ import division, absolute_import
 import six
@@ -190,7 +208,7 @@ from numpy.testing import assert_equal
 import inspect
 
 from ..exceptions import StreamWarning, DuplicateWarning
-from ._cutil import *
+from ._cutil import unique_int_1d
 
 
 # Python 3.0, 3.1 do not have the builtin callable()
@@ -1523,25 +1541,28 @@ def cached(key):
 
 
 def unique_rows(arr, return_index=False):
-    """Return the unique rows from an array
+    """Return the unique rows of an array.
 
     Arguments
     ---------
-    arr : np.array of shape (n1, m)
+    arr : numpy.ndarray
+        Array of shape ``(n1, m)``.
     return_index : bool, optional
       If ``True``, returns indices of array that formed answer (see
       :func:`numpy.unique`)
 
     Returns
     -------
-    unique_rows : numpy.array
-         shape (n2, m)
-    r_idx : numpy.array (optional)
-          index (if `return_index` was ``True``)
+    unique_rows : numpy.ndarray
+         Array of shape ``(n2, m)`` containing only the unique rows of `arr`.
+    r_idx : numpy.ndarray (optional)
+          Array containing the corresponding row indices (if `return_index`
+          is ``True``).
 
     Examples
     --------
     Remove dupicate rows from an array:
+    
     >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
     >>> b = unique_rows(a)
     >>> b
@@ -1576,28 +1597,29 @@ def unique_rows(arr, return_index=False):
 
 
 def blocks_of(a, n, m):
-    """Extract a view of (n, m) blocks along the diagonal of the array `a`
+    """Extract a view of ``(n, m)`` blocks along the diagonal of the array `a`.
 
     Parameters
     ----------
-    a : array_like
-        starting array
+    a : numpy.ndarray
+        Input array, must be C contiguous and at least 2D.
     n : int
-        size of block in first dimension
+        Size of block in first dimension.
     m : int
-        size of block in second dimension
+        Size of block in second dimension.
 
     Returns
     -------
-    (nblocks, n, m) : tuple
-          view of the original array, where nblocks is the number of times the
-          miniblock fits in the original.
+    view : numpy.ndarray
+        A view of the original array with shape ``(nblocks, n, m)``, where
+        ``nblocks`` is the number of times the miniblocks of shape ``(n, m)``
+        fit in the original.
 
     Raises
     ------
     ValueError
         If the supplied `n` and `m` don't divide `a` into an integer number
-        of blocks.
+        of blocks or if `a` is not C contiguous.
 
     Examples
     --------
@@ -1612,9 +1634,11 @@ def blocks_of(a, n, m):
 
     Notes
     -----
-    n, m must divide a into an identical integer number of blocks.
+    `n`, `m` must divide `a` into an identical integer number of blocks. Please
+    note that if the block size is larger than the input array, this number will
+    be zero, resulting in an empty view!
 
-    Uses strides so probably requires that the array is C contiguous.
+    Uses strides and therefore requires that the array is C contiguous.
 
     Returns a view, so editing this modifies the original array.
 
@@ -1625,6 +1649,8 @@ def blocks_of(a, n, m):
     # based on:
     # http://stackoverflow.com/a/10862636
     # but generalised to handle non square blocks.
+    if not a.flags['C_CONTIGUOUS']:
+        raise ValueError("Input array is not C contiguous.")
 
     nblocks = a.shape[0] // n
     nblocks2 = a.shape[1] // m
@@ -1735,11 +1761,11 @@ def static_variables(**kwargs):
     Example
     -------
 
-    >>> @static(msg='foo calls', calls=0)
-    >>> def foo():
-    >>>     foo.calls += 1
-    >>>     print("{}: {}".format(foo.msg, foo.calls))
-    >>>
+    >>> @static_variables(msg='foo calls', calls=0)
+    ... def foo():
+    ...     foo.calls += 1
+    ...     print("{}: {}".format(foo.msg, foo.calls))
+    ...
     >>> foo()
     foo calls: 1
     >>> foo()
@@ -1747,7 +1773,7 @@ def static_variables(**kwargs):
 
 
     .. note:: Based on https://stackoverflow.com/a/279586
-        by user `Claudiu<https://stackoverflow.com/users/15055/claudiu>`
+        by `Claudiu <https://stackoverflow.com/users/15055/claudiu>`_
 
     .. versionadded:: 0.19.0
     """
@@ -1773,11 +1799,20 @@ def static_variables(**kwargs):
 
 @static_variables(warned=False)
 def warn_if_not_unique(groupmethod):
-    """Decorator triggering a :class:`DuplicateWarning` if the underlying group
-    is not unique.
+    """Decorator triggering a :class:`~MDAnalysis.exceptions.DuplicateWarning`
+    if the underlying group is not unique.
 
-    Assures that during execution of the decorated method, only the first of
+    Assures that during execution of the decorated method only the first of
     potentially multiple warnings concerning the uniqueness of groups is shown.
+
+    Raises
+    ------
+    :class:`~MDAnalysis.exceptions.DuplicateWarning`
+        If the :class:`~MDAnalysis.core.groups.AtomGroup`,
+        :class:`~MDAnalysis.core.groups.ResidueGroup`, or
+        :class:`~MDAnalysis.core.groups.SegmentGroup` of which the decorated
+        method is a member contains duplicates.
+
 
     .. versionadded:: 0.19.0
     """
@@ -1815,6 +1850,199 @@ def warn_if_not_unique(groupmethod):
             warn_if_not_unique.warned = False
         return result
     return wrapper
+
+
+def check_coords(*coord_names, **options):
+    """Decorator for automated coordinate array checking.
+
+    This decorator is intended for use especially in
+    :mod:`MDAnalysis.lib.distances`.
+    It takes an arbitrary number of positional arguments which must correspond
+    to names of positional arguments of the decorated function.
+    It then checks if the corresponding values are valid coordinate arrays.
+    If all these arrays are single coordinates (i.e., their shape is ``(3,)``),
+    the decorated function can optionally return a single coordinate (or angle)
+    instead of an array of coordinates (or angles). This can be used to enable
+    computations of single observables using functions originally designed to
+    accept only 2-d coordinate arrays.
+
+    The checks performed on each individual coordinate array are:
+
+    * Check that coordinate arrays are of type :class:`numpy.ndarray`.
+    * Check that coordinate arrays have a shape of ``(n, 3)`` (or ``(3,)`` if
+      single coordinates are allowed; see keyword argument `allow_single`).
+    * Automatic dtype conversion to ``numpy.float32``.
+    * Optional replacement by a copy; see keyword argument `enforce_copy` .
+    * If coordinate arrays aren't C-contiguous, they will be automatically
+      replaced by a C-contiguous copy.
+    * Optional check for equal length of all coordinate arrays; see optional
+      keyword argument `check_lengths_match`.
+
+    Parameters
+    ----------
+    *coord_names : tuple
+        Arbitrary number of strings corresponding to names of positional
+        arguments of the decorated function.
+    **options : dict, optional
+        * **enforce_copy** (:class:`bool`, optional) -- Enforce working on a
+          copy of the coordinate arrays. This is useful to ensure that the input
+          arrays are left unchanged. Default: ``True``
+        * **allow_single** (:class:`bool`, optional) -- Allow the input
+          coordinate array to be a single coordinate with shape ``(3,)``.
+        * **convert_single** (:class:`bool`, optional) -- If ``True``, single
+          coordinate arrays will be converted to have a shape of ``(1, 3)``.
+          Only has an effect if `allow_single` is ``True``. Default: ``True``
+        * **reduce_result_if_single** (:class:`bool`, optional) -- If ``True``
+          and *all* input coordinates are single, a decorated function ``func``
+          will return ``func()[0]`` instead of ``func()``. Only has an effect if
+          `allow_single` is ``True``. Default: ``True``
+        * **check_lengths_match** (:class:`bool`, optional) -- If ``True``, a
+          :class:`ValueError` is raised if not all coordinate arrays contain the
+          same number of coordinates. Default: ``True``
+
+    Raises
+    ------
+    ValueError
+        If the decorator is used without positional arguments (for development
+        purposes only).
+
+        If any of the positional arguments supplied to the decorator doesn't
+        correspond to a name of any of the decorated function's positional
+        arguments.
+
+        If any of the coordinate arrays has a wrong shape.
+    TypeError
+        If any of the coordinate arrays is not a :class:`numpy.ndarray`.
+
+        If the dtype of any of the coordinate arrays is not convertible to
+          ``numpy.float32``.
+
+    Example
+    -------
+
+    >>> @check_coords('coords1', 'coords2')
+    ... def coordsum(coords1, coords2):
+    ...     assert coords1.dtype == np.float32
+    ...     assert coords2.flags['C_CONTIGUOUS']
+    ...     return coords1 + coords2
+    ...
+    >>> # automatic dtype conversion:
+    >>> coordsum(np.zeros(3, dtype=np.int64), np.ones(3))
+    array([1., 1., 1.], dtype=float32)
+    >>>
+    >>> # automatic handling of non-contiguous arrays:
+    >>> coordsum(np.zeros(3), np.ones(6)[::2])
+    array([1., 1., 1.], dtype=float32)
+    >>>
+    >>> # automatic shape checking:
+    >>> coordsum(np.zeros(3), np.ones(6))
+    ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).
+
+
+    .. versionadded:: 0.19.0
+    """
+    enforce_copy = options.get('enforce_copy', True)
+    allow_single = options.get('allow_single', True)
+    convert_single = options.get('convert_single', True)
+    reduce_result_if_single = options.get('reduce_result_if_single', True)
+    check_lengths_match = options.get('check_lengths_match',
+                                     len(coord_names) > 1)
+    if not coord_names:
+        raise ValueError("Decorator check_coords() cannot be used without "
+                         "positional arguments.")
+
+    def check_coords_decorator(func):
+        fname = func.__name__
+        code = func.__code__
+        argnames = code.co_varnames
+        nargs = len(code.co_varnames)
+        ndefaults = len(func.__defaults__) if func.__defaults__ else 0
+        # Create a tuple of positional argument names:
+        nposargs = code.co_argcount - ndefaults
+        posargnames = argnames[:nposargs]
+        # The check_coords() decorator is designed to work only for positional
+        # arguments:
+        for name in coord_names:
+            if name not in posargnames:
+                raise ValueError("In decorator check_coords(): Name '{}' "
+                                 "doesn't correspond to any positional "
+                                 "argument of the decorated function {}()."
+                                 "".format(name, func.__name__))
+
+        def _check_coords(coords, argname):
+            if not isinstance(coords, np.ndarray):
+                raise TypeError("{}(): Parameter '{}' must be a numpy.ndarray, "
+                                "got {}.".format(fname, argname, type(coords)))
+            is_single = False
+            if allow_single:
+                if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
+                    raise ValueError("{}(): {}.shape must be (3,) or (n, 3), "
+                                     "got {}.".format(fname, argname,
+                                                      coords.shape))
+                if coords.ndim == 1:
+                    is_single = True
+                    if convert_single:
+                        coords = coords[None, :]
+            else:
+                if (coords.ndim != 2) or (coords.shape[1] != 3):
+                    raise ValueError("{}(): {}.shape must be (n, 3), got {}."
+                                     "".format(fname, argname, coords.shape))
+            try:
+                coords = coords.astype(np.float32, order='C', copy=enforce_copy)
+            except ValueError:
+                raise TypeError("{}(): {}.dtype must be convertible to float32,"
+                                " got {}.".format(fname, argname, coords.dtype))
+            return coords, is_single
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # Check for invalid function call:
+            if len(args) != nposargs:
+                # set marker for testing purposes:
+                wrapper._invalid_call = True
+                if len(args) > nargs:
+                    # too many arguments, invoke call:
+                    return func(*args, **kwargs)
+                for name in posargnames[:len(args)]:
+                    if name in kwargs:
+                        # duplicate argument, invoke call:
+                        return func(*args, **kwargs)
+                for name in posargnames[len(args):]:
+                    if name not in kwargs:
+                        # missing argument, invoke call:
+                        return func(*args, **kwargs)
+                for name in kwargs:
+                    if name not in argnames:
+                        # unexpected kwarg, invoke call:
+                        return func(*args, **kwargs)
+                # call is valid, unset test marker:
+                wrapper._invalid_call = False
+            args = list(args)
+            ncoords = []
+            all_single = allow_single
+            for name in coord_names:
+                idx = posargnames.index(name)
+                if idx < len(args):
+                    args[idx], is_single = _check_coords(args[idx], name)
+                    all_single &= is_single
+                    ncoords.append(args[idx].shape[0])
+                else:
+                    kwargs[name], is_single = _check_coords(kwargs[name],
+                                                            name)
+                    all_single &= is_single
+                    ncoords.append(kwargs[name].shape[0])
+            if check_lengths_match and ncoords:
+                if ncoords.count(ncoords[0]) != len(ncoords):
+                    raise ValueError("{}(): {} must contain the same number of "
+                                     "coordinates, got {}."
+                                     "".format(fname, ", ".join(coord_names),
+                                               ncoords))
+            # If all input coordinate arrays were 1-d, so should be the output:
+            if all_single and reduce_result_if_single:
+                return func(*args, **kwargs)[0]
+            return func(*args, **kwargs)
+        return wrapper
+    return check_coords_decorator
 
 
 #------------------------------------------------------------------
@@ -2047,3 +2275,57 @@ def dedent_docstring(text):
 
     # treat first line as special (typically no leading whitespace!) which messes up dedent
     return lines[0].lstrip() + "\n" + textwrap.dedent("\n".join(lines[1:]))
+
+
+def check_box(box):
+    """Take a box input and deduce what type of system it represents based on
+    the shape of the array and whether all angles are 90 degrees.
+
+    Parameters
+    ----------
+    box : array_like
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+
+    Returns
+    -------
+    boxtype : {``'ortho'``, ``'tri_vecs'``}
+        String indicating the box type (orthogonal or triclinic).
+    checked_box : numpy.ndarray
+        Array of dtype ``numpy.float32`` containing box information:
+          * If `boxtype` is ``'ortho'``, `cecked_box` will have the shape ``(3,)``
+            containing the x-, y-, and z-dimensions of the orthogonal box.
+          * If  `boxtype` is ``'tri_vecs'``, `cecked_box` will have the shape
+            ``(3, 3)`` containing the triclinic box vectors in a lower triangular
+            matrix as returned by
+            :meth:`~MDAnalysis.lib.mdamath.triclinic_vectors`.
+
+    Raises
+    ------
+    ValueError
+        If `box` is not of the form ``[lx, ly, lz, alpha, beta, gamma]``
+        or contains data that is not convertible to ``numpy.float32``.
+
+    See Also
+    --------
+    MDAnalysis.lib.mdamath.triclinic_vectors
+
+
+    .. versionchanged: 0.19.0
+       * Enforced correspondence of `box` with specified format.
+       * Added automatic conversion of input to :class:`numpy.ndarray` with
+         dtype ``numpy.float32``.
+       * Now also returns the box in the format expected by low-level functions
+         in :mod:`~MDAnalysis.lib.c_distances`.
+       * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
+    """
+    from .mdamath import triclinic_vectors  # avoid circular import
+    box = np.asarray(box, dtype=np.float32, order='C')
+    if box.shape != (6,):
+        raise ValueError("Invalid box information. Must be of the form "
+                         "[lx, ly, lz, alpha, beta, gamma].")
+    if np.all(box[3:] == 90.):
+        return 'ortho', box[:3]
+    return 'tri_vecs', triclinic_vectors(box)

@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -33,7 +34,7 @@ from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import PQR
 from MDAnalysisTests import tempdir, make_Universe
-from numpy.testing import TestCase
+
 
 class TestPQRReader(_SingleFrameReader):
     __test__ = True
@@ -68,133 +69,127 @@ class TestPQRReader(_SingleFrameReader):
             "Charges for N atoms in Pro residues do not match.")
 
 
-class TestPQRWriter(TestCase, RefAdKSmall):
-    def setUp(self):
-        self.universe = mda.Universe(PQR)
-        self.prec = 3
-        ext = ".pqr"
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/pqr-writer-test' + ext
+class TestPQRWriter(RefAdKSmall):
+    @staticmethod
+    @pytest.fixture
+    def universe():
+        return mda.Universe(PQR)
 
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.universe
-        del self.tmpdir
+    prec = 3
 
-    def test_writer_noChainID(self):
-        assert_equal(self.universe.segments.segids[0], 'SYSTEM')
-        self.universe.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
+    def test_writer_noChainID(self, universe, tmpdir):
+        outfile = str(tmpdir.join('pqr-test.pqr'))
+
+        assert_equal(universe.segments.segids[0], 'SYSTEM')
+        universe.atoms.write(outfile)
+        u = mda.Universe(outfile)
         assert_equal(u.segments.segids[0], 'SYSTEM')
         assert_almost_equal(u.atoms.positions,
-                            self.universe.atoms.positions, self.prec,
+                            universe.atoms.positions, self.prec,
                             err_msg="Writing PQR file with PQRWriter does "
                             "not reproduce original coordinates")
-        assert_almost_equal(u.atoms.charges, self.universe.atoms.charges,
+        assert_almost_equal(u.atoms.charges, universe.atoms.charges,
                             self.prec, err_msg="Writing PQR file with "
                             "PQRWriter does not reproduce original charges")
-        assert_almost_equal(u.atoms.radii, self.universe.atoms.radii,
+        assert_almost_equal(u.atoms.radii, universe.atoms.radii,
                             self.prec, err_msg="Writing PQR file with "
                             "PQRWriter does not reproduce original radii")
 
     # 363 TODO:
     # Not sure if this should be a segid or chainID?
     # Topology system now allows for both of these
-    def test_write_withChainID(self):
-        self.universe.segments.segids = 'A'
-        assert_equal(self.universe.segments.segids[0], 'A')  # sanity check
-        self.universe.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
+    def test_write_withChainID(self, universe, tmpdir):
+        outfile = str(tmpdir.join('pqr-test.pqr'))
+
+        universe.segments.segids = 'A'
+        assert_equal(universe.segments.segids[0], 'A')  # sanity check
+        universe.atoms.write(outfile)
+        u = mda.Universe(outfile)
         assert_equal(u.segments.segids[0], 'A')
         assert_almost_equal(u.atoms.positions,
-                            self.universe.atoms.positions, self.prec,
+                            universe.atoms.positions, self.prec,
                             err_msg="Writing PQR file with PQRWriter does "
                             "not reproduce original coordinates")
-        assert_almost_equal(u.atoms.charges, self.universe.atoms.charges,
+        assert_almost_equal(u.atoms.charges, universe.atoms.charges,
                             self.prec, err_msg="Writing PQR file with "
                             "PQRWriter does not reproduce original charges")
-        assert_almost_equal(u.atoms.radii, self.universe.atoms.radii,
+        assert_almost_equal(u.atoms.radii, universe.atoms.radii,
                             self.prec, err_msg="Writing PQR file with "
                             "PQRWriter does not reproduce original radii")
 
-    def test_timestep_not_modified_by_writer(self):
-        ts = self.universe.trajectory.ts
-        x = ts._pos.copy()
-        self.universe.atoms.write(self.outfile)
-        assert_equal(ts._pos,
-                     x,
+    def test_timestep_not_modified_by_writer(self, universe, tmpdir):
+        outfile = str(tmpdir.join('pqr-test.pqr'))
+
+        ts = universe.trajectory.ts
+        x = ts.positions.copy()
+        universe.atoms.write(outfile)
+        assert_equal(ts.positions, x,
                      err_msg="Positions in Timestep were modified by writer.")
 
-    def test_total_charge(self):
-        self.universe.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
+    def test_total_charge(self, universe, tmpdir):
+        outfile = str(tmpdir.join('pqr-test.pqr'))
+        universe.atoms.write(outfile)
+        u = mda.Universe(outfile)
         assert_almost_equal(
             u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
             "Total charge (in CHARMM) does not match expected value.")
 
-class TestPQRWriterMissingAttrs(TestCase):
+class TestPQRWriterMissingAttrs(object):
     # pqr requires names, resids, resnames, segids, radii, charges
-    def setUp(self):
-        self.reqd_attributes = ['names', 'resids', 'resnames', 'radii', 'charges']
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/pqr-writer-test.pqr'
+    @staticmethod
+    @pytest.fixture
+    def reqd_attributes():
+        return ['names', 'resids', 'resnames', 'radii', 'charges']
 
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.tmpdir
-        del self.outfile
-        del self.reqd_attributes
+    @staticmethod
+    @pytest.fixture
+    def outfile(tmpdir):
+        return str(tmpdir.join('pqr-writer-test.pqr'))
 
-    def test_no_names_writing(self):
-        attrs = self.reqd_attributes
+    def test_no_names_writing(self, reqd_attributes, outfile):
+        attrs = reqd_attributes
         attrs.remove('names')
         u = make_Universe(attrs, trajectory=True)
 
         with pytest.warns(UserWarning):
-            u.atoms.write(self.outfile)
+            u.atoms.write(outfile)
 
-        u2 = mda.Universe(self.outfile)
+        u2 = mda.Universe(outfile)
 
         assert all(u2.atoms.names == 'X')
 
-    def test_no_resnames_writing(self):
-        attrs = self.reqd_attributes
+    def test_no_resnames_writing(self, reqd_attributes, outfile):
+        attrs = reqd_attributes
         attrs.remove('resnames')
         u = make_Universe(attrs, trajectory=True)
 
         with pytest.warns(UserWarning):
-            u.atoms.write(self.outfile)
+            u.atoms.write(outfile)
 
-        u2 = mda.Universe(self.outfile)
+        u2 = mda.Universe(outfile)
 
         assert all(u2.residues.resnames == 'UNK')
 
-    def test_no_radii_writing(self):
-        attrs = self.reqd_attributes
+    def test_no_radii_writing(self, reqd_attributes, outfile):
+        attrs = reqd_attributes
         attrs.remove('radii')
         u = make_Universe(attrs, trajectory=True)
 
         with pytest.warns(UserWarning):
-            u.atoms.write(self.outfile)
+            u.atoms.write(outfile)
 
-        u2 = mda.Universe(self.outfile)
+        u2 = mda.Universe(outfile)
 
         assert all(u2.atoms.radii == 1.0)
 
-    def test_no_charges_writing(self):
-        attrs = self.reqd_attributes
+    def test_no_charges_writing(self, reqd_attributes, outfile):
+        attrs = reqd_attributes
         attrs.remove('charges')
         u = make_Universe(attrs, trajectory=True)
 
         with pytest.warns(UserWarning):
-            u.atoms.write(self.outfile)
+            u.atoms.write(outfile)
 
-        u2 = mda.Universe(self.outfile)
+        u2 = mda.Universe(outfile)
 
         assert all(u2.atoms.charges == 0.0)

@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -2361,8 +2362,21 @@ class AtomGroup(GroupBase):
         .. versionchanged:: 0.16.0 Updating selections now possible by setting
             the `updating` argument.
         .. versionchanged:: 0.17.0 Added *moltype* and *molnum* selections.
-        .. versionchanged:: 0.18.1 Added strict type checking for passed groups.
+        .. versionchanged:: 0.19.0
+           Added strict type checking for passed groups.
+           Added periodic kwarg (default True)
+        .. versionchanged:: 0.19.2
+           Empty sel string now returns an empty Atom group.
         """
+
+        if not sel:
+            warnings.warn("Empty string to select atoms, empty group returned.",
+                          UserWarning)
+            return self[[]]
+
+        # once flags removed, replace with default=True
+        periodic = selgroups.pop('periodic', flags['use_periodic_selections'])
+
         updating = selgroups.pop('updating', False)
         sel_strs = (sel,) + othersel
 
@@ -2372,7 +2386,7 @@ class AtomGroup(GroupBase):
                                 "You provided {} for group '{}'".format(
                                     thing.__class__.__name__, group))
 
-        selections = tuple((selection.Parser.parse(s, selgroups)
+        selections = tuple((selection.Parser.parse(s, selgroups, periodic=periodic)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
@@ -2535,7 +2549,7 @@ class AtomGroup(GroupBase):
         """Write `AtomGroup` to a file.
 
         The output can either be a coordinate file or a selection, depending on
-        the format. 
+        the format.
 
         Examples
         --------
@@ -2622,7 +2636,7 @@ class AtomGroup(GroupBase):
             raise ValueError(
                 'Cannot explicitely set "multiframe" to False and request '
                 'more than 1 frame with the "frames" keyword argument.'
-            ) 
+            )
         elif multiframe is None:
             if frames is None:
                 # By default we only write the current frame.
@@ -2698,7 +2712,11 @@ class ResidueGroup(GroupBase):
         The :class:`Atoms<Atom>` are ordered locally by :class:`Residue` in the
         :class:`ResidueGroup`.  Duplicates are *not* removed.
         """
-        ag = self.universe.atoms[np.concatenate(self.indices)]
+        # If indices is an empty list np.concatenate will fail (Issue #1999).
+        try:
+            ag = self.universe.atoms[np.concatenate(self.indices)]
+        except ValueError:
+            ag = self.universe.atoms[self.indices]
         # If the ResidueGroup is known to be unique, this also holds for the
         # atoms therein, since atoms can only belong to one residue at a time.
         # On the contrary, if the ResidueGroup is not unique, this does not
@@ -2857,7 +2875,11 @@ class SegmentGroup(GroupBase):
         are further ordered by :class:`Segment` in the :class:`SegmentGroup`.
         Duplicates are *not* removed.
         """
-        ag = self.universe.atoms[np.concatenate(self.indices)]
+        # If indices is an empty list np.concatenate will fail (Issue #1999).
+        try:
+            ag = self.universe.atoms[np.concatenate(self.indices)]
+        except ValueError:
+            ag = self.universe.atoms[self.indices]
         # If the SegmentGroup is known to be unique, this also holds for the
         # residues therein, and thus, also for the atoms in those residues.
         # On the contrary, if the SegmentGroup is not unique, this does not

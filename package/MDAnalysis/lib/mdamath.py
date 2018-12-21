@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -35,6 +36,7 @@ Helper functions for common mathematical operations
 .. autofunction:: triclinic_vectors
 .. autofunction:: box_volume
 .. autofunction:: make_whole
+.. autofunction:: find_fragments
 
 .. versionadded:: 0.11.0
 """
@@ -44,7 +46,7 @@ import numpy as np
 
 from ..exceptions import NoDataError
 from . import util
-from ._cutil import make_whole
+from ._cutil import make_whole, find_fragments
 
 # geometric functions
 def norm(v):
@@ -249,46 +251,3 @@ def box_volume(dimensions):
     """
     return np.linalg.det(triclinic_vectors(dimensions))
 
-
-def one_to_many_pointers(Ni, Nj, i2j):
-    """Based on a many to one mapping of i to j, create the reverse mapping
-
-    Arguments
-    ---------
-    Ni : int
-       number of i  components
-    Nj : int
-       number of j components
-    i2j : numpy.ndarray
-       relates i to parent js
-
-    Returns
-    -------
-    ordered : list
-       an ordered list of i indices [size (i,)]
-    ptrs : list
-       the start and end index for each j [size (Nj, 2)]
-
-    Example
-    -------
-    .. code:: python
-
-        # Residx - the resid of each Atom
-        ordered, ptrs = one_to_many_pointers(Natoms, Nres, Residx)
-
-        # Returns an array of the atom indices that are in resid 7
-        atoms = ordered[ptrs[7,0]:ptrs[7,1]]
-
-    """
-    ordered = i2j.argsort()
-    sorted_idx = i2j[ordered]
-    borders = np.concatenate([[0],
-                              np.where(np.diff(sorted_idx))[0] + 1,
-                              [Ni]])
-
-    ptrs = np.zeros((Nj, 2), dtype=np.int32)
-    for x, y in zip(borders[:-1], borders[1:]):
-        i = sorted_idx[x]
-        ptrs[i] = x, y
-
-    return ordered, ptrs

@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -21,7 +22,7 @@
 #
 """
 PeriodicKDTree --- :mod:`MDAnalysis.lib.pkdtree`
-===============================================================================
+================================================
 
 This module contains a class to allow searches on a KDTree involving periodic
 boundary conditions.
@@ -45,7 +46,7 @@ __all__ = [
 
 
 class PeriodicKDTree(object):
-    """Wrapper around scipy.spatial.cKDtree
+    """Wrapper around :class:`scipy.spatial.cKDTree`
 
     Creates an object which can handle periodic as well as
     non periodic boundary condtions depending on the parameters
@@ -55,10 +56,12 @@ class PeriodicKDTree(object):
     provided. Periodic Boundary conditions are implemented by creating
     duplicates of the particles which are within the specified cutoff
     distance from the boundary. These duplicates along with the
-    original particle coordinates are used with the cKDTree
-    without any special treatment due to PBC beyond this point.
-    The final results after any operation with duplicate particle indices
-    can be traced back to the original particle using undo augment function.
+    original particle coordinates are used with the cKDTree without
+    any special treatment due to PBC beyond this point.  The final
+    results after any operation with duplicate particle indices can be
+    traced back to the original particle using the
+    :func:`MDAnalysis.lib.distances.undo_augment` function.
+
     """
     def __init__(self, box=None, leafsize=10):
         """
@@ -85,6 +88,13 @@ class PeriodicKDTree(object):
 
     @property
     def pbc(self):
+        """Flag to indicate the presence of periodic boundaries.
+
+        - ``True`` if PBC are taken into account
+        - ``False`` if no unitcell dimension is available.
+
+        This is a managed attribute and can only be read.
+        """
         return self.box is not None
 
     def set_coords(self, coords, cutoff=None):
@@ -115,8 +125,7 @@ class PeriodicKDTree(object):
 
         See Also
         --------
-        MDAnalysis.lib._augment.augment_coordinates
-
+        MDAnalysis.lib.distances.augment_coordinates
 
         """
         # If no cutoff distance is provided but PBC aware
@@ -155,8 +164,8 @@ class PeriodicKDTree(object):
         to enable distance evaluations from points in the tree
         and their images.
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         centers: array_like (N,3)
           coordinate array to search for neighbors
         radius: float
@@ -170,7 +179,6 @@ class PeriodicKDTree(object):
         if centers.shape == (self.dim, ):
             centers = centers.reshape((1, self.dim))
 
-        self._indices = set()  # clear previous search
         # Sanity check
         if self.pbc:
             if self.cutoff < radius:
@@ -197,7 +205,8 @@ class PeriodicKDTree(object):
         return self._indices
 
     def get_indices(self):
-        """
+        """Return the neighbors from the last query.
+
         Returns
         ------
         indices : list
@@ -235,5 +244,66 @@ class PeriodicKDTree(object):
         if pairs.size > 0:
             # First sort the pairs then pick the unique pairs
             pairs = np.sort(pairs, axis=1)
+            pairs = unique_rows(pairs)
+        return pairs
+
+    def search_tree(self, centers, radius):
+        """
+        Searches all the pairs within `radius` between `centers`
+        and ``coords``
+
+        ``coords`` are the already initialized coordinates in the tree
+        during :meth:`set_coords`.
+        ``centers`` are wrapped around the primary unit cell
+        if PBC is desired. Minimum image convention (PBC) is
+        activated if the `box` argument is provided during
+        class initialization
+
+        Parameters
+        ----------
+        centers: array_like (N,3)
+          coordinate array to search for neighbors
+        radius: float
+          maximum distance to search for neighbors.
+
+        Returns
+        -------
+        pairs : array
+          all the pairs between ``coords`` and ``centers``
+
+        Note
+        ----
+        This method constructs another tree from the ``centers``
+        and queries the previously built tree (built in
+        :meth:`set_coords`)
+        """
+
+        if not self._built:
+            raise RuntimeError('Unbuilt tree. Run tree.set_coords(...)')
+
+        centers = np.asarray(centers)
+        if centers.shape == (self.dim, ):
+            centers = centers.reshape((1, self.dim))
+
+        # Sanity check
+        if self.pbc:
+            if self.cutoff < radius:
+                raise RuntimeError('Set cutoff greater or equal to the radius.')
+            # Bring all query points to the central cell
+            wrapped_centers = apply_PBC(centers, self.box)
+            other_tree = cKDTree(wrapped_centers, leafsize=self.leafsize)
+            pairs = other_tree.query_ball_tree(self.ckdt, radius)
+            pairs = np.array([[i, j] for i, lst in enumerate(pairs) for j in lst],
+                                   dtype=np.int64)
+            if pairs.size > 0:
+                pairs[:, 1] = undo_augment(pairs[:, 1],
+                                             self.mapping,
+                                             len(self.coords))
+        else:
+            other_tree = cKDTree(centers, leafsize=self.leafsize)
+            pairs = other_tree.query_ball_tree(self.ckdt, radius)
+            pairs = np.array([[i, j] for i, lst in enumerate(pairs) for j in lst],
+                                   dtype=np.int64)
+        if pairs.size > 0:
             pairs = unique_rows(pairs)
         return pairs

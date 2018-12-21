@@ -13,13 +13,75 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
-         VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta
 
-  * 0.18.1
+mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
+         dpadula85, jbarnoud, manuel.nuno.melo
+  * 0.19.3
+
+Fixes
+  * fixed gcc support in MacOS (Issue #2162, PR #2163)
+  * fixed error when reading bonds/angles/dihedrals from gsd file (Issue #2152,
+    PR #2154)
+  * fixed error when reading bonds/angles/dihedrals from hoomdxml file 
+    (Issue #2151, PR #2153)
+  * fixed MacOS (XCode) library compatibility 
+    (Issue #2144)
+  * fixed lib.nsgrid segfault for coordinates very close to the box boundary
+    (Issue #2132, PR #2136)
+  * fixed Lint error
+    (Issue #2148, PR #2149)
+  * Fixed Empty select_atoms string, now raises warning and returns empty
+    AtomGroup (Issue #2112)
+  * Read TPR files from Gromacs 2019 (PR #2161)
+
+
+11/06/18 richardjgowers
+  * 0.19.2
+
+Changes
+  * Added Windows support
+
+
+11/05/18 orbeckst, PicoCentauri, richardjgowers, zemanj
+  * 0.19.1
+
+Fixes
+   * limit output of Chainreader __repr__ (#2109)
+   * added missing docs for lib.pkdtree (#2104)
+   * Added sphinx markup for FrameIterator (#2106)
+   * fixed error for residues and segments containing 0 atoms (#1999)
+   * fixed numpy deprecation warnings (#2122, #2123)
+   * Fixed reading PDB files with DOS line ending (#2128)
+
+Deprecations
+   * Default ``filename`` directory of align.AlignTraj is deprecated and 
+     will change in 1.0 to the current directory.
+
+10/09/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
+         VOD555, davidercruz, jbarnoud, ayushsuhane, hfmull, micaela-matta,
+         sebastien.buchoux, arm61, p-j-smith, IAlibay
+
+  * 0.19.0
 
 Enhancements
-
+  * Added bond/angle/dihedral reading in PARM7 TOPParser (PR #2052)
+  * Replaced multiple apply (_apply_distmat, _apply_kdtree)
+    methods in distance based selections with
+    lib.distances.capped_distance for automatic selection of
+    distance evaluation method. (PR #2035)
+  * Modified analysis.rdf.InterRDF to use lib.distances.capped_distance
+    to handle rdf calculations for large systems. (PR #2013)
+  * Added return_distances argument in lib.distances.capped_distances
+    to evaluate and return distances only when required. Modified
+    the optimization rules in lib.distances._determine_method for
+    faster computations. (PR #2041)
+  * Added method search_tree in lib.pkdtree to find all the pairs between
+    two kdtrees. (PR #2041)
+  * Added a wrapper of lib.nsgrid in lib.distances.self_capped_distance
+    and lib.distances.capped_distanceto automatically chose the fastest
+    method for distance based calculations. (PR #2008)
+  * Added Grid search functionality in lib.nsgrid for faster distance based
+    calculations. (PR #2008)
   * Modified around selections to work with KDTree and periodic boundary
     conditions.  Should reduce memory usage (#974 PR #2022)
   * Modified topology.guessers.guess_bonds to automatically select the
@@ -27,18 +89,18 @@ Enhancements
     lib.distance.self_capped_distance (PR # 2006)
   * Added lib.distances.self_capped_distance to internally select the
     optimized method for distance evaluations of coordinates with itself. (PR # 2006)
-  * Added augment functionality to create relevant images of particles 
+  * Added augment functionality to create relevant images of particles
     in the vicinity of central cell to handle periodic boundary
-    conditions (PR #1977) 
+    conditions (PR #1977)
   * Added lib.distances.capped_distance function to quickly calculate all distances
     up to a given maximum distance (PR #1941)
   * Added a rotation coordinate transformation (PR #1937)
   * Added box, plane and axis centering trajectory transformations (PR #1946 and #1973)
   * Added a on-the-fly trajectory transformations API and a coordinate translation
-  	function (Issue #786)
+    function (Issue #786)
   * Added various duecredit stubs
   * Import time reduced by a factor two (PR #1881)
-  * added compound kwarg to center, centroid, center_of_geometry, center_of_mass (PR #1903)
+  * Added compound kwarg to center, centroid, center_of_geometry, center_of_mass (PR #1903)
   * Added rdf.InterRDF_s to calculate site-specific pair distribution
     functions (PR #1815)
   * Increased performance of (repeated) calls to AtomGroup.pack_into_box()
@@ -50,18 +112,29 @@ Enhancements
   * Calculations in *Group.center() are performed in double precision (#PR1936)
   * Functions in lib.distances accept coordinate arrays of arbitrary dtype
     (PR #1936)
-  * Added calc_distance, calc_angle and calc_dihedral to lib.distances
-    (Issue #1262 #1938)
   * Added pbc kwarg to Bond/Angle/Dihedral/Improper object value method,
     default True. (Issue #1938)
   * ChainReader can correctly handle continuous trajectories split into multiple files,
     generated with gromacs -noappend (PR #1728)
   * MDAnalysis.lib.mdamath now supports triclinic boxes and rewrote in Cython (PR #1965)
   * AtomGroup.write can write a trajectory of selected frames (Issue #1037)
-  * Added dihedrals.py with Ramachandran class to analysis module 
+  * Added dihedrals.py with Dihedral, Ramachandran, and Janin classes to
+    analysis module (PR #1997, PR #2033)
+  * Added the analysis.data module for reference data used in analysis (PR #2033)
+  * Added analysis.dihedrals with Ramachandran class to analysis module (PR #1997)
+  * Added augment functionality to create relevant images of particles
+  * Most functions in `MDanalysis.lib.distances` previously only accepting
+    arrays of coordinates now also accept single coordinates as input (PR #2048,
+    Issues #1262 #1938)
+  * Performance improvements to make_whole (PR #1965)
+  * Performance improvements to fragment finding (PR #2028)
+  * Added user-defined boxes in density code (PR #2005)
+  * MemoryReader now can accept velocities and forces (PR #2080)
+  * Universe.transfer_to_memory now copies dimensions, velocities and forces
+    (where possible) (Issue #1041 PR #2080)
 
 Fixes
-  * rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
+  * Rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
   * Fixed order of indices in Angle/Dihedral/Improper repr
   * coordinates.memory.MemoryReader now takes np.ndarray only (Issue #1685)
   * Silenced warning when duecredit is not installed (Issue #1872)
@@ -73,9 +146,21 @@ Fixes
     pack_into_box() (Issue #1911)
   * Fixed format of MODEL number in PDB file writing (Issue #1950)
   * PDBWriter now properly sets start value
+  * Introduced compatibility for pbd files hybrid36 format encoding (Issue #1897)
   * Zero length TopologyGroup now return proper shape array via to_indices
     (Issue #1974)
   * Added periodic boundary box support to the Tinker file reader (Issue #2001)
+  * Modifying coordinates by assignation is consistently persistent when using
+    the memory reader (Issue #2018)
+  * Allow import of WaterBridgeAnalysis from analysis.hbonds (#2064)
+  * Fixed SphericalLayer and SphericalZone selections with pbc=True.  Previously
+    these shifted all atoms to inside the primary unit cell when calculating the
+    center of the reference group (Issue #1795)
+  * PCA analysis now uses start frame as reference frame rather than 0th frame
+    (PR #2055)
+  * Fixed trajectory iteration from a MDAnalysis.Universe.empty (#2076)
+  * Fixed copies MemoryReader not linking to the underlying coordinate array
+    on initial Timestep (Issue #2081 PR #2080)
 
 Changes
   * TopologyAttrs are now statically typed (Issue #1876)
@@ -86,15 +171,38 @@ Changes
     duplicates. Otherwise, the group itself is returned. Repeated access of
     *Group.unique will always return the same object unless the group is
     updated or modified. (PR #1922)
+  * SurvivalProbability does not dilute SP anymore when the reference frame (t0)
+    cannot find any molecules in the first place. (PR #1995)
   * The TPR parser reads SETTLE constraints as bonds. (Issue #1949)
   * Indexing a trajectory with a slice or an array now returns an iterable
     (Issue #1894)
+  * Removed unused function MDAnalysis.lb.mdamath.one_to_many_pointers()
+    (issue #2010)
+  * Box input for functions in `MDAnalysis.lib.distances` is now consistently
+    enforced to be of the form ``[lx, ly, lz, alpha, beta, gamma]`` as required
+    by the docs (Issue #2046, PR #2048)
+  * Added periodic keyword to select_atoms (#759)
+  * PCA.transform now requires that PCA.run() has already been called
+    otherwise a ValueError is raised (PR #2055)
+  * The quiet keyword has been removed and replaced with verbose (Issue #1975
+    PR #2055)
+  * MDAnalysis.Universe.empty now creates a MemoryReader trajectory (#2076 #2077)
 
 Deprecations
-  * almost all "save()", "save_results()", "save_table()" methods in
+  * start/stop/step are deprecated in the initialization of Analysis classes.
+    These parameters should instead be given to the run() method of the class.
+    (Issue #1463 #1979 PR #2055)
+  * Almost all "save()", "save_results()", "save_table()" methods in
     analysis classes were deprecated and will be removed in 1.0 (Issue
     #1972 and #1745)
+  * Deprecated use of core.flags. For use_pbc, the pbc keyword should
+    be used, use_KDTree_routines is obsolete as all distance calculations
+    select the fastest method, all other uses of flags are deprecated.
+    (#782)
 
+Testsuite
+  * skip tests for duecredit when duecredit is not installed (#1906)
+  * updated meta data for PyPi and updated README and INSTALL
 
 04/15/18 tylerjereddy, richardjgowers, palnabarun, bieniekmateusz, kain88-de,
          orbeckst, xiki-tempula, navyakhare, zemanj, ayushsuhane, davidercruz,
@@ -157,6 +265,11 @@ Changes
 
 Deprecations
   * undeprecated creating Groups from list of Components (Issue #1847)
+
+Testsuite
+  * Unit tests for unwanted side effects when importing MDAnalysis
+  * MDAnalysis.visualization is now tested
+
 
 01/24/18 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
          jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow, sseyler, rcortini,
@@ -271,6 +384,9 @@ Fixes
 Changes
   * scipy and matplotlib are now required dependencies (Issue #1159)
 
+Testsuite
+  * Port to pytest - removed nose as a dependency (Issue #884)
+
 
 06/03/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma,
          richardjgowers, Shtkddud123, QuantumEntangledAndy, orbeckst,
@@ -322,7 +438,7 @@ Changes
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
          dotsdl, manuel.nuno.melo, utkbansal, vedantrathore, shobhitagarwal1612,
-         xiki-tempula
+         xiki-tempula, kash1102, vedantrathore
 
   * 0.16.0
 
@@ -477,9 +593,22 @@ Deprecations (Issue #599)
   * MassWeight=True parameter in analysis.gnm.closeContactGNMAnalysis
     deprecated in favor of weights="size".
 
+Testsuite
+  * Make knownfailure work even without parentheses.
+  * Added a plugin to list the non-closed file handle (Issue #853, PR #874).
+    The plugin can be disabled with --no-open-files.
+  * The test_failure test can be made fail by setting the MDA_FAILURE_TEST
+    environment variable (PR #874)
+  * replaced XTC_HOLE test trajectory with more meaningful one MULTIPDB_HOLE
+  * install external packages on Travis (SETUP == full: HOLE, clustalw)
+    to test additional analysis code (Issue #898)
+  * removed usage of random numbers from tests (Issue #958)
+  * test_imports now always uses the correct source directory (Issue #939).
+
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
-         dotsdl, richardjgowers, BartBruininks, jdetle
+         dotsdl, richardjgowers, BartBruininks, jdetle, pedrishi,
+         fiona-naughton, jdetle
 
   * 0.15.0
 
@@ -550,6 +679,16 @@ Deprecations (Issue #599)
   * Deprecated as_Universe function; not needed
   * Deprecated ContactAnalysis and ContactAnalysis1 classes
 
+Testsuite
+  * metadata update: link download_url to GitHub releases so that
+    Depsy recognizes contributors (issue #749) and added
+    @richardjgowers as maintainer
+  * a __version__ variable is now exposed; it is built by setup.py from the
+    AUTHORS file (Issue #784)
+  * Removed all bare assert (Issue #724)
+  * added tempdir module
+
+
 02/28/16 tyler.je.reddy, kain88-de, jbarnoud, richardjgowers, orbeckst
          manuel.nuno.melo, Balasubra, Saxenauts, mattihappy
 
@@ -603,6 +742,13 @@ Fixes
   * Fixed cyzone selection failing in orthogonal systems (Issue #710)
   * Fixed Error in calculation of average grid density (Issue #716)
   * Fixed indexing an AtomGroup using a list of bools now working (Issue #729)
+
+Testsuite
+  * Added the cleanup plugin (--with-mda_cleanup) to delete offset files
+    after tests have run (Issue 669)
+  * Made memleak testing python 3 compliant (Issue 662). It may be a moot
+    point since python 3.4 now cleverly deals with leaks.
+
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
          orbeckst, Balasubra
@@ -690,6 +836,9 @@ Fixes
     (Issue #521)
   * Fixed MOL2Writer rereading frames when writing them (Issue #521)
   * Fixed PDBWriter not writing occupancies from atoms (Issue #620)
+
+Testsuite
+  * removed ez_setup.py
 
 
 10/08/15
@@ -941,6 +1090,12 @@ Fixes
     (Issue #409)
   * Fixed TopologyGroup.__contains__ failing if different instance of
     same bond was queried. (Issue #409)
+
+Testsuite
+  * Overhaul of the test subsystem.
+  * Tests now implement nose plugins, as a submodule. (Issue 331)
+    Available plugins are: memleak testing, stderr capturing (for quieter
+    test runs), and proper knownfailure implementation (Issue 338).
 
 
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst,
@@ -1342,14 +1497,23 @@ Fixes
   * fixed Issue 113 (replaced outdated Biopython to call ClustalW)
 
 
-02/16/12 sebastien.buchoux
+02/16/12 sebastien.buchoux, orbeckst
 
   * 0.7.5.1
 
-  Fixes
-
+Fixes
   * added: missing files (Issue 95)
   * removed: unused delaunay-related files
+
+Testsuite
+  * test package is now called 'MDAnalysisTests'
+  * tests AND data are now bundled together in MDAnalysisTests
+  * MDAnalysis and MDAnalysisTests packages MUST have the same
+    release number (they need to stay in sync); MDAnalysisTests
+    will NOT run if a release mismatch is detected
+  * see Issue #87 and
+    https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
+
 
 02/11/12 orbeckst, sebastien.buchoux, jandom, hallben, lukasgrossar
 
@@ -1461,6 +1625,14 @@ Fixes
     releases of MDAnalysis will also use these test data unless a
     MDAnalysisTestData package with a higher release number is available.
 
+  Testsuite
+  
+   * Split off test data trajectories and structures from
+     MDAnalaysis/tests/data into separate package. (Issue 28)
+   * Numbering matches the earliest MDAnalysis release for which the data is
+     needed. Any later releases of MDAnalysis will also use these test data
+     unless a MDAnalysisTestData package with a higher release number is
+     available.
 
 
 05/22/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, dcaplan,

@@ -7,18 +7,15 @@ max_jobs: 100
 cache:
     - '%LOCALAPPDATA%\pip\Cache'
 
-matrix:
-    # FIXME: allow all Windows builds
-    # to fail for now; remove this
-    # when we have full Windows compatibility
-    allow_failures:
-      - PYTHON_ARCH: 64
-
 image:
     - Visual Studio 2015
 
 environment:
     global:
+        CONDA_CHANNELS: conda-forge
+        CONDA_DEPENDENCIES: pip setuptools wheel cython mock six biopython networkx joblib matplotlib scipy vs2015_runtime pytest mmtf-python GridDataFormats hypothesis pytest-cov codecov
+        PIP_DEPENDENCIES: gsd==1.5.2 duecredit
+        DEBUG: "False"
         MINGW_64: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
         OPENBLAS_64: https://3f23b170c54c2533c070-1c8a9b3114517dc5fe17b7c3f8c63a43.ssl.cf2.rackcdn.com/openblas-5f998ef_gcc7_1_0_win64.zip
         APPVEYOR_SAVE_CACHE_ON_ERROR: true
@@ -26,17 +23,15 @@ environment:
         TEST_TIMEOUT: 1000
         PYTHON: "C:\\conda"
         MINICONDA_VERSION: "latest"
-        CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\ci-helpers\\appveyor\\windows_sdk.cmd"
 
     matrix:
-
         - PYTHON_VERSION: 3.6
           PYTHON_ARCH: 64
           MSVC_VERSION: "Visual Studio 10 Win64"
 
 init:
-    - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
-    - "ECHO \"%APPVEYOR_SCHEDULED_BUILD%\""
+    - ps: Write-Host ${env:PYTHON} ${env:PYTHON_VERSION} ${env:PYTHON_ARCH}
+    - ps: Write-Host ${env:APPVEYOR_SCHEDULED_BUILD}
     # cancel build if newer one is submitted; complicated
     # details for getting this to work are credited to JuliaLang
     # developers
@@ -48,26 +43,24 @@ init:
 
 install:
     # set up a conda env
-    - "git clone --depth 1 git://github.com/astropy/ci-helpers.git"
-    - "powershell ci-helpers/appveyor/install-miniconda.ps1"
-    - SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
+    - ps: git clone -q --depth 1 git://github.com/astropy/ci-helpers.git
+    - ps: ci-helpers/appveyor/install-miniconda.ps1
+    - ps: $env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
     # deal with missing stdint.h as previously described
-    # see: https://github.com/swistakm/pyimgui/blob/master/.appveyor.yml
-    - cp "c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdint.h" "C:\Users\appveyor\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include\stdint.h"
-    - ps: conda config --append channels conda-forge
-    - ps: conda create -n testing python=$env:PYTHON_VERSION pip setuptools wheel cython mock six biopython networkx joblib matplotlib scipy vs2015_runtime pytest mmtf-python GridDataFormats hypothesis
-    - cmd: C:\conda\envs\testing\Scripts\pip.exe install gsd==1.5.2 duecredit
-    - cmd: C:\conda\envs\testing\Scripts\activate testing
+    # see https://github.com/swistakm/pyimgui/blob/master/.appveyor.yml
+    - ps: cp "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdint.h" "C:\Users\appveyor\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include\stdint.h"
+    - ps: activate test
 
 build_script:
     - cmd: cd package
-    - cmd: C:\conda\envs\testing\python.exe setup.py develop --no-deps --user 3>&1
+    - cmd: C:\conda\envs\test\python.exe setup.py develop --no-deps --user 3>&1
 
 test_script:
     - cmd: cd ..\testsuite
-    - cmd: C:\conda\envs\testing\python.exe setup.py develop --no-deps --user 3>&1
+    - cmd: C:\conda\envs\test\python.exe setup.py develop --no-deps --user 3>&1
     - cmd: cd MDAnalysisTests
-    - cmd: C:\conda\envs\testing\Scripts\pytest.exe --disable-pytest-warnings 3>&1
+    - cmd: C:\conda\envs\test\Scripts\pytest.exe --cov=MDAnalysis --disable-pytest-warnings 3>&1
+    - cmd: codecov
 
 after_build:
     # cache cleanup

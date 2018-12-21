@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -462,7 +463,7 @@ class DumpReader(base.ReaderBase):
     Will automatically convert positions from their scaled/fractional
     representation to their real values.
 
-    .. versionadded:: 0.18.1
+    .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
 

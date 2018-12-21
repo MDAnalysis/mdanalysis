@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -66,4 +67,4 @@ Data
 # e.g. with lib.log
 
 #: Release of MDAnalysis as a string, using `semantic versioning`_.
-__version__ = "0.18.1-dev"  # NOTE: keep in sync with RELEASE in setup.py
+__version__ = "0.19.3-dev"  # NOTE: keep in sync with RELEASE in setup.py

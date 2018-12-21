@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -886,10 +887,6 @@ class TestPBCFlag(object):
         universe = mda.Universe(TRZ_psf, TRZ)
         return universe.residues[0:3]
 
-    def test_flag(self):
-        # Test default setting of flag
-        assert mda.core.flags['use_pbc'] is False
-
     def test_default(self, ag, ref_noPBC):
         # Test regular behaviour
         assert_almost_equal(ag.center_of_geometry(), ref_noPBC['COG'], self.prec)
@@ -904,7 +901,7 @@ class TestPBCFlag(object):
         assert_almost_equal(ag.principal_axes(), ref_noPBC['PAxes'], self.prec)
 
     def test_pbcflag(self, ag, ref_PBC):
-        # Test using ag method flag
+        # Test using pbc keyword
         assert_almost_equal(ag.center_of_geometry(pbc=True), ref_PBC['COG'], self.prec)
         assert_almost_equal(ag.center_of_mass(pbc=True), ref_PBC['COM'], self.prec)
         assert_almost_equal(ag.radius_of_gyration(pbc=True), ref_PBC['ROG'], self.prec)
@@ -915,36 +912,6 @@ class TestPBCFlag(object):
         assert_almost_equal(ag.bsphere(pbc=True)[0], ref_PBC['BSph'][0], self.prec)
         assert_almost_equal(ag.bsphere(pbc=True)[1], ref_PBC['BSph'][1], self.prec)
         assert_almost_equal(ag.principal_axes(pbc=True), ref_PBC['PAxes'], self.prec)
-
-    def test_usepbc_flag(self, ag, ref_PBC):
-        # Test using the core.flags flag
-        mda.core.flags['use_pbc'] = True
-        assert_almost_equal(ag.center_of_geometry(), ref_PBC['COG'], self.prec)
-        assert_almost_equal(ag.center_of_mass(), ref_PBC['COM'], self.prec)
-        assert_almost_equal(ag.radius_of_gyration(), ref_PBC['ROG'], self.prec)
-        assert_almost_equal(ag.shape_parameter(), ref_PBC['Shape'], self.prec)
-        assert_almost_equal(ag.asphericity(), ref_PBC['Asph'], self.prec)
-        assert_almost_equal(ag.moment_of_inertia(), ref_PBC['MOI'], self.prec)
-        assert_almost_equal(ag.bbox(), ref_PBC['BBox'], self.prec)
-        assert_almost_equal(ag.bsphere()[0], ref_PBC['BSph'][0], self.prec)
-        assert_almost_equal(ag.bsphere()[1], ref_PBC['BSph'][1], self.prec)
-        assert_almost_equal(ag.principal_axes(), ref_PBC['PAxes'], self.prec)
-        mda.core.flags['use_pbc'] = False
-
-    def test_override_flag(self, ag, ref_noPBC):
-        # Test using the core.flags flag, then overriding
-        mda.core.flags['use_pbc'] = True
-        assert_almost_equal(ag.center_of_geometry(pbc=False), ref_noPBC['COG'], self.prec)
-        assert_almost_equal(ag.center_of_mass(pbc=False), ref_noPBC['COM'], self.prec)
-        assert_almost_equal(ag.radius_of_gyration(pbc=False), ref_noPBC['ROG'], self.prec)
-        assert_almost_equal(ag.shape_parameter(pbc=False), ref_noPBC['Shape'], self.prec)
-        assert_almost_equal(ag.asphericity(pbc=False), ref_noPBC['Asph'], self.prec)
-        assert_almost_equal(ag.moment_of_inertia(pbc=False), ref_noPBC['MOI'], self.prec)
-        assert_almost_equal(ag.bbox(pbc=False), ref_noPBC['BBox'], self.prec)
-        assert_almost_equal(ag.bsphere(pbc=False)[0], ref_noPBC['BSph'][0], self.prec)
-        assert_almost_equal(ag.bsphere(pbc=False)[1], ref_noPBC['BSph'][1], self.prec)
-        assert_almost_equal(ag.principal_axes(pbc=False), ref_noPBC['PAxes'], self.prec)
-        mda.core.flags['use_pbc'] = False
 
 
 def test_instantselection_termini():
@@ -1001,9 +968,21 @@ class TestAtomGroup(object):
 
     def test_n_residues(self, ag):
         assert ag.n_residues == 214
+        
+    def test_zero_atoms_residues(self, ag):
+        new_ag = ag[[]].residues.atoms
+
+        assert isinstance(new_ag, mda.AtomGroup)
+        assert len(new_ag) == 0
 
     def test_n_segments(self, ag):
         assert ag.n_segments == 1
+        
+    def test_zero_atoms_segments(self, ag):
+        new_ag = ag[[]].segments.atoms
+
+        assert isinstance(new_ag, mda.AtomGroup)
+        assert len(new_ag) == 0
 
     def test_resids_dim(self, ag):
         assert len(ag.resids) == len(ag)
@@ -1250,7 +1229,7 @@ class TestAtomGroup(object):
         u.trajectory.rewind()  # just to make sure...
         ag = u.atoms[1000:2000:200]
         # Provide arbitrary box
-        box = np.array([5., 5., 5.], dtype=np.float32)
+        box = np.array([5., 5., 5., 90., 90., 90.], dtype=np.float32)
         # Expected folded coordinates
         packed_coords = np.array([[3.94543672, 2.5939188, 2.73179913],
                                   [3.21632767, 0.879035, 0.32085133],
