@@ -69,6 +69,16 @@ water bridge analysis:
  - *forcefield* to switch between default values for different force fields
  - *donors* and *acceptors* atom types (to add additional atom names)
 
+Theory
+------
+
+This module attempts to find multi-order water bridge by an approach similar
+to breadth-first search, where the first solvation shell of selection 1 is
+selected, followed by the selection of the second solvation shell as well as
+any hydrogen bonding partner from selection 1. After that, the third solvation
+shell, as well as any binding partners from selection 2, are detected. This
+process is repeated until the maximum order of water bridge is reached.
+
 .. _wb_Analysis_Output:
 
 Output
