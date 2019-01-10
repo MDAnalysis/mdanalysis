@@ -237,6 +237,18 @@ and thus, they should be counted as the same type of water bridge. The type of t
 bridge can be customised by supplying an analsysis function to
 :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
 
+The analysis function has two parameters. The current and the output. The current is a list
+of hydrogen bonds from selection 1 to selection 2, and an example will be ::
+
+[[0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180],
+ [2,3,('SOL',2,'HW2'),('ASP',3,'OD1'),  3.0,180],]
+
+Where current[0] is the first hydrogen bond originating from selection 1 and current[-1] is
+the final hydrogen bond ending in selection 2. The output sums up all the information in the
+current frame and is a dictionary with a user-defined key and the value is the weight of the
+corresponding key. At the end of the analysis, the keys from all the frames are collected
+and the corresponding values will be summed up and returned.
+
   def analysis(current, output):
       '''This function defines how the type of water bridge should be specified.
 
@@ -247,9 +259,7 @@ bridge can be customised by supplying an analsysis function to
             selection 1 to selection 2.
         output : dict
             A dictionary where the key is the type of the water bridge and the value
-            is the number of this type of water bridge.
-            Acknowledging the new water bridge, this variable will be *modified* in place
-            so that this function is not retruning any variable.
+            is the weight of this type of water bridge.
       '''
 
       # decompose the first hydrogen bond.
@@ -275,9 +285,14 @@ Returns ::
 
 Note that the result is arranged in the format of (key, proportion of time). When no
 custom analysis function is supplied, the key is expended for backward compatibility.
+
 Some people might only interested in contacts between residues and pay no attention
-to the details regarding the atom name. This can also be achieved by supplying an analysis
-function to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
+to the details regarding the atom name. However, since multiple water bridges can
+exist between two residues, which sometimes can give a result such that the water
+bridge between two residues exists 300% of the time. Though this might be a desirable
+result for some people, others might want the water bridge between two residues to be
+only counted once per frame. This can also be achieved by supplying an analysis function
+to :meth:`~WaterBridgeAnalysis.count_by_type`. ::
 
   def analysis(current, output):
       '''This function defines how the type of water bridge should be specified.
@@ -289,9 +304,7 @@ function to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
             selection 1 to selection 2.
         output : dict
             A dictionary where the key is the type of the water bridge and the value
-            is the number of this type of water bridge.
-            Acknowledging the new water bridge, this variable will be *modified* in place
-            so that this function is not retruning any variable.
+            is the weight of this type of water bridge.
       '''
 
       s1_index, to_index, (s1_resname, s1_resid, s1_name),
@@ -300,7 +313,9 @@ function to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
       (s2_resname, s2_resid, s2_name), dist, angle = current[-1]
       # s1_name and s2_name are not included in the key
       key = (s1_resname, s1_resid, s2_resname, s2_resid)
-      output[key] += 1
+      
+      # Each residue is only counted once per frame
+      output[key] = 1
 
   w.count_by_type(analysis_func=analysis)
 
@@ -322,9 +337,7 @@ function to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
             selection 1 to selection 2.
         output : dict
             A dictionary where the key is the type of the water bridge and the value
-            is the number of this type of water bridge.
-            Acknowledging the new water bridge, this variable will be *modified* in place
-            so that this function is not retruning any variable.
+            is the weight of this type of water bridge.
       '''
 
       s1_index, to_index, (s1_resname, s1_resid, s1_name),
@@ -359,8 +372,6 @@ interactions can be discarded by supplying an analysis function to
         output : dict
             A dictionary where the key is the type of the water bridge and the value
             is the number of this type of water bridge.
-            Acknowledging the new water bridge, this variable will be *modified* in place
-            so that this function is not retruning any variable.
       '''
 
       s1_index, to_index, (s1_resname, s1_resid, s1_name),
@@ -427,9 +438,6 @@ The analysis function can be written as::
         output : dict
             A dictionary where the key is the type of the water bridge and the value
             is the number of this type of water bridge.
-            Acknowledging the new water bridge, this variable will be *modified* in place
-            so that this function is not retruning any variable.
-            The output of this frame is the sum of all the values in this dictionary.
       '''
 
       # decompose the first hydrogen bond.
@@ -1225,8 +1233,11 @@ class WaterBridgeAnalysis(AnalysisBase):
             length = len(self._network)
             result_dict = defaultdict(int)
             for frame in self._network:
-                self._traverse_water_network(frame, [], analysis_func=analysis_func, output=result_dict,
+                frame_dict = defaultdict(int)
+                self._traverse_water_network(frame, [], analysis_func=analysis_func, output=frame_dict,
                                              link_func=self._full_link, **kwargs)
+                for key, value in frame_dict.items():
+                    result_dict[key] += frame_dict[key]
 
             if output is 'combined':
                 result = [[i for i in key] for key in result_dict]
