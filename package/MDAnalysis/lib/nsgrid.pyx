@@ -77,6 +77,7 @@ Classes
 # Used to handle memory allocation
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from libc.math cimport sqrt
+#from libc.stdio cimport printf
 import numpy as np
 from libcpp.vector cimport vector
 cimport numpy as np
@@ -624,9 +625,27 @@ cdef class _NSGrid(object):
         Assumes the coordinate is already inside the brick shaped box.
         Return wrong cell-id if this is not the case
         """
-        return <ns_int> (coord[ZZ] / self.cellsize[ZZ]) * (self.cell_offsets[ZZ]) +\
-               <ns_int> (coord[YY] / self.cellsize[YY]) * self.cell_offsets[YY] + \
-               <ns_int> (coord[XX] / self.cellsize[XX])
+        cdef ns_int xpos, ypos, zpos
+
+        xpos = <ns_int> (coord[XX] / self.cellsize[XX])
+        if xpos >= self.ncells[XX]:
+            xpos = 0
+        ypos = <ns_int> (coord[YY] / self.cellsize[YY])
+        if ypos >= self.ncells[YY]:
+            ypos = 0
+        zpos = <ns_int> (coord[ZZ] / self.cellsize[ZZ])
+        if zpos >= self.ncells[ZZ]:
+            zpos = 0
+
+        #if (xpos >= self.ncells[XX] or
+        #    ypos >= self.ncells[YY] or
+        #    zpos >= self.ncells[ZZ]):
+        #    printf("out of bounds: %d %d %d\n", xpos, ypos, zpos)
+        #    printf('ncells: %d %d %d\n', self.ncells[XX], self.ncells[YY], self.ncells[ZZ])
+        #    printf("coordinate: %f %f %f\n", coord[XX], coord[YY], coord[ZZ])
+        #    printf("cellsize: %f %f %f\n", self.cellsize[XX], self.cellsize[YY], self.cellsize[ZZ])
+
+        return zpos * self.cell_offsets[ZZ] + ypos * self.cell_offsets[YY] + xpos
 
     cdef bint cellid2cellxyz(self, ns_int cellid, ivec cellxyz) nogil:
         """Finds actual cell position `(x, y, z)` from a cell-id
