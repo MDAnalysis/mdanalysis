@@ -36,3 +36,6 @@ package/doc/html/
 MDAnalysis.log
 # Ignore the authors.py files as they are generated files
 authors.py
+
+# Ignore generated documentation stubs
+package/doc/sphinx/source/documentation_pages/core/*.txt

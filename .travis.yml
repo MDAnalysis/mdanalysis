@@ -54,6 +54,7 @@ matrix:
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
            INSTALL_HOLE="false"
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx-sitemap"
+           CONDA_DEPENDENCIES="${CONDA_DEPENDENCIES} tabulate"
 
     - env: NAME="Lint"
            PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"

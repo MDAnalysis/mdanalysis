@@ -14,9 +14,17 @@
 import sys
 import os
 import platform
+import subprocess
 
 # http://alabaster.readthedocs.io/en/latest/
 import alabaster
+
+# Generate documentation stubs for transplanted methods. This is needed because
+# methods transplanted from topology attributes into topology components and
+# groups (e.g. Atom, AtomGroup) do not appear in the documentation of the
+# component or group otherwise.
+subprocess.call('./transplant_stub.py')
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
