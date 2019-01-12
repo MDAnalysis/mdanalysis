@@ -61,6 +61,7 @@ class TransplantedMethod:
 
 
 def clear_citations(doc):
+    return doc
     citation_re = re.compile(r'^ *\.\. \[[^]]+\]')
 
     result = []
