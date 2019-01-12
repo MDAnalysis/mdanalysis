@@ -117,7 +117,7 @@ for target_key, target_dict in targets.items():
         target_name = target_key
     table = []
     for attribute_key, method_list in target_dict.items():
-        table.append([f'**Requires {attribute_key}**', ''])
+        table.append(['**Requires {}**'.format(attribute_key), ''])
         for method in method_list:
             table.append([method.name, method.short_desc])
     print(tabulate.tabulate(table, tablefmt='grid'))
@@ -137,9 +137,9 @@ for target_key, target_dict in targets.items():
     with open(file_name, 'w') as outfile:
         table = []
         for attribute_key, method_list in target_dict.items():
-            table.append([f'**Requires {attribute_key}**', ''])
+            table.append(['**Requires {}**'.format(attribute_key), ''])
             for method in method_list:
-                table.append([f':meth:`{method.name}`', method.short_desc])
+                table.append([':meth:`{}`'.format(method.name), method.short_desc])
         print(tabulate.tabulate(table, tablefmt='grid'), file=outfile)
 
         for attribute_key, method_list in target_dict.items():
