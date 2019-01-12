@@ -8,11 +8,13 @@ import os
 import textwrap
 import re
 import inspect
-import MDAnalysis as mda
 import tabulate
 
 from sphinx.ext.napoleon import NumpyDocstring
 
+# Make sure we use the same version of MDAnalysis as sphinx
+sys.path.insert(0, os.path.abspath('../../..'))
+import MDAnalysis as mda
 
 class TransplantedMethod:
     def __init__(self, method):
