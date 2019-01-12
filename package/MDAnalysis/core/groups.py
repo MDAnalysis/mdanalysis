@@ -435,6 +435,9 @@ class GroupBase(_MutableBase):
     |                               |            | that are part of ``s`` or  |
     |                               |            | ``t`` but not both         |
     +-------------------------------+------------+----------------------------+
+
+    .. include:: GroupBase.txt
+
     """
     def __init__(self, *args):
         try:
@@ -1781,6 +1784,8 @@ class AtomGroup(GroupBase):
     new :class:`AtomGroup` for multiple matches.  This makes it difficult to use
     the feature consistently in scripts.
 
+    .. include:: AtomGroup.txt
+
 
     See Also
     --------
@@ -2702,6 +2707,9 @@ class ResidueGroup(GroupBase):
        *Instant selectors* of Segments will be removed in the 1.0 release.
        See :ref:`Instant selectors <instance-selectors>` for details and
        alternatives.
+
+    .. include:: ResidueGroup.txt
+
     """
 
     @property
@@ -2864,6 +2872,7 @@ class SegmentGroup(GroupBase):
        *Instant selectors* of Segments will be removed in the 1.0 release.
        See :ref:`Instant selectors <instance-selectors>` for details and
        alternatives.
+
     """
 
     @property
@@ -3102,6 +3111,9 @@ class Atom(ComponentBase):
     :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` components are obtained
     from :class:`ComponentBase`, so this class only includes ad-hoc methods
     specific to :class:`Atoms<Atom>`.
+
+    .. include:: Atom.txt
+
     """
     def __getattr__(self, attr):
         """Try and catch known attributes and give better error message"""
@@ -3241,6 +3253,9 @@ class Residue(ComponentBase):
     :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` components are obtained
     from :class:`ComponentBase`, so this class only includes ad-hoc methods
     specific to :class:`Residues<Residue>`.
+
+    .. include:: Residue.txt
+
     """
     def __repr__(self):
         me = '<Residue'
@@ -3288,6 +3303,7 @@ class Segment(ComponentBase):
        *Instant selectors* of :class:`Segments<Segment>` will be removed in the
        1.0 release. See :ref:`Instant selectors <instance-selectors>` for
        details and alternatives.
+
     """
     def __repr__(self):
         me = '<Segment'
