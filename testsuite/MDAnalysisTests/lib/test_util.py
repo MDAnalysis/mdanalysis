@@ -1167,7 +1167,6 @@ class TestWarnIfNotUnique(object):
     """Tests concerning the decorator @warn_if_not_uniue
     """
 
-    @pytest.fixture()
     def warn_msg(self, func, group, group_name):
         msg = ("{}.{}(): {} {} contains duplicates. Results might be "
                "biased!".format(group.__class__.__name__, func.__name__,
