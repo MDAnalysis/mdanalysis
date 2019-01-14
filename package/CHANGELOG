@@ -19,6 +19,7 @@ mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
   * 0.20.0
 
 Changes
+  * added official support for Python 3.7 (PR #1963)
   * stopped official support of Python 3.4 (#2066, PR #2174)
 
 Fixes
