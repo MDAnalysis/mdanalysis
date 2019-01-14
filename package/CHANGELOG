@@ -15,10 +15,11 @@ The rules for this file:
 ------------------------------------------------------------------------------
 
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
-         dpadula85, jbarnoud, manuel.nuno.melo
+         dpadula85, jbarnoud, manuel.nuno.melo, ayushsuhane
   * 0.19.3
 
 Fixes
+  * fixed the segmentation fault in capped_distances (Issue #2164, PR #2169)
   * fixed gcc support in MacOS (Issue #2162, PR #2163)
   * fixed error when reading bonds/angles/dihedrals from gsd file (Issue #2152,
     PR #2154)

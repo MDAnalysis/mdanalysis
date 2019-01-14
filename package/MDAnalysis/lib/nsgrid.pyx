@@ -901,8 +901,6 @@ cdef class FastNS(object):
                                     if probe[m] > self.box.c_pbcbox.box[m][m]:
                                         check = False
                                         break
-                                    if probe[m] == self.box.c_pbcbox.box[m][m]:
-                                        probe[m] -= 0.01*self.grid.cellsize[m]
                             if not check:
                                 continue
                             # Get the cell index corresponding to the probe
@@ -984,8 +982,6 @@ cdef class FastNS(object):
                                     elif probe[m] > self.box.c_pbcbox.box[m][m]:
                                         check = False
                                         break
-                                    if probe[m] == self.box.c_pbcbox.box[m][m]:
-                                        probe[m] -= 0.01*self.grid.cellsize[m]
                             if not check:
                                 continue
                             # Get the cell index corresponding to the probe
