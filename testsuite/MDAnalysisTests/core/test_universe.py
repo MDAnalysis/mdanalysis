@@ -346,7 +346,7 @@ class TestGuessBonds(object):
     """
     @pytest.fixture()
     def vdw(self):
-        return {'A': 1.05, 'B': 0.4}
+        return {'A': 1.4, 'B': 0.5}
 
     def _check_universe(self, u):
         """Verify that the Universe is created correctly"""
