@@ -157,7 +157,7 @@ def guess_bonds(atoms, coords, box=None, **kwargs):
          coordinates of the atoms (i.e., `AtomGroup.positions)`)
     fudge_factor : float, optional
         The factor by which atoms must overlap eachother to be considered a
-        bond.  Larger values will increase the number of bonds found. [0.72]
+        bond.  Larger values will increase the number of bonds found. [0.55]
     vdwradii : dict, optional
         To supply custom vdwradii for atoms in the algorithm. Must be a dict
         of format {type:radii}. The default table of van der Waals radii is
