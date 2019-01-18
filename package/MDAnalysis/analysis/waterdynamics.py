@@ -1273,14 +1273,41 @@ class SurvivalProbability(object):
         if tau_max > (stop - start):
             raise ValueError("Too few frames selected for given tau_max.")
 
-        # load all frames to an array of sets
+        # preload the frames (selected ids) to a list of sets
         selected_ids = []
-        for ts in self.universe.trajectory[start:stop]:
-            self.print(verbose, "Loading frame:", ts)
-            selected_ids.append(set(self.universe.select_atoms(self.selection).ids))
+        if step <= tau_max + 1:
+            # load all frames
+            for ts in self.universe.trajectory[start:stop]:
+                self.print(verbose, "Loading frame:", ts)
+                selected_ids.append(set(self.universe.select_atoms(self.selection).ids))
+        else:
+            # skip frames that will not be used
+            # Example: step 5 and tau 2: L, L, L, S, S, L, L, L, S, S, ... with L = Load, and S = Skip
+            loaded_counter = 0
+            no_of_frames_to_load = tau_max + 1
+            skipped = 0
+            no_of_frames_to_skip = step - (tau_max + 1)
+            for ts in self.universe.trajectory[start:stop]:
+                if skipped == no_of_frames_to_skip:
+                    skipped = 0
+                    loaded_counter = 0
+
+                if loaded_counter == no_of_frames_to_load:
+                    self.print(verbose, "Skipping loading frame:", ts)
+                    skipped += 1
+                    continue
+
+                self.print(verbose, "Loading frame:", ts)
+                selected_ids.append(set(self.universe.select_atoms(self.selection).ids))
+
+                loaded_counter += 1
+
 
         tau_timeseries = np.arange(1, tau_max + 1)
         sp_timeseries_data = [[] for _ in range(tau_max)]
+
+        # frames not analysed are skipped because they were not loaded
+        step = tau_max + 1 if step >= (tau_max + 1) else step
 
         for t in range(0, len(selected_ids), step):
             Nt = len(selected_ids[t])

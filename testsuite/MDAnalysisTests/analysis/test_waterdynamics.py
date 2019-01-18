@@ -31,7 +31,7 @@ import pytest
 import numpy as np
 from mock import patch
 from mock import Mock
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_almost_equal, assert_equal
 
 SELECTION1 = "byres name OH2"
 SELECTION2 = "byres name P1"
@@ -120,3 +120,15 @@ def test_SurvivalProbability_alwaysPresent(universe):
         sp = waterdynamics.SurvivalProbability(universe, "")
         sp.run(tau_max=3, start=0, stop=6)
         assert all(np.equal(sp.sp_timeseries, 1))
+
+
+def test_SurvivalProbability_stepLargerThanDtmax(universe):
+    # Testing if the frames are skipped correctly
+    with patch.object(universe, 'select_atoms', return_value=Mock(ids=(1,))) as select_atoms_mock:
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        sp.run(tau_max=2, step=5, stop=9, verbose=True)
+        assert_equal(sp.sp_timeseries, [1, 1])
+        # with tau_max=2 for all the frames we only read 6 of them
+        # this is because the frames which are not used are skipped, and therefore 'select_atoms'
+        assert universe.trajectory.n_frames > 6
+        assert_equal(select_atoms_mock.call_count, 6)
