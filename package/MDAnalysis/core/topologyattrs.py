@@ -675,6 +675,10 @@ class RecordTypes(AtomAttr):
     """For PDB-like formats, indicates if ATOM or HETATM
 
     Defaults to 'ATOM'
+
+    .. versionchanged:: 0.20.0
+       Can now initialise with boolean array, where True will
+       correspond to 'ATOM', False to 'HETATM'
     """
     # internally encodes {True: 'ATOM', False: 'HETATM'}
     attrname = 'record_types'
@@ -682,7 +686,10 @@ class RecordTypes(AtomAttr):
     per_object = 'atom'
 
     def __init__(self, values, guessed=False):
-        self.values = np.where(values == 'ATOM', True, False)
+        if values.dtype == bool:
+            self.values = values
+        else:
+            self.values = np.where(values == 'ATOM', True, False)
         self._guessed = guessed
 
     @staticmethod
