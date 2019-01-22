@@ -2232,6 +2232,7 @@ class AtomGroup(GroupBase):
             record_type *record_type*
                 for selecting either ATOM or HETATM from PDB-like files.
                 e.g. ``select_atoms('name CA and not record_type HETATM')``
+
         **Boolean**
 
             not
