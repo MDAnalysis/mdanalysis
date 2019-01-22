@@ -652,8 +652,9 @@ class GroupBase(_MutableBase):
         """Weighted center of (compounds of) the group
 
         Computes the weighted center of :class:`Atoms<Atom>` in the group.
-        Weighted centers per :class:`Residue` or per :class:`Segment` can be
-        obtained by setting the `compound` parameter accordingly.
+        Weighted centers per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
 
         Parameters
         ----------
@@ -663,17 +664,18 @@ class GroupBase(_MutableBase):
         pbc : bool or None, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation. If ``True`` and `compound` is
-            ``'segments'`` or ``'residues'``, the center of each compound will
-            be calculated without moving any :class:`Atoms<Atom>` to keep the
-            compounds intact. Instead, the resulting position vectors will be
-            moved to the primary unit cell after calculation.
-        compound : {'group', 'segments', 'residues'}, optional
+            ``'segments'``, ``'residues'``, ``'molecules'``, or ``'fragments'``,
+            the center of each compound will be calculated without moving any
+            :class:`Atoms<Atom>` to keep the compounds intact. Instead, the
+            resulting position vectors will be moved to the primary unit cell
+            after calculation.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the weighted center of all atoms in the group will
             be returned as a single position vector. Else, the weighted centers
-            of each :class:`Segment` or :class:`Residue` will be returned as an
-            array of position vectors, i.e. a 2d array. Note that, in any case,
-            *only* the positions of :class:`Atoms<Atom>` *belonging to the
-            group* will be taken into account.
+            of each :class:`Segment`, :class:`Residue`, molecule, or fragment
+            will be returned as an array of position vectors, i.e. a 2d array.
+            Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
+            *belonging to the group* will be taken into account.
 
         Returns
         -------
@@ -681,9 +683,9 @@ class GroupBase(_MutableBase):
             Position vector(s) of the weighted center(s) of the group.
             If `compound` was set to ``'group'``, the output will be a single
             position vector.
-            If `compound` was set to ``'segments'`` or ``'residues'``, the
-            output will be a 2d array of shape ``(n, 3)`` where ``n`` is the
-            number of compounds.
+            If `compound` was set to ``'segments'``, ``'residues'``, 
+            ``'molecules'``, or ``'fragments'``, the output will be a 2d array
+            of shape ``(n, 3)`` where ``n`` is the number of compounds.
 
         Examples
         --------
@@ -705,6 +707,8 @@ class GroupBase(_MutableBase):
 
 
         .. versionchanged:: 0.19.0 Added `compound` parameter
+        .. versionchanged:: 0.20.0 Added `'molecules'` and `'fragments'`
+            compounds
         """
 
         if pbc is None:
@@ -715,7 +719,8 @@ class GroupBase(_MutableBase):
         # enforce calculations in double precision:
         dtype = np.float64
 
-        if compound.lower() == 'group':
+        comp = compound.lower()
+        if comp == 'group':
             if pbc:
                 coords = atoms.pack_into_box(inplace=False)
             else:
@@ -726,16 +731,26 @@ class GroupBase(_MutableBase):
             else:
                 weights = weights.astype(dtype, copy=False)
             return np.average(coords, weights=weights, axis=0)
-        elif compound.lower() == 'residues':
+        elif comp == 'residues':
             compound_indices = atoms.resindices
-            n_compounds = atoms.n_residues
-        elif compound.lower() == 'segments':
+        elif comp == 'segments':
             compound_indices = atoms.segindices
-            n_compounds = atoms.n_segments
+        elif comp == 'molecules':
+            try:
+                compound_indices = atoms.molnums
+            except AttributeError:
+                raise NoDataError("Cannot use compound='molecules': "
+                                  "No molecule information in topology.")
+        elif comp == 'fragments':
+            try:
+                compound_indices = atoms.fragnums
+            except AttributeError:
+                raise NoDataError("Cannot use compound='fragments': "
+                                  "No bond information in topology.")
         else:
             raise ValueError("Unrecognized compound definition: {}\nPlease use"
-                             " one of 'group', 'residues', or 'segments'."
-                             "".format(compound))
+                             " one of 'group', 'residues', 'segments', "
+                             "'molecules', or 'fragments'.".format(compound))
 
         # Sort positions and weights by compound index and promote to dtype if
         # required:
@@ -747,12 +762,13 @@ class GroupBase(_MutableBase):
         else:
             weights = weights.astype(dtype, copy=False)
             weights = weights[sort_indices]
-        # Allocate output array:
-        centers = np.zeros((n_compounds, 3), dtype=dtype)
         # Get sizes of compounds:
         unique_compound_indices, compound_sizes = np.unique(compound_indices,
                                                             return_counts=True)
+        n_compounds = len(unique_compound_indices)
         unique_compound_sizes = unique_int_1d(compound_sizes)
+        # Allocate output array:
+        centers = np.zeros((n_compounds, 3), dtype=dtype)
         # Compute centers per compound for each compound size:
         for compound_size in unique_compound_sizes:
             compound_mask = compound_sizes == compound_size
@@ -788,7 +804,7 @@ class GroupBase(_MutableBase):
             be calculated without moving any :class:`Atoms<Atom>` to keep the
             compounds intact. Instead, the resulting position vectors will be
             moved to the primary unit cell after calculation.
-        compound : {'group', 'segments', 'residues'}, optional
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the center of geometry of all :class:`Atoms<Atom>`
             in the group will be returned as a single position vector. Else, the
             centers of geometry of each :class:`Segment` or :class:`Residue`
@@ -814,6 +830,8 @@ class GroupBase(_MutableBase):
 
         .. versionchanged:: 0.8 Added `pbc` keyword
         .. versionchanged:: 0.19.0 Added `compound` parameter
+        .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
+            compounds
         """
         return self.center(None, pbc=pbc, compound=compound)
 

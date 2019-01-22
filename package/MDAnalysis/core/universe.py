@@ -1012,9 +1012,9 @@ class Universe(object):
         frags = tuple([AtomGroup(np.sort(ix), self) for ix in frag_indices])
 
         fragdict = {}
-        for f in frags:
+        for i, f in enumerate(frags):
             for a in f:
-                fragdict[a] = f
+                fragdict[a] = (i, f)
 
         return fragdict
 

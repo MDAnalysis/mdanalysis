@@ -799,13 +799,13 @@ class Masses(AtomAttr):
             atoms to keep the compounds intact. Instead, the resulting
             center-of-mass position vectors will be moved to the primary unit
             cell after calculation.
-        compound : {'group', 'segments', 'residues'}, optional
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If 'group', the center of mass of all atoms in the atomgroup will
             be returned as a single position vector. Else, the centers of mass
-            of each segment or residue will be returned as an array of position
-            vectors, i.e. a 2d array. Note that, in any case, *only* the
-            positions of atoms *belonging to the atomgroup* will be
-            taken into account.
+            of each :class:`Segment`, :class:`Residue`, molecule, or fragment
+            will be returned as an array of position vectors, i.e. a 2d array.
+            Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
+            *belonging to the group* will be taken into account.
 
         Returns
         -------
@@ -825,6 +825,8 @@ class Masses(AtomAttr):
 
         .. versionchanged:: 0.8 Added `pbc` parameter
         .. versionchanged:: 0.19.0 Added `compound` parameter
+        .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
+            compounds
         """
         atoms = group.atoms
         return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound)
@@ -1681,12 +1683,29 @@ class Bonds(_Connection):
         ('bonded_atoms', property(bonded_atoms, None, None,
                                   bonded_atoms.__doc__)))
 
+    def fragnum(self):
+        """The number (ID) of the fragment this Atom is part of
+
+        .. versionadded:: 0.20.0
+        """
+        return self.universe._fragdict[self][0]
+
+    def fragnums(self):
+        """1d-numpy array of fragment numbers (IDs).
+
+        Contains all fragment numbers of all Atoms in this AtomGroup.
+
+        .. versionadded 0.20.0
+        """
+        fragdict = self.universe._fragdict
+        return np.array([fragdict[a][0] for a in self], dtype=np.int64)
+
     def fragment(self):
         """The fragment that this Atom is part of
 
         .. versionadded:: 0.9.0
         """
-        return self.universe._fragdict[self]
+        return self.universe._fragdict[self][1]
 
     def fragments(self):
         """Read-only list of fragments.
@@ -1706,9 +1725,17 @@ class Bonds(_Connection):
         ('fragment', property(fragment, None, None,
                               fragment.__doc__)))
 
+    transplants[Atom].append(
+        ('fragnum', property(fragnum, None, None,
+                              fragnum.__doc__)))
+
     transplants[AtomGroup].append(
         ('fragments', property(fragments, None, None,
                                fragments.__doc__)))
+
+    transplants[AtomGroup].append(
+        ('fragnums', property(fragnums, None, None,
+                              fragnums.__doc__)))
 
 
 class Angles(_Connection):
