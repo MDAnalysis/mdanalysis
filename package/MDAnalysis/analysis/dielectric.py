@@ -49,20 +49,12 @@ from MDAnalysis.units import constants, convert
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.lib.mdamath import make_whole
 from MDAnalysis.due import due, Doi
-<<<<<<< HEAD
 from MDAnalysis.exceptions import NoDataError
 
 due.cite(Doi("10.1080/00268978300102721"),
          description="Dielectric analysis",
          path="MDAnalysis.analysis.dielectric",
          cite_module=True)
-=======
-
-due.cite(Doi("10.1080/00268978300102721"),
-description="Dielectric analysis",
-path="MDAnalysis.analysis.dielectric",
-cite_module=True)
->>>>>>> 84176f7a2... Added option for make_whole + better docu
 del Doi
 
 class DielectricConstant(AnalysisBase):
@@ -127,10 +119,6 @@ class DielectricConstant(AnalysisBase):
                                       "systems with free charges are not available!")
 
         self.volume = 0
-<<<<<<< HEAD
-=======
-
->>>>>>> 84176f7a2... Added option for make_whole + better docu
         # Dictionary containing results
         self.results = {"M":  np.zeros(3),
                         "M2": np.zeros(3),
