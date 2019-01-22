@@ -549,6 +549,12 @@ class AtomTypeSelection(StringSelection):
     field = 'types'
 
 
+class RecordTypeSelection(StringSelection):
+    """Select atoms based on 'record_type' attribute"""
+    token = 'record_type'
+    field = 'record_types'
+
+
 class AtomICodeSelection(StringSelection):
     """Select atoms based on icode attribute"""
     token = 'icode'
