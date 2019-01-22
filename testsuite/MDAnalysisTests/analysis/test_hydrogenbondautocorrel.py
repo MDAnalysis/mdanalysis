@@ -213,7 +213,7 @@ class TestHydrogenBondAutocorrel(object):
                      bond_type='continuous',
                      sample_time=0.06,
         )
-        assert hbond.d == oxygens
+        assert hbond.d == nitrogens
 
     def test_save(self, u, hydrogens, oxygens, nitrogens, tmpdir):
         hbond = HBAC(u,
