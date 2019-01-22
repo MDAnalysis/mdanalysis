@@ -707,7 +707,7 @@ class GroupBase(_MutableBase):
 
 
         .. versionchanged:: 0.19.0 Added `compound` parameter
-        .. versionchanged:: 0.20.0 Added `'molecules'` and `'fragments'`
+        .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         """
 
@@ -788,12 +788,12 @@ class GroupBase(_MutableBase):
 
     @warn_if_not_unique
     def center_of_geometry(self, pbc=None, compound='group'):
-        """Center of geometry (also known as centroid) of the group.
+        """Center of geometry of (compounds of) the group.
 
         Computes the center of geometry (a.k.a. centroid) of
         :class:`Atoms<Atom>` in the group. Centers of geometry per
-        :class:`Residue` or per :class:`Segment` can be obtained by setting the
-        `compound` parameter accordingly.
+        :class:`Residue`, :class:`Segment`, molecule, or fragment can be
+        obtained by setting the `compound` parameter accordingly.
 
         Parameters
         ----------
@@ -1827,11 +1827,12 @@ class AtomGroup(GroupBase):
         # REMOVE in 1.0
         #
         # is this a known attribute failure?
-        if attr in ('fragments',):  # TODO: Generalise this to cover many attributes
+        if attr in ('fragments', 'fragnums'):  # TODO: Generalise this to cover many attributes
             # eg:
             # if attr in _ATTR_ERRORS:
             # raise NDE(_ATTR_ERRORS[attr])
-            raise NoDataError("AtomGroup has no fragments; this requires Bonds")
+            raise NoDataError("AtomGroup has no {}; this requires Bonds"
+                              "".format(attr))
         elif hasattr(self.universe._topology, 'names'):
             # Ugly hack to make multiple __getattr__s work
             try:
@@ -3123,8 +3124,9 @@ class Atom(ComponentBase):
     """
     def __getattr__(self, attr):
         """Try and catch known attributes and give better error message"""
-        if attr in ('fragment',):
-            raise NoDataError("Atom has no fragment data, this requires Bonds")
+        if attr in ('fragment', 'fragnum'):
+            raise NoDataError("Atom has no {} data, this requires Bonds"
+                              "".format(attr))
         else:
             raise AttributeError("{cls} has no attribute {attr}".format(
                 cls=self.__class__.__name__, attr=attr))

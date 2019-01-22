@@ -1004,6 +1004,8 @@ class Universe(object):
            by their first atom index so their order is predictable.
         .. versionchanged:: 0.19.0
            Uses faster C++ implementation
+        .. versionchanged:: 0.20.0
+           Added fragment number to fragdict items
         """
         atoms = self.atoms.ix
         bonds = self.atoms.bonds.to_indices()

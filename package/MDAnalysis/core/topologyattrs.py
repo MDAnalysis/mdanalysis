@@ -785,9 +785,10 @@ class Masses(AtomAttr):
     def center_of_mass(group, pbc=None, compound='group'):
         """Center of mass of (compounds of) the group.
 
-        Computes the center of mass of atoms in the group.
-        Centers of mass per residue or per segment can be obtained by setting
-        the `compound` parameter accordingly.
+        Computes the center of mass of :class:`Atoms<Atom>` in the group.
+        Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
 
         Parameters
         ----------
@@ -819,8 +820,10 @@ class Masses(AtomAttr):
 
         Note
         ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
+        * This method can only be accessed if the underlying topology has
+          information about atomic masses.
+        * The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+          ``True`` allows the *pbc* flag to be used by default.
 
 
         .. versionchanged:: 0.8 Added `pbc` parameter
@@ -1675,7 +1678,9 @@ class Bonds(_Connection):
     transplants = defaultdict(list)
 
     def bonded_atoms(self):
-        """An AtomGroup of all atoms bonded to this Atom"""
+        """An :class:`~MDAnalysis.core.groups.AtomGroup` of all
+        :class:`Atoms<MDAnalysis.core.groups.Atom>` bonded to this
+        :class:`~MDAnalysis.core.groups.Atom`."""
         idx = [b.partner(self).index for b in self.bonds]
         return self.universe.atoms[idx]
 
@@ -1684,37 +1689,88 @@ class Bonds(_Connection):
                                   bonded_atoms.__doc__)))
 
     def fragnum(self):
-        """The number (ID) of the fragment this Atom is part of
+        """The number (ID) of the
+        :class:`~MDAnalysis.core.topologyattrs.Bonds.fragment` this
+        :class:`~MDAnalysis.core.groups.Atom` is part of.
+
+        Note
+        ----
+        This property is only accessible if the underlying topology contains
+        bond information.
+
 
         .. versionadded:: 0.20.0
         """
         return self.universe._fragdict[self][0]
 
     def fragnums(self):
-        """1d-numpy array of fragment numbers (IDs).
+        """The
+        :class:`fragment numbers<MDAnalysis.core.topologyattrs.Bonds.fragnum>`
+        of all :class:`Atoms<MDAnalysis.core.groups.Atom>` in this
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
 
-        Contains all fragment numbers of all Atoms in this AtomGroup.
+        A :class:`numpy.ndarray` with
+        :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``,)``
+        and :attr:`~numpy.ndarray.dtype`\ ``=numpy.int64``.
 
-        .. versionadded 0.20.0
+        Note
+        ----
+        This property is only accessible if the underlying topology contains
+        bond information.
+
+
+        .. versionadded:: 0.20.0
         """
         fragdict = self.universe._fragdict
         return np.array([fragdict[a][0] for a in self], dtype=np.int64)
 
     def fragment(self):
-        """The fragment that this Atom is part of
+        """An :class:`~MDAnalysis.core.groups.AtomGroup` representing the
+        fragment this :class:`~MDAnalysis.core.groups.Atom` is part of.
+
+        A fragment is a
+        :class:`group of atoms<MDAnalysis.core.groups.AtomGroup>` which are
+        interconnected by :class:`~MDAnalysis.core.topologyattrs.Bonds`, i.e.,
+        there exists a path along one
+        or more :class:`~MDAnalysis.core.topologyattrs.Bonds` between any pair
+        of :class:`Atoms<MDAnalysis.core.groups.Atom>`
+        within a fragment. Thus, a fragment typically corresponds to a molecule.
+
+        Note
+        ----
+        This property is only accessible if the underlying topology contains
+        bond information.
+
 
         .. versionadded:: 0.9.0
         """
         return self.universe._fragdict[self][1]
 
     def fragments(self):
-        """Read-only list of fragments.
+        """Read-only :class:`tuple` of
+        :class:`fragments<MDAnalysis.core.topologyattrs.Bonds.fragment>`.
 
-        Contains all fragments that any Atom in this AtomGroup is
-        part of, the contents of the fragments may extend beyond the
-        contents of this AtomGroup.
+        Contains all fragments that
+        any :class:`~MDAnalysis.core.groups.Atom` in this
+        :class:`~MDAnalysis.core.groups.AtomGroup` is part of.
 
-        .. versionadded 0.9.0
+        A fragment is a
+        :class:`group of atoms<MDAnalysis.core.groups.AtomGroup>` which are
+        interconnected by :class:`~MDAnalysis.core.topologyattrs.Bonds`, i.e.,
+        there exists a path along one
+        or more :class:`~MDAnalysis.core.topologyattrs.Bonds` between any pair
+        of :class:`Atoms<MDAnalysis.core.groups.Atom>`
+        within a fragment. Thus, a fragment typically corresponds to a molecule.
+
+        Note
+        ----
+        * This property is only accessible if the underlying topology contains
+          bond information.
+        * The contents of the fragments may extend beyond the contents of this
+          :class:`~MDAnalysis.core.groups.AtomGroup`.
+
+
+        .. versionadded:: 0.9.0
         """
         return tuple(sorted(
             set(a.fragment for a in self),
