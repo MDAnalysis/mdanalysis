@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -14,36 +14,20 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
-# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
+import MDAnalysis as mda
 
-__all__ = [
-    'align',
-    'base',
-    'contacts',
-    'density',
-    'distances',
-    'diffusionmap',
-    'dihedrals',
-    'distances',
-    'dielectric',
-    'gnm',
-    'hbonds',
-    'helix_analysis',
-    'hole2',
-    'hydrogenbonds',
-    'leaflet',
-    'lineardensity',
-    'msd',
-    'nuclinfo',
-    'polymer',
-    'pca',
-    'psa',
-    'rdf',
-    'rms',
-    'waterdynamics',
-]
+from MDAnalysisTests.datafiles import waterPSF, waterDCD
+from MDAnalysis.analysis.dielectric import DielectricConstant
+from numpy.testing import assert_almost_equal
+
+def test_isotropic():
+    universe = mda.Universe(waterPSF, waterDCD)
+
+    eps = DielectricConstant(universe.atoms).run()
+    assert_almost_equal(1.001967, round(eps.results['eps_mean'], 6))
