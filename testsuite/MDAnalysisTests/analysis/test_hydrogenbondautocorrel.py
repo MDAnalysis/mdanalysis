@@ -26,13 +26,18 @@ import pytest
 import six
 from six.moves import range
 
-from MDAnalysisTests.datafiles import TRZ, TRZ_psf
+from MDAnalysisTests.datafiles import (
+    TRZ, TRZ_psf,
+    waterPSF, waterDCD,
+    XYZ_mini,
+)
 from numpy.testing import assert_almost_equal
 import numpy as np
 import mock
 import os
 
 import MDAnalysis as mda
+from MDAnalysis.analysis import hbonds
 from MDAnalysis.analysis.hbonds import HydrogenBondAutoCorrel as HBAC
 
 
@@ -200,6 +205,16 @@ class TestHydrogenBondAutocorrel(object):
             np.array([0.33, 0.33, 5, 1, 0.1]),
         )
 
+    def test_auto_donors(self, u, hydrogens, oxygens, nitrogens):
+        hbond = HBAC(u,
+                     hydrogens=hydrogens,
+                     acceptors=oxygens,
+                     #donors=nitrogens,
+                     bond_type='continuous',
+                     sample_time=0.06,
+        )
+        assert hbond.d == oxygens
+
     def test_save(self, u, hydrogens, oxygens, nitrogens, tmpdir):
         hbond = HBAC(u,
                      hydrogens=hydrogens,
@@ -302,3 +317,21 @@ class TestHydrogenBondAutocorrel(object):
                      sample_time=0.06,
         )
         assert isinstance(repr(hbond), six.string_types)
+
+def test_find_donors():
+    u = mda.Universe(waterPSF, waterDCD)
+
+    H = u.select_atoms('name H*')
+
+    D = hbonds.find_hydrogen_donors(H)
+
+    assert len(H) == len(D)
+    # check each O is bonded to the corresponding H
+    for h_atom, o_atom in zip(H, D):
+        assert o_atom in h_atom.bonded_atoms
+
+def test_donors_nobonds():
+    u = mda.Universe(XYZ_mini)
+
+    with pytest.raises(mda.NoDataError):
+        hbonds.find_hydrogen_donors(u.atoms)
