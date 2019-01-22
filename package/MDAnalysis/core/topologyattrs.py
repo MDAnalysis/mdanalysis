@@ -677,37 +677,16 @@ class RecordTypes(AtomAttr):
     Defaults to 'ATOM'
 
     .. versionchanged:: 0.20.0
-       Can now initialise with boolean array, where True will
-       correspond to 'ATOM', False to 'HETATM'
+       Now stores array of dtype object rather than boolean mapping
     """
-    # internally encodes {True: 'ATOM', False: 'HETATM'}
     attrname = 'record_types'
     singular = 'record_type'
     per_object = 'atom'
-
-    def __init__(self, values, guessed=False):
-        if values.dtype == bool:
-            self.values = values
-        else:
-            self.values = np.where(values == 'ATOM', True, False)
-        self._guessed = guessed
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.array(['ATOM'] * na, dtype=object)
-
-    def get_atoms(self, atomgroup):
-        return np.where(self.values[atomgroup.ix], 'ATOM', 'HETATM')
-
-    @_check_length
-    def set_atoms(self, atomgroup, values):
-        self.values[atomgroup.ix] = np.where(values == 'ATOM', True, False)
-
-    def get_residues(self, rg):
-        return [self.get_atoms(r.atoms) for r in rg]
-
-    def get_segments(self, sg):
-        return [self.get_atoms(s.atoms) for s in sg]
 
 
 class ChainIDs(AtomAttr):
