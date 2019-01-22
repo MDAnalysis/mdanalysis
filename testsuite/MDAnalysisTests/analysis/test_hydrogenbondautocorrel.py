@@ -205,16 +205,6 @@ class TestHydrogenBondAutocorrel(object):
             np.array([0.33, 0.33, 5, 1, 0.1]),
         )
 
-    def test_auto_donors(self, u, hydrogens, oxygens, nitrogens):
-        hbond = HBAC(u,
-                     hydrogens=hydrogens,
-                     acceptors=oxygens,
-                     #donors=nitrogens,
-                     bond_type='continuous',
-                     sample_time=0.06,
-        )
-        assert hbond.d == nitrogens
-
     def test_save(self, u, hydrogens, oxygens, nitrogens, tmpdir):
         hbond = HBAC(u,
                      hydrogens=hydrogens,

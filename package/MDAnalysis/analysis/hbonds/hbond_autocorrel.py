@@ -138,7 +138,7 @@ Examples
 
 This example finds the continuous hydrogen bond lifetime between N-H..O in a
 polyamide system.  This will use the default geometric definition for hydrogen
-bonds of length 3.0 :math:`\\A` and angle 130 degrees.
+bonds of length 3.0 Å and angle of 130 degrees.
 It will observe a window of 2.0 ps (`sample_time`) and try to gather 1000
 sample point within this time window (this relies upon the trajectory being
 sampled frequently enough).  This process is repeated for 20 different start
@@ -266,10 +266,6 @@ class HydrogenBondAutoCorrel(object):
         Within each run, the number of frames to analyse [50]
     pbc : bool, optional
         Whether to consider periodic boundaries in calculations [``True``]
-
-
-    .. versionchanged:: 0.20.0
-       If donors are not given, an attempt to automatically find these is done
     """
 
     def __init__(self, universe,
@@ -291,11 +287,7 @@ class HydrogenBondAutoCorrel(object):
 
         self.h = hydrogens
         self.a = acceptors
-        if donors is not None:
-            self.d = donors
-        else:
-            # with fingers.crossed():
-            self.d = find_hydrogen_donors(hydrogens)
+        self.d = donors
         if not len(self.h) == len(self.d):
             raise ValueError("Donors and Hydrogen groups must be identical "
                              "length.  Try using `find_hydrogen_donors`.")
