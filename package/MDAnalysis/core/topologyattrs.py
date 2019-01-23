@@ -1701,7 +1701,7 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.20.0
         """
-        return self.universe._fragdict[self].ix
+        return self.universe._fragdict[self.ix].ix
 
     def fragindices(self):
         """The

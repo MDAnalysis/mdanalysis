@@ -687,6 +687,17 @@ class GroupBase(_MutableBase):
             ``'molecules'``, or ``'fragments'``, the output will be a 2d array
             of shape ``(n, 3)`` where ``n`` is the number of compounds.
 
+        Raises
+        ------
+        ValueError:
+            If `compound` is not one of ``'group'``, ``'segments'``,
+            ``'residues'``, ``'molecules'``, or ``'fragments'``.
+        NoDataError:
+            * If `compound` is ``'molecule'`` but the topology doesn't
+              contain molecule information (molnums).
+            * If `compound` is ``'fragments'`` but the topology doesn't
+              contain bonds.
+
         Examples
         --------
 
@@ -725,6 +736,9 @@ class GroupBase(_MutableBase):
                 coords = atoms.pack_into_box(inplace=False)
             else:
                 coords = atoms.positions
+            # Weights don't make sense if we have less than 2 atoms:
+            if len(self) < 2:
+                weights = None
             # promote coords or weights to dtype if required:
             if weights is None:
                 coords = coords.astype(dtype, copy=False)
@@ -774,6 +788,10 @@ class GroupBase(_MutableBase):
             compound_mask = compound_sizes == compound_size
             _compound_indices = unique_compound_indices[compound_mask]
             atoms_mask = np.in1d(compound_indices, _compound_indices)
+            # Skip computation for compound size < 2:
+            if compound_size < 2:
+                centers[compound_mask] = coords[atoms_mask].reshape((-1, 3))
+                continue
             _coords = coords[atoms_mask].reshape((-1, compound_size, 3))
             if weights is None:
                 _centers = _coords.mean(axis=1)
@@ -3124,7 +3142,7 @@ class Atom(ComponentBase):
     """
     def __getattr__(self, attr):
         """Try and catch known attributes and give better error message"""
-        if attr in ('fragment', 'fragindices'):
+        if attr in ('fragment', 'fragindex'):
             raise NoDataError("Atom has no {} data, this requires Bonds"
                               "".format(attr))
         else:
