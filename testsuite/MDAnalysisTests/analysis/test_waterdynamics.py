@@ -132,3 +132,11 @@ def test_SurvivalProbability_stepLargerThanDtmax(universe):
         # this is because the frames which are not used are skipped, and therefore 'select_atoms'
         assert universe.trajectory.n_frames > 6
         assert_equal(select_atoms_mock.call_count, 6)
+
+
+def test_SurvivalProbability_stepEqualDtMax(universe):
+    with patch.object(universe, 'select_atoms', return_value=Mock(ids=(1,))) as select_atoms_mock:
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        sp.run(tau_max=4, step=5, stop=9, verbose=True)
+        # all frames from 0, with 9 inclusive
+        assert_equal(select_atoms_mock.call_count, 10)
