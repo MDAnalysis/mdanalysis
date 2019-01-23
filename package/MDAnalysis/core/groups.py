@@ -743,7 +743,7 @@ class GroupBase(_MutableBase):
                                   "No molecule information in topology.")
         elif comp == 'fragments':
             try:
-                compound_indices = atoms.fragnums
+                compound_indices = atoms.fragindices
             except AttributeError:
                 raise NoDataError("Cannot use compound='fragments': "
                                   "No bond information in topology.")
@@ -1827,7 +1827,7 @@ class AtomGroup(GroupBase):
         # REMOVE in 1.0
         #
         # is this a known attribute failure?
-        if attr in ('fragments', 'fragnums'):  # TODO: Generalise this to cover many attributes
+        if attr in ('fragments', 'fragindices'):  # TODO: Generalise this to cover many attributes
             # eg:
             # if attr in _ATTR_ERRORS:
             # raise NDE(_ATTR_ERRORS[attr])
@@ -3124,7 +3124,7 @@ class Atom(ComponentBase):
     """
     def __getattr__(self, attr):
         """Try and catch known attributes and give better error message"""
-        if attr in ('fragment', 'fragnum'):
+        if attr in ('fragment', 'fragindices'):
             raise NoDataError("Atom has no {} data, this requires Bonds"
                               "".format(attr))
         else:

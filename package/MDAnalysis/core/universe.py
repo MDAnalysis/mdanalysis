@@ -89,6 +89,7 @@ import numpy as np
 import logging
 import copy
 import warnings
+import collections
 
 import MDAnalysis
 import sys
@@ -1005,7 +1006,9 @@ class Universe(object):
         .. versionchanged:: 0.19.0
            Uses faster C++ implementation
         .. versionchanged:: 0.20.0
-           Added fragment number to fragdict items
+           * _fragdict keys are now atom indices instead of Atoms
+           * _fragdict items are now a namedtuple ``fraginfo(ix, fragment)``
+             storing the fragindex ``ix`` along with the fragment.
         """
         atoms = self.atoms.ix
         bonds = self.atoms.bonds.to_indices()
@@ -1014,9 +1017,10 @@ class Universe(object):
         frags = tuple([AtomGroup(np.sort(ix), self) for ix in frag_indices])
 
         fragdict = {}
+        fraginfo = collections.namedtuple('fraginfo', 'ix, fragment')
         for i, f in enumerate(frags):
             for a in f:
-                fragdict[a] = (i, f)
+                fragdict[a.ix] = fraginfo(i, f)
 
         return fragdict
 

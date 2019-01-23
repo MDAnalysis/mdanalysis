@@ -1688,8 +1688,8 @@ class Bonds(_Connection):
         ('bonded_atoms', property(bonded_atoms, None, None,
                                   bonded_atoms.__doc__)))
 
-    def fragnum(self):
-        """The number (ID) of the
+    def fragindex(self):
+        """The index (ID) of the
         :class:`~MDAnalysis.core.topologyattrs.Bonds.fragment` this
         :class:`~MDAnalysis.core.groups.Atom` is part of.
 
@@ -1701,11 +1701,11 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.20.0
         """
-        return self.universe._fragdict[self][0]
+        return self.universe._fragdict[self].ix
 
-    def fragnums(self):
+    def fragindices(self):
         """The
-        :class:`fragment numbers<MDAnalysis.core.topologyattrs.Bonds.fragnum>`
+        :class:`fragment indices<MDAnalysis.core.topologyattrs.Bonds.fragindex>`
         of all :class:`Atoms<MDAnalysis.core.groups.Atom>` in this
         :class:`~MDAnalysis.core.groups.AtomGroup`.
 
@@ -1722,7 +1722,7 @@ class Bonds(_Connection):
         .. versionadded:: 0.20.0
         """
         fragdict = self.universe._fragdict
-        return np.array([fragdict[a][0] for a in self], dtype=np.int64)
+        return np.array([fragdict[aix].ix for aix in self.ix], dtype=np.int64)
 
     def fragment(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` representing the
@@ -1744,7 +1744,7 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.9.0
         """
-        return self.universe._fragdict[self][1]
+        return self.universe._fragdict[self.ix].fragment
 
     def fragments(self):
         """Read-only :class:`tuple` of
@@ -1772,26 +1772,25 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.9.0
         """
-        return tuple(sorted(
-            set(a.fragment for a in self),
-            key=lambda x: x[0].index
-        ))
+        fragdict = self.universe._fragdict
+        return tuple(sorted(set(fragdict[aix].fragment for aix in self.ix),
+                            key=lambda x: x[0].ix))
 
     transplants[Atom].append(
         ('fragment', property(fragment, None, None,
                               fragment.__doc__)))
 
     transplants[Atom].append(
-        ('fragnum', property(fragnum, None, None,
-                              fragnum.__doc__)))
+        ('fragindex', property(fragindex, None, None,
+                               fragindex.__doc__)))
 
     transplants[AtomGroup].append(
         ('fragments', property(fragments, None, None,
                                fragments.__doc__)))
 
     transplants[AtomGroup].append(
-        ('fragnums', property(fragnums, None, None,
-                              fragnums.__doc__)))
+        ('fragindices', property(fragindices, None, None,
+                                 fragindices.__doc__)))
 
 
 class Angles(_Connection):
