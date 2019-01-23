@@ -35,7 +35,7 @@ from numpy.testing import (
 )
 
 import MDAnalysis as mda
-from MDAnalysis.exceptions import DuplicateWarning
+from MDAnalysis.exceptions import DuplicateWarning, NoDataError
 from MDAnalysis.lib import distances, transformations
 from MDAnalysis.core.topologyobjects import (
     Bond,
@@ -48,6 +48,8 @@ from MDAnalysisTests.datafiles import (
     PSF, DCD,
     TRZ_psf, TRZ,
     two_water_gro,
+    TPR_xvf, TRR_xvf,
+    GRO
 )
 from MDAnalysisTests import make_Universe, no_deprecated_call
 
@@ -937,6 +939,22 @@ class TestAtomGroup(object):
     def ag(self, universe):
         return universe.atoms
 
+    @pytest.fixture()
+    def universe_molfrg(self):
+        return mda.Universe(TPR_xvf, TRR_xvf)
+
+    @pytest.fixture()
+    def ag_molfrg(self, universe_molfrg):
+        return universe_molfrg.atoms
+
+    @pytest.fixture()
+    def universe_no_molfrg(self):
+        return mda.Universe(GRO)
+
+    @pytest.fixture()
+    def ag_no_molfrg(self, universe_no_molfrg):
+        return universe_no_molfrg.atoms
+
     def test_getitem_int(self, universe):
         assert_equal(universe.atoms[0].ix, universe.atoms.ix[0])
 
@@ -1053,9 +1071,52 @@ class TestAtomGroup(object):
         com = ag.center_of_mass(pbc=True, compound=compound)
         assert_almost_equal(com, ref, decimal=5)
 
+    @pytest.mark.parametrize('name, compound', (('molnums', 'molecules'),
+                                                ('fragindices', 'fragments')))
+    def test_center_of_geometry_compounds_special(self, ag_molfrg,
+                                                  name, compound):
+        ref = [a.center_of_geometry() for a in ag_molfrg.groupby(name).values()]
+        cog = ag_molfrg.center_of_geometry(compound=compound)
+        assert_almost_equal(cog, ref, decimal=5)
+
+    @pytest.mark.parametrize('name, compound', (('molnums', 'molecules'),
+                                                ('fragindices', 'fragments')))
+    def test_center_of_mass_compounds_special(self, ag_molfrg,
+                                              name, compound):
+        ref = [a.center_of_mass() for a in ag_molfrg.groupby(name).values()]
+        com = ag_molfrg.center_of_mass(compound=compound)
+        assert_almost_equal(com, ref, decimal=5)
+
+    @pytest.mark.parametrize('name, compound', (('molnums', 'molecules'),
+                                                ('fragindices', 'fragments')))
+    def test_center_of_geometry_compounds_special_pbc(self, ag_molfrg,
+                                                      name, compound):
+        ag_molfrg.dimensions = [50, 50, 50, 90, 90, 90]
+        ref = [a.center_of_geometry() for a in ag_molfrg.groupby(name).values()]
+        ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
+                                  ag_molfrg.dimensions)
+        cog = ag_molfrg.center_of_geometry(pbc=True, compound=compound)
+        assert_almost_equal(cog, ref, decimal=5)
+
+    @pytest.mark.parametrize('name, compound', (('molnums', 'molecules'),
+                                                ('fragindices', 'fragments')))
+    def test_center_of_mass_compounds_special_pbc(self, ag_molfrg,
+                                                  name, compound):
+        ag_molfrg.dimensions = [50, 50, 50, 90, 90, 90]
+        ref = [a.center_of_mass() for a in ag_molfrg.groupby(name).values()]
+        ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
+                                  ag_molfrg.dimensions)
+        com = ag_molfrg.center_of_mass(pbc=True, compound=compound)
+        assert_almost_equal(com, ref, decimal=5)
+
     def test_center_wrong_compound(self, ag):
         with pytest.raises(ValueError):
             ag.center(weights=None, compound="foo")
+
+    @pytest.mark.parametrize('compound', ('molecules', 'fragments'))
+    def test_center_compounds_special_fail(self, ag_no_molfrg, compound):
+        with pytest.raises(NoDataError):
+            ag_no_molfrg.center(weights=None, compound=compound)
 
     def test_coordinates(self, ag):
         assert_almost_equal(
