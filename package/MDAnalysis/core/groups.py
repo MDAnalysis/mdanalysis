@@ -2229,6 +2229,9 @@ class AtomGroup(GroupBase):
             moltype *molecule-type*
                 select by molecule type, e.g. ``moltype Protein_A``. At the
                 moment, only the TPR format defines the molecule type.
+            record_type *record_type*
+                for selecting either ATOM or HETATM from PDB-like files.
+                e.g. ``select_atoms('name CA and not record_type HETATM')``
 
         **Boolean**
 

@@ -22,6 +22,9 @@ Changes
   * added official support for Python 3.7 (PR #1963)
   * stopped official support of Python 3.4 (#2066, PR #2174)
 
+Enhancements
+  * added record_type to select_atoms language (PR #2179)
+
 Fixes
   * fixed gcc support in MacOS (Issue #2162, PR #2163)
   * fixed error when reading bonds/angles/dihedrals from gsd file (Issue #2152,
@@ -37,6 +40,8 @@ Fixes
   * Fixed Empty select_atoms string, now raises warning and returns empty
     AtomGroup (Issue #2112)
   * Read TPR files from Gromacs 2019 (PR #2161)
+  * Fixed copying Universes created from PDB files (record_type attribute
+    was problematic) (Issue #2178 #1926, PR #2179)
 
 
 11/06/18 richardjgowers

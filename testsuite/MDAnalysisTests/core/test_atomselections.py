@@ -45,6 +45,7 @@ from MDAnalysis.tests.datafiles import (
     GRO, NUCL, NUCLsel, TPR, XTC,
     TRZ_psf, TRZ,
     PDB_icodes,
+    PDB_HOLE,
 )
 from MDAnalysisTests import make_Universe
 
@@ -1038,3 +1039,14 @@ def test_empty_sel():
         ag = u.atoms.select_atoms("")
     assert_equal(len(ag), 0)
     assert isinstance(ag, mda.AtomGroup)
+
+
+def test_record_type_sel():
+    u = mda.Universe(PDB_HOLE)
+
+    assert len(u.select_atoms('record_type ATOM')) == 264
+    assert len(u.select_atoms('not record_type HETATM')) == 264
+    assert len(u.select_atoms('record_type HETATM')) == 8
+
+    assert len(u.select_atoms('name CA and not record_type HETATM')) == 30
+    assert len(u.select_atoms('name CA and record_type HETATM')) == 2
