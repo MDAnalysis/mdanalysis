@@ -47,14 +47,16 @@ supersede these two citations.)
    and O. Beckstein. `MDAnalysis: A Python package for the rapid analysis of
    molecular dynamics simulations`_. In S. Benthall and S. Rostrup, editors,
    *Proceedings of the 15th Python in Science Conference*, pages 98-105,
-   Austin, TX, 2016. SciPy.
+   Austin, TX, 2016. SciPy. doi:`10.25080/Majora-629e541a-00e`_
 
 .. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
+.. _`10.25080/Majora-629e541a-00e`:
+   https://doi.org/10.25080/Majora-629e541a-00e
 
 .. _`MDAnalysis: A Python package for the rapid analysis of molecular
    dynamics simulations`:
    http://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html
-
+   
 
 .. _references-components:
 
@@ -249,8 +251,8 @@ export them to different formats. For example, one can display them in
 BibTeX format, using:
 
 .. code-block:: bash
-
-   duecredit summary --format=bibtex
+ 
+   duecredit summary --format=bibtex 
 
 
 **Please cite your use of MDAnalysis and the packages and algorithms
@@ -258,3 +260,4 @@ that it uses. Thanks!**
 
 
 .. _duecredit: https://github.com/duecredit/duecredit
+

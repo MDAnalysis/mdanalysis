@@ -643,6 +643,7 @@ Testsuite
 Changes
   * Added Windows support
 
+
 11/05/18 orbeckst, PicoCentauri, richardjgowers, zemanj
   * 0.19.1
 
@@ -655,7 +656,7 @@ Fixes
    * Fixed reading PDB files with DOS line ending (#2128)
 
 Deprecations
-   * Default ``filename`` directory of align.AlignTraj is deprecated and
+   * Default ``filename`` directory of align.AlignTraj is deprecated and 
      will change in 1.0 to the current directory.
 
 10/09/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
@@ -2227,7 +2228,7 @@ Testsuite
     MDAnalysisTestData package with a higher release number is available.
 
   Testsuite
-
+  
    * Split off test data trajectories and structures from
      MDAnalaysis/tests/data into separate package. (Issue 28)
    * Numbering matches the earliest MDAnalysis release for which the data is
