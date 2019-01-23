@@ -1284,7 +1284,7 @@ class SurvivalProbability(object):
 
         frame_no = start
         while frame_no < stop:      # we have already added 1 to stop, therefore <
-            if frame_loaded_counter == frames_to_load_no:
+            if frames_to_skip_no != 0 and frame_loaded_counter == frames_to_load_no:
                 self.print(verbose, "Skipping the next %d frames:" % frames_to_skip_no)
                 frame_no += frames_to_skip_no
                 frame_loaded_counter = 0
