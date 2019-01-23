@@ -744,7 +744,7 @@ class GroupBase(_MutableBase):
         elif comp == 'fragments':
             try:
                 compound_indices = atoms.fragindices
-            except AttributeError:
+            except NoDataError:
                 raise NoDataError("Cannot use compound='fragments': "
                                   "No bond information in topology.")
         else:
