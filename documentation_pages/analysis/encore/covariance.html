@@ -4,24 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>4.2.6.1.5. Covariance calculation — encore.covariance &#8212; MDAnalysis 0.19.3-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.19.3-dev',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
           href="../../../_static/opensearch.xml"/>
@@ -36,8 +28,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
@@ -48,7 +39,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.analysis.encore.covariance"></span><div class="section" id="covariance-calculation-encore-covariance">
-<h1>4.2.6.1.5. Covariance calculation — <code class="xref py py-mod docutils literal"><span class="pre">encore.covariance</span></code><a class="headerlink" href="#covariance-calculation-encore-covariance" title="Permalink to this headline">¶</a></h1>
+<h1>4.2.6.1.5. Covariance calculation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">encore.covariance</span></code><a class="headerlink" href="#covariance-calculation-encore-covariance" title="Permalink to this headline">¶</a></h1>
 <p>The module contains functions to estimate the covariance matrix of
 an ensemble of structures.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -73,11 +64,11 @@ an ensemble of structures.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ensemble</strong> (<em>Universe object</em>) – The structural ensemble</li>
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Atom selection string in the MDAnalysis format.</li>
-<li><strong>estimator</strong> (<a class="reference internal" href="utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="MDAnalysis.analysis.encore.utils.ParallelCalculation.function"><em>function</em></a><em> (</em><em>optional</em><em>)</em>) – Function that estimates the covariance matrix. It requires at least
+<li><strong>estimator</strong> (<em>function</em><em> (</em><em>optional</em><em>)</em>) – Function that estimates the covariance matrix. It requires at least
 a “coordinates” numpy array (of shape (N,M,3), where N is the number
 of frames and M the number of atoms). See ml_covariance_estimator and
 shrinkage_covariance_estimator for reference.</li>
-<li><strong>weights</strong> (<em>str/array_like</em><em> (</em><em>optional</em><em>)</em>) – specify weights. If <code class="docutils literal"><span class="pre">'mass'</span></code> then chose masses of ensemble atoms, if <code class="docutils literal"><span class="pre">None</span></code> chose uniform weights</li>
+<li><strong>weights</strong> (<em>str/array_like</em><em> (</em><em>optional</em><em>)</em>) – specify weights. If <code class="docutils literal notranslate"><span class="pre">'mass'</span></code> then chose masses of ensemble atoms, if <code class="docutils literal notranslate"><span class="pre">None</span></code> chose uniform weights</li>
 <li><strong>reference</strong> (<em>MDAnalysis.Universe object</em><em> (</em><em>optional</em><em>)</em>) – Use the distances to a specific reference structure rather than the
 distance to the mean.</li>
 </ul>
@@ -86,7 +77,7 @@ distance to the mean.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>cov_mat</strong> – Covariance matrix</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
 </td>
 </tr>
 </tbody>
@@ -102,15 +93,15 @@ distance to the mean.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coordinates</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Flattened array of coordiantes</li>
-<li><strong>reference_coordinates</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Optional reference to use instead of mean</li>
+<li><strong>coordinates</strong> (<em>numpy.array</em>) – Flattened array of coordiantes</li>
+<li><strong>reference_coordinates</strong> (<em>numpy.array</em>) – Optional reference to use instead of mean</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>cov_mat</strong> – Estimate of  covariance matrix</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
 </td>
 </tr>
 </tbody>
@@ -132,8 +123,8 @@ Ledoit on his website:
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coordinates</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Flattened array of coordinates</li>
-<li><strong>reference_coordinates</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Optional reference to use instead of mean</li>
+<li><strong>coordinates</strong> (<em>numpy.array</em>) – Flattened array of coordinates</li>
+<li><strong>reference_coordinates</strong> (<em>numpy.array</em>) – Optional reference to use instead of mean</li>
 <li><strong>shrinkage_parameter</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Optional shrinkage parameter</li>
 </ul>
 </td>
@@ -186,12 +177,12 @@ Ledoit on his website:
 <li class="toctree-l1 current"><a class="reference internal" href="../../analysis_modules.html">4. Analysis modules</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../align.html">4.2.1. Coordinate fitting and alignment — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../contacts.html">4.2.2. Native contacts analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../distances.html">4.2.3. Distance analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../rms.html">4.2.4. Calculating root mean square quantities — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../psa.html">4.2.5. Calculating path similarity — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../align.html">4.2.1. Coordinate fitting and alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contacts.html">4.2.2. Native contacts analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../distances.html">4.2.3. Distance analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rms.html">4.2.4. Calculating root mean square quantities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../psa.html">4.2.5. Calculating path similarity — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="../encore.html#modules">4.2.6.1. Modules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../encore.html#references">4.2.6.2. References</a></li>
 </ul>
@@ -216,10 +207,10 @@ Ledoit on his website:
 <li class="toctree-l1"><a class="reference internal" href="../../auxiliary_modules.html">9. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../core_modules.html">10. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../version.html">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../units.html">14. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../references.html">16. References</a></li>
 </ul>
 
@@ -228,9 +219,9 @@ Ledoit on his website:
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../analysis_modules.html">4. Analysis modules</a><ul>
-  <li><a href="../encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul>
-      <li>Previous: <a href="confdistmatrix.html" title="previous chapter">4.2.6.1.4. Distance Matrix calculation — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.ensemble.confdistmatrix</span></code></a></li>
-      <li>Next: <a href="bootstrap.html" title="next chapter">4.2.6.1.6. bootstrap procedures — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.ensemble.bootstrap</span></code></a></li>
+  <li><a href="../encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul>
+      <li>Previous: <a href="confdistmatrix.html" title="previous chapter">4.2.6.1.4. Distance Matrix calculation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.ensemble.confdistmatrix</span></code></a></li>
+      <li>Next: <a href="bootstrap.html" title="next chapter">4.2.6.1.6. bootstrap procedures — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.ensemble.bootstrap</span></code></a></li>
   </ul></li>
   </ul></li>
   </ul></li>
@@ -238,12 +229,14 @@ Ledoit on his website:
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -254,7 +247,7 @@ Ledoit on his website:
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

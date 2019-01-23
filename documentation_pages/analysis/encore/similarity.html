@@ -4,24 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>4.2.6.1.1. Ensemble Similarity Calculations — MDAnalysis.analysis.encore.similarity &#8212; MDAnalysis 0.19.3-dev documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.19.3-dev',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
           href="../../../_static/opensearch.xml"/>
@@ -36,8 +28,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
@@ -48,7 +39,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.analysis.encore.similarity"></span><div class="section" id="ensemble-similarity-calculations-mdanalysis-analysis-encore-similarity">
-<h1>4.2.6.1.1. Ensemble Similarity Calculations — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.similarity" title="MDAnalysis.analysis.encore.similarity"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.encore.similarity</span></code></a><a class="headerlink" href="#ensemble-similarity-calculations-mdanalysis-analysis-encore-similarity" title="Permalink to this headline">¶</a></h1>
+<h1>4.2.6.1.1. Ensemble Similarity Calculations — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.similarity" title="MDAnalysis.analysis.encore.similarity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.similarity</span></code></a><a class="headerlink" href="#ensemble-similarity-calculations-mdanalysis-analysis-encore-similarity" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -64,7 +55,7 @@
 ensembles described in <a class="reference internal" href="#lindorff-larsen2009" id="id1">[Lindorff-Larsen2009]</a>. The implementation and examples
 are described in <a class="reference internal" href="#tiberti2015" id="id2">[Tiberti2015]</a>.</p>
 <p>The module includes facilities for handling ensembles and trajectories through
-the <code class="xref py py-class docutils literal"><span class="pre">Universe</span></code> class, performing clustering or dimensionality reduction
+the <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> class, performing clustering or dimensionality reduction
 of the ensemble space, estimating multivariate probability distributions from
 the input data, and more. ENCORE can be used to compare experimental and
 simulation-derived ensembles, as well as estimate the convergence of
@@ -72,14 +63,14 @@ trajectories from time-dependent simulations.</p>
 <p>ENCORE includes three different methods for calculations of similarity measures
 between ensembles implemented in individual functions:</p>
 <ul class="simple">
-<li><strong>Harmonic Ensemble Similarity</strong> : <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.hes" title="MDAnalysis.analysis.encore.similarity.hes"><code class="xref py py-func docutils literal"><span class="pre">hes()</span></code></a></li>
-<li><strong>Clustering Ensemble Similarity</strong> : <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.ces" title="MDAnalysis.analysis.encore.similarity.ces"><code class="xref py py-func docutils literal"><span class="pre">ces()</span></code></a></li>
-<li><strong>Dimensional Reduction Ensemble Similarity</strong> : <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal"><span class="pre">dres()</span></code></a></li>
+<li><strong>Harmonic Ensemble Similarity</strong> : <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.hes" title="MDAnalysis.analysis.encore.similarity.hes"><code class="xref py py-func docutils literal notranslate"><span class="pre">hes()</span></code></a></li>
+<li><strong>Clustering Ensemble Similarity</strong> : <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.ces" title="MDAnalysis.analysis.encore.similarity.ces"><code class="xref py py-func docutils literal notranslate"><span class="pre">ces()</span></code></a></li>
+<li><strong>Dimensional Reduction Ensemble Similarity</strong> : <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal notranslate"><span class="pre">dres()</span></code></a></li>
 </ul>
 <p>as well as two methods to evaluate the convergence of trajectories:</p>
 <ul class="simple">
-<li><strong>Clustering based convergence evaluation</strong> : <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.ces_convergence" title="MDAnalysis.analysis.encore.similarity.ces_convergence"><code class="xref py py-func docutils literal"><span class="pre">ces_convergence()</span></code></a></li>
-<li><strong>Dimensionality-reduction based convergence evaluation</strong> : <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres_convergence" title="MDAnalysis.analysis.encore.similarity.dres_convergence"><code class="xref py py-func docutils literal"><span class="pre">dres_convergence()</span></code></a></li>
+<li><strong>Clustering based convergence evaluation</strong> : <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.ces_convergence" title="MDAnalysis.analysis.encore.similarity.ces_convergence"><code class="xref py py-func docutils literal notranslate"><span class="pre">ces_convergence()</span></code></a></li>
+<li><strong>Dimensionality-reduction based convergence evaluation</strong> : <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres_convergence" title="MDAnalysis.analysis.encore.similarity.dres_convergence"><code class="xref py py-func docutils literal notranslate"><span class="pre">dres_convergence()</span></code></a></li>
 </ul>
 <p>When using this module in published work please cite <a class="reference internal" href="#tiberti2015" id="id3">[Tiberti2015]</a>.</p>
 <p class="rubric">References</p>
@@ -103,14 +94,14 @@ Lindorff-Larsen. PLoS Comput Biol. 2015, 11, e1004415.</td></tr>
 of two simple ensembles. The ensembles are obtained from the MDAnalysis
 test suite for two different simulations of the protein AdK. To run the
 examples first execute:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="n">Universe</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="n">Universe</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
 </pre></div>
 </div>
-<p>To calculate the Harmonic Ensemble Similarity (<a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.hes" title="MDAnalysis.analysis.encore.similarity.hes"><code class="xref py py-func docutils literal"><span class="pre">hes()</span></code></a>)
+<p>To calculate the Harmonic Ensemble Similarity (<a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.hes" title="MDAnalysis.analysis.encore.similarity.hes"><code class="xref py py-func docutils literal notranslate"><span class="pre">hes()</span></code></a>)
 two ensemble objects are first created and then used for calculation:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
 <span class="go">(array([[        0.        ,  38279683.95892926],</span>
@@ -120,13 +111,13 @@ two ensemble objects are first created and then used for calculation:</p>
 <p>Here None is returned in the array as the default details parameter is False.
 HES can assume any non-negative value, i.e. no upper bound exists and the
 measurement can therefore be used as an absolute scale.</p>
-<p>The calculation of the Clustering Ensemble Similarity (<a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.ces" title="MDAnalysis.analysis.encore.similarity.ces"><code class="xref py py-func docutils literal"><span class="pre">ces()</span></code></a>)
+<p>The calculation of the Clustering Ensemble Similarity (<a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.ces" title="MDAnalysis.analysis.encore.similarity.ces"><code class="xref py py-func docutils literal notranslate"><span class="pre">ces()</span></code></a>)
 is computationally more expensive. It is based on clustering algorithms that in
 turn require a similarity matrix between the frames the ensembles are made
 of. The similarity matrix is derived from a distance matrix (By default a RMSD
 matrix; a full RMSD matrix between each pairs of elements needs to be computed).
 The RMSD matrix is automatically calculated.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">CES</span>
@@ -137,20 +128,20 @@ The RMSD matrix is automatically calculated.</p>
 <p>However, we may want to reuse the RMSD matrix in other calculations e.g.
 running CES with different parameters or running DRES. In this
 case we first compute the RMSD matrix alone:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rmsd_matrix</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">get_distance_matrix</span><span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rmsd_matrix</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">get_distance_matrix</span><span class="p">(</span>
 <span class="go">                                encore.utils.merge_universes([ens1, ens2]),</span>
 <span class="go">                                save_matrix=&quot;rmsd.npz&quot;)</span>
 </pre></div>
 </div>
 <p>In the above example the RMSD matrix was also saved in rmsd.npz on disk, and
 so can be loaded and re-used at later times, instead of being recomputed:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rmsd_matrix</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">get_distance_matrix</span><span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rmsd_matrix</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">get_distance_matrix</span><span class="p">(</span>
 <span class="go">                                encore.utils.merge_universes([ens1, ens2]),</span>
 <span class="go">                                load_matrix=&quot;rmsd.npz&quot;)</span>
 </pre></div>
 </div>
 <p>For instance, the rmsd_matrix object can be re-used as input for the
-Dimensional Reduction Ensemble Similarity (<a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal"><span class="pre">dres()</span></code></a>) method.
+Dimensional Reduction Ensemble Similarity (<a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal notranslate"><span class="pre">dres()</span></code></a>) method.
 DRES is based on the estimation of the probability density in
 a dimensionally-reduced conformational space of the ensembles, obtained from
 the original space using either the Stochastic Proximity Embedding algorithm or
@@ -159,7 +150,7 @@ As the algorithms require the distance matrix calculated on the original space,
 we can reuse the previously-calculated RMSD matrix.
 In the following example the dimensions are reduced to 3 using the
 saved RMSD matrix and the default SPE dimensional reduction method.   :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span><span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span><span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span>
 <span class="go">                               distance_matrix = rmsd_matrix)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DRES</span>
 <span class="go">[[ 0.        ,   0.67453198]</span>
@@ -167,17 +158,17 @@ saved RMSD matrix and the default SPE dimensional reduction method.   :</p>
 </pre></div>
 </div>
 <p>In addition to the quantitative similarity estimate, the dimensional reduction
-can easily be visualized, see the <code class="docutils literal"><span class="pre">Example</span></code> section in
-<a class="reference internal" href="dimensionality_reduction.html#module-MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality" title="MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality</span></code></a>.
+can easily be visualized, see the <code class="docutils literal notranslate"><span class="pre">Example</span></code> section in
+<a class="reference internal" href="dimensionality_reduction.html#module-MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality" title="MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality</span></code></a>.
 Due to the stochastic nature of SPE, two identical ensembles will not
 necessarily result in an exactly 0 estimate of the similarity, but will be very
-close. For the same reason, calculating the similarity with the <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal"><span class="pre">dres()</span></code></a>
+close. For the same reason, calculating the similarity with the <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal notranslate"><span class="pre">dres()</span></code></a>
 twice will not result in necessarily identical values but rather two very close
 values.</p>
-<p>It should be noted that both in <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.ces" title="MDAnalysis.analysis.encore.similarity.ces"><code class="xref py py-func docutils literal"><span class="pre">ces()</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal"><span class="pre">dres()</span></code></a> the similarity is
+<p>It should be noted that both in <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.ces" title="MDAnalysis.analysis.encore.similarity.ces"><code class="xref py py-func docutils literal notranslate"><span class="pre">ces()</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal notranslate"><span class="pre">dres()</span></code></a> the similarity is
 evaluated using the Jensen-Shannon divergence resulting in an upper bound of
 ln(2), which indicates no similarity between the ensembles and a lower bound
-of 0.0 signifying two identical ensembles. In contrast, the <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.hes" title="MDAnalysis.analysis.encore.similarity.hes"><code class="xref py py-func docutils literal"><span class="pre">hes()</span></code></a> function uses
+of 0.0 signifying two identical ensembles. In contrast, the <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.hes" title="MDAnalysis.analysis.encore.similarity.hes"><code class="xref py py-func docutils literal notranslate"><span class="pre">hes()</span></code></a> function uses
 a symmetrized version of the Kullback-Leibler divergence, which is unbounded.</p>
 <div class="section" id="functions-for-ensemble-comparisons">
 <h2>4.2.6.1.1.1. Functions for ensemble comparisons<a class="headerlink" href="#functions-for-ensemble-comparisons" title="Permalink to this headline">¶</a></h2>
@@ -196,7 +187,7 @@ in <a class="reference internal" href="#tiberti2015" id="id4">[Tiberti2015]</a>.
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>cov_estimator</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Covariance matrix estimator method, either shrinkage, <cite>shrinkage</cite>,
 or Maximum Likelyhood, <cite>ml</cite>. Default is shrinkage.</li>
-<li><strong>weights</strong> (<em>str/array_like</em><em>, </em><em>optional</em>) – specify optional weights. If <code class="docutils literal"><span class="pre">mass</span></code> then chose masses of ensemble atoms</li>
+<li><strong>weights</strong> (<em>str/array_like</em><em>, </em><em>optional</em>) – specify optional weights. If <code class="docutils literal notranslate"><span class="pre">mass</span></code> then chose masses of ensemble atoms</li>
 <li><strong>align</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to align the ensembles before calculating their similarity.
 Note: this changes the ensembles in-place, and will thus leave your
 ensembles in an altered state.
@@ -215,7 +206,7 @@ If this is False (default), 0.0 will be used instead.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Harmonic similarity measurements between each pair of ensembles.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a> (bidimensional)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array (bidimensional)</p>
 </td>
 </tr>
 </tbody>
@@ -225,11 +216,11 @@ If this is False (default), 0.0 will be used instead.</li>
 distribution. The mean and covariance matrix are, thus, estimatated from
 the distribution of each ensemble and used for comparision by the
 symmetrized version of Kullback-Leibler divergence defined as:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[D_{KL}(P(x) || Q(x)) = \int_{-\infty}^{\infty}P(x_i)
 ln(P(x_i)/Q(x_i)) = \langle{}ln(P(x))\rangle{}_P -
 \langle{}ln(Q(x))\rangle{}_P\]</div>
-<p>where the <span class="math">\(\langle{}.\rangle{}_P\)</span> denotes an expectation
+<p>where the <span class="math notranslate nohighlight">\(\langle{}.\rangle{}_P\)</span> denotes an expectation
 calculated under the distribution P.</p>
 <p>For each ensemble, the  mean conformation is estimated as the average over
 the ensemble, and the covariance matrix is calculated by default using a
@@ -245,7 +236,7 @@ as Universe objects from a topology file and two trajectories. The
 topology- and trajectory files used are obtained from the MDAnalysis
 test suite for two different simulations of the protein AdK. To run the
 examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">HES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">HES</span>
@@ -256,14 +247,14 @@ examples see the module <a class="reference internal" href="#examples">Examples<
 <p>You can use the align=True option to align the ensembles first. This will
 align everything to the current timestep in the first ensemble. Note that
 this changes the ens1 and ens2 objects:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">[[    0.          6880.34140106]</span>
 <span class="go">[ 6880.34140106     0.        ]]</span>
 </pre></div>
 </div>
 <p>Alternatively, for greater flexibility in how the alignment should be done
 you can call use an AlignTraj object manually:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">align</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">align</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens2</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
@@ -287,7 +278,7 @@ using the Jensen-Shannon divergence as described in
 <li><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of ensemble objects for similarity measurements</li>
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>clustering_method</strong> – A single or a list of instances of the
-<a class="reference internal" href="clustering.html#module-MDAnalysis.analysis.encore.clustering.ClusteringMethod" title="MDAnalysis.analysis.encore.clustering.ClusteringMethod"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod</span></code></a> classes
+<a class="reference internal" href="clustering.html#module-MDAnalysis.analysis.encore.clustering.ClusteringMethod" title="MDAnalysis.analysis.encore.clustering.ClusteringMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod</span></code></a> classes
 from the clustering module. Different parameters for the same clustering
 method can be explored by adding different instances of the same
 clustering class. Clustering methods options are the
@@ -325,7 +316,7 @@ each cluster, the centroids and the frames associated with each cluster.</p>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array, numpy.array</p>
 </td>
 </tr>
 </tbody>
@@ -345,8 +336,8 @@ created as Universe object using a topology file and two trajectories. The
 topology- and trajectory files used are obtained from the MDAnalysis
 test suite for two different simulations of the protein AdK. To run the
 examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
-Here the simplest case of just two instances of <code class="xref py py-class docutils literal"><span class="pre">Universe</span></code> is illustrated:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+Here the simplest case of just two instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> is illustrated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span><span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">CES</span>
@@ -358,7 +349,7 @@ Here the simplest case of just two instances of <code class="xref py py-class do
 (Note that the sklearn module must be installed). Likewise,  different parameters
 for the same clustering method can be explored by adding different
 instances of the same clustering class:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
 <span class="go">                              clustering_method = [encore.DBSCAN(eps=0.45),</span>
 <span class="go">                                                   encore.DBSCAN(eps=0.50)])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;eps=0.45: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -424,7 +415,7 @@ symmetrical similarity matrix.</p>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array, numpy.array</p>
 </td>
 </tr>
 </tbody>
@@ -438,10 +429,10 @@ to compute the Jensen-Shannon divergence between each pair of ensembles.</p>
 <p>In the Jensen-Shannon divergence the upper bound of ln(2) signifies
 no similarity between the two ensembles, the lower bound, 0.0,
 signifies identical ensembles. However, due to the stochastic nature of
-the dimensional reduction in <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal"><span class="pre">dres()</span></code></a>, two identical ensembles will
+the dimensional reduction in <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal notranslate"><span class="pre">dres()</span></code></a>, two identical ensembles will
 not necessarily result in an exact 0.0 estimate of the similarity but
 will be very close. For the same reason, calculating the similarity with
-the <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal"><span class="pre">dres()</span></code></a> twice will not result in two identical numbers; small
+the <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal notranslate"><span class="pre">dres()</span></code></a> twice will not result in two identical numbers; small
 differences have to be expected.</p>
 <p class="rubric">Examples</p>
 <p>To calculate the Dimensional Reduction Ensemble similarity, two ensembles
@@ -449,9 +440,9 @@ are created as Universe objects from a topology file and two trajectories.
 The topology- and trajectory files used are obtained from the MDAnalysis
 test suite for two different simulations of the protein AdK. To run the
 examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
-Here the simplest case of comparing just two instances of <code class="xref py py-class docutils literal"><span class="pre">Universe</span></code> is
+Here the simplest case of comparing just two instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> is
 illustrated:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DRES</span>
@@ -460,13 +451,13 @@ illustrated:</p>
 </pre></div>
 </div>
 <p>In addition to the quantitative similarity estimate, the dimensional
-reduction can easily be visualized, see the <code class="docutils literal"><span class="pre">Example</span></code> section in
-<code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`</span></code></p>
+reduction can easily be visualized, see the <code class="docutils literal notranslate"><span class="pre">Example</span></code> section in
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`</span></code></p>
 <p>To use a different dimensional reduction methods, simply set the
 parameter dimensionality_reduction_method. Likewise, different parameters
 for the same clustering method can be explored by adding different
 instances of the same method  class:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
 <span class="go">                                dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DRES</span>
 <span class="go">[[ 0.          0.69314718]</span>
@@ -492,7 +483,7 @@ using the Jensen-Shannon divergence as described in
 <li><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of ensemble objects for similarity measurements</li>
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>clustering_method</strong> – A single or a list of instances of the
-<a class="reference internal" href="clustering.html#module-MDAnalysis.analysis.encore.clustering.ClusteringMethod" title="MDAnalysis.analysis.encore.clustering.ClusteringMethod"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod</span></code></a> classes
+<a class="reference internal" href="clustering.html#module-MDAnalysis.analysis.encore.clustering.ClusteringMethod" title="MDAnalysis.analysis.encore.clustering.ClusteringMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod</span></code></a> classes
 from the clustering module. Different parameters for the same clustering
 method can be explored by adding different instances of the same
 clustering class. Clustering methods options are the
@@ -530,7 +521,7 @@ each cluster, the centroids and the frames associated with each cluster.</p>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array, numpy.array</p>
 </td>
 </tr>
 </tbody>
@@ -550,8 +541,8 @@ created as Universe object using a topology file and two trajectories. The
 topology- and trajectory files used are obtained from the MDAnalysis
 test suite for two different simulations of the protein AdK. To run the
 examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
-Here the simplest case of just two instances of <code class="xref py py-class docutils literal"><span class="pre">Universe</span></code> is illustrated:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+Here the simplest case of just two instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> is illustrated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span><span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">CES</span>
@@ -563,7 +554,7 @@ Here the simplest case of just two instances of <code class="xref py py-class do
 (Note that the sklearn module must be installed). Likewise,  different parameters
 for the same clustering method can be explored by adding different
 instances of the same clustering class:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
 <span class="go">                              clustering_method = [encore.DBSCAN(eps=0.45),</span>
 <span class="go">                                                   encore.DBSCAN(eps=0.50)])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;eps=0.45: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -591,10 +582,10 @@ therefore of convergence.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>original_ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> object) – ensemble containing the trajectory whose convergence has to estimated</li>
+<li><strong>original_ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> object) – ensemble containing the trajectory whose convergence has to estimated</li>
 <li><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Size of window to be used, in number of frames</li>
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
-<li><strong>clustering_method</strong> (<a class="reference internal" href="clustering.html#module-MDAnalysis.analysis.encore.clustering.ClusteringMethod" title="MDAnalysis.analysis.encore.clustering.ClusteringMethod"><em>MDAnalysis.analysis.encore.clustering.ClusteringMethod</em></a>) – A single or a list of instances of the ClusteringMethod classes from
+<li><strong>clustering_method</strong> (<em>MDAnalysis.analysis.encore.clustering.ClusteringMethod</em>) – A single or a list of instances of the ClusteringMethod classes from
 the clustering module. Different parameters for the same clustering
 method can be explored by adding different instances of the same
 clustering class.</li>
@@ -618,7 +609,7 @@ MDAnalysis test suite for two different simulations of the protein AdK.
 To run the examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
 Here the simplest case of evaluating the convergence is illustrated by
 splitting the trajectory into a window_size of 10 frames :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ces_conv</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces_convergence</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">ces_conv</span>
 <span class="go">[[ 0.48194205]</span>
@@ -648,9 +639,9 @@ splitting the trajectory into a window_size of 10 frames :</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>cc</strong> (<em>encore.clustering.ClustersCollection</em>) – Collection from cluster calculated by a clustering algorithm
 (e.g. Affinity propagation)</li>
-<li><strong>ens1</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a>) – First ensemble to be used in comparison</li>
+<li><strong>ens1</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – First ensemble to be used in comparison</li>
 <li><strong>ens1_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – First ensemble id as detailed in the ClustersCollection metadata</li>
-<li><strong>ens2</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a>) – Second ensemble to be used in comparison</li>
+<li><strong>ens2</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – Second ensemble to be used in comparison</li>
 <li><strong>ens2_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Second ensemble id as detailed in the ClustersCollection metadata</li>
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”.</li>
 </ul>
@@ -714,8 +705,8 @@ particular, will use ensembles with ID [ens_id_min, ens_id_max].</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>embedded_space</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Array containing the coordinates of the embedded space</li>
-<li><strong>ensemble_assignment</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – array containing one int per ensemble conformation. These allow
+<li><strong>embedded_space</strong> (<em>numpy.array</em>) – Array containing the coordinates of the embedded space</li>
+<li><strong>ensemble_assignment</strong> (<em>numpy.array</em>) – array containing one int per ensemble conformation. These allow
 to distinguish, in the complete embedded space, which
 conformations belong to each ensemble. For instance if
 ensemble_assignment is [1,1,1,1,2,2], it means that the first
@@ -753,14 +744,14 @@ Dimensionality reduction method. In this case, we have continuous
 probability densities, this we need to integrate over the measurable
 space. The aim is to first calculate the Kullback-Liebler divergence, which
 is defined as:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[D_{KL}(P(x) || Q(x)) = \int_{-\infty}^{\infty}P(x_i) ln(P(x_i)/Q(x_i)) = \langle{}ln(P(x))\rangle{}_P - \langle{}ln(Q(x))\rangle{}_P\]</div>
-<p>where the <span class="math">\(\langle{}.\rangle{}_P\)</span> denotes an expectation calculated
+<p>where the <span class="math notranslate nohighlight">\(\langle{}.\rangle{}_P\)</span> denotes an expectation calculated
 under the distribution P. We can, thus, just estimate the expectation
 values of the components to get an estimate of dKL.
 Since the Jensen-Shannon distance is actually  more complex, we need to
 estimate four expectation values:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[ \begin{align}\begin{aligned}\langle{}log(P(x))\rangle{}_P\\\langle{}log(Q(x))\rangle{}_Q\\\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P\\\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q\end{aligned}\end{align} \]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -768,20 +759,20 @@ estimate four expectation values:</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>kde1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html#scipy.stats.gaussian_kde" title="(in SciPy v1.2.0)"><em>scipy.stats.gaussian_kde</em></a>) – Kernel density estimation for ensemble 1</li>
-<li><strong>resamples1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Samples drawn according do kde1. Will be used as samples to
+<li><strong>resamples1</strong> (<em>numpy.array</em>) – Samples drawn according do kde1. Will be used as samples to
 calculate the expected values according to ‘P’ as detailed before.</li>
 <li><strong>kde2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html#scipy.stats.gaussian_kde" title="(in SciPy v1.2.0)"><em>scipy.stats.gaussian_kde</em></a>) – Kernel density estimation for ensemble 2</li>
-<li><strong>resamples2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Samples drawn according do kde2. Will be used as sample to
+<li><strong>resamples2</strong> (<em>numpy.array</em>) – Samples drawn according do kde2. Will be used as sample to
 calculate the expected values according to ‘Q’ as detailed before.</li>
-<li><strong>ln_P1_exp_P1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Use this value for <span class="math">\(\langle{}log(P(x))\rangle{}_P\)</span>; if None,
+<li><strong>ln_P1_exp_P1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Use this value for <span class="math notranslate nohighlight">\(\langle{}log(P(x))\rangle{}_P\)</span>; if None,
 calculate it instead</li>
-<li><strong>ln_P2_exp_P2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Use this value for <span class="math">\(\langle{}log(Q(x))\rangle{}_Q\)</span>; if
+<li><strong>ln_P2_exp_P2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Use this value for <span class="math notranslate nohighlight">\(\langle{}log(Q(x))\rangle{}_Q\)</span>; if
 None, calculate it instead</li>
 <li><strong>ln_P1P2_exp_P1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Use this value for
-<span class="math">\(\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P\)</span>;
+<span class="math notranslate nohighlight">\(\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P\)</span>;
 if None, calculate it instead</li>
 <li><strong>ln_P1P2_exp_P2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – Use this value for
-<span class="math">\(\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q\)</span>;
+<span class="math notranslate nohighlight">\(\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q\)</span>;
 if None, calculate it instead</li>
 </ul>
 </td>
@@ -826,7 +817,7 @@ reduction method</p>
 <code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">discrete_kullback_leibler_divergence</code><span class="sig-paren">(</span><em>pA</em>, <em>pB</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#discrete_kullback_leibler_divergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.discrete_kullback_leibler_divergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Kullback-Leibler divergence between discrete probability distribution.
 Notice that since this measure is not symmetric ::
-<span class="math">\(d_{KL}(p_A,p_B) != d_{KL}(p_B,p_A)\)</span></p>
+<span class="math notranslate nohighlight">\(d_{KL}(p_A,p_B) != d_{KL}(p_B,p_A)\)</span></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -900,7 +891,7 @@ symmetrical similarity matrix.</p>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array, numpy.array</p>
 </td>
 </tr>
 </tbody>
@@ -914,10 +905,10 @@ to compute the Jensen-Shannon divergence between each pair of ensembles.</p>
 <p>In the Jensen-Shannon divergence the upper bound of ln(2) signifies
 no similarity between the two ensembles, the lower bound, 0.0,
 signifies identical ensembles. However, due to the stochastic nature of
-the dimensional reduction in <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal"><span class="pre">dres()</span></code></a>, two identical ensembles will
+the dimensional reduction in <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal notranslate"><span class="pre">dres()</span></code></a>, two identical ensembles will
 not necessarily result in an exact 0.0 estimate of the similarity but
 will be very close. For the same reason, calculating the similarity with
-the <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal"><span class="pre">dres()</span></code></a> twice will not result in two identical numbers; small
+the <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal notranslate"><span class="pre">dres()</span></code></a> twice will not result in two identical numbers; small
 differences have to be expected.</p>
 <p class="rubric">Examples</p>
 <p>To calculate the Dimensional Reduction Ensemble similarity, two ensembles
@@ -925,9 +916,9 @@ are created as Universe objects from a topology file and two trajectories.
 The topology- and trajectory files used are obtained from the MDAnalysis
 test suite for two different simulations of the protein AdK. To run the
 examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
-Here the simplest case of comparing just two instances of <code class="xref py py-class docutils literal"><span class="pre">Universe</span></code> is
+Here the simplest case of comparing just two instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> is
 illustrated:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DRES</span>
@@ -936,13 +927,13 @@ illustrated:</p>
 </pre></div>
 </div>
 <p>In addition to the quantitative similarity estimate, the dimensional
-reduction can easily be visualized, see the <code class="docutils literal"><span class="pre">Example</span></code> section in
-<code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`</span></code></p>
+reduction can easily be visualized, see the <code class="docutils literal notranslate"><span class="pre">Example</span></code> section in
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`</span></code></p>
 <p>To use a different dimensional reduction methods, simply set the
 parameter dimensionality_reduction_method. Likewise, different parameters
 for the same clustering method can be explored by adding different
 instances of the same method  class:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
 <span class="go">                                dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DRES</span>
 <span class="go">[[ 0.          0.69314718]</span>
@@ -966,7 +957,7 @@ therefore of convergence.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>original_ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> object) – ensemble containing the trajectory whose convergence has to estimated</li>
+<li><strong>original_ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> object) – ensemble containing the trajectory whose convergence has to estimated</li>
 <li><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Size of window to be used, in number of frames</li>
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>dimensionality_reduction_method</strong> – A single or a list of instances of the DimensionalityReductionMethod
@@ -995,7 +986,7 @@ MDAnalysis test suite for two different simulations of the protein AdK.
 To run the examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
 Here the simplest case of evaluating the convergence is illustrated by
 splitting the trajectory into a window_size of 10 frames :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dres_conv</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres_convergence</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">dres_conv</span>
 <span class="go">[[ 0.5295528 ]</span>
@@ -1024,8 +1015,8 @@ elaborate the coordinates for later use.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>embedded_space</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Array containing the coordinates of the embedded space</li>
-<li><strong>ensemble_assignment</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Array containing one int per ensemble conformation. These allow to
+<li><strong>embedded_space</strong> (<em>numpy.array</em>) – Array containing the coordinates of the embedded space</li>
+<li><strong>ensemble_assignment</strong> (<em>numpy.array</em>) – Array containing one int per ensemble conformation. These allow to
 distinguish, in the complete embedded space, which conformations
 belong to each ensemble. For instance if ensemble_assignment
 is [1,1,1,1,2,2], it means that the first four conformations belong
@@ -1060,11 +1051,11 @@ as defined in <a class="reference internal" href="#tiberti2015" id="id9">[Tibert
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sigma1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Covariance matrix for the first ensemble.</li>
-<li><strong>sigma2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Covariance matrix for the second ensemble.</li>
-<li><strong>x1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Mean for the estimated normal multivariate distribution of the first
+<li><strong>sigma1</strong> (<em>numpy.array</em>) – Covariance matrix for the first ensemble.</li>
+<li><strong>sigma2</strong> (<em>numpy.array</em>) – Covariance matrix for the second ensemble.</li>
+<li><strong>x1</strong> (<em>numpy.array</em>) – Mean for the estimated normal multivariate distribution of the first
 ensemble.</li>
-<li><strong>x2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)"><em>numpy.array</em></a>) – Mean for the estimated normal multivariate distribution of the second
+<li><strong>x2</strong> (<em>numpy.array</em>) – Mean for the estimated normal multivariate distribution of the second
 ensemble.</li>
 </ul>
 </td>
@@ -1094,7 +1085,7 @@ in <a class="reference internal" href="#tiberti2015" id="id10">[Tiberti2015]</a>
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>cov_estimator</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Covariance matrix estimator method, either shrinkage, <cite>shrinkage</cite>,
 or Maximum Likelyhood, <cite>ml</cite>. Default is shrinkage.</li>
-<li><strong>weights</strong> (<em>str/array_like</em><em>, </em><em>optional</em>) – specify optional weights. If <code class="docutils literal"><span class="pre">mass</span></code> then chose masses of ensemble atoms</li>
+<li><strong>weights</strong> (<em>str/array_like</em><em>, </em><em>optional</em>) – specify optional weights. If <code class="docutils literal notranslate"><span class="pre">mass</span></code> then chose masses of ensemble atoms</li>
 <li><strong>align</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to align the ensembles before calculating their similarity.
 Note: this changes the ensembles in-place, and will thus leave your
 ensembles in an altered state.
@@ -1113,7 +1104,7 @@ If this is False (default), 0.0 will be used instead.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Harmonic similarity measurements between each pair of ensembles.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.15)">numpy.array</a> (bidimensional)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array (bidimensional)</p>
 </td>
 </tr>
 </tbody>
@@ -1123,11 +1114,11 @@ If this is False (default), 0.0 will be used instead.</li>
 distribution. The mean and covariance matrix are, thus, estimatated from
 the distribution of each ensemble and used for comparision by the
 symmetrized version of Kullback-Leibler divergence defined as:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[D_{KL}(P(x) || Q(x)) = \int_{-\infty}^{\infty}P(x_i)
 ln(P(x_i)/Q(x_i)) = \langle{}ln(P(x))\rangle{}_P -
 \langle{}ln(Q(x))\rangle{}_P\]</div>
-<p>where the <span class="math">\(\langle{}.\rangle{}_P\)</span> denotes an expectation
+<p>where the <span class="math notranslate nohighlight">\(\langle{}.\rangle{}_P\)</span> denotes an expectation
 calculated under the distribution P.</p>
 <p>For each ensemble, the  mean conformation is estimated as the average over
 the ensemble, and the covariance matrix is calculated by default using a
@@ -1143,7 +1134,7 @@ as Universe objects from a topology file and two trajectories. The
 topology- and trajectory files used are obtained from the MDAnalysis
 test suite for two different simulations of the protein AdK. To run the
 examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">HES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">HES</span>
@@ -1154,14 +1145,14 @@ examples see the module <a class="reference internal" href="#examples">Examples<
 <p>You can use the align=True option to align the ensembles first. This will
 align everything to the current timestep in the first ensemble. Note that
 this changes the ens1 and ens2 objects:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">[[    0.          6880.34140106]</span>
 <span class="go">[ 6880.34140106     0.        ]]</span>
 </pre></div>
 </div>
 <p>Alternatively, for greater flexibility in how the alignment should be done
 you can call use an AlignTraj object manually:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">align</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">align</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens2</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
@@ -1182,7 +1173,7 @@ needs are generated here.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> object) – Input ensemble</li>
+<li><strong>ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> object) – Input ensemble</li>
 <li><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – size of the window (in number of frames) to be used</li>
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 </ul>
@@ -1263,12 +1254,12 @@ file name</li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../analysis_modules.html">4. Analysis modules</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../align.html">4.2.1. Coordinate fitting and alignment — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../contacts.html">4.2.2. Native contacts analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../distances.html">4.2.3. Distance analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../rms.html">4.2.4. Calculating root mean square quantities — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../psa.html">4.2.5. Calculating path similarity — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../align.html">4.2.1. Coordinate fitting and alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contacts.html">4.2.2. Native contacts analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../distances.html">4.2.3. Distance analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rms.html">4.2.4. Calculating root mean square quantities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../psa.html">4.2.5. Calculating path similarity — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="../encore.html#modules">4.2.6.1. Modules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../encore.html#references">4.2.6.2. References</a></li>
 </ul>
@@ -1293,10 +1284,10 @@ file name</li>
 <li class="toctree-l1"><a class="reference internal" href="../../auxiliary_modules.html">9. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../core_modules.html">10. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../version.html">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../units.html">14. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../references.html">16. References</a></li>
 </ul>
 
@@ -1305,8 +1296,8 @@ file name</li>
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../analysis_modules.html">4. Analysis modules</a><ul>
-  <li><a href="../encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul>
-      <li>Previous: <a href="../encore.html" title="previous chapter">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+  <li><a href="../encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul>
+      <li>Previous: <a href="../encore.html" title="previous chapter">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
       <li>Next: <a href="clustering.html" title="next chapter">4.2.6.1.2. Clustering</a></li>
   </ul></li>
   </ul></li>
@@ -1315,12 +1306,14 @@ file name</li>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1331,7 +1324,7 @@ file name</li>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

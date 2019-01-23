@@ -4,24 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MDAnalysis documentation &#8212; MDAnalysis 0.19.3-dev documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.19.3-dev',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
           href="_static/opensearch.xml"/>
@@ -35,8 +27,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
@@ -54,7 +45,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Release:</th><td class="field-body">0.19.3-dev</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body">Jan 14, 2019</td>
+<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body">Jan 23, 2019</td>
 </tr>
 </tbody>
 </table>
@@ -87,25 +78,25 @@ can be installed either with <a class="reference external" href="http://www.pip-
 <div class="section" id="pip">
 <h3>pip<a class="headerlink" href="#pip" title="Permalink to this headline">¶</a></h3>
 <p>Installation with <a class="reference external" href="http://www.pip-installer.org/en/latest/index.html">pip</a> and a <em>minimal set of dependencies</em>:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis
 </pre></div>
 </div>
 <p>To install with a <em>full set of dependencies</em> (which includes everything needed
-for <code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis</span></code>), add the <code class="docutils literal"><span class="pre">[analysis]</span></code> tag:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis<span class="o">[</span>analysis<span class="o">]</span>
+for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code>), add the <code class="docutils literal notranslate"><span class="pre">[analysis]</span></code> tag:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis<span class="o">[</span>analysis<span class="o">]</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="conda">
 <h3>conda<a class="headerlink" href="#conda" title="Permalink to this headline">¶</a></h3>
 <p>First installation with <a class="reference external" href="http://conda.pydata.org/docs/">conda</a>:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>conda config --add channels conda-forge
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda config --add channels conda-forge
 conda install mdanalysis
 </pre></div>
 </div>
 <p>which will automatically install a <em>full set of dependencies</em>.</p>
 <p>To upgrade later:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>conda update mdanalysis
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda update mdanalysis
 </pre></div>
 </div>
 </div>
@@ -113,8 +104,8 @@ conda install mdanalysis
 <h3>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h3>
 <p>If you want to <a class="reference external" href="http://wiki.mdanalysis.org/UnitTests">run the tests</a> or use example files to follow some of the
 examples in the documentation or the <a class="reference external" href="https://www.mdanalysis.org/pages/learning_MDAnalysis/">tutorials</a>, also install the
-<code class="docutils literal"><span class="pre">MDAnalysisTests</span></code> package:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysisTests    <span class="c1"># with pip</span>
+<code class="docutils literal notranslate"><span class="pre">MDAnalysisTests</span></code> package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysisTests    <span class="c1"># with pip</span>
 conda install mdanalysistests            <span class="c1"># with conda</span>
 </pre></div>
 </div>
@@ -125,7 +116,7 @@ conda install mdanalysistests            <span class="c1"># with conda</span>
 <p><strong>Source code</strong> is available from
 <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/">https://github.com/MDAnalysis/mdanalysis/</a> under the <a class="reference external" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU Public
 Licence, version 2</a>. Obtain the sources with <a class="reference external" href="https://git-scm.com/">git</a></p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>git clone https://github.com/MDAnalysis/mdanalysis.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/MDAnalysis/mdanalysis.git
 </pre></div>
 </div>
 </div>
@@ -192,10 +183,10 @@ literature. Please make sure to also reference any
 <li class="toctree-l1"><a class="reference internal" href="documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation_pages/core_modules.html">10. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/version.html">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/units.html">14. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation_pages/references.html">16. References</a></li>
 </ul>
 
@@ -209,12 +200,14 @@ literature. Please make sure to also reference any
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -225,7 +218,7 @@ literature. Please make sure to also reference any
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

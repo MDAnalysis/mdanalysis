@@ -4,24 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>4.7.2. HELANAL — analysis of protein helices &#8212; MDAnalysis 0.19.3-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.19.3-dev',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -36,8 +28,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
@@ -61,13 +52,13 @@
 </tr>
 </tbody>
 </table>
-<p>The <a class="reference internal" href="#module-MDAnalysis.analysis.helanal" title="MDAnalysis.analysis.helanal"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.helanal</span></code></a> module is a Python implementation of the
+<p>The <a class="reference internal" href="#module-MDAnalysis.analysis.helanal" title="MDAnalysis.analysis.helanal"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.helanal</span></code></a> module is a Python implementation of the
 <a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> algorithm <a class="reference internal" href="#bansal2000" id="id1">[Bansal2000]</a> in <a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.f">helanal.f</a>, which is also available
 through the <a class="reference external" href="http://nucleix.mbu.iisc.ernet.in/helanal/helanal.shtml">HELANAL webserver</a>.</p>
 <p>Please cite the paper <a class="reference internal" href="#bansal2000" id="id2">[Bansal2000]</a> (and possibly <a class="reference internal" href="#kumar1996" id="id3">[Kumar1996]</a> and
 <a class="reference internal" href="#kumar1998" id="id4">[Kumar1998]</a>) in published work when using
-<a class="reference internal" href="#MDAnalysis.analysis.helanal.helanal_trajectory" title="MDAnalysis.analysis.helanal.helanal_trajectory"><code class="xref py py-mod docutils literal"><span class="pre">helanal_trajectory</span></code></a> or
-<a class="reference internal" href="#MDAnalysis.analysis.helanal.helanal_main" title="MDAnalysis.analysis.helanal.helanal_main"><code class="xref py py-mod docutils literal"><span class="pre">helanal_main</span></code></a>.</p>
+<a class="reference internal" href="#MDAnalysis.analysis.helanal.helanal_trajectory" title="MDAnalysis.analysis.helanal.helanal_trajectory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">helanal_trajectory</span></code></a> or
+<a class="reference internal" href="#MDAnalysis.analysis.helanal.helanal_main" title="MDAnalysis.analysis.helanal.helanal_main"><code class="xref py py-mod docutils literal notranslate"><span class="pre">helanal_main</span></code></a>.</p>
 <p><a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> quantifies the geometry of helices in proteins on the basis of their Cα
 atoms alone. It can extract the helices from the structure files and then
 characterises the overall geometry of each helix as being linear, curved or
@@ -146,31 +137,31 @@ HELANAL - A program to characterise helix geometry in proteins.
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – </li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string that selects Calpha atoms [<code class="docutils literal"><span class="pre">&quot;name</span> <span class="pre">CA&quot;</span></code>]</li>
-<li><strong>begin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – start analysing for time (ps) &gt;= <em>begin</em>; <code class="docutils literal"><span class="pre">None</span></code> starts from the
-beginning [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>finish</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – stop analysis for time (ps) =&lt; <em>finish</em>; <code class="docutils literal"><span class="pre">None</span></code> goes to the
-end of the trajectory [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>matrix_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Output file- bending matrix [<code class="docutils literal"><span class="pre">&quot;bending_matrix.dat&quot;</span></code>]</li>
-<li><strong>origin_pdbfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Output file- origin pdb file [<code class="docutils literal"><span class="pre">&quot;origin.pdb&quot;</span></code>]</li>
-<li><strong>summary_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Output file- all of the basic data [<code class="docutils literal"><span class="pre">&quot;summary.txt&quot;</span></code>]</li>
+<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string that selects Calpha atoms [<code class="docutils literal notranslate"><span class="pre">&quot;name</span> <span class="pre">CA&quot;</span></code>]</li>
+<li><strong>begin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – start analysing for time (ps) &gt;= <em>begin</em>; <code class="docutils literal notranslate"><span class="pre">None</span></code> starts from the
+beginning [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>finish</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – stop analysis for time (ps) =&lt; <em>finish</em>; <code class="docutils literal notranslate"><span class="pre">None</span></code> goes to the
+end of the trajectory [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>matrix_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Output file- bending matrix [<code class="docutils literal notranslate"><span class="pre">&quot;bending_matrix.dat&quot;</span></code>]</li>
+<li><strong>origin_pdbfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Output file- origin pdb file [<code class="docutils literal notranslate"><span class="pre">&quot;origin.pdb&quot;</span></code>]</li>
+<li><strong>summary_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Output file- all of the basic data [<code class="docutils literal notranslate"><span class="pre">&quot;summary.txt&quot;</span></code>]</li>
 <li><strong>screw_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Output file- local tilts of individual residues from 2 to n-1
-[<code class="docutils literal"><span class="pre">&quot;screw.xvg&quot;</span></code>]</li>
+[<code class="docutils literal notranslate"><span class="pre">&quot;screw.xvg&quot;</span></code>]</li>
 <li><strong>tilt_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Output file- tilt of line of best fit applied to origin axes
-[<code class="docutils literal"><span class="pre">&quot;local_tilt.xvg&quot;</span></code>]</li>
+[<code class="docutils literal notranslate"><span class="pre">&quot;local_tilt.xvg&quot;</span></code>]</li>
 <li><strong>bend_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Output file- local bend angles between successive local helix axes
-[<code class="docutils literal"><span class="pre">&quot;local_bend.xvg&quot;</span></code>]</li>
+[<code class="docutils literal notranslate"><span class="pre">&quot;local_bend.xvg&quot;</span></code>]</li>
 <li><strong>twist_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Output file- local unit twist between successive helix turns
-[<code class="docutils literal"><span class="pre">&quot;unit_twist.xvg&quot;</span></code>]</li>
-<li><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Prefix to add to all output file names; set to <code class="docutils literal"><span class="pre">None</span></code> to disable
-[<code class="docutils literal"><span class="pre">&quot;helanal__&quot;</span></code>]</li>
-<li><strong>ref_axis</strong> (<em>array_like</em><em> (</em><em>optional</em><em>)</em>) – Calculate tilt angle relative to the axis; if <code class="docutils literal"><span class="pre">None</span></code> then <code class="docutils literal"><span class="pre">[0,0,1]</span></code>
-is chosen [<code class="docutils literal"><span class="pre">None</span></code>]</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Toggle diagnostic outputs. [<code class="docutils literal"><span class="pre">True</span></code>]</li>
+[<code class="docutils literal notranslate"><span class="pre">&quot;unit_twist.xvg&quot;</span></code>]</li>
+<li><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Prefix to add to all output file names; set to <code class="docutils literal notranslate"><span class="pre">None</span></code> to disable
+[<code class="docutils literal notranslate"><span class="pre">&quot;helanal__&quot;</span></code>]</li>
+<li><strong>ref_axis</strong> (<em>array_like</em><em> (</em><em>optional</em><em>)</em>) – Calculate tilt angle relative to the axis; if <code class="docutils literal notranslate"><span class="pre">None</span></code> then <code class="docutils literal notranslate"><span class="pre">[0,0,1]</span></code>
+is chosen [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Toggle diagnostic outputs. [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">FinishTimeException</span></code> – If the specified finish time precedes the specified start time or
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">FinishTimeException</span></code> – If the specified finish time precedes the specified start time or
 current time stamp of trajectory object.</p>
 </td>
 </tr>
@@ -201,7 +192,7 @@ are directly obtained from the selection.</p>
 <dd><p>Simple <a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> run on a single frame PDB/GRO.</p>
 <p>Computed data are returned as a dict and also logged at level INFO to the
 logger <em>MDAnalysis.analysis.helanal</em>. A simple way to enable a logger is to
-use <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.start_logging" title="MDAnalysis.lib.log.start_logging"><code class="xref py py-func docutils literal"><span class="pre">start_logging()</span></code></a>.</p>
+use <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.start_logging" title="MDAnalysis.lib.log.start_logging"><code class="xref py py-func docutils literal notranslate"><span class="pre">start_logging()</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -209,8 +200,8 @@ use <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.start
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>pdbfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – filename of the single-frame input file</li>
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string, default is “name CA” to select all C-alpha atoms.</li>
-<li><strong>ref_axis</strong> (<em>array_like</em><em> (</em><em>optional</em><em>)</em>) – Calculate tilt angle relative to the axis; if <code class="docutils literal"><span class="pre">None</span></code> then <code class="docutils literal"><span class="pre">[0,0,1]</span></code>
-is chosen [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+<li><strong>ref_axis</strong> (<em>array_like</em><em> (</em><em>optional</em><em>)</em>) – Calculate tilt angle relative to the axis; if <code class="docutils literal notranslate"><span class="pre">None</span></code> then <code class="docutils literal notranslate"><span class="pre">[0,0,1]</span></code>
+is chosen [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 </ul>
 </td>
 </tr>
@@ -241,8 +232,8 @@ is chosen [<code class="docutils literal"><span class="pre">None</span></code>]<
 helix, e.g. with “name CA and resid 1:20”.</p>
 <p class="rubric">Example</p>
 <p>Analyze helix 8 in AdK (PDB 4AKE); the standard logger is started and
-writes output to the file <code class="docutils literal"><span class="pre">MDAnalysis.log</span></code>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">start_logging</span><span class="p">()</span>
+writes output to the file <code class="docutils literal notranslate"><span class="pre">MDAnalysis.log</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">start_logging</span><span class="p">()</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">helanal_main</span><span class="p">(</span><span class="s2">&quot;4ake_A.pdb&quot;</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA and resnum 161-187&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -300,14 +291,14 @@ be accomplished more transparently with <cite>selection</cite>.</p>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="gnm.html">4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gnm.html">4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">4.7.2. HELANAL — analysis of protein helices</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#background">4.7.2.1. Background</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#functions">4.7.2.2. Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="rdf.html">4.7.3. Radial Distribution Functions — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="dihedrals.html">4.7.4. Dihedral angles analysis — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rdf.html">4.7.3. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dihedrals.html">4.7.4. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
@@ -323,10 +314,10 @@ be accomplished more transparently with <cite>selection</cite>.</p>
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
 </ul>
 
@@ -335,20 +326,22 @@ be accomplished more transparently with <cite>selection</cite>.</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../analysis_modules.html">4. Analysis modules</a><ul>
-      <li>Previous: <a href="gnm.html" title="previous chapter">4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
-      <li>Next: <a href="rdf.html" title="next chapter">4.7.3. Radial Distribution Functions — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
+      <li>Previous: <a href="gnm.html" title="previous chapter">4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
+      <li>Next: <a href="rdf.html" title="next chapter">4.7.3. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -359,7 +352,7 @@ be accomplished more transparently with <cite>selection</cite>.</p>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

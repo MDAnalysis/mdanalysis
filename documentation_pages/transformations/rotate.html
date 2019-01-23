@@ -4,24 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>7.2. Trajectory rotation — MDAnalysis.transformations.rotate &#8212; MDAnalysis 0.19.3-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.19.3-dev',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -36,8 +28,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
@@ -48,7 +39,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.transformations.rotate"></span><div class="section" id="trajectory-rotation-mdanalysis-transformations-rotate">
-<h1>7.2. Trajectory rotation — <a class="reference internal" href="#module-MDAnalysis.transformations.rotate" title="MDAnalysis.transformations.rotate"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.transformations.rotate</span></code></a><a class="headerlink" href="#trajectory-rotation-mdanalysis-transformations-rotate" title="Permalink to this headline">¶</a></h1>
+<h1>7.2. Trajectory rotation — <a class="reference internal" href="#module-MDAnalysis.transformations.rotate" title="MDAnalysis.transformations.rotate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a><a class="headerlink" href="#trajectory-rotation-mdanalysis-transformations-rotate" title="Permalink to this headline">¶</a></h1>
 <p>Rotates the coordinates by a given angle arround an axis formed by a direction and a
 point</p>
 <dl class="function">
@@ -61,7 +52,7 @@ custom coordinates.</p>
 <p class="rubric">Examples</p>
 <p>e.g. rotate the coordinates by 90 degrees on a axis formed by the [0,0,1] vector and
 the center of geometry of a given AtomGroup:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
 <span class="n">angle</span> <span class="o">=</span> <span class="mi">90</span>
 <span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">()</span>
 <span class="n">d</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
@@ -69,7 +60,7 @@ the center of geometry of a given AtomGroup:</p>
 </pre></div>
 </div>
 <p>e.g. rotate the coordinates by a custom axis:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
 <span class="n">angle</span> <span class="o">=</span> <span class="mi">90</span>
 <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 <span class="n">d</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
@@ -89,8 +80,8 @@ will be defined. If no AtomGroup is given, the <cite>point</cite> argument becom
 <li><strong>point</strong> (<em>array-like</em><em>, </em><em>optional</em>) – list of the coordinates of the point from where a custom axis of rotation will
 be defined. Expected shapes are (3, ) or (1, 3). If no point is given, the
 <cite>ag</cite> argument becomes mandatory.</li>
-<li><strong>weights</strong> ({“mass”, <code class="docutils literal"><span class="pre">None</span></code>} or array_like, optional) – define the weights of the atoms when calculating the center of the AtomGroup.
-With <code class="docutils literal"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal"><span class="pre">None</span></code> weigh each atom equally.
+<li><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like, optional) – define the weights of the atoms when calculating the center of the AtomGroup.
+With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code> weigh each atom equally.
 If a float array of the same length as <cite>ag</cite> is provided, use each element of
 the <cite>array_like</cite> as a weight for the corresponding atom in <cite>ag</cite>. Default is
 None.</li>
@@ -154,18 +145,18 @@ after rotating the trajectory.</p>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="translate.html">7.1. Trajectory translation — <code class="docutils literal"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">7.2. Trajectory rotation — <code class="docutils literal"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="translate.html">7.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
 </ul>
 
@@ -174,7 +165,7 @@ after rotating the trajectory.</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../trajectory_transformations.html">7. Trajectory transformations</a><ul>
-      <li>Previous: <a href="translate.html" title="previous chapter">7.1. Trajectory translation — <code class="docutils literal"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+      <li>Previous: <a href="translate.html" title="previous chapter">7.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
       <li>Next: <a href="../selections_modules.html" title="next chapter">8. Selection exporters</a></li>
   </ul></li>
   </ul></li>
@@ -182,12 +173,14 @@ after rotating the trajectory.</p>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -198,7 +191,7 @@ after rotating the trajectory.</p>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

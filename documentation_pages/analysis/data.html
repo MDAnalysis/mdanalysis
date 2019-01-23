@@ -4,24 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>4.11.1. Analysis data files &#8212; MDAnalysis 0.19.3-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.19.3-dev',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -36,8 +28,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
@@ -49,22 +40,22 @@
             
   <span class="target" id="module-MDAnalysis.analysis.data.filenames"></span><div class="section" id="analysis-data-files">
 <h1>4.11.1. Analysis data files<a class="headerlink" href="#analysis-data-files" title="Permalink to this headline">¶</a></h1>
-<p><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.data</span></code> contains data files that are used as part of
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.data</span></code> contains data files that are used as part of
 analysis. These can be experimental or theoretical data. Files are stored
 inside the package and made accessible via variables in
-<a class="reference internal" href="#module-MDAnalysis.analysis.data.filenames" title="MDAnalysis.analysis.data.filenames"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.data.filenames</span></code></a>. These variables are documented
+<a class="reference internal" href="#module-MDAnalysis.analysis.data.filenames" title="MDAnalysis.analysis.data.filenames"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.data.filenames</span></code></a>. These variables are documented
 below, including references to the literature and where they are used
-inside <code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis</span></code>.</p>
+inside <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code>.</p>
 <div class="section" id="data-files">
 <h2>4.11.1.1. Data files<a class="headerlink" href="#data-files" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
 <dt id="MDAnalysis.analysis.data.filenames.Rama_ref">
 <code class="descclassname">MDAnalysis.analysis.data.filenames.</code><code class="descname">Rama_ref</code><a class="headerlink" href="#MDAnalysis.analysis.data.filenames.Rama_ref" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reference Ramachandran histogram for <a class="reference internal" href="dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran" title="MDAnalysis.analysis.dihedrals.Ramachandran"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.analysis.dihedrals.Ramachandran</span></code></a>.
+<dd><p>Reference Ramachandran histogram for <a class="reference internal" href="dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran" title="MDAnalysis.analysis.dihedrals.Ramachandran"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals.Ramachandran</span></code></a>.
 The data were calculated on a data set of 500 PDB structures taken from <a class="reference internal" href="dihedrals.html#lovell2003" id="id1">[Lovell2003]</a>.
-This is a numpy array in the <span class="math">\(\phi\)</span> and <span class="math">\(psi\)</span> backbone dihedral angles.</p>
+This is a numpy array in the <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(psi\)</span> backbone dihedral angles.</p>
 <p>Load and plot it with</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis.data.filenames</span> <span class="k">import</span> <span class="n">Rama_ref</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -80,11 +71,11 @@ example.</p>
 <dl class="data">
 <dt id="MDAnalysis.analysis.data.filenames.Janin_ref">
 <code class="descclassname">MDAnalysis.analysis.data.filenames.</code><code class="descname">Janin_ref</code><a class="headerlink" href="#MDAnalysis.analysis.data.filenames.Janin_ref" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reference Janin histogram for <a class="reference internal" href="dihedrals.html#MDAnalysis.analysis.dihedrals.Janin" title="MDAnalysis.analysis.dihedrals.Janin"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.analysis.dihedrals.Janin</span></code></a>.
+<dd><p>Reference Janin histogram for <a class="reference internal" href="dihedrals.html#MDAnalysis.analysis.dihedrals.Janin" title="MDAnalysis.analysis.dihedrals.Janin"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals.Janin</span></code></a>.
 The data were calculated on a data set of 500 PDB structures taken from <a class="reference internal" href="dihedrals.html#lovell2003" id="id2">[Lovell2003]</a>.
-This is a numpy array in the <span class="math">\(\chi_1\)</span> and <span class="math">\(chi_2\)</span> sidechain dihedral angles.</p>
+This is a numpy array in the <span class="math notranslate nohighlight">\(\chi_1\)</span> and <span class="math notranslate nohighlight">\(chi_2\)</span> sidechain dihedral angles.</p>
 <p>Load and plot it with</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis.data.filenames</span> <span class="k">import</span> <span class="n">Janin_ref</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -159,10 +150,10 @@ data. See the <a class="reference internal" href="dihedrals.html#figure-janin"><
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
 </ul>
 
@@ -171,7 +162,7 @@ data. See the <a class="reference internal" href="dihedrals.html#figure-janin"><
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../analysis_modules.html">4. Analysis modules</a><ul>
-      <li>Previous: <a href="legacy/x3dna.html" title="previous chapter">4.10.1.1.1. Generation and Analysis of X3DNA helicoidal parameter profiles — <code class="docutils literal"><span class="pre">MDAnalysis.analysis.legacy.x3dna</span></code></a></li>
+      <li>Previous: <a href="legacy/x3dna.html" title="previous chapter">4.10.1.1.1. Generation and Analysis of X3DNA helicoidal parameter profiles — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.legacy.x3dna</span></code></a></li>
       <li>Next: <a href="../topology_modules.html" title="next chapter">5. Topology modules</a></li>
   </ul></li>
   </ul></li>
@@ -179,12 +170,14 @@ data. See the <a class="reference internal" href="dihedrals.html#figure-janin"><
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -195,7 +188,7 @@ data. See the <a class="reference internal" href="dihedrals.html#figure-janin"><
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

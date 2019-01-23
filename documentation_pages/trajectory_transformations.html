@@ -4,24 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>7. Trajectory transformations &#8212; MDAnalysis 0.19.3-dev documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.19.3-dev',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
           href="../_static/opensearch.xml"/>
@@ -36,8 +28,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
@@ -49,39 +40,39 @@
             
   <div class="section" id="module-MDAnalysis.transformations">
 <span id="trajectory-transformations"></span><span id="transformations"></span><h1>7. Trajectory transformations<a class="headerlink" href="#module-MDAnalysis.transformations" title="Permalink to this headline">¶</a></h1>
-<p>The transformations submodule <a class="reference internal" href="#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.transformations</span></code></a> contains a
+<p>The transformations submodule <a class="reference internal" href="#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code></a> contains a
 collection of functions to modify the trajectory. Coordinate transformations,
 such as PBC corrections and molecule fitting are often required for some
 analyses and visualization, and the functions in this module allow
 transformations to be applied on-the-fly.  These transformation functions
-(<code class="docutils literal"><span class="pre">transformation_1</span></code> and <code class="docutils literal"><span class="pre">transformation_2</span></code> in the following example) can be
-called by the user for any given <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code> of the trajectory,</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
+(<code class="docutils literal notranslate"><span class="pre">transformation_1</span></code> and <code class="docutils literal notranslate"><span class="pre">transformation_2</span></code> in the following example) can be
+called by the user for any given <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> of the trajectory,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
    <span class="n">ts</span> <span class="o">=</span> <span class="n">transformation_2</span><span class="p">(</span><span class="n">transformation_1</span><span class="p">(</span><span class="n">ts</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>where they change the coordinates of the timestep <code class="docutils literal"><span class="pre">ts</span></code> in place.  However, it
+<p>where they change the coordinates of the timestep <code class="docutils literal notranslate"><span class="pre">ts</span></code> in place.  However, it
 is much more convenient to associate a whole workflow of transformations with a
 trajectory and have the transformations be called automatically. One can add a
 workflow (a sequence of transformations) using the
-<a class="reference internal" href="coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.add_transformations" title="MDAnalysis.coordinates.base.ReaderBase.add_transformations"><code class="xref py py-meth docutils literal"><span class="pre">Universe.trajectory.add_transformations</span></code></a> method of a
+<a class="reference internal" href="coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.add_transformations" title="MDAnalysis.coordinates.base.ReaderBase.add_transformations"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Universe.trajectory.add_transformations</span></code></a> method of a
 trajectory,</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">workflow</span> <span class="o">=</span> <span class="p">[</span><span class="n">transformation_1</span><span class="p">,</span> <span class="n">transformation_2</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">workflow</span> <span class="o">=</span> <span class="p">[</span><span class="n">transformation_1</span><span class="p">,</span> <span class="n">transformation_2</span><span class="p">]</span>
 <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">workflow</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>or upon <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a>
+<p>or upon <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>
 creation using the keyword argument <cite>transformations</cite>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="n">workflow</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="n">workflow</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note that in the two latter cases, the workflow cannot be changed after having
 being added.</p>
-<p>A simple transformation that takes no other arguments but a <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code> can be defined
+<p>A simple transformation that takes no other arguments but a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> can be defined
 as the following example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">up_by_2</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">up_by_2</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Translate all coordinates by 2 angstroms up along the Z dimension.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -89,11 +80,11 @@ as the following example:</p>
     <span class="k">return</span> <span class="n">ts</span>
 </pre></div>
 </div>
-<p>If the transformation requires other arguments besides the <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code>, the transformation
-takes these arguments, while a wrapped function takes the <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code> object as
+<p>If the transformation requires other arguments besides the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>, the transformation
+takes these arguments, while a wrapped function takes the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> object as
 argument.
 So, a transformation can be roughly defined as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">up_by_x</span><span class="p">(</span><span class="n">distance</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">up_by_x</span><span class="p">(</span><span class="n">distance</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a transformation that will translate all coordinates by a given amount along the Z dimension.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -103,9 +94,9 @@ So, a transformation can be roughly defined as follows:</p>
 <span class="k">return</span> <span class="n">wrapped</span>
 </pre></div>
 </div>
-<p>An alternative to using a wrapped function is using partials from <a class="reference external" href="https://docs.python.org/3/library/functools.html#module-functools" title="(in Python v3.7)"><code class="xref py py-mod docutils literal"><span class="pre">functools</span></code></a>. The
+<p>An alternative to using a wrapped function is using partials from <a class="reference external" href="https://docs.python.org/3/library/functools.html#module-functools" title="(in Python v3.7)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">functools</span></code></a>. The
 above function can be written as:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">functools</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">functools</span>
 
 <span class="k">def</span> <span class="nf">up_by_x</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
     <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">distance</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -114,22 +105,22 @@ above function can be written as:</p>
 <span class="n">up_by_2</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">up_by_x</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="transformations/translate.html#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.transformations.translate()</span></code></a> for a simple example.</p>
+<p>See <a class="reference internal" href="transformations/translate.html#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate()</span></code></a> for a simple example.</p>
 <p class="rubric">Examples</p>
 <p>Translating the coordinates of a frame:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 <span class="n">new_ts</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>e.g. create a workflow and adding it to the trajectory:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 <span class="n">workflow</span> <span class="o">=</span> <span class="p">[</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span>
             <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])]</span>
 <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">workflow</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>e.g. giving a workflow as a keyword argument when defining the universe:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">workflow</span> <span class="o">=</span> <span class="p">[</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">workflow</span> <span class="o">=</span> <span class="p">[</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span>
             <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])]</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="n">workflow</span><span class="p">)</span>
 </pre></div>
@@ -137,8 +128,8 @@ above function can be written as:</p>
 <p class="rubric">Currently implemented transformations</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="transformations/translate.html">7.1. Trajectory translation — <code class="docutils literal"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="transformations/rotate.html">7.2. Trajectory rotation — <code class="docutils literal"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="transformations/translate.html">7.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="transformations/rotate.html">7.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -180,18 +171,18 @@ above function can be written as:</p>
 <li class="toctree-l1"><a class="reference internal" href="topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">6. Coordinates modules</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">7. Trajectory transformations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="transformations/translate.html">7.1. Trajectory translation — <code class="docutils literal"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="transformations/rotate.html">7.2. Trajectory rotation — <code class="docutils literal"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="transformations/translate.html">7.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="transformations/rotate.html">7.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="selections_modules.html">8. Selection exporters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">9. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core_modules.html">10. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="units.html">14. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">16. References</a></li>
 </ul>
 
@@ -199,19 +190,21 @@ above function can be written as:</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="coordinates/XDR.html" title="previous chapter">6.27. XDR based trajectory files — <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
-      <li>Next: <a href="transformations/translate.html" title="next chapter">7.1. Trajectory translation — <code class="docutils literal"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+      <li>Previous: <a href="coordinates/XDR.html" title="previous chapter">6.27. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+      <li>Next: <a href="transformations/translate.html" title="next chapter">7.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -222,7 +215,7 @@ above function can be written as:</p>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

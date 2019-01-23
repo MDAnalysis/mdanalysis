@@ -4,24 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>12.2.1. Fast distance array computation — MDAnalysis.lib.distances &#8212; MDAnalysis 0.19.3-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.19.3-dev',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -36,8 +28,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
@@ -48,7 +39,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.lib.distances"></span><div class="section" id="fast-distance-array-computation-mdanalysis-lib-distances">
-<h1>12.2.1. Fast distance array computation — <a class="reference internal" href="#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a><a class="headerlink" href="#fast-distance-array-computation-mdanalysis-lib-distances" title="Permalink to this headline">¶</a></h1>
+<h1>12.2.1. Fast distance array computation — <a class="reference internal" href="#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a><a class="headerlink" href="#fast-distance-array-computation-mdanalysis-lib-distances" title="Permalink to this headline">¶</a></h1>
 <p>Fast C-routines to calculate arrays of distances or angles from coordinate
 arrays. Many of the functions also exist in parallel versions, which typically
 provide higher performance than the serial code.
@@ -74,11 +65,11 @@ case-insensitive):</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>“serial”</td>
-<td><code class="xref py py-mod docutils literal"><span class="pre">c_distances</span></code></td>
+<td><code class="xref py py-mod docutils literal notranslate"><span class="pre">c_distances</span></code></td>
 <td>serial implementation in C/Cython</td>
 </tr>
 <tr class="row-odd"><td>“OpenMP”</td>
-<td><code class="xref py py-mod docutils literal"><span class="pre">c_distances_openmp</span></code></td>
+<td><code class="xref py py-mod docutils literal notranslate"><span class="pre">c_distances_openmp</span></code></td>
 <td>parallel implementation in C/Cython
 with OpenMP</td>
 </tr>
@@ -95,12 +86,12 @@ with OpenMP</td>
 <code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">distance_array</code><span class="sig-paren">(</span><em>reference</em>, <em>configuration</em>, <em>box=None</em>, <em>result=None</em>, <em>backend='serial'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#distance_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.distance_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate all possible distances between a reference set and another
 configuration.</p>
-<p>If there are <code class="docutils literal"><span class="pre">n</span></code> positions in <cite>reference</cite> and <code class="docutils literal"><span class="pre">m</span></code> positions in
-<cite>configuration</cite>, a distance array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">m)</span></code> will be computed.</p>
+<p>If there are <code class="docutils literal notranslate"><span class="pre">n</span></code> positions in <cite>reference</cite> and <code class="docutils literal notranslate"><span class="pre">m</span></code> positions in
+<cite>configuration</cite>, a distance array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">m)</span></code> will be computed.</p>
 <p>If the optional argument <cite>box</cite> is supplied, the minimum image convention is
 applied when calculating distances. Either orthogonal or triclinic boxes are
 supported.</p>
-<p>If a 2D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with the shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">m)</span></code>
+<p>If a 2D numpy array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> with the shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">m)</span></code>
 is provided in <cite>result</cite>, then this preallocated array is filled. This can
 speed up calculations.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -108,28 +99,28 @@ speed up calculations.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Reference coordinate array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> (dtype is
-arbitrary, will be converted to <code class="docutils literal"><span class="pre">numpy.float32</span></code> internally).</li>
-<li><strong>configuration</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Configuration coordinate array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(m,</span> <span class="pre">3)</span></code> (dtype is
-arbitrary, will be converted to <code class="docutils literal"><span class="pre">numpy.float32</span></code> internally).</li>
+<li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Reference coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> (dtype is
+arbitrary, will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</li>
+<li><strong>configuration</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Configuration coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">3)</span></code> (dtype is
+arbitrary, will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</li>
 <li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
-<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">m)</span></code> and dtype
-<code class="docutils literal"><span class="pre">numpy.float64</span></code>.
+<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">m)</span></code> and dtype
+<code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>.
 Avoids creating the array which saves time when the function
 is called repeatedly.</li>
 <li><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>d</strong> – Array containing the distances <code class="docutils literal"><span class="pre">d[i,j]</span></code> between reference coordinates
-<code class="docutils literal"><span class="pre">i</span></code> and configuration coordinates <code class="docutils literal"><span class="pre">j</span></code>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>d</strong> – Array containing the distances <code class="docutils literal notranslate"><span class="pre">d[i,j]</span></code> between reference coordinates
+<code class="docutils literal notranslate"><span class="pre">i</span></code> and configuration coordinates <code class="docutils literal notranslate"><span class="pre">j</span></code>.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n,</span> <span class="pre">m)</span></code>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n,</span> <span class="pre">m)</span></code>)</p>
 </td>
 </tr>
 </tbody>
@@ -138,7 +129,7 @@ is called repeatedly.</li>
 <p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.
 Now also accepts single coordinates as input.</p>
 </div>
 </dd></dl>
@@ -150,31 +141,31 @@ Now also accepts single coordinates as input.</p>
 <p>If the optional argument <cite>box</cite> is supplied, the minimum image convention is
 applied when calculating distances. Either orthogonal or triclinic boxes are
 supported.</p>
-<p>If a 1D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with the shape
-<code class="docutils literal"><span class="pre">(n*(n-1)/2,)</span></code> is provided in <cite>result</cite>, then this preallocated array is
+<p>If a 1D numpy array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> with the shape
+<code class="docutils literal notranslate"><span class="pre">(n*(n-1)/2,)</span></code> is provided in <cite>result</cite>, then this preallocated array is
 filled. This can speed up calculations.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Reference coordinate array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> (dtype is
-arbitrary, will be converted to <code class="docutils literal"><span class="pre">numpy.float32</span></code> internally).</li>
+<li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Reference coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> (dtype is
+arbitrary, will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</li>
 <li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
-<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal"><span class="pre">(n*(n-1)/2,)</span></code> and
-dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code>. Avoids creating the array which saves time when
+<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal notranslate"><span class="pre">(n*(n-1)/2,)</span></code> and
+dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>. Avoids creating the array which saves time when
 the function is called repeatedly.</li>
 <li><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p><strong>d</strong> – Array containing the distances <code class="docutils literal"><span class="pre">dist[i,j]</span></code> between reference
-coordinates <code class="docutils literal"><span class="pre">i</span></code> and <code class="docutils literal"><span class="pre">j</span></code> at position <code class="docutils literal"><span class="pre">d[k]</span></code>. Loop through <code class="docutils literal"><span class="pre">d</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p><strong>d</strong> – Array containing the distances <code class="docutils literal notranslate"><span class="pre">dist[i,j]</span></code> between reference
+coordinates <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code> at position <code class="docutils literal notranslate"><span class="pre">d[k]</span></code>. Loop through <code class="docutils literal notranslate"><span class="pre">d</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
@@ -183,7 +174,7 @@ coordinates <code class="docutils literal"><span class="pre">i</span></code> and
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n*(n-1)/2,)</span></code>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n*(n-1)/2,)</span></code>)</p>
 </td>
 </tr>
 </tbody>
@@ -192,7 +183,7 @@ coordinates <code class="docutils literal"><span class="pre">i</span></code> and
 <p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.</p>
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -216,35 +207,35 @@ implemented.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Reference coordinate array with shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code>.</li>
-<li><strong>configuration</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Configuration coordinate array with shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(m,</span> <span class="pre">3)</span></code>.</li>
+<li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Reference coordinate array with shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code>.</li>
+<li><strong>configuration</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Configuration coordinate array with shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">3)</span></code>.</li>
 <li><strong>max_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Maximum cutoff distance between the reference and configuration.</li>
 <li><strong>min_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum cutoff distance between reference and configuration.</li>
 <li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
 <li><strong>method</strong> (<em>{'bruteforce'</em><em>, </em><em>'nsgrid'</em><em>, </em><em>'pkdtree'}</em><em>, </em><em>optional</em>) – Keyword to override the automatic guessing of the employed search
 method.</li>
-<li><strong>return_distances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to <code class="docutils literal"><span class="pre">True</span></code>, distances will also be returned.</li>
+<li><strong>return_distances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, distances will also be returned.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul>
-<li><p class="first"><strong>pairs</strong> (numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.int64</span></code>, <code class="docutils literal"><span class="pre">shape=(n_pairs,</span> <span class="pre">2)</span></code>)) – Pairs of indices, corresponding to coordinates in the <cite>reference</cite> and
+<li><p class="first"><strong>pairs</strong> (numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.int64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n_pairs,</span> <span class="pre">2)</span></code>)) – Pairs of indices, corresponding to coordinates in the <cite>reference</cite> and
 <cite>configuration</cite> arrays such that the distance between them lies within
 the interval (<cite>min_cutoff</cite>, <cite>max_cutoff</cite>].
-Each row in <cite>pairs</cite> is an index pair <code class="docutils literal"><span class="pre">[i,</span> <span class="pre">j]</span></code> corresponding to the
-<code class="docutils literal"><span class="pre">i</span></code>-th coordinate in <cite>reference</cite> and the <code class="docutils literal"><span class="pre">j</span></code>-th coordinate in
+Each row in <cite>pairs</cite> is an index pair <code class="docutils literal notranslate"><span class="pre">[i,</span> <span class="pre">j]</span></code> corresponding to the
+<code class="docutils literal notranslate"><span class="pre">i</span></code>-th coordinate in <cite>reference</cite> and the <code class="docutils literal notranslate"><span class="pre">j</span></code>-th coordinate in
 <cite>configuration</cite>.</p>
 </li>
-<li><p class="first"><strong>distances</strong> (numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n_pairs,)</span></code>), optional) – Distances corresponding to each pair of indices. Only returned if
-<cite>return_distances</cite> is <code class="docutils literal"><span class="pre">True</span></code>. <code class="docutils literal"><span class="pre">distances[k]</span></code> corresponds to the
-<code class="docutils literal"><span class="pre">k</span></code>-th pair returned in <cite>pairs</cite> and gives the distance between the
-coordinates <code class="docutils literal"><span class="pre">reference[pairs[k,</span> <span class="pre">0]]</span></code> and
-<code class="docutils literal"><span class="pre">configuration[pairs[k,</span> <span class="pre">1]]</span></code>.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">capped_distances</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span>
+<li><p class="first"><strong>distances</strong> (numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n_pairs,)</span></code>), optional) – Distances corresponding to each pair of indices. Only returned if
+<cite>return_distances</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>. <code class="docutils literal notranslate"><span class="pre">distances[k]</span></code> corresponds to the
+<code class="docutils literal notranslate"><span class="pre">k</span></code>-th pair returned in <cite>pairs</cite> and gives the distance between the
+coordinates <code class="docutils literal notranslate"><span class="pre">reference[pairs[k,</span> <span class="pre">0]]</span></code> and
+<code class="docutils literal notranslate"><span class="pre">configuration[pairs[k,</span> <span class="pre">1]]</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">capped_distances</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span>
                                     <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
     <span class="n">coord1</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -266,7 +257,7 @@ methods.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.distances.distance_array" title="MDAnalysis.lib.distances.distance_array"><code class="xref py py-func docutils literal"><span class="pre">distance_array()</span></code></a>, <a class="reference internal" href="pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search" title="MDAnalysis.lib.pkdtree.PeriodicKDTree.search"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.pkdtree.PeriodicKDTree.search()</span></code></a>, <a class="reference internal" href="nsgrid.html#MDAnalysis.lib.nsgrid.FastNS.search" title="MDAnalysis.lib.nsgrid.FastNS.search"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.nsgrid.FastNS.search()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.distances.distance_array" title="MDAnalysis.lib.distances.distance_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">distance_array()</span></code></a>, <a class="reference internal" href="pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search" title="MDAnalysis.lib.pkdtree.PeriodicKDTree.search"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree.PeriodicKDTree.search()</span></code></a>, <a class="reference internal" href="nsgrid.html#MDAnalysis.lib.nsgrid.FastNS.search" title="MDAnalysis.lib.nsgrid.FastNS.search"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid.FastNS.search()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -289,13 +280,13 @@ implemented.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Reference coordinate array with shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code>.</li>
+<li><strong>reference</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Reference coordinate array with shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code>.</li>
 <li><strong>max_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Maximum cutoff distance between <cite>reference</cite> coordinates.</li>
 <li><strong>min_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum cutoff distance between <cite>reference</cite> coordinates.</li>
 <li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
 <li><strong>method</strong> (<em>{'bruteforce'</em><em>, </em><em>'nsgrid'</em><em>, </em><em>'pkdtree'}</em><em>, </em><em>optional</em>) – Keyword to override the automatic guessing of the employed search
 method.</li>
@@ -303,17 +294,17 @@ method.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul>
-<li><p class="first"><strong>pairs</strong> (numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.int64</span></code>, <code class="docutils literal"><span class="pre">shape=(n_pairs,</span> <span class="pre">2)</span></code>)) – Pairs of indices, corresponding to coordinates in the <cite>reference</cite> array
+<li><p class="first"><strong>pairs</strong> (numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.int64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n_pairs,</span> <span class="pre">2)</span></code>)) – Pairs of indices, corresponding to coordinates in the <cite>reference</cite> array
 such that the distance between them lies within the interval
 (<cite>min_cutoff</cite>, <cite>max_cutoff</cite>].
-Each row in <cite>pairs</cite> is an index pair <code class="docutils literal"><span class="pre">[i,</span> <span class="pre">j]</span></code> corresponding to the
-<code class="docutils literal"><span class="pre">i</span></code>-th and the <code class="docutils literal"><span class="pre">j</span></code>-th coordinate in <cite>reference</cite>.</p>
+Each row in <cite>pairs</cite> is an index pair <code class="docutils literal notranslate"><span class="pre">[i,</span> <span class="pre">j]</span></code> corresponding to the
+<code class="docutils literal notranslate"><span class="pre">i</span></code>-th and the <code class="docutils literal notranslate"><span class="pre">j</span></code>-th coordinate in <cite>reference</cite>.</p>
 </li>
-<li><p class="first"><strong>distances</strong> (numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n_pairs,)</span></code>)) – Distances corresponding to each pair of indices. <code class="docutils literal"><span class="pre">distances[k]</span></code>
-corresponds to the <code class="docutils literal"><span class="pre">k</span></code>-th pair returned in <cite>pairs</cite> and gives the
-distance between the coordinates <code class="docutils literal"><span class="pre">reference[pairs[k,</span> <span class="pre">0]]</span></code> and
-<code class="docutils literal"><span class="pre">reference[pairs[k,</span> <span class="pre">1]]</span></code>.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">self_capped_distances</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
+<li><p class="first"><strong>distances</strong> (numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n_pairs,)</span></code>)) – Distances corresponding to each pair of indices. <code class="docutils literal notranslate"><span class="pre">distances[k]</span></code>
+corresponds to the <code class="docutils literal notranslate"><span class="pre">k</span></code>-th pair returned in <cite>pairs</cite> and gives the
+distance between the coordinates <code class="docutils literal notranslate"><span class="pre">reference[pairs[k,</span> <span class="pre">0]]</span></code> and
+<code class="docutils literal notranslate"><span class="pre">reference[pairs[k,</span> <span class="pre">1]]</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">self_capped_distances</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
     <span class="n">coord1</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
     <span class="n">coord2</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
@@ -334,7 +325,7 @@ methods.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.distances.self_distance_array" title="MDAnalysis.lib.distances.self_distance_array"><code class="xref py py-func docutils literal"><span class="pre">self_distance_array()</span></code></a>, <a class="reference internal" href="pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search" title="MDAnalysis.lib.pkdtree.PeriodicKDTree.search"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.pkdtree.PeriodicKDTree.search()</span></code></a>, <a class="reference internal" href="nsgrid.html#MDAnalysis.lib.nsgrid.FastNS.self_search" title="MDAnalysis.lib.nsgrid.FastNS.self_search"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.nsgrid.FastNS.self_search()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.distances.self_distance_array" title="MDAnalysis.lib.distances.self_distance_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">self_distance_array()</span></code></a>, <a class="reference internal" href="pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search" title="MDAnalysis.lib.pkdtree.PeriodicKDTree.search"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree.PeriodicKDTree.search()</span></code></a>, <a class="reference internal" href="nsgrid.html#MDAnalysis.lib.nsgrid.FastNS.self_search" title="MDAnalysis.lib.nsgrid.FastNS.self_search"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid.FastNS.self_search()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -343,20 +334,20 @@ methods.</p>
 <code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">calc_bonds</code><span class="sig-paren">(</span><em>coords1</em>, <em>coords2</em>, <em>box=None</em>, <em>result=None</em>, <em>backend='serial'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#calc_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.calc_bonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the bond lengths between pairs of atom positions from the two
 coordinate arrays <cite>coords1</cite> and <cite>coords2</cite>, which must contain the same
-number of coordinates. <code class="docutils literal"><span class="pre">coords1[i]</span></code> and <code class="docutils literal"><span class="pre">coords2[i]</span></code> represent the
-positions of atoms connected by the <code class="docutils literal"><span class="pre">i</span></code>-th bond. If single coordinates are
+number of coordinates. <code class="docutils literal notranslate"><span class="pre">coords1[i]</span></code> and <code class="docutils literal notranslate"><span class="pre">coords2[i]</span></code> represent the
+positions of atoms connected by the <code class="docutils literal notranslate"><span class="pre">i</span></code>-th bond. If single coordinates are
 supplied, a single distance will be returned.</p>
-<p>In comparison to <a class="reference internal" href="#MDAnalysis.lib.distances.distance_array" title="MDAnalysis.lib.distances.distance_array"><code class="xref py py-meth docutils literal"><span class="pre">distance_array()</span></code></a> and <a class="reference internal" href="#MDAnalysis.lib.distances.self_distance_array" title="MDAnalysis.lib.distances.self_distance_array"><code class="xref py py-meth docutils literal"><span class="pre">self_distance_array()</span></code></a>,
+<p>In comparison to <a class="reference internal" href="#MDAnalysis.lib.distances.distance_array" title="MDAnalysis.lib.distances.distance_array"><code class="xref py py-meth docutils literal notranslate"><span class="pre">distance_array()</span></code></a> and <a class="reference internal" href="#MDAnalysis.lib.distances.self_distance_array" title="MDAnalysis.lib.distances.self_distance_array"><code class="xref py py-meth docutils literal notranslate"><span class="pre">self_distance_array()</span></code></a>,
 which calculate distances between all possible combinations of coordinates,
-<a class="reference internal" href="#MDAnalysis.lib.distances.calc_bonds" title="MDAnalysis.lib.distances.calc_bonds"><code class="xref py py-meth docutils literal"><span class="pre">calc_bonds()</span></code></a> only calculates distances between pairs of coordinates,
+<a class="reference internal" href="#MDAnalysis.lib.distances.calc_bonds" title="MDAnalysis.lib.distances.calc_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_bonds()</span></code></a> only calculates distances between pairs of coordinates,
 similar to:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If the optional argument <cite>box</cite> is supplied, the minimum image convention is
 applied when calculating distances. Either orthogonal or triclinic boxes are
 supported.</p>
-<p>If a numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with shape <code class="docutils literal"><span class="pre">(n,)</span></code> (for <code class="docutils literal"><span class="pre">n</span></code>
+<p>If a numpy array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code> (for <code class="docutils literal notranslate"><span class="pre">n</span></code>
 coordinate pairs) is provided in <cite>result</cite>, then this preallocated array is
 filled. This can speed up calculations.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -364,19 +355,19 @@ filled. This can speed up calculations.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coords1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> for one half of a
-single or <code class="docutils literal"><span class="pre">n</span></code> bonds, respectively (dtype is arbitrary, will be
-converted to <code class="docutils literal"><span class="pre">numpy.float32</span></code> internally).</li>
-<li><strong>coords2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> for the other half of
-a single or <code class="docutils literal"><span class="pre">n</span></code> bonds, respectively (dtype is arbitrary, will be
-converted to <code class="docutils literal"><span class="pre">numpy.float32</span></code> internally).</li>
+<li><strong>coords1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> for one half of a
+single or <code class="docutils literal notranslate"><span class="pre">n</span></code> bonds, respectively (dtype is arbitrary, will be
+converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</li>
+<li><strong>coords2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> for the other half of
+a single or <code class="docutils literal notranslate"><span class="pre">n</span></code> bonds, respectively (dtype is arbitrary, will be
+converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</li>
 <li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
-<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal"><span class="pre">(n,)</span></code>
-(for <code class="docutils literal"><span class="pre">n</span></code> coordinate pairs). Avoids recreating the array in repeated
+<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+(for <code class="docutils literal notranslate"><span class="pre">n</span></code> coordinate pairs). Avoids recreating the array in repeated
 function calls.</li>
 <li><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</li>
 </ul>
@@ -387,7 +378,7 @@ two single coordinates were supplied, their distance is returned as a
 single number instead of an array.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n,)</span></code>) or numpy.float64</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n,)</span></code>) or numpy.float64</p>
 </td>
 </tr>
 </tbody>
@@ -399,7 +390,7 @@ single number instead of an array.</p>
 <p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.
 Now also accepts single coordinates as input.</p>
 </div>
 </dd></dl>
@@ -411,7 +402,7 @@ Now also accepts single coordinates as input.</p>
 three coordinate arrays <cite>coords1</cite>, <cite>coords2</cite>, and <cite>coords3</cite>. All coordinate
 arrays must contain the same number of coordinates.</p>
 <p>The coordinates in <cite>coords2</cite> represent the apices of the angles:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>  <span class="mi">2</span><span class="o">---</span><span class="mi">3</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="mi">2</span><span class="o">---</span><span class="mi">3</span>
  <span class="o">/</span>
 <span class="mi">1</span>
 </pre></div>
@@ -423,7 +414,7 @@ that angle.</p>
 into account when constructing the connecting vectors between coordinates,
 i.e., the minimum image convention is applied for the vectors forming the
 angles. Either orthogonal or triclinic boxes are supported.</p>
-<p>If a numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with shape <code class="docutils literal"><span class="pre">(n,)</span></code> (for <code class="docutils literal"><span class="pre">n</span></code>
+<p>If a numpy array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code> (for <code class="docutils literal notranslate"><span class="pre">n</span></code>
 coordinate triplets) is provided in <cite>result</cite>, then this preallocated array
 is filled. This can speed up calculations.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -431,22 +422,22 @@ is filled. This can speed up calculations.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coords1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the coordinates of one
-side of a single or <code class="docutils literal"><span class="pre">n</span></code> angles, respectively (dtype is arbitrary, will
-be converted to <code class="docutils literal"><span class="pre">numpy.float32</span></code> internally)</li>
-<li><strong>coords2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the coordinates of the
-apices of a single or <code class="docutils literal"><span class="pre">n</span></code> angles, respectively (dtype is arbitrary,
-will be converted to <code class="docutils literal"><span class="pre">numpy.float32</span></code> internally)</li>
-<li><strong>coords3</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the coordinates of the
-other side of a single or <code class="docutils literal"><span class="pre">n</span></code> angles, respectively (dtype is
-arbitrary, will be converted to <code class="docutils literal"><span class="pre">numpy.float32</span></code> internally)</li>
+<li><strong>coords1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the coordinates of one
+side of a single or <code class="docutils literal notranslate"><span class="pre">n</span></code> angles, respectively (dtype is arbitrary, will
+be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally)</li>
+<li><strong>coords2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the coordinates of the
+apices of a single or <code class="docutils literal notranslate"><span class="pre">n</span></code> angles, respectively (dtype is arbitrary,
+will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally)</li>
+<li><strong>coords3</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the coordinates of the
+other side of a single or <code class="docutils literal notranslate"><span class="pre">n</span></code> angles, respectively (dtype is
+arbitrary, will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally)</li>
 <li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
-<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal"><span class="pre">(n,)</span></code>
-(for <code class="docutils literal"><span class="pre">n</span></code> coordinate triplets). Avoids recreating the array in repeated
+<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+(for <code class="docutils literal notranslate"><span class="pre">n</span></code> coordinate triplets). Avoids recreating the array in repeated
 function calls.</li>
 <li><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</li>
 </ul>
@@ -457,7 +448,7 @@ are returned in radians (rad). If three single coordinates were
 supplied, the angle is returned as a single number instead of an array.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n,)</span></code>) or numpy.float64</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n,)</span></code>) or numpy.float64</p>
 </td>
 </tr>
 </tbody>
@@ -473,7 +464,7 @@ calculation</p>
 <p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.
 Now also accepts single coordinates as input.</p>
 </div>
 </dd></dl>
@@ -487,7 +478,7 @@ from the four coordinate arrays <cite>coords1</cite>, <cite>coords2</cite>, <cit
 <p>The dihedral angle formed by a quadruplet of positions (1,2,3,4) is
 calculated around the axis connecting positions 2 and 3 (i.e., the angle
 between the planes spanned by positions (1,2,3) and (2,3,4)):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>        <span class="mi">4</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>        <span class="mi">4</span>
         <span class="o">|</span>
   <span class="mi">2</span><span class="o">-----</span><span class="mi">3</span>
  <span class="o">/</span>
@@ -495,15 +486,15 @@ between the planes spanned by positions (1,2,3) and (2,3,4)):</p>
 </pre></div>
 </div>
 <p>If all coordinates lie in the same plane, the cis configuration corresponds
-to a dihedral angle of zero, and the trans configuration to <span class="math">\(\pi\)</span>
+to a dihedral angle of zero, and the trans configuration to <span class="math notranslate nohighlight">\(\pi\)</span>
 radians (180 degrees). Configurations where the dihedral angle is undefined
 (e.g., when all coordinates lie on the same straight line) result in a value
-of <code class="docutils literal"><span class="pre">nan</span></code> (not a number) for that dihedral.</p>
+of <code class="docutils literal notranslate"><span class="pre">nan</span></code> (not a number) for that dihedral.</p>
 <p>If the optional argument <cite>box</cite> is supplied, periodic boundaries are taken
 into account when constructing the connecting vectors between coordinates,
 i.e., the minimum image convention is applied for the vectors forming the
 dihedral angles. Either orthogonal or triclinic boxes are supported.</p>
-<p>If a numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with shape <code class="docutils literal"><span class="pre">(n,)</span></code> (for <code class="docutils literal"><span class="pre">n</span></code>
+<p>If a numpy array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code> (for <code class="docutils literal notranslate"><span class="pre">n</span></code>
 coordinate quadruplets) is provided in <cite>result</cite> then this preallocated array
 is filled. This can speed up calculations.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -511,25 +502,25 @@ is filled. This can speed up calculations.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coords1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the 1st
+<li><strong>coords1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the 1st
 positions in dihedrals (dtype is arbitrary, will be converted to
-<code class="docutils literal"><span class="pre">numpy.float32</span></code> internally)</li>
-<li><strong>coords2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the 2nd
+<code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally)</li>
+<li><strong>coords2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the 2nd
 positions in dihedrals (dtype is arbitrary, will be converted to
-<code class="docutils literal"><span class="pre">numpy.float32</span></code> internally)</li>
-<li><strong>coords3</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the 3rd
+<code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally)</li>
+<li><strong>coords3</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the 3rd
 positions in dihedrals (dtype is arbitrary, will be converted to
-<code class="docutils literal"><span class="pre">numpy.float32</span></code> internally)</li>
-<li><strong>coords4</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the 4th
+<code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally)</li>
+<li><strong>coords4</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> containing the 4th
 positions in dihedrals (dtype is arbitrary, will be converted to
-<code class="docutils literal"><span class="pre">numpy.float32</span></code> internally)</li>
+<code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally)</li>
 <li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
-<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal"><span class="pre">(n,)</span></code>
-(for <code class="docutils literal"><span class="pre">n</span></code> coordinate quadruplets). Avoids recreating the array in
+<li><strong>result</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+(for <code class="docutils literal notranslate"><span class="pre">n</span></code> coordinate quadruplets). Avoids recreating the array in
 repeated function calls.</li>
 <li><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</li>
 </ul>
@@ -541,7 +532,7 @@ coordinates were supplied, the dihedral angle is returned as a single
 number instead of an array.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal"><span class="pre">shape=(n,)</span></code>) or numpy.float64</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n,)</span></code>) or numpy.float64</p>
 </td>
 </tr>
 </tbody>
@@ -560,7 +551,7 @@ calculation</p>
 <p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.
 Now also accepts single coordinates as input.</p>
 </div>
 </dd></dl>
@@ -574,12 +565,12 @@ Now also accepts single coordinates as input.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coords</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> (dtype is arbitrary,
-will be converted to <code class="docutils literal"><span class="pre">numpy.float32</span></code> internally).</li>
+<li><strong>coords</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> (dtype is arbitrary,
+will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</li>
 <li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
 <li><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</li>
 </ul>
@@ -589,7 +580,7 @@ triclinic and must be provided in the same format as returned by
 as defined by <cite>box</cite>.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray  (<code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code>, <code class="docutils literal"><span class="pre">shape=coords.shape</span></code>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray  (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float32</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=coords.shape</span></code>)</p>
 </td>
 </tr>
 </tbody>
@@ -601,7 +592,7 @@ as defined by <cite>box</cite>.</p>
 <p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.
 Now also accepts (and, likewise, returns) single coordinates.</p>
 </div>
 </dd></dl>
@@ -612,18 +603,18 @@ Now also accepts (and, likewise, returns) single coordinates.</p>
 <dd><p>Transform an array of coordinates from real space to S space (a.k.a.
 lambda space)</p>
 <p>S space represents fractional space within the unit cell for this system.</p>
-<p>Reciprocal operation to <a class="reference internal" href="#MDAnalysis.lib.distances.transform_StoR" title="MDAnalysis.lib.distances.transform_StoR"><code class="xref py py-meth docutils literal"><span class="pre">transform_StoR()</span></code></a>.</p>
+<p>Reciprocal operation to <a class="reference internal" href="#MDAnalysis.lib.distances.transform_StoR" title="MDAnalysis.lib.distances.transform_StoR"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transform_StoR()</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coords</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – A <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> array of coordinates (dtype is arbitrary, will
-be converted to <code class="docutils literal"><span class="pre">numpy.float32</span></code> internally).</li>
+<li><strong>coords</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – A <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> array of coordinates (dtype is arbitrary, will
+be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</li>
 <li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
 <li><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</li>
 </ul>
@@ -632,7 +623,7 @@ triclinic and must be provided in the same format as returned by
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newcoords</strong> – An array containing fractional coordiantes.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code>, <code class="docutils literal"><span class="pre">shape=coords.shape</span></code>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float32</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=coords.shape</span></code>)</p>
 </td>
 </tr>
 </tbody>
@@ -641,7 +632,7 @@ triclinic and must be provided in the same format as returned by
 <p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.
 Now also accepts (and, likewise, returns) a single coordinate.</p>
 </div>
 </dd></dl>
@@ -651,18 +642,18 @@ Now also accepts (and, likewise, returns) a single coordinate.</p>
 <code class="descclassname">MDAnalysis.lib.distances.</code><code class="descname">transform_StoR</code><span class="sig-paren">(</span><em>coords</em>, <em>box</em>, <em>backend='serial'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#transform_StoR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.transform_StoR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform an array of coordinates from S space into real space.</p>
 <p>S space represents fractional space within the unit cell for this system.</p>
-<p>Reciprocal operation to <a class="reference internal" href="#MDAnalysis.lib.distances.transform_RtoS" title="MDAnalysis.lib.distances.transform_RtoS"><code class="xref py py-meth docutils literal"><span class="pre">transform_RtoS()</span></code></a></p>
+<p>Reciprocal operation to <a class="reference internal" href="#MDAnalysis.lib.distances.transform_RtoS" title="MDAnalysis.lib.distances.transform_RtoS"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transform_RtoS()</span></code></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coords</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – A <code class="docutils literal"><span class="pre">(3,)</span></code> or <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> array of coordinates (dtype is arbitrary, will
-be converted to <code class="docutils literal"><span class="pre">numpy.float32</span></code> internally).</li>
+<li><strong>coords</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – A <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> array of coordinates (dtype is arbitrary, will
+be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</li>
 <li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
 <li><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</li>
 </ul>
@@ -671,7 +662,7 @@ triclinic and must be provided in the same format as returned by
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>newcoords</strong> – An array containing real space coordiantes.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal"><span class="pre">dtype=numpy.float32</span></code>, <code class="docutils literal"><span class="pre">shape=coords.shape</span></code>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float32</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=coords.shape</span></code>)</p>
 </td>
 </tr>
 </tbody>
@@ -680,7 +671,7 @@ triclinic and must be provided in the same format as returned by
 <p><span class="versionmodified">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal"><span class="pre">numpy.float32</span></code>.
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.
 Now also accepts (and, likewise, returns) a single coordinate.</p>
 </div>
 </dd></dl>
@@ -696,19 +687,19 @@ involves the evaluation of reciprocal box vectors followed by the
 calculation of distances of atoms from the walls by means of projection onto
 the reciprocal vectors. If the distance is less than a specified cutoff
 distance, relevant periodic images are generated using box translation
-vectors <span class="math">\(\vec{t}\)</span> with</p>
-<div class="math">
+vectors <span class="math notranslate nohighlight">\(\vec{t}\)</span> with</p>
+<div class="math notranslate nohighlight">
 \[\vec{t}=l\cdot\vec{a}+m\cdot\vec{b}+n\cdot \vec{c}\,,\]</div>
-<p>where <span class="math">\(l,\,m,\,n \in \{-1,\,0,\,1\}\)</span> are the neighboring cell indices
-in <span class="math">\(x\)</span>-, <span class="math">\(y\)</span>-, and <span class="math">\(z\)</span>-direction relative to the central
-cell with box vectors <span class="math">\(\vec{a},\,\vec{b},\,\vec{c}\)</span>.</p>
-<p>For instance, an atom close to the <span class="math">\(xy\)</span>-plane containing the origin
+<p>where <span class="math notranslate nohighlight">\(l,\,m,\,n \in \{-1,\,0,\,1\}\)</span> are the neighboring cell indices
+in <span class="math notranslate nohighlight">\(x\)</span>-, <span class="math notranslate nohighlight">\(y\)</span>-, and <span class="math notranslate nohighlight">\(z\)</span>-direction relative to the central
+cell with box vectors <span class="math notranslate nohighlight">\(\vec{a},\,\vec{b},\,\vec{c}\)</span>.</p>
+<p>For instance, an atom close to the <span class="math notranslate nohighlight">\(xy\)</span>-plane containing the origin
 will generate a periodic image outside the central cell and close to the
-opposite <span class="math">\(xy\)</span>-plane of the box, i.e., shifted by
-<span class="math">\(\vec{t} = 0\cdot\vec{a}+0\cdot\vec{b}+1\cdot\vec{c}=\vec{c}\)</span>.</p>
+opposite <span class="math notranslate nohighlight">\(xy\)</span>-plane of the box, i.e., shifted by
+<span class="math notranslate nohighlight">\(\vec{t} = 0\cdot\vec{a}+0\cdot\vec{b}+1\cdot\vec{c}=\vec{c}\)</span>.</p>
 <p>Likewise, if the particle is close to more than one box walls, images along
 the diagonals are also generated:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>                            <span class="n">x</span>            <span class="n">x</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                            <span class="n">x</span>            <span class="n">x</span>
 <span class="o">+------------+</span>                <span class="o">+------------+</span>
 <span class="o">|</span>            <span class="o">|</span>   <span class="n">augment</span>      <span class="o">|</span>            <span class="o">|</span>
 <span class="o">|</span>            <span class="o">|</span>   <span class="o">-------&gt;</span>     <span class="o">|</span>            <span class="o">|</span>
@@ -721,22 +712,22 @@ the diagonals are also generated:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>coordinates</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Input coordinate array of shape <code class="docutils literal"><span class="pre">(n,</span> <span class="pre">3)</span></code> and dtype <code class="docutils literal"><span class="pre">numpy.float32</span></code>
+<li><strong>coordinates</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Input coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> and dtype <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>
 used to generate duplicate images in the vicinity of the central cell. All
 coordinates must be within the primary unit cell.</li>
-<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Box dimensions of shape <code class="docutils literal"><span class="pre">(6,)</span></code> and dtype <code class="docutils literal"><span class="pre">numpy.float32</span></code>. The
+<li><strong>box</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Box dimensions of shape <code class="docutils literal notranslate"><span class="pre">(6,)</span></code> and dtype <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>. The
 dimensions must be provided in the same format as returned
-by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
-<code class="docutils literal"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code></li>
+by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code></li>
 <li><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Thickness of cutoff region for duplicate image generation.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>output</strong> (<em>numpy.ndarray</em>) – Coordinates of duplicate (augmented) particles (dtype <code class="docutils literal"><span class="pre">numpy.float32</span></code>).</li>
-<li><strong>indices</strong> (<em>numpy.ndarray</em>) – Original indices of the augmented coordinates (dtype <code class="docutils literal"><span class="pre">numpy.int64</span></code>).
+<li><strong>output</strong> (<em>numpy.ndarray</em>) – Coordinates of duplicate (augmented) particles (dtype <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>).</li>
+<li><strong>indices</strong> (<em>numpy.ndarray</em>) – Original indices of the augmented coordinates (dtype <code class="docutils literal notranslate"><span class="pre">numpy.int64</span></code>).
 Maps the indices of augmented particles to their original particle index
-such that <code class="docutils literal"><span class="pre">indices[augmented_index]</span> <span class="pre">=</span> <span class="pre">original_index</span></code>.</li>
+such that <code class="docutils literal notranslate"><span class="pre">indices[augmented_index]</span> <span class="pre">=</span> <span class="pre">original_index</span></code>.</li>
 </ul>
 </p>
 </td>
@@ -748,14 +739,14 @@ such that <code class="docutils literal"><span class="pre">indices[augmented_ind
 <p>Output does not return coordinates from the initial array.
 To merge the particles with their respective images, the following operation
 is necessary when generating the images:</p>
-<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="n">images</span><span class="p">,</span> <span class="n">mapping</span> <span class="o">=</span> <span class="n">augment_coordinates</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
+<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">images</span><span class="p">,</span> <span class="n">mapping</span> <span class="o">=</span> <span class="n">augment_coordinates</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
 <span class="n">all_coords</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">images</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.distances.undo_augment" title="MDAnalysis.lib.distances.undo_augment"><code class="xref py py-meth docutils literal"><span class="pre">undo_augment()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.distances.undo_augment" title="MDAnalysis.lib.distances.undo_augment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">undo_augment()</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.19.0.</span></p>
@@ -771,11 +762,11 @@ is necessary when generating the images:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>results</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Array of dtype <code class="docutils literal"><span class="pre">numpy.int64</span></code> containing coordinate indices, including
+<li><strong>results</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.int64</span></code> containing coordinate indices, including
 “augmented” indices.</li>
-<li><strong>translation</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Index map of dtype <code class="docutils literal"><span class="pre">numpy.int64</span></code> linking the augmented indices to the
+<li><strong>translation</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><em>numpy.ndarray</em></a>) – Index map of dtype <code class="docutils literal notranslate"><span class="pre">numpy.int64</span></code> linking the augmented indices to the
 original particle indices such that
-<code class="docutils literal"><span class="pre">translation[augmented_index]</span> <span class="pre">=</span> <span class="pre">original_index</span></code>.</li>
+<code class="docutils literal notranslate"><span class="pre">translation[augmented_index]</span> <span class="pre">=</span> <span class="pre">original_index</span></code>.</li>
 <li><strong>nreal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of real coordinates, i.e., indices in <cite>results</cite> equal or larger
 than this need to be mapped to their real counterpart.</li>
 </ul>
@@ -796,7 +787,7 @@ their corresponding initial original indices.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.distances.augment_coordinates" title="MDAnalysis.lib.distances.augment_coordinates"><code class="xref py py-meth docutils literal"><span class="pre">augment_coordinates()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.distances.augment_coordinates" title="MDAnalysis.lib.distances.augment_coordinates"><code class="xref py py-meth docutils literal notranslate"><span class="pre">augment_coordinates()</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.19.0.</span></p>
@@ -806,16 +797,16 @@ their corresponding initial original indices.</p>
 </div>
 </div>
 <div class="section" id="low-level-modules-for-mdanalysis-lib-distances">
-<h1>12.2.2. Low-level modules for <a class="reference internal" href="#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a><a class="headerlink" href="#low-level-modules-for-mdanalysis-lib-distances" title="Permalink to this headline">¶</a></h1>
-<p><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib._distances</span></code> contains low level access to the
+<h1>12.2.2. Low-level modules for <a class="reference internal" href="#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a><a class="headerlink" href="#low-level-modules-for-mdanalysis-lib-distances" title="Permalink to this headline">¶</a></h1>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib._distances</span></code> contains low level access to the
 <em>serial</em> MDAnalysis Cython functions in <cite>distances</cite>.  These have
 little to no error checking done on inputs so should be used with
-caution. Similarly, <code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib._distances_openmp</span></code> contains
+caution. Similarly, <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib._distances_openmp</span></code> contains
 the OpenMP-enable functions.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="c_distances.html">12.2.2.1. Distance calculation library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.c_distances</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="c_distances_openmp.html">12.2.2.2. Parallel distance calculation library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.c_distances_openmp</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="c_distances.html">12.2.2.1. Distance calculation library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.c_distances</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="c_distances_openmp.html">12.2.2.2. Parallel distance calculation library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.c_distances_openmp</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -861,35 +852,35 @@ the OpenMP-enable functions.</p>
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">12.1. Overview</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">12.2. List of modules</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.1. Fast distance array computation — <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#selection-of-acceleration-backend">12.2.1.1. Selection of acceleration (“backend”)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#functions">12.2.1.2. Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="c_distances.html">12.2.2.1. Distance calculation library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.c_distances</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="c_distances_openmp.html">12.2.2.2. Parallel distance calculation library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.c_distances_openmp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="c_distances.html">12.2.2.1. Distance calculation library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.c_distances</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="c_distances_openmp.html">12.2.2.2. Parallel distance calculation library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.c_distances_openmp</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">12.2.4. Neighbor search library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">12.2.5. PeriodicKDTree — <code class="docutils literal"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="log.html">12.2.6. Setting up logging — <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mdamath.html">12.2.7. Mathematical helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="qcprot.html">12.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="util.html">12.2.10. Helper functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">12.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">12.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">12.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">12.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">12.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">12.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">12.3. Low level file formats</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
 </ul>
 
@@ -897,21 +888,23 @@ the OpenMP-enable functions.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../lib_modules.html">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a><ul>
-      <li>Previous: <a href="../lib_modules.html" title="previous chapter">12. Library functions — <code class="docutils literal"><span class="pre">MDAnalysis.lib</span></code></a></li>
-      <li>Next: <a href="c_distances.html" title="next chapter">12.2.2.1. Distance calculation library — <code class="docutils literal"><span class="pre">MDAnalysis.lib.c_distances</span></code></a></li>
+  <li><a href="../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul>
+      <li>Previous: <a href="../lib_modules.html" title="previous chapter">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+      <li>Next: <a href="c_distances.html" title="next chapter">12.2.2.1. Distance calculation library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.c_distances</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -922,7 +915,7 @@ the OpenMP-enable functions.</p>
       &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
