@@ -88,7 +88,7 @@ that two objects are of the same level, or to access a particular class::
    at.level.plural  # Returns AtomGroup class
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 from six.moves import zip
 from six import string_types
 
