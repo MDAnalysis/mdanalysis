@@ -736,15 +736,16 @@ class GroupBase(_MutableBase):
                 coords = atoms.pack_into_box(inplace=False)
             else:
                 coords = atoms.positions
-            # Weights don't make sense if we have less than 2 atoms:
-            if len(self) < 2:
-                weights = None
-            # promote coords or weights to dtype if required:
+            # If there's no atom, return its (empty) coordinates unchanged.
+            if len(atoms) == 0:
+                return coords
             if weights is None:
+                # promote coords to dtype if required:
                 coords = coords.astype(dtype, copy=False)
-            else:
-                weights = weights.astype(dtype, copy=False)
-            return np.average(coords, weights=weights, axis=0)
+                return coords.mean(axis=0)
+            # promote weights to dtype if required:
+            weights = weights.astype(dtype, copy=False)
+            return (coords * weights[:, None]).sum(axis=0) / weights.sum()
         elif comp == 'residues':
             compound_indices = atoms.resindices
         elif comp == 'segments':
@@ -788,10 +789,6 @@ class GroupBase(_MutableBase):
             compound_mask = compound_sizes == compound_size
             _compound_indices = unique_compound_indices[compound_mask]
             atoms_mask = np.in1d(compound_indices, _compound_indices)
-            # Skip computation for compound size < 2:
-            if compound_size < 2:
-                centers[compound_mask] = coords[atoms_mask].reshape((-1, 3))
-                continue
             _coords = coords[atoms_mask].reshape((-1, compound_size, 3))
             if weights is None:
                 _centers = _coords.mean(axis=1)
