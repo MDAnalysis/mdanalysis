@@ -85,6 +85,7 @@ The function :func:`find_hydrogen_donors` can be used to construct the donor
 AtomGroup
 ::
 
+  import MDAnalysis as mda
   from MDAnalysis.analysis import hbonds
   from MDAnalysis.tests.datafiles import waterPSF, waterDCD
   u = mda.Universe(waterPSF, waterDCD)
@@ -94,7 +95,24 @@ AtomGroup
 
 Note that this requires the Universe to have bond information.  If this isn't
 present in the topology file, the
-:meth:`MDAnalysis.core.groups.AtomGroup.guess_bonds` method can be used.
+:meth:`MDAnalysis.core.groups.AtomGroup.guess_bonds` method can be used, for
+example
+::
+
+  import MDAnalysis as mda
+  from MDAnalysis.analysis import hbonds
+  from MDAnalysis.tests.datafiles import GRO
+  # we could load the Universe with guess_bonds=True
+  # but this would guess **all** bonds
+  u = mda.Universe(GRO)
+  water = u.select_atoms('resname SOL and not type DUMMY')
+  # guess bonds only within our water atoms
+  # this adds the bond information directly to the Universe
+  water.guess_bonds()
+  hydrogens = water.select_atoms('type H')
+  # this is now possible as we guessed the bonds
+  donors = hbonds.find_hydrogen_donors(hydrogens)
+
 
 The keyword **exclusions** allows a tuple of array addresses to be provided,
 (Hidx, Aidx),these pairs of hydrogen-acceptor are then not permitted to be
