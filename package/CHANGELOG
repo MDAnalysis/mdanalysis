@@ -38,6 +38,11 @@ Fixes
     AtomGroup (Issue #2112)
   * Read TPR files from Gromacs 2019 (PR #2161)
 
+Enhancements
+  * center, centroid, center_of_geometry, center_of_mass can now be computed per
+    molecule or per fragment (PR #2182)
+  * Atoms (AtomGroups) have a new fragindex (fragindices) property corresponding
+    to the respective fragment (fragments) (PR #2182)
 
 11/06/18 richardjgowers
   * 0.19.2
