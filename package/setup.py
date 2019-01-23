@@ -278,7 +278,7 @@ def extensions(config):
     if platform.system() == 'Darwin' and using_clang():
         cpp_extra_compile_args.append('-stdlib=libc++')
         # mac_ver() -> ('10.14', ...)
-        if int(platform.mac_ver()[0].split(".")[1]) <= 9:
+        if int(platform.mac_ver()[0].split(".")[1]) <= 7:
             cpp_extra_compile_args.append('-mmacosx-version-min=10.9')
             cpp_extra_link_args.append('-stdlib=libc++')
 
