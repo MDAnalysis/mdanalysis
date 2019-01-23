@@ -1273,36 +1273,33 @@ class SurvivalProbability(object):
         if tau_max > (stop - start):
             raise ValueError("Too few frames selected for given tau_max.")
 
-        # preload the frames (selected ids) to a list of sets
+        # preload the frames (atom IDs) to a list of sets
         selected_ids = []
-        if step <= tau_max + 1:
-            # load all frames
-            for ts in self.universe.trajectory[start:stop]:
-                self.print(verbose, "Loading frame:", ts)
-                selected_ids.append(set(self.universe.select_atoms(self.selection).ids))
-        else:
-            # skip frames that will not be used
-            # Example: step 5 and tau 2: L, L, L, S, S, L, L, L, S, S, ... with L = Load, and S = Skip
-            loaded_counter = 0
-            no_of_frames_to_load = tau_max + 1
-            skipped = 0
-            no_of_frames_to_skip = step - (tau_max + 1)
-            for ts in self.universe.trajectory[start:stop]:
-                if skipped == no_of_frames_to_skip:
-                    skipped = 0
-                    loaded_counter = 0
 
-                if loaded_counter == no_of_frames_to_load:
-                    self.print(verbose, "Skipping loading frame:", ts)
-                    skipped += 1
-                    continue
+        # skip frames that will not be used
+        # Example: step 5 and tau 2: L, L, L, S, S, L, L, L, S, S, ... with L = Load, and S = Skip
+        frame_loaded_counter = 0
+        frames_to_load_no = tau_max + 1
+        frames_to_skip_no = max(step - (tau_max + 1), 0)
 
-                self.print(verbose, "Loading frame:", ts)
-                selected_ids.append(set(self.universe.select_atoms(self.selection).ids))
+        frame_no = start
+        while frame_no < stop:      # we have already added 1 to stop, therefore <
+            if frame_loaded_counter == frames_to_load_no:
+                self.print(verbose, "Skipping the next %d frames:" % frames_to_skip_no)
+                frame_no += frames_to_skip_no
+                frame_loaded_counter = 0
+                continue
 
-                loaded_counter += 1
+            # update the frame number
+            self.universe.trajectory[frame_no]
 
+            self.print(verbose, "Loading frame:", self.universe.trajectory.ts)
+            selected_ids.append(set(self.universe.select_atoms(self.selection).ids))
 
+            frame_no += 1
+            frame_loaded_counter += 1
+
+        ## calculate Survival Probability
         tau_timeseries = np.arange(1, tau_max + 1)
         sp_timeseries_data = [[] for _ in range(tau_max)]
 
