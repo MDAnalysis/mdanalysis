@@ -689,14 +689,13 @@ class GroupBase(_MutableBase):
 
         Raises
         ------
-        ValueError:
+        ValueError
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
-        NoDataError:
-            * If `compound` is ``'molecule'`` but the topology doesn't
-              contain molecule information (molnums).
-            * If `compound` is ``'fragments'`` but the topology doesn't
-              contain bonds.
+        ~MDAnalysis.exceptions.NoDataError
+            If `compound` is ``'molecule'`` but the topology doesn't
+            contain molecule information (molnums) or if `compound` is
+            ``'fragments'`` but the topology doesn't contain bonds.
 
         Examples
         --------
