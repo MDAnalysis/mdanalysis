@@ -277,10 +277,8 @@ def extensions(config):
     # needed to specify c++ runtime library on OSX
     if platform.system() == 'Darwin' and using_clang():
         cpp_extra_compile_args.append('-stdlib=libc++')
-        # mac_ver() -> ('10.14', ...)
-        if int(platform.mac_ver()[0].split(".")[1]) <= 7:
-            cpp_extra_compile_args.append('-mmacosx-version-min=10.9')
-            cpp_extra_link_args.append('-stdlib=libc++')
+        cpp_extra_compile_args.append('-mmacosx-version-min=10.9')
+        cpp_extra_link_args.append('-stdlib=libc++')
 
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
