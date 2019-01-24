@@ -1841,7 +1841,8 @@ class AtomGroup(GroupBase):
         # REMOVE in 1.0
         #
         # is this a known attribute failure?
-        if attr in ('fragments', 'fragindices'):  # TODO: Generalise this to cover many attributes
+        # TODO: Generalise this to cover many attributes
+        if attr in ('fragments', 'fragindices', 'n_fragments'):
             # eg:
             # if attr in _ATTR_ERRORS:
             # raise NDE(_ATTR_ERRORS[attr])
