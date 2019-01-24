@@ -99,8 +99,35 @@ DOI:http://dx.doi.org/10.1063/1.4922445</td></tr>
 <p>Three AtomGroup selections representing the <strong>hydrogens</strong>, <strong>donors</strong> and
 <strong>acceptors</strong> that you wish to analyse.  Note that the <strong>hydrogens</strong> and
 <strong>donors</strong> selections must be aligned, that is <strong>hydrogens[0]</strong> and
-<strong>donors[0]</strong> must represent a bonded pair.  If a single donor therefore has
-two hydrogens, it must feature twice in the <strong>donors</strong> AtomGroup.</p>
+<strong>donors[0]</strong> must represent a bonded pair.  For systems such as water,
+this will mean that each oxygen appears twice in the <strong>donors</strong> AtomGroup.
+The function <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_autocorrel.find_hydrogen_donors" title="MDAnalysis.analysis.hbonds.hbond_autocorrel.find_hydrogen_donors"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_hydrogen_donors()</span></code></a> can be used to construct the donor
+AtomGroup</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">hbonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">waterPSF</span><span class="p">,</span> <span class="n">waterDCD</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">waterPSF</span><span class="p">,</span> <span class="n">waterDCD</span><span class="p">)</span>
+<span class="n">hydrogens</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name H*&#39;</span><span class="p">)</span>
+<span class="n">donors</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that this requires the Universe to have bond information.  If this isn’t
+present in the topology file, the
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds" title="MDAnalysis.core.groups.AtomGroup.guess_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.guess_bonds()</span></code></a> method can be used, for
+.. rubric:: Example</p>
+<p>import MDAnalysis as mda
+from MDAnalysis.analysis import hbonds
+from MDAnalysis.tests.datafiles import GRO
+# we could load the Universe with guess_bonds=True
+# but this would guess <strong>all</strong> bonds
+u = mda.Universe(GRO)
+water = u.select_atoms(‘resname SOL and not type DUMMY’)
+# guess bonds only within our water atoms
+# this adds the bond information directly to the Universe
+water.guess_bonds()
+hydrogens = water.select_atoms(‘type H’)
+# this is now possible as we guessed the bonds
+donors = hbonds.find_hydrogen_donors(hydrogens)</p>
 <p>The keyword <strong>exclusions</strong> allows a tuple of array addresses to be provided,
 (Hidx, Aidx),these pairs of hydrogen-acceptor are then not permitted to be
 counted as part of the analysis.  This could be used to exclude the
@@ -135,20 +162,38 @@ This is a dictionary with the following keys</p>
 <em>fit</em>, <em>tau</em> and <em>estimate</em> are filled after the <code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> method has been
 used.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">hbonds</span>
+<p>This example finds the continuous hydrogen bond lifetime between N-H..O in a
+polyamide system.  This will use the default geometric definition for hydrogen
+bonds of length 3.0 Å and angle of 130 degrees.
+It will observe a window of 2.0 ps (<cite>sample_time</cite>) and try to gather 1000
+sample point within this time window (this relies upon the trajectory being
+sampled frequently enough).  This process is repeated for 20 different start
+points to build a better average.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">hbonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">TRZ_psf</span><span class="p">,</span> <span class="n">TRZ</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="c1"># load system</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TRZ_psf</span><span class="p">,</span> <span class="n">TRZ</span><span class="p">)</span>
+<span class="c1"># select atoms of interest into AtomGroups</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name Hn&#39;</span><span class="p">)</span>
-<span class="n">O</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
 <span class="n">N</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name N&#39;</span><span class="p">)</span>
-<span class="n">hb_ac</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">acceptors</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">O</span><span class="p">,</span>
-            <span class="n">hydrogens</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">Hn</span><span class="p">,</span> <span class="n">donors</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">N</span><span class="p">,</span><span class="n">bond_type</span><span class="o">=</span><span class="s1">&#39;continuous&#39;</span><span class="p">,</span>
-            <span class="n">sample_time</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">nruns</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">nsamples</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">O</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
+<span class="c1"># create analysis object</span>
+<span class="n">hb_ac</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="n">u</span><span class="p">,</span>
+            <span class="n">acceptors</span><span class="o">=</span><span class="n">O</span><span class="p">,</span> <span class="n">hydrogens</span><span class="o">=</span><span class="n">H</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="n">N</span><span class="p">,</span>
+            <span class="n">bond_type</span><span class="o">=</span><span class="s1">&#39;continuous&#39;</span><span class="p">,</span>
+            <span class="n">sample_time</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nruns</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="c1"># call run to gather results</span>
 <span class="n">hb_ac</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="c1"># attempt to fit results to exponential equation</span>
 <span class="n">hb_ac</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="c1"># grab results from inside object</span>
 <span class="n">tau</span> <span class="o">=</span> <span class="n">hb_ac</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;tau&#39;</span><span class="p">]</span>
 <span class="n">time</span> <span class="o">=</span> <span class="n">hb_ac</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">hb_ac</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span>
 <span class="n">estimate</span> <span class="o">=</span> <span class="n">hb_ac</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;estimate&#39;</span><span class="p">]</span>
+<span class="c1"># plot to check!</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="s1">&#39;ro&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">estimate</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -157,6 +202,27 @@ used.</p>
 </div>
 <div class="section" id="classes">
 <h2>4.3.2.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.analysis.hbonds.hbond_autocorrel.find_hydrogen_donors">
+<code class="descclassname">MDAnalysis.analysis.hbonds.hbond_autocorrel.</code><code class="descname">find_hydrogen_donors</code><span class="sig-paren">(</span><em>hydrogens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_autocorrel.html#find_hydrogen_donors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_autocorrel.find_hydrogen_donors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the donor atom for each hydrogen</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hydrogens</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – the hydrogens that will form hydrogen bonds</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>donors</strong> – the donor atom for each hydrogen, found via bond information</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.20.0.</span></p>
+</div>
+</dd></dl>
+
 <dl class="class">
 <dt id="MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.hbonds.hbond_autocorrel.</code><code class="descname">HydrogenBondAutoCorrel</code><span class="sig-paren">(</span><em>universe</em>, <em>hydrogens=None</em>, <em>acceptors=None</em>, <em>donors=None</em>, <em>bond_type=None</em>, <em>exclusions=None</em>, <em>angle_crit=130.0</em>, <em>dist_crit=3.0</em>, <em>sample_time=100</em>, <em>time_cut=None</em>, <em>nruns=1</em>, <em>nsamples=50</em>, <em>pbc=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_autocorrel.html#HydrogenBondAutoCorrel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel" title="Permalink to this definition">¶</a></dt>
@@ -172,8 +238,8 @@ used.</p>
 <li><strong>donors</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The atoms which are connected to the hydrogens.  This group
 must be identical in length to the hydrogen group and matched,
 ie hydrogens[0] is bonded to donors[0].
-For many cases, this will mean a donor appears twice in this
-group.</li>
+For water, this will mean a donor appears twice in this
+group, once for each hydrogen.</li>
 <li><strong>bond_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Which definition of hydrogen bond lifetime to consider, either
 ‘continuous’ or ‘intermittent’.</li>
 <li><strong>exclusions</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – Indices of Hydrogen-Acceptor pairs to be excluded.
