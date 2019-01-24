@@ -22,9 +22,12 @@
 #
 from __future__ import absolute_import
 
-__all__ = ['HydrogenBondAnalysis', 'HydrogenBondAutoCorrel',
-           'WaterBridgeAnalysis']
+__all__ = [
+    'HydrogenBondAnalysis',
+    'HydrogenBondAutoCorrel', 'find_hydrogen_donors',
+    'WaterBridgeAnalysis',
+]
 
 from .hbond_analysis import HydrogenBondAnalysis
-from .hbond_autocorrel import HydrogenBondAutoCorrel
+from .hbond_autocorrel import HydrogenBondAutoCorrel, find_hydrogen_donors
 from .wbridge_analysis import WaterBridgeAnalysis
