@@ -95,8 +95,8 @@ AtomGroup
 
 Note that this requires the Universe to have bond information.  If this isn't
 present in the topology file, the
-:meth:`MDAnalysis.core.groups.AtomGroup.guess_bonds` method can be used, for
-example
+:meth:`MDAnalysis.core.groups.AtomGroup.guess_bonds` method can be used
+as so
 ::
 
   import MDAnalysis as mda
@@ -151,8 +151,8 @@ The *results* and *time* values are only filled after the :meth:`run` method,
 used.
 
 
-Examples
---------
+Worked Example for Polyamide
+----------------------------
 
 This example finds the continuous hydrogen bond lifetime between N-H..O in a
 polyamide system.  This will use the default geometric definition for hydrogen
