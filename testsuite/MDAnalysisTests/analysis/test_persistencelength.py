@@ -89,9 +89,9 @@ class TestPersistenceLength(object):
     def test_plot_with_ax(self, p_run):
         fig, ax = plt.subplots()
 
-        ax = p_run.plot(ax=ax)
+        ax2 = p_run.plot(ax=ax)
 
-        assert ax is ax
+        assert ax2 is ax
 
     def test_perform_fit_warn(self, p_run):
         with pytest.warns(DeprecationWarning):
