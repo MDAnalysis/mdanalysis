@@ -73,7 +73,7 @@ def unique_int_1d(np.int64_t[:] values):
     cdef np.int64_t[:] result = np.empty(n_values, dtype=np.int64)
 
     if n_values == 0:
-        return result
+        return np.array(result)
 
     result[0] = values[0]
     for i in range(1, n_values):

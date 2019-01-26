@@ -47,6 +47,11 @@ Fixes
   * Fixed copying Universes created from PDB files (record_type attribute
     was problematic) (Issue #2178 #1926, PR #2179)
 
+Enhancements
+  * center, centroid, center_of_geometry, center_of_mass can now be computed per
+    molecule or per fragment (PR #2182)
+  * Atoms (AtomGroups) have a new fragindex (fragindices) property corresponding
+    to the respective fragment (fragments) (PR #2182)
 
 11/06/18 richardjgowers
   * 0.19.2
