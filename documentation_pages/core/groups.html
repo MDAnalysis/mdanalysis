@@ -385,8 +385,9 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
-Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can be
-obtained by setting the <cite>compound</cite> parameter accordingly.</p>
+Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -396,28 +397,38 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 identical weights for all atoms of the group.</li>
 <li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
-<code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
-be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
-compounds intact. Instead, the resulting position vectors will be
-moved to the primary unit cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
+<code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>,
+the center of each compound will be calculated without moving any
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the compounds intact. Instead, the
+resulting position vectors will be moved to the primary unit cell
+after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
 be returned as a single position vector. Else, the weighted centers
-of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> will be returned as an
-array of position vectors, i.e. a 2d array. Note that, in any case,
-<em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the
-group</em> will be taken into account.</li>
+of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
+will be returned as an array of position vectors, i.e. a 2d array.
+Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the weighted center(s) of the group.
 If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
 position vector.
-If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
-output will be a 2d array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the
-number of compounds.</p>
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>, the output will be a 2d array
+of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>compound</cite> is not one of <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>.</li>
+<li><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> – If <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'molecule'</span></code> but the topology doesn’t
+contain molecule information (molnums) or if <cite>compound</cite> is
+<code class="docutils literal notranslate"><span class="pre">'fragments'</span></code> but the topology doesn’t contain bonds.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -439,16 +450,20 @@ number of compounds.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.center_of_geometry">
 <code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can be obtained by setting the
-<cite>compound</cite> parameter accordingly.</p>
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
+obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -460,7 +475,7 @@ primary unit cell before calculation. If <code class="docutils literal notransla
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
 will be returned as an array of position vectors, i.e. a 2d array.
@@ -490,17 +505,21 @@ number of compounds.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.centroid">
 <code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.centroid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can be obtained by setting the
-<cite>compound</cite> parameter accordingly.</p>
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
+obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -512,7 +531,7 @@ primary unit cell before calculation. If <code class="docutils literal notransla
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
 will be returned as an array of position vectors, i.e. a 2d array.
@@ -542,6 +561,10 @@ number of compounds.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
 </div>
 </dd></dl>
 
@@ -1903,8 +1926,9 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
-Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can be
-obtained by setting the <cite>compound</cite> parameter accordingly.</p>
+Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1914,28 +1938,38 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 identical weights for all atoms of the group.</li>
 <li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
-<code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
-be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
-compounds intact. Instead, the resulting position vectors will be
-moved to the primary unit cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
+<code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>,
+the center of each compound will be calculated without moving any
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the compounds intact. Instead, the
+resulting position vectors will be moved to the primary unit cell
+after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
 be returned as a single position vector. Else, the weighted centers
-of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> will be returned as an
-array of position vectors, i.e. a 2d array. Note that, in any case,
-<em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the
-group</em> will be taken into account.</li>
+of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
+will be returned as an array of position vectors, i.e. a 2d array.
+Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the weighted center(s) of the group.
 If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
 position vector.
-If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
-output will be a 2d array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the
-number of compounds.</p>
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>, the output will be a 2d array
+of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>compound</cite> is not one of <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>.</li>
+<li><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> – If <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'molecule'</span></code> but the topology doesn’t
+contain molecule information (molnums) or if <cite>compound</cite> is
+<code class="docutils literal notranslate"><span class="pre">'fragments'</span></code> but the topology doesn’t contain bonds.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -1957,16 +1991,20 @@ number of compounds.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.center_of_geometry">
 <code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can be obtained by setting the
-<cite>compound</cite> parameter accordingly.</p>
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
+obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1978,7 +2016,7 @@ primary unit cell before calculation. If <code class="docutils literal notransla
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
 will be returned as an array of position vectors, i.e. a 2d array.
@@ -2008,17 +2046,21 @@ number of compounds.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.centroid">
 <code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.centroid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can be obtained by setting the
-<cite>compound</cite> parameter accordingly.</p>
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
+obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2030,7 +2072,7 @@ primary unit cell before calculation. If <code class="docutils literal notransla
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
 will be returned as an array of position vectors, i.e. a 2d array.
@@ -2060,6 +2102,10 @@ number of compounds.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
 </div>
 </dd></dl>
 
@@ -2929,8 +2975,9 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
-Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can be
-obtained by setting the <cite>compound</cite> parameter accordingly.</p>
+Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2940,28 +2987,38 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 identical weights for all atoms of the group.</li>
 <li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
-<code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
-be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
-compounds intact. Instead, the resulting position vectors will be
-moved to the primary unit cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
+<code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>,
+the center of each compound will be calculated without moving any
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the compounds intact. Instead, the
+resulting position vectors will be moved to the primary unit cell
+after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
 be returned as a single position vector. Else, the weighted centers
-of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> will be returned as an
-array of position vectors, i.e. a 2d array. Note that, in any case,
-<em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the
-group</em> will be taken into account.</li>
+of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
+will be returned as an array of position vectors, i.e. a 2d array.
+Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the weighted center(s) of the group.
 If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
 position vector.
-If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
-output will be a 2d array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the
-number of compounds.</p>
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>, the output will be a 2d array
+of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>compound</cite> is not one of <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>.</li>
+<li><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> – If <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'molecule'</span></code> but the topology doesn’t
+contain molecule information (molnums) or if <cite>compound</cite> is
+<code class="docutils literal notranslate"><span class="pre">'fragments'</span></code> but the topology doesn’t contain bonds.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -2983,16 +3040,20 @@ number of compounds.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.center_of_geometry">
 <code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can be obtained by setting the
-<cite>compound</cite> parameter accordingly.</p>
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
+obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3004,7 +3065,7 @@ primary unit cell before calculation. If <code class="docutils literal notransla
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
 will be returned as an array of position vectors, i.e. a 2d array.
@@ -3034,17 +3095,21 @@ number of compounds.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.centroid">
 <code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.centroid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Center of geometry (also known as centroid) of the group.</p>
+<dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can be obtained by setting the
-<cite>compound</cite> parameter accordingly.</p>
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
+obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3056,7 +3121,7 @@ primary unit cell before calculation. If <code class="docutils literal notransla
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
 will be returned as an array of position vectors, i.e. a 2d array.
@@ -3086,6 +3151,10 @@ number of compounds.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
 </div>
 </dd></dl>
 

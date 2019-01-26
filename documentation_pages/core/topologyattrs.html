@@ -283,13 +283,64 @@ attributes.</p>
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Bonds.bonded_atoms">
 <code class="descname">bonded_atoms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.bonded_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.bonded_atoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>An AtomGroup of all atoms bonded to this Atom</p>
+<dd><p>An <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> of all
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> bonded to this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Bonds.fragindex">
+<code class="descname">fragindex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.fragindex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.fragindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>The index (ID) of the
+<a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds.fragment" title="MDAnalysis.core.topologyattrs.Bonds.fragment"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragment</span></code></a> this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> is part of.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This property is only accessible if the underlying topology contains
+bond information.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.20.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Bonds.fragindices">
+<code class="descname">fragindices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.fragindices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.fragindices" title="Permalink to this definition">¶</a></dt>
+<dd><p>The
+<a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds.fragindex" title="MDAnalysis.core.topologyattrs.Bonds.fragindex"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragment</span> <span class="pre">indices</span></code></a>
+of all <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
+<p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.15)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code><code class="docutils literal notranslate"><span class="pre">,)</span></code>
+and <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.15)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.int64</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This property is only accessible if the underlying topology contains
+bond information.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.20.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Bonds.fragment">
 <code class="descname">fragment</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.fragment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.fragment" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fragment that this Atom is part of</p>
+<dd><p>An <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> representing the
+fragment this <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> is part of.</p>
+<p>A fragment is a
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">group</span> <span class="pre">of</span> <span class="pre">atoms</span></code></a> which are
+interconnected by <a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a>, i.e.,
+there exists a path along one
+or more <a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a> between any pair
+of <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+within a fragment. Thus, a fragment typically corresponds to a molecule.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This property is only accessible if the underlying topology contains
+bond information.</p>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.0.</span></p>
 </div>
@@ -298,10 +349,47 @@ attributes.</p>
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Bonds.fragments">
 <code class="descname">fragments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.fragments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.fragments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read-only list of fragments.</p>
-<p>Contains all fragments that any Atom in this AtomGroup is
-part of, the contents of the fragments may extend beyond the
-contents of this AtomGroup.</p>
+<dd><p>Read-only <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of
+<a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds.fragment" title="MDAnalysis.core.topologyattrs.Bonds.fragment"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragments</span></code></a>.</p>
+<p>Contains all fragments that
+any <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> in this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> is part of.</p>
+<p>A fragment is a
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">group</span> <span class="pre">of</span> <span class="pre">atoms</span></code></a> which are
+interconnected by <a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a>, i.e.,
+there exists a path along one
+or more <a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a> between any pair
+of <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+within a fragment. Thus, a fragment typically corresponds to a molecule.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>This property is only accessible if the underlying topology contains
+bond information.</li>
+<li>The contents of the fragments may extend beyond the contents of this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</li>
+</ul>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Bonds.n_fragments">
+<code class="descname">n_fragments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.n_fragments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.n_fragments" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of unique
+<a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds.fragments" title="MDAnalysis.core.topologyattrs.Bonds.fragments"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragments</span></code></a> the
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> of this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> are part of.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This property is only accessible if the underlying topology contains
+bond information.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.20.0.</span></p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -462,9 +550,10 @@ proteins. <em>J Phys Chem B</em>, 108(21),
 <dt id="MDAnalysis.core.topologyattrs.Masses.center_of_mass">
 <code class="descname">center_of_mass</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.center_of_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.center_of_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of mass of (compounds of) the group.</p>
-<p>Computes the center of mass of atoms in the group.
-Centers of mass per residue or per segment can be obtained by setting
-the <cite>compound</cite> parameter accordingly.</p>
+<p>Computes the center of mass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code> in the group.
+Centers of mass per <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -477,12 +566,12 @@ of mass of each compound will be calculated without moving any
 atoms to keep the compounds intact. Instead, the resulting
 center-of-mass position vectors will be moved to the primary unit
 cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'}</em><em>, </em><em>optional</em>) – If ‘group’, the center of mass of all atoms in the atomgroup will
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If ‘group’, the center of mass of all atoms in the atomgroup will
 be returned as a single position vector. Else, the centers of mass
-of each segment or residue will be returned as an array of position
-vectors, i.e. a 2d array. Note that, in any case, <em>only</em> the
-positions of atoms <em>belonging to the atomgroup</em> will be
-taken into account.</li>
+of each <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, molecule, or fragment
+will be returned as an array of position vectors, i.e. a 2d array.
+Note that, in any case, <em>only</em> the positions of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code>
+<em>belonging to the group</em> will be taken into account.</li>
 </ul>
 </td>
 </tr>
@@ -501,14 +590,22 @@ compounds.</p>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
+<ul class="last simple">
+<li>This method can only be accessed if the underlying topology has
+information about atomic masses.</li>
+<li>The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
+<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</li>
+</ul>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> parameter</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
 </div>
 </dd></dl>
 

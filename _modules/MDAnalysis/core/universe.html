@@ -128,6 +128,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">collections</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -1043,6 +1044,10 @@
 <span class="sd">           by their first atom index so their order is predictable.</span>
 <span class="sd">        .. versionchanged:: 0.19.0</span>
 <span class="sd">           Uses faster C++ implementation</span>
+<span class="sd">        .. versionchanged:: 0.20.0</span>
+<span class="sd">           * _fragdict keys are now atom indices instead of Atoms</span>
+<span class="sd">           * _fragdict items are now a namedtuple ``fraginfo(ix, fragment)``</span>
+<span class="sd">             storing the fragindex ``ix`` along with the fragment.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">ix</span>
         <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">to_indices</span><span class="p">()</span>
@@ -1051,9 +1056,10 @@
         <span class="n">frags</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">AtomGroup</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">ix</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span> <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">frag_indices</span><span class="p">])</span>
 
         <span class="n">fragdict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frags</span><span class="p">:</span>
+        <span class="n">fraginfo</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;fraginfo&#39;</span><span class="p">,</span> <span class="s1">&#39;ix, fragment&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frags</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">fragdict</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span>
+                <span class="n">fragdict</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">fraginfo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">fragdict</span></div>
 

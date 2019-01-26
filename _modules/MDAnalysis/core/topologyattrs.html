@@ -88,7 +88,8 @@
 <span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="k">import</span> <span class="n">deprecate</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">flags</span>
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">convert_aa_code</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">warn_if_not_unique</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="p">(</span><span class="n">cached</span><span class="p">,</span> <span class="n">convert_aa_code</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span>
+                        <span class="n">unique_int_1d</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">transformations</span><span class="p">,</span> <span class="n">mdamath</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionError</span>
 <span class="kn">from</span> <span class="nn">.topologyobjects</span> <span class="k">import</span> <span class="n">TopologyGroup</span>
@@ -810,9 +811,10 @@
     <span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Center of mass of (compounds of) the group.</span>
 
-<span class="sd">        Computes the center of mass of atoms in the group.</span>
-<span class="sd">        Centers of mass per residue or per segment can be obtained by setting</span>
-<span class="sd">        the `compound` parameter accordingly.</span>
+<span class="sd">        Computes the center of mass of :class:`Atoms&lt;Atom&gt;` in the group.</span>
+<span class="sd">        Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or</span>
+<span class="sd">        fragment can be obtained by setting the `compound` parameter</span>
+<span class="sd">        accordingly.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -824,13 +826,13 @@
 <span class="sd">            atoms to keep the compounds intact. Instead, the resulting</span>
 <span class="sd">            center-of-mass position vectors will be moved to the primary unit</span>
 <span class="sd">            cell after calculation.</span>
-<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;}, optional</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, &#39;fragments&#39;}, optional</span>
 <span class="sd">            If &#39;group&#39;, the center of mass of all atoms in the atomgroup will</span>
 <span class="sd">            be returned as a single position vector. Else, the centers of mass</span>
-<span class="sd">            of each segment or residue will be returned as an array of position</span>
-<span class="sd">            vectors, i.e. a 2d array. Note that, in any case, *only* the</span>
-<span class="sd">            positions of atoms *belonging to the atomgroup* will be</span>
-<span class="sd">            taken into account.</span>
+<span class="sd">            of each :class:`Segment`, :class:`Residue`, molecule, or fragment</span>
+<span class="sd">            will be returned as an array of position vectors, i.e. a 2d array.</span>
+<span class="sd">            Note that, in any case, *only* the positions of :class:`Atoms&lt;Atom&gt;`</span>
+<span class="sd">            *belonging to the group* will be taken into account.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -844,12 +846,16 @@
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
-<span class="sd">        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to</span>
-<span class="sd">        ``True`` allows the *pbc* flag to be used by default.</span>
+<span class="sd">        * This method can only be accessed if the underlying topology has</span>
+<span class="sd">          information about atomic masses.</span>
+<span class="sd">        * The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to</span>
+<span class="sd">          ``True`` allows the *pbc* flag to be used by default.</span>
 
 
 <span class="sd">        .. versionchanged:: 0.8 Added `pbc` parameter</span>
 <span class="sd">        .. versionchanged:: 0.19.0 Added `compound` parameter</span>
+<span class="sd">        .. versionchanged:: 0.20.0 Added ``&#39;molecules&#39;`` and ``&#39;fragments&#39;``</span>
+<span class="sd">            compounds</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
         <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span></div>
@@ -1698,7 +1704,9 @@
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Bonds.bonded_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.bonded_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">bonded_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;An AtomGroup of all atoms bonded to this Atom&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;An :class:`~MDAnalysis.core.groups.AtomGroup` of all</span>
+<span class="sd">        :class:`Atoms&lt;MDAnalysis.core.groups.Atom&gt;` bonded to this</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.Atom`.&quot;&quot;&quot;</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span></div>
 
@@ -1706,34 +1714,129 @@
         <span class="p">(</span><span class="s1">&#39;bonded_atoms&#39;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">bonded_atoms</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
                                   <span class="n">bonded_atoms</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span>
 
+<div class="viewcode-block" id="Bonds.fragindex"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragindex">[docs]</a>    <span class="k">def</span> <span class="nf">fragindex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The index (ID) of the</span>
+<span class="sd">        :class:`~MDAnalysis.core.topologyattrs.Bonds.fragment` this</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.Atom` is part of.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        This property is only accessible if the underlying topology contains</span>
+<span class="sd">        bond information.</span>
+
+
+<span class="sd">        .. versionadded:: 0.20.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_fragdict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span></div>
+
+<div class="viewcode-block" id="Bonds.fragindices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragindices">[docs]</a>    <span class="k">def</span> <span class="nf">fragindices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The</span>
+<span class="sd">        :class:`fragment indices&lt;MDAnalysis.core.topologyattrs.Bonds.fragindex&gt;`</span>
+<span class="sd">        of all :class:`Atoms&lt;MDAnalysis.core.groups.Atom&gt;` in this</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+
+<span class="sd">        A :class:`numpy.ndarray` with</span>
+<span class="sd">        :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``,)``</span>
+<span class="sd">        and :attr:`~numpy.ndarray.dtype`\ ``=numpy.int64``.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        This property is only accessible if the underlying topology contains</span>
+<span class="sd">        bond information.</span>
+
+
+<span class="sd">        .. versionadded:: 0.20.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fragdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_fragdict</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fragdict</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span> <span class="k">for</span> <span class="n">aix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Bonds.fragment"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragment">[docs]</a>    <span class="k">def</span> <span class="nf">fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The fragment that this Atom is part of</span>
+        <span class="sd">&quot;&quot;&quot;An :class:`~MDAnalysis.core.groups.AtomGroup` representing the</span>
+<span class="sd">        fragment this :class:`~MDAnalysis.core.groups.Atom` is part of.</span>
+
+<span class="sd">        A fragment is a</span>
+<span class="sd">        :class:`group of atoms&lt;MDAnalysis.core.groups.AtomGroup&gt;` which are</span>
+<span class="sd">        interconnected by :class:`~MDAnalysis.core.topologyattrs.Bonds`, i.e.,</span>
+<span class="sd">        there exists a path along one</span>
+<span class="sd">        or more :class:`~MDAnalysis.core.topologyattrs.Bonds` between any pair</span>
+<span class="sd">        of :class:`Atoms&lt;MDAnalysis.core.groups.Atom&gt;`</span>
+<span class="sd">        within a fragment. Thus, a fragment typically corresponds to a molecule.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        This property is only accessible if the underlying topology contains</span>
+<span class="sd">        bond information.</span>
+
 
 <span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_fragdict</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_fragdict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">fragment</span></div>
 
 <div class="viewcode-block" id="Bonds.fragments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragments">[docs]</a>    <span class="k">def</span> <span class="nf">fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only list of fragments.</span>
+        <span class="sd">&quot;&quot;&quot;Read-only :class:`tuple` of</span>
+<span class="sd">        :class:`fragments&lt;MDAnalysis.core.topologyattrs.Bonds.fragment&gt;`.</span>
 
-<span class="sd">        Contains all fragments that any Atom in this AtomGroup is</span>
-<span class="sd">        part of, the contents of the fragments may extend beyond the</span>
-<span class="sd">        contents of this AtomGroup.</span>
+<span class="sd">        Contains all fragments that</span>
+<span class="sd">        any :class:`~MDAnalysis.core.groups.Atom` in this</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup` is part of.</span>
 
-<span class="sd">        .. versionadded 0.9.0</span>
+<span class="sd">        A fragment is a</span>
+<span class="sd">        :class:`group of atoms&lt;MDAnalysis.core.groups.AtomGroup&gt;` which are</span>
+<span class="sd">        interconnected by :class:`~MDAnalysis.core.topologyattrs.Bonds`, i.e.,</span>
+<span class="sd">        there exists a path along one</span>
+<span class="sd">        or more :class:`~MDAnalysis.core.topologyattrs.Bonds` between any pair</span>
+<span class="sd">        of :class:`Atoms&lt;MDAnalysis.core.groups.Atom&gt;`</span>
+<span class="sd">        within a fragment. Thus, a fragment typically corresponds to a molecule.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        * This property is only accessible if the underlying topology contains</span>
+<span class="sd">          bond information.</span>
+<span class="sd">        * The contents of the fragments may extend beyond the contents of this</span>
+<span class="sd">          :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+
+
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span>
-            <span class="nb">set</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">fragment</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">),</span>
-            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
-        <span class="p">))</span></div>
+        <span class="n">fragdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_fragdict</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fragdict</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span><span class="o">.</span><span class="n">fragment</span> <span class="k">for</span> <span class="n">aix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">),</span>
+                            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Bonds.n_fragments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.n_fragments">[docs]</a>    <span class="k">def</span> <span class="nf">n_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The number of unique</span>
+<span class="sd">        :class:`~MDAnalysis.core.topologyattrs.Bonds.fragments` the</span>
+<span class="sd">        :class:`Atoms&lt;MDAnalysis.core.groups.Atom&gt;` of this</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup` are part of.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        This property is only accessible if the underlying topology contains</span>
+<span class="sd">        bond information.</span>
+
+
+<span class="sd">        .. versionadded:: 0.20.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fragindices</span><span class="p">))</span></div>
 
     <span class="n">transplants</span><span class="p">[</span><span class="n">Atom</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;fragment&#39;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">fragment</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
                               <span class="n">fragment</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span>
 
+    <span class="n">transplants</span><span class="p">[</span><span class="n">Atom</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;fragindex&#39;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">fragindex</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">fragindex</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span>
+
     <span class="n">transplants</span><span class="p">[</span><span class="n">AtomGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">fragments</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
-                               <span class="n">fragments</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span></div>
+                               <span class="n">fragments</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">AtomGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;fragindices&#39;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">fragindices</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">fragindices</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">AtomGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;n_fragments&#39;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">n_fragments</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">n_fragments</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="Angles"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Angles">[docs]</a><span class="k">class</span> <span class="nc">Angles</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
