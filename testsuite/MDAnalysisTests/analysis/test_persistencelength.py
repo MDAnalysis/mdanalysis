@@ -115,6 +115,7 @@ class TestFitExponential(object):
         assert_almost_equal(a, self.a_ref, decimal=3)
         # assert np.rint(a) == self.a_ref
 
+
 class TestSortBackbone(object):
     @staticmethod
     @pytest.fixture(scope='class')
@@ -151,9 +152,11 @@ class TestSortBackbone(object):
 
     def test_circular(self):
         u = mda.Universe.empty(6, trajectory=True)
+        # circular structure
         bondlist = [(0, 1), (1, 2), (2, 3),
                     (3, 4), (4, 5), (5, 0)]
         u.add_TopologyAttr(Bonds(bondlist))
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as ex:
             polymer.sort_backbone(u.atoms)
+        assert 'cyclical' in str(ex.value)
