@@ -46,37 +46,61 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Richard J. Gowers</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2015</td>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2015, 2018</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
 </tr>
 </tbody>
 </table>
 <p>This module contains various commonly used tools in analysing polymers.</p>
+<div class="section" id="persistence-length-worked-example">
+<h2>4.6.1.1. Persistence length worked example<a class="headerlink" href="#persistence-length-worked-example" title="Permalink to this headline">¶</a></h2>
+<p>This example shows how to find the persistence length of a polymer
+using MDAnalysis.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">TRZ_psf</span><span class="p">,</span> <span class="n">TRZ</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">polymer</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TRZ_psf</span><span class="p">,</span> <span class="n">TRZ</span><span class="p">)</span>
+<span class="c1"># this system is a pure polymer melt of polyamide,</span>
+<span class="c1"># so we can select the chains by using the .fragments attribute</span>
+<span class="n">chains</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">fragments</span>
+<span class="c1"># select only the backbone atoms for each chain</span>
+<span class="n">backbones</span> <span class="o">=</span> <span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;not name O* H&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">]</span>
+<span class="c1"># sort the chains, removing any non-backbone atoms</span>
+<span class="n">sorted_backbones</span> <span class="o">=</span> <span class="p">[</span><span class="n">polymer</span><span class="o">.</span><span class="n">sort_backbone</span><span class="p">(</span><span class="n">bb</span><span class="p">)</span> <span class="k">for</span> <span class="n">bb</span> <span class="ow">in</span> <span class="n">backbones</span><span class="p">]</span>
+<span class="n">lp</span> <span class="o">=</span> <span class="n">polymer</span><span class="o">.</span><span class="n">PersistenceLength</span><span class="p">(</span><span class="n">sorted_backbones</span><span class="p">)</span>
+<span class="c1"># Run the analysis, this will average over all polymer chains</span>
+<span class="c1"># and all timesteps in trajectory</span>
+<span class="n">lp</span> <span class="o">=</span> <span class="n">lp</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The persistence length is: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lp</span><span class="o">.</span><span class="n">pl</span><span class="p">))</span>
+<span class="c1"># always check the visualisation of this:</span>
+<span class="n">lp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
 <dl class="class">
 <dt id="MDAnalysis.analysis.polymer.PersistenceLength">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.polymer.</code><code class="descname">PersistenceLength</code><span class="sig-paren">(</span><em>atomgroups</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/polymer.html#PersistenceLength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the persistence length for polymer chains</p>
 <p>The persistence length is the length at which two points on the polymer
-chain become decorrelated.</p>
-<p class="rubric">Notes</p>
-<p>This analysis requires that the trajectory supports indexing.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.13.0.</span></p>
-</div>
-<p>Calculate the persistence length for polymer chains</p>
+chain become decorrelated.  This is determined by first measuring the
+autocorrelation (<span class="math notranslate nohighlight">\(C(n)\)</span>) of two bond vectors
+(<span class="math notranslate nohighlight">\(\mathbf{a}_i, \mathbf{a}_{i + n}\)</span>) separated by <span class="math notranslate nohighlight">\(n\)</span> bonds</p>
+<div class="math notranslate nohighlight">
+\[C(n) = \langle \cos\theta_{i, i+n} \rangle =
+        \langle \mathbf{a_i} \cdot \mathbf{a_{i+n}} \rangle\]</div>
+<p>An exponential decay is then fitted to this, which yields the
+persistence length</p>
+<div class="math notranslate nohighlight">
+\[C(n) \approx \exp\left( - \frac{n \bar{l_B}}{l_P} \right)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\bar{l_B}\)</span> is the average bond length, and <span class="math notranslate nohighlight">\(l_P\)</span> is
+the persistence length which is fitted</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>atomgroups</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of atomgroups.  Each atomgroup should represent a single
+<li><strong>atomgroups</strong> (<em>iterable</em>) – List of AtomGroups.  Each should represent a single
 polymer chain, ordered in the correct order.</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to analyse, Default: None becomes 0.</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Last frame of trajectory to analyse, Default: None becomes
-n_frames.</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Frame index to stop analysis. Default: None becomes
-n_frames. Iteration stops <em>before</em> this frame number.</li>
 <li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
 default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
 </ul>
@@ -84,16 +108,90 @@ default is <code class="docutils literal notranslate"><span class="pre">False</s
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="MDAnalysis.analysis.polymer.PersistenceLength.perform_fit">
-<code class="descname">perform_fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/polymer.html#PersistenceLength.perform_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength.perform_fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit the results to an exponential decay</p>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.polymer.PersistenceLength.results">
+<code class="descname">results</code><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>the measured bond autocorrelation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.polymer.PersistenceLength.lb">
+<code class="descname">lb</code><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength.lb" title="Permalink to this definition">¶</a></dt>
+<dd><p>the average bond length</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.polymer.PersistenceLength.lp">
+<code class="descname">lp</code><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength.lp" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculated persistence length</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.polymer.PersistenceLength.fit">
+<code class="descname">fit</code><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>the modelled backbone decorrelation predicted by <em>lp</em></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="docutils">
+<dt><a class="reference internal" href="#MDAnalysis.analysis.polymer.sort_backbone" title="MDAnalysis.analysis.polymer.sort_backbone"><code class="xref py py-func docutils literal notranslate"><span class="pre">sort_backbone()</span></code></a></dt>
+<dd>for producing the sorted AtomGroup required for input.</dd>
+</dl>
+<p><code class="xref py py-class docutils literal notranslate"></code></p>
+<dl class="last docutils">
+<dt><code class="xref py py-class docutils literal notranslate"></code></dt>
+<dd>The run method now automatically performs the exponential fit</dd>
+</dl>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.polymer.PersistenceLength.plot">
 <code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/polymer.html#PersistenceLength.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Oooh fancy</p>
+<dd><p>Visualise the results and fit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ax</strong> (<em>matplotlib.Axes</em><em>, </em><em>optional</em>) – if provided, the graph is plotted on this axis</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>ax</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">the axis that the graph was plotted on</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -103,7 +201,7 @@ default is <code class="docutils literal notranslate"><span class="pre">False</s
 <code class="descclassname">MDAnalysis.analysis.polymer.</code><code class="descname">fit_exponential_decay</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/polymer.html#fit_exponential_decay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.polymer.fit_exponential_decay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit a function to an exponential decay</p>
 <div class="math notranslate nohighlight">
-\[y = \exp(-x/a)\]</div>
+\[y = \exp\left(- \frac{x}{a}\right)\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -120,6 +218,32 @@ default is <code class="docutils literal notranslate"><span class="pre">False</s
 <p>This function assumes that data starts at 1.0 and decays to 0.0</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="MDAnalysis.analysis.polymer.sort_backbone">
+<code class="descclassname">MDAnalysis.analysis.polymer.</code><code class="descname">sort_backbone</code><span class="sig-paren">(</span><em>backbone</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/polymer.html#sort_backbone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.polymer.sort_backbone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rearrange a linear AtomGroup into backbone order</p>
+<p>Requires that the backbone has bond information,
+and that only backbone atoms are provided (ie no side
+chains or hydrogens).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>backbone</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – the backbone atoms, not necessarily in order</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>sorted_backbone</strong> – backbone in order, so <cite>sorted_backbone[i]</cite> is bonded to
+<cite>sorted_backbone[i - 1]</cite> and <cite>sorted_backbone[i + 1]</cite></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.20.0.</span></p>
+</div>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -162,7 +286,10 @@ default is <code class="docutils literal notranslate"><span class="pre">False</s
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.6.1. Polymer analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.polymer</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.6.1. Polymer analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.polymer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#persistence-length-worked-example">4.6.1.1. Persistence length worked example</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a></li>
