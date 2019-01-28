@@ -113,21 +113,23 @@ AtomGroup</p>
 </div>
 <p>Note that this requires the Universe to have bond information.  If this isn’t
 present in the topology file, the
-<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds" title="MDAnalysis.core.groups.AtomGroup.guess_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.guess_bonds()</span></code></a> method can be used, for
-.. rubric:: Example</p>
-<p>import MDAnalysis as mda
-from MDAnalysis.analysis import hbonds
-from MDAnalysis.tests.datafiles import GRO
-# we could load the Universe with guess_bonds=True
-# but this would guess <strong>all</strong> bonds
-u = mda.Universe(GRO)
-water = u.select_atoms(‘resname SOL and not type DUMMY’)
-# guess bonds only within our water atoms
-# this adds the bond information directly to the Universe
-water.guess_bonds()
-hydrogens = water.select_atoms(‘type H’)
-# this is now possible as we guessed the bonds
-donors = hbonds.find_hydrogen_donors(hydrogens)</p>
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds" title="MDAnalysis.core.groups.AtomGroup.guess_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.guess_bonds()</span></code></a> method can be used
+as so</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">hbonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">GRO</span>
+<span class="c1"># we could load the Universe with guess_bonds=True</span>
+<span class="c1"># but this would guess **all** bonds</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">GRO</span><span class="p">)</span>
+<span class="n">water</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and not type DUMMY&#39;</span><span class="p">)</span>
+<span class="c1"># guess bonds only within our water atoms</span>
+<span class="c1"># this adds the bond information directly to the Universe</span>
+<span class="n">water</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">()</span>
+<span class="n">hydrogens</span> <span class="o">=</span> <span class="n">water</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;type H&#39;</span><span class="p">)</span>
+<span class="c1"># this is now possible as we guessed the bonds</span>
+<span class="n">donors</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>The keyword <strong>exclusions</strong> allows a tuple of array addresses to be provided,
 (Hidx, Aidx),these pairs of hydrogen-acceptor are then not permitted to be
 counted as part of the analysis.  This could be used to exclude the
@@ -161,7 +163,9 @@ This is a dictionary with the following keys</p>
 <p>The <em>results</em> and <em>time</em> values are only filled after the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method,
 <em>fit</em>, <em>tau</em> and <em>estimate</em> are filled after the <code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> method has been
 used.</p>
-<p class="rubric">Examples</p>
+</div>
+<div class="section" id="worked-example-for-polyamide">
+<h2>4.3.2.4. Worked Example for Polyamide<a class="headerlink" href="#worked-example-for-polyamide" title="Permalink to this headline">¶</a></h2>
 <p>This example finds the continuous hydrogen bond lifetime between N-H..O in a
 polyamide system.  This will use the default geometric definition for hydrogen
 bonds of length 3.0 Å and angle of 130 degrees.
@@ -201,7 +205,7 @@ points to build a better average.</p>
 </div>
 </div>
 <div class="section" id="classes">
-<h2>4.3.2.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>4.3.2.5. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.hbonds.hbond_autocorrel.find_hydrogen_donors">
 <code class="descclassname">MDAnalysis.analysis.hbonds.hbond_autocorrel.</code><code class="descname">find_hydrogen_donors</code><span class="sig-paren">(</span><em>hydrogens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_autocorrel.html#find_hydrogen_donors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_autocorrel.find_hydrogen_donors" title="Permalink to this definition">¶</a></dt>
@@ -380,7 +384,8 @@ is saved into the solution dict</p>
 <li class="toctree-l4"><a class="reference internal" href="#description">4.3.2.1. Description</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#input">4.3.2.2. Input</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#output">4.3.2.3. Output</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#classes">4.3.2.4. Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#worked-example-for-polyamide">4.3.2.4. Worked Example for Polyamide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes">4.3.2.5. Classes</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html">4.3.3. Water Bridge analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a></li>
