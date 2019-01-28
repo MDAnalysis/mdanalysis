@@ -40,7 +40,7 @@ the static dielectric constant
 for a system simulated in tin foil boundary conditions.
 """
 
-from __future__ import division
+from __future__ import absolute_import, division
 
 import numpy as np
 from numpy.testing import assert_almost_equal
@@ -107,7 +107,8 @@ class DielectricConstant(AnalysisBase):
         self.selection = selection
         self.temperature = temperature
         self.make_whole = make_whole
-
+        self.volume = 0
+        
         try:
             self.charges = selection.charges
         except:
@@ -132,7 +133,7 @@ class DielectricConstant(AnalysisBase):
 
     def _single_frame(self):
         # Make molecules whole
-        if make_whole:
+        if self.make_whole:
             for frag in self.selection.fragments:
                 make_whole(frag)
 
