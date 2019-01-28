@@ -31,3 +31,15 @@ def test_isotropic():
 
     eps = DielectricConstant(universe.atoms).run()
     assert_almost_equal(1.001967, round(eps.results['eps_mean'], 6))
+    
+def test_temperature():
+    universe = mda.Universe(waterPSF, waterDCD)
+
+    eps = DielectricConstant(universe.atoms, temperature=100).run()
+    assert_almost_equal(1.0059, round(eps.results['eps_mean'], 6))
+    
+def test_without_make_whole():
+    universe = mda.Universe(waterPSF, waterDCD)
+
+    eps = DielectricConstant(universe.atoms, make_whole=False).run()
+    assert_almost_equal(1.001967, round(eps.results['eps_mean'], 6))

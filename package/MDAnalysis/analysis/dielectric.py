@@ -40,7 +40,7 @@ the static dielectric constant
 for a system simulated in tin foil boundary conditions.
 """
 
-from __future__ import division
+from __future__ import absolute_import, division
 
 import numpy as np
 from numpy.testing import assert_almost_equal
@@ -49,11 +49,12 @@ from MDAnalysis.units import constants, convert
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.lib.mdamath import make_whole
 from MDAnalysis.due import due, Doi
+from MDAnalysis.exceptions import NoDataError
 
 due.cite(Doi("10.1080/00268978300102721"),
-description="Dielectric analysis",
-path="MDAnalysis.analysis.dielectric",
-cite_module=True)
+         description="Dielectric analysis",
+         path="MDAnalysis.analysis.dielectric",
+         cite_module=True)
 del Doi
 
 class DielectricConstant(AnalysisBase):
@@ -105,8 +106,16 @@ class DielectricConstant(AnalysisBase):
                                                  **kwargs)
         self.selection = selection
         self.temperature = temperature
-        self.charges = selection.charges
+        self.make_whole = make_whole
         self.volume = 0
+        
+        try:
+            self.charges = selection.charges
+        except:
+            raise NoDataError("No charges defined for selection.")
+            
+        if np.sum(self.charges) != 0:
+            raise NotImplementedError("Analysis for non neutral systems not available!")
 
         # Dictionary containing results
         self.results = {"M":  np.zeros(3),
@@ -121,7 +130,7 @@ class DielectricConstant(AnalysisBase):
 
     def _single_frame(self):
         # Make molecules whole
-        if make_whole:
+        if self.make_whole:
             for frag in self.selection.fragments:
                 make_whole(frag)
 
