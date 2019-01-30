@@ -21,25 +21,48 @@
 #
 from __future__ import absolute_import
 import MDAnalysis as mda
+import pytest
 
-from MDAnalysisTests.datafiles import waterPSF, waterDCD
+from MDAnalysisTests.datafiles import PSF_TRICLINIC, DCD_TRICLINIC
 from MDAnalysis.analysis.dielectric import DielectricConstant
 from numpy.testing import assert_almost_equal
-
-def test_isotropic():
-    universe = mda.Universe(waterPSF, waterDCD)
-
+        
+def test_water():
+    universe = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
+    
     eps = DielectricConstant(universe.atoms).run()
-    assert_almost_equal(1.001967, round(eps.results['eps_mean'], 6))
+    assert_almost_equal(3.874, round(eps.results['eps_mean'], 3))
+    
+def test_make_whole():
+    universe = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC, in_memory=True)
+    
+    # cut molecules apart
+    for ts in universe.trajectory:
+        universe.atoms.wrap()
+    
+    eps = DielectricConstant(universe.atoms, make_whole=False).run()
+    assert_almost_equal(630.326, round(eps.results['eps_mean'], 3))
+    
+    eps = DielectricConstant(universe.atoms, make_whole=True).run()
+    assert_almost_equal(3.874, round(eps.results['eps_mean'], 3))
     
 def test_temperature():
-    universe = mda.Universe(waterPSF, waterDCD)
-
-    eps = DielectricConstant(universe.atoms, temperature=100).run()
-    assert_almost_equal(1.0059, round(eps.results['eps_mean'], 6))
+    universe = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
     
-def test_without_make_whole():
-    universe = mda.Universe(waterPSF, waterDCD)
-
-    eps = DielectricConstant(universe.atoms, make_whole=False).run()
-    assert_almost_equal(1.001967, round(eps.results['eps_mean'], 6))
+    eps = DielectricConstant(universe.atoms, temperature=100).run()
+    assert_almost_equal(9.621, round(eps.results['eps_mean'], 3))
+    
+def test_non_neutral():
+    universe = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
+    
+    with pytest.raises(NotImplementedError):
+        DielectricConstant(universe.atoms[:-1]).run()
+        
+def test_free_charges():
+    universe = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
+    
+    universe.atoms.fragments[0].charges += 1
+    universe.atoms.fragments[1].charges -= 1
+    
+    with pytest.raises(NotImplementedError):
+        DielectricConstant(universe.atoms).run()

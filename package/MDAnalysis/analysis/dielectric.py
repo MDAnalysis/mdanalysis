@@ -108,14 +108,11 @@ class DielectricConstant(AnalysisBase):
         self.temperature = temperature
         self.make_whole = make_whole
         self.volume = 0
-        
+
         try:
             self.charges = selection.charges
         except:
             raise NoDataError("No charges defined for selection.")
-            
-        if np.sum(self.charges) != 0:
-            raise NotImplementedError("Analysis for non neutral systems not available!")
 
         # Dictionary containing results
         self.results = {"M":  np.zeros(3),
@@ -125,9 +122,14 @@ class DielectricConstant(AnalysisBase):
                         "eps_mean": 0}
 
     def _prepare(self):
-        error = "ERROR: Total charge of the selection is not zero."
-        assert_almost_equal(0, np.sum(self.charges), err_msg=error)
-
+        if np.sum(self.charges) != 0:
+            raise NotImplementedError("Analysis for non neutral systems not available!")
+            
+        for frag in self.selection.fragments:
+            if np.sum(frag.charges) != 0:
+                raise NotImplementedError("Analysis for systems with free charges"
+                                          " not available!")
+                
     def _single_frame(self):
         # Make molecules whole
         if self.make_whole:
