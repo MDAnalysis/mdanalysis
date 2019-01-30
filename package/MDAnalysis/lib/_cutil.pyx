@@ -103,7 +103,7 @@ cdef intset difference(intset a, intset b):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def make_whole(atomgroup, reference_atom=None):
+def make_whole(atomgroup, reference_atom=None, inplace=True):
     """Move all atoms in a single molecule so that bonds don't split over images
 
     Atom positions are modified in place.
@@ -133,6 +133,13 @@ def make_whole(atomgroup, reference_atom=None):
     reference_atom : :class:`~MDAnalysis.core.groups.Atom`
         The atom around which all other atoms will be moved.
         Defaults to atom 0 in the atomgroup.
+    inplace : bool, optional
+        If ``True``, coordinates are modified in place.
+
+    Returns
+    -------
+    coords : numpy.ndarray
+        The unwrapped atom coordinates.
 
     Raises
     ------
@@ -150,17 +157,17 @@ def make_whole(atomgroup, reference_atom=None):
     -------
     Make fragments whole::
 
-        from MDAnalysis.lib.mdamath import make_whole
+        from MDAnalysis.lib.util import make_whole
 
         # This algorithm requires bonds, these can be guessed!
         u = mda.Universe(......, guess_bonds=True)
 
-        # MDAnalysis can split molecules into their fragments
+        # MDAnalysis can split AtomGroups into their fragments
         # based on bonding information.
         # Note that this function will only handle a single fragment
         # at a time, necessitating a loop.
-        for frag in u.fragments:
-          make_whole(frag)
+        for frag in u.atoms.fragments:
+            make_whole(frag)
 
     Alternatively, to keep a single atom in place as the anchor::
 
@@ -170,6 +177,9 @@ def make_whole(atomgroup, reference_atom=None):
 
 
     .. versionadded:: 0.11.0
+    .. versionchanged:: 0.20.0
+        Inplace-modification of atom positions is now optional, and positions
+        are returned as a numpy array.
     """
     cdef intset refpoints, todo, done
     cdef int i, nloops, ref, atom, other, natoms
@@ -187,6 +197,10 @@ def make_whole(atomgroup, reference_atom=None):
     # map of global indices to local indices
     ix_view = atomgroup.ix[:]
     natoms = atomgroup.ix.shape[0]
+
+    if natoms == 0:
+        return atomgroup.positions
+
     for i in range(natoms):
         ix_to_rel[ix_view[i]] = i
 
@@ -197,6 +211,9 @@ def make_whole(atomgroup, reference_atom=None):
         if not reference_atom in atomgroup:
             raise ValueError("Reference atom not in atomgroup")
         ref = ix_to_rel[reference_atom.ix]
+
+    if natoms == 1:
+        return atomgroup.positions
 
     box = atomgroup.dimensions
 
@@ -274,8 +291,9 @@ def make_whole(atomgroup, reference_atom=None):
 
     if refpoints.size() < natoms:
         raise ValueError("AtomGroup was not contiguous from bonds, process failed")
-    else:
+    if inplace:
         atomgroup.positions = newpos
+    return np.array(newpos)
 
 
 @cython.boundscheck(False)
