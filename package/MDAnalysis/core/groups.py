@@ -1842,11 +1842,11 @@ class AtomGroup(GroupBase):
         #
         # is this a known attribute failure?
         # TODO: Generalise this to cover many attributes
-        if attr in ('fragments', 'fragindices', 'n_fragments'):
+        if attr in ('fragments', 'fragindices', 'n_fragments', 'unwrap'):
             # eg:
             # if attr in _ATTR_ERRORS:
             # raise NDE(_ATTR_ERRORS[attr])
-            raise NoDataError("AtomGroup has no {}; this requires Bonds"
+            raise NoDataError("AtomGroup.{} not available; this requires Bonds"
                               "".format(attr))
         elif hasattr(self.universe._topology, 'names'):
             # Ugly hack to make multiple __getattr__s work

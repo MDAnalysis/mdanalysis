@@ -50,8 +50,9 @@ from numpy.lib.utils import deprecate
 
 from . import flags
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
-                        unique_int_1d)
+                        unique_int_1d, check_box)
 from ..lib import transformations, mdamath
+from ..lib.distances import apply_PBC
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
@@ -1798,6 +1799,137 @@ class Bonds(_Connection):
     transplants[AtomGroup].append(
         ('n_fragments', property(n_fragments, None, None,
                                  n_fragments.__doc__)))
+
+    def unwrap(self, box=None, compound='fragments', reference='com',
+               inplace=True):
+        """Move atoms in this group so that bonds within the
+        group's compounds aren't split accross periodic boundaries.
+
+        Parameters
+        ----------
+        box : array_like or None, optional
+            The unitcell dimensions of the system, which can be orthogonal or
+            triclinic and must be provided in the same format as returned by
+            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+            ``[lx, ly, lz, alpha, beta, gamma]``.
+            If ``None``, uses the dimensions of the current timestep.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of components to unwrap. Note that, in any case, all
+            atoms within each compound must be interconnected by bonds, i.e.,
+            compounds must correspond to (parts of) molecules.
+        reference : {'com', 'cog', None}, optional
+            If ``'com'`` (center of mass) or ``'cog'`` (center of geometry), the
+            unwrapped compounds will be shifted so that their individual
+            reference point lies within the primary unit cell.
+            If ``None``, no such shift is performed.
+        inplace : bool, optional
+            If ``True``, coordinates are modified in place.
+
+        Returns
+        -------
+        coords : numpy.ndarray
+            Unwrapped atom coordinate array of shape ``(n, 3)``.
+
+        Note
+        ----
+        * This is the inverse transformation of packing atoms into the primary
+          unit cell, preventing bonds from being "broken" accross periodic
+          boundaries.
+        * Be aware of the fact that only atoms *belonging to the group* will
+          be unwrapped! If you want entire molecules to be unwrapped, make sure
+          that all atoms of these molecules belong the group.
+
+        See Also
+        --------
+        :func:`MDAnalysis.lib.mdamath.make_whole`
+
+
+        .. versionadded:: 0.20.0
+        """
+        if reference is not None:
+            if reference.lower() not in ['com', 'cog']:
+                raise ValueError("Unrecognized reference definition: {}\n"
+                                 "Please use one of 'com', 'cog', or None."
+                                 "".format(compound))
+            ref = reference.lower()
+
+        if box is None:
+            box = self.dimensions
+        boxtype, box = check_box(box)
+        ortho = (boxtype == 'ortho')
+        if ortho:
+            hbox = 0.5 * box[:3]
+
+        atoms = self.atoms
+        unique_atoms = atoms.unique
+
+        comp = compound.lower()
+        if comp == 'group':
+            if ortho:
+                positions = unique_atoms.positions
+                # Only unwrap if necessary:
+                if np.any(np.abs(positions - positions[0]) > hbox):
+                    positions = mdamath.make_whole(unique_atoms, inplace=False)
+            else:
+                positions = mdamath.make_whole(unique_atoms, inplace=False)
+            # Apply reference shift if required:
+            if reference is not None:
+                if ref == 'com':
+                    refpos = unique_atoms.center_of_mass(pbc=False,
+                                                         compound='group')
+                elif ref == 'cog':
+                    refpos = unique_atoms.center_of_geometry(pbc=False,
+                                                             compound='group')
+                target = apply_PBC(refpos, self.dimensions)
+                positions += target - refpos
+            if inplace:
+                unique_atoms.positions = positions
+            if not atoms.isunique:
+                positions = positions[atoms._unique_restore_mask]
+            return positions
+        elif comp == 'fragments':
+            compound_indices = unique_atoms.fragindices
+        elif comp == 'residues':
+            compound_indices = unique_atoms.resindices
+        elif comp == 'segments':
+            compound_indices = unique_atoms.segindices
+        elif comp == 'molecules':
+            try:
+                compound_indices = unique_atoms.molnums
+            except AttributeError:
+                raise NoDataError("Cannot use compound='molecules': "
+                                  "No molecule information in topology.")
+        else:
+            raise ValueError("Unrecognized compound definition: {}\nPlease use"
+                             " one of 'group', 'residues', 'segments', "
+                             "'molecules', or 'fragments'.".format(compound))
+
+        # Now process every compound:
+        unique_compound_indices = unique_int_1d(compound_indices)
+        positions = unique_atoms.positions
+        for i in unique_compound_indices:
+            mask = np.where(compound_indices == i)
+            c = unique_atoms[mask]
+            cpos = positions[mask]
+            # Only unwrap if necessary:
+            if (not ortho) or np.any(np.abs(cpos - cpos[0]) > hbox):
+                positions[mask] = mdamath.make_whole(c, inplace=False)
+            # Apply reference shift if required:
+            if reference is not None:
+                if ref == 'com':
+                    refpos = c.center_of_mass(pbc=False, compound='group')
+                elif ref == 'cog':
+                    refpos = c.center_of_geometry(pbc=False, compound='group')
+                target = apply_PBC(refpos, self.dimensions)
+                positions[mask] += target - refpos
+        if inplace:
+            unique_atoms.positions = positions
+        if not atoms.isunique:
+            positions = positions[atoms._unique_restore_mask]
+        return positions
+
+    transplants[GroupBase].append(
+        ('unwrap', unwrap))
 
 
 class Angles(_Connection):

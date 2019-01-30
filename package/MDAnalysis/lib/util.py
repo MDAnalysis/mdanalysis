@@ -208,7 +208,7 @@ from numpy.testing import assert_equal
 import inspect
 
 from ..exceptions import StreamWarning, DuplicateWarning
-from ._cutil import unique_int_1d, make_whole
+from ._cutil import unique_int_1d
 
 
 # Python 3.0, 3.1 do not have the builtin callable()
