@@ -671,12 +671,11 @@ class PDBWriter(base.WriterBase):
         if not self.obj or not hasattr(self.obj.universe, 'bonds'):
             return
 
-        bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
-
         mapping = {index: i for i, index in enumerate(self.obj.atoms.indices)}
 
-        # Write out only the bonds that were defined in CONECT records
+        bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
         if self.bonds == "conect":
+            # Write out only the bonds that were defined in CONECT records
             bonds = ((bond[0].index, bond[1].index) for bond in bondset if not bond.is_guessed)
         elif self.bonds == "all":
             bonds = ((bond[0].index, bond[1].index) for bond in bondset)
@@ -692,9 +691,8 @@ class PDBWriter(base.WriterBase):
 
         atoms = np.sort(self.obj.atoms.indices)
 
-        conect = ([a] + sorted(con[a])
+        conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
                   for a in atoms if a in con)
-        connect = ([mapping[x] for x in row] for row in conect)
 
         for c in conect:
             self.CONECT(c)
