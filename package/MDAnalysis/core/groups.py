@@ -654,7 +654,9 @@ class GroupBase(_MutableBase):
         Computes the weighted center of :class:`Atoms<Atom>` in the group.
         Weighted centers per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
-        accordingly.
+        accordingly. If the weights of a compound sum up to zero, the
+        coordinates of that compound's weighted center will be ``nan`` (not a
+        number).
 
         Parameters
         ----------

@@ -181,7 +181,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
         are returned as a numpy array.
     """
     cdef intset refpoints, todo, done
-    cdef int i, nloops, ref, atom, other, natoms
+    cdef int i, j, nloops, ref, atom, other, natoms
     cdef cmap[int, int] ix_to_rel
     cdef intmap bonding
     cdef int[:, :] bonds
@@ -189,16 +189,21 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     cdef bint ortho
     cdef float[:] box
     cdef float tri_box[3][3]
+    cdef float half_box[3]
     cdef float inverse_box[3]
     cdef double vec[3]
     cdef ssize_t[:] ix_view
+    cdef bint is_unwrapped
 
     # map of global indices to local indices
     ix_view = atomgroup.ix[:]
     natoms = atomgroup.ix.shape[0]
+    
+    oldpos = atomgroup.positions
 
-    if natoms == 0:
-        return atomgroup.positions
+    # Nothing to do for less than 2 atoms
+    if natoms < 2:
+        return np.array(oldpos)
 
     for i in range(natoms):
         ix_to_rel[ix_view[i]] = i
@@ -211,12 +216,10 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
             raise ValueError("Reference atom not in atomgroup")
         ref = ix_to_rel[reference_atom.ix]
 
-    if natoms == 1:
-        return atomgroup.positions
-
     box = atomgroup.dimensions
 
     for i in range(3):
+        half_box[i] = 0.5 * box[i]
         if box[i] == 0.0:
             raise ValueError("One or more dimensions was zero.  "
                              "You can set dimensions using 'atomgroup.dimensions='")
@@ -227,6 +230,17 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
             ortho = False
 
     if ortho:
+        # If atomgroup is already unwrapped, bail out
+        is_unwrapped = True
+        for i in range(1, natoms):
+            for j in range(3):
+                if abs(oldpos[i, j] - oldpos[0, j]) >= half_box[j]:
+                    is_unwrapped = False
+                    break
+            if not is_unwrapped:
+                break
+        if is_unwrapped:
+            return np.array(oldpos)
         for i in range(3):
             inverse_box[i] = 1.0 / box[i]
     else:
@@ -249,7 +263,6 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
             bonding[atom].insert(other)
             bonding[other].insert(atom)
 
-    oldpos = atomgroup.positions
     newpos = np.zeros((oldpos.shape[0], 3), dtype=np.float32)
 
     refpoints = intset()  # Who is safe to use as reference point?
