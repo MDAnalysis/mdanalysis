@@ -104,9 +104,8 @@ cdef intset difference(intset a, intset b):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def make_whole(atomgroup, reference_atom=None, inplace=True):
-    """Move all atoms in a single molecule so that bonds don't split over images
-
-    Atom positions are modified in place.
+    """Move all atoms in a single molecule so that bonds don't split over
+    images.
 
     This function is most useful when atoms have been packed into the primary
     unit cell, causing breaks mid molecule, with the molecule then appearing
