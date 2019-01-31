@@ -1231,7 +1231,7 @@ class SurvivalProbability(object):
         elif verbose:
             print(args)
 
-    def run(self, tau_max=20, start=0, stop=None, step=1, verbose=False):
+    def run(self, tau_max=20, start=0, stop=None, step=1, residues=False, verbose=False):
         """
         Computes and returns the survival probability timeseries
 
@@ -1245,6 +1245,9 @@ class SurvivalProbability(object):
             Jump every `step`'th frame
         tau_max : int
             Survival probability is calculated for the range :math:`1 <= \tau <= tau_max`
+        residues : Boolean
+            the selection and analysis will be carried out on the residues (resids) rather than on atoms.
+            A single atom is sufficient to classify the residue as within the distance.
         verbose : Boolean
             Overwrite the constructor's verbosity
 
@@ -1294,12 +1297,17 @@ class SurvivalProbability(object):
             self.universe.trajectory[frame_no]
 
             self.print(verbose, "Loading frame:", self.universe.trajectory.ts)
-            selected_ids.append(set(self.universe.select_atoms(self.selection).ids))
+            atoms = self.universe.select_atoms(self.selection)
+
+            # SP of residues or of atoms
+            ids = atoms.residues.resids if residues else atoms.ids
+            selected_ids.append(set(ids))
 
             frame_no += 1
             frame_loaded_counter += 1
 
         ## calculate Survival Probability
+        # TODO
         tau_timeseries = np.arange(1, tau_max + 1)
         sp_timeseries_data = [[] for _ in range(tau_max)]
 
@@ -1319,6 +1327,7 @@ class SurvivalProbability(object):
                     break
 
                 # ids that survive from t to t + tau and at every frame in between
+                # TODO intermittend
                 Ntau = len(set.intersection(*selected_ids[t:t + tau + 1]))
                 sp_timeseries_data[tau - 1].append(Ntau / float(Nt))
 
