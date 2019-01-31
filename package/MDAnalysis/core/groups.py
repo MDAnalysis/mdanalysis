@@ -853,6 +853,115 @@ class GroupBase(_MutableBase):
         return self.center(None, pbc=pbc, compound=compound)
 
     centroid = center_of_geometry
+    
+    @warn_if_not_unique
+    def sum(self, elements, compound='group'):
+        """The sum of elements associated with (compounds of) the group.
+        
+        Computes the sum over the elements of :class:`Atoms<Atom>` in the group.
+        The sum per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
+
+        Parameters
+        ----------
+        elements : array_like
+            Elements to sum.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            If ``'group'``, the sum over all elements associated
+            with atoms in the group will
+            be returned as a single value. Else, the sum for all elements
+            of each :class:`Segment`, :class:`Residue`, molecule, or fragment
+            will be returned as an 1d array.
+            Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
+            *belonging to the group* will be taken into account.
+
+        Returns
+        -------
+        sum : numpy.ndarray
+            Sum of the group.
+            If `compound` was set to ``'group'``, the output will be a single
+            value.
+            If `compound` was set to ``'segments'``, ``'residues'``, 
+            ``'molecules'``, or ``'fragments'``, the output will be a 1d array
+            of shape ``(n,)`` where ``n`` is the number of compounds.
+
+        Raises
+        ------
+        ValueError
+            If `compound` is not one of ``'group'``, ``'segments'``,
+            ``'residues'``, ``'molecules'``, or ``'fragments'``.
+        ~MDAnalysis.exceptions.NoDataError
+            If `compound` is ``'molecule'`` but the topology doesn't
+            contain molecule information (molnums) or if `compound` is
+            ``'fragments'`` but the topology doesn't contain bonds.
+
+        Examples
+        --------
+
+        To find the total charge of a given :class:`AtomGroup`::
+
+            >>> sel = u.select_atoms('prop mass > 4.0')
+            >>> sel.sum(sel.charges)
+
+        To find the total mass per residue of all CA :class:`Atoms<Atom>`::
+
+            >>> sel = u.select_atoms('name CA')
+            >>> sel.sum(sel.masses, compound='residues')
+
+
+        .. versionadded:: 0.20.0
+        """
+        
+        atoms = self.atoms
+        
+        comp = compound.lower()
+        
+        if comp == 'group':
+            return elements.sum()
+        elif comp == 'residues':
+            compound_indices = atoms.resindices
+        elif comp == 'segments':
+            compound_indices = atoms.segindices
+        elif comp == 'molecules':
+            try:
+                compound_indices = atoms.molnums
+            except AttributeError:
+                raise NoDataError("Cannot use compound='molecules': "
+                                  "No molecule information in topology.")
+        elif comp == 'fragments':
+            try:
+                compound_indices = atoms.fragindices
+            except NoDataError:
+                raise NoDataError("Cannot use compound='fragments': "
+                                  "No bond information in topology.")
+        else:
+            raise ValueError("Unrecognized compound definition: {}\nPlease use"
+                             " one of 'group', 'residues', 'segments', "
+                             "'molecules', or 'fragments'.".format(compound))
+        
+        # Sort elements by compound
+        sort_indices = np.argsort(compound_indices)
+        compound_indices = compound_indices[sort_indices]
+        
+        elements = elements[sort_indices]
+        
+        # Get sizes of compounds:
+        unique_compound_indices, compound_sizes = np.unique(compound_indices,
+                                                            return_counts=True)
+        n_compounds = len(unique_compound_indices)
+        unique_compound_sizes = unique_int_1d(compound_sizes)
+        # Allocate output array:
+        sums = np.zeros(n_compounds)
+        # Compute sums per compound for each compound size:
+        for compound_size in unique_compound_sizes:
+            compound_mask = compound_sizes == compound_size
+            _compound_indices = unique_compound_indices[compound_mask]
+            atoms_mask = np.in1d(compound_indices, _compound_indices)
+            _sumamnds = elements[atoms_mask].reshape((-1, compound_size))
+            _sums = _sumamnds.sum(axis=1)
+            sums[compound_mask] = _sums
+        return sums
 
     def bbox(self, **kwargs):
         """Return the bounding box of the selection.
