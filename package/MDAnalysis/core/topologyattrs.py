@@ -827,11 +827,39 @@ class Masses(AtomAttr):
         ('center_of_mass', center_of_mass))
 
     @warn_if_not_unique
-    def total_mass(group):
-        """Total mass of the Group.
+    def total_mass(group, compound='group'):
+        """Total mass of (compounds of) the group.
+        
+        Computes the total mass of :class:`Atoms<Atom>` in the group.
+        Total masses per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
 
+        Parameters
+        ----------
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            If 'group', the total mass of all atoms in the atomgroup will
+            be returned as a single value. Else, the total masses
+            of each :class:`Segment`, :class:`Residue`, molecule, or fragment
+            will be returned as an 1D array of values.
+            Note that, in any case, *only* the masses of :class:`Atoms<Atom>`
+            *belonging to the group* will be taken into account.
+
+        Returns
+        -------
+        sum : numpy.ndarray
+            Total masses of the group.
+            If `compound` was set to 'group', the output will be a single
+            value.
+            If `compound` was set to 'segments' or 'residues', the output will
+            be a 1d array of shape ``(n,)`` where ``n`` is the number
+            compounds.
+
+
+        .. versionchanged:: 0.20.0 Added `compound` parameter
         """
-        return group.masses.sum()
+        atoms = group.atoms
+        return atoms.sum(weights=atoms.masses, compound=compound)
 
     transplants[GroupBase].append(
         ('total_mass', total_mass))
@@ -1160,11 +1188,39 @@ class Charges(AtomAttr):
         return charges
 
     @warn_if_not_unique
-    def total_charge(group):
-        """Total charge of the Group.
+    def total_charge(group, compound='group'):
+        """Total charge of (compounds of) the group.
+        
+        Computes the total charge of :class:`Atoms<Atom>` in the group.
+        Total charges per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
 
+        Parameters
+        ----------
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            If 'group', the total charge of all atoms in the atomgroup will
+            be returned as a single value. Else, the total charges
+            of each :class:`Segment`, :class:`Residue`, molecule, or fragment
+            will be returned as an 1D array of values.
+            Note that, in any case, *only* the masses of :class:`Atoms<Atom>`
+            *belonging to the group* will be taken into account.
+
+        Returns
+        -------
+        sum : numpy.ndarray
+            Total masses of the group.
+            If `compound` was set to 'group', the output will be a single
+            value.
+            If `compound` was set to 'segments' or 'residues', the output will
+            be a 1d array of shape ``(n,)`` where ``n`` is the number
+            compounds.
+
+
+        .. versionchanged:: 0.20.0 Added `compound` parameter
         """
-        return group.charges.sum()
+        atoms = group.atoms
+        return atoms.sum(weights=atoms.charges, compound=compound)
 
     transplants[GroupBase].append(
         ('total_charge', total_charge))
