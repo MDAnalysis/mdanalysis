@@ -729,7 +729,7 @@ class TestIncompletePDB(object):
 class TestPDBXLSerial(object):
     """For Issue #446"""
     @staticmethod
-    @pytest.fixture(scope='class'):
+    @pytest.fixture(scope='class')
     def u():
         return mda.Universe(PDB_xlserial)
 
