@@ -49,6 +49,8 @@ Fixes
   * Read TPR files from Gromacs 2019 (PR #2161)
   * Fixed copying Universes created from PDB files (record_type attribute
     was problematic) (Issue #2178 #1926, PR #2179)
+  * Fixed writing CONECT records when writing PDB files that are a
+    subsection of original Universe (Issue #2194, PR #2195)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()

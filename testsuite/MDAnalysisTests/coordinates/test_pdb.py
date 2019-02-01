@@ -475,6 +475,21 @@ def test_conect_bonds_all(tmpdir):
 
     # assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
 
+def test_write_bonds_partial(tmpdir):
+    u = mda.Universe(CONECT)
+    # grab all atoms with bonds
+    ag = (u.atoms.bonds.atom1 + u.atoms.bonds.atom2).unique
+
+    outfile = os.path.join(str(tmpdir), 'test.pdb')
+    ag.write(outfile)
+
+    u2 = mda.Universe(outfile)
+
+    assert len(u2.atoms.bonds) > 0
+    # check bonding is correct in new universe
+    for a_ref, atom in zip(ag, u2.atoms):
+        assert len(a_ref.bonds) == len(atom.bonds)
+
 
 class TestMultiPDBWriter(TestCase):
     def setUp(self):
