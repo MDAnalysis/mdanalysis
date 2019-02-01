@@ -32,9 +32,10 @@ import MDAnalysis as mda
 import numpy as np
 from MDAnalysisTests import tempdir, make_Universe
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
-from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
+from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
                                                    RefAdK)
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
+                                       PDB_full,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
@@ -70,23 +71,44 @@ class TestPDBReader(_SingleFrameReader):
         assert isinstance(self.universe.trajectory, PDBReader), "failed to choose PDBReader"
 
 
-class _PDBMetadata(TestCase, Ref4e43):
-    __test__ = False
+class TestPDBMetadata(object):
+    header = 'HYDROLASE                               11-MAR-12   4E43'
+    title = ['HIV PROTEASE (PR) DIMER WITH ACETATE IN EXO SITE AND PEPTIDE '
+             'IN ACTIVE', '2 SITE']
+    compnd = ['MOL_ID: 1;',
+              '2 MOLECULE: PROTEASE;',
+              '3 CHAIN: A, B;',
+              '4 ENGINEERED: YES;',
+              '5 MUTATION: YES;',
+              '6 MOL_ID: 2;',
+              '7 MOLECULE: RANDOM PEPTIDE;',
+              '8 CHAIN: C;',
+              '9 ENGINEERED: YES;',
+              '10 OTHER_DETAILS: UNKNOWN IMPURITY', ]
+    num_remarks = 333
+    # only first 5 remarks for comparison
+    nmax_remarks = 5
+    remarks = [
+        '2',
+        '2 RESOLUTION.    1.54 ANGSTROMS.',
+        '3',
+        '3 REFINEMENT.',
+        '3   PROGRAM     : REFMAC 5.5.0110',
+    ]
 
-    def setUp(self):
-        self.universe = mda.Universe(self.filename)
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        return mda.Universe(PDB_full)
 
-    def tearDown(self):
-        del self.universe
-
-    def test_HEADER(self):
-        assert_equal(self.universe.trajectory.header,
+    def test_HEADER(self, universe):
+        assert_equal(universe.trajectory.header,
                      self.header,
                      err_msg="HEADER record not correctly parsed")
 
-    def test_TITLE(self):
+    def test_TITLE(self, universe):
         try:
-            title = self.universe.trajectory.title
+            title = universe.trajectory.title
         except AttributeError:
             raise AssertionError("Reader does not have a 'title' attribute.")
         assert_equal(len(title),
@@ -98,9 +120,9 @@ class _PDBMetadata(TestCase, Ref4e43):
                          reference,
                          err_msg="TITLE line {0} do not match".format(lineno))
 
-    def test_COMPND(self):
+    def test_COMPND(self, universe):
         try:
-            compound = self.universe.trajectory.compound
+            compound = universe.trajectory.compound
         except AttributeError:
             raise AssertionError(
                 "Reader does not have a 'compound' attribute.")
@@ -114,9 +136,9 @@ class _PDBMetadata(TestCase, Ref4e43):
                          reference,
                          err_msg="COMPND line {0} do not match".format(lineno))
 
-    def test_REMARK(self):
+    def test_REMARK(self, universe):
         try:
-            remarks = self.universe.trajectory.remarks
+            remarks = universe.trajectory.remarks
         except AttributeError:
             raise AssertionError("Reader does not have a 'remarks' attribute.")
         assert_equal(len(remarks),

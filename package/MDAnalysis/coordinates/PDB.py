@@ -259,11 +259,11 @@ class PDBReader(base.ReaderBase):
             self.n_atoms = top.n_atoms
 
         self.model_offset = kwargs.pop("model_offset", 0)
-
-        self.header = header = ""
-        self.title = title = []
-        self.compound = compound = []
-        self.remarks = remarks = []
+        # dummy/default variables as these are read
+        header = ""
+        title = []
+        compound = []
+        remarks = []
 
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
@@ -306,6 +306,11 @@ class PDBReader(base.ReaderBase):
                 remarks.append(line[6:].strip().decode())
 
         end = pdbfile.tell()  # where the file ends
+
+        self.header = header
+        self.title = title
+        self.compound = compound
+        self.remarks = remarks
 
         if not models:
             # No model entries
