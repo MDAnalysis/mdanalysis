@@ -859,7 +859,7 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.20.0 Added `compound` parameter
         """
         atoms = group.atoms
-        return atoms.sum(weights=atoms.masses, compound=compound)
+        return atoms.accumulate("masses", compound=compound)
 
     transplants[GroupBase].append(
         ('total_mass', total_mass))
@@ -1220,7 +1220,7 @@ class Charges(AtomAttr):
         .. versionchanged:: 0.20.0 Added `compound` parameter
         """
         atoms = group.atoms
-        return atoms.sum(weights=atoms.charges, compound=compound)
+        return atoms.accumulate("charges", compound=compound)
 
     transplants[GroupBase].append(
         ('total_charge', total_charge))
