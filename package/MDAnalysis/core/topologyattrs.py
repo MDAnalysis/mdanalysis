@@ -1896,7 +1896,7 @@ class Bonds(_Connection):
         if comp == 'group':
             positions = mdamath.make_whole(unique_atoms, inplace=False)
             # Apply reference shift if required:
-            if reference is not None:
+            if reference is not None and len(positions) > 0:
                 if ref == 'com':
                     masses = unique_atoms.masses
                     total_mass = masses.sum()
