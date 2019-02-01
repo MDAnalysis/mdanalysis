@@ -151,7 +151,7 @@ __all__ = [
     "RANDOM_WALK_TOPO", # garbage topology to go along with XTC positions above
     "AUX_XVG", "XVG_BAD_NCOL", #for testing .xvg auxiliary reader
     "AUX_XVG_LOWF", "AUX_XVG_HIGHF",
-    "MMTF", "MMTF_gz",
+    "MMTF", "MMTF_gz", 'MMTF_skinny',  # skinny - some optional fields stripped out
     "ALIGN_BOUND",  # two component bound system
     "ALIGN_UNBOUND", # two component unbound system
     "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
@@ -439,6 +439,7 @@ RANDOM_WALK_TOPO = resource_filename(__name__, 'data/RANDOM_WALK_TOPO.pdb')
 
 MMTF = resource_filename(__name__, 'data/173D.mmtf')
 MMTF_gz = resource_filename(__name__, 'data/5KIH.mmtf.gz')
+MMTF_skinny = resource_filename(__name__, 'data/1ubq-less-optional.mmtf')
 
 ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
 ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')

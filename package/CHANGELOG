@@ -52,6 +52,8 @@ Fixes
   * Fixed writing CONECT records when writing PDB files that are a
     subsection of original Universe (Issue #2194)
   * PDBReader now correctly reads HEADER information (Issue #2195)
+  * Fixed reading MMTF files with some optional fields missing
+    (Issue #2193)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
