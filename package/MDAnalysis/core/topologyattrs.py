@@ -1898,15 +1898,16 @@ class Bonds(_Connection):
             # Apply reference shift if required:
             if reference is not None:
                 if ref == 'com':
-                    if np.isclose(unique_atoms.total_mass(), 0.0):
+                    masses = unique_atoms.masses
+                    total_mass = masses.sum()
+                    if np.isclose(total_mass, 0.0):
                         raise ValueError("Cannot perform unwrap with "
                                          "reference='com' because the total "
                                          "mass of the group is zero.")
-                    refpos = unique_atoms.center_of_mass(pbc=False,
-                                                         compound='group')
+                    refpos = np.sum(positions * masses[:, None], axis=0)
+                    refpos /= total_mass
                 elif ref == 'cog':
-                    refpos = unique_atoms.center_of_geometry(pbc=False,
-                                                             compound='group')
+                    refpos = positions.mean(axis=0)
                 target = apply_PBC(refpos, self.dimensions)
                 positions += target - refpos
         # We need to split the group into compounds:
@@ -1933,15 +1934,18 @@ class Bonds(_Connection):
                 # Apply reference shift if required:
                 if reference is not None:
                     if ref == 'com':
-                        if np.isclose(c.total_mass(), 0.0):
+                        masses = c.masses
+                        total_mass = masses.sum()
+                        if np.isclose(total_mass, 0.0):
                             raise ValueError("Cannot perform unwrap with "
                                              "reference='com' because the "
                                              "total mass of at least one of "
                                              "its {} is zero.".format(comp))
-                        refpos = c.center_of_mass(pbc=False, compound='group')
+                        refpos = np.sum(positions[mask] * masses[:, None],
+                                        axis=0)
+                        refpos /= total_mass
                     elif ref == 'cog':
-                        refpos = c.center_of_geometry(pbc=False,
-                                                      compound='group')
+                        refpos = positions[mask].mean(axis=0)
                     target = apply_PBC(refpos, self.dimensions)
                     positions[mask] += target - refpos
         if inplace:
