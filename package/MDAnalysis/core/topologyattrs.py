@@ -1807,25 +1807,25 @@ class Bonds(_Connection):
         group's compounds aren't split accross periodic boundaries.
 
         This function is most useful when atoms have been packed into the
-        primary unit cell, causing breaks mid molecule, with the molecule then
+        primary unit cell, causing breaks mid-molecule, with the molecule then
         appearing on either side of the unit cell. This is problematic for
         operations such as calculating the center of mass of the molecule. ::
 
-           +-----------+     +-----------+
-           |           |     |           |
-           | 6       3 |     |         3 | 6
-           | !       ! |     |         ! | !
-           |-5-8   1-2-| ->  |       1-2-|-5-8
-           | !       ! |     |         ! | !
-           | 7       4 |     |         4 | 7
-           |           |     |           |
-           +-----------+     +-----------+
+           +-----------+       +-----------+
+           |           |       |           |
+           | 6       3 |       |         3 | 6
+           | !       ! |       |         ! | !
+           |-5-8   1-2-|  ==>  |       1-2-|-5-8
+           | !       ! |       |         ! | !
+           | 7       4 |       |         4 | 7
+           |           |       |           |
+           +-----------+       +-----------+
 
         Parameters
         ----------
         compound : {'group', 'segments', 'residues', 'molecules', \
                     'fragments'}, optional
-            Which type of components to unwrap. Note that, in any case, all
+            Which type of component to unwrap. Note that, in any case, all
             atoms within each compound must be interconnected by bonds, i.e.,
             compounds must correspond to (parts of) molecules.
         reference : {'com', 'cog', None}, optional
@@ -1854,13 +1854,14 @@ class Bonds(_Connection):
 
         Note
         ----
-        * Be aware of the fact that only atoms *belonging to the group* will
-          be unwrapped! If you want entire molecules to be unwrapped, make sure
-          that all atoms of these molecules are part of the group.\n
-          An AtomGroup containing all atoms of all fragments in the group ``ag``
-          can be created with
+        Be aware of the fact that only atoms *belonging to the group* will
+        be unwrapped! If you want entire molecules to be unwrapped, make sure
+        that all atoms of these molecules are part of the group.\n
+        An AtomGroup containing all atoms of all fragments in the group ``ag``
+        can be created with::
 
-          >>> all_frag_atoms = sum(ag.fragments)
+          all_frag_atoms = sum(ag.fragments)
+
 
         See Also
         --------
