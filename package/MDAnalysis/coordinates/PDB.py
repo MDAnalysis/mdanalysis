@@ -223,9 +223,6 @@ class PDBReader(base.ReaderBase):
     --------
     :class:`PDBWriter`
     :class:`PDBReader`
-       implements a larger subset of the header records,
-       which are accessible as :attr:`PDBReader.metadata`.
-
 
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based
