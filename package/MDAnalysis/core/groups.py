@@ -855,21 +855,25 @@ class GroupBase(_MutableBase):
     centroid = center_of_geometry
     
     @warn_if_not_unique
-    def accumulate(self, attribute, op=np.sum, compound='group'):
+    def accumulate(self, attribute, function=np.sum, compound='group'):
         """Accumulates the attribute associated with (compounds of) the group.
-        
+
         Accumulates the attribute of :class:`Atoms<Atom>` in the group.
         The accumulation is done per :class:`Residue`, :class:`Segment`, molecule, 
         or fragment can be obtained by setting the `compound` parameter
         accordingly. By default the method sums up all elements, but 
-        any numpy operation applying to numpy.ndarray can be used.
+        any numpy function that takes a (n,) array of the same dtype and 
+        returns a scalar can be used.
 
         Parameters
         ----------
-        attribute : str
-            Attribute to accumulate.
-        op : operation, optional
-            Operation to perform.
+        attribute : str, numpy.ndarray
+            Attribute or :class:`numpy.ndarray` to accumulate.
+            If a :class:`numpy.ndarray` is provided it must have the same length 
+            as the total number of atoms in the :class:`AtomGroup`.
+        function : function, optional
+            Numpy function to perform. It must take a (n,) array of the same dtype 
+            and return a scalar.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the sum over all elements associated
             with atoms in the group will
@@ -881,8 +885,8 @@ class GroupBase(_MutableBase):
 
         Returns
         -------
-        sum : numpy.ndarray
-            Acuumulation of the attribute.
+        numpy.ndarray
+            Acuumulation of the attribute or provided numpy.ndarray.
             If `compound` was set to ``'group'``, the output will be a single
             value.
             If `compound` was set to ``'segments'``, ``'residues'``, 
@@ -891,6 +895,9 @@ class GroupBase(_MutableBase):
 
         Raises
         ------
+        ValueError
+            If provided array does not have the same length 
+            as the number of atoms in the :class:`AtomGroup`:.
         ~MDAnalysis.exceptions.NoDataError
             If :class:`AtomGroup`: does not have the given attribute.
         ValueError
@@ -913,26 +920,34 @@ class GroupBase(_MutableBase):
 
             >>> sel = u.select_atoms('name CA')
             >>> sel.accumulate('masses', compound='residues')
-            
+    
         To find the maximal charge per fragment of a given :class:`AtomGroup`::
         
-            >>> sel.accumulate('charges', compound="fragments", op=np.max)
+            >>> sel.accumulate('charges', compound="fragments", function=np.max)
 
 
         .. versionadded:: 0.20.0
         """
-        
+
         atoms = self.atoms
 
-        try:
-            attribute_values = getattr(atoms, attribute)
-        except AttributeError:
-            raise NoDataError("Group does not have {} attribute.".format(attribute))
-        
+        if type(attribute) in (np.ndarray, tuple, list):
+            attribute_values = np.array(attribute)
+            if attribute_values.shape != (len(atoms),):
+                raise ValueError("The input array dimensions {} does not match "
+                                 "the required dimension ({},) based on "
+                                 "the group size.".format(attribute_values.shape,
+                                                          len(atoms)))
+        else:
+            try:
+                attribute_values = getattr(atoms, attribute)
+            except AttributeError:
+                raise NoDataError("AtomGroup does not have '{}' attribute.".format(attribute))
+
         comp = compound.lower()
-        
+
         if comp == 'group':
-            return op(attribute_values)
+            return function(attribute_values)
         elif comp == 'residues':
             compound_indices = atoms.resindices
         elif comp == 'segments':
@@ -953,11 +968,11 @@ class GroupBase(_MutableBase):
             raise ValueError("Unrecognized compound definition: {}\nPlease use"
                              " one of 'group', 'residues', 'segments', "
                              "'molecules', or 'fragments'.".format(compound))
-        
+
         # Sort attribute values by compound
         sort_indices = np.argsort(compound_indices)
         compound_indices = compound_indices[sort_indices]
-        
+
         attribute_values = attribute_values[sort_indices]
         # Get sizes of compounds:
         unique_compound_indices, compound_sizes = np.unique(compound_indices,
@@ -971,8 +986,8 @@ class GroupBase(_MutableBase):
             compound_mask = compound_sizes == compound_size
             _compound_indices = unique_compound_indices[compound_mask]
             atoms_mask = np.in1d(compound_indices, _compound_indices)
-            _summands = attribute_values[atoms_mask].reshape((-1, compound_size))
-            _accumulation = op(_summands, axis=1)
+            _elements = attribute_values[atoms_mask].reshape((-1, compound_size))
+            _accumulation = function(_elements, axis=1)
             accumulation[compound_mask] = _accumulation
         return accumulation
 
