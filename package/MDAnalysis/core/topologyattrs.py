@@ -1460,7 +1460,7 @@ class Molnums(ResidueAttr):
     attrname = 'molnums'
     singular = 'molnum'
     target_classes = [AtomGroup, ResidueGroup, Atom, Residue]
-    dtype = int
+    dtype = np.int64
 
 # segment attributes
 
