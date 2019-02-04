@@ -298,6 +298,29 @@ class TestMakeWhole(object):
         # positions must be untouched:
         assert_array_equal(ag.positions, orig_pos)
 
+    def test_double_precision_box(self):
+        # universe with double precision box containing a 2-atom molecule
+        # broken accross a corner:
+        u = mda.Universe.empty(
+            n_atoms=2,
+            n_residues=1,
+            n_segments=1,
+            atom_resindex=[0, 0],
+            residue_segindex=[0],
+            trajectory=True,
+            velocities=False,
+            forces=False)
+        ts = u.trajectory.ts
+        ts.frame = 0
+        ts.dimensions = [10, 10, 10, 90, 90, 90]
+        assert ts.dimensions.dtype == np.float64
+        ts.positions = np.array([[1, 1, 1,], [9, 9, 9]], dtype=np.float32)
+        u.add_TopologyAttr(Bonds([(0, 1)]))
+        mdamath.make_whole(u.atoms)
+        assert_array_almost_equal(u.atoms.positions,
+                                  np.array([[1, 1, 1,], [-1, -1, -1]],
+                                           dtype=np.float32))
+
     @staticmethod
     @pytest.fixture()
     def ag(universe):
