@@ -254,6 +254,14 @@ class TestMakeWhole(object):
         universe.add_TopologyAttr(Bonds(bondlist))
         return universe
 
+    def test_return_value(self, universe):
+        ag = universe.residues[0].atoms
+        orig_pos = ag.positions.copy()
+        retval = mdamath.make_whole(ag)
+        assert retval.dtype == np.float32
+        assert_array_equal(ag.positions, retval)
+        assert np.any(ag.positions != orig_pos)
+
     def test_single_atom_no_bonds(self):
         # Call make_whole on single atom with no bonds, shouldn't move
         u = mda.Universe(Make_Whole)
@@ -265,7 +273,13 @@ class TestMakeWhole(object):
         refpos = ag.positions.copy()
         mdamath.make_whole(ag)
 
-        assert_array_almost_equal(ag.positions, refpos)
+        assert_array_equal(ag.positions, refpos) # must be untouched
+
+    def test_empty_ag(self, universe):
+        ag = mda.AtomGroup([], universe)
+        retval = mdamath.make_whole(ag)
+        assert retval.dtype == np.float32
+        assert_array_equal(retval, np.empty((0, 3), dtype=np.float32))
 
     def test_scrambled_ag(self, universe):
         # if order of atomgroup is mixed
@@ -276,6 +290,13 @@ class TestMakeWhole(object):
         # artificial system which uses 1nm bonds, so
         # largest bond should be 20A
         assert ag.bonds.values().max() < 20.1
+
+    def test_out_of_place(self, universe):
+        ag = universe.residues[0].atoms
+        orig_pos = ag.positions.copy()
+        mdamath.make_whole(ag, inplace=False)
+        # positions must be untouched:
+        assert_array_equal(ag.positions, orig_pos)
 
     @staticmethod
     @pytest.fixture()
