@@ -519,19 +519,20 @@ class TestAccumulate(object):
             ag.accumulate("masses", compound="foo")
         
     def test_accumulate_array_attribute(self, ag):
-        a = np.arange(len(ag))
-        assert_equal(ag.accumulate(a), np.sum(a))
+        a = np.ones((len(ag), 10))
+        assert_equal(ag.accumulate(a), np.sum(a, axis=0))
         
     def test_accumulate_array_attribute_wrongshape(self, ag):
         with pytest.raises(ValueError):
-            ag.accumulate(np.arange(len(ag) - 1))
+            ag.accumulate(np.ones(len(ag) - 1))
         
     @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
                                                 ('segids', 'segments'),
                                                 ('fragindices', 'fragments')))
     def test_accumulate_array_attribute_compounds(self, ag, name, compound):
-        ref = [np.ones(len(a)).sum() for a in ag.groupby(name).values()]
-        assert_equal(ag.accumulate(np.ones(len(ag)), compound=compound), ref)
+        ref = [np.ones((len(a), 10)).sum(axis=0) for a in ag.groupby(name).values()]
+        assert_equal(ag.accumulate(np.ones((len(ag), 10)), compound=compound), 
+                     ref)
 
 
 class TestSplit(object):
