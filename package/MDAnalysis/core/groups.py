@@ -862,17 +862,18 @@ class GroupBase(_MutableBase):
         The accumulation is done per :class:`Residue`, :class:`Segment`, molecule, 
         or fragment can be obtained by setting the `compound` parameter
         accordingly. By default the method sums up all elements, but 
-        any numpy function that takes a (n,) array of the same dtype and 
+        any numpy function that takes any multi-dimensional array of the same dtype and 
         returns a scalar can be used.
 
         Parameters
         ----------
         attribute : str, numpy.ndarray
             Attribute or :class:`numpy.ndarray` to accumulate.
-            If a :class:`numpy.ndarray` is provided it must have the same length 
-            as the total number of atoms in the :class:`AtomGroup`.
+            If a :class:`numpy.ndarray` is provided which first dimensions 
+            must have the same length as the total number of atoms in 
+            the :class:`AtomGroup`.
         function : function, optional
-            Numpy function to perform. It must take a (n,) array of the same dtype 
+            Numpy function to perform. It must take an array of the same dtype 
             and return a scalar.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the sum over all elements associated
@@ -933,21 +934,22 @@ class GroupBase(_MutableBase):
 
         if type(attribute) in (np.ndarray, tuple, list):
             attribute_values = np.array(attribute)
-            if attribute_values.shape != (len(atoms),):
-                raise ValueError("The input array dimensions {} does not match "
-                                 "the required dimension ({},) based on "
-                                 "the group size.".format(attribute_values.shape,
+            if len(attribute_values) != len(atoms):
+                raise ValueError("The input array length {} does not match "
+                                 "the required length {} based on "
+                                 "the group size.".format(len(attribute_values),
                                                           len(atoms)))
         else:
             try:
                 attribute_values = getattr(atoms, attribute)
             except AttributeError:
-                raise NoDataError("AtomGroup does not have '{}' attribute.".format(attribute))
+                raise NoDataError("AtomGroup does not have '{}' "
+                                  "attribute.".format(attribute))
 
         comp = compound.lower()
 
         if comp == 'group':
-            return function(attribute_values)
+            return function(attribute_values, axis=0)
         elif comp == 'residues':
             compound_indices = atoms.resindices
         elif comp == 'segments':
@@ -969,6 +971,8 @@ class GroupBase(_MutableBase):
                              " one of 'group', 'residues', 'segments', "
                              "'molecules', or 'fragments'.".format(compound))
 
+        higher_dimemsions = list(attribute_values.shape[1:])
+
         # Sort attribute values by compound
         sort_indices = np.argsort(compound_indices)
         compound_indices = compound_indices[sort_indices]
@@ -980,13 +984,14 @@ class GroupBase(_MutableBase):
         n_compounds = len(unique_compound_indices)
         unique_compound_sizes = unique_int_1d(compound_sizes)
         # Allocate output array:
-        accumulation = np.zeros(n_compounds)
+        accumulation = np.zeros([n_compounds] + higher_dimemsions)
         # Compute sums per compound for each compound size:
         for compound_size in unique_compound_sizes:
             compound_mask = compound_sizes == compound_size
             _compound_indices = unique_compound_indices[compound_mask]
             atoms_mask = np.in1d(compound_indices, _compound_indices)
-            _elements = attribute_values[atoms_mask].reshape((-1, compound_size))
+            _elements = attribute_values[atoms_mask].reshape([-1, compound_size] 
+                                                              + higher_dimemsions)
             _accumulation = function(_elements, axis=1)
             accumulation[compound_mask] = _accumulation
         return accumulation
