@@ -32,6 +32,7 @@ Helper functions for common mathematical operations
 .. autofunction:: angle
 .. autofunction:: dihedral
 .. autofunction:: stp
+.. autofunction:: sarrus_det
 .. autofunction:: triclinic_box
 .. autofunction:: triclinic_vectors
 .. autofunction:: box_volume
@@ -46,7 +47,8 @@ import numpy as np
 
 from ..exceptions import NoDataError
 from . import util
-from ._cutil import make_whole, find_fragments
+from ._cutil import (make_whole, find_fragments, _sarrus_det_single,
+                     _sarrus_det_multiple)
 
 # geometric functions
 def norm(v):
@@ -158,96 +160,240 @@ def _angle(a, b):
     return np.rad2deg(angle)
 
 
+def sarrus_det(matrix):
+    """Computes the determinant of a 3x3 matrix according to the
+    `rule of Sarrus`_.
+
+    If an array of 3x3 matrices is supplied, determinants are computed per
+    matrix and returned as an appropriately shaped numpy array.
+
+    .. _rule of Sarrus:
+       https://en.wikipedia.org/wiki/Rule_of_Sarrus
+
+    Parameters
+    ----------
+    matrix : numpy.ndarray
+        An array of shape ``(..., 3, 3)`` with the 3x3 matrices residing in the
+        last two dimensions.
+
+    Returns
+    -------
+    det : float or numpy.ndarray
+        The determinant(s) of `matrix`.
+        If ``matrix.shape == (3, 3)``, the determinant will be returned as a
+        scalar. If ``matrix.shape == (..., 3, 3)``, the determinants will be
+        returned as a :class:`numpy.ndarray` of shape ``(...,)`` and dtype
+        ``numpy.float64``.
+
+    Raises
+    ------
+    ValueError:
+        If `matrix` has less than two dimensions or its last two dimensions
+        are not of shape ``(3, 3)``.
+
+
+    .. versionadded:: 0.20.0
+    """
+    m = matrix.astype(np.float64)
+    shape = m.shape
+    ndim = m.ndim
+    if ndim < 2 or shape[-2:] != (3, 3):
+        raise ValueError("Invalid matrix shape: must be (3, 3) or (..., 3, 3), "
+                         "got {}.".format(shape))
+    if ndim == 2:
+        return _sarrus_det_single(m)
+    return _sarrus_det_multiple(m.reshape((-1, 3, 3))).reshape(shape[:-2])
+
+
 def triclinic_box(x, y, z):
-    """Convert the three triclinic box vectors to [A,B,C,alpha,beta,gamma].
+    """Convert the three triclinic box vectors to
+    ``[lx, ly, lz, alpha, beta, gamma]``.
 
-    Angles are in degrees.
+    If the resulting box is invalid, i.e., any box length is zero or negative,
+    or any angle is outside the open interval ``(0, 180)``, a zero vector will
+    be returned.
 
-    * alpha  = angle(y,z)
-    * beta   = angle(x,z)
-    * gamma  = angle(x,y)
+    All angles are in degrees and defined as follows:
+
+    * ``alpha = angle(y,z)``
+    * ``beta  = angle(x,z)``
+    * ``gamma = angle(x,y)``
+
+    Parameters
+    ----------
+    x : array_like
+        Array of shape ``(3,)`` representing the first box vector
+    y : array_like
+        Array of shape ``(3,)`` representing the second box vector
+    z : array_like
+        Array of shape ``(3,)`` representing the third box vector
+
+    Returns
+    -------
+    numpy.ndarray
+        A numpy array of shape ``(6,)`` and dtype ``np.float32`` providing the
+        unitcell dimensions in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        ``[lx, ly, lz, alpha, beta, gamma]``.\n
+        Invalid boxes are returned as a zero vector.
 
     Note
     ----
     Definition of angles: http://en.wikipedia.org/wiki/Lattice_constant
+
+    See Also
+    --------
+    :func:`~MDAnalysis.lib.mdamath.triclinic_vectors`
+
+
+    .. versionchanged:: 0.20.0
+       Calculations are performed in double precision and invalid box vectors
+       result in an all-zero box.
     """
-    A, B, C = [norm(v) for v in (x, y, z)]
+    x = np.asarray(x, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+    z = np.asarray(z, dtype=np.float64)
+    A = norm(x)
+    B = norm(y)
+    C = norm(z)
     alpha = _angle(y, z)
     beta = _angle(x, z)
     gamma = _angle(x, y)
-    return np.array([A, B, C, alpha, beta, gamma], dtype=np.float32)
+    box = np.array([A, B, C, alpha, beta, gamma], dtype=np.float32)
+    # Only positive edge lengths and angles in (0, 180) are allowed:
+    if not (np.all(box > 0) and alpha < 180 and beta < 180 and gamma < 180):
+        # invalid box, return zero vector:
+        box = np.zeros(6, dtype=np.float32)
+    return box
 
 
 def triclinic_vectors(dimensions):
-    """Convert `[A,B,C,alpha,beta,gamma]` to a triclinic box representation.
+    """Convert ``[lx, ly, lz, alpha, beta, gamma]`` to a triclinic matrix
+    representation.
 
     Original `code by Tsjerk Wassenaar`_ posted on the Gromacs mailinglist.
 
-    If *dimensions* indicates a non-periodic system (i.e. all lengths
-    0) then null-vectors are returned.
+    If `dimensions` indicates a non-periodic system (i.e., all lengths are
+    zero), zero vectors are returned. The same applies for invalid `dimensions`,
+    i.e., any box length is zero or negative, or any angle is outside the open
+    interval ``(0, 180)``.
 
     .. _code by Tsjerk Wassenaar:
        http://www.mail-archive.com/gmx-users@gromacs.org/msg28032.html
 
     Parameters
     ----------
-    dimensions : [A, B, C, alpha, beta, gamma]
-        list of box lengths and angles (in degrees) such as
-        ``[A,B,C,alpha,beta,gamma]``
+    dimensions : array_like
+        Unitcell dimensions provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
     -------
-    numpy.array
-        numpy 3x3 array B, with ``B[0]`` as first box vector,
-        ``B[1]``as second vector, ``B[2]`` as third box vector.
+    numpy.ndarray
+        A numpy array ``B`` of shape ``(3, 3)`` and dtype ``numpy.float32``,
+        with ``B[0]`` containing the first, ``B[1]`` the second, and ``B[2]``
+        the third box vector.
 
     Notes
     -----
-    The first vector is always pointing along the X-axis,
-    i.e., parallel to (1, 0, 0).
+    * The first vector is guaranteed to point along the x-axis, i.e., it has the
+      form ``(lx, 0, 0)``.
+    * The second vector is guaranteed to lie in the x/y-plane, i.e., its
+      z-component is guaranteed to be zero.
+    * If any box length is negative or zero, or if any box angle is zero, the
+      box is treated as invalid and an all-zero-matrix is returned.
+
 
 
     .. versionchanged:: 0.7.6
        Null-vectors are returned for non-periodic (or missing) unit cell.
-
+    .. versionchanged:: 0.20.0
+       Calculations are performed in double precision and zero vectors are
+       also returned for invalid boxes.
     """
-    B = np.zeros((3, 3), dtype=np.float32)
-    x, y, z, a, b, c = dimensions[:6]
-
-    if np.all(dimensions[:3] == 0):
-        return B
-
-    B[0][0] = x
-    if a == 90. and b == 90. and c == 90.:
-        B[1][1] = y
-        B[2][2] = z
+    dim = np.asarray(dimensions, dtype=np.float64)
+    x, y, z, a, b, c = dim
+    # Only positive edge lengths and angles in (0, 180) are allowed:
+    if np.any(dim <= 0) or a >= 180 or b >= 180 or c >= 180:
+        # invalid box, return zero vectors:
+        B = np.zeros((3, 3), dtype=np.float32)
+    # detect orthogonal boxes:
+    elif a == 90 and b == 90 and c == 90:
+        # box is orthogonal, return a diagonal matrix:
+        B = np.diag(dim[:3].astype(np.float32))
+    # we have a triclinic box:
     else:
-        a = np.deg2rad(a)
-        b = np.deg2rad(b)
-        c = np.deg2rad(c)
-        B[1][0] = y * np.cos(c)
-        B[1][1] = y * np.sin(c)
-        B[2][0] = z * np.cos(b)
-        B[2][1] = z * (np.cos(a) - np.cos(b) * np.cos(c)) / np.sin(c)
-        B[2][2] = np.sqrt(z * z - B[2][0] ** 2 - B[2][1] ** 2)
+        B = np.zeros((3, 3), dtype=np.float64)
+        B[0, 0] = x
+        # Use exact trigonometric values for right angles:
+        if a == 90:
+            cos_a = 0.0
+        else:
+            cos_a = np.cos(np.deg2rad(a))
+        if b == 90:
+            cos_b = 0.0
+        else:
+            cos_b = np.cos(np.deg2rad(b))
+        if c == 90:
+            cos_c = 0.0
+            sin_c = 1.0
+        else:
+            c = np.deg2rad(c)
+            cos_c = np.cos(c)
+            sin_c = np.sin(c)
+        B[1, 0] = y * cos_c
+        B[1, 1] = y * sin_c
+        B[2, 0] = z * cos_b
+        B[2, 1] = z * (cos_a - cos_b * cos_c) / sin_c
+        B[2, 2] = np.sqrt(z * z - B[2, 0] ** 2 - B[2, 1] ** 2)
+        # the discriminant of the above sqrt is only zero or negative for
+        # triplets of box angles that lead to an invalid box (the sum of two
+        # angles is less than or equal to the third). We don't need to
+        # explicitly test for np.nan here, since checking for a positive value
+        # already covers that.
+        if B[2, 2] > 0:
+            # all clear, convert to correct dtype:
+            B = B.astype(np.float32)
+        else:
+            # invalid box, return zero vectors:
+            B = np.zeros((3, 3), dtype=np.float32)
     return B
 
 
 def box_volume(dimensions):
-    """Return the volume of the unitcell described by *dimensions*.
+    """Return the volume of the unitcell described by `dimensions`.
 
-    The volume is computed as `det(x1,x2,x2)` where the xi are the
-    triclinic box vectors from :func:`triclinic_vectors`.
+    The volume is computed as *det(x1, x2, x3)* where the *xi* are the
+    triclinic box vectors obtained from :func:`triclinic_vectors`.
+    If the box is invalid, i.e., any box length is zero or negative, or any
+    angle is outside the open interval ``(0, 180)``, the resulting volume will
+    be zero.
 
     Parameters
     ----------
-    dimensions : [A, B, C, alpha, beta, gamma]
-        list of box lengths and angles (in degrees) such as
-        [A,B,C,alpha,beta,gamma]
+    dimensions : array_like
+        Unitcell dimensions provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
     -------
     volume : float
+
+
+    .. versionchanged:: 0.20.0
+        Calculations are performed in double precision and zero is returned
+        for invalid dimensions.
     """
-    return np.linalg.det(triclinic_vectors(dimensions))
+    dim = np.asarray(dimensions, dtype=np.float64)
+    x, y, z, a, b, c = dim
+    if a == 90 and b == 90 and c == 90 and x > 0 and y > 0 and z > 0:
+        # valid orthogonal box, volume is the product of edge lengths:
+        volume = x * y * z
+    else:
+        # triclinic or invalid box, volume is determinant of box matrix
+        # (invalid boxes are handled by triclinic_vectors):
+        volume = sarrus_det(triclinic_vectors(dim))
+    return volume
 

@@ -35,7 +35,8 @@ from libcpp.vector cimport vector
 from cython.operator cimport dereference as deref
 
 
-__all__ = ['unique_int_1d', 'make_whole', 'find_fragments']
+__all__ = ['unique_int_1d', 'make_whole', 'find_fragments',
+           '_sarrus_det_single', '_sarrus_det_multiple']
 
 cdef extern from "calc_distances.h":
     ctypedef float coordinate[3]
@@ -353,6 +354,36 @@ cdef float _norm(float * a):
         result += a[n]*a[n]
     return sqrt(result)
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
+    """Computes the determinant of a 3x3 matrix."""
+    cdef np.float64_t det
+    det = m[0, 0] * m[1, 1] * m[2, 2]
+    det -= m[0, 0] * m[1, 2] * m[2, 1]
+    det += m[0, 1] * m[1, 2] * m[2, 0]
+    det -= m[0, 1] * m[1, 0] * m[2, 2]
+    det += m[0, 2] * m[1, 0] * m[2, 1]
+    det -= m[0, 2] * m[1, 1] * m[2, 0]
+    return det
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cpdef np.ndarray _sarrus_det_multiple(np.float64_t[:, :, ::1] m):
+    """Computes all determinants of an array of 3x3 matrices."""
+    cdef np.intp_t n
+    cdef np.intp_t i
+    cdef np.float64_t[:] det
+    n = m.shape[0]
+    det = np.empty(n, dtype=np.float64)
+    for i in range(n):
+        det[i] = m[i, 0, 0] * m[i, 1, 1] * m[i, 2, 2]
+        det[i] -= m[i, 0, 0] * m[i, 1, 2] * m[i, 2, 1]
+        det[i] += m[i, 0, 1] * m[i, 1, 2] * m[i, 2, 0]
+        det[i] -= m[i, 0, 1] * m[i, 1, 0] * m[i, 2, 2]
+        det[i] += m[i, 0, 2] * m[i, 1, 0] * m[i, 2, 1]
+        det[i] -= m[i, 0, 2] * m[i, 1, 1] * m[i, 2, 0]
+    return np.array(det)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
