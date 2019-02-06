@@ -1380,7 +1380,7 @@ class GroupBase(_MutableBase):
                 compound_indices = unique_atoms.resindices
             elif comp == 'segments':
                 compound_indices = unique_atoms.segindices
-            elif comp == 'molecules':
+            else:  # comp == 'molecules'
                 try:
                     compound_indices = unique_atoms.molnums
                 except AttributeError:
