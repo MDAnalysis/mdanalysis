@@ -492,19 +492,21 @@ class TestAccumulate(object):
 
     @pytest.fixture()
     def ag(self):
-        return mda.Universe(PSF, DCD).atoms    
+        return mda.Universe(PSF, DCD).atoms
 
     def test_accumulate_str_attribute(self, ag):
         assert_almost_equal(ag.accumulate("masses"), 
                             np.sum(ag.masses))
-        
+
     def test_accumulate_different_func(self, ag):
         assert_almost_equal(ag.accumulate("masses", function=np.prod), 
                             np.prod(ag.masses))
-        
-    @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
-                                                ('segids', 'segments'),
-                                                ('fragindices', 'fragments')))
+    
+    @pytest.mark.parametrize('ag, name, compound', 
+                             ((mda.Universe(PSF, DCD).atoms, 'resids','residues'),
+                              (mda.Universe(PSF, DCD).atoms, 'segids','segments'),
+                              (mda.Universe(TPR_xvf, TRR_xvf).atoms, 'molnums','molecules'),
+                              (mda.Universe(TPR_xvf, TRR_xvf).atoms, 'fragindices','fragments')))
     def test_accumulate_str_attribute_compounds(self, ag, name, compound):
         ref = [sum(a.masses) for a in ag.groupby(name).values()]
         vals = ag.accumulate("masses", compound=compound)
@@ -513,22 +515,32 @@ class TestAccumulate(object):
     def test_accumulate_wrongname(self, ag):
         with pytest.raises(NoDataError):
             ag.accumulate("foo")
-        
+
     def test_accumulate_wrongcomponent(self, ag):
         with pytest.raises(ValueError):
             ag.accumulate("masses", compound="foo")
-        
+
+    def test_accumulate_nobonds(self):
+        with pytest.raises(NoDataError):
+            mda.Universe(GRO).atoms.accumulate("masses", compound="fragments")
+
+    def test_accumulate_nomolnums(self):
+        with pytest.raises(NoDataError):
+            mda.Universe(GRO).atoms.accumulate("masses", compound="molecules")
+
     def test_accumulate_array_attribute(self, ag):
         a = np.ones((len(ag), 10))
         assert_equal(ag.accumulate(a), np.sum(a, axis=0))
-        
+
     def test_accumulate_array_attribute_wrongshape(self, ag):
         with pytest.raises(ValueError):
             ag.accumulate(np.ones(len(ag) - 1))
-        
-    @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
-                                                ('segids', 'segments'),
-                                                ('fragindices', 'fragments')))
+
+    @pytest.mark.parametrize('ag, name, compound', 
+                             ((mda.Universe(PSF, DCD).atoms, 'resids','residues'),
+                              (mda.Universe(PSF, DCD).atoms, 'segids','segments'),
+                              (mda.Universe(TPR_xvf, TRR_xvf).atoms, 'molnums','molecules'),
+                              (mda.Universe(TPR_xvf, TRR_xvf).atoms, 'fragindices','fragments')))
     def test_accumulate_array_attribute_compounds(self, ag, name, compound):
         ref = [np.ones((len(a), 10)).sum(axis=0) for a in ag.groupby(name).values()]
         assert_equal(ag.accumulate(np.ones((len(ag), 10)), compound=compound), 

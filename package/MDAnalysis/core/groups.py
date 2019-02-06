@@ -862,8 +862,9 @@ class GroupBase(_MutableBase):
         The accumulation is done per :class:`Residue`, :class:`Segment`, molecule, 
         or fragment can be obtained by setting the `compound` parameter
         accordingly. By default the method sums up all elements, but 
-        any numpy function that takes any multi-dimensional array of the same dtype and 
-        returns a scalar can be used.
+        any numpy function that takes a multi-dimensional array of the same 
+        dtype and returns a scalar can be used. For multi-dimensional input 
+        arrays the accumulation is performed along the first axes.
 
         Parameters
         ----------
@@ -886,13 +887,14 @@ class GroupBase(_MutableBase):
 
         Returns
         -------
-        numpy.ndarray
+        float or numpy.ndarray
             Acuumulation of the attribute or provided numpy.ndarray.
-            If `compound` was set to ``'group'``, the output will be a single
-            value.
+            If `compound` was set to ``'group'``, the first dimension 
+            of the input is contracted to a single value.
             If `compound` was set to ``'segments'``, ``'residues'``, 
-            ``'molecules'``, or ``'fragments'``, the output will be a 1d array
-            of shape ``(n,)`` where ``n`` is the number of compounds.
+            ``'molecules'``, or ``'fragments'``, the length of 
+            the first dimension is the number of compounds. In all cases the
+            other dimensions of the return array are of the original shape.
 
         Raises
         ------
@@ -933,7 +935,7 @@ class GroupBase(_MutableBase):
         atoms = self.atoms
 
         if type(attribute) in (np.ndarray, tuple, list):
-            attribute_values = np.array(attribute)
+            attribute_values = np.asarray(attribute)
             if len(attribute_values) != len(atoms):
                 raise ValueError("The input array length {} does not match "
                                  "the required length {} based on "
