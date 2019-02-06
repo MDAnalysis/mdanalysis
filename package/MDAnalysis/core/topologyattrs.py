@@ -847,7 +847,7 @@ class Masses(AtomAttr):
 
         Returns
         -------
-        sum : numpy.ndarray
+        float or numpy.ndarray
             Total masses of the group.
             If `compound` was set to 'group', the output will be a single
             value.
@@ -1208,7 +1208,7 @@ class Charges(AtomAttr):
 
         Returns
         -------
-        sum : numpy.ndarray
+        float or numpy.ndarray
             Total masses of the group.
             If `compound` was set to 'group', the output will be a single
             value.
