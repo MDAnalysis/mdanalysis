@@ -30,6 +30,8 @@ Enhancements
   * Atom-, Residue-, and SegmentGroups have a new unwrap() method allowing to
     make compounds (group/residues/segments/fragments/molecules) that are broken
     across periodic boundaries whole (Issues #1004 and #1185, PR #2189)
+  * lib.mdamath.make_whole() now returns the resulting coordinates and is able
+    to operate out-of-place, i.e., without modifying atom coordinates (PR #2189)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
