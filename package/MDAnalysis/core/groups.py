@@ -1258,7 +1258,7 @@ class GroupBase(_MutableBase):
 
     def unwrap(self, compound='fragments', reference='com', inplace=True):
         """Move atoms of this group so that bonds within the
-        group's compounds aren't split accross periodic boundaries.
+        group's compounds aren't split across periodic boundaries.
 
         This function is most useful when atoms have been packed into the
         primary unit cell, causing breaks mid-molecule, with the molecule then
@@ -1362,7 +1362,7 @@ class GroupBase(_MutableBase):
                                          "mass of the group is zero.")
                     refpos = np.sum(positions * masses[:, None], axis=0)
                     refpos /= total_mass
-                elif ref == 'cog':
+                else:  # ref == 'cog'
                     refpos = positions.mean(axis=0)
                 target = distances.apply_PBC(refpos, self.dimensions)
                 positions += target - refpos
@@ -1400,7 +1400,7 @@ class GroupBase(_MutableBase):
                         refpos = np.sum(positions[mask] * masses[:, None],
                                         axis=0)
                         refpos /= total_mass
-                    elif ref == 'cog':
+                    else:  # ref == 'cog'
                         refpos = positions[mask].mean(axis=0)
                     target = distances.apply_PBC(refpos, self.dimensions)
                     positions[mask] += target - refpos
