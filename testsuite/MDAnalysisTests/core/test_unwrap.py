@@ -24,20 +24,13 @@ from __future__ import absolute_import, division
 from six.moves import range
 
 import numpy as np
-from numpy.testing import (
-    assert_equal,
-    assert_almost_equal,
-    assert_array_equal
-)
+from numpy.testing import assert_almost_equal, assert_array_equal
 import pytest
 
 import MDAnalysis as mda
 from MDAnalysis.core import topologyattrs
 from MDAnalysis import NoDataError
 from MDAnalysis.lib.mdamath import triclinic_box
-
-from MDAnalysisTests import make_Universe
-from MDAnalysisTests.datafiles import TPR, XTC
 
 
 def unwrap_test_universe(have_bonds=True, have_masses=True, have_molnums=True,
@@ -737,10 +730,45 @@ class TestUnwrap(object):
         assert_array_equal(group.atoms.positions, orig_pos)
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
-    def test_unwrap_no_bonds_exception_safety(self, level):
+    @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
+                                          'group', 'segments'))
+    def test_unwrap_no_masses_exception_safety(self, level, compound):
+        # universe without masses:
+        u = unwrap_test_universe(have_masses=False)
+        # select group appropriate for compound:
+        if compound == 'group':
+            group = u.atoms[39:47] # molecule 12
+        elif compound == 'segments':
+            group = u.atoms[23:47] # molecules 10, 11, 12
+        else:
+            group = u.atoms
+        # select topology level:
+        if level == 'residues':
+            group = group.residues
+        elif level == 'segments':
+            group = group.segments
+        # store original positions:
+        orig_pos = group.atoms.positions
+        # try to unwrap:
+        with pytest.raises(NoDataError):
+            group.unwrap(compound=compound, reference='com', inplace=True)
+        # make sure atom positions are unchanged:
+        assert_array_equal(group.atoms.positions, orig_pos)
+
+    @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
+    @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
+                                          'group', 'segments'))
+    @pytest.mark.parametrize('reference', ('com', 'cog', None))
+    def test_unwrap_no_bonds_exception_safety(self, level, compound, reference):
         # universe without bonds:
         u = unwrap_test_universe(have_bonds=False)
-        group = u.atoms
+        # select group appropriate for compound:
+        if compound == 'group':
+            group = u.atoms[39:47] # molecule 12
+        elif compound == 'segments':
+            group = u.atoms[23:47] # molecules 10, 11, 12
+        else:
+            group = u.atoms
         # select topology level:
         if level == 'residues':
             group = group.residues
@@ -749,7 +777,7 @@ class TestUnwrap(object):
         # store original positions:
         orig_pos = group.atoms.positions
         with pytest.raises(NoDataError):
-            group.unwrap()
+            group.unwrap(compound=compound, reference=reference, inplace=True)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
 
