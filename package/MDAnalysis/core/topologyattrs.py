@@ -52,7 +52,6 @@ from . import flags
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
                         unique_int_1d)
 from ..lib import transformations, mdamath
-from ..lib.distances import apply_PBC
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
