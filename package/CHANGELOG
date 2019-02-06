@@ -27,6 +27,9 @@ Enhancements
     molecule or per fragment (PR #2182)
   * Atoms (AtomGroups) have a new fragindex (fragindices) property corresponding
     to the respective fragment (fragments) (PR #2182)
+  * Atom-, Residue-, and SegmentGroups have a new unwrap() method allowing to
+    make compounds (group/residues/segments/fragments/molecules) that are broken
+    across periodic boundaries whole (Issues #1004 and #1185, PR #2189)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
