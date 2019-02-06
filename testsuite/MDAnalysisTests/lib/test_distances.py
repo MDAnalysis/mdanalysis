@@ -68,7 +68,7 @@ def test_transform_StoR_pass(coord_dtype):
     box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
     s = np.array([[0.5, -0.1, 0.5]], dtype=coord_dtype)
 
-    original_r = np.array([[ 5.75,  0.36066014, 0.75000012]], dtype=np.float32)
+    original_r = np.array([[ 5.75,  0.36066014, 0.75]], dtype=np.float32)
 
     test_r = distances.transform_StoR(s, box)
 

@@ -33,6 +33,7 @@ import textwrap
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_array_equal)
+from itertools import combinations_with_replacement as comb_wr
 
 import MDAnalysis as mda
 import MDAnalysis.lib.util as util
@@ -229,6 +230,118 @@ class TestGeometryFunctions(object):
         bc = ab + self.e2
         cd = bc + self.e3
         assert_almost_equal(mdamath.dihedral(ab, bc, cd), -np.pi / 2)
+
+
+class TestMatrixOperations(object):
+
+    def ref_trivecs(self, box):
+        box = np.asarray(box, dtype=np.float64)
+        x, y, z, a, b, c = box
+        # Only positive edge lengths and angles in (0, 180) are allowed:
+        if np.any(box <= 0) or a >= 180 or b >= 180 or c >= 180:
+            ref = np.zeros((3, 3), dtype=np.float32)
+        # detect orthogonal boxes:
+        elif a == 90 and b == 90 and c == 90:
+            ref = np.diag(box[:3].astype(np.float32))
+        else:
+            ref = np.zeros((3, 3), dtype=np.float64)
+            cos_a = 0.0 if a == 90 else np.cos(np.deg2rad(a))
+            cos_b = 0.0 if b == 90 else np.cos(np.deg2rad(b))
+            cos_c = 0.0 if c == 90 else np.cos(np.deg2rad(c))
+            sin_c = 1.0 if c == 90 else np.sin(np.deg2rad(c))
+            ref[0, 0] = x
+            ref[1, 0] = y * cos_c
+            ref[1, 1] = y * sin_c
+            ref[2, 0] = z * cos_b
+            ref[2, 1] = z * (cos_a - cos_b * cos_c) / sin_c
+            ref[2, 2] = np.sqrt(z * z - ref[2, 0] ** 2 - ref[2, 1] ** 2)
+            if ref[2, 2] == 0 or np.isnan(ref[2, 2]):
+                ref[:, :] = 0.0
+            ref = ref.astype(np.float32)
+        return ref
+
+    def ref_trivecs_unsafe(self, box):
+        box = np.asarray(box, dtype=np.float64)
+        x, y, z, a, b, c = box
+        # detect orthogonal boxes:
+        if a == 90 and b == 90 and c == 90:
+            ref = np.diag(box[:3].astype(np.float32))
+        else:
+            ref = np.zeros((3, 3), dtype=np.float64)
+            cos_a = 0.0 if a == 90 else np.cos(np.deg2rad(a))
+            cos_b = 0.0 if b == 90 else np.cos(np.deg2rad(b))
+            cos_c = 0.0 if c == 90 else np.cos(np.deg2rad(c))
+            sin_c = 1.0 if c == 90 else np.sin(np.deg2rad(c))
+            ref[0, 0] = x
+            ref[1, 0] = y * cos_c
+            ref[1, 1] = y * sin_c
+            ref[2, 0] = z * cos_b
+            ref[2, 1] = z * (cos_a - cos_b * cos_c) / sin_c
+            ref[2, 2] = np.sqrt(z * z - ref[2, 0] ** 2 - ref[2, 1] ** 2)
+            ref = ref.astype(np.float32)
+        return ref
+
+    def ref_tribox(self, tri_vecs):
+        tri_vecs = tri_vecs.astype(np.float64)
+        x, y, z = np.linalg.norm(tri_vecs, axis=1)
+        a = np.rad2deg(np.arccos(np.dot(tri_vecs[1], tri_vecs[2]) / (y * z)))
+        b = np.rad2deg(np.arccos(np.dot(tri_vecs[0], tri_vecs[2]) / (x * z)))
+        c = np.rad2deg(np.arccos(np.dot(tri_vecs[0], tri_vecs[1]) / (x * y)))
+        box = np.array([x, y, z, a, b, c], dtype=np.float32)
+        print(box)
+        if not (np.all(box > 0) and a < 180 and b < 180 and c < 180):
+            box = np.zeros(6, dtype=np.float32)
+        return box
+
+    @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
+    @pytest.mark.parametrize('angles',
+                             comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
+    def test_box_volume(self, lengths, angles):
+        box = np.array(lengths + angles, dtype=np.float32)
+        assert_almost_equal(mdamath.box_volume(box),
+                            np.linalg.det(self.ref_trivecs(box)),
+                            decimal=5)
+
+    @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
+    @pytest.mark.parametrize('angles',
+                             comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
+    def test_triclinic_vectors(self, lengths, angles):
+        box = lengths + angles
+        ref = self.ref_trivecs(box)
+        res = mdamath.triclinic_vectors(box)
+        assert_array_equal(res, ref)
+        assert res.dtype == ref.dtype
+
+    @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
+    @pytest.mark.parametrize('angles',
+                             comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
+    def test_triclinic_box(self, lengths, angles):
+        tri_vecs = self.ref_trivecs_unsafe(lengths + angles)
+        ref = self.ref_tribox(tri_vecs)
+        res = mdamath.triclinic_box(*tri_vecs)
+        assert_array_equal(res, ref)
+        assert res.dtype == ref.dtype
+
+    def test_sarrus_det(self):
+        comb = comb_wr(np.linspace(-133.7, 133.7, num=5), 9)
+        # test array of matrices:
+        matrix = np.array(tuple(comb)).reshape((-1, 5, 3, 3))
+        ref = np.linalg.det(matrix)
+        res = mdamath.sarrus_det(matrix)
+        assert_almost_equal(res, ref, 7)
+        assert ref.dtype == res.dtype == np.float64
+        # test single matrices:
+        matrix = matrix.reshape(-1, 3, 3)
+        ref = ref.ravel()
+        res = np.array([mdamath.sarrus_det(m) for m in matrix])
+        assert_almost_equal(res, ref, 7)
+        assert ref.dtype == res.dtype == np.float64
+
+    @pytest.mark.parametrize('shape', ((0,), (3, 2), (2, 3), (1, 1, 3, 1)))
+    def test_sarrus_det_wrong_shape(self, shape):
+        matrix = np.zeros(shape)
+        with pytest.raises(ValueError):
+            mdamath.sarrus_det(matrix)
 
 
 class TestMakeWhole(object):
