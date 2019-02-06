@@ -156,7 +156,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     -------
     Make fragments whole::
 
-        from MDAnalysis.lib.util import make_whole
+        from MDAnalysis.lib.mdamath import make_whole
 
         # This algorithm requires bonds, these can be guessed!
         u = mda.Universe(......, guess_bonds=True)
@@ -173,6 +173,11 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
         # This will mean that atomgroup[10] will NOT get moved,
         # and all other atoms will move (if necessary).
         make_whole(atomgroup, reference_atom=atomgroup[10])
+
+
+    See Also
+    --------
+    :meth:`MDAnalysis.core.groups.AtomGroup.unwrap`
 
 
     .. versionadded:: 0.11.0

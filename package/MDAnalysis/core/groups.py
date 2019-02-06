@@ -1214,6 +1214,12 @@ class GroupBase(_MutableBase):
            :meth:`wrap` with all default keywords is identical to
            :meth:`pack_into_box`
 
+        See Also
+        --------
+        :meth:`pack_into_box`
+        :meth:`unwrap`
+        :meth:`~MDanalysis.lib.distances.apply_PBC`
+
 
         .. versionadded:: 0.9.2
         """
@@ -1320,8 +1326,8 @@ class GroupBase(_MutableBase):
         See Also
         --------
         :func:`~MDAnalysis.lib.mdamath.make_whole`,
-        :meth:`~MDAnalysis.AtomGroup.wrap`,
-        :meth:`~MDAnalysis.AtomGroup.pack_into_box`,
+        :meth:`wrap`,
+        :meth:`pack_into_box`,
         :func:`~MDanalysis.lib.distances.apply_PBC`
 
 
