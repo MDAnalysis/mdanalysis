@@ -25,7 +25,7 @@
 import cython
 import numpy as np
 cimport numpy as np
-from libc.math cimport sqrt
+from libc.math cimport sqrt, fabs
 
 from MDAnalysis import NoDataError
 
@@ -235,7 +235,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
         is_unwrapped = True
         for i in range(1, natoms):
             for j in range(3):
-                if abs(oldpos[i, j] - oldpos[0, j]) >= half_box[j]:
+                if fabs(oldpos[i, j] - oldpos[0, j]) >= half_box[j]:
                     is_unwrapped = False
                     break
             if not is_unwrapped:
