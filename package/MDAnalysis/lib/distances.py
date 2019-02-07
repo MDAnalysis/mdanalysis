@@ -73,7 +73,7 @@ import numpy as np
 from numpy.lib.utils import deprecate
 
 from .util import check_coords, check_box
-from .mdamath import triclinic_vectors, triclinic_box
+from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
 
@@ -1478,10 +1478,8 @@ def apply_PBC(coords, box, backend="serial"):
         return coords
     boxtype, box = check_box(box)
     if boxtype == 'ortho':
-        box_inv = box ** (-1)
-        _run("ortho_pbc", args=(coords, box, box_inv), backend=backend)
+        _run("ortho_pbc", args=(coords, box), backend=backend)
     else:
-        box_inv = np.diagonal(box) ** (-1)
-        _run("triclinic_pbc", args=(coords, box, box_inv), backend=backend)
+        _run("triclinic_pbc", args=(coords, box), backend=backend)
 
     return coords

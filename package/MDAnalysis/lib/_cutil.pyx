@@ -40,8 +40,8 @@ __all__ = ['unique_int_1d', 'make_whole', 'find_fragments',
 
 cdef extern from "calc_distances.h":
     ctypedef float coordinate[3]
-    void minimum_image(double *x, float *box, float *inverse_box)
-    void minimum_image_triclinic(double *dx, coordinate *box)
+    void minimum_image(double* x, float* box, float* inverse_box)
+    void minimum_image_triclinic(double* dx, float* box)
 
 ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
@@ -187,14 +187,14 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
         are returned as a numpy array.
     """
     cdef intset refpoints, todo, done
-    cdef int i, j, nloops, ref, atom, other, natoms
+    cdef np.intp_t i, j, nloops, ref, atom, other, natoms
     cdef cmap[int, int] ix_to_rel
     cdef intmap bonding
     cdef int[:, :] bonds
     cdef float[:, :] oldpos, newpos
     cdef bint ortho
     cdef float[:] box
-    cdef float tri_box[3][3]
+    cdef float[:, :] tri_box
     cdef float half_box[3]
     cdef float inverse_box[3]
     cdef double vec[3]
@@ -280,7 +280,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
         newpos[ref, i] = oldpos[ref, i]
 
     nloops = 0
-    while refpoints.size() < natoms and nloops < natoms:
+    while <np.intp_t> refpoints.size() < natoms and nloops < natoms:
         # count iterations to prevent infinite loop here
         nloops += 1
 
@@ -299,7 +299,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
                 if ortho:
                     minimum_image(&vec[0], &box[0], &inverse_box[0])
                 else:
-                    minimum_image_triclinic(&vec[0], <coordinate*>&tri_box[0])
+                    minimum_image_triclinic(&vec[0], &tri_box[0, 0])
                 # Then define position of other based on this vector
                 for i in range(3):
                     newpos[other, i] = newpos[atom, i] + vec[i]
@@ -308,7 +308,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
                 refpoints.insert(other)
             done.insert(atom)
 
-    if refpoints.size() < natoms:
+    if <np.intp_t> refpoints.size() < natoms:
         raise ValueError("AtomGroup was not contiguous from bonds, process failed")
     if inplace:
         atomgroup.positions = newpos
