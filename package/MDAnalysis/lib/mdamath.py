@@ -250,67 +250,19 @@ def triclinic_box(x, y, z):
        Calculations are performed in double precision and invalid box vectors
        result in an all-zero box.
     """
-    # check if upper right triangle of box matrix is zero:
-    if x[1] == 0.0 and x[2] == 0.0 and y[2] == 0.0:
-        lx = x[0]
-        # check for 90° angles
-        # check gamma:
-        if y[0] == 0.0:  # gamma = 90° => ly = y[1]
-            ly = y[1]
-            gamma = 90.0
-            # check beta
-            if z[0] == 0.0:  # beta and gamma are 90°
-                beta = 90.0
-                # check alpha
-                if z[1] == 0.0:  # all angles are 90° => lz = z[2]
-                    alpha = 90.0
-                    lz = z[2]
-                else:  # only beta and gamma are 90°
-                    z = np.asarray(z, dtype=np.float64)
-                    lz = norm(z)
-                    alpha = np.rad2deg(np.arccos(z[1] / lz))
-            else:  # gamma = 90  but beta != 90
-                z = np.asarray(z, dtype=np.float64)
-                lz = norm(z)
-                beta = np.rad2deg(np.arccos(z[0] / lz))
-                # check alpha
-                if z[1] == 0.0:  # only alpha and gamma are 90°
-                    alpha = 90.0
-                else:  # only gamma = 90°
-                    alpha = np.rad2deg(np.arccos(z[1] / lz))
-        else:  # gamma != 90°
-            y = np.asarray(y, dtype=np.float64)
-            ly = norm(y)
-            gamma = np.rad2deg(np.arccos(y[0] / ly))
-            # check beta:
-            if z[0] == 0.0:  # beta = 90° but gamma != 90°
-                beta = 90.0
-                # check alpha
-                if z[1] == 0.0:  # only alpha and beta are 90° => lz = z[2]
-                    alpha = 90.0
-                    lz = z[2]
-                else:  # only beta = 90°
-                    z = np.asarray(z, dtype=np.float64)
-                    lz = norm(z)
-                    alpha = np.rad2deg(np.arccos(y[1] * z[1] / (ly * lz)))
-            else:  # neither beta nor gamma are 90°
-                z = np.asarray(z, dtype=np.float64)
-                lz = norm(z)
-                alpha = np.rad2deg(np.arccos(np.dot(y, z) / (ly * lz)))
-                beta = np.rad2deg(np.arccos(z[0] / lz))
-    else:  # malformed triclinic box matrix with nonzero upper triangle
-        x = np.asarray(x, dtype=np.float64)
-        y = np.asarray(y, dtype=np.float64)
-        z = np.asarray(z, dtype=np.float64)
-        lx = norm(x)
-        ly = norm(y)
-        lz = norm(z)
-        alpha = np.rad2deg(np.arccos(np.dot(y, z) / (ly * lz)))
-        beta = np.rad2deg(np.arccos(np.dot(x, z) / (lx * lz)))
-        gamma = np.rad2deg(np.arccos(np.dot(x, y) / (lx * ly)))
+    x = np.asarray(x, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+    z = np.asarray(z, dtype=np.float64)
+    lx = norm(x)
+    ly = norm(y)
+    lz = norm(z)
+    alpha = np.rad2deg(np.arccos(np.dot(y, z) / (ly * lz)))
+    beta = np.rad2deg(np.arccos(np.dot(x, z) / (lx * lz)))
+    gamma = np.rad2deg(np.arccos(np.dot(x, y) / (lx * ly)))
     box = np.array([lx, ly, lz, alpha, beta, gamma], dtype=np.float32)
     # Only positive edge lengths and angles in (0, 180) are allowed:
-    if np.any(box <= 0.0) or alpha >= 180.0 or beta >= 180.0 or gamma >= 180.0:
+    if not (np.all(box > 0.0) and \
+            alpha < 180.0 and beta < 180.0 and gamma < 180.0):
         # invalid box, return zero vector:
         box = np.zeros(6, dtype=np.float32)
     return box
@@ -363,7 +315,8 @@ def triclinic_vectors(dimensions):
     dim = np.asarray(dimensions, dtype=np.float64)
     lx, ly, lz, alpha, beta, gamma = dim
     # Only positive edge lengths and angles in (0, 180) are allowed:
-    if np.any(dim <= 0.0) or alpha >= 180.0 or beta >= 180.0 or gamma >= 180.0:
+    if not (np.all(dim > 0.0) and \
+            alpha < 180.0 and beta < 180.0 and gamma < 180.0):
         # invalid box, return zero vectors:
         box_matrix = np.zeros((3, 3), dtype=np.float32)
     # detect orthogonal boxes:

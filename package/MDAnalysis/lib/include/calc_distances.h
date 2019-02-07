@@ -93,6 +93,10 @@ static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
  * Moves all coordinates to within the box boundaries for an orthogonal box
  */
     int i, j;
+    // bail out if any of the box dimensions is zero:
+    if (!(box[0] && box[1] && box[2])) {
+        return;
+    }
 #ifdef PARALLEL
     #pragma omp parallel for private(i, j) shared(coords)
 #endif
@@ -125,6 +129,10 @@ static void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
  *   \  c_x  c_y  c_z  /                 \  6    7    8  /
  */
     int i;
+    // bail out if any of the box dimensions is zero:
+    if (!(box[0] && box[4] && box[8])) {
+        return;
+    }
 #ifdef PARALLEL
     #pragma omp parallel for private(i) shared(coords)
 #endif
