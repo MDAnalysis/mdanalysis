@@ -261,11 +261,10 @@ def triclinic_box(x, y, z):
     gamma = np.rad2deg(np.arccos(np.dot(x, y) / (lx * ly)))
     box = np.array([lx, ly, lz, alpha, beta, gamma], dtype=np.float32)
     # Only positive edge lengths and angles in (0, 180) are allowed:
-    if not (np.all(box > 0.0) and \
-            alpha < 180.0 and beta < 180.0 and gamma < 180.0):
-        # invalid box, return zero vector:
-        box = np.zeros(6, dtype=np.float32)
-    return box
+    if np.all(box > 0.0) and alpha < 180.0 and beta < 180.0 and gamma < 180.0:
+        return box
+    # invalid box, return zero vector:
+    return np.zeros(6, dtype=np.float32)
 
 
 def triclinic_vectors(dimensions):

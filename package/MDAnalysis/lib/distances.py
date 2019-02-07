@@ -1111,10 +1111,11 @@ def transform_RtoS(coords, box, backend="serial"):
     boxtype, box = check_box(box)
     if boxtype == 'ortho':
         box = np.diag(box)
+    box = box.astype(np.float64)
 
     # Create inverse matrix of box
     # need order C here
-    inv = np.array(np.linalg.inv(box), dtype=np.float32, order='C')
+    inv = np.array(np.linalg.inv(box), order='C')
 
     _run("coord_transform", args=(coords, inv), backend=backend)
 
@@ -1159,6 +1160,7 @@ def transform_StoR(coords, box, backend="serial"):
     boxtype, box = check_box(box)
     if boxtype == 'ortho':
         box = np.diag(box)
+    box = box.astype(np.float64)
 
     _run("coord_transform", args=(coords, box), backend=backend)
     return coords

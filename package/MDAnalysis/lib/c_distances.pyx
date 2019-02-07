@@ -45,7 +45,7 @@ cdef extern from "calc_distances.h":
     void _calc_self_distance_array(coordinate* ref, int numref, double* distances)
     void _calc_self_distance_array_ortho(coordinate* ref, int numref, float* box, double* distances)
     void _calc_self_distance_array_triclinic(coordinate* ref, int numref, float* box, double* distances)
-    void _coord_transform(coordinate* coords, int numCoords, float* box)
+    void _coord_transform(coordinate* coords, int numCoords, double* box)
     void _calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
     void _calc_bond_distance_ortho(coordinate* atom1, coordinate* atom2, int numatom, float* box, double* distances)
     void _calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2, int numatom, float* box, double* distances)
@@ -119,7 +119,7 @@ def coord_transform(numpy.ndarray coords, numpy.ndarray box):
     cdef int numcoords
     numcoords = coords.shape[0]
 
-    _coord_transform(<coordinate*> coords.data, numcoords, <float*> box.data)
+    _coord_transform(<coordinate*> coords.data, numcoords, <double*> box.data)
 
 def calc_bond_distance(numpy.ndarray coords1, numpy.ndarray coords2,
                        numpy.ndarray results):

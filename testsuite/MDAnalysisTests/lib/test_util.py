@@ -288,7 +288,6 @@ class TestMatrixOperations(object):
         b = np.rad2deg(np.arccos(np.dot(tri_vecs[0], tri_vecs[2]) / (x * z)))
         c = np.rad2deg(np.arccos(np.dot(tri_vecs[0], tri_vecs[1]) / (x * y)))
         box = np.array([x, y, z, a, b, c], dtype=np.float32)
-        print(box)
         if not (np.all(box > 0) and a < 180 and b < 180 and c < 180):
             box = np.zeros(6, dtype=np.float32)
         return box

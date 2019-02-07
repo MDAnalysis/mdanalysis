@@ -89,81 +89,77 @@ static void minimum_image_triclinic(double* dx, float* box)
 
 static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
 {
-/*
- * Moves all coordinates to within the box boundaries for an orthogonal box
- */
-    int i, j;
+   /*
+    * Moves all coordinates to within the box boundaries for an orthogonal box
+    */
+
     // bail out if any of the box dimensions is zero:
     if (!(box[0] && box[1] && box[2])) {
         return;
     }
+
+    int i, s[3];
+    double bi[3];
+    bi[0] = 1.0 / (double) box[0];
+    bi[1] = 1.0 / (double) box[1];
+    bi[2] = 1.0 / (double) box[2];
+
 #ifdef PARALLEL
-    #pragma omp parallel for private(i, j) shared(coords)
+    #pragma omp parallel for private(i, s) shared(coords)
 #endif
-    for (i=0; i < numcoords; i++) {
-        for (j=0; j < 3; j++) {
-            if (coords[i][j] >= box[j]) {
-                coords[i][j] -= box[j];
-                while (coords[i][j] >= box[j]) {
-                    coords[i][j] -= box[j];
-                }
-            }
-            else {
-                if (coords[i][j] < 0.0f) {
-                    coords[i][j] += box[j];
-                    while (coords[i][j] < 0.0f) {
-                        coords[i][j] += box[j];
-                    }
-                }
-            }
-        }
+    for (i=0; i < numcoords; i++){
+        s[0] = floor(coords[i][0] * bi[0]);
+        s[1] = floor(coords[i][1] * bi[1]);
+        s[2] = floor(coords[i][2] * bi[2]);
+        coords[i][0] -= s[0] * box[0];
+        coords[i][1] -= s[1] * box[1];
+        coords[i][2] -= s[2] * box[2];
     }
 }
 
 static void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
 {
-/* Moves all coordinates to within the box boundaries for a triclinic box
- * Assumes box having zero values for box[1], box[2] and box[5]:
- *   /  a_x   0    0   \                 /  0    1    2  \
- *   |  b_x  b_y   0   |       indices:  |  3    4    5  |
- *   \  c_x  c_y  c_z  /                 \  6    7    8  /
- */
-    int i;
+   /* Moves all coordinates to within the box boundaries for a triclinic box
+    * Assumes box having zero values for box[1], box[2] and box[5]:
+    *   [ a_x,   0,   0 ]                 [ 0, 1, 2 ]
+    *   [ b_x, b_y,   0 ]       indices:  [ 3, 4, 5 ]
+    *   [ c_x, c_y, c_z ]                 [ 6, 7, 8 ]
+    *
+    * Inverse of matrix box (here called "m"):
+    *   [                       1/m0,           0,    0 ]
+    *   [                -m3/(m0*m4),        1/m4,    0 ]
+    *   [ (m3*m7/(m0*m4) - m6/m0)/m8, -m7/(m4*m8), 1/m8 ]
+    */
+
     // bail out if any of the box dimensions is zero:
     if (!(box[0] && box[4] && box[8])) {
         return;
     }
+
+    int i, s;
+    double bi0 = 1.0 / (double) box[0];
+    double bi4 = 1.0 / (double) box[4];
+    double bi8 = 1.0 / (double) box[8];
+    double bi3 = -box[3] * bi0 * bi4;
+    double bi6 = (-bi3 * box[7] - box[6] * bi0) * bi8;
+    double bi7 = -box[7] * bi4 * bi8;
+
 #ifdef PARALLEL
-    #pragma omp parallel for private(i) shared(coords)
+    #pragma omp parallel for private(i, s) shared(coords)
 #endif
-    for (i=0; i < numcoords; i++){
+    for (i = 0; i < numcoords; i++){
         // translate coords[i] to central cell along c-axis
-        while (coords[i][2] >= box[8]) {
-            coords[i][0] -= box[6];
-            coords[i][1] -= box[7];
-            coords[i][2] -= box[8];
-        }
-        while (coords[i][2] < 0.0f) {
-            coords[i][0] += box[6];
-            coords[i][1] += box[7];
-            coords[i][2] += box[8];
-        }
+        s = floor(coords[i][2] * bi8);
+        coords[i][2] -= s * box[8];
+        coords[i][1] -= s * box[7];
+        coords[i][0] -= s * box[6];
         // translate remainder of coords[i] to central cell along b-axis
-        while (coords[i][1] >= box[4]) {
-            coords[i][0] -= box[3];
-            coords[i][1] -= box[4];
-        }
-        while (coords[i][1] < 0.0f) {
-            coords[i][0] += box[3];
-            coords[i][1] += box[4];
-        }
+        s = floor(coords[i][1] * bi4 + coords[i][2] * bi7);
+        coords[i][1] -= s * box[4];
+        coords[i][0] -= s * box[3];
         // translate remainder of coords[i] to central cell along a-axis
-        while (coords[i][0] >= box[0]) {
-            coords[i][0] -= box[0];
-        }
-        while (coords[i][0] < 0.0f) {
-            coords[i][0] += box[0];
-        }
+        s = floor(coords[i][0] * bi0 + coords[i][1] * bi3 + coords[i][2] * bi6);
+        coords[i][0] -= s * box[0];
     }
 }
 
@@ -332,7 +328,7 @@ static void _calc_self_distance_array_triclinic(coordinate* ref, int numref,
   }
 }
 
-void _coord_transform(coordinate* coords, int numCoords, float* box)
+void _coord_transform(coordinate* coords, int numCoords, double* box)
 {
   int i, j, k;
   float newpos[3];
@@ -348,7 +344,7 @@ void _coord_transform(coordinate* coords, int numCoords, float* box)
     newpos[2] = 0.0;
     for (j=0; j<3; j++){
       for (k=0; k<3; k++){
-        newpos[j] += coords[i][k] * box[3 * j + k];
+        newpos[j] += coords[i][k] * box[3 * k + j];
       }
     }
     coords[i][0] = newpos[0];
