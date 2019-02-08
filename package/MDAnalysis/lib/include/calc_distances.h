@@ -90,7 +90,14 @@ static void minimum_image_triclinic(double* dx, float* box)
 static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
 {
    /*
-    * Moves all coordinates to within the box boundaries for an orthogonal box
+    * Moves all coordinates to within the box boundaries for an orthogonal box.
+    *
+    * This routine first shifts coordinates by at most one box if necessary.
+    * If that is not enough, the number of required box shifts is computed and
+    * a subsequent (multi-)box shift applied. The single shift is faster and
+    * usually enough and more accurate since the estimation of the number of
+    * required box shifts is error-prone if particles reside exactly on a box
+    * boundary.
     */
 
     // bail out if any of the box dimensions is zero:
@@ -98,29 +105,52 @@ static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
         return;
     }
 
-    int i, s[3];
-    double bi[3];
-    bi[0] = 1.0 / (double) box[0];
-    bi[1] = 1.0 / (double) box[1];
-    bi[2] = 1.0 / (double) box[2];
+    int i, j, s;
+    // inverse box for multi-box shifts:
+    double inverse_box[3];
+    float crd;
+    inverse_box[0] = 1.0 / (double) box[0];
+    inverse_box[1] = 1.0 / (double) box[1];
+    inverse_box[2] = 1.0 / (double) box[2];
 
 #ifdef PARALLEL
-    #pragma omp parallel for private(i, s) shared(coords)
+#pragma omp parallel for private(i, j, s, crd) shared(coords)
 #endif
-    for (i=0; i < numcoords; i++){
-        s[0] = floor(coords[i][0] * bi[0]);
-        s[1] = floor(coords[i][1] * bi[1]);
-        s[2] = floor(coords[i][2] * bi[2]);
-        coords[i][0] -= s[0] * box[0];
-        coords[i][1] -= s[1] * box[1];
-        coords[i][2] -= s[2] * box[2];
+    for (i=0; i < numcoords; i++) {
+        for (j=0; j < 3; j++) {
+            crd = coords[i][j];
+            if (crd < 0.0f) {
+                crd += box[j];
+                // check if multi-box shifts are required:
+                if (crd < 0.0f) {
+                    s = floor(coords[i][j] * inverse_box[j]);
+                    coords[i][j] -= s * box[j];
+                }
+                else{
+                    coords[i][j] = crd;
+                }
+            }
+            else{
+                if (crd >= box[j]) {
+                    crd -= box[j];
+                    // check if multi-box shifts are required:
+                    if (crd >= box[j]) {
+                        s = floor(coords[i][j] * inverse_box[j]);
+                        coords[i][j] -= s * box[j];
+                    }
+                    else{
+                        coords[i][j] = crd;
+                    }
+                }
+            }
+        }
     }
 }
 
 static void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
 {
-   /* Moves all coordinates to within the box boundaries for a triclinic box
-    * Assumes box having zero values for box[1], box[2] and box[5]:
+   /* Moves all coordinates to within the box boundaries for a triclinic box.
+    * Assumes that the box has zero values for box[1], box[2] and box[5]:
     *   [ a_x,   0,   0 ]                 [ 0, 1, 2 ]
     *   [ b_x, b_y,   0 ]       indices:  [ 3, 4, 5 ]
     *   [ c_x, c_y, c_z ]                 [ 6, 7, 8 ]
@@ -129,6 +159,13 @@ static void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
     *   [                       1/m0,           0,    0 ]
     *   [                -m3/(m0*m4),        1/m4,    0 ]
     *   [ (m3*m7/(m0*m4) - m6/m0)/m8, -m7/(m4*m8), 1/m8 ]
+    *
+    * This routine first shifts coordinates by at most one box if necessary.
+    * If that is not enough, the number of required box shifts is computed and
+    * a subsequent (multi-)box shift applied. The single shift is faster and
+    * usually enough and more accurate since the estimation of the number of
+    * required box shifts is error-prone if particles reside exactly on a box
+    * boundary.
     */
 
     // bail out if any of the box dimensions is zero:
@@ -136,30 +173,118 @@ static void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
         return;
     }
 
-    int i, s;
+    int i, s, msr;
+    float crd[3];
+    // constants for multi-box shifts:
     double bi0 = 1.0 / (double) box[0];
     double bi4 = 1.0 / (double) box[4];
     double bi8 = 1.0 / (double) box[8];
     double bi3 = -box[3] * bi0 * bi4;
     double bi6 = (-bi3 * box[7] - box[6] * bi0) * bi8;
     double bi7 = -box[7] * bi4 * bi8;
+    // constants for single box shifts:
+    double lbound;
+    double ubound;
+    double a_ax_yfactor = (double) box[3] * bi4;;
+    double a_ax_zfactor = (double) box[6] * bi8;
+    double b_ax_zfactor = (double) box[7] * bi8;
+
 
 #ifdef PARALLEL
-    #pragma omp parallel for private(i, s) shared(coords)
+#pragma omp parallel for private(i, s, msr, crd, lbound, ubound) shared(coords)
 #endif
     for (i = 0; i < numcoords; i++){
+        msr = 0;
+        crd[0] = coords[i][0];
+        crd[1] = coords[i][1];
+        crd[2] = coords[i][2];
         // translate coords[i] to central cell along c-axis
-        s = floor(coords[i][2] * bi8);
-        coords[i][2] -= s * box[8];
-        coords[i][1] -= s * box[7];
-        coords[i][0] -= s * box[6];
-        // translate remainder of coords[i] to central cell along b-axis
-        s = floor(coords[i][1] * bi4 + coords[i][2] * bi7);
-        coords[i][1] -= s * box[4];
-        coords[i][0] -= s * box[3];
-        // translate remainder of coords[i] to central cell along a-axis
-        s = floor(coords[i][0] * bi0 + coords[i][1] * bi3 + coords[i][2] * bi6);
-        coords[i][0] -= s * box[0];
+        if (crd[2] < 0.0f) {
+            crd[0] +=  box[6];
+            crd[1] +=  box[7];
+            crd[2] +=  box[8];
+            // check if multi-box shifts are required:
+            if (crd[2] < 0.0f) {
+                msr = 1;
+            }
+        }
+        else {
+            if (crd[2] >= box[8]) {
+                crd[0] -=  box[6];
+                crd[1] -=  box[7];
+                crd[2] -=  box[8];
+                // check if multi-box shifts are required:
+                if (crd[2] >= box[8]) {
+                   msr = 1;
+                }
+            }
+        }
+        if (!msr) {
+            // translate remainder of crd to central cell along b-axis
+            lbound = crd[2] * b_ax_zfactor;
+            if (crd[1] < lbound) {
+                crd[0] += box[3];
+                crd[1] += box[4];
+                // check if multi-box shifts are required:
+                if (crd[1] < lbound) {
+                    msr = 1;
+                }
+            }
+            else{
+                ubound = lbound + box[4];
+                if (crd[1] >= ubound) {
+                    crd[0] -= box[3];
+                    crd[1] -= box[4];
+                    // check if multi-box shifts are required:
+                    if (crd[1] >= ubound) {
+                        msr = 1;
+                    }
+                }
+            }
+            if (!msr) {
+                // translate remainder of crd to central cell along a-axis
+                lbound = crd[1] * a_ax_yfactor + crd[2] * a_ax_zfactor;
+                if (crd[0] < lbound) {
+                    crd[0] += box[0];
+                    // check if multi-box shifts are required:
+                    if (crd[0] < lbound) {
+                        msr = 1;
+                    }
+                }
+                else {
+                    ubound = lbound + box[0];
+                    if (crd[0] >= ubound) {
+                        crd[0] -= box[0];
+                        // check if multi-box shifts are required:
+                        if (crd[0] >= ubound) {
+                            msr = 1;
+                        }
+                    }
+                }
+            }
+        }
+        // multi-box shifts required?
+        if (msr) {
+            // translate coords[i] to central cell along c-axis
+            s = floor(coords[i][2] * bi8);
+            coords[i][2] -= s * box[8];
+            coords[i][1] -= s * box[7];
+            coords[i][0] -= s * box[6];
+            // translate remainder of coords[i] to central cell along b-axis
+            s = floor(coords[i][1] * bi4 + coords[i][2] * bi7);
+            coords[i][1] -= s * box[4];
+            coords[i][0] -= s * box[3];
+            // translate remainder of coords[i] to central cell along a-axis
+            s = floor(coords[i][0] * bi0 + coords[i][1] * bi3 + \
+                      coords[i][2] * bi6);
+            coords[i][0] -= s * box[0];
+        }
+        // single shift was sufficient, apply the result:
+        else {
+            coords[i][0] = crd[0];
+            coords[i][1] = crd[1];
+            coords[i][2] = crd[2];
+        }
     }
 }
 
