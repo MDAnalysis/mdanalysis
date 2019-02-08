@@ -82,6 +82,8 @@ class MMTFReader(base.SingleFrameReaderBase):
         if not top.unit_cell is None:
             # optional field
             ts.dimensions = top.unit_cell
+        else:
+            ts._unitcell = None
 
         return ts
 
