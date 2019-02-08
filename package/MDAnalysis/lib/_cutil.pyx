@@ -25,7 +25,7 @@
 import cython
 import numpy as np
 cimport numpy as np
-from libc.math cimport sqrt
+from libc.math cimport sqrt, fabs
 
 from MDAnalysis import NoDataError
 
@@ -103,10 +103,9 @@ cdef intset difference(intset a, intset b):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def make_whole(atomgroup, reference_atom=None):
-    """Move all atoms in a single molecule so that bonds don't split over images
-
-    Atom positions are modified in place.
+def make_whole(atomgroup, reference_atom=None, inplace=True):
+    """Move all atoms in a single molecule so that bonds don't split over
+    images.
 
     This function is most useful when atoms have been packed into the primary
     unit cell, causing breaks mid molecule, with the molecule then appearing
@@ -133,6 +132,13 @@ def make_whole(atomgroup, reference_atom=None):
     reference_atom : :class:`~MDAnalysis.core.groups.Atom`
         The atom around which all other atoms will be moved.
         Defaults to atom 0 in the atomgroup.
+    inplace : bool, optional
+        If ``True``, coordinates are modified in place.
+
+    Returns
+    -------
+    coords : numpy.ndarray
+        The unwrapped atom coordinates.
 
     Raises
     ------
@@ -155,12 +161,12 @@ def make_whole(atomgroup, reference_atom=None):
         # This algorithm requires bonds, these can be guessed!
         u = mda.Universe(......, guess_bonds=True)
 
-        # MDAnalysis can split molecules into their fragments
+        # MDAnalysis can split AtomGroups into their fragments
         # based on bonding information.
         # Note that this function will only handle a single fragment
         # at a time, necessitating a loop.
-        for frag in u.fragments:
-          make_whole(frag)
+        for frag in u.atoms.fragments:
+            make_whole(frag)
 
     Alternatively, to keep a single atom in place as the anchor::
 
@@ -169,10 +175,18 @@ def make_whole(atomgroup, reference_atom=None):
         make_whole(atomgroup, reference_atom=atomgroup[10])
 
 
+    See Also
+    --------
+    :meth:`MDAnalysis.core.groups.AtomGroup.unwrap`
+
+
     .. versionadded:: 0.11.0
+    .. versionchanged:: 0.20.0
+        Inplace-modification of atom positions is now optional, and positions
+        are returned as a numpy array.
     """
     cdef intset refpoints, todo, done
-    cdef int i, nloops, ref, atom, other, natoms
+    cdef int i, j, nloops, ref, atom, other, natoms
     cdef cmap[int, int] ix_to_rel
     cdef intmap bonding
     cdef int[:, :] bonds
@@ -180,13 +194,22 @@ def make_whole(atomgroup, reference_atom=None):
     cdef bint ortho
     cdef float[:] box
     cdef float tri_box[3][3]
+    cdef float half_box[3]
     cdef float inverse_box[3]
     cdef double vec[3]
     cdef ssize_t[:] ix_view
+    cdef bint is_unwrapped
 
     # map of global indices to local indices
     ix_view = atomgroup.ix[:]
     natoms = atomgroup.ix.shape[0]
+    
+    oldpos = atomgroup.positions
+
+    # Nothing to do for less than 2 atoms
+    if natoms < 2:
+        return np.array(oldpos)
+
     for i in range(natoms):
         ix_to_rel[ix_view[i]] = i
 
@@ -198,9 +221,11 @@ def make_whole(atomgroup, reference_atom=None):
             raise ValueError("Reference atom not in atomgroup")
         ref = ix_to_rel[reference_atom.ix]
 
-    box = atomgroup.dimensions
+    box = atomgroup.dimensions.astype(np.float32)
+    # TODO: remove astype(np.float32) once all universes return float32 boxes
 
     for i in range(3):
+        half_box[i] = 0.5 * box[i]
         if box[i] == 0.0:
             raise ValueError("One or more dimensions was zero.  "
                              "You can set dimensions using 'atomgroup.dimensions='")
@@ -211,6 +236,17 @@ def make_whole(atomgroup, reference_atom=None):
             ortho = False
 
     if ortho:
+        # If atomgroup is already unwrapped, bail out
+        is_unwrapped = True
+        for i in range(1, natoms):
+            for j in range(3):
+                if fabs(oldpos[i, j] - oldpos[0, j]) >= half_box[j]:
+                    is_unwrapped = False
+                    break
+            if not is_unwrapped:
+                break
+        if is_unwrapped:
+            return np.array(oldpos)
         for i in range(3):
             inverse_box[i] = 1.0 / box[i]
     else:
@@ -233,7 +269,6 @@ def make_whole(atomgroup, reference_atom=None):
             bonding[atom].insert(other)
             bonding[other].insert(atom)
 
-    oldpos = atomgroup.positions
     newpos = np.zeros((oldpos.shape[0], 3), dtype=np.float32)
 
     refpoints = intset()  # Who is safe to use as reference point?
@@ -274,8 +309,9 @@ def make_whole(atomgroup, reference_atom=None):
 
     if refpoints.size() < natoms:
         raise ValueError("AtomGroup was not contiguous from bonds, process failed")
-    else:
+    if inplace:
         atomgroup.positions = newpos
+    return np.array(newpos)
 
 
 @cython.boundscheck(False)
