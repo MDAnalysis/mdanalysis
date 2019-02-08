@@ -9,7 +9,7 @@ import MDAnalysis as mda
 from MDAnalysis.core.groups import AtomGroup
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import MMTF, MMTF_gz, MMTF_skinny
+from MDAnalysisTests.datafiles import MMTF, MMTF_gz, MMTF_skinny, MMTF_skinny2
 
 
 class TestMMTFParser(ParserBase):
@@ -44,6 +44,19 @@ class TestMMTFSkinny(ParserBase):
     guessed_attrs = ['ids', 'masses', 'segids']
     expected_n_atoms = 660
     expected_n_residues = 134
+    expected_n_segments = 2
+
+class TestMMTFSkinny2(ParserBase):
+    parser = mda.topology.MMTFParser.MMTFParser
+    ref_filename = MMTF_skinny2
+    expected_attrs = [
+        'names', 'types',
+        'charges', 'names', 'resnames', 'resids', 'resnums',
+        'bonds', 'models'
+    ]
+    guessed_attrs = ['ids', 'masses', 'segids']
+    expected_n_atoms = 169
+    expected_n_residues = 44
     expected_n_segments = 2
 
 

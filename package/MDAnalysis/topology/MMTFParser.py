@@ -247,10 +247,12 @@ class MMTFParser(base.TopologyReaderBase):
 
             offset += groupID_2_natoms[gtype]
         # add inter group bonds
-        for x, y in zip(mtop.bond_atom_list[1::2], mtop.bond_atom_list[::2]):
-            if x > y:
-                x, y = y, x
-            bonds.append((x, y))
+        if not mtop.bond_atom_list is None:  # optional field
+            for x, y in zip(mtop.bond_atom_list[1::2],
+                            mtop.bond_atom_list[::2]):
+                if x > y:
+                    x, y = y, x
+                bonds.append((x, y))
         attrs.append(Bonds(bonds))
 
         top = Topology(natoms, nresidues, nsegments,
