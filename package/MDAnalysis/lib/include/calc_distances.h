@@ -100,18 +100,17 @@ static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
     * boundary.
     */
 
-    // bail out if any of the box dimensions is zero:
-    if (!(box[0] && box[1] && box[2])) {
+    // nothing to do if the box is all-zeros:
+    if (!box[0] && !box[1] && !box[2]) {
         return;
     }
 
     int i, j, s;
-    // inverse box for multi-box shifts:
-    double inverse_box[3];
     float crd;
-    inverse_box[0] = 1.0 / (double) box[0];
-    inverse_box[1] = 1.0 / (double) box[1];
-    inverse_box[2] = 1.0 / (double) box[2];
+    // inverse box for multi-box shifts:
+    const double inverse_box[3] = {1.0 / (double) box[0], \
+                                   1.0 / (double) box[1], \
+                                   1.0 / (double) box[2]};
 
 #ifdef PARALLEL
 #pragma omp parallel for private(i, j, s, crd) shared(coords)
@@ -125,6 +124,10 @@ static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
                 if (crd < 0.0f) {
                     s = floor(coords[i][j] * inverse_box[j]);
                     coords[i][j] -= s * box[j];
+                    // multi-box shifts might be inexact, so check again:
+                    if (coords[i][j] < 0.0f) {
+                        coords[i][j] += box[j];
+                    }
                 }
                 else{
                     coords[i][j] = crd;
@@ -137,6 +140,10 @@ static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
                     if (crd >= box[j]) {
                         s = floor(coords[i][j] * inverse_box[j]);
                         coords[i][j] -= s * box[j];
+                        // multi-box shifts might be inexact, so check again:
+                        if (coords[i][j] >= box[j]) {
+                            coords[i][j] -= box[j];
+                        }
                     }
                     else{
                         coords[i][j] = crd;
@@ -168,26 +175,26 @@ static void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
     * boundary.
     */
 
-    // bail out if any of the box dimensions is zero:
-    if (!(box[0] && box[4] && box[8])) {
+    // nothing to do if the box diagonal is all-zeros:
+    if (!box[0] && !box[4] && !box[8]) {
         return;
     }
 
     int i, s, msr;
     float crd[3];
     // constants for multi-box shifts:
-    double bi0 = 1.0 / (double) box[0];
-    double bi4 = 1.0 / (double) box[4];
-    double bi8 = 1.0 / (double) box[8];
-    double bi3 = -box[3] * bi0 * bi4;
-    double bi6 = (-bi3 * box[7] - box[6] * bi0) * bi8;
-    double bi7 = -box[7] * bi4 * bi8;
-    // constants for single box shifts:
+    const double bi0 = 1.0 / (double) box[0];
+    const double bi4 = 1.0 / (double) box[4];
+    const double bi8 = 1.0 / (double) box[8];
+    const double bi3 = -box[3] * bi0 * bi4;
+    const double bi6 = (-bi3 * box[7] - box[6] * bi0) * bi8;
+    const double bi7 = -box[7] * bi4 * bi8;
+    // variables and constants for single box shifts:
     double lbound;
     double ubound;
-    double a_ax_yfactor = (double) box[3] * bi4;;
-    double a_ax_zfactor = (double) box[6] * bi8;
-    double b_ax_zfactor = (double) box[7] * bi8;
+    const double a_ax_yfactor = (double) box[3] * bi4;;
+    const double a_ax_zfactor = (double) box[6] * bi8;
+    const double b_ax_zfactor = (double) box[7] * bi8;
 
 
 #ifdef PARALLEL
@@ -278,6 +285,50 @@ static void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
             s = floor(coords[i][0] * bi0 + coords[i][1] * bi3 + \
                       coords[i][2] * bi6);
             coords[i][0] -= s * box[0];
+            // multi-box shifts might be inexact, so check again:
+            crd[0] = coords[i][0];
+            crd[1] = coords[i][1];
+            crd[2] = coords[i][2];
+            // translate coords[i] to central cell along c-axis
+            if (crd[2] < 0.0f) {
+                crd[0] +=  box[6];
+                crd[1] +=  box[7];
+                crd[2] +=  box[8];
+            }
+            else {
+                if (crd[2] >= box[8]) {
+                    crd[0] -=  box[6];
+                    crd[1] -=  box[7];
+                    crd[2] -=  box[8];
+                }
+            }
+            // translate remainder of crd to central cell along b-axis
+            lbound = crd[2] * b_ax_zfactor;
+            if (crd[1] < lbound) {
+                crd[0] += box[3];
+                crd[1] += box[4];
+            }
+            else{
+                ubound = lbound + box[4];
+                if (crd[1] >= ubound) {
+                    crd[0] -= box[3];
+                    crd[1] -= box[4];
+                }
+            }
+            // translate remainder of crd to central cell along a-axis
+            lbound = crd[1] * a_ax_yfactor + crd[2] * a_ax_zfactor;
+            if (crd[0] < lbound) {
+                crd[0] += box[0];
+            }
+            else {
+                ubound = lbound + box[0];
+                if (crd[0] >= ubound) {
+                    crd[0] -= box[0];
+                }
+            }
+            coords[i][0] = crd[0];
+            coords[i][1] = crd[1];
+            coords[i][2] = crd[2];
         }
         // single shift was sufficient, apply the result:
         else {
