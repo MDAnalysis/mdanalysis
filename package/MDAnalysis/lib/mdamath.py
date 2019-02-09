@@ -267,7 +267,7 @@ def triclinic_box(x, y, z):
     return np.zeros(6, dtype=np.float32)
 
 
-def triclinic_vectors(dimensions):
+def triclinic_vectors(dimensions, dtype=np.float32):
     """Convert ``[lx, ly, lz, alpha, beta, gamma]`` to a triclinic matrix
     representation.
 
@@ -287,11 +287,13 @@ def triclinic_vectors(dimensions):
         Unitcell dimensions provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
+    dtype: numpy.dtype
+        The data type of the returned box matrix.
 
     Returns
     -------
     box_matrix : numpy.ndarray
-        A numpy array of shape ``(3, 3)`` and dtype ``numpy.float32``,
+        A numpy array of shape ``(3, 3)`` and dtype `dtype`,
         with ``box_matrix[0]`` containing the first, ``box_matrix[1]`` the
         second, and ``box_matrix[2]`` the third box vector.
 
@@ -308,8 +310,9 @@ def triclinic_vectors(dimensions):
     .. versionchanged:: 0.7.6
        Null-vectors are returned for non-periodic (or missing) unit cell.
     .. versionchanged:: 0.20.0
-       Calculations are performed in double precision and zero vectors are
-       also returned for invalid boxes.
+       * Calculations are performed in double precision and zero vectors are
+         also returned for invalid boxes.
+       * Added optional output dtype parameter.
     """
     dim = np.asarray(dimensions, dtype=np.float64)
     lx, ly, lz, alpha, beta, gamma = dim
@@ -317,11 +320,11 @@ def triclinic_vectors(dimensions):
     if not (np.all(dim > 0.0) and \
             alpha < 180.0 and beta < 180.0 and gamma < 180.0):
         # invalid box, return zero vectors:
-        box_matrix = np.zeros((3, 3), dtype=np.float32)
+        box_matrix = np.zeros((3, 3), dtype=dtype)
     # detect orthogonal boxes:
     elif alpha == beta == gamma == 90.0:
         # box is orthogonal, return a diagonal matrix:
-        box_matrix = np.diag(dim[:3].astype(np.float32))
+        box_matrix = np.diag(dim[:3].astype(dtype, copy=False))
     # we have a triclinic box:
     else:
         box_matrix = np.zeros((3, 3), dtype=np.float64)
@@ -355,18 +358,18 @@ def triclinic_vectors(dimensions):
         # positive value already covers that.
         if box_matrix[2, 2] > 0.0:
             # all good, convert to correct dtype:
-            box_matrix = box_matrix.astype(np.float32)
+            box_matrix = box_matrix.astype(dtype, copy=False)
         else:
             # invalid box, return zero vectors:
-            box_matrix = np.zeros((3, 3), dtype=np.float32)
+            box_matrix = np.zeros((3, 3), dtype=dtype)
     return box_matrix
 
 
 def box_volume(dimensions):
     """Return the volume of the unitcell described by `dimensions`.
 
-    The volume is computed as *det(x1, x2, x3)* where the *xi* are the
-    triclinic box vectors obtained from :func:`triclinic_vectors`.
+    The volume is computed as the product of the box matrix trace, with the
+    matrix obtained from :func:`triclinic_vectors`.
     If the box is invalid, i.e., any box length is zero or negative, or any
     angle is outside the open interval ``(0, 180)``, the resulting volume will
     be zero.
@@ -381,6 +384,7 @@ def box_volume(dimensions):
     Returns
     -------
     volume : float
+        The volume of the unitcell. Will be zero for invalid boxes.
 
 
     .. versionchanged:: 0.20.0
@@ -393,8 +397,9 @@ def box_volume(dimensions):
         # valid orthogonal box, volume is the product of edge lengths:
         volume = lx * ly * lz
     else:
-        # triclinic or invalid box, volume is determinant of box matrix
-        # (invalid boxes are handled by triclinic_vectors):
-        volume = sarrus_det(triclinic_vectors(dim))
+        # triclinic or invalid box, volume is trace product of box matrix
+        # (invalid boxes are set to all zeros by triclinic_vectors):
+        tri_vecs = triclinic_vectors(dim, dtype=np.float64)
+        volume = tri_vecs[0, 0] * tri_vecs[1, 1] * tri_vecs[2, 2]
     return volume
 
