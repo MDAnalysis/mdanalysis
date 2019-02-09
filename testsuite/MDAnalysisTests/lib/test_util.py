@@ -295,21 +295,97 @@ class TestMatrixOperations(object):
     @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
     @pytest.mark.parametrize('angles',
                              comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
-    def test_box_volume(self, lengths, angles):
-        box = np.array(lengths + angles, dtype=np.float32)
-        assert_almost_equal(mdamath.box_volume(box),
-                            np.linalg.det(self.ref_trivecs(box)),
-                            decimal=5)
-
-    @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
-    @pytest.mark.parametrize('angles',
-                             comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
     def test_triclinic_vectors(self, lengths, angles):
         box = lengths + angles
         ref = self.ref_trivecs(box)
         res = mdamath.triclinic_vectors(box)
         assert_array_equal(res, ref)
-        assert res.dtype == ref.dtype
+        # check for default dtype:
+        assert res.dtype == np.float32
+        # belts and braces, make sure upper triangle is always zero:
+        assert not(res[0, 1] or res[0, 2] or res[1, 2])
+
+    @pytest.mark.parametrize('alpha', (60, 90))
+    @pytest.mark.parametrize('beta', (60, 90))
+    @pytest.mark.parametrize('gamma', (60, 90))
+    def test_triclinic_vectors_right_angle_zeros(self, alpha, beta, gamma):
+        angles = [alpha, beta, gamma]
+        box = [10, 20, 30] + angles
+        mat = mdamath.triclinic_vectors(box)
+        if 90 in angles:
+            if gamma == 90:
+                assert not mat[1, 0]
+                if alpha == 90:
+                    assert not mat[2, 1]
+                    if beta == 90:
+                        assert not mat[2, 0]
+                    else:
+                        assert mat[2, 0]
+                else:
+                    assert mat[2, 1]
+            else:
+                assert mat[1, 0]
+                if beta == 90:
+                    assert not mat[2, 0]
+                    if alpha == 90:
+                        assert not mat[2, 1]
+                    else:
+                        assert mat[2,1]
+                else:
+                    assert mat[2, 0]
+                    # 2, 1 cannot be zero here regardless of alpha
+                    assert mat[2, 1]
+        else:
+            assert mat[1, 0] and mat[2, 0] and mat[2, 1]
+
+    @pytest.mark.parametrize('dtype', (int, float, np.float32, np.float64))
+    def test_triclinic_vectors_retval(self, dtype):
+        # valid box
+        box = [1, 1, 1, 70, 80, 90]
+        res = mdamath.triclinic_vectors(box, dtype=dtype)
+        assert res.shape == (3, 3)
+        assert res.dtype == dtype
+        # zero box
+        box = [0, 0, 0, 0, 0, 0]
+        res = mdamath.triclinic_vectors(box, dtype=dtype)
+        assert res.shape == (3, 3)
+        assert res.dtype == dtype
+        assert np.all(res == 0)
+        # invalid box angles
+        box = [1, 1, 1, 40, 40, 90]
+        res = mdamath.triclinic_vectors(box, dtype=dtype)
+        assert res.shape == (3, 3)
+        assert res.dtype == dtype
+        assert np.all(res == 0)
+        # invalid box lengths:
+        box = [-1, 1, 1, 70, 80, 90]
+        res = mdamath.triclinic_vectors(box, dtype=dtype)
+        assert res.shape == (3, 3)
+        assert res.dtype == dtype
+        assert np.all(res == 0)
+
+    def test_triclinic_vectors_box_cycle(self):
+        max_error = 0.0
+        for a in range(10, 91, 10):
+            for b in range(10, 91, 10):
+                for g in range(10, 91, 10):
+                    ref = np.array([1, 1, 1, a, b, g], dtype=np.float32)
+                    res = mdamath.triclinic_box(*mdamath.triclinic_vectors(ref))
+                    if not np.all(res == 0.0):
+                        assert_almost_equal(res, ref, 5)
+
+    @pytest.mark.parametrize('angles', ([70, 70, 70],
+                                        [70, 70, 90],
+                                        [70, 90, 70],
+                                        [90, 70, 70],
+                                        [70, 90, 90],
+                                        [90, 70, 90],
+                                        [90, 90, 70]))
+    def test_triclinic_vectors_box_cycle_exact(self, angles):
+        # These cycles were inexact prior to PR #2201
+        ref = np.array([10.1, 10.1, 10.1] + angles, dtype=np.float32)
+        res = mdamath.triclinic_box(*mdamath.triclinic_vectors(ref))
+        assert_equal(res, ref)
 
     @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
     @pytest.mark.parametrize('angles',
@@ -320,6 +396,15 @@ class TestMatrixOperations(object):
         res = mdamath.triclinic_box(*tri_vecs)
         assert_array_equal(res, ref)
         assert res.dtype == ref.dtype
+
+    @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
+    @pytest.mark.parametrize('angles',
+                             comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
+    def test_box_volume(self, lengths, angles):
+        box = np.array(lengths + angles, dtype=np.float32)
+        assert_almost_equal(mdamath.box_volume(box),
+                            np.linalg.det(self.ref_trivecs(box)),
+                            decimal=5)
 
     def test_sarrus_det(self):
         comb = comb_wr(np.linspace(-133.7, 133.7, num=5), 9)
