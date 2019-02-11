@@ -38,7 +38,7 @@ Enhancements
 Changes
   * added official support for Python 3.7 (PR #1963)
   * stopped official support of Python 3.4 (#2066, PR #2174)
-  * In lim.mdamath, calculations within triclinic_box(), triclinic_vectors(),
+  * In lib.mdamath, calculations within triclinic_box(), triclinic_vectors(),
     and box_volume() are performed in double precision. If a supplied box is
     invalid, an all-zero array or zero is returned, respectively. (Issue #2200,
     PR #2201)
