@@ -31,7 +31,7 @@ typedef float coordinate[3];
   #define USED_OPENMP 0
 #endif
 
-static void minimum_image(double *x, float *box, float *inverse_box)
+static void minimum_image(double* x, float* box, float* inverse_box)
 {
   int i;
   double s;
@@ -43,93 +43,317 @@ static void minimum_image(double *x, float *box, float *inverse_box)
   }
 }
 
-static void minimum_image_triclinic(double *dx, coordinate* box)
+static void minimum_image_triclinic(double* dx, float* box)
 {
-  // Minimum image convention for triclinic systems, modelled after domain.cpp in LAMMPS
-  // Assumes that there is a maximum separation of 1 box length (enforced in dist functions
-  // by moving all particles to inside the box before calculating separations)
-  // Requires a box
-  // Assumes box having zero values for box[0][1], box[0][2] and box [1][2]
-  double dmin[3], rx[3], ry[3], rz[3];
-  double min = FLT_MAX, d;
-  int i, x, y, z;
-
-  for (x = -1; x < 2; ++x) {
-    rx[0] = dx[0] + box[0][0] * (float)x;
-    rx[1] = dx[1];
-    rx[2] = dx[2];
-    for (y = -1; y < 2; ++y) {
-      ry[0] = rx[0] + box[1][0] * (float)y;
-      ry[1] = rx[1] + box[1][1] * (float)y;
-      ry[2] = rx[2];
-      for (z = -1; z < 2; ++z) {
-        rz[0] = ry[0] + box[2][0] * (float)z;
-        rz[1] = ry[1] + box[2][1] * (float)z;
-        rz[2] = ry[2] + box[2][2] * (float)z;
-        d = rz[0]*rz[0] + rz[1]*rz[1] + rz[2] * rz[2];
-        if (d < min) {
-          for (i=0; i<3; ++i){
-            min = d;
-            dmin[i] = rz[i];
-          }
+   /*
+    * Minimum image convention for triclinic systems, modelled after domain.cpp
+    * in LAMMPS.
+    * Assumes that there is a maximum separation of 1 box length (enforced in
+    * dist functions by moving all particles to inside the box before
+    * calculating separations).
+    * Assumes box having zero values for box[1], box[2] and box[5]:
+    *   /  a_x   0    0   \                 /  0    1    2  \
+    *   |  b_x  b_y   0   |       indices:  |  3    4    5  |
+    *   \  c_x  c_y  c_z  /                 \  6    7    8  /
+    */
+    double dx_min[3] = {0.0, 0.0, 0.0};
+    double dsq_min = FLT_MAX;
+    double dsq;
+    double rx;
+    double ry[2];
+    double rz[3];
+    int ix, iy, iz;
+    for (ix = -1; ix < 2; ++ix) {
+        rx = dx[0] + box[0] * ix;
+        for (iy = -1; iy < 2; ++iy) {
+            ry[0] = rx + box[3] * iy;
+            ry[1] = dx[1] + box[4] * iy;
+            for (iz = -1; iz < 2; ++iz) {
+                rz[0] = ry[0] + box[6] * iz;
+                rz[1] = ry[1] + box[7] * iz;
+                rz[2] = dx[2] + box[8] * iz;
+                dsq = rz[0] * rz[0] + rz[1] * rz[1] + rz[2] * rz[2];
+                if (dsq < dsq_min) {
+                    dsq_min = dsq;
+                    dx_min[0] = rz[0];
+                    dx_min[1] = rz[1];
+                    dx_min[2] = rz[2];
+                }
+            }
         }
-      }
     }
-  }
-  for (i =0; i<3; ++i) {
-    dx[i] = dmin[i];
-  }
+    dx[0] = dx_min[0];
+    dx[1] = dx_min[1];
+    dx[2] = dx_min[2];
 }
 
-static void _ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse)
+static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
 {
-  int i, s[3];
-  // Moves all coordinates to within the box boundaries for a orthogonal box
+   /*
+    * Moves all coordinates to within the box boundaries for an orthogonal box.
+    *
+    * This routine first shifts coordinates by at most one box if necessary.
+    * If that is not enough, the number of required box shifts is computed and
+    * a multi-box shift is applied instead. The single shift is faster, usually
+    * enough and more accurate since the estimation of the number of required
+    * box shifts is error-prone if particles reside exactly on a box boundary.
+    * In order to guarantee that coordinates lie strictly within the primary
+    * image, multi-box shifts are always checked for accuracy and a subsequent
+    * single-box shift is applied where necessary.
+    */
+
+    // nothing to do if the box is all-zeros:
+    if (!box[0] && !box[1] && !box[2]) {
+        return;
+    }
+
+    int i, j, s;
+    float crd;
+    // inverse box for multi-box shifts:
+    const double inverse_box[3] = {1.0 / (double) box[0], \
+                                   1.0 / (double) box[1], \
+                                   1.0 / (double) box[2]};
+
+   /*
+    * NOTE FOR DEVELOPERS:
+    * The order of operations matters due to numerical precision. A coordinate
+    * residing just below the lower bound of the box might get shifted exactly
+    * to the upper bound!
+    * Example: -0.0000001 + 10.0 == 10.0 (in single precision)
+    * It is therefore important to *first* check for the lower bound and
+    * afterwards *always* for the upper bound.
+    */
+
 #ifdef PARALLEL
-#pragma omp parallel for private(i, s) shared(coords)
+#pragma omp parallel for private(i, j, s, crd) shared(coords)
 #endif
-  for (i=0; i < numcoords; i++){
-    s[0] = floor(coords[i][0] * box_inverse[0]);
-    s[1] = floor(coords[i][1] * box_inverse[1]);
-    s[2] = floor(coords[i][2] * box_inverse[2]);
-    coords[i][0] -= s[0] * box[0];
-    coords[i][1] -= s[1] * box[1];
-    coords[i][2] -= s[2] * box[2];
-  }
+    for (i=0; i < numcoords; i++) {
+        for (j=0; j < 3; j++) {
+            crd = coords[i][j];
+            if (crd < 0.0f) {
+                crd += box[j];
+                // check if multi-box shifts are required:
+                if (crd < 0.0f) {
+                    s = floor(coords[i][j] * inverse_box[j]);
+                    coords[i][j] -= s * box[j];
+                    // multi-box shifts might be inexact, so check again:
+                    if (coords[i][j] < 0.0f) {
+                        coords[i][j] += box[j];
+                    }
+                }
+                else{
+                    coords[i][j] = crd;
+                }
+            }
+            // Don't put an "else" before this! (see note)
+            if (crd >= box[j]) {
+                crd -= box[j];
+                // check if multi-box shifts are required:
+                if (crd >= box[j]) {
+                    s = floor(coords[i][j] * inverse_box[j]);
+                    coords[i][j] -= s * box[j];
+                    // multi-box shifts might be inexact, so check again:
+                    if (coords[i][j] >= box[j]) {
+                        coords[i][j] -= box[j];
+                    }
+                }
+                else{
+                    coords[i][j] = crd;
+                }
+            }
+        }
+    }
 }
 
-static void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
+static void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
 {
-  int i, s;
-  // Inverse of matrix box (here called "m")
-  //   [           1/m00                 ,        0      ,   0  ]
-  //   [        -m10/(m00*m11)           ,      1/m11    ,   0  ]
-  //   [(m10*m21/(m00*m11) - m20/m00)/m22, -m21/(m11*m22), 1/m22]
-  float bi00 = box_inverse[0];
-  float bi11 = box_inverse[1];
-  float bi22 = box_inverse[2];
-  float bi01 = -box[1][0]*bi00*bi11;
-  float bi02 = (box[1][0]*box[2][1]*bi11 - box[2][0])*bi00*bi22;
-  float bi12 = -box[2][1]*bi11*bi22;
-  // Moves all coordinates to within the box boundaries for a triclinic box
-  // Assumes box having zero values for box[0][1], box[0][2] and box [1][2]
+   /* Moves all coordinates to within the box boundaries for a triclinic box.
+    * Assumes that the box has zero values for box[1], box[2] and box[5]:
+    *   [ a_x,   0,   0 ]                 [ 0, 1, 2 ]
+    *   [ b_x, b_y,   0 ]       indices:  [ 3, 4, 5 ]
+    *   [ c_x, c_y, c_z ]                 [ 6, 7, 8 ]
+    *
+    * Inverse of matrix box (here called "m"):
+    *   [                       1/m0,           0,    0 ]
+    *   [                -m3/(m0*m4),        1/m4,    0 ]
+    *   [ (m3*m7/(m0*m4) - m6/m0)/m8, -m7/(m4*m8), 1/m8 ]
+    *
+    * This routine first shifts coordinates by at most one box if necessary.
+    * If that is not enough, the number of required box shifts is computed and
+    * a multi-box shift is applied instead. The single shift is faster, usually
+    * enough and more accurate since the estimation of the number of required
+    * box shifts is error-prone if particles reside exactly on a box boundary.
+    * In order to guarantee that coordinates lie strictly within the primary
+    * image, multi-box shifts are always checked for accuracy and a subsequent
+    * single-box shift is applied where necessary.
+    */
+
+    // nothing to do if the box diagonal is all-zeros:
+    if (!box[0] && !box[4] && !box[8]) {
+        return;
+    }
+
+    int i, s, msr;
+    float crd[3];
+    // constants for multi-box shifts:
+    const double bi0 = 1.0 / (double) box[0];
+    const double bi4 = 1.0 / (double) box[4];
+    const double bi8 = 1.0 / (double) box[8];
+    const double bi3 = -box[3] * bi0 * bi4;
+    const double bi6 = (-bi3 * box[7] - box[6] * bi0) * bi8;
+    const double bi7 = -box[7] * bi4 * bi8;
+    // variables and constants for single box shifts:
+    double lbound;
+    double ubound;
+    const double a_ax_yfactor = (double) box[3] * bi4;;
+    const double a_ax_zfactor = (double) box[6] * bi8;
+    const double b_ax_zfactor = (double) box[7] * bi8;
+
+
+   /*
+    * NOTE FOR DEVELOPERS:
+    * The order of operations matters due to numerical precision. A coordinate
+    * residing just below the lower bound of the box might get shifted exactly
+    * to the upper bound!
+    * Example: -0.0000001 + 10.0 == 10.0 (in single precision)
+    * It is therefore important to *first* check for the lower bound and
+    * afterwards *always* for the upper bound.
+    */
+
 #ifdef PARALLEL
-#pragma omp parallel for private(i, s) shared(coords)
+#pragma omp parallel for private(i, s, msr, crd, lbound, ubound) shared(coords)
 #endif
-  for (i=0; i < numcoords; i++){
-    // translate coords[i] to central cell along c-axis
-    s = floor(coords[i][2]*bi22);
-    coords[i][2] -= s * box[2][2];
-    coords[i][1] -= s * box[2][1];
-    coords[i][0] -= s * box[2][0];
-    // translate remainder of coords[i] to central cell along b-axis
-    s = floor(coords[i][1]*bi11 + coords[i][2]*bi12);
-    coords[i][1] -= s * box[1][1];
-    coords[i][0] -= s * box[1][0];
-    // translate remainder of coords[i] to central cell along a-axis
-    s = floor(coords[i][0]*bi00 + coords[i][1]*bi01 + coords[i][2]*bi02);
-    coords[i][0] -= s * box[0][0];
-  }
+    for (i = 0; i < numcoords; i++){
+        msr = 0;
+        crd[0] = coords[i][0];
+        crd[1] = coords[i][1];
+        crd[2] = coords[i][2];
+        // translate coords[i] to central cell along c-axis
+        if (crd[2] < 0.0f) {
+            crd[0] +=  box[6];
+            crd[1] +=  box[7];
+            crd[2] +=  box[8];
+            // check if multi-box shifts are required:
+            if (crd[2] < 0.0f) {
+                msr = 1;
+            }
+        }
+        // Don't put an "else" before this! (see note)
+        if (crd[2] >= box[8]) {
+            crd[0] -=  box[6];
+            crd[1] -=  box[7];
+            crd[2] -=  box[8];
+            // check if multi-box shifts are required:
+            if (crd[2] >= box[8]) {
+               msr = 1;
+            }
+        }
+        if (!msr) {
+            // translate remainder of crd to central cell along b-axis
+            lbound = crd[2] * b_ax_zfactor;
+            ubound = lbound + box[4];
+            if (crd[1] < lbound) {
+                crd[0] += box[3];
+                crd[1] += box[4];
+                // check if multi-box shifts are required:
+                if (crd[1] < lbound) {
+                    msr = 1;
+                }
+            }
+            // Don't put an "else" before this! (see note)
+            if (crd[1] >= ubound) {
+                crd[0] -= box[3];
+                crd[1] -= box[4];
+                // check if multi-box shifts are required:
+                if (crd[1] >= ubound) {
+                    msr = 1;
+                }
+            }
+            if (!msr) {
+                // translate remainder of crd to central cell along a-axis
+                lbound = crd[1] * a_ax_yfactor + crd[2] * a_ax_zfactor;
+                ubound = lbound + box[0];
+                if (crd[0] < lbound) {
+                    crd[0] += box[0];
+                    // check if multi-box shifts are required:
+                    if (crd[0] < lbound) {
+                        msr = 1;
+                    }
+                }
+                // Don't put an "else" before this! (see note)
+                if (crd[0] >= ubound) {
+                    crd[0] -= box[0];
+                    // check if multi-box shifts are required:
+                    if (crd[0] >= ubound) {
+                        msr = 1;
+                    }
+                }
+            }
+        }
+        // multi-box shifts required?
+        if (msr) {
+            // translate coords[i] to central cell along c-axis
+            s = floor(coords[i][2] * bi8);
+            coords[i][2] -= s * box[8];
+            coords[i][1] -= s * box[7];
+            coords[i][0] -= s * box[6];
+            // translate remainder of coords[i] to central cell along b-axis
+            s = floor(coords[i][1] * bi4 + coords[i][2] * bi7);
+            coords[i][1] -= s * box[4];
+            coords[i][0] -= s * box[3];
+            // translate remainder of coords[i] to central cell along a-axis
+            s = floor(coords[i][0] * bi0 + coords[i][1] * bi3 + \
+                      coords[i][2] * bi6);
+            coords[i][0] -= s * box[0];
+            // multi-box shifts might be inexact, so check again:
+            crd[0] = coords[i][0];
+            crd[1] = coords[i][1];
+            crd[2] = coords[i][2];
+            // translate coords[i] to central cell along c-axis
+            if (crd[2] < 0.0f) {
+                crd[0] +=  box[6];
+                crd[1] +=  box[7];
+                crd[2] +=  box[8];
+            }
+            // Don't put an "else" before this! (see note)
+            if (crd[2] >= box[8]) {
+                crd[0] -=  box[6];
+                crd[1] -=  box[7];
+                crd[2] -=  box[8];
+            }
+            // translate remainder of crd to central cell along b-axis
+            lbound = crd[2] * b_ax_zfactor;
+            ubound = lbound + box[4];
+            if (crd[1] < lbound) {
+                crd[0] += box[3];
+                crd[1] += box[4];
+            }
+            // Don't put an "else" before this! (see note)
+            if (crd[1] >= ubound) {
+                crd[0] -= box[3];
+                crd[1] -= box[4];
+            }
+            // translate remainder of crd to central cell along a-axis
+            lbound = crd[1] * a_ax_yfactor + crd[2] * a_ax_zfactor;
+            ubound = lbound + box[0];
+            if (crd[0] < lbound) {
+                crd[0] += box[0];
+            }
+            // Don't put an "else" before this! (see note)
+            if (crd[0] >= ubound) {
+                crd[0] -= box[0];
+            }
+            coords[i][0] = crd[0];
+            coords[i][1] = crd[1];
+            coords[i][2] = crd[2];
+        }
+        // single shift was sufficient, apply the result:
+        else {
+            coords[i][0] = crd[0];
+            coords[i][1] = crd[1];
+            coords[i][2] = crd[2];
+        }
+    }
 }
 
 static void _calc_distance_array(coordinate* ref, int numref, coordinate* conf,
@@ -182,19 +406,15 @@ static void _calc_distance_array_ortho(coordinate* ref, int numref, coordinate* 
 
 static void _calc_distance_array_triclinic(coordinate* ref, int numref,
                                            coordinate* conf, int numconf,
-                                           coordinate* box, double* distances)
+                                           float* box, double* distances)
 {
   int i, j;
   double dx[3];
-  float box_inverse[3];
   double rsq;
 
-  box_inverse[0] = 1.0 / box[0][0];
-  box_inverse[1] = 1.0 / box[1][1];
-  box_inverse[2] = 1.0 / box[2][2];
   // Move coords to inside box
-  _triclinic_pbc(ref, numref, box, box_inverse);
-  _triclinic_pbc(conf, numconf, box, box_inverse);
+  _triclinic_pbc(ref, numref, box);
+  _triclinic_pbc(conf, numconf, box);
 
 #ifdef PARALLEL
 #pragma omp parallel for private(i, j, dx, rsq) shared(distances)
@@ -211,8 +431,8 @@ static void _calc_distance_array_triclinic(coordinate* ref, int numref,
   }
 }
 
-static void _calc_self_distance_array(coordinate* ref, int numref, double* distances,
-                                      int distnum)
+static void _calc_self_distance_array(coordinate* ref, int numref,
+                                      double* distances)
 {
   int i, j, distpos;
   double dx[3];
@@ -238,8 +458,8 @@ static void _calc_self_distance_array(coordinate* ref, int numref, double* dista
   }
 }
 
-static void _calc_self_distance_array_ortho(coordinate* ref, int numref, float* box,
-                                            double* distances, int distnum)
+static void _calc_self_distance_array_ortho(coordinate* ref, int numref,
+                                            float* box, double* distances)
 {
   int i, j, distpos;
   double dx[3];
@@ -272,19 +492,13 @@ static void _calc_self_distance_array_ortho(coordinate* ref, int numref, float* 
 }
 
 static void _calc_self_distance_array_triclinic(coordinate* ref, int numref,
-                                                coordinate* box, double *distances,
-                                                int distnum)
+                                                float* box, double *distances)
 {
   int i, j, distpos;
   double dx[3];
   double rsq;
-  float box_inverse[3];
 
-  box_inverse[0] = 1.0 / box[0][0];
-  box_inverse[1] = 1.0 / box[1][1];
-  box_inverse[2] = 1.0 / box[2][2];
-
-  _triclinic_pbc(ref, numref, box, box_inverse);
+  _triclinic_pbc(ref, numref, box);
 
   distpos = 0;
 
@@ -307,7 +521,7 @@ static void _calc_self_distance_array_triclinic(coordinate* ref, int numref,
   }
 }
 
-void _coord_transform(float coords[][3], int numCoords, float box[][3])
+void _coord_transform(coordinate* coords, int numCoords, double* box)
 {
   int i, j, k;
   float newpos[3];
@@ -323,7 +537,7 @@ void _coord_transform(float coords[][3], int numCoords, float box[][3])
     newpos[2] = 0.0;
     for (j=0; j<3; j++){
       for (k=0; k<3; k++){
-        newpos[j] += coords[i][k] * box[k][j];
+        newpos[j] += coords[i][k] * box[3 * k + j];
       }
     }
     coords[i][0] = newpos[0];
@@ -377,20 +591,15 @@ static void _calc_bond_distance_ortho(coordinate* atom1, coordinate* atom2,
   }
 }
 static void _calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2,
-                                          int numatom, coordinate* box,
+                                          int numatom, float* box,
                                           double* distances)
 {
   int i;
   double dx[3];
-  float box_inverse[3];
   double rsq;
 
-  box_inverse[0] = 1.0/box[0][0];
-  box_inverse[1] = 1.0/box[1][1];
-  box_inverse[2] = 1.0/box[2][2];
-
-  _triclinic_pbc(atom1, numatom, box, box_inverse);
-  _triclinic_pbc(atom2, numatom, box, box_inverse);
+  _triclinic_pbc(atom1, numatom, box);
+  _triclinic_pbc(atom2, numatom, box);
 
 #ifdef PARALLEL
 #pragma omp parallel for private(i, dx, rsq) shared(distances)
@@ -482,21 +691,16 @@ static void _calc_angle_ortho(coordinate* atom1, coordinate* atom2,
 
 static void _calc_angle_triclinic(coordinate* atom1, coordinate* atom2,
                                   coordinate* atom3, int numatom,
-                                  coordinate* box, double* angles)
+                                  float* box, double* angles)
 {
   // Triclinic version of min image aware angle calculate, see above
   int i;
   double rji[3], rjk[3];
   double x, y, xp[3];
-  float box_inverse[3];
 
-  box_inverse[0] = 1.0/box[0][0];
-  box_inverse[1] = 1.0/box[1][1];
-  box_inverse[2] = 1.0/box[2][2];
-
-  _triclinic_pbc(atom1, numatom, box, box_inverse);
-  _triclinic_pbc(atom2, numatom, box, box_inverse);
-  _triclinic_pbc(atom3, numatom, box, box_inverse);
+  _triclinic_pbc(atom1, numatom, box);
+  _triclinic_pbc(atom2, numatom, box);
+  _triclinic_pbc(atom3, numatom, box);
 
 #ifdef PARALLEL
 #pragma omp parallel for private(i, rji, rjk, x, xp, y) shared(angles)
@@ -628,20 +832,15 @@ static void _calc_dihedral_ortho(coordinate* atom1, coordinate* atom2,
 
 static void _calc_dihedral_triclinic(coordinate* atom1, coordinate* atom2,
                                      coordinate* atom3, coordinate* atom4,
-                                     int numatom, coordinate* box, double* angles)
+                                     int numatom, float* box, double* angles)
 {
   int i;
   double va[3], vb[3], vc[3];
-  float box_inverse[3];
 
-  box_inverse[0] = 1.0/box[0][0];
-  box_inverse[1] = 1.0/box[1][1];
-  box_inverse[2] = 1.0/box[2][2];
-
-  _triclinic_pbc(atom1, numatom, box, box_inverse);
-  _triclinic_pbc(atom2, numatom, box, box_inverse);
-  _triclinic_pbc(atom3, numatom, box, box_inverse);
-  _triclinic_pbc(atom4, numatom, box, box_inverse);
+  _triclinic_pbc(atom1, numatom, box);
+  _triclinic_pbc(atom2, numatom, box);
+  _triclinic_pbc(atom3, numatom, box);
+  _triclinic_pbc(atom4, numatom, box);
 
 #ifdef PARALLEL
 #pragma omp parallel for private(i, va, vb, vc) shared(angles)
