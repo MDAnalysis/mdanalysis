@@ -32,14 +32,14 @@ Enhancements
     across periodic boundaries whole (Issues #1004 and #1185, PR #2189)
   * lib.mdamath.make_whole() now returns the resulting coordinates and is able
     to operate out-of-place, i.e., without modifying atom coordinates (PR #2189)
-  * lim.mdamath.triclinic_vectors() got an optional argument allowing to specify
+  * lib.mdamath.triclinic_vectors() got an optional argument allowing to specify
     the dtype of the returned box matrix. (Issue #2200, PR #2201)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
   * stopped official support of Python 3.4 (#2066, PR #2174)
   * In lim.mdamath, calculations within triclinic_box(), triclinic_vectors(),
-    and box_volume() are performed in double precision. If a supplied box bux is
+    and box_volume() are performed in double precision. If a supplied box is
     invalid, an all-zero array or zero is returned, respectively. (Issue #2200,
     PR #2201)
 
