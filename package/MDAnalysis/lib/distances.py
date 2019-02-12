@@ -929,8 +929,8 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
             distances = dist[mask]
     if return_distances:
         return pairs, distances
-    else:
-        return pairs
+    
+    return pairs
 
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
@@ -1002,8 +1002,8 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
                     pairs, distances = pairs[idx], distances[idx]
     if return_distances:
         return pairs, distances
-    else:
-        return pairs
+    
+    return pairs
 
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
@@ -1094,8 +1094,8 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
 
     if return_distances:
         return pairs, distances
-    else:
-        return pairs
+    
+    return pairs
 
 
 @check_coords('coords')
