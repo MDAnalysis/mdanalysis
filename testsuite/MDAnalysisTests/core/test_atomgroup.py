@@ -561,7 +561,7 @@ class TestWrap(object):
         """Check that a set of coordinates are 0.0 <= r <= box"""
         box = u.dimensions[:3]
 
-        return (coords >= 0.0).all() and (coords <= box).all()
+        return (coords >= 0.0).all() and (coords < box).all()
 
     def test_wrap_atoms(self, u):
         ag = u.atoms[100:200]
@@ -573,15 +573,15 @@ class TestWrap(object):
         ag = u.atoms[:100]
         ag.wrap(compound='group')
 
-        cen = ag.center_of_mass()
+        cen = ag.center_of_mass(pbc=True, compound='group')
 
         assert self._in_box(cen, u)
 
     def test_wrap_residues(self, u):
-        ag = u.atoms[300:400]
+        ag = u.atoms[300:400].residues
         ag.wrap(compound='residues')
 
-        cen = np.vstack([r.atoms.center_of_mass() for r in ag.residues])
+        cen = ag.center_of_mass(pbc=True, compound='residues')
 
         assert self._in_box(cen, u)
 
@@ -589,7 +589,7 @@ class TestWrap(object):
         ag = u.atoms[1000:1200]
         ag.wrap(compound='segments')
 
-        cen = np.vstack([s.atoms.center_of_mass() for s in ag.segments])
+        cen = ag.center_of_mass(pbc=True, compound='segments')
 
         assert self._in_box(cen, u)
 
@@ -597,7 +597,7 @@ class TestWrap(object):
         ag = u.atoms[:250]
         ag.wrap(compound='fragments')
 
-        cen = np.vstack([f.center_of_mass() for f in ag.fragments])
+        cen = ag.center_of_mass(pbc=True, compound='fragments')
 
         assert self._in_box(cen, u)
 
