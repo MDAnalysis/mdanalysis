@@ -1249,18 +1249,20 @@ class GroupBase(_MutableBase):
         # Try and auto detect box dimensions:
         if box is None:
             box = self.dimensions
-        if not np.all(box > 0.0):
-            raise ValueError("Invalid box: Not all box dimensions are "
-                             "positive. You can specify a valid box using the "
-                             "'box' argument.")
+        else:
+            box = np.asarray(box, dtype=np.float32)
+        if not np.all(box > 0.0) or box.shape != (6,):
+            raise ValueError("Invalid box: Box has invalid shape or not all "
+                             "box dimensions are positive. You can specify a "
+                             "valid box using the 'box' argument.")
 
         # no matter what kind of group we have, we need to work on its (unique)
         # atoms:
-        if self.isunique:
-            atoms = self.atoms
-        else:
-            atoms = self.atoms.unique
-            restore_mask = self.atoms._unique_restore_mask
+        atoms = self.atoms
+        if not self.isunique:
+            _atoms = atoms.unique
+            restore_mask = atoms._unique_restore_mask
+            atoms = _atoms
 
         comp = compound.lower()
         if comp not in ('atoms', 'group', 'segments', 'residues', 'molecules', \
@@ -1297,6 +1299,7 @@ class GroupBase(_MutableBase):
                                          "of the group is zero.")
                 else:  # ctr == 'cog'
                     ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
+                ctrpos = ctrpos.astype(np.float32, copy=False)
                 target = distances.apply_PBC(ctrpos, box)
                 positions += target - ctrpos
             else:
@@ -1327,6 +1330,7 @@ class GroupBase(_MutableBase):
                                          "".format(comp))
                 else:  # ctr == 'cog'
                     ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
+                ctrpos = ctrpos.astype(np.float32, copy=False)
                 target = distances.apply_PBC(ctrpos, box)
                 shifts = target - ctrpos
 
@@ -1454,6 +1458,7 @@ class GroupBase(_MutableBase):
                     refpos /= total_mass
                 else:  # ref == 'cog'
                     refpos = positions.mean(axis=0)
+                refpos = refpos.astype(np.float32, copy=False)
                 target = distances.apply_PBC(refpos, self.dimensions)
                 positions += target - refpos
         # We need to split the group into compounds:
@@ -1492,6 +1497,7 @@ class GroupBase(_MutableBase):
                         refpos /= total_mass
                     else:  # ref == 'cog'
                         refpos = positions[mask].mean(axis=0)
+                    refpos = refpos.astype(np.float32, copy=False)
                     target = distances.apply_PBC(refpos, self.dimensions)
                     positions[mask] += target - refpos
         if inplace:
