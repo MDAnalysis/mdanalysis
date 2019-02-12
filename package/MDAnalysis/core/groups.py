@@ -1254,11 +1254,13 @@ class GroupBase(_MutableBase):
                              "positive. You can specify a valid box using the "
                              "'box' argument.")
 
-        # no matter what kind of group we have, we need to work on its atoms:
-        # call self.unique first, this potentially populates the unique caches
-        # of self.atoms
-        unique_atoms = self.unique.atoms
-        atoms = self.atoms
+        # no matter what kind of group we have, we need to work on its (unique)
+        # atoms:
+        if self.isunique:
+            atoms = self.atoms
+        else:
+            atoms = self.atoms.unique
+            restore_mask = self.atoms._unique_restore_mask
 
         comp = compound.lower()
         if comp not in ('atoms', 'group', 'segments', 'residues', 'molecules', \
@@ -1271,64 +1273,60 @@ class GroupBase(_MutableBase):
         if len(atoms) == 0:
             return np.zeros((0, 3), dtype=np.float32)
 
-        if comp == "atoms" or len(unique_atoms) == 1:
-            positions = distances.apply_PBC(unique_atoms.positions, box)
+        if comp == "atoms" or len(atoms) == 1:
+            positions = distances.apply_PBC(atoms.positions, box)
         else:
             ctr = center.lower()
             if ctr  == 'com':
                 # Don't use hasattr(self, 'masses') because that's incredibly
                 # slow for ResidueGroups or SegmentGroups
-                if not hasattr(unique_atoms, 'masses'):
+                if not hasattr(self._u._topology, 'masses'):
                     raise NoDataError("Cannot perform wrap with center='com', "
                                       "this requires masses.")
             elif ctr != 'cog':
                 raise ValueError("Unrecognized center definition '{}'. Please "
                                  "use one of 'com' or 'cog'.".format(center))
-            positions = unique_atoms.positions
+            positions = atoms.positions
             if comp == 'group':
                 # compute and apply required shift:
                 if ctr == 'com':
-                    ctrpos = unique_atoms.center_of_mass(pbc=False,
-                                                         compound=comp)
+                    ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
                     if np.isnan(ctrpos[0]):
                         raise ValueError("Cannot use compound='group' with "
                                          "center='com' because the total mass "
                                          "of the group is zero.")
                 else:  # ctr == 'cog'
-                    ctrpos = unique_atoms.center_of_geometry(pbc=False,
-                                                             compound=comp)
+                    ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
                 target = distances.apply_PBC(ctrpos, box)
                 positions += target - ctrpos
             else:
                 if comp == 'segments':
-                    compound_indices = unique_atoms.segindices
+                    compound_indices = atoms.segindices
                 elif comp == 'residues':
-                    compound_indices = unique_atoms.resindices
+                    compound_indices = atoms.resindices
                 elif comp == 'molecules':
                     try:
-                        compound_indices = unique_atoms.molnums
+                        compound_indices = atoms.molnums
                     except AttributeError:
                         raise NoDataError("Cannot use compound='molecules', "
                                           "this requires molnums.")
                 else:  # comp == 'fragments'
                     try:
-                        compound_indices = unique_atoms.fragindices
+                        compound_indices = atoms.fragindices
                     except NoDataError:
                         raise NoDataError("Cannot use compound='fragments', "
                                           "this requires bonds.")
 
                 # compute required shifts:
                 if ctr == 'com':
-                    ctrpos = unique_atoms.center_of_mass(pbc=False,
-                                                         compound=comp)
+                    ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
                     if np.any(np.isnan(ctrpos)):
                         raise ValueError("Cannot use compound='{0}' with "
                                          "center='com' because the total mass "
                                          "of at least one of the {0} is zero."
                                          "".format(comp))
                 else:  # ctr == 'cog'
-                    ctrpos = unique_atoms.center_of_geometry(pbc=False,
-                                                             compound=comp)
+                    ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
                 target = distances.apply_PBC(ctrpos, box)
                 shifts = target - ctrpos
 
@@ -1341,9 +1339,9 @@ class GroupBase(_MutableBase):
                     shift_idx += 1
 
         if inplace:
-            unique_atoms.positions = positions
-        if not atoms.isunique:
-            positions = positions[atoms._unique_restore_mask]
+            atoms.positions = positions
+        if not self.isunique:
+            positions = positions[restore_mask]
         return positions
 
     def unwrap(self, compound='fragments', reference='com', inplace=True):
