@@ -68,7 +68,7 @@ def test_transform_StoR_pass(coord_dtype):
     box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
     s = np.array([[0.5, -0.1, 0.5]], dtype=coord_dtype)
 
-    original_r = np.array([[ 5.75,  0.36066014, 0.75000012]], dtype=np.float32)
+    original_r = np.array([[ 5.75,  0.36066014, 0.75]], dtype=np.float32)
 
     test_r = distances.transform_StoR(s, box)
 
@@ -822,6 +822,54 @@ class Test_apply_PBC(object):
         r_in_cell = distances.apply_PBC(r, box)
 
         assert_almost_equal([5.75, 7.3606596, 0.75], r_in_cell, self.prec)
+
+    def test_coords_strictly_in_central_image_ortho(self, backend):
+        box = np.array([10.1, 10.1, 10.1, 90.0, 90.0, 90.0], dtype=np.float32)
+        # coordinates just below lower or exactly at the upper box boundaries:
+        coords = np.array([[-1.0e-7, -1.0e-7, -1.0e-7],
+                           [-1.0e-7, -1.0e-7,  box[2]],
+                           [-1.0e-7,  box[1], -1.0e-7],
+                           [ box[0], -1.0e-7, -1.0e-7],
+                           [ box[0],  box[1], -1.0e-7],
+                           [ box[0], -1.0e-7,  box[2]],
+                           [-1.0e-7,  box[1],  box[2]],
+                           [ box[0],  box[1],  box[2]]], dtype=np.float32)
+        # Check that all test coordinates actually lie below the lower or
+        # exactly at the upper box boundary:
+        assert np.all((coords < 0.0) | (coords == box[:3]))
+        res = distances.apply_PBC(coords, box, backend=backend)
+        # Assert all result coordinates lie strictly within the primary image:
+        assert np.all(res >= 0.0)
+        assert np.all(res < box[:3])
+
+    def test_coords_in_central_image_tric(self, backend):
+        # Triclinic box corresponding to this box matrix:
+        tbx = np.array([[10.1      ,  0.       ,  0.       ],
+                        [ 1.0100002, 10.1      ,  0.       ],
+                        [ 1.0100006,  1.0100021, 10.1      ]],
+                       dtype=np.float32)
+        box = mdamath.triclinic_box(*tbx)
+        # coordinates just below lower or exactly at the upper box boundaries:
+        coords = np.array([[  -1.0e-7,   -1.0e-7,   -1.0e-7],
+                           [tbx[0, 0],   -1.0e-7,   -1.0e-7],
+                           [   1.01  , tbx[1, 1],   -1.0e-7],
+                           [   1.01  ,    1.01  , tbx[2, 2]],
+                           [tbx[0, 0] + tbx[1, 0], tbx[1, 1], -1.0e-7],
+                           [tbx[0, 0] + tbx[2, 0], 1.01, tbx[2, 2]],
+                           [2.02, tbx[1, 1] + tbx[2, 1], tbx[2, 2]],
+                           [tbx[0, 0] + tbx[1, 0] + tbx[2, 0],
+                            tbx[1, 1] + tbx[2, 1], tbx[2, 2]]],
+                          dtype=np.float32)
+        relcoords = distances.transform_RtoS(coords, box)
+        # Check that all test coordinates actually lie below the lower or
+        # exactly at the upper box boundary:
+        assert np.all((relcoords < 0.0) | (relcoords == 1.0))
+        res = distances.apply_PBC(coords, box, backend=backend)
+        relres = distances.transform_RtoS(res, box)
+        # Assert all result coordinates lie strictly within the primary image:
+        assert np.all(relres >= 0.0)
+        assert np.all(relres < 1.0)
+
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestPeriodicAngles(object):

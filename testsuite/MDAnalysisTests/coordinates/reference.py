@@ -80,7 +80,8 @@ class RefAdK(object):
     # CRYST1 80.017   80.017   80.017  60.00  60.00  90.00
     ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.],
                             dtype=np.float32)
-    ref_volume = 362270.0  # computed with Gromacs
+    #ref_volume = 362270.0  # computed with Gromacs ## NOT EXACT!
+    ref_volume = 362269.520669292
 
 
 class Ref2r9r(object):
