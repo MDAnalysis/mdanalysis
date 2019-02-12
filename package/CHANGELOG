@@ -32,11 +32,17 @@ Enhancements
     across periodic boundaries whole (Issues #1004 and #1185, PR #2189)
   * lib.mdamath.make_whole() now returns the resulting coordinates and is able
     to operate out-of-place, i.e., without modifying atom coordinates (PR #2189)
-  * added return_distances kwarg to self_capped_distance (Issue #2101, PR #2202)  
+  * lib.mdamath.triclinic_vectors() got an optional argument allowing to specify
+    the dtype of the returned box matrix. (Issue #2200, PR #2201)
+  * added return_distances kwarg to self_capped_distance (Issue #2101, PR #2202)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
   * stopped official support of Python 3.4 (#2066, PR #2174)
+  * In lib.mdamath, calculations within triclinic_box(), triclinic_vectors(),
+    and box_volume() are performed in double precision. If a supplied box is
+    invalid, an all-zero array or zero is returned, respectively. (Issue #2200,
+    PR #2201)
 
 Fixes
   * fixed gcc support in MacOS (Issue #2162, PR #2163)
@@ -58,6 +64,10 @@ Fixes
   * Fixed writing CONECT records when writing PDB files that are a
     subsection of original Universe (Issue #2194)
   * PDBReader now correctly reads HEADER information (Issue #2195)
+  * Wrapped coordinates, i.e., coordinates resulting from *Group.wrap(),
+    *Group.pack_into_box(), or lib.distances.apply_PBC() are now guaranteed
+    to lie within the central periodic image (including its lower but
+    *exluding* its upper boundaries) (Issue #2200, PR #2201)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
