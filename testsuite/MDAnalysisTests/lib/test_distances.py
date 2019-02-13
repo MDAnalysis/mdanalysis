@@ -171,14 +171,20 @@ def test_capped_distance_return(npoints, box, query, method, min_cutoff):
 @pytest.mark.parametrize('box', boxes_1)
 @pytest.mark.parametrize('method', method_1)
 @pytest.mark.parametrize('min_cutoff', min_cutoff_1)
-def test_self_capped_distance(npoints, box, method, min_cutoff):
+@pytest.mark.parametrize('ret_dist', (False, True))
+def test_self_capped_distance(npoints, box, method, min_cutoff, ret_dist):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
                          size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
     max_cutoff = 0.2
-    pairs, distance = distances.self_capped_distance(points, max_cutoff,
-                                                     min_cutoff=min_cutoff,
-                                                     box=box, method=method)
+    result = distances.self_capped_distance(points, max_cutoff,
+                                            min_cutoff=min_cutoff, box=box,
+                                            method=method,
+                                            return_distances=ret_dist)
+    if ret_dist:
+        pairs, cdists = result
+    else:
+        pairs = result
     found_pairs, found_distance = [], []
     for i, coord in enumerate(points):
         dist = distances.distance_array(coord, points[i+1:], box=box)
@@ -190,7 +196,21 @@ def test_self_capped_distance(npoints, box, method, min_cutoff):
             j = other_idx + 1 + i
             found_pairs.append((i, j))
             found_distance.append(dist[0, other_idx])
+    # check number of found pairs:
     assert_equal(len(pairs), len(found_pairs))
+    # check pair/distance correspondence:
+    if ret_dist and len(pairs) > 0:
+        # get result pairs and distances in one array:
+        res = np.hstack((pairs.astype(cdists.dtype), cdists[:, None]))
+        # get reference pairs and distances in one array:
+        ref = np.hstack((np.array(found_pairs, dtype=np.float64),
+                         np.array(found_distance, dtype=np.float64)[:, None]))
+        # sort both arrays by column 1 and 0:
+        res = res[res[:, 1].argsort()] # no stable sort needed.
+        res = res[res[:, 0].argsort(kind='mergesort')] # sort must be stable!
+        ref = ref[ref[:, 1].argsort()]
+        ref = ref[ref[:, 0].argsort(kind='mergesort')]
+        assert_almost_equal(res, ref, decimal=5)
 
 
 @pytest.mark.parametrize('box', (None,
