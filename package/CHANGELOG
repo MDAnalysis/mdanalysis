@@ -35,6 +35,11 @@ Enhancements
   * lib.mdamath.triclinic_vectors() got an optional argument allowing to specify
     the dtype of the returned box matrix. (Issue #2200, PR #2201)
   * added return_distances kwarg to self_capped_distance (Issue #2101, PR #2202)
+  * *Group.wrap() now returns wrapped positions and can optionally work
+    out-of-place (Issue #2203, PR #2204)
+  * Improved performance of AtomGroup creation from ResidueGroups and
+    SegmentGroups via ResidueGroup.atoms or SegmentGroup.atoms, respectively.
+    This speeds up all methods using these mechanisms. (Issue #2203, PR #2204)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
@@ -68,6 +73,8 @@ Fixes
     *Group.pack_into_box(), or lib.distances.apply_PBC() are now guaranteed
     to lie within the central periodic image (including its lower but
     *exluding* its upper boundaries) (Issue #2200, PR #2201)
+  * *Group.wrap() is now guaranteed to only work on atoms actually belonging to
+    the calling group. (Issue #2203, PR #2204)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
