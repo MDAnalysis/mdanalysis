@@ -269,9 +269,9 @@ class TransTable(object):
         """
         try:
             return np.concatenate(self._RA[rix])
-        except ValueError:  # six is not iterable, length 1 or empty
-            # don't accidentally send a view!
-            return self._RA[rix].astype(np.int64, copy=True)
+        except ValueError:  # rix is not iterable or empty
+            # don't accidentally return a view!
+            return self._RA[rix].astype(np.intp, copy=True)
 
     def residues2atoms_2d(self, rix):
         """Get atom indices represented by each residue index.
@@ -326,8 +326,9 @@ class TransTable(object):
         """
         try:
             return np.concatenate(self._SR[six])
-        except ValueError:  # six is not iterable, length 1 or empty
-            return self._SR[six].astype(np.int64, copy=True)
+        except ValueError:  # six is not iterable or empty
+            # don't accidentally return a view!
+            return self._SR[six].astype(np.intp, copy=True)
 
     def segments2residues_2d(self, six):
         """Get residue indices represented by each segment index.
