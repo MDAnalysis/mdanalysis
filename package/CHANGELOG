@@ -75,6 +75,7 @@ Fixes
     *exluding* its upper boundaries) (Issue #2200, PR #2201)
   * *Group.wrap() is now guaranteed to only work on atoms actually belonging to
     the calling group. (Issue #2203, PR #2204)
+  * Fixed documentation in analysis/contacts.py
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
