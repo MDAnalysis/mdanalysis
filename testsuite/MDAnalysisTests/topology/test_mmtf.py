@@ -41,17 +41,17 @@ class TestMMTFSkinny(ParserBase):
         'charges', 'names', 'resnames', 'resids', 'resnums',
         'bonds', 'models'
     ]
+    # for all attributes often in MMTF,
+    # check that we get expected error on access
+    # (sort so pytest gets reliable order)
+    missing_attrs = sorted(set(TestMMTFParser.expected_attrs)
+                           - set(expected_attrs))
     guessed_attrs = ['ids', 'masses', 'segids']
     expected_n_atoms = 660
     expected_n_residues = 134
     expected_n_segments = 2
 
-    @pytest.mark.parametrize('attr',
-                             # for all attributes often in MMTF,
-                             # check that we get expected error on access
-                             # (sort so pytest gets reliable order)
-                             sorted({*TestMMTFParser.expected_attrs}
-                                    - {*expected_attrs}))
+    @pytest.mark.parametrize('attr', missing_attrs)
     def test_missing_attribute(self, attr):
         u = mda.Universe(self.ref_filename)
 
