@@ -775,7 +775,9 @@ class Masses(AtomAttr):
         Computes the center of mass of :class:`Atoms<Atom>` in the group.
         Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
-        accordingly.
+        accordingly. If the masses of a compound sum up to zero, the
+        center of mass coordinates of that compound will be ``nan`` (not a
+        number).
 
         Parameters
         ----------
@@ -1457,7 +1459,7 @@ class Molnums(ResidueAttr):
     attrname = 'molnums'
     singular = 'molnum'
     target_classes = [AtomGroup, ResidueGroup, Atom, Residue]
-    dtype = int
+    dtype = np.int64
 
 # segment attributes
 
