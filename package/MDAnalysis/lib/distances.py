@@ -699,12 +699,12 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
             # to avoid failures for very close particles but with
             # larger cutoff
             boxsize = np.maximum(boxsize, 2 * max_cutoff)
-            pseudobox[:3] = 1.2 * boxsize
+            pseudobox[:3] = boxsize + 2.2*max_cutoff
             pseudobox[3:] = 90.
             shiftref, shiftconf = reference.copy(), configuration.copy()
             # Extra padding near the origin
-            shiftref -= lmin - 0.1*boxsize
-            shiftconf -= lmin - 0.1*boxsize
+            shiftref -= lmin - 0.1*max_cutoff
+            shiftconf -= lmin - 0.1*max_cutoff
             gridsearch = FastNS(max_cutoff, shiftconf, box=pseudobox, pbc=False)
             results = gridsearch.search(shiftref)
         else:
