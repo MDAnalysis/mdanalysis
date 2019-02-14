@@ -63,6 +63,7 @@ in MDAnalysis. ::
     from MDAnalysis.analysis import contacts
     from MDAnalysis.tests.datafiles import PSF,DCD
     import matplotlib.pyplot as plt
+    import numpy as np
     # example trajectory (transition of AdK from closed to open)
     u = mda.Universe(PSF,DCD)
     # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and
@@ -84,7 +85,7 @@ in MDAnalysis. ::
     average_contacts = np.mean(ca1.timeseries[:, 1])
     print('average contacts = {}'.format(average_contacts))
     # plot time series q(t)
-    f, ax = plt.subplots()
+    fig, ax = plt.subplots()
     ax.plot(ca1.timeseries[:, 0], ca1.timeseries[:, 1])
     ax.set(xlabel='frame', ylabel='fraction of native contacts',
            title='Native Contacts, average = {:.2f}'.format(average_contacts))
