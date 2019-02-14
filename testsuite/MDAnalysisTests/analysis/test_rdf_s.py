@@ -98,7 +98,7 @@ def test_cdf(rdf):
 
 
 @pytest.mark.parametrize("density, value", [
-    (True, 13275.775528444701),
+    (True, 13275.775440503656),
     (False, 0.021915460340071267)])
 
 def test_density(u, sels, density, value):
