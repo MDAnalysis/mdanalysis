@@ -9,7 +9,7 @@ import MDAnalysis as mda
 from MDAnalysis.core.groups import AtomGroup
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import MMTF, MMTF_gz
+from MDAnalysisTests.datafiles import MMTF, MMTF_gz, MMTF_skinny, MMTF_skinny2
 
 
 class TestMMTFParser(ParserBase):
@@ -31,6 +31,46 @@ class TestMMTFParser_gz(TestMMTFParser):
     expected_n_atoms = 1140
     expected_n_residues = 36
     expected_n_segments = 4
+
+
+class TestMMTFSkinny(ParserBase):
+    parser = mda.topology.MMTFParser.MMTFParser
+    ref_filename = MMTF_skinny
+    expected_attrs = [
+        'names', 'types',
+        'charges', 'names', 'resnames', 'resids', 'resnums',
+        'bonds', 'models'
+    ]
+    # for all attributes often in MMTF,
+    # check that we get expected error on access
+    # (sort so pytest gets reliable order)
+    missing_attrs = sorted(set(TestMMTFParser.expected_attrs)
+                           - set(expected_attrs))
+    guessed_attrs = ['ids', 'masses', 'segids']
+    expected_n_atoms = 660
+    expected_n_residues = 134
+    expected_n_segments = 2
+
+    @pytest.mark.parametrize('attr', missing_attrs)
+    def test_missing_attribute(self, attr):
+        u = mda.Universe(self.ref_filename)
+
+        with pytest.raises(AttributeError):
+            vals = u.atoms.bfactors
+
+    
+class TestMMTFSkinny2(ParserBase):
+    parser = mda.topology.MMTFParser.MMTFParser
+    ref_filename = MMTF_skinny2
+    expected_attrs = [
+        'names', 'types',
+        'charges', 'names', 'resnames', 'resids', 'resnums',
+        'bonds', 'models'
+    ]
+    guessed_attrs = ['ids', 'masses', 'segids']
+    expected_n_atoms = 169
+    expected_n_residues = 44
+    expected_n_segments = 2
 
 
 class TestMMTFUniverse(object):
