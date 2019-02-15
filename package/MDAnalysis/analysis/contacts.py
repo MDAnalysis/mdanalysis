@@ -59,11 +59,11 @@ As an example we analyze the opening ("unzipping") of salt bridges
 when the AdK enzyme opens up; this is one of the example trajectories
 in MDAnalysis. ::
 
+    import numpy as np
+    import matplotlib.pyplot as plt
     import MDAnalysis as mda
     from MDAnalysis.analysis import contacts
     from MDAnalysis.tests.datafiles import PSF,DCD
-    import matplotlib.pyplot as plt
-    import numpy as np
     # example trajectory (transition of AdK from closed to open)
     u = mda.Universe(PSF,DCD)
     # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and
