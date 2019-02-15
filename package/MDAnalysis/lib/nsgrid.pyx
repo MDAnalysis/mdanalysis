@@ -979,7 +979,7 @@ cdef class FastNS(object):
                                     if probe[m] < 0:
                                         check = False
                                         break
-                                    elif probe[m] >= self.box.c_pbcbox.box[m][m]:
+                                    elif probe[m] > self.box.c_pbcbox.box[m][m]:
                                         check = False
                                         break
                             if not check:
