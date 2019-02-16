@@ -738,7 +738,7 @@ class Universe(object):
                 return self._anchor_uuid
             except AttributeError:
                 # store this so we can later recall it if needed
-                self._anchor_uuid = uuid.uuid4()
+                self._anchor_uuid = str(uuid.uuid4())
                 return self._anchor_uuid
 
     @property
@@ -770,13 +770,20 @@ class Universe(object):
 
     @classmethod
     def _unpickle_U(cls, top, traj, anchor):
-        u = cls(top, anchor_name=anchor)
-        u.load_new(traj)
+        """Special method used by __reduce__ to deserialise a Universe"""
+        # top is a Topology object at this point, but Universe can handle that
+        u = cls(top)
+        u.anchor_name = anchor
+        # maybe this is None, but that's still cool
+        u.trajectory = traj
 
         return u
 
     def __reduce__(self):
-        return (self._unpickle_U, (self._topology, self.trajectory.filename, self.anchor_name))
+        # Can't quite use __setstate__/__getstate__ so go via __reduce__
+        # Universe's two "legs" of topology and traj both serialise themselves
+        # the only other state held in Universe is anchor name?
+        return (self._unpickle_U, (self._topology, self._trajectory, self.anchor_name))
 
     # Properties
     @property
