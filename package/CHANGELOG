@@ -14,7 +14,8 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
-         dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson, ayushsuhane
+         dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson, ayushsuhane,
+         picocentauri
   * 0.20.0
 
 Enhancements
@@ -40,6 +41,7 @@ Enhancements
   * Improved performance of AtomGroup creation from ResidueGroups and
     SegmentGroups via ResidueGroup.atoms or SegmentGroup.atoms, respectively.
     This speeds up all methods using these mechanisms. (Issue #2203, PR #2204)
+  * added more Van-der-Waals radii to improve guess_bonds (#2138, PR #2142)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
@@ -48,6 +50,7 @@ Changes
     and box_volume() are performed in double precision. If a supplied box is
     invalid, an all-zero array or zero is returned, respectively. (Issue #2200,
     PR #2201)
+  * changed fudge_factor in guess_bonds to deal with new vdw radii (#2138, PR #2142)
 
 Fixes
   * fixed the segmentation fault in capped_distances (Issue #2164, PR #2169)
