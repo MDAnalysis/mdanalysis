@@ -134,9 +134,9 @@ class AnalysisBase(object):
         self._trajectory = trajectory
         # TODO: Remove once start/stop/step are deprecated from init
         # See if these have been set as class attributes, and use that
-        start = getattr(self, 'start', start)
-        stop = getattr(self, 'stop', stop)
-        step = getattr(self, 'step', step)
+        start = getattr(self, 'start', start) if start is None else start
+        stop = getattr(self, 'stop', stop) if stop is None else stop
+        step = getattr(self, 'step', step) if step is None else step
         start, stop, step = trajectory.check_slice_indices(start, stop, step)
         self.start = start
         self.stop = stop
@@ -184,7 +184,7 @@ class AnalysisBase(object):
         """
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
-        verbose = getattr(self, '_verbose', False) if verbose is None else verbose
+        self._verbose = getattr(self, '_verbose', False) if verbose is None else verbose
 
         self._setup_frames(self._trajectory, start, stop, step)
         logger.info("Starting preparation")
