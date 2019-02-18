@@ -14,8 +14,9 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
-         dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson, ayushsuhane,
-         picocentauri
+         dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
+         ayushsuhane, picocentauri, NinadBhat
+
   * 0.20.0
 
 Enhancements
@@ -81,6 +82,7 @@ Fixes
     *exluding* its upper boundaries) (Issue #2200, PR #2201)
   * *Group.wrap() is now guaranteed to only work on atoms actually belonging to
     the calling group. (Issue #2203, PR #2204)
+  * Fixed documentation of MDAnalysis.analysis.contacts
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
