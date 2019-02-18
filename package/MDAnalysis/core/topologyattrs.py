@@ -841,7 +841,7 @@ class Masses(AtomAttr):
             If 'group', the total mass of all atoms in the atomgroup will
             be returned as a single value. Else, the total masses
             of each :class:`Segment`, :class:`Residue`, molecule, or fragment
-            will be returned as an 1D array of values.
+            will be returned as a 1D array.
             Note that, in any case, *only* the masses of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
 
@@ -851,7 +851,7 @@ class Masses(AtomAttr):
             Total masses of the group.
             If `compound` was set to 'group', the output will be a single
             value.
-            If `compound` was set to 'segments' or 'residues', the output will
+            Otherwise, the output will
             be a 1d array of shape ``(n,)`` where ``n`` is the number
             compounds.
 
@@ -1202,7 +1202,7 @@ class Charges(AtomAttr):
             If 'group', the total charge of all atoms in the atomgroup will
             be returned as a single value. Else, the total charges
             of each :class:`Segment`, :class:`Residue`, molecule, or fragment
-            will be returned as an 1D array of values.
+            will be returned as a 1D array.
             Note that, in any case, *only* the masses of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
 
@@ -1212,7 +1212,7 @@ class Charges(AtomAttr):
             Total masses of the group.
             If `compound` was set to 'group', the output will be a single
             value.
-            If `compound` was set to 'segments' or 'residues', the output will
+            Otherwise, the output will
             be a 1d array of shape ``(n,)`` where ``n`` is the number
             compounds.
 
