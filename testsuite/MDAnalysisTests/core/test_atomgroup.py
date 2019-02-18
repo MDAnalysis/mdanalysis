@@ -512,10 +512,6 @@ class TestAccumulate(object):
         vals = ag.accumulate("masses", compound=compound)
         assert_almost_equal(vals, ref, decimal=5)
 
-    def test_accumulate_wrongname(self, ag):
-        with pytest.raises(NoDataError):
-            ag.accumulate("foo")
-
     def test_accumulate_wrongcomponent(self, ag):
         with pytest.raises(ValueError):
             ag.accumulate("masses", compound="foo")
@@ -536,7 +532,7 @@ class TestAccumulate(object):
         with pytest.raises(ValueError):
             ag.accumulate(np.ones(len(ag) - 1))
 
-    @pytest.mark.parametrize('ag, name, compound', 
+    @pytest.mark.parametrize('ag, name, compound',
                              ((mda.Universe(PSF, DCD).atoms, 'resids','residues'),
                               (mda.Universe(PSF, DCD).atoms, 'segids','segments'),
                               (mda.Universe(TPR_xvf, TRR_xvf).atoms, 'molnums','molecules'),

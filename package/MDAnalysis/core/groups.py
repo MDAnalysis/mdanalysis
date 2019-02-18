@@ -861,10 +861,10 @@ class GroupBase(_MutableBase):
         Accumulates the attribute of :class:`Atoms<Atom>` in the group.
         The accumulation per :class:`Residue`, :class:`Segment`, molecule, 
         or fragment can be obtained by setting the `compound` parameter
-        accordingly. By default, the method sums up all attributes per compound, but 
-        any function that takes a multi-dimensional array of the same 
-        dtype and returns a scalar can be used. For multi-dimensional input 
-        arrays, the accumulation is performed along the first axes.
+        accordingly. By default, the method sums up all attributes per compound, 
+        but any function that takes a array and returns a acuumulation over a 
+        over a given axis can be used. For multi-dimensional input arrays, 
+        the accumulation is performed along the first axes.
 
         Parameters
         ----------
@@ -874,8 +874,10 @@ class GroupBase(_MutableBase):
             must have the same length as the total number of atoms in 
             the group.
         function : callable, optional
-            Numpy function to perform. It must take an array of the same dtype 
-            and return a scalar.
+            The function performing the accumulation. It must take the array of
+            attribute values to accumulate as its only positional argument and
+            accept an (optional) keyword argument ``axis`` allowing to specify
+            the axis along which the accumulation is performed.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the sum over all attributes associated
             with atoms in the group will
@@ -901,8 +903,6 @@ class GroupBase(_MutableBase):
         ValueError
             If provided array does not have the same length 
             as the number of atoms in the group.
-        ~MDAnalysis.exceptions.NoDataError
-            If the given attribute is missing.
         ValueError
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
@@ -937,16 +937,11 @@ class GroupBase(_MutableBase):
         if isinstance(attribute, (np.ndarray, tuple, list)):
             attribute_values = np.asarray(attribute)
             if len(attribute_values) != len(atoms):
-                raise ValueError("The input array length {} does not match "
-                                 "the required length {} based on "
-                                 "the group size.".format(len(attribute_values),
-                                                          len(atoms)))
+                raise ValueError("The input array length ({}) does not match "
+                                 "the number of atoms ({}) in the group."
+                                 "".format(len(attribute_values), len(atoms)))
         else:
-            try:
-                attribute_values = getattr(atoms, attribute)
-            except AttributeError:
-                raise NoDataError("AtomGroup does not have '{}' "
-                                  "attribute.".format(attribute))
+            attribute_values = getattr(atoms, attribute)
 
         comp = compound.lower()
 
