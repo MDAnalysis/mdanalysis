@@ -859,50 +859,50 @@ class GroupBase(_MutableBase):
         """Accumulates the attribute associated with (compounds of) the group.
 
         Accumulates the attribute of :class:`Atoms<Atom>` in the group.
-        The accumulation is done per :class:`Residue`, :class:`Segment`, molecule, 
+        The accumulation per :class:`Residue`, :class:`Segment`, molecule, 
         or fragment can be obtained by setting the `compound` parameter
-        accordingly. By default the method sums up all elements, but 
-        any numpy function that takes a multi-dimensional array of the same 
+        accordingly. By default, the method sums up all attributes per compound, but 
+        any function that takes a multi-dimensional array of the same 
         dtype and returns a scalar can be used. For multi-dimensional input 
-        arrays the accumulation is performed along the first axes.
+        arrays, the accumulation is performed along the first axes.
 
         Parameters
         ----------
-        attribute : str, numpy.ndarray
-            Attribute or :class:`numpy.ndarray` to accumulate.
-            If a :class:`numpy.ndarray` is provided which first dimensions 
+        attribute : str or array_like
+            Attribute or array of values to accumulate.
+            If a :class:`numpy.ndarray` is provided, its first dimension
             must have the same length as the total number of atoms in 
-            the :class:`AtomGroup`.
-        function : function, optional
+            the group.
+        function : callable, optional
             Numpy function to perform. It must take an array of the same dtype 
             and return a scalar.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
-            If ``'group'``, the sum over all elements associated
+            If ``'group'``, the sum over all attributes associated
             with atoms in the group will
-            be returned as a single value. Else, the sum for all elements
-            of each :class:`Segment`, :class:`Residue`, molecule, or fragment
-            will be returned as an 1d array.
-            Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
+            be returned as a single value. Otherwise, the accumulation of the attributes
+            per :class:`Segment`, :class:`Residue`, molecule, or fragment
+            will be returned as a 1d array.
+            Note that, in any case, *only* the :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
 
         Returns
         -------
         float or numpy.ndarray
-            Acuumulation of the attribute or provided numpy.ndarray.
-            If `compound` was set to ``'group'``, the first dimension 
-            of the input is contracted to a single value.
-            If `compound` was set to ``'segments'``, ``'residues'``, 
+            Acuumulation of the `attribute`.
+            If `compound` is set to ``'group'``, the first dimension 
+            of the `attribute` array will be contracted to a single value.
+            If `compound` is set to ``'segments'``, ``'residues'``, 
             ``'molecules'``, or ``'fragments'``, the length of 
-            the first dimension is the number of compounds. In all cases the
+            the length of the first dimension will correspond to the number of compounds. In all cases, the
             other dimensions of the return array are of the original shape.
 
         Raises
         ------
         ValueError
             If provided array does not have the same length 
-            as the number of atoms in the :class:`AtomGroup`:.
+            as the number of atoms in the group.
         ~MDAnalysis.exceptions.NoDataError
-            If :class:`AtomGroup`: does not have the given attribute.
+            If the given attribute is missing.
         ValueError
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
@@ -924,7 +924,7 @@ class GroupBase(_MutableBase):
             >>> sel = u.select_atoms('name CA')
             >>> sel.accumulate('masses', compound='residues')
     
-        To find the maximal charge per fragment of a given :class:`AtomGroup`::
+        To find the maximum atomic charge per fragment of a given :class:`AtomGroup`::
         
             >>> sel.accumulate('charges', compound="fragments", function=np.max)
 
@@ -934,7 +934,7 @@ class GroupBase(_MutableBase):
 
         atoms = self.atoms
 
-        if type(attribute) in (np.ndarray, tuple, list):
+        if isinstance(attribute, (np.ndarray, tuple, list)):
             attribute_values = np.asarray(attribute)
             if len(attribute_values) != len(atoms):
                 raise ValueError("The input array length {} does not match "
