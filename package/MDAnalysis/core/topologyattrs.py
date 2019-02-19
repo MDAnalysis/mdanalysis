@@ -782,18 +782,20 @@ class Masses(AtomAttr):
         Parameters
         ----------
         pbc : bool, optional
-            If ``True`` and `compound` is 'group', move all atoms to the primary
-            unit cell before calculation.
-            If ``True`` and `compound` is 'segments' or 'residues', the centers
-            of mass of each compound will be calculated without moving any
-            atoms to keep the compounds intact. Instead, the resulting
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is ``'segments'`` or ``'residues'``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact. Instead, the resulting
             center-of-mass position vectors will be moved to the primary unit
             cell after calculation.
-        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
-            If 'group', the center of mass of all atoms in the atomgroup will
-            be returned as a single position vector. Else, the centers of mass
-            of each :class:`Segment`, :class:`Residue`, molecule, or fragment
-            will be returned as an array of position vectors, i.e. a 2d array.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            If ``'group'``, the center of mass of all atoms in the group will
+            be returned as a single position vector. Otherwise, the centers of
+            mass of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e. a 2d
+            array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
 
@@ -801,11 +803,11 @@ class Masses(AtomAttr):
         -------
         center : numpy.ndarray
             Position vector(s) of the center(s) of mass of the group.
-            If `compound` was set to 'group', the output will be a single
+            If `compound` was set to ``'group'``, the output will be a single
             position vector.
-            If `compound` was set to 'segments' or 'residues', the output will
-            be a 2d array of shape ``(n, 3)`` where ``n`` is the number
-            compounds.
+            If `compound` was set to ``'segments'`` or ``'residues'``, the
+            output will be a 2d coordinate array of shape ``(n, 3)`` where ``n``
+            is the number of compounds.
 
         Note
         ----
@@ -837,23 +839,22 @@ class Masses(AtomAttr):
 
         Parameters
         ----------
-        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
-            If 'group', the total mass of all atoms in the atomgroup will
-            be returned as a single value. Else, the total masses
-            of each :class:`Segment`, :class:`Residue`, molecule, or fragment
-            will be returned as a 1D array.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            If ``'group'``, the total mass of all atoms in the group will be
+            returned as a single value. Otherwise, the total masses per
+            :class:`Segment`, :class:`Residue`, molecule, or fragment will be
+            returned as a 1d array.
             Note that, in any case, *only* the masses of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
 
         Returns
         -------
         float or numpy.ndarray
-            Total masses of the group.
-            If `compound` was set to 'group', the output will be a single
-            value.
-            Otherwise, the output will
-            be a 1d array of shape ``(n,)`` where ``n`` is the number
-            compounds.
+            Total mass of (compounds of) the group.
+            If `compound` was set to ``'group'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,)``
+            where ``n`` is the number of compounds.
 
 
         .. versionchanged:: 0.20.0 Added `compound` parameter
@@ -1197,23 +1198,22 @@ class Charges(AtomAttr):
 
         Parameters
         ----------
-        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
-            If 'group', the total charge of all atoms in the atomgroup will
-            be returned as a single value. Else, the total charges
-            of each :class:`Segment`, :class:`Residue`, molecule, or fragment
-            will be returned as a 1D array.
-            Note that, in any case, *only* the masses of :class:`Atoms<Atom>`
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            If 'group', the total charge of all atoms in the group will
+            be returned as a single value. Otherwise, the total charges per
+            :class:`Segment`, :class:`Residue`, molecule, or fragment
+            will be returned as a 1d array.
+            Note that, in any case, *only* the charges of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
 
         Returns
         -------
         float or numpy.ndarray
-            Total masses of the group.
-            If `compound` was set to 'group', the output will be a single
-            value.
-            Otherwise, the output will
-            be a 1d array of shape ``(n,)`` where ``n`` is the number
-            compounds.
+            Total charge of (compounds of) the group.
+            If `compound` was set to ``'group'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,)``
+            where ``n`` is the number of compounds.
 
 
         .. versionchanged:: 0.20.0 Added `compound` parameter
