@@ -27,14 +27,15 @@ from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysis.exceptions import DuplicateWarning, NoDataError
-from MDAnalysisTests.datafiles import PSF, DCD, TPR_xvf, TRR_xvf, GRO
+from MDAnalysisTests.datafiles import PSF, DCD, GRO
+from MDAnalysisTests.core.util import UnWrapUniverse
 import pytest
 
-levelist=('atoms', 'residues', 'segments')
-        
+levels = ('atoms', 'residues', 'segments')
+
 class TestAccumulate(object):
     """Tests the functionality of *Group.accumulate()."""
-    @pytest.fixture(params=levelist)
+    @pytest.fixture(params=levels)
     def group(self, request):
         u = mda.Universe(PSF, DCD)
         return getattr(u, request.param)
@@ -47,15 +48,14 @@ class TestAccumulate(object):
             group.accumulate("masses", function=np.prod),
             np.prod(group.atoms.masses))
 
-    @pytest.mark.parametrize('universe, name, compound',
-                             ((mda.Universe(PSF, DCD), 'resids', 'residues'),
-                              (mda.Universe(PSF, DCD), 'segids', 'segments'),
-                              (mda.Universe(TPR_xvf, TRR_xvf), 'molnums', 'molecules'),
-                              (mda.Universe(TPR_xvf, TRR_xvf), 'fragindices', 'fragments')))
-    @pytest.mark.parametrize('level', levelist)
-    def test_accumulate_str_attribute_compounds(self, universe, name, compound,
-                                                level):
-        group = getattr(universe, level)
+    @pytest.mark.parametrize('name, compound', (('resindices', 'residues'),
+                                                ('segindices', 'segments'),
+                                                ('molnums', 'molecules'),
+                                                ('fragindices', 'fragments')))
+    @pytest.mark.parametrize('level', levels)
+    def test_accumulate_str_attribute_compounds(self, name, compound, level):
+        u = UnWrapUniverse()
+        group = getattr(u, level)
         ref = [sum(a.masses) for a in group.atoms.groupby(name).values()]
         vals = group.accumulate("masses", compound=compound)
         assert_almost_equal(vals, ref, decimal=5)
@@ -68,43 +68,42 @@ class TestAccumulate(object):
         with pytest.raises(ValueError):
             group.accumulate("masses", compound="foo")
 
-    @pytest.mark.parametrize('level', levelist)
+    @pytest.mark.parametrize('level', levels)
     def test_accumulate_nobonds(self, level):
         group = getattr(mda.Universe(GRO), level)
         with pytest.raises(NoDataError):
             group.accumulate("masses", compound="fragments")
 
-    @pytest.mark.parametrize('level', levelist)
+    @pytest.mark.parametrize('level', levels)
     def test_accumulate_nomolnums(self, level):
         group = getattr(mda.Universe(GRO), level)
         with pytest.raises(NoDataError):
             group.accumulate("masses", compound="molecules")
 
     def test_accumulate_array_attribute(self, group):
-        a = np.ones((len(group.atoms), 10))
+        a = np.ones((len(group.atoms), 2, 5))
         assert_equal(group.accumulate(a), np.sum(a, axis=0))
 
     def test_accumulate_array_attribute_wrongshape(self, group):
         with pytest.raises(ValueError):
             group.accumulate(np.ones(len(group.atoms) - 1))
 
-    @pytest.mark.parametrize('universe, name, compound',
-                             ((mda.Universe(PSF, DCD), 'resids', 'residues'),
-                              (mda.Universe(PSF, DCD), 'segids', 'segments'),
-                              (mda.Universe(TPR_xvf, TRR_xvf), 'molnums', 'molecules'),
-                              (mda.Universe(TPR_xvf, TRR_xvf), 'fragindices', 'fragments')))
-    @pytest.mark.parametrize('level', levelist)
-    def test_accumulate_array_attribute_compounds(self, universe, name,
-                                                  compound, level):
-        group = getattr(universe, level)
-        ref = [np.ones((len(a), 10)).sum(axis=0) for a in group.atoms.groupby(name).values()]
-        assert_equal(group.accumulate(np.ones((len(group.atoms), 10)), compound=compound), ref)
+    @pytest.mark.parametrize('name, compound', (('resindices', 'residues'),
+                                                ('segindices', 'segments'),
+                                                ('molnums', 'molecules'),
+                                                ('fragindices', 'fragments')))
+    @pytest.mark.parametrize('level', levels)
+    def test_accumulate_array_attribute_compounds(self, name, compound, level):
+        u = UnWrapUniverse()
+        group = getattr(u, level)
+        ref = [np.ones((len(a), 2, 5)).sum(axis=0) for a in group.atoms.groupby(name).values()]
+        assert_equal(group.accumulate(np.ones((len(group.atoms), 2, 5)), compound=compound), ref)
 
 class TestTotals(object):
     """Tests the functionality of *Group.total*() like total_mass
     and total_charge.
     """
-    @pytest.fixture(params=levelist)
+    @pytest.fixture(params=levels)
     def group(self, request):
         u = mda.Universe(PSF, DCD)
         return getattr(u, request.param)
