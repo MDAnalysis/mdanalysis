@@ -488,59 +488,6 @@ class TestCenter(object):
         with pytest.raises(ValueError):
             ag.center(weights)
 
-class TestAccumulate(object):
-
-    @pytest.fixture()
-    def ag(self):
-        return mda.Universe(PSF, DCD).atoms
-
-    def test_accumulate_str_attribute(self, ag):
-        assert_almost_equal(ag.accumulate("masses"), 
-                            np.sum(ag.masses))
-
-    def test_accumulate_different_func(self, ag):
-        assert_almost_equal(ag.accumulate("masses", function=np.prod), 
-                            np.prod(ag.masses))
-    
-    @pytest.mark.parametrize('ag, name, compound', 
-                             ((mda.Universe(PSF, DCD).atoms, 'resids','residues'),
-                              (mda.Universe(PSF, DCD).atoms, 'segids','segments'),
-                              (mda.Universe(TPR_xvf, TRR_xvf).atoms, 'molnums','molecules'),
-                              (mda.Universe(TPR_xvf, TRR_xvf).atoms, 'fragindices','fragments')))
-    def test_accumulate_str_attribute_compounds(self, ag, name, compound):
-        ref = [sum(a.masses) for a in ag.groupby(name).values()]
-        vals = ag.accumulate("masses", compound=compound)
-        assert_almost_equal(vals, ref, decimal=5)
-
-    def test_accumulate_wrongcomponent(self, ag):
-        with pytest.raises(ValueError):
-            ag.accumulate("masses", compound="foo")
-
-    def test_accumulate_nobonds(self):
-        with pytest.raises(NoDataError):
-            mda.Universe(GRO).atoms.accumulate("masses", compound="fragments")
-
-    def test_accumulate_nomolnums(self):
-        with pytest.raises(NoDataError):
-            mda.Universe(GRO).atoms.accumulate("masses", compound="molecules")
-
-    def test_accumulate_array_attribute(self, ag):
-        a = np.ones((len(ag), 10))
-        assert_equal(ag.accumulate(a), np.sum(a, axis=0))
-
-    def test_accumulate_array_attribute_wrongshape(self, ag):
-        with pytest.raises(ValueError):
-            ag.accumulate(np.ones(len(ag) - 1))
-
-    @pytest.mark.parametrize('ag, name, compound',
-                             ((mda.Universe(PSF, DCD).atoms, 'resids','residues'),
-                              (mda.Universe(PSF, DCD).atoms, 'segids','segments'),
-                              (mda.Universe(TPR_xvf, TRR_xvf).atoms, 'molnums','molecules'),
-                              (mda.Universe(TPR_xvf, TRR_xvf).atoms, 'fragindices','fragments')))
-    def test_accumulate_array_attribute_compounds(self, ag, name, compound):
-        ref = [np.ones((len(a), 10)).sum(axis=0) for a in ag.groupby(name).values()]
-        assert_equal(ag.accumulate(np.ones((len(ag), 10)), compound=compound), 
-                     ref)
 
 
 class TestSplit(object):
@@ -1199,40 +1146,6 @@ class TestAtomGroup(object):
         ref = ag.radius_of_gyration()
         with pytest.warns(DuplicateWarning) as w:
             assert not np.allclose(ag2.radius_of_gyration(), ref)
-            assert len(w) == 1
-
-    def test_total_charge(self, ag):
-        assert_almost_equal(ag.total_charge(), -4.0, decimal=4)
-        
-    @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
-                                                ('segids', 'segments'),
-                                                ('fragindices', 'fragments')))
-    def test_total_charge_compounds(self, ag, name, compound):
-        ref = [sum(a.charges) for a in ag.groupby(name).values()]
-        assert_almost_equal(ag.total_charge(compound=compound), ref)
-
-    def test_total_charge_duplicates(self, ag):
-        ag2 = ag + ag[0]
-        ref = ag.total_charge() + ag[0].charge
-        with pytest.warns(DuplicateWarning) as w:
-            assert_almost_equal(ag2.total_charge(), ref)
-            assert len(w) == 1
-
-    def test_total_mass(self, ag):
-        assert_almost_equal(ag.total_mass(), 23582.043)
-        
-    @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
-                                                ('segids', 'segments'),
-                                                ('fragindices', 'fragments')))
-    def test_total_mass_compounds(self, ag, name, compound):
-        ref = [sum(a.masses) for a in ag.groupby(name).values()]
-        assert_almost_equal(ag.total_mass(compound=compound), ref)
-
-    def test_total_mass_duplicates(self, ag):
-        ag2 = ag + ag[0]
-        ref = ag.total_mass() + ag[0].mass
-        with pytest.warns(DuplicateWarning) as w:
-            assert_almost_equal(ag2.total_mass(), ref)
             assert len(w) == 1
 
     def test_indices_ndarray(self, ag):
