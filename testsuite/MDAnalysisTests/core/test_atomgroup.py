@@ -489,7 +489,6 @@ class TestCenter(object):
             ag.center(weights)
 
 
-
 class TestSplit(object):
 
     @pytest.fixture()

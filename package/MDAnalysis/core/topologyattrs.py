@@ -820,7 +820,8 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         """
-        return group.atoms.center(weights=atoms.masses, pbc=pbc, compound=compound)
+        atoms = group.atoms
+        return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound)
 
     transplants[GroupBase].append(
         ('center_of_mass', center_of_mass))
@@ -857,7 +858,7 @@ class Masses(AtomAttr):
 
         .. versionchanged:: 0.20.0 Added `compound` parameter
         """
-        return group.atoms.accumulate("masses", compound=compound)
+        return group.accumulate("masses", compound=compound)
 
     transplants[GroupBase].append(
         ('total_mass', total_mass))
@@ -1217,7 +1218,7 @@ class Charges(AtomAttr):
 
         .. versionchanged:: 0.20.0 Added `compound` parameter
         """
-        return group.atoms.accumulate("charges", compound=compound)
+        return group.accumulate("charges", compound=compound)
 
     transplants[GroupBase].append(
         ('total_charge', total_charge))
