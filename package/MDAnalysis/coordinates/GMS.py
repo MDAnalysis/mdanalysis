@@ -47,7 +47,7 @@ from . import base
 import MDAnalysis.lib.util as util
 
 
-class GMSReader(base.ReaderBase):
+class GMSReader(base.ReaderBase, base._AsciiPickle):
     """Reads from an GAMESS output file
 
     :Data:
@@ -82,7 +82,7 @@ class GMSReader(base.ReaderBase):
         super(GMSReader, self).__init__(outfilename, **kwargs)
 
         # the filename has been parsed to be either b(g)zipped or not
-        self.outfile = util.anyopen(self.filename)
+        self._f = util.anyopen(self.filename)
 
         # note that, like for xtc and trr files, _n_atoms and _n_frames are used quasi-private variables
         # to prevent the properties being recalculated
@@ -177,7 +177,7 @@ class GMSReader(base.ReaderBase):
         return len(offsets)
 
     def _read_frame(self, frame):
-        self.outfile.seek(self._offsets[frame])
+        self._f.seek(self._offsets[frame])
         self.ts.frame = frame - 1  # gets +1'd in _read_next
         return self._read_next_timestep()
 
@@ -186,7 +186,7 @@ class GMSReader(base.ReaderBase):
         if ts is None:
             ts = self.ts
         # check that the outfile object exists; if not reopen the trajectory
-        if self.outfile is None:
+        if self._f is None:
             self.open_trajectory()
         x = []
         y = []
@@ -195,7 +195,7 @@ class GMSReader(base.ReaderBase):
         flag = 0
         counter = 0
 
-        for line in self.outfile:
+        for line in self._f:
             if self.runtyp == 'optimize':
                 if (flag == 0) and (re.match(r'^.NSERCH=.*', line) is not None):
                     flag = 1
@@ -246,22 +246,22 @@ class GMSReader(base.ReaderBase):
         self.open_trajectory()
 
     def open_trajectory(self):
-        if self.outfile is not None:
+        if self._f is not None:
             raise IOError(errno.EALREADY, 'GMS file already opened', self.filename)
         if not os.path.exists(self.filename):
             # must check; otherwise might segmentation fault
             raise IOError(errno.ENOENT, 'GMS file not found', self.filename)
 
-        self.outfile = util.anyopen(self.filename)
+        self._f = util.anyopen(self.filename)
 
         # reset ts
         ts = self.ts
         ts.frame = -1
-        return self.outfile
+        return self._f
 
     def close(self):
         """Close out trajectory file if it was open."""
-        if self.outfile is None:
+        if self._f is None:
             return
-        self.outfile.close()
-        self.outfile = None
+        self._f.close()
+        self._f = None

@@ -4,13 +4,33 @@
 import multiprocessing
 import numpy as np
 import pytest
+import pickle
 
 import MDAnalysis as mda
+from MDAnalysis.coordinates.core import get_reader_for
 from MDAnalysisTests.datafiles import (
+    AUX_XVG,
+    CRD,
     PSF, DCD,
-    GRO, XTC,
-    PDB,
-    XYZ,
+    DMS,
+    DLP_CONFIG,
+    DLP_HISTORY,
+    INPCRD,
+    GMS_ASYMOPT,
+    GRO,
+    LAMMPSdata_mini,
+    mol2_molecules,
+    MMTF,
+    NCDF,
+    PDB_small, PDB_multiframe,
+    PDBQT_input,
+    PQR,
+    TRR,
+    TRJ,
+    TRZ,
+    XTC,
+    XPDB_small,
+    XYZ_mini, XYZ,
 )
 
 from numpy.testing import assert_equal
@@ -19,12 +39,12 @@ from numpy.testing import assert_equal
 @pytest.fixture(params=[
     (PSF, DCD),
     (GRO, XTC),
-    (PDB,),
+    (PDB_multiframe,),
     (XYZ,),
 ])
 def u(request):
     if len(request.param) == 1:
-        f = request.param
+        f = request.param[0]
         return mda.Universe(f)
     else:
         top, trj = request.param
@@ -66,3 +86,46 @@ def test_multiprocess_names(u):
     p.close()
 
     assert_equal(ref, res)
+
+@pytest.fixture(params=[
+    # formatname, filename
+    ('CRD', CRD, dict()),
+    ('DATA', LAMMPSdata_mini, dict(n_atoms=1)),
+    ('DCD', DCD, dict()),
+    ('DMS', DMS, dict()),
+    ('CONFIG', DLP_CONFIG, dict()),
+    ('HISTORY', DLP_HISTORY, dict()),
+    ('INPCRD', INPCRD, dict()),
+    ('GMS', GMS_ASYMOPT, dict()),
+    ('GRO', GRO, dict()),
+    ('MMTF', MMTF, dict()),
+    ('MOL2', mol2_molecules, dict()),
+    ('PDB', PDB_small, dict()),
+    ('PQR', PQR, dict()),
+    ('PDBQT', PDBQT_input, dict()),
+    ('TRR', TRR, dict()),
+    ('TRZ', TRZ, dict(n_atoms=8184)),
+    ('TRJ', TRJ, dict(n_atoms=252)),
+    ('XTC', XTC, dict()),
+    ('XPDB', XPDB_small, dict()),
+    ('XYZ', XYZ_mini, dict()),
+    ('NCDF', NCDF, dict()),
+    ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
+    ('CHAIN', [GRO, GRO, GRO], dict()),
+])
+def ref_reader(request):
+    fmt_name, filename, extras = request.param
+
+    r = get_reader_for(filename, format=fmt_name)(filename, **extras)
+    try:
+        yield r
+    finally:
+        # make sure file handle is closed afterwards
+        r.close()
+
+def test_readers_pickle(ref_reader):
+    ps = pickle.dumps(ref_reader)
+
+    reanimated = pickle.loads(ps)
+
+    assert len(ref_reader) == len(reanimated)

@@ -37,6 +37,7 @@ import numpy as np
 
 from . import base
 from . import core
+from ..lib import util
 
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 
@@ -141,7 +142,7 @@ class ConfigReader(base.SingleFrameReaderBase):
         ts.frame = 0
 
 
-class HistoryReader(base.ReaderBase):
+class HistoryReader(base.ReaderBase, base._AsciiPickle):
     """Reads DLPoly format HISTORY files
 
     .. versionadded:: 0.11.0
@@ -154,9 +155,9 @@ class HistoryReader(base.ReaderBase):
         super(HistoryReader, self).__init__(filename, **kwargs)
 
         # "private" file handle
-        self._file = open(self.filename, 'r')
-        self.title = self._file.readline().strip()
-        self._levcfg, self._imcon, self.n_atoms = np.int64(self._file.readline().split()[:3])
+        self._f = util.anyopen(self.filename, 'r')
+        self.title = self._f.readline().strip()
+        self._levcfg, self._imcon, self.n_atoms = np.int64(self._f.readline().split()[:3])
         self._has_vels = True if self._levcfg > 0 else False
         self._has_forces = True if self._levcfg == 2 else False
 
@@ -170,20 +171,20 @@ class HistoryReader(base.ReaderBase):
         if ts is None:
             ts = self.ts
 
-        line = self._file.readline()  # timestep line
+        line = self._f.readline()  # timestep line
         if not line.startswith('timestep'):
             raise IOError
         if not self._imcon == 0:
-            ts._unitcell[0] = self._file.readline().split()
-            ts._unitcell[1] = self._file.readline().split()
-            ts._unitcell[2] = self._file.readline().split()
+            ts._unitcell[0] = self._f.readline().split()
+            ts._unitcell[1] = self._f.readline().split()
+            ts._unitcell[2] = self._f.readline().split()
 
         # If ids are given, put them in here
         # and later sort by them
         ids = []
 
         for i in range(self.n_atoms):
-            line = self._file.readline().strip()  # atom info line
+            line = self._f.readline().strip()  # atom info line
             try:
                 idx = int(line.split()[1])
             except IndexError:
@@ -192,11 +193,11 @@ class HistoryReader(base.ReaderBase):
                 ids.append(idx)
 
             # Read in this order for now, then later reorder in place
-            ts._pos[i] = self._file.readline().split()
+            ts._pos[i] = self._f.readline().split()
             if self._has_vels:
-                ts._velocities[i] = self._file.readline().split()
+                ts._velocities[i] = self._f.readline().split()
             if self._has_forces:
-                ts._forces[i] = self._file.readline().split()
+                ts._forces[i] = self._f.readline().split()
 
         if ids:
             ids = np.array(ids)
@@ -214,7 +215,7 @@ class HistoryReader(base.ReaderBase):
 
     def _read_frame(self, frame):
         """frame is 0 based, error checking is done in base.getitem"""
-        self._file.seek(self._offsets[frame])
+        self._f.seek(self._offsets[frame])
         self.ts.frame = frame - 1  # gets +1'd in read_next_frame
         return self._read_next_timestep()
 
@@ -234,7 +235,7 @@ class HistoryReader(base.ReaderBase):
         """
         offsets = self._offsets = []
 
-        with open(self.filename, 'r') as f:
+        with util.anyopen(self.filename, 'r') as f:
             n_frames = 0
 
             f.readline()
@@ -262,10 +263,10 @@ class HistoryReader(base.ReaderBase):
 
     def _reopen(self):
         self.close()
-        self._file = open(self.filename, 'r')
-        self._file.readline()  # header is 2 lines
-        self._file.readline()
+        self._f = util.anyopen(self.filename, 'r')
+        self._f.readline()  # header is 2 lines
+        self._f.readline()
         self.ts.frame = -1
 
     def close(self):
-        self._file.close()
+        self._f.close()
