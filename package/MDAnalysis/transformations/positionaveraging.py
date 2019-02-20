@@ -13,10 +13,9 @@ returned.
 .. autoclass:: PositionAverager
 
 """
-from __future__ import absolute_import, division
+from __future__ import absolute_import
 
 import numpy as np
-import MDAnalysis as md
 import warnings
 
 
