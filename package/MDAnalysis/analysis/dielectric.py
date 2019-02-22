@@ -122,19 +122,13 @@ class DielectricConstant(AnalysisBase):
                         "eps_mean": 0}
 
     def _prepare(self):
-        if np.sum(self.charges) != 0:
-            raise NotImplementedError("Analysis for non neutral systems not available!")
-            
-        for frag in self.selection.fragments:
-            if np.sum(frag.charges) != 0:
-                raise NotImplementedError("Analysis for systems with free charges"
-                                          " not available!")
+        if not np.allclose(self.selection.total_charge(compound='fragments'), 0.0):
+            raise NotImplementedError("Analysis for non-neutral systems or "
+                                      "systems with free charges are not available!")
                 
     def _single_frame(self):
-        # Make molecules whole
         if self.make_whole:
-            for frag in self.selection.fragments:
-                make_whole(frag)
+            self.selection.unwrap()
 
         self.volume += self.selection.universe.trajectory.ts.volume
 

@@ -26,43 +26,39 @@ import pytest
 from MDAnalysisTests.datafiles import PSF_TRICLINIC, DCD_TRICLINIC
 from MDAnalysis.analysis.dielectric import DielectricConstant
 from numpy.testing import assert_almost_equal
+    
+class TestDielectric(object):
+    @pytest.fixture()
+    def ag(self):
+        return mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC).atoms
         
-def test_water():
-    universe = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
-    
-    eps = DielectricConstant(universe.atoms).run()
-    assert_almost_equal(3.874, round(eps.results['eps_mean'], 3))
-    
-def test_make_whole():
-    universe = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC, in_memory=True)
-    
-    # cut molecules apart
-    for ts in universe.trajectory:
-        universe.atoms.wrap()
-    
-    eps = DielectricConstant(universe.atoms, make_whole=False).run()
-    assert_almost_equal(630.326, round(eps.results['eps_mean'], 3))
-    
-    eps = DielectricConstant(universe.atoms, make_whole=True).run()
-    assert_almost_equal(3.874, round(eps.results['eps_mean'], 3))
-    
-def test_temperature():
-    universe = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
-    
-    eps = DielectricConstant(universe.atoms, temperature=100).run()
-    assert_almost_equal(9.621, round(eps.results['eps_mean'], 3))
-    
-def test_non_neutral():
-    universe = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
-    
-    with pytest.raises(NotImplementedError):
-        DielectricConstant(universe.atoms[:-1]).run()
+    def test_water(self, ag):
+        eps = DielectricConstant(ag).run()
+        assert_almost_equal(eps.results['eps_mean'], 3.874, decimal=1)
         
-def test_free_charges():
-    universe = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
+    def test_make_whole(self, ag):
+        # cut molecules apart
+        ag.universe.transfer_to_memory()
+        for ts in ag.universe.trajectory:
+            ag.wrap()
     
-    universe.atoms.fragments[0].charges += 1
-    universe.atoms.fragments[1].charges -= 1
-    
-    with pytest.raises(NotImplementedError):
-        DielectricConstant(universe.atoms).run()
+        eps_broken = DielectricConstant(ag, make_whole=False).run()
+        assert_almost_equal(eps_broken.results['eps_mean'], 721.711, decimal=1)
+        
+        eps_whole = DielectricConstant(ag, make_whole=True).run()
+        assert_almost_equal(eps_whole.results['eps_mean'], 3.874, decimal=1)
+        
+    def test_temperature(self, ag):        
+        eps = DielectricConstant(ag, temperature=100).run()
+        assert_almost_equal(eps.results['eps_mean'], 9.621, decimal=1)
+        
+    def test_non_neutral(self, ag):        
+        with pytest.raises(NotImplementedError):
+            DielectricConstant(ag[:-1]).run()
+            
+    def test_free_charges(self, ag):
+        ag.fragments[0].charges += 1
+        ag.fragments[1].charges -= 1
+        
+        with pytest.raises(NotImplementedError):
+            DielectricConstant(ag).run()
