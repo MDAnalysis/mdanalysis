@@ -213,7 +213,7 @@ import scipy.optimize
 import warnings
 
 from MDAnalysis.lib.log import ProgressMeter
-from MDAnalysis.lib.distances import distance_array, calc_angles, calc_bonds
+from MDAnalysis.lib.distances import capped_distance, calc_angles, calc_bonds
 from MDAnalysis.lib.util import deprecate
 from MDAnalysis.core.groups import requires
 
@@ -420,13 +420,14 @@ class HydrogenBondAutoCorrel(object):
         box = self.u.dimensions if self.pbc else None
 
         # 2d array of all distances
-        d = distance_array(self.h.positions, self.a.positions, box=box)
+        pair, d = capped_distance(self.h.positions, self.a.positions, max_cutoff=self.d_crit, box=box)
         if self.exclusions:
             # set to above dist crit to exclude
-            d[self.exclusions] = self.d_crit + 1.0
+            exclude = [[a, b] for a, b in zip(self.exclusions[0], self.exclusions[1])]
+            pair = np.delete(pair, np.where(pair==exclude), 0)
+        
+        hidx, aidx = [np.array(id_list)  for id_list in zip(*pair)]
 
-        # find which partners satisfy distance criteria
-        hidx, aidx = np.where(d < self.d_crit)
 
         a = calc_angles(self.d.positions[hidx], self.h.positions[hidx],
                         self.a.positions[aidx], box=box)
