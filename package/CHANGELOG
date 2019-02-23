@@ -45,6 +45,8 @@ Enhancements
   * added more Van-der-Waals radii to improve guess_bonds (#2138, PR #2142)
   * added *Group.accumulate() (PR #2192)
   * added compound kwarg to total_mass and total_charge (PR #2192)
+  * updated HydrogenBondAutoCorrel to use capped_distance in place of
+    distance_array. (Issue #2103, PR #2209)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
