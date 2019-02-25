@@ -423,10 +423,10 @@ class HydrogenBondAutoCorrel(object):
         pair, d = capped_distance(self.h.positions, self.a.positions, max_cutoff=self.d_crit, box=box)
         if self.exclusions:
             # set to above dist crit to exclude
-            exclude = [[a, b] for a, b in zip(self.exclusions[0], self.exclusions[1])]
+            exclude = np.column_stack((self.exclusions[0], self.exclusions[1]))
             pair = np.delete(pair, np.where(pair==exclude), 0)
         
-        hidx, aidx = [np.array(id_list)  for id_list in zip(*pair)]
+        hidx, aidx = np.transpose(pair)
 
 
         a = calc_angles(self.d.positions[hidx], self.h.positions[hidx],
