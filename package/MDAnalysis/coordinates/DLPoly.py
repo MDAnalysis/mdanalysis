@@ -108,11 +108,11 @@ class ConfigReader(base.SingleFrameReaderBase):
 
                 line = inf.readline().strip()
 
-        coords = np.array(coords, dtype=np.float32, order='F')
+        coords = np.array(coords, dtype=np.float32, order='C')
         if has_vels:
-            velocities = np.array(velocities, dtype=np.float32, order='F')
+            velocities = np.array(velocities, dtype=np.float32, order='C')
         if has_forces:
-            forces = np.array(forces, dtype=np.float32, order='F')
+            forces = np.array(forces, dtype=np.float32, order='C')
         self.n_atoms = len(coords)
 
         if ids:

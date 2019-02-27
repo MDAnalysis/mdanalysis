@@ -228,7 +228,7 @@ class Timestep(object):
        :attr:`frame` now 0-based instead of 1-based.
        Attributes `status` and `step` removed.
     """
-    order = 'F'
+    order = 'C'
 
     def __init__(self, n_atoms, **kwargs):
         """Create a Timestep, representing a frame of a trajectory
