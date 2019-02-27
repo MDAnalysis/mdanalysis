@@ -138,6 +138,58 @@ class TestGroupProperties(object):
         unique_group = group.unique
         assert unique_group is group.unique
 
+    @pytest.mark.parametrize('group, ref', (
+        (uni.atoms, True),
+        (uni.atoms[[1]], True),
+        (uni.atoms[[-1]], True),
+        (uni.atoms[[1, 2, 3, 4]], True),
+        (uni.atoms[-3:-1], True),
+        (uni.atoms[31:100], True),
+        (uni.atoms[1:-20], True),
+        (uni.residues, True),
+        (uni.residues[[1]], True),
+        (uni.residues[[-1]], True),
+        (uni.residues[[1, 2, 3, 4]], True),
+        (uni.residues[-3:-1], True),
+        (uni.residues[2:5], True),
+        (uni.residues[1:-1], True),
+        (uni.segments, True),
+        (uni.segments[[1]], True),
+        (uni.segments[[-1]], True),
+        (uni.segments[[1, 2, 3, 4]], True),
+        (uni.segments[-3:-1], True),
+        (uni.segments[2:5], True),
+        (uni.segments[1:-1], True),
+        (uni.atoms[[]], False),
+        (uni.atoms + uni.atoms[[0]], False),
+        (uni.atoms[[0]] + uni.atoms, False),
+        (uni.atoms[[2, 1]], False),
+        (uni.atoms[[2, 1, 7, 50]], False),
+        (uni.atoms[::2], False),
+        (uni.atoms[::-1], False),
+        (uni.atoms[-1:-4:-1], False),
+        (uni.residues[[]], False),
+        (uni.residues + uni.residues[[0]], False),
+        (uni.residues[[0]] + uni.residues, False),
+        (uni.residues[[2, 1]], False),
+        (uni.residues[[2, 1, 4, 3]], False),
+        (uni.residues[::2], False),
+        (uni.residues[::-1], False),
+        (uni.residues[-1:-4:-1], False),
+        (uni.segments[[]], False),
+        (uni.segments + uni.segments[[0]], False),
+        (uni.segments[[0]] + uni.segments, False),
+        (uni.segments[[2, 1]], False),
+        (uni.segments[[2, 1, 4, 3]], False),
+        (uni.segments[::2], False),
+        (uni.segments[::-1], False),
+        (uni.segments[-1:-4:-1], False)
+        ))
+    def test_group_iscontiguous(self, group, ref):
+        res = group.iscontiguous
+        assert res == ref
+        assert type(res) == bool
+
 
 class TestGroupSlicing(object):
     """All Groups (Atom, Residue, Segment) should slice like a numpy array

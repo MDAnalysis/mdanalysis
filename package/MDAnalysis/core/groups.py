@@ -104,7 +104,7 @@ from numpy.lib.utils import deprecate
 
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
-from ..lib.util import cached, warn_if_not_unique, unique_int_1d
+from ..lib.util import cached, warn_if_not_unique, unique_int_1d, isrange_int_1d
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
@@ -647,6 +647,33 @@ class GroupBase(_MutableBase):
         # 3. The group is unique if all elements in the mask are False. We could
         #    return ``not np.any(mask)`` here but using the following is faster:
         return not np.count_nonzero(mask)
+
+    @property
+    @cached('iscontiguous')
+    def iscontiguous(self):
+        """Indicates whether the group is contiguous.
+
+        A boolean value indicating whether the group's indices
+        ``self.ix`` form a contiguous range.
+
+        Examples
+        --------
+
+           >>> ag = u.atoms[10:20]
+           >>> ag
+           <AtomGroup with 10 atoms>
+           >>> ag.iscontiguous
+           True
+           >>> ag2 = u.atoms[10:40:2]
+           >>> ag2
+           <AtomGroup with 15 atoms>
+           >>> ag2.iscontiguous
+           False
+
+
+        .. versionadded:: 0.20.0
+        """
+        return isrange_int_1d(self._ix)
 
     @warn_if_not_unique
     def center(self, weights, pbc=None, compound='group'):
@@ -2451,6 +2478,38 @@ class AtomGroup(GroupBase):
     def positions(self, values):
         ts = self.universe.trajectory.ts
         ts.positions[self.ix, :] = values
+
+    @property
+    def _positions(self):
+        """(View of) coordinates of the :class:`Atoms<Atom>` in the
+        :class:`AtomGroup`.
+
+        A :class:`numpy.ndarray` with shape ``(n_atoms, 3)`` and dtype
+        ``numpy.float32``.
+
+        If the atomgroup is contiguous, a view of the its coordinates is
+        returned. Otherwise, the returned array will be a copy.
+
+        .. note:: Changing positions is not reflected in any files; reading any
+                  frame from the
+                  :attr:`~MDAnalysis.core.universe.Universe.trajectory` will
+                  replace the change with that from the file *except* if the
+                  :attr:`~MDAnalysis.core.universe.Universe.trajectory` is held
+                  in memory, e.g., when the
+                  :meth:`~MDAnalysis.core.universe.Universe.transfer_to_memory`
+                  method was used.
+
+        Raises
+        ------
+        ~MDAnalysis.exceptions.NoDataError
+            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            does not contain
+            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.
+        """
+        if self.iscontiguous:
+            ix = self._ix
+            return self.universe.trajectory.ts.positions[ix[0]:ix[-1]+1]
+        return self.universe.trajectory.ts.positions[self._ix]
 
     @property
     def velocities(self):

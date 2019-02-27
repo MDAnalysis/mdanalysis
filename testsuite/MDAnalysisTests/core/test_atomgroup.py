@@ -52,6 +52,7 @@ from MDAnalysisTests.datafiles import (
     GRO
 )
 from MDAnalysisTests import make_Universe, no_deprecated_call
+from MDAnalysisTests.core.util import UnWrapUniverse
 
 import pytest
 
@@ -628,6 +629,59 @@ class TestAtomGroupProperties(object):
         # assert restore mask can reproduce original ag:
         assert ag.unique[ag._unique_restore_mask] == ag
 
+    uni = UnWrapUniverse()  # cannot use fixtures in parametrize
+
+    @pytest.mark.parametrize('atomgroup, isview', (
+        (uni.atoms, True),
+        (uni.atoms[[1]], True),
+        (uni.atoms[[-1]], True),
+        (uni.atoms[[1, 2, 3, 4]], True),
+        (uni.atoms[-3:-1], True),
+        (uni.atoms[31:], True),
+        (uni.atoms[1:-20], True),
+        (uni.atoms[[]], False),
+        (uni.atoms + uni.atoms[[0]], False),
+        (uni.atoms[[0]] + uni.atoms, False),
+        (uni.atoms[[2, 1]], False),
+        (uni.atoms[[2, 1, 7, 40]], False),
+        (uni.atoms[::2], False),
+        (uni.atoms[::-1], False),
+        (uni.atoms[-1:-4:-1], False),
+        ))
+    def test_ag_positions_view(self, atomgroup, isview):
+        """Test if ag._positions returns a view if the atomgroup is
+        contiguous and a copy otherwise.
+        """
+        # get a coordinate copy:
+        pos = atomgroup.positions
+        assert pos.flags['OWNDATA']
+        # try to get a coordinate view:
+        _pos = atomgroup._positions
+        # make sure both are equal:
+        assert_equal(pos, _pos)
+        # for contiguous atomgroups, _pos must be a view (a copy otherwise):
+        _isview = not _pos.flags['OWNDATA']
+        assert _isview == isview
+        assert atomgroup.iscontiguous == isview
+        # change an entry in _pos:
+        if len(atomgroup) > 0:
+            _pos -= 1.0
+            if isview:
+                assert_equal(_pos, atomgroup.positions)
+            else:
+                assert_almost_equal(atomgroup.positions - _pos,
+                                    np.ones_like(_pos), decimal=5)
+
+    def test_ag_positions_view_nopos(self):
+        u = UnWrapUniverse()
+        u.coord.has_positions = False
+        ag = u.atoms
+        with pytest.raises(NoDataError):
+            ag.positions
+        with pytest.raises(NoDataError):
+            ag._positions
+
+
 class TestOrphans(object):
     """Test moving Universes out of scope and having A/AG persist
 
@@ -646,7 +700,7 @@ class TestOrphans(object):
 
         assert atom is not u.atoms[1]
         assert len(atom.universe.atoms) == len(u.atoms)
-        assert_almost_equal(atom.position, u.atoms[1].position)
+        assert_equal(atom.position, u.atoms[1].position)
 
     def test_atomgroup(self):
         u = mda.Universe(two_water_gro)
@@ -659,7 +713,7 @@ class TestOrphans(object):
         ag2 = u.atoms[:4]
         assert ag is not ag2
         assert len(ag.universe.atoms) == len(u.atoms)
-        assert_almost_equal(ag.positions, ag2.positions)
+        assert_equal(ag.positions, ag2.positions)
 
 
 class TestCrossUniverse(object):
