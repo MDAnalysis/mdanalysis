@@ -26,7 +26,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib._cutil import unique_int_1d, find_fragments
+from MDAnalysis.lib._cutil import unique_int_1d, isrange_int_1d, find_fragments
 
 
 @pytest.mark.parametrize('values', (
@@ -44,6 +44,38 @@ def test_unique_int_1d(values):
     assert_equal(res, ref)
     assert type(res) == type(ref)
     assert res.dtype == ref.dtype
+
+@pytest.mark.parametrize('values, ref', (
+    ([-3], True),                   # length-1 array, negative
+    ([3], True),                    # length-1 array, positive
+    ([0], True),                    # length-1 array, zero
+    ([-5, -4], True),               # length-2 contiguous range
+    ([1, 2, 3, 4, 5], True),        # contiguous range, positive
+    ([-5, -4, -3, -2, -1], True),   # contiguous range, negative
+    ([-2, -1, 0, 1, 2], True),      # contiguous range, neg to pos
+    ([], False),                    # empty array
+    ([0, 0], False),                # length-2 array, zeros
+    ([-3, -4], False),              # length-2 inverted range
+    ([5, 4, 3, 2, 1], False),       # inverted range, positive
+    ([-1, -2, -3, -4, -5], False),  # inverted range, negative
+    ([2, 1, 0, -1, -2], False),     # inverted range, pos to neg
+    ([1, 3, 5, 7, 9], False),       # strided range, positive
+    ([-9, -7, -5, -3, -1], False),  # strided range, negative
+    ([-5, -3, -1, 1, 3], False),    # strided range, neg to pos
+    ([3, 1, -1, -3, -5], False),    # inverted strided range, pos to neg
+    ([1, 1, 1, 1], False),          # all identical
+    ([2, 3, 5, 7], False),          # monotonic
+    ([5, 2, 7, 3], False),          # non-monotonic
+    ([1, 2, 2, 3, 4], False),       # range with middle duplicates
+    ([1, 2, 3, 4, 4], False),       # range with end duplicates
+    ([1, 1, 2, 3, 4], False),       # range with start duplicates
+    ([-1, 2, 2, 4, 3], False)       # duplicates, non-monotonic
+))
+def test_isrange_int_1d(values, ref):
+    array = np.array(values, dtype=np.intp)
+    res = isrange_int_1d(array)
+    assert_equal(res, ref)
+    assert type(res) == bool
 
 
 @pytest.mark.parametrize('edges,ref', [

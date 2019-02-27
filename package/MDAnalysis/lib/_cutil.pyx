@@ -22,7 +22,13 @@
 #
 #
 
-import cython
+# cython: cdivision=True
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: initializedcheck=False
+# cython: embedsignature=False
+# Warning: Sphinx chokes if embedsignature is True
+
 import numpy as np
 cimport numpy as np
 from libc.math cimport sqrt, fabs
@@ -35,8 +41,7 @@ from libcpp.vector cimport vector
 from cython.operator cimport dereference as deref
 
 
-__all__ = ['unique_int_1d', 'make_whole', 'find_fragments',
-           '_sarrus_det_single', '_sarrus_det_multiple']
+__all__ = ['unique_int_1d', 'isrange_int_1d', 'make_whole', 'find_fragments']
 
 cdef extern from "calc_distances.h":
     ctypedef float coordinate[3]
@@ -47,8 +52,6 @@ ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
 
 
-@cython.boundscheck(False) # turn off bounds-checking for entire function
-@cython.wraparound(False)  # turn off negative index wrapping for entire function
 def unique_int_1d(np.int64_t[:] values):
     """Find the unique elements of a 1D array of integers.
 
@@ -90,6 +93,50 @@ def unique_int_1d(np.int64_t[:] values):
     return np.array(result)
 
 
+def isrange_int_1d(np.intp_t[:] values):
+    """Checks if an integer array is a contiguous range.
+
+    Checks if ``values[i+1] == values[i] + 1`` holds for all elements of
+    `values`.
+
+    Parameters
+    ----------
+    values: numpy.ndarray
+        1D array of dtype ``numpy.intp``.
+
+    Returns
+    -------
+    bool
+        ``True`` if `values` is a contiguous range of numbers, ``False``
+        otherwise or if `values` is empty.
+
+    Notes
+    -----
+    The dtype ``numpy.intp`` is usually equivalent to ``numpy.int32`` on a 32
+    bit operating system, and, likewise, equivalent to ``numpy.int64`` on a 64
+    bit operating system. The exact behavior is compiler-dependent and can be
+    checked with ``print(numpy.intp)``.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef np.intp_t n_values = values.shape[0]
+    cdef np.intp_t i
+    cdef bint isrange = True
+    with nogil:
+        if n_values > 1:
+            if (values[n_values - 1] - values[0] + 1) == n_values:
+                for i in range(n_values - 1):
+                    if values[i] + 1 != values[i + 1]:
+                        isrange = False
+                        break
+            else:
+                isrange = False
+        elif n_values == 0:
+            isrange = False
+    return isrange
+
+
 cdef intset difference(intset a, intset b):
     """a.difference(b)
 
@@ -102,8 +149,6 @@ cdef intset difference(intset a, intset b):
     return output
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def make_whole(atomgroup, reference_atom=None, inplace=True):
     """Move all atoms in a single molecule so that bonds don't split over
     images.
@@ -313,8 +358,6 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     return np.array(newpos)
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 cdef float _dot(float * a, float * b):
     """Return dot product of two 3d vectors"""
     cdef ssize_t n
@@ -326,8 +369,6 @@ cdef float _dot(float * a, float * b):
     return sum1
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 cdef void _cross(float * a, float * b, float * result):
     """
     Calculates the cross product between 3d vectors
@@ -352,8 +393,7 @@ cdef float _norm(float * a):
         result += a[n]*a[n]
     return sqrt(result)
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
+
 cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
     """Computes the determinant of a 3x3 matrix."""
     cdef np.float64_t det
@@ -365,8 +405,7 @@ cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
     det -= m[0, 2] * m[1, 1] * m[2, 0]
     return det
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
+
 cpdef np.ndarray _sarrus_det_multiple(np.float64_t[:, :, ::1] m):
     """Computes all determinants of an array of 3x3 matrices."""
     cdef np.intp_t n
@@ -383,8 +422,7 @@ cpdef np.ndarray _sarrus_det_multiple(np.float64_t[:, :, ::1] m):
         det[i] -= m[i, 0, 2] * m[i, 1, 1] * m[i, 2, 0]
     return np.array(det)
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
+
 def find_fragments(atoms, bondlist):
     """Calculate distinct fragments from nodes (atom indices) and edges (pairs
     of atom indices).

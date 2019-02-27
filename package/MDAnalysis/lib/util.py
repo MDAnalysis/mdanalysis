@@ -117,6 +117,7 @@ Arrays
 ------
 
 .. autofunction:: unique_int_1d(values)
+.. autofunction:: isrange_int_1d(values)
 .. autofunction:: unique_rows
 .. autofunction:: blocks_of
 
@@ -208,7 +209,7 @@ from numpy.testing import assert_equal
 import inspect
 
 from ..exceptions import StreamWarning, DuplicateWarning
-from ._cutil import unique_int_1d
+from ._cutil import unique_int_1d, isrange_int_1d
 
 
 # Python 3.0, 3.1 do not have the builtin callable()
