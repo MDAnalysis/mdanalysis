@@ -41,7 +41,9 @@ from libcpp.vector cimport vector
 from cython.operator cimport dereference as deref
 
 
-__all__ = ['unique_int_1d', 'isrange_int_1d', 'make_whole', 'find_fragments']
+__all__ = ['unique_int_1d', 'isrange_int_1d', 'argwhere_int_1d',
+           'make_whole', 'find_fragments']
+
 
 cdef extern from "calc_distances.h":
     ctypedef float coordinate[3]
@@ -52,7 +54,7 @@ ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
 
 
-def unique_int_1d(np.int64_t[:] values):
+def unique_int_1d(np.intp_t[:] values, bint return_counts=False):
     """Find the unique elements of a 1D array of integers.
 
     This function is optimal on sorted arrays.
@@ -60,37 +62,135 @@ def unique_int_1d(np.int64_t[:] values):
     Parameters
     ----------
     values: numpy.ndarray
-        1D array of dtype ``numpy.int64`` in which to find the unique values.
+        1D array of dtype ``numpy.intp`` (or equivalent) in which to find the
+        unique values.
+    return_counts: bool, optional
+        If ``True``, the number of occurrences of each unique value is returned
+        as well.
 
     Returns
     -------
-    numpy.ndarray
+    unique: numpy.ndarray
         A deduplicated copy of `values`.
+    counts: numpy.ndarray, optional
+        An array of the same length as `unique` containing the number of
+        occurrences of each unique value in the original `values` array. Only
+        returned if `return_counts` is ``True``.
+
+    Notes
+    -----
+    The dtype ``numpy.intp`` is usually equivalent to ``numpy.int32`` on a 32
+    bit operating system, and, likewise, equivalent to ``numpy.int64`` on a 64
+    bit operating system. The exact behavior is compiler-dependent and can be
+    checked with ``print(numpy.intp)``.
+
+
+    See Also
+    --------
+    :func:`numpy.unique`
 
 
     .. versionadded:: 0.19.0
+    .. versionchanged:: 0.20.0
+       Added optional  `return_counts` parameter and changed dtype from
+       ``np.int64`` to ``np.intp`` (corresponds to atom indices).
+    """
+    cdef np.intp_t[::1] result
+    cdef np.intp_t[::1] counts
+    cdef np.intp_t n_values
+
+    if return_counts:
+        n_values = values.shape[0]
+        counts = np.ones(n_values, dtype=np.intp)
+        result = _unique_int_1d_with_counts(values, counts)
+        n_values = result.shape[0]
+        return np.asarray(result), np.asarray(counts[:n_values])
+
+    result = _unique_int_1d(values)
+    return np.asarray(result)
+
+
+cdef inline np.intp_t[::1] _unique_int_1d(np.intp_t[:] values):
+    """C/C++-level implementation of :func:`unique_int_1d` with
+    ``return_counts=False``.
+
+
+    .. versionadded:: 0.20.0
     """
     cdef bint is_monotonic = True
-    cdef int i = 0
-    cdef int j = 0
-    cdef int n_values = values.shape[0]
-    cdef np.int64_t[:] result = np.empty(n_values, dtype=np.int64)
+    cdef np.intp_t i = 0
+    cdef np.intp_t j = 0
+    cdef np.intp_t n_values = values.shape[0]
+    cdef np.intp_t[::1] result = np.empty(n_values, dtype=np.intp)
+    cdef np.intp_t[::1] srt
+    if n_values > 0:
+        result[0] = values[0]
+        if n_values > 1:
+            for i in range(1, n_values):
+                if values[i] != result[j]:
+                    j += 1
+                    result[j] = values[i]
+                if values[i] < values[i - 1]:
+                    is_monotonic = False
+            n_values = j + 1
+            if is_monotonic:
+                result = result[:n_values]
+            else:
+                # Here could also call the function recursively but that would
+                # render inlining impossible
+                j = 0
+                srt = np.sort(result[:n_values])
+                result[0] = srt[0]
+                for i in range(1, n_values):
+                    if srt[i] != result[j]:
+                        j += 1
+                        result[j] = srt[i]
+                result = result[:j + 1]
+    return result
 
-    if n_values == 0:
-        return np.array(result)
 
-    result[0] = values[0]
-    for i in range(1, n_values):
-        if values[i] != result[j]:
-            j += 1
-            result[j] = values[i]
-        if values[i] < values[i - 1]:
-            is_monotonic = False
-    result = result[:j + 1]
-    if not is_monotonic:
-        result = unique_int_1d(np.sort(result))
+cdef inline np.intp_t[::1] _unique_int_1d_with_counts(np.intp_t[:] values,
+                                                      np.intp_t[::1] counts):
+    """C/C++-level implementation of :func:`unique_int_1d` with
+    ``return_counts=True``.
 
-    return np.array(result)
+
+    .. versionadded:: 0.20.0
+    """
+    cdef bint is_monotonic = True
+    cdef np.intp_t i = 0
+    cdef np.intp_t j = 0
+    cdef np.intp_t n_values = values.shape[0]
+    cdef np.intp_t[::1] result = np.empty(n_values, dtype=np.intp)
+    cdef np.intp_t[::1] srt
+    if n_values > 0:
+        result[0] = values[0]
+        if n_values > 1:
+            for i in range(1, n_values):
+                if values[i] == result[j]:
+                    counts[j] += 1
+                else:
+                    j += 1
+                    result[j] = values[i]
+                if values[i] < values[i - 1]:
+                    is_monotonic = False
+                    break
+            if is_monotonic:
+                result = result[:j + 1]
+            else:
+                # reset counts, sort the values and try again:
+                counts[:j + 1] = 1
+                j = 0
+                srt = np.sort(values)
+                result[0] = srt[0]
+                for i in range(1, n_values):
+                    if srt[i] == result[j]:
+                        counts[j] += 1
+                    else:
+                        j += 1
+                        result[j] = srt[i]
+                result = result[:j + 1]
+    return result
 
 
 def isrange_int_1d(np.intp_t[:] values):
@@ -135,6 +235,65 @@ def isrange_int_1d(np.intp_t[:] values):
         elif n_values == 0:
             isrange = False
     return isrange
+
+
+def argwhere_int_1d(np.intp_t[:] arr, np.intp_t value):
+    """Find the array indices where elements of `arr` are equal to `value`.
+
+    This function is similar to calling `numpy.argwhere(arr == value).ravel()`
+    but is a bit faster since it avoids creating an intermediate boolean array.
+
+    Parameters
+    ----------
+    arr : numpy.ndarray
+        The array to search. Must be one-dimensional and of dtype ``numpy.intp``
+        or equivalent.
+    value : int
+        The value to search for. Must be of a type compatible with
+        ``numpy.intp``.
+
+    Returns
+    -------
+    numpy.ndarray
+        A one-dimensional array of dtype ``numpy.intp`` containing all indices
+        ``i`` which satisfy the condition ``arr[i] == value``.
+
+    Notes
+    -----
+    The dtype ``numpy.intp`` is usually equivalent to ``numpy.int32`` on a 32
+    bit operating system, and, likewise, equivalent to ``numpy.int64`` on a 64
+    bit operating system. The exact behavior is compiler-dependent and can be
+    checked with ``print(numpy.intp)``.
+
+    See Also
+    --------
+    :func:`numpy.argwhere`
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef np.intp_t[::1] result = np.empty(arr.shape[0], dtype=np.intp)
+    cdef np.intp_t nargs = _argwhere_int_1d(arr, value, result)
+    return np.asarray(result[:nargs])
+
+
+cdef inline np.intp_t _argwhere_int_1d(np.intp_t[:] arr, np.intp_t value,
+                                       np.intp_t[::1] result) nogil:
+    """C/C++-level implementation of :func:`argwhere_int_1d`.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef np.intp_t i = 0
+    cdef np.intp_t nargs = 0
+    cdef np.intp_t n = arr.shape[0]
+
+    for i in range(n):
+        if arr[i] == value:
+            result[nargs] = i
+            nargs += 1
+
+    return nargs
 
 
 cdef intset difference(intset a, intset b):

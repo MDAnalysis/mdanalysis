@@ -26,24 +26,50 @@ import pytest
 import numpy as np
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib._cutil import unique_int_1d, isrange_int_1d, find_fragments
+from MDAnalysis.lib._cutil import (unique_int_1d, isrange_int_1d,
+                                   argwhere_int_1d, find_fragments)
 
 
 @pytest.mark.parametrize('values', (
-    [],  # empty array
-    [1, 1, 1, 1, ],  # all identical
-    [2, 3, 5, 7, ],  # all different, monotonic
-    [5, 2, 7, 3, ],  # all different, non-monotonic
-    [1, 2, 2, 4, 4, 6, ],  # duplicates, monotonic
-    [1, 2, 2, 6, 4, 4, ],  # duplicates, non-monotonic
+    [],                  # empty array
+    [-999],              # single value array
+    [1, 1, 1, 1],        # all identical
+    [2, 3, 5, 7],        # all different, monotonic
+    [5, 2, 7, 3],        # all different, non-monotonic
+    [1, 2, 2, 4, 4, 6],  # duplicates, monotonic
+    [1, 2, 2, 6, 4, 4],  # duplicates, non-monotonic
+    [4, 2, 6, 1, 4, 2]   # duplicates, scrambled
 ))
 def test_unique_int_1d(values):
-    array = np.array(values, dtype=np.int64)
+    array = np.array(values, dtype=np.intp)
     ref = np.unique(array)
     res = unique_int_1d(array)
     assert_equal(res, ref)
     assert type(res) == type(ref)
     assert res.dtype == ref.dtype
+
+
+@pytest.mark.parametrize('values', (
+    [],                  # empty array
+    [-999],              # single value array
+    [1, 1, 1, 1],        # all identical
+    [2, 3, 5, 7],        # all different, monotonic
+    [5, 2, 7, 3],        # all different, non-monotonic
+    [1, 2, 2, 4, 4, 6],  # duplicates, monotonic
+    [1, 2, 2, 6, 4, 4],  # duplicates, non-monotonic
+    [4, 2, 6, 1, 4, 2]   # duplicates, scrambled
+))
+def test_unique_int_1d_return_counts(values):
+    array = np.array(values, dtype=np.intp)
+    ref_unique, ref_counts = np.unique(array, return_counts=True)
+    unique, counts = unique_int_1d(array, return_counts=True)
+    assert_equal(unique, ref_unique)
+    assert_equal(counts, ref_counts)
+    assert type(unique) == type(ref_unique)
+    assert type(counts) == type(ref_counts)
+    assert unique.dtype == ref_unique.dtype
+    assert counts.dtype == ref_counts.dtype
+
 
 @pytest.mark.parametrize('values, ref', (
     ([-3], True),                   # length-1 array, negative
@@ -76,6 +102,26 @@ def test_isrange_int_1d(values, ref):
     res = isrange_int_1d(array)
     assert_equal(res, ref)
     assert type(res) == bool
+
+
+@pytest.mark.parametrize('arr', (
+    [],                       # empty array
+    [1],                      # single value array
+    [1, 1, 1, 1],             # all identical
+    [0, 3, 5, 7],             # all different, monotonic
+    [5, 2, 7, 3],             # all different, non-monotonic
+    [-1, -1, 2, 2, 4, 4, 6],  # duplicates, monotonic
+    [1, 2, 2, 6, 4, 4, -1],   # duplicates, non-monotonic
+    [4, 2, 6, 1, 4, 2, -1]    # duplicates, scrambled
+))
+@pytest.mark.parametrize('value', (-1, 0, 1, 2, 3, 4, 5, 6, 7))
+def test_argwhere_int_1d(arr, value):
+    arr = np.array(arr, dtype=np.intp)
+    ref = np.argwhere(arr == value).ravel()
+    res = argwhere_int_1d(arr, value)
+    assert_equal(res, ref)
+    assert type(res) == type(ref)
+    assert res.dtype == ref.dtype
 
 
 @pytest.mark.parametrize('edges,ref', [
