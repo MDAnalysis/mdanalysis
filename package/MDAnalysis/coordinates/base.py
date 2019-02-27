@@ -227,6 +227,8 @@ class Timestep(object):
        :attr:`n_atoms` now a read only property.
        :attr:`frame` now 0-based instead of 1-based.
        Attributes `status` and `step` removed.
+    .. versionchanged:: 0.20.0
+       Changed order of positions, velocities, and forces arrays from 'F' to 'C'
     """
     order = 'C'
 
