@@ -692,6 +692,8 @@ class TestAtomGroupProperties(object):
         _isview = not _pos.flags['OWNDATA']
         assert _isview == isview
         assert atomgroup.iscontiguous == isview
+        # in any case, _pos must be C-contiguous:
+        assert _pos.flags['CARRAY']
         # change an entry in _pos:
         if len(atomgroup) > 0:
             _pos -= 1.0
