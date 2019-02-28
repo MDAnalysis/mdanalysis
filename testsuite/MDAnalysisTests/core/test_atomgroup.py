@@ -1074,6 +1074,10 @@ class TestAtomGroup(object):
         with pytest.raises(NoDataError):
             ag_no_molfrg._compound_indices(compound)
 
+    def test_compound_indices_wrongname(self, ag):
+        with pytest.raises(ValueError):
+            ag._compound_indices('boogie-woogie')
+
     def test_center_of_geometry(self, ag):
         assert_almost_equal(ag.center_of_geometry(),
                             [-0.04223963, 0.0141824, -0.03505163], decimal=5)
