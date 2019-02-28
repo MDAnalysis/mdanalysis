@@ -104,7 +104,8 @@ from numpy.lib.utils import deprecate
 
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
-from ..lib.util import cached, warn_if_not_unique, unique_int_1d, isrange_int_1d
+from ..lib.util import (cached, warn_if_not_unique, unique_int_1d,
+                        isrange_int_1d)
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
@@ -120,7 +121,8 @@ def _unpickle(uhash, ix):
     try:
         u = _ANCHOR_UNIVERSES[uhash]
     except KeyError:
-        # doesn't provide as nice an error message as before as only hash of universe is stored
+        # doesn't provide as nice an error message as before as only hash of
+        # universe is stored
         # maybe if we pickled the filename too we could do better...
         raise RuntimeError(
             "Couldn't find a suitable Universe to unpickle AtomGroup onto "
@@ -675,6 +677,73 @@ class GroupBase(_MutableBase):
         """
         return isrange_int_1d(self._ix)
 
+    def _compound_indices(self, compound):
+        """Return compound indices of the AtomGroup's atoms.
+
+        Parameters
+        ----------
+        compound : {'atoms', 'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}
+            A string indicating the type of compound.
+
+        Notes
+        -----
+        The compound indices of the compounds ``'atoms'`` or ``'group'`` are
+        identical to ``self.ix`` or ``np.zeros(len(self), dtype=np.intp)``,
+        respectively, and are only supported for completeness.
+
+        Returns
+        -------
+        numpy.ndarray
+            A C-contiguous numpy array of shape ``(self.natoms,)`` and
+            dtype ``numpy.intp`` containing the compound indices of atoms in
+            this AtomGroup.
+
+        Raises
+        ------
+        ValueError
+            If `compound` is not one of ``'atoms'``, ``'group'``,
+            ``'segments'``, ``'residues'``, ``'molecules'``, or ``'fragments'``.
+        ~MDAnalysis.exceptions.NoDataError
+            If `compound` is ``'molecules'`` but the topology doesn't
+            contain molecule information (molnums) or if `compound` is
+            ``'fragments'`` but the topology doesn't contain bonds.
+        """
+        if compound == 'fragments':
+            try:
+                compound_indices = self.fragindices
+            except NoDataError:
+                raise NoDataError("Cannot use compound='fragments', this "
+                                  "requires bonds.")
+        elif compound == 'molecules':
+            try:
+                compound_indices = self.molnums
+            except AttributeError:
+                raise NoDataError("Cannot use compound='molecules', this "
+                                  "requires molnums.")
+        elif compound == 'residues':
+            compound_indices = self.resindices
+        elif compound == 'segments':
+            compound_indices = self.segindices
+        elif compound == 'group':
+            compound_indices = np.zeros(len(self._ix), dtype=np.intp)
+        elif compound == 'atoms':
+            compound_indices = self.ix
+        else:
+            raise ValueError("Unrecognized compound definition '{}'."
+                             "".format(compound))
+        return np.ascontiguousarray(compound_indices, dtype=np.intp)
+
+    def _check_compound(self, compound, atoms=False):
+        valid = ['group', 'segments', 'residues', 'molecules', 'fragments']
+        if atoms:
+            valid.append('atoms')
+        comp = compound.lower()
+        if comp not in valid:
+            raise ValueError("Unrecognized compound definition '{}'. "
+                             "Please use one of {}.".format(compound, valid))
+        return comp
+
     @warn_if_not_unique
     def center(self, weights, pbc=None, compound='group'):
         """Weighted center of (compounds of) the group
@@ -699,7 +768,8 @@ class GroupBase(_MutableBase):
             :class:`Atoms<Atom>` to keep the compounds intact. Instead, the
             resulting position vectors will be moved to the primary unit cell
             after calculation.
-        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
             If ``'group'``, the weighted center of all atoms in the group will
             be returned as a single position vector. Else, the weighted centers
             of each :class:`Segment`, :class:`Residue`, molecule, or fragment
@@ -755,11 +825,11 @@ class GroupBase(_MutableBase):
             pbc = flags['use_pbc']
 
         atoms = self.atoms
+        comp = atoms._check_compound(compound)
 
         # enforce calculations in double precision:
         dtype = np.float64
 
-        comp = compound.lower()
         if comp == 'group':
             if pbc:
                 coords = atoms.pack_into_box(inplace=False)
@@ -775,27 +845,8 @@ class GroupBase(_MutableBase):
             # promote weights to dtype if required:
             weights = weights.astype(dtype, copy=False)
             return (coords * weights[:, None]).sum(axis=0) / weights.sum()
-        elif comp == 'residues':
-            compound_indices = atoms.resindices
-        elif comp == 'segments':
-            compound_indices = atoms.segindices
-        elif comp == 'molecules':
-            try:
-                compound_indices = atoms.molnums
-            except AttributeError:
-                raise NoDataError("Cannot use compound='molecules': "
-                                  "No molecule information in topology.")
-        elif comp == 'fragments':
-            try:
-                compound_indices = atoms.fragindices
-            except NoDataError:
-                raise NoDataError("Cannot use compound='fragments': "
-                                  "No bond information in topology.")
-        else:
-            raise ValueError("Unrecognized compound definition: {}\nPlease use"
-                             " one of 'group', 'residues', 'segments', "
-                             "'molecules', or 'fragments'.".format(compound))
-
+        
+        compound_indices = atoms._compound_indices(comp)
         # Sort positions and weights by compound index and promote to dtype if
         # required:
         sort_indices = np.argsort(compound_indices)
@@ -962,6 +1013,7 @@ class GroupBase(_MutableBase):
         """
 
         atoms = self.atoms
+        comp = atoms._check_compound(compound)
 
         if isinstance(attribute, string_types):
             attribute_values = getattr(atoms, attribute)
@@ -972,30 +1024,10 @@ class GroupBase(_MutableBase):
                                  "the number of atoms ({}) in the group."
                                  "".format(len(attribute_values), len(atoms)))
 
-        comp = compound.lower()
-
         if comp == 'group':
             return function(attribute_values, axis=0)
-        elif comp == 'residues':
-            compound_indices = atoms.resindices
-        elif comp == 'segments':
-            compound_indices = atoms.segindices
-        elif comp == 'molecules':
-            try:
-                compound_indices = atoms.molnums
-            except AttributeError:
-                raise NoDataError("Cannot use compound='molecules': "
-                                  "No molecule information in topology.")
-        elif comp == 'fragments':
-            try:
-                compound_indices = atoms.fragindices
-            except NoDataError:
-                raise NoDataError("Cannot use compound='fragments': "
-                                  "No bond information in topology.")
-        else:
-            raise ValueError("Unrecognized compound definition: '{}'. Please "
-                             "use one of 'group', 'residues', 'segments', "
-                             "'molecules', or 'fragments'.".format(compound))
+        
+        compound_indices = atoms._compound_indices(comp)
 
         higher_dims = list(attribute_values.shape[1:])
 
@@ -1427,18 +1459,12 @@ class GroupBase(_MutableBase):
         # no matter what kind of group we have, we need to work on its (unique)
         # atoms:
         atoms = self.atoms
+        comp = atoms._check_compound(compound, atoms=True)
+
         if not self.isunique:
             _atoms = atoms.unique
             restore_mask = atoms._unique_restore_mask
             atoms = _atoms
-
-        comp = compound.lower()
-        if comp not in ('atoms', 'group', 'segments', 'residues', 'molecules', \
-                        'fragments'):
-            raise ValueError("Unrecognized compound definition '{}'. "
-                             "Please use one of 'atoms', 'group', 'segments', "
-                             "'residues', 'molecules', or 'fragments'."
-                             "".format(compound))
 
         if len(atoms) == 0:
             return np.zeros((0, 3), dtype=np.float32)
@@ -1471,23 +1497,7 @@ class GroupBase(_MutableBase):
                 target = distances.apply_PBC(ctrpos, box)
                 positions += target - ctrpos
             else:
-                if comp == 'segments':
-                    compound_indices = atoms.segindices
-                elif comp == 'residues':
-                    compound_indices = atoms.resindices
-                elif comp == 'molecules':
-                    try:
-                        compound_indices = atoms.molnums
-                    except AttributeError:
-                        raise NoDataError("Cannot use compound='molecules', "
-                                          "this requires molnums.")
-                else:  # comp == 'fragments'
-                    try:
-                        compound_indices = atoms.fragindices
-                    except NoDataError:
-                        raise NoDataError("Cannot use compound='fragments', "
-                                          "this requires bonds.")
-
+                compound_indices = atoms._compound_indices(comp)
                 # compute required shifts:
                 if ctr == 'com':
                     ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
@@ -1588,10 +1598,13 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.20.0
         """
         atoms = self.atoms
+        comp = atoms._check_compound(compound)
+
         # bail out early if no bonds in topology:
         if not hasattr(atoms, 'bonds'):
             raise NoDataError("{}.unwrap() not available; this requires Bonds"
                               "".format(self.__class__.__name__))
+
         unique_atoms = atoms.unique
         if reference is not None:
             ref = reference.lower()
@@ -1604,12 +1617,7 @@ class GroupBase(_MutableBase):
             elif ref != 'cog':
                 raise ValueError("Unrecognized reference '{}'. Please use one "
                                  "of 'com', 'cog', or None.".format(reference))
-        comp = compound.lower()
-        if comp not in ('fragments', 'group', 'residues', 'segments',
-                        'molecules'):
-            raise ValueError("Unrecognized compound definition '{}'. Please "
-                             "use one of 'group', 'residues', 'segments', "
-                             "'molecules', or 'fragments'.".format(compound))
+
         # The 'group' needs no splitting:
         if comp == 'group':
             positions = mdamath.make_whole(unique_atoms, inplace=False)
@@ -1631,18 +1639,7 @@ class GroupBase(_MutableBase):
                 positions += target - refpos
         # We need to split the group into compounds:
         else:
-            if comp == 'fragments':
-                compound_indices = unique_atoms.fragindices
-            elif comp == 'residues':
-                compound_indices = unique_atoms.resindices
-            elif comp == 'segments':
-                compound_indices = unique_atoms.segindices
-            else:  # comp == 'molecules'
-                try:
-                    compound_indices = unique_atoms.molnums
-                except AttributeError:
-                    raise NoDataError("Cannot use compound='molecules', this "
-                                      "requires molnums.")
+            compound_indices = unique_atoms._compound_indices(comp)
             # Now process every compound:
             unique_compound_indices = unique_int_1d(compound_indices)
             positions = unique_atoms.positions

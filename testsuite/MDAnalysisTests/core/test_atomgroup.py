@@ -1002,6 +1002,49 @@ class TestAtomGroup(object):
         """testing that len(atomgroup) == atomgroup.n_atoms"""
         assert len(ag) == ag.n_atoms, "len and n_atoms disagree"
 
+    @pytest.mark.parametrize('compound, ref', (
+        ('aToMs', 'atoms'),
+        ('gRoUp', 'group'),
+        ('rEsIdUeS', 'residues'),
+        ('sEgMeNtS', 'segments'),
+        ('mOlEcUlEs', 'molecules'),
+        ('fRaGmEnTs', 'fragments')
+    ))
+    @pytest.mark.parametrize('atoms', (True, False))
+    def test_check_compound(self, ag, compound, ref, atoms):
+        if (not atoms) and (ref == 'atoms'):
+            with pytest.raises(ValueError):
+               ag._check_compound(compound, atoms=atoms)
+        else: 
+            assert ag._check_compound(compound, atoms=atoms) == ref
+
+    @pytest.mark.parametrize('atoms', (True, False))
+    def test_check_compound_wrongname(self, ag, atoms):
+        with pytest.raises(ValueError):
+            ag._check_compound('random_bs', atoms=atoms)
+
+    @pytest.mark.parametrize('compound, indexname', (
+        ('atoms', 'ix'),
+        ('group', None),
+        ('residues', 'resindices'),
+        ('segments', 'segindices'),
+        ('molecules', 'molnums'),
+        ('fragments', 'fragindices')
+    ))
+    def test_compound_indices(self, ag_molfrg, compound, indexname):
+        if compound == 'group':
+            ref = np.zeros(len(ag_molfrg), dtype=np.intp)
+        else:
+            ref = getattr(ag_molfrg, indexname)
+        res = ag_molfrg._compound_indices(compound)
+        assert_equal(res, ref)
+        assert res.dtype == ref.dtype
+
+    @pytest.mark.parametrize('compound', ('molecules', 'fragments'))
+    def test_compound_indices_nomols_nofrags(self, ag_no_molfrg, compound):
+        with pytest.raises(NoDataError):
+            ag_no_molfrg._compound_indices(compound)
+
     def test_center_of_geometry(self, ag):
         assert_almost_equal(ag.center_of_geometry(),
                             [-0.04223963, 0.0141824, -0.03505163], decimal=5)
