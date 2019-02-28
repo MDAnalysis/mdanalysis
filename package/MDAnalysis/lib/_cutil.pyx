@@ -222,9 +222,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
             raise ValueError("Reference atom not in atomgroup")
         ref = ix_to_rel[reference_atom.ix]
 
-    box = atomgroup.dimensions.astype(np.float32)
-    # TODO: remove astype(np.float32) once all universes return float32 boxes
-
+    box = atomgroup.dimensions
     for i in range(3):
         half_box[i] = 0.5 * box[i]
         if box[i] == 0.0:

@@ -496,6 +496,7 @@ class TestMakeWhole(object):
         assert_array_equal(ag.positions, orig_pos)
 
     def test_double_precision_box(self):
+        # This test could in principle be removed since PR #2213
         # universe with double precision box containing a 2-atom molecule
         # broken accross a corner:
         u = mda.Universe.empty(
@@ -510,7 +511,7 @@ class TestMakeWhole(object):
         ts = u.trajectory.ts
         ts.frame = 0
         ts.dimensions = [10, 10, 10, 90, 90, 90]
-        assert ts.dimensions.dtype == np.float64
+        #assert ts.dimensions.dtype == np.float64  # not applicable since #2213
         ts.positions = np.array([[1, 1, 1,], [9, 9, 9]], dtype=np.float32)
         u.add_TopologyAttr(Bonds([(0, 1)]))
         mdamath.make_whole(u.atoms)

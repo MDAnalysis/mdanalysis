@@ -87,6 +87,8 @@ Fixes
   * *Group.wrap() is now guaranteed to only work on atoms actually belonging to
     the calling group. (Issue #2203, PR #2204)
   * Fixed documentation of MDAnalysis.analysis.contacts
+  * Enforced consistent dtype (numpy.float32) of Universe.dimensions and
+    Timestep.dimensions for all Universes and Readers (Issue #2190, PR #2213)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
