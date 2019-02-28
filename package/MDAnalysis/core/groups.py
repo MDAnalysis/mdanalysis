@@ -105,7 +105,7 @@ from numpy.lib.utils import deprecate
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
 from ..lib.util import (cached, warn_if_not_unique, unique_int_1d,
-                        isrange_int_1d, argwhere_int_1d)
+                        iscontiguous_int_1d, argwhere_int_1d)
 from ..lib import distances
 from ..lib import c_distances
 from ..lib import transformations
@@ -676,7 +676,7 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.20.0
         """
-        return isrange_int_1d(self._ix)
+        return iscontiguous_int_1d(self._ix)
 
     def _compound_indices(self, compound):
         """Return compound indices of the AtomGroup's atoms.

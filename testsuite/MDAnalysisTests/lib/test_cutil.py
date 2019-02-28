@@ -26,7 +26,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib._cutil import (unique_int_1d, isrange_int_1d,
+from MDAnalysis.lib._cutil import (unique_int_1d, iscontiguous_int_1d,
                                    argwhere_int_1d, find_fragments)
 
 
@@ -97,9 +97,9 @@ def test_unique_int_1d_return_counts(values):
     ([1, 1, 2, 3, 4], False),       # range with start duplicates
     ([-1, 2, 2, 4, 3], False)       # duplicates, non-monotonic
 ))
-def test_isrange_int_1d(values, ref):
+def test_iscontiguous_int_1d(values, ref):
     array = np.array(values, dtype=np.intp)
-    res = isrange_int_1d(array)
+    res = iscontiguous_int_1d(array)
     assert_equal(res, ref)
     assert type(res) == bool
 

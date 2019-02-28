@@ -41,7 +41,7 @@ from libcpp.vector cimport vector
 from cython.operator cimport dereference as deref
 
 
-__all__ = ['unique_int_1d', 'isrange_int_1d', 'argwhere_int_1d',
+__all__ = ['unique_int_1d', 'iscontiguous_int_1d', 'argwhere_int_1d',
            'make_whole', 'find_fragments']
 
 
@@ -193,7 +193,7 @@ cdef inline np.intp_t[::1] _unique_int_1d_with_counts(np.intp_t[:] values,
     return result
 
 
-def isrange_int_1d(np.intp_t[:] values):
+def iscontiguous_int_1d(np.intp_t[:] values):
     """Checks if an integer array is a contiguous range.
 
     Checks if ``values[i+1] == values[i] + 1`` holds for all elements of
@@ -222,19 +222,19 @@ def isrange_int_1d(np.intp_t[:] values):
     """
     cdef np.intp_t n_values = values.shape[0]
     cdef np.intp_t i
-    cdef bint isrange = True
+    cdef bint iscontiguous = True
     with nogil:
         if n_values > 1:
             if (values[n_values - 1] - values[0] + 1) == n_values:
                 for i in range(n_values - 1):
                     if values[i] + 1 != values[i + 1]:
-                        isrange = False
+                        iscontiguous = False
                         break
             else:
-                isrange = False
+                iscontiguous = False
         elif n_values == 0:
-            isrange = False
-    return isrange
+            iscontiguous = False
+    return iscontiguous
 
 
 def argwhere_int_1d(np.intp_t[:] arr, np.intp_t value):

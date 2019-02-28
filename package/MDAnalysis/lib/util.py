@@ -117,7 +117,7 @@ Arrays
 ------
 
 .. autofunction:: unique_int_1d(values, return_counts=False)
-.. autofunction:: isrange_int_1d(values)
+.. autofunction:: iscontiguous_int_1d(values)
 .. autofunction:: argwhere_int_1d(arr, value)
 .. autofunction:: unique_rows
 .. autofunction:: blocks_of
@@ -210,7 +210,7 @@ from numpy.testing import assert_equal
 import inspect
 
 from ..exceptions import StreamWarning, DuplicateWarning
-from ._cutil import unique_int_1d, isrange_int_1d, argwhere_int_1d
+from ._cutil import unique_int_1d, iscontiguous_int_1d, argwhere_int_1d
 
 
 # Python 3.0, 3.1 do not have the builtin callable()
