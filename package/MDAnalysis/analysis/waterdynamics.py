@@ -1231,7 +1231,53 @@ class SurvivalProbability(object):
         elif verbose:
             print(args)
 
-    def run(self, tau_max=20, start=0, stop=None, step=1, residues=False, verbose=False, intermittency=0):
+    def _correct_intermittency(self, intermittency, selected_ids):
+        """
+        Pre-process Consecutive Intermittency
+        :param intermittency: the max gap allowed and to be corrected
+        :param selected_ids: modifies the selecteded IDs in place by adding atoms which left for <= :param intermittency
+        """
+        self.print('Correcting the selected IDs for intermittancy (gaps). ')
+        if intermittency == 0:
+            return
+
+        # If the atom is absent for a number of frames equal or smaller
+        # than the parameter intermittency, then correct the data and remove the absence.
+        # ie 7,G,G,7 with inter=2 will be replaced by 7,7,7,7, where G=absence
+        for i, ids in enumerate(selected_ids):
+            # initially update each frame as seen 0 ago (now)
+            seen_frames_ago = {i: 0 for i in ids}
+            for j in range(1, intermittency + 2):
+                for atomid in seen_frames_ago.keys():
+                    # run out of atoms
+                    if i + j >= len(selected_ids):
+                        continue
+
+                    # if the atom is absent now
+                    if not atomid in selected_ids[i + j]:
+                        # increase its absence counter
+                        seen_frames_ago[atomid] += 1
+                        continue
+
+                    # the atom is found
+                    # it was present in the last frame
+                    if seen_frames_ago[atomid] == 0:
+                        continue
+
+                    # we are passed the gap
+                    if seen_frames_ago[atomid] > intermittency:
+                        continue
+
+                    # the atom was absent but returned on time (<= intermittency)
+                    # add it to the frames where it was absent.
+                    # Introduce the corrections.
+                    for k in range(seen_frames_ago[atomid], 0, -1):
+                        selected_ids[i + j - k].add(atomid)
+
+                    seen_frames_ago[atomid] = 0
+
+
+    def run(self, tau_max=20, start=0, stop=None, step=1, residues=False, intermittency=0, verbose=False):
         """
         Computes and returns the survival probability timeseries
 
@@ -1249,12 +1295,11 @@ class SurvivalProbability(object):
             the selection and analysis will be carried out on the residues (resids) rather than on atoms.
             A single atom is sufficient to classify the residue as within the distance.
         intermittency : int
-            The number of frames where the selected atom is allowed to leave but be counted as still in the selection.
-            0 means it is continuous, which is that for tau_max \tau, the atom survives only if it is present at each
-            tau :math:`1 <= \tau <= tau_max`. For other values, the data is preprocessed to remove gaps of max size
-            of the intermittency value. Ie when set to 2, if the atom leaves the selection only for two frames,
-            it is counted as in. If intermittency is set to the value of \tau-1, the atom has to be present only in the first frame
-            and in the last frame.
+            The maximum number of frames where an atom can leave but count as present if it returns the next frame.
+            0 means a continuous survival probability, which is that for tau_max \tau, the atom survives only if it
+            is present at each tau :math:`1 <= \tau <= tau_max`. For other values, the data is preprocessed to
+            remove gaps of max size of the intermittency value. Ie when set to 2, if the atom leaves the selection
+            only for two consecutive frames, it is counted as in.
         verbose : Boolean
             Overwrite the constructor's verbosity
 
@@ -1284,7 +1329,7 @@ class SurvivalProbability(object):
             raise ValueError("Too few frames selected for given tau_max.")
 
         # preload the frames (atom IDs) to a list of sets
-        selected_ids = []
+        self.selected_ids = []
 
         # skip frames that will not be used
         # Example: step 5 and tau 2: L, L, L, S, S, L, L, L, S, S, ... with L = Load, and S = Skip
@@ -1308,44 +1353,13 @@ class SurvivalProbability(object):
 
             # SP of residues or of atoms
             ids = atoms.residues.resids if residues else atoms.ids
-            selected_ids.append(set(ids))
+            self.selected_ids.append(set(ids))
 
             frame_no += 1
             frame_loaded_counter += 1
 
-        # Pre-process Consecutive Intermittency
-        print('Original intermittency', selected_ids)
-        if intermittency > 0:
-            # Correct the data for the intermittency. If the atom is absent for a number of frames equal or smaller
-            # than the parameter intermittency, then correct the data and remove the absence.
-            # This is done by a separate pass over the data.
-            for i, ids in enumerate(selected_ids):
-                # look at the inter+2 ahead to see if we need to fill in any gaps
-                # ie 7,G,G,7 with inter=2 will be replaced by 7,7,7,7
-
-                # initially update each frame as seen 0 ago (now)
-                frames_ago_seen = {i: 0 for i in ids}
-                for j in range(1, intermittency + 2):
-                    for atomid in frames_ago_seen.keys():
-                        if i + j >= len(selected_ids):
-                            continue
-
-                        # if the atom is absent
-                        if not atomid in selected_ids[i + j]:
-                            # increase its absence counter
-                            frames_ago_seen[atomid] += 1
-
-                        # the atom is found
-                        elif atomid in selected_ids[i + j]:
-                            # if the atom was absent before
-                            if frames_ago_seen[atomid] != 0 and frames_ago_seen[atomid] <= intermittency:
-                                # add it to the frames where it was absent and it meets the criteria
-                                for b in range(frames_ago_seen[atomid], 0, -1):
-                                    print('adding 9')
-                                    selected_ids[i + j - b].add(atomid)
-
-                            frames_ago_seen[atomid] = 0
-        print('Corrected intermittency', selected_ids)
+        # correct the dataset for gaps (intermittency)
+        self._correct_intermittency(intermittency, self.selected_ids)
 
         # calculate Survival Probability
         tau_timeseries = np.arange(1, tau_max + 1)
@@ -1354,8 +1368,8 @@ class SurvivalProbability(object):
         # frames not analysed are skipped because they were not loaded
         step = tau_max + 1 if step >= (tau_max + 1) else step
 
-        for t in range(0, len(selected_ids), step):
-            Nt = len(selected_ids[t])
+        for t in range(0, len(self.selected_ids), step):
+            Nt = len(self.selected_ids[t])
 
             if Nt == 0:
                 self.print(verbose,
@@ -1363,11 +1377,11 @@ class SurvivalProbability(object):
                 continue
 
             for tau in tau_timeseries:
-                if t + tau >= len(selected_ids):
+                if t + tau >= len(self.selected_ids):
                     break
 
                 # continuous: IDs that survive from t to t + tau and at every frame in between
-                Ntau = len(set.intersection(*selected_ids[t:t + tau + 1]))
+                Ntau = len(set.intersection(*self.selected_ids[t:t + tau + 1]))
                 sp_timeseries_data[tau - 1].append(Ntau / float(Nt))
 
         # user can investigate the distribution and sample size

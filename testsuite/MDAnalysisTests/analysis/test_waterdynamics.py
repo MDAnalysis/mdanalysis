@@ -149,7 +149,7 @@ def test_SurvivalProbability_intermittency1and2(universe):
         select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
         sp = waterdynamics.SurvivalProbability(universe, "")
         sp.run(tau_max=3, stop=9, verbose=True, intermittency=2)
-        print(sp.sp_timeseries)
+        assert all((x == set([9, 8]) for x in sp.selected_ids))
         assert_almost_equal(sp.sp_timeseries, [1, 1, 1])
 
 
@@ -162,5 +162,4 @@ def test_SurvivalProbability_intermittency2lacking(universe):
         select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
         sp = waterdynamics.SurvivalProbability(universe, "")
         sp.run(tau_max=3, stop=8, verbose=True, intermittency=2)
-        print(sp.sp_timeseries)
         assert_almost_equal(sp.sp_timeseries, [0, 0, 0])
