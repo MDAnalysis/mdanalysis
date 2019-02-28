@@ -488,7 +488,7 @@ class Universe(object):
 
         if trajectory:
             coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
-            dims = np.zeros(6, dtype=np.float64)
+            dims = np.zeros(6, dtype=np.float32)
             vels = np.zeros_like(coords) if velocities else None
             forces = np.zeros_like(coords) if forces else None
 
@@ -658,7 +658,7 @@ class Universe(object):
 
             velocities = np.zeros_like(coordinates) if has_vels else None
             forces = np.zeros_like(coordinates) if has_fors else None
-            dimensions = (np.zeros((n_frames, 6), dtype=np.float64)
+            dimensions = (np.zeros((n_frames, 6), dtype=np.float32)
                           if has_dims else None)
 
             for i, ts in enumerate(self.trajectory[start:stop:step]):
