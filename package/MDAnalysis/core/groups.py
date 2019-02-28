@@ -735,6 +735,33 @@ class GroupBase(_MutableBase):
         return np.ascontiguousarray(compound_indices, dtype=np.intp)
 
     def _check_compound(self, compound, atoms=False):
+        """Checks if `compound` is a known compound.
+
+        `compound` is case-insensitive.
+
+        Parameters
+        ----------
+        compound: str
+            The `compound` keyword to check. Must be one of ``'group'``,
+            ``'segments'``, ``'residues'``, ``'molecules'``, or ``'fragments'``.
+        atoms: bool
+            If ``True``, ``'atoms'`` is also allowed as a `compound`.
+
+        Returns
+        -------
+        str
+            `compound` converted to lowercase.
+
+        Raises
+        ------
+        ValueError
+            If ``compound.lower()`` is none of ``'group'``, ``'segments'``,
+            ``'residues'``, ``'molecules'``, or ``'fragments'`` (or, if `atoms`
+            is ``True``, also ``'atoms'``).
+
+        
+        .. versionadded:: 0.20.0
+        """
         valid = ['group', 'segments', 'residues', 'molecules', 'fragments']
         if atoms:
             valid.append('atoms')
