@@ -107,6 +107,7 @@ from ..lib import util
 from ..lib.util import (cached, warn_if_not_unique, unique_int_1d,
                         isrange_int_1d, argwhere_int_1d)
 from ..lib import distances
+from ..lib import c_distances
 from ..lib import transformations
 from ..lib import mdamath
 from ..selections import get_writer as get_selection_writer_for
@@ -943,7 +944,8 @@ class GroupBase(_MutableBase):
             be calculated without moving any :class:`Atoms<Atom>` to keep the
             compounds intact. Instead, the resulting position vectors will be
             moved to the primary unit cell after calculation.
-        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
             If ``'group'``, the center of geometry of all :class:`Atoms<Atom>`
             in the group will be returned as a single position vector. Else, the
             centers of geometry of each :class:`Segment` or :class:`Residue`
@@ -1426,7 +1428,7 @@ class GroupBase(_MutableBase):
         -------
         numpy.ndarray
             Array of wrapped atom coordinates of dtype `np.float32` and shape
-            ``(len(self.atoms.n_atoms), 3)``
+            ``(self.atoms.n_atoms, 3)``
 
         Raises
         ------
@@ -1434,7 +1436,7 @@ class GroupBase(_MutableBase):
             If `compound` is not one of ``'atoms'``, ``'group'``,
             ``'segments'``, ``'residues'``, ``'molecules'``, or ``'fragments'``.
         ~MDAnalysis.exceptions.NoDataError
-            If `compound` is ``'molecule'`` but the topology doesn't
+            If `compound` is ``'molecules'`` but the topology doesn't
             contain molecule information (molnums) or if `compound` is
             ``'fragments'`` but the topology doesn't contain bonds or if
             `center` is ``'com'`` but the topology doesn't contain masses.
@@ -1492,13 +1494,18 @@ class GroupBase(_MutableBase):
         """
         # Try and auto detect box dimensions:
         if box is None:
-            box = self.dimensions
+            box = self.dimensions.astype(np.float32, copy=False)
         else:
             box = np.asarray(box, dtype=np.float32)
         if not np.all(box > 0.0) or box.shape != (6,):
             raise ValueError("Invalid box: Box has invalid shape or not all "
                              "box dimensions are positive. You can specify a "
                              "valid box using the 'box' argument.")
+        if box[3] == 90.0 and box[4] == 90.0 and box[5] == 90.0:
+            pbc_func = c_distances.ortho_pbc
+        else:
+            box = mdamath.triclinic_vectors(box)
+            pbc_func = c_distances.triclinic_pbc
 
         # no matter what kind of group we have, we need to work on its (unique)
         # atoms:
@@ -1511,49 +1518,55 @@ class GroupBase(_MutableBase):
             atoms = _atoms
 
         if len(atoms) == 0:
-            return np.zeros((0, 3), dtype=np.float32)
+            return np.empty((0, 3), dtype=np.float32)
+
+        if inplace:
+            positions = atoms._positions  # try to get a view
+        else:
+            positions = atoms.positions  # get a copy
 
         if comp == "atoms" or len(atoms) == 1:
-            positions = distances.apply_PBC(atoms.positions, box)
+                pbc_func(positions, box)
         else:
             ctr = center.lower()
             if ctr  == 'com':
-                # Don't use hasattr(self, 'masses') because that's incredibly
-                # slow for ResidueGroups or SegmentGroups
-                if not hasattr(self._u._topology, 'masses'):
+                try:
+                    masses = atoms.masses
+                except AttributeError:
                     raise NoDataError("Cannot perform wrap with center='com', "
                                       "this requires masses.")
             elif ctr != 'cog':
                 raise ValueError("Unrecognized center definition '{}'. Please "
                                  "use one of 'com' or 'cog'.".format(center))
-            positions = atoms.positions
             if comp == 'group':
                 # compute and apply required shift:
                 if ctr == 'com':
-                    ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
+                    ctrpos = atoms.center(masses, pbc=False, compound=comp)
                     if np.isnan(ctrpos[0]):
                         raise ValueError("Cannot use compound='group' with "
                                          "center='com' because the total mass "
                                          "of the group is zero.")
                 else:  # ctr == 'cog'
-                    ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
+                    ctrpos = atoms.center(None, pbc=False, compound=comp)
                 ctrpos = ctrpos.astype(np.float32, copy=False)
-                target = distances.apply_PBC(ctrpos, box)
+                target = ctrpos.copy()
+                pbc_func(target.reshape((-1, 3)), box)
                 positions += target - ctrpos
             else:
                 compound_indices = atoms._compound_indices(comp)
                 # compute required shifts:
                 if ctr == 'com':
-                    ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
+                    ctrpos = atoms.center(masses, pbc=False, compound=comp)
                     if np.any(np.isnan(ctrpos)):
                         raise ValueError("Cannot use compound='{0}' with "
                                          "center='com' because the total mass "
                                          "of at least one of the {0} is zero."
                                          "".format(comp))
                 else:  # ctr == 'cog'
-                    ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
+                    ctrpos = atoms.center(None, pbc=False, compound=comp)
                 ctrpos = ctrpos.astype(np.float32, copy=False)
-                target = distances.apply_PBC(ctrpos, box)
+                target = ctrpos.copy()
+                pbc_func(target.reshape((-1, 3)), box)
                 shifts = target - ctrpos
 
                 # apply the shifts:
@@ -1564,7 +1577,7 @@ class GroupBase(_MutableBase):
                     positions[mask] += shifts[shift_idx]
                     shift_idx += 1
 
-        if inplace:
+        if inplace and not atoms.iscontiguous:
             atoms.positions = positions
         if not self.isunique:
             positions = positions[restore_mask]

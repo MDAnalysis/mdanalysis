@@ -460,33 +460,41 @@ class TestCenter(object):
     def test_center_1(self, ag):
         weights = np.zeros(ag.n_atoms)
         weights[0] = 1
-        assert_almost_equal(ag.center(weights),
-                                  ag.positions[0])
+        pos = ag.positions
+        assert_almost_equal(ag.center(weights), ag.positions[0])
+        assert_equal(ag.positions, pos)
 
     def test_center_2(self, ag):
         weights = np.zeros(ag.n_atoms)
         weights[:4] = 1. / 4.
-        assert_almost_equal(ag.center(weights),
-                                  ag.positions[:4].mean(axis=0))
+        pos = ag.positions
+        assert_almost_equal(ag.center(weights), ag.positions[:4].mean(axis=0))
+        assert_equal(ag.positions, pos)
 
     def test_center_duplicates(self, ag):
         weights = np.ones(ag.n_atoms)
         weights[0] = 2.
         ref = ag.center(weights)
         ag2 = ag + ag[0]
+        pos = ag2.positions
         with pytest.warns(DuplicateWarning):
             ctr = ag2.center(None)
         assert_almost_equal(ctr, ref, decimal=6)
+        assert_equal(ag2.positions, pos)
 
     def test_center_wrong_length(self, ag):
         weights = np.ones(ag.n_atoms + 4)
+        pos = ag.positions
         with pytest.raises(ValueError):
             ag.center(weights)
+        assert_equal(ag.positions, pos)
 
     def test_center_wrong_shape(self, ag):
         weights = np.ones((ag.n_atoms, 2))
+        pos = ag.positions
         with pytest.raises(ValueError):
             ag.center(weights)
+        assert_equal(ag.positions, pos)
 
     def test_center_emty_ag(self, ag):
         eag = ag[[]]
@@ -505,8 +513,10 @@ class TestCenter(object):
 
     def test_center_invalid_box(self, ag):
         ag.universe.dimensions = [0, 0, 0, 0, 0, 0]
+        pos = ag.positions
         with pytest.raises(ValueError):
             ag.center(None, pbc=True)
+        assert_equal(ag.positions, pos)
 
 
 class TestSplit(object):
@@ -1159,13 +1169,17 @@ class TestAtomGroup(object):
         assert_almost_equal(com, ref, decimal=5)
 
     def test_center_wrong_compound(self, ag):
+        pos = ag.positions
         with pytest.raises(ValueError):
             ag.center(weights=None, compound="foo")
+        assert_equal(ag.positions, pos)
 
     @pytest.mark.parametrize('compound', ('molecules', 'fragments'))
     def test_center_compounds_special_fail(self, ag_no_molfrg, compound):
+        pos = ag_no_molfrg.positions
         with pytest.raises(NoDataError):
             ag_no_molfrg.center(weights=None, compound=compound)
+        assert_equal(ag_no_molfrg.positions, pos)
 
     @pytest.mark.parametrize('weights', (None, np.array([0.0]),
                                          np.array([2.0])))
@@ -1180,7 +1194,9 @@ class TestAtomGroup(object):
         if compound != 'group':
             ref = ref.reshape((1, 3))
         ag_s = mda.AtomGroup([at])
+        pos = ag_s.positions
         assert_equal(ref, ag_s.center(weights, pbc=False, compound=compound))
+        assert_equal(ag_s.positions, pos)
 
     @pytest.mark.parametrize('pbc', (False, True))
     @pytest.mark.parametrize('weights', (None, np.array([])))
@@ -1205,7 +1221,9 @@ class TestAtomGroup(object):
         if compound != 'group':
             ref = ref.reshape((1, 3))
         ag_s = mda.AtomGroup([at])
+        pos = ag_s.positions
         assert_equal(ref, ag_s.center(weights, pbc=True, compound=compound))
+        assert_equal(ag_s.positions, pos)
 
     @pytest.mark.parametrize('pbc', (False, True))
     @pytest.mark.parametrize('weights', (None, np.array([])))
@@ -1213,7 +1231,7 @@ class TestAtomGroup(object):
                                           'molecules', 'fragments'))
     def test_center_compounds_empty(self, ag_molfrg, pbc, weights, compound):
         ref = np.empty((0, 3), dtype=np.float64)
-        ag_e = mda.AtomGroup([], ag_molfrg.universe)
+        ag_e = ag_molfrg[[]]
         assert_equal(ref, ag_e.center(weights, pbc=pbc, compound=compound))
 
     @pytest.mark.parametrize('pbc', (False, True))
@@ -1230,7 +1248,9 @@ class TestAtomGroup(object):
             n_compounds = len(ag_molfrg.groupby(name))
             ref = np.full((n_compounds, 3), np.nan, dtype=np.float64)
         weights = np.zeros(len(ag_molfrg))
+        pos = ag_molfrg.positions
         assert_equal(ref, ag_molfrg.center(weights, pbc=pbc, compound=compound))
+        assert_equal(ag_molfrg.positions, pos)
 
     def test_coordinates(self, ag):
         assert_almost_equal(
