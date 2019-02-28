@@ -1231,7 +1231,7 @@ class SurvivalProbability(object):
         elif verbose:
             print(args)
 
-    def run(self, tau_max=20, start=0, stop=None, step=1, residues=False, verbose=False):
+    def run(self, tau_max=20, start=0, stop=None, step=1, residues=False, verbose=False, intermittency=0):
         """
         Computes and returns the survival probability timeseries
 
@@ -1248,6 +1248,13 @@ class SurvivalProbability(object):
         residues : Boolean
             the selection and analysis will be carried out on the residues (resids) rather than on atoms.
             A single atom is sufficient to classify the residue as within the distance.
+        intermittency : int
+            The number of frames where the selected atom is allowed to leave but be counted as still in the selection.
+            0 means it is continuous, which is that for tau_max \tau, the atom survives only if it is present at each
+            tau :math:`1 <= \tau <= tau_max`. For other values, the data is preprocessed to remove gaps of max size
+            of the intermittency value. Ie when set to 2, if the atom leaves the selection only for two frames,
+            it is counted as in. If intermittency is set to the value of \tau-1, the atom has to be present only in the first frame
+            and in the last frame.
         verbose : Boolean
             Overwrite the constructor's verbosity
 
@@ -1306,8 +1313,41 @@ class SurvivalProbability(object):
             frame_no += 1
             frame_loaded_counter += 1
 
-        ## calculate Survival Probability
-        # TODO
+        # Pre-process Consecutive Intermittency
+        print('Original intermittency', selected_ids)
+        if intermittency > 0:
+            # Correct the data for the intermittency. If the atom is absent for a number of frames equal or smaller
+            # than the parameter intermittency, then correct the data and remove the absence.
+            # This is done by a separate pass over the data.
+            for i, ids in enumerate(selected_ids):
+                # look at the inter+2 ahead to see if we need to fill in any gaps
+                # ie 7,G,G,7 with inter=2 will be replaced by 7,7,7,7
+
+                # initially update each frame as seen 0 ago (now)
+                frames_ago_seen = {i: 0 for i in ids}
+                for j in range(1, intermittency + 2):
+                    for atomid in frames_ago_seen.keys():
+                        if i + j >= len(selected_ids):
+                            continue
+
+                        # if the atom is absent
+                        if not atomid in selected_ids[i + j]:
+                            # increase its absence counter
+                            frames_ago_seen[atomid] += 1
+
+                        # the atom is found
+                        elif atomid in selected_ids[i + j]:
+                            # if the atom was absent before
+                            if frames_ago_seen[atomid] != 0 and frames_ago_seen[atomid] <= intermittency:
+                                # add it to the frames where it was absent and it meets the criteria
+                                for b in range(frames_ago_seen[atomid], 0, -1):
+                                    print('adding 9')
+                                    selected_ids[i + j - b].add(atomid)
+
+                            frames_ago_seen[atomid] = 0
+        print('Corrected intermittency', selected_ids)
+
+        # calculate Survival Probability
         tau_timeseries = np.arange(1, tau_max + 1)
         sp_timeseries_data = [[] for _ in range(tau_max)]
 
@@ -1326,8 +1366,7 @@ class SurvivalProbability(object):
                 if t + tau >= len(selected_ids):
                     break
 
-                # ids that survive from t to t + tau and at every frame in between
-                # TODO intermittend
+                # continuous: IDs that survive from t to t + tau and at every frame in between
                 Ntau = len(set.intersection(*selected_ids[t:t + tau + 1]))
                 sp_timeseries_data[tau - 1].append(Ntau / float(Nt))
 

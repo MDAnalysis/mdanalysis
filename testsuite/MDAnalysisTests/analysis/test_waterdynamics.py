@@ -138,3 +138,29 @@ def test_SurvivalProbability_stepEqualDtMax(universe):
         sp.run(tau_max=4, step=5, stop=9, verbose=True)
         # all frames from 0, with 9 inclusive
         assert_equal(select_atoms_mock.call_count, 10)
+
+
+def test_SurvivalProbability_intermittency1and2(universe):
+    """
+    Intermittency of 2 means that we still count an atom if it is not present in 2 consecutive frames, but then returns
+    """
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        ids = [(9, 8), (), (8,), (9,), (8,), (), (9,8), (), (8,), (9,8,)]
+        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        sp.run(tau_max=3, stop=9, verbose=True, intermittency=2)
+        print(sp.sp_timeseries)
+        assert_almost_equal(sp.sp_timeseries, [1, 1, 1])
+
+
+def test_SurvivalProbability_intermittency2lacking(universe):
+    """
+    Intermittency of 3 is required and not 2 for the atom to be counted.
+    """
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        ids = [(9,), (), (), (), (9,), (), (), (), (9,)]
+        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        sp.run(tau_max=3, stop=8, verbose=True, intermittency=2)
+        print(sp.sp_timeseries)
+        assert_almost_equal(sp.sp_timeseries, [0, 0, 0])
