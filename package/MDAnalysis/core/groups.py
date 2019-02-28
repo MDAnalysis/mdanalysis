@@ -105,7 +105,7 @@ from numpy.lib.utils import deprecate
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
 from ..lib.util import (cached, warn_if_not_unique, unique_int_1d,
-                        isrange_int_1d)
+                        isrange_int_1d, argwhere_int_1d)
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
@@ -819,8 +819,11 @@ class GroupBase(_MutableBase):
         ValueError
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
+        ValueError
+            If `pbc` is ``True`` but the unit cell is invalid (has non-positive
+            values).
         ~MDAnalysis.exceptions.NoDataError
-            If `compound` is ``'molecule'`` but the topology doesn't
+            If `compound` is ``'molecules'`` but the topology doesn't
             contain molecule information (molnums) or if `compound` is
             ``'fragments'`` but the topology doesn't contain bonds.
 
@@ -853,47 +856,61 @@ class GroupBase(_MutableBase):
 
         atoms = self.atoms
         comp = atoms._check_compound(compound)
+        coords = atoms._positions
 
         # enforce calculations in double precision:
         dtype = np.float64
 
-        if comp == 'group':
-            if pbc:
-                coords = atoms.pack_into_box(inplace=False)
-            else:
-                coords = atoms.positions
-            # If there's no atom, return its (empty) coordinates unchanged.
-            if len(atoms) == 0:
-                return coords
-            if weights is None:
-                # promote coords to dtype if required:
-                coords = coords.astype(dtype, copy=False)
-                return coords.mean(axis=0)
+        if weights is not None:
+            # check for correct shape:
+            if weights.ndim != 1:
+                raise ValueError("Weights are not one-dimensional.")
+            if len(weights) != len(atoms._ix):
+                raise ValueError("Length of weights ({}) is not equal to the "
+                                 "number of atoms ({}).".format(len(weights),
+                                                                len(atoms)))
             # promote weights to dtype if required:
             weights = weights.astype(dtype, copy=False)
+
+        # If there's no atom, return its (empty) coordinates unchanged.
+        if len(atoms) == 0:
+            return coords
+
+        if pbc:
+            box = atoms.dimensions
+            if not np.all(box > 0.0):
+                raise ValueError("Box lengths and angles must be positive.")
+
+        if comp == 'group':
+            if pbc:
+                coords = distances.apply_PBC(coords, box)
+            if weights is None:
+                # promote coords to dtype:
+                coords = coords.astype(dtype)
+                return coords.mean(axis=0)
             return (coords * weights[:, None]).sum(axis=0) / weights.sum()
-        
+
+        # comp != 'group':
         compound_indices = atoms._compound_indices(comp)
-        # Sort positions and weights by compound index and promote to dtype if
-        # required:
+        # Sort positions and weights by compound index:
         sort_indices = np.argsort(compound_indices)
         compound_indices = compound_indices[sort_indices]
-        coords = atoms.positions[sort_indices]
+        coords = coords[sort_indices]
         if weights is None:
-            coords = coords.astype(dtype, copy=False)
+            # promote coords to dtype:
+            coords = coords.astype(dtype)
         else:
-            weights = weights.astype(dtype, copy=False)
             weights = weights[sort_indices]
         # Get sizes of compounds:
-        unique_compound_indices, compound_sizes = np.unique(compound_indices,
-                                                            return_counts=True)
+        unique_compound_indices, compound_sizes = \
+            unique_int_1d(compound_indices, return_counts=True)
         n_compounds = len(unique_compound_indices)
         unique_compound_sizes = unique_int_1d(compound_sizes)
         # Allocate output array:
-        centers = np.zeros((n_compounds, 3), dtype=dtype)
+        centers = np.empty((n_compounds, 3), dtype=np.float32)
         # Compute centers per compound for each compound size:
         for compound_size in unique_compound_sizes:
-            compound_mask = compound_sizes == compound_size
+            compound_mask = argwhere_int_1d(compound_sizes, compound_size)
             _compound_indices = unique_compound_indices[compound_mask]
             atoms_mask = np.in1d(compound_indices, _compound_indices)
             _coords = coords[atoms_mask].reshape((-1, compound_size, 3))
@@ -905,7 +922,7 @@ class GroupBase(_MutableBase):
                 _centers /= _weights.sum(axis=1)[:, None]
             centers[compound_mask] = _centers
         if pbc:
-            centers = distances.apply_PBC(centers, atoms.dimensions)
+            centers = distances.apply_PBC(centers, box)
         return centers
 
     @warn_if_not_unique

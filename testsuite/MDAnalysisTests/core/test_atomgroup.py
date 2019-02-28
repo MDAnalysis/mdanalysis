@@ -485,9 +485,28 @@ class TestCenter(object):
 
     def test_center_wrong_shape(self, ag):
         weights = np.ones((ag.n_atoms, 2))
-
         with pytest.raises(ValueError):
             ag.center(weights)
+
+    def test_center_emty_ag(self, ag):
+        eag = ag[[]]
+        weights = np.array([])
+        res = eag.center(weights)
+        assert res.shape == (0, 3)
+        assert_equal(res, eag.positions)
+        # test without weights:
+        res = eag.center(None)
+        assert res.shape == (0, 3)
+        assert_equal(res, eag.positions)
+        # test with wrong weights shape:
+        weights = np.array([[], []])
+        with pytest.raises(ValueError):
+            eag.center(weights)
+
+    def test_center_invalid_box(self, ag):
+        ag.universe.dimensions = [0, 0, 0, 0, 0, 0]
+        with pytest.raises(ValueError):
+            ag.center(None, pbc=True)
 
 
 class TestSplit(object):
@@ -1162,6 +1181,15 @@ class TestAtomGroup(object):
             ref = ref.reshape((1, 3))
         ag_s = mda.AtomGroup([at])
         assert_equal(ref, ag_s.center(weights, pbc=False, compound=compound))
+
+    @pytest.mark.parametrize('pbc', (False, True))
+    @pytest.mark.parametrize('weights', (None, np.array([])))
+    @pytest.mark.parametrize('comp', ('group', 'residues', 'segments',
+                                      'molecules', 'fragments'))
+    def test_center_compounds_empty_ag(self, ag_molfrg, pbc, weights, comp):
+        eag = ag_molfrg[[]]
+        ref = eag.positions
+        assert_equal(ref, eag.center(weights, pbc=pbc, compound=comp))
 
     @pytest.mark.parametrize('weights', (None, np.array([0.0]),
                                          np.array([2.0])))
