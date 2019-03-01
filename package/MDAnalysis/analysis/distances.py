@@ -46,7 +46,7 @@ __all__ = ['distance_array', 'self_distance_array',
 import numpy as np
 import scipy.sparse
 
-from MDAnalysis.lib.distances import distance_array, self_distance_array
+from MDAnalysis.lib.distances import capped_distance
 from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib.distances import calc_bonds
@@ -99,7 +99,11 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     '''
 
     if returntype == "numpy":
-        adj = (distance_array(coord, coord, box=box) < cutoff)
+        adj = np.full((len(coord), len(coord)), False, dtype=bool)
+        pairs = capped_distance(coord, coord, max_cutoff=cutoff, box=box, return_distances=False)
+
+        for x, y in pairs:
+            adj[x][y]=True
         return adj
     elif returntype == "sparse":
         # Initialize square List of Lists matrix of dimensions equal to number
