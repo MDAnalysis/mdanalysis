@@ -276,10 +276,10 @@ water molecules, a weak rise mean slow movement of particles::
 SurvivalProbability
 ~~~~~~~~~~~~~~~~~~~
 
-Analyzing survival probability (SP) :class:`SurvivalProbability` for water
-molecules. In this case we are analyzing how long water molecules remain in a
-sphere of radius 12.3 centered in the geometrical center of resid 42, 26, 34
-and 80.  A slow decay of SP means a long permanence time of water molecules in
+Analyzing survival probability (SP) :class:`SurvivalProbability` of molecules.
+In this case we are analyzing how long water molecules remain in a
+sphere of radius 12.3 centered in the geometrical center of resid 42 and 26.
+A slow decay of SP means a long permanence time of water molecules in
 the zone, on the other hand, a fast decay means a short permanence time::
 
   import MDAnalysis
@@ -287,7 +287,7 @@ the zone, on the other hand, a fast decay means a short permanence time::
   import matplotlib.pyplot as plt
 
   universe = MDAnalysis.Universe(pdb, trajectory)
-  selection = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26 or resid 34 or resid 80) "
+  selection = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26) "
   sp = SP(universe, selection, verbose=True)
   sp.run(start=0, stop=100, tau_max=20)
   tau_timeseries = sp.tau_timeseries
@@ -378,13 +378,13 @@ represents a MSD value in its respective window timestep. Data is stored in
 SurvivalProbability
 ~~~~~~~~~~~~~~~~~~~
 
-Survival Probability (SP) computes two lists: a list of taus (:attr:`SurvivalProbability.tau_timeseries`) and a list of their corresponding mean survival
-probabilities (:attr:`SurvivalProbability.sp_timeseries`). Additionally, a list :attr:`SurvivalProbability.sp_timeseries_data` is provided which contains
-a list of SPs for each tau, which can be used to compute their distribution, etc.
+Survival Probability (SP) computes two lists: a list of taus (:attr:`SurvivalProbability.tau_timeseries`) and a list of
+ the corresponding survival probabilities (:attr:`SurvivalProbability.sp_timeseries`).
 
     results = [ tau1, tau2, ..., tau_n ], [ sp_tau1, sp_tau2, ..., sp_tau_n]
 
-Additionally, for each
+Additionally, a list :attr:`SurvivalProbability.sp_timeseries_data` is provided which contains
+a not averaged list of SPs for each tau, which can be used to compute their distribution, etc.
 
 Classes
 --------
