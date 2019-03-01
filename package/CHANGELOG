@@ -47,6 +47,8 @@ Enhancements
   * added compound kwarg to total_mass and total_charge (PR #2192)
   * updated HydrogenBondAutoCorrel to use capped_distance in place of
     distance_array. (Issue #2103, PR #2209)
+  * updated analysis.distances.contact_matrix to use capped_distance. (Issue #2102,
+    PR #2215)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
