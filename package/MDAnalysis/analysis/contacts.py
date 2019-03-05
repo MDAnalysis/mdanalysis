@@ -216,7 +216,7 @@ import logging
 import MDAnalysis
 import MDAnalysis.lib.distances
 from MDAnalysis.lib.util import openany, deprecate
-from MDAnalysis.analysis.distances import distance_array
+from MDAnalysis.lib.distances import distance_array
 from MDAnalysis.core.groups import AtomGroup
 from .base import AnalysisBase
 

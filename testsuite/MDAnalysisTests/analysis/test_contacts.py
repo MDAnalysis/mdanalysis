@@ -25,7 +25,7 @@ from __future__ import print_function, division, absolute_import
 import MDAnalysis as mda
 import pytest
 from MDAnalysis.analysis import contacts
-from MDAnalysis.analysis.distances import distance_array
+from MDAnalysis.lib.distances import distance_array
 
 from numpy.testing import (
     assert_almost_equal,
