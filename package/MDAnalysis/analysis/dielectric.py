@@ -107,24 +107,24 @@ class DielectricConstant(AnalysisBase):
         self.selection = selection
         self.temperature = temperature
         self.make_whole = make_whole
-        self.volume = 0
 
         try:
             self.charges = selection.charges
         except:
             raise NoDataError("No charges defined for selection.")
 
+    def _prepare(self):
+        if not np.allclose(self.selection.total_charge(compound='fragments'), 0.0):
+            raise NotImplementedError("Analysis for non-neutral systems or "
+                                      "systems with free charges are not available!")
+
+        self.volume = 0
         # Dictionary containing results
         self.results = {"M":  np.zeros(3),
                         "M2": np.zeros(3),
                         "fluct": np.zeros(3),
                         "eps": np.zeros(3),
                         "eps_mean": 0}
-
-    def _prepare(self):
-        if not np.allclose(self.selection.total_charge(compound='fragments'), 0.0):
-            raise NotImplementedError("Analysis for non-neutral systems or "
-                                      "systems with free charges are not available!")
                 
     def _single_frame(self):
         if self.make_whole:
