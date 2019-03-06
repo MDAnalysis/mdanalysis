@@ -46,7 +46,10 @@ __all__ = ['distance_array', 'self_distance_array',
 import numpy as np
 import scipy.sparse
 
-from MDAnalysis.lib.distances import capped_distance, distance_array
+from MDAnalysis.lib.distances import (
+           capped_distance,
+           self_distance_array, distance_array,  # legacy reasons
+)
 from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib.distances import calc_bonds
