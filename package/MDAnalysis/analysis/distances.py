@@ -40,8 +40,8 @@ See Also
 
 from __future__ import absolute_import
 
-__all__ = ['distance_array', 'contact_matrix',
-           'dist', 'between']
+__all__ = ['distance_array', 'self_distance_array',
+           'contact_matrix', 'dist', 'between']
 
 import numpy as np
 import scipy.sparse
