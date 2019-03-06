@@ -40,13 +40,13 @@ See Also
 
 from __future__ import absolute_import
 
-__all__ = ['contact_matrix', 'capped_distance'
+__all__ = ['distance_array', 'contact_matrix',
            'dist', 'between']
 
 import numpy as np
 import scipy.sparse
 
-from MDAnalysis.lib.distances import capped_distance
+from MDAnalysis.lib.distances import capped_distance, distance_array
 from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib.distances import calc_bonds
