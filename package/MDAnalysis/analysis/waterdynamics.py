@@ -308,6 +308,39 @@ the zone, on the other hand, a fast decay means a short permanence time::
   plt.plot(tau_timeseries, sp_timeseries)
   plt.show()
 
+Another example applies to the situation where you work with many different "residues".
+Here we calculate the SP of a potassium ion around each lipid in a membrane and
+average the results. In this example, if the SP analysis were run without treating each lipid
+separately, potassium ions may hop from one lipid to another and still be counted as remaining
+in the specified region. That is, the survival probability of the potassium ion around the
+entire membrane will be calculated.
+
+Note, for this example, it is advisable to use .Universe(in_memory=True) to ensure that the
+simulation does not loaded into RAM memory once per lipid::
+
+  import MDAnalysis
+  from MDAnalysis.analysis.waterdynamics import SurvivalProbability as SP
+  import numpy as np
+
+  u = MDAnalysis.Universe("md.gro", "md100ns.xtc", in_memory=True)
+  lipids = u.select_atoms('resname LIPIDS')
+  joined_sp_timeseries = [[] for _ in range(20)]
+  for lipid in lipids.residues:
+      print("Lipid ID: %d" % lipid.resid)
+
+      selection = "resname POTASSIUM and around 3.5 (resid %d and name O13 O14) " % lipid.resid
+      sp = SP(u, selection, verbose=True)
+      sp.run(tau_max=20)
+
+      # Raw SP points for each tau:
+      for sps, new_sps in zip(joined_sp_timeseries, sp.sp_timeseries_data):
+          sps.extend(new_sps)
+
+  # average all SP datapoints
+  sp_data = [np.mean(sp) for sp in joined_sp_timeseries]
+
+  for tau, sp in zip(range(1, tau_max + 1), sp_data):
+      print("{time} {sp}".format(time=tau, sp=sp))
 
 .. _Output:
 
