@@ -163,3 +163,33 @@ def test_SurvivalProbability_intermittency2lacking(universe):
         sp = waterdynamics.SurvivalProbability(universe, "")
         sp.run(tau_max=3, stop=8, verbose=True, intermittency=2)
         assert_almost_equal(sp.sp_timeseries, [0, 0, 0])
+
+
+def test_SurvivalProbability_intermittency1_step5_noSkipping(universe):
+    """
+    Step means skipping frames is tau_max + 2 * intermittency + 1 < step.
+    No frames should be skipped.
+    """
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        ids = [(2, 3), (3,), (2, 3), (3,), (2,), (3,), (2, 3), (3,), (2, 3), (2, 3), (2, 3)]
+        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        sp.run(tau_max=2, stop=10, verbose=True, intermittency=1, step=5)
+        assert all((x == set([2, 3]) for x in sp.selected_ids))
+        assert_almost_equal(sp.sp_timeseries, [1, 1])
+
+def test_SurvivalProbability_intermittency1_step5_Skipping(universe):
+    """
+    Step means skipping frames is tau_max + 2 * intermittency + 1 < step.
+    One frame will be skipped.
+    """
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        ids = [(1,), (), (1,), (), (1,), (), (1,), (), (1), (1), ()]
+        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        sp.run(tau_max=1, stop=10, verbose=True, intermittency=1, step=5)
+        assert all((x == set([1]) for x in sp.selected_ids))
+        assert(len(sp.selected_ids) == len(ids) - 1)
+        assert_almost_equal(sp.sp_timeseries, [1])
+
+
