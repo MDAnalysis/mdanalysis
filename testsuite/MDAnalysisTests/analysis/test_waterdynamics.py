@@ -142,7 +142,8 @@ def test_SurvivalProbability_stepEqualDtMax(universe):
 
 def test_SurvivalProbability_intermittency1and2(universe):
     """
-    Intermittency of 2 means that we still count an atom if it is not present in 2 consecutive frames, but then returns
+    Intermittency of 2 means that we still count an atom if it is not present for up to 2 consecutive frames,
+    but then returns at the following step.
     """
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
         ids = [(9, 8), (), (8,), (9,), (8,), (), (9,8), (), (8,), (9,8,)]
@@ -155,7 +156,7 @@ def test_SurvivalProbability_intermittency1and2(universe):
 
 def test_SurvivalProbability_intermittency2lacking(universe):
     """
-    Intermittency of 3 is required and not 2 for the atom to be counted.
+    If an atom is not present for more than 2 consecutive frames, it is considered to have left the region.
     """
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
         ids = [(9,), (), (), (), (9,), (), (), (), (9,)]
@@ -192,5 +193,3 @@ def test_SurvivalProbability_intermittency1_step5_Skipping(universe):
         assert all((x == set([1]) for x in sp.selected_ids))
         assert len(sp.selected_ids) == beforepopsing
         assert_almost_equal(sp.sp_timeseries, [1])
-
-

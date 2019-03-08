@@ -297,6 +297,10 @@ the zone, on the other hand, a fast decay means a short permanence time::
   for tau, sp in zip(tau_timeseries, sp_timeseries):
         print("{time} {sp}".format(time=tau, sp=sp))
 
+  # SP is not calculated at tau=0, but if you would like to plot SP=1 at tau=0:
+  tau_timeseries.insert(0, 0)
+  sp_timeseries.insert(1, 0)
+
   # plot
   plt.xlabel('Time')
   plt.ylabel('SP')
@@ -383,8 +387,8 @@ Survival Probability (SP) computes two lists: a list of taus (:attr:`SurvivalPro
 
     results = [ tau1, tau2, ..., tau_n ], [ sp_tau1, sp_tau2, ..., sp_tau_n]
 
-Additionally, a list :attr:`SurvivalProbability.sp_timeseries_data` is provided which contains
-a not averaged list of SPs for each tau, which can be used to compute their distribution, etc.
+Additionally, a list :attr:`SurvivalProbability.sp_timeseries_data`, is provided which contains
+a list of all SPs calculated for each tau. This can be used to compute the distribution or time dependence etc. of SP.
 
 Classes
 --------
@@ -1176,11 +1180,10 @@ class MeanSquareDisplacement(object):
 
 
 class SurvivalProbability(object):
-    r"""Survival probability analysis
+    r"""Survival Probability (SP) analysis
 
-    Function to evaluate the Survival Probability (SP). The SP gives the
-    probability for a group of particles to remain in certain region. The SP is
-    given by:
+    The SP gives the probability for a group of particles to remain in certain region.
+    The SP is given by:
 
     .. math::
         P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}
@@ -1196,9 +1199,8 @@ class SurvivalProbability(object):
       Universe object
     selection : str
       Selection string; any selection is allowed. With this selection you
-      define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resname LIPID)"
-      and "resname ION and around 10 (resid 20)" (see `SP-examples`_ )
-    verbose : Boolean
+      define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resid 10)" (see `SP-examples`_ )
+    verbose : Boolean, optional
       If True, prints progress and comments to the console.
 
 
@@ -1243,7 +1245,7 @@ class SurvivalProbability(object):
 
         # If the atom is absent for a number of frames equal or smaller
         # than the parameter intermittency, then correct the data and remove the absence.
-        # ie 7,G,G,7 with inter=2 will be replaced by 7,7,7,7, where G=absence
+        # ie 7,A,A,7 with intermittency=2 will be replaced by 7,7,7,7, where A=absence
         for i, ids in enumerate(selected_ids):
             # initially update each frame as seen 0 ago (now)
             seen_frames_ago = {i: 0 for i in ids}
@@ -1279,30 +1281,30 @@ class SurvivalProbability(object):
 
     def run(self, tau_max=20, start=0, stop=None, step=1, residues=False, intermittency=0, verbose=False):
         """
-        Computes and returns the survival probability timeseries
+        Computes and returns the Survival Probability (SP) timeseries
 
         Parameters
         ----------
-        start : int
+        start : int, optional
             Zero-based index of the first frame to be analysed
-        stop : int
+        stop : int, optional
             Zero-based index of the last frame to be analysed (inclusive)
-        step : int
+        step : int, optional
             Jump every `step`'th frame. This is compatible but independant of the taus used, and it is good to consider
             using the  step as tau_max to remove the overlap. Note that step and taus are consistent with intermittency.
-        tau_max : int
+        tau_max : int, optional
             Survival probability is calculated for the range :math:`1 <= \tau <= tau_max`
-        residues : Boolean
-            the selection and analysis will be carried out on the residues (resids) rather than on atoms.
+        residues : Boolean, optional
+            If true, the analysis will be carried out on the residues (.resids) rather than on atom (.ids).
             A single atom is sufficient to classify the residue as within the distance.
-        intermittency : int
-            The maximum number of frames where an atom can leave but count as present if it returns the next frame.
-            0 means a continuous survival probability, which is that for tau_max \tau, the atom survives only if it
-            is present at each tau :math:`1 <= \tau <= tau_max`. For other values, the data is preprocessed to
-            remove gaps of max size of the intermittency value. Ie when set to 2, if the atom leaves the selection
-            only for two consecutive frames, it is counted as in.
-        verbose : Boolean
-            Overwrite the constructor's verbosity
+        intermittency : int, optional
+            The maximum number of consecutive frames for which an atom can leave but be counted as present if it returns
+            at the next frame. An intermittency of `0` is equivalent to a continuous survival probability, which does
+            not allow for the leaving and returning of atoms. For example, for `intermittency=2', any given atom may
+            leave a region of interest for up to two consecutive frames yet be treated as being present at all frames.
+            The default is continuous (0).
+        verbose : Boolean, optional
+            Print the progress to the console
 
         Returns
         -------
@@ -1375,11 +1377,11 @@ class SurvivalProbability(object):
         tau_timeseries = np.arange(1, tau_max + 1)
         sp_timeseries_data = [[] for _ in range(tau_max)]
 
-        # adjust step for the frames that were not loaded
-        # todo
-        step = step - num_frames_to_skip
+        # adjust for the frames that were not loaded (step>tau_max + 1),
+        # and for extra frames that were loaded (intermittency)
+        window_jump = step - num_frames_to_skip
 
-        for t in range(0, len(self.selected_ids), step):
+        for t in range(0, len(self.selected_ids), window_jump):
             Nt = len(self.selected_ids[t])
 
             if Nt == 0:
