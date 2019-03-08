@@ -167,29 +167,30 @@ def test_SurvivalProbability_intermittency2lacking(universe):
 
 def test_SurvivalProbability_intermittency1_step5_noSkipping(universe):
     """
-    Step means skipping frames is tau_max + 2 * intermittency + 1 < step.
+    Step leads to skipping frames if (tau_max + 1) + (intermittency * 2) < step.
     No frames should be skipped.
     """
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
-        ids = [(2, 3), (3,), (2, 3), (3,), (2,), (3,), (2, 3), (3,), (2, 3), (2, 3), (2, 3)]
+        ids = [(2, 3), (3,), (2, 3), (3,), (2,), (3,), (2, 3), (3,), (2, 3), (2, 3)]
         select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
         sp = waterdynamics.SurvivalProbability(universe, "")
-        sp.run(tau_max=2, stop=10, verbose=True, intermittency=1, step=5)
+        sp.run(tau_max=2, stop=9, verbose=True, intermittency=1, step=5)
         assert all((x == set([2, 3]) for x in sp.selected_ids))
         assert_almost_equal(sp.sp_timeseries, [1, 1])
 
 def test_SurvivalProbability_intermittency1_step5_Skipping(universe):
     """
-    Step means skipping frames is tau_max + 2 * intermittency + 1 < step.
-    One frame will be skipped.
+    Step leads to skipping frames if (tau_max + 1) * (intermittency * 2) < step.
+    In this case one frame will be skipped per window.
     """
     with patch.object(universe, 'select_atoms') as select_atoms_mock:
-        ids = [(1,), (), (1,), (), (1,), (), (1,), (), (1), (1), ()]
+        ids = [(1,), (), (1,), (), (1,), (), (1,), (), (1,), (1,)]
+        beforepopsing = len(ids) - 2
         select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
         sp = waterdynamics.SurvivalProbability(universe, "")
-        sp.run(tau_max=1, stop=10, verbose=True, intermittency=1, step=5)
+        sp.run(tau_max=1, stop=9, verbose=True, intermittency=1, step=5)
         assert all((x == set([1]) for x in sp.selected_ids))
-        assert(len(sp.selected_ids) == len(ids) - 1)
+        assert len(sp.selected_ids) == beforepopsing
         assert_almost_equal(sp.sp_timeseries, [1])
 
 

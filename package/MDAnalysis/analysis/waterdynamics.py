@@ -1288,7 +1288,8 @@ class SurvivalProbability(object):
         stop : int
             Zero-based index of the last frame to be analysed (inclusive)
         step : int
-            Jump every `step`'th frame
+            Jump every `step`'th frame. This is compatible but independant of the taus used, and it is good to consider
+            using the  step as tau_max to remove the overlap. Note that step and taus are consistent with intermittency.
         tau_max : int
             Survival probability is calculated for the range :math:`1 <= \tau <= tau_max`
         residues : Boolean
@@ -1332,17 +1333,26 @@ class SurvivalProbability(object):
         self.selected_ids = []
 
         # skip frames that will not be used
-        # Example: step 5 and tau 2: L, L, L, S, S, L, L, L, S, S, ... with L = Load, and S = Skip
+        # Example: step 5 and tau 2: LLLSS LLLSS, ... where L = Load, and S = Skip
+        # Intermittency means that we have to load the extra frames to know if the atom is actually missing.
+        # Say step=5 and tau=1, intermittency=0: LLSSS LLSSS
+        # Say step=5 and tau=1, intermittency=1: LLLSL LLLSL
         frame_loaded_counter = 0
-        frames_to_load_no = tau_max + 1
-        frames_to_skip_no = max(step - (tau_max + 1), 0)
+        # only for the first window (frames before t are not used)
+        frames_per_window = tau_max + 1 + intermittency
+        # This number will apply after the first windows was loaded
+        frames_per_window_subsequent = (tau_max + 1) + (2 * intermittency)
+        num_frames_to_skip = max(step - frames_per_window_subsequent, 0)
 
         frame_no = start
         while frame_no < stop:      # we have already added 1 to stop, therefore <
-            if frames_to_skip_no != 0 and frame_loaded_counter == frames_to_load_no:
-                self.print(verbose, "Skipping the next %d frames:" % frames_to_skip_no)
-                frame_no += frames_to_skip_no
+            if num_frames_to_skip != 0 and frame_loaded_counter == frames_per_window:
+                self.print(verbose, "Skipping the next %d frames:" % num_frames_to_skip)
+                frame_no += num_frames_to_skip
                 frame_loaded_counter = 0
+                # Correct the number of frames to be loaded after the first window (which starts at t=0, and
+                # intermittency does not apply to the frames before)
+                frames_per_window = frames_per_window_subsequent
                 continue
 
             # update the frame number
@@ -1365,8 +1375,9 @@ class SurvivalProbability(object):
         tau_timeseries = np.arange(1, tau_max + 1)
         sp_timeseries_data = [[] for _ in range(tau_max)]
 
-        # frames not analysed are skipped because they were not loaded
-        step = tau_max + 1 if step >= (tau_max + 1) else step
+        # adjust step for the frames that were not loaded
+        # todo
+        step = step - num_frames_to_skip
 
         for t in range(0, len(self.selected_ids), step):
             Nt = len(self.selected_ids[t])
