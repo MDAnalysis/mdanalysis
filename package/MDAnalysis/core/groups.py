@@ -105,7 +105,7 @@ from numpy.lib.utils import deprecate
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
 from ..lib.util import (cached, warn_if_not_unique, unique_int_1d,
-                        iscontiguous_int_1d, argwhere_int_1d)
+                        iscontiguous_int_1d, unique_masks_int_1d)
 from ..lib import distances
 from ..lib import c_distances
 from ..lib import transformations
@@ -712,28 +712,27 @@ class GroupBase(_MutableBase):
         """
         if compound == 'fragments':
             try:
-                compound_indices = self.fragindices
+                return self.fragindices
             except NoDataError:
                 raise NoDataError("Cannot use compound='fragments', this "
                                   "requires bonds.")
         elif compound == 'molecules':
             try:
-                compound_indices = self.molnums
+                return self.molnums
             except AttributeError:
                 raise NoDataError("Cannot use compound='molecules', this "
                                   "requires molnums.")
         elif compound == 'residues':
-            compound_indices = self.resindices
+            return self.resindices
         elif compound == 'segments':
-            compound_indices = self.segindices
+            return self.segindices
         elif compound == 'group':
-            compound_indices = np.zeros(len(self._ix), dtype=np.intp)
+            return np.zeros(len(self._ix), dtype=np.intp)
         elif compound == 'atoms':
-            compound_indices = self.ix
+            return self.ix
         else:
             raise ValueError("Unrecognized compound definition '{}'."
                              "".format(compound))
-        return np.ascontiguousarray(compound_indices, dtype=np.intp)
 
     def _check_compound(self, compound, atoms=False):
         """Checks if `compound` is a known compound.
@@ -911,9 +910,9 @@ class GroupBase(_MutableBase):
         centers = np.empty((n_compounds, 3), dtype=np.float32)
         # Compute centers per compound for each compound size:
         for compound_size in unique_compound_sizes:
-            compound_mask = argwhere_int_1d(compound_sizes, compound_size)
+            compound_mask = (compound_sizes == compound_size).nonzero()
             _compound_indices = unique_compound_indices[compound_mask]
-            atoms_mask = np.in1d(compound_indices, _compound_indices)
+            atoms_mask = np.in1d(compound_indices, _compound_indices).nonzero()
             _coords = coords[atoms_mask].reshape((-1, compound_size, 3))
             if weights is None:
                 _centers = _coords.mean(axis=1)
@@ -1549,11 +1548,11 @@ class GroupBase(_MutableBase):
                 else:  # ctr == 'cog'
                     ctrpos = atoms.center(None, pbc=False, compound=comp)
                 ctrpos = ctrpos.astype(np.float32, copy=False)
-                target = ctrpos.copy()
-                pbc_func(target.reshape((-1, 3)), box)
-                positions += target - ctrpos
+                target = ctrpos.reshape((1, 3)).copy()
+                pbc_func(target, box)
+                positions += target[0] - ctrpos
             else:
-                compound_indices = atoms._compound_indices(comp)
+                comp_ix = atoms._compound_indices(comp)
                 # compute required shifts:
                 if ctr == 'com':
                     ctrpos = atoms.center(masses, pbc=False, compound=comp)
@@ -1566,16 +1565,13 @@ class GroupBase(_MutableBase):
                     ctrpos = atoms.center(None, pbc=False, compound=comp)
                 ctrpos = ctrpos.astype(np.float32, copy=False)
                 target = ctrpos.copy()
-                pbc_func(target.reshape((-1, 3)), box)
+                pbc_func(target, box)
                 shifts = target - ctrpos
 
                 # apply the shifts:
-                unique_compound_indices = unique_int_1d(compound_indices)
-                shift_idx = 0
-                for i in unique_compound_indices:
-                    mask = np.where(compound_indices == i)
-                    positions[mask] += shifts[shift_idx]
-                    shift_idx += 1
+                comp_masks = unique_masks_int_1d(comp_ix)
+                for i in range(len(comp_masks)):
+                    positions[comp_masks[i]] += shifts[i]
 
         if inplace and not atoms.iscontiguous:
             atoms.positions = positions
