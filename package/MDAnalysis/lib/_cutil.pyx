@@ -514,16 +514,57 @@ def iscontiguous_int_1d(np.intp_t[:] values):
     """
     cdef np.intp_t n_values = values.shape[0]
     cdef np.intp_t i
-    cdef bint iscontiguous = True
-    with nogil:
-        if n_values > 1:
-            for i in range(n_values - 1):
-                if values[i] + 1 != values[i + 1]:
-                    iscontiguous = False
-                    break
-        elif n_values == 0:
-            iscontiguous = False
-    return iscontiguous
+    if n_values > 1:
+        for i in range(n_values - 1):
+            if values[i] + 1 != values[i + 1]:
+                return False
+    elif n_values == 0:
+        return False
+    return True
+
+
+def indices_to_slice_1d(np.ndarray[np.intp_t, ndim=1] indices):
+    """Converts an index array to a slice if possible.
+
+    Slice conversion is only performed if all indices are non-negative.
+
+    Parameters
+    ----------
+    indices: numpy.ndarray
+        1D array of dtype ``numpy.intp``.
+
+    Returns
+    -------
+    slice or np.ndarray
+        If `indices` can be represented by a slice and all its elements are
+        non-negative, a slice object is returned. Otherwise, the `indices` array
+        is returned.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef np.intp_t[:] ix = indices
+    cdef np.intp_t n = ix.shape[0]
+    cdef np.intp_t i
+    cdef np.intp_t stride
+    if n > 0 and ix[0] >= 0:
+        if n > 1:
+            stride = ix[1] - ix[0]
+            if stride > 0:
+                for i in range(1, n - 1):
+                    if ix[i] + stride != ix[i + 1]:
+                        return indices  # multiple strides
+                return slice(ix[0], ix[n - 1] + 1, stride)
+            elif stride < 0 and ix[n - 1] >= 0:
+                for i in range(1, n - 1):
+                    if ix[i] + stride != ix[i + 1]:
+                        return indices  # multiple strides
+                if ix[n - 1] == 0:
+                    return slice(ix[0], None, stride)  # last index is 0
+                return slice(ix[0], ix[n - 1] - 1, stride)
+            return indices  # stride == 0
+        return slice(ix[0], ix[0] + 1, 1)  # single index
+    return indices  # empty array
 
 
 def argwhere_int_1d(np.intp_t[:] arr, np.intp_t value):

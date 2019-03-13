@@ -28,7 +28,8 @@ from numpy.testing import assert_equal
 
 from MDAnalysis.lib._cutil import (coords_add_vec, unique_int_1d,
                                    unique_masks_int_1d, iscontiguous_int_1d,
-                                   argwhere_int_1d, find_fragments)
+                                   argwhere_int_1d, indices_to_slice_1d,
+                                   find_fragments)
 
 
 @pytest.mark.parametrize('positions', (
@@ -269,6 +270,51 @@ def test_argwhere_int_1d(arr, value):
     assert_equal(res, ref)
     assert type(res) == type(ref)
     assert res.dtype == ref.dtype
+
+
+@pytest.mark.parametrize('indices, ref', (
+    ([5], slice(5, 6, 1)),               # single value array
+    ([0, 1], slice(0, 2, 1)),            # two value array, stride 1
+    ([2, 12], slice(2, 13, 10)),         # two value array, stride 10
+    ([1, 0], slice(1, None, -1)),        # two value array, stride -1
+    ([12, 1], slice(12, 0, -11)),        # two value array, stride -11
+    ([0, 1, 2, 3], slice(0, 4, 1)),      # monotonic, stride 1
+    ([0, 2, 4, 6], slice(0, 7, 2)),      # monotonic, stride 2
+    ([2, 3, 4, 5], slice(2, 6, 1)),      # monotonic with offset, stride 1
+    ([3, 5, 7, 9], slice(3, 10, 2)),     # monotonic with offset, stride 2
+    ([3, 2, 1, 0], slice(3, None, -1)),  # monotonic, stride -1
+    ([9, 6, 3, 0], slice(9, None, -3)),  # monotonic, stride -3
+    ([7, 6, 5, 4], slice(7, 3, -1)),     # monotonic with offset, stride -1
+    ([14, 10, 6], slice(14, 5, -4))      # monotonic with offset, stride -4
+))
+def test_indices_to_slice_1d_slice(indices, ref):
+    ix = np.array(indices, dtype=np.intp)
+    res = indices_to_slice_1d(ix)
+    assert isinstance(res, slice)
+    assert res == ref
+    values = np.arange(60, dtype=np.float32).reshape((-1, 3))
+    fancy_indexed = values[ix]
+    view = values[res]
+    assert not view.flags['OWNDATA']  # the purpose of indices_to_slice_1d
+    assert_equal(view, fancy_indexed)
+
+
+@pytest.mark.parametrize('indices', (
+    [],                       # empty array
+    [1, 1, 1, 1],             # all identical
+    [0, 3, 5, 7],             # all different, monotonic, non-uniform stride
+    [5, 2, 7, 3],             # all different, non-monotonic
+    [0, 0, 2, 2, 4, 4, 6],    # duplicates, monotonic
+    [1, 2, 2, 6, 4, 4, 1],    # duplicates, non-monotonic
+    [4, 2, 6, 1, 4, 2, 1],    # duplicates, scrambled
+    [-1, 0, 1, 2, 3, 4, 5],   # monotonic, stride 1, negative values
+    [1, 0, -1, -2, -3, -4],   # monotonic, stride -1, negative values
+    [-3, -1, 1, 3, 5, 7],     # monotonic, stride 2, negative values
+    [3, 0, -3, -6, -9, -12]   # monotonic, stride -3, negative values
+))
+def test_indices_to_slice_1d_noslice(indices):
+    ix = np.array(indices, dtype=np.intp)
+    assert indices_to_slice_1d(ix) is ix
 
 
 @pytest.mark.parametrize('edges,ref', [

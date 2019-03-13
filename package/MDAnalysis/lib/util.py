@@ -214,7 +214,7 @@ import inspect
 
 from ..exceptions import StreamWarning, DuplicateWarning
 from ._cutil import (coords_add_vec, unique_int_1d, unique_masks_int_1d,
-                     iscontiguous_int_1d, argwhere_int_1d)
+                     iscontiguous_int_1d, argwhere_int_1d, indices_to_slice_1d)
 
 
 # Python 3.0, 3.1 do not have the builtin callable()
