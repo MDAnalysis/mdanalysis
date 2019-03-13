@@ -39,6 +39,7 @@ from functools import partial
 
 from ..lib.transformations import rotation_matrix
 from ..lib.util import get_weights
+from ..lib.util import coords_add_vec
 
 def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
     '''
@@ -143,7 +144,7 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
         rotation = matrix[:3, :3].T
         translation = matrix[:3, 3]
         ts.positions= np.dot(ts.positions, rotation)
-        ts.positions += translation
+        coords_add_vec(ts.positions, translation)
         
         return ts
     
