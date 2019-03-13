@@ -166,7 +166,7 @@ class TestFragments(object):
             assert len(frag) == 25
             assert at in frag
             fragindex = at.fragindex
-            assert isinstance(fragindex, int)
+            assert isinstance(fragindex, np.intp)
             with pytest.raises(AttributeError):
                 x = at.n_fragments
 

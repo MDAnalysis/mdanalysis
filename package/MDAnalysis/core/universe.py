@@ -89,7 +89,7 @@ import numpy as np
 import logging
 import copy
 import warnings
-import collections
+from collections import namedtuple
 
 import MDAnalysis
 import sys
@@ -996,33 +996,28 @@ class Universe(object):
     # Attribute (ie, 2 for the price of 1)
     # Fragments then gets its own Class/namespace/jazz.
     @property
-    @cached('fragments')
-    def _fragdict(self):
+    @cached('fraginfo')
+    def _fraginfo(self):
+        """A named tuple holding information on this universe's fragments.
+
+        Notes
+        -----
+        Replaces the old `Universe._fragdict` implementation.
+
+        .. versionadded:: 0.20.0
         """
-        .. versionadded:: 0.9.0
-        .. versionchanged:: 0.16.0
-           Fragment atoms are sorted by their index, and framgents are sorted
-           by their first atom index so their order is predictable.
-        .. versionchanged:: 0.19.0
-           Uses faster C++ implementation
-        .. versionchanged:: 0.20.0
-           * _fragdict keys are now atom indices instead of Atoms
-           * _fragdict items are now a namedtuple ``fraginfo(ix, fragment)``
-             storing the fragindex ``ix`` along with the fragment.
-        """
-        atoms = self.atoms.ix
-        bonds = self.atoms.bonds.to_indices()
-
-        frag_indices = find_fragments(atoms, bonds)
-        frags = tuple([AtomGroup(np.sort(ix), self) for ix in frag_indices])
-
-        fragdict = {}
-        fraginfo = collections.namedtuple('fraginfo', 'ix, fragment')
-        for i, f in enumerate(frags):
-            for a in f:
-                fragdict[a.ix] = fraginfo(i, f)
-
-        return fragdict
+        atom_ix = self.atoms.ix
+        bond_ix = self.atoms.bonds.to_indices()
+        frag_ix = find_fragments(atom_ix, bond_ix)
+        fraglist = sorted([AtomGroup(np.sort(ix), self) for ix in frag_ix],
+                          key=lambda x: x.ix[0])
+        fragments = np.empty(len(fraglist), dtype=object)
+        fragments[:] = fraglist
+        fragindices = np.empty(len(atom_ix), dtype=np.intp)
+        for i, f in enumerate(fragments):
+            fragindices[f.ix] = i
+        fraginfo = namedtuple('fraginfo', 'fragindices, fragments')
+        return fraginfo(fragindices, fragments)
 
 
 # TODO: what is the point of this function???

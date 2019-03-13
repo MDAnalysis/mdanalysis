@@ -1744,7 +1744,7 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.20.0
         """
-        return self.universe._fragdict[self.ix].ix
+        return self.universe._fraginfo.fragindices[self.ix]
 
     def fragindices(self):
         """The
@@ -1764,8 +1764,7 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.20.0
         """
-        fragdict = self.universe._fragdict
-        return np.array([fragdict[aix].ix for aix in self.ix], dtype=np.int64)
+        return self.universe._fraginfo.fragindices[self.ix]
 
     def fragment(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` representing the
@@ -1787,7 +1786,7 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.9.0
         """
-        return self.universe._fragdict[self.ix].fragment
+        return self.universe._fraginfo.fragments[self.fragindex]
 
     def fragments(self):
         """Read-only :class:`tuple` of
@@ -1815,9 +1814,8 @@ class Bonds(_Connection):
 
         .. versionadded:: 0.9.0
         """
-        fragdict = self.universe._fragdict
-        return tuple(sorted(set(fragdict[aix].fragment for aix in self.ix),
-                            key=lambda x: x[0].ix))
+        unique_fragindices = unique_int_1d(self.fragindices)
+        return tuple(self.universe._fraginfo.fragments[unique_fragindices])
 
     def n_fragments(self):
         """The number of unique
