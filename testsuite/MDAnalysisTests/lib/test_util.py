@@ -39,7 +39,7 @@ import MDAnalysis as mda
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import (cached, static_variables, warn_if_not_unique,
-                                 check_coords)
+                                 check_coords, check_compound)
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError, DuplicateWarning
 
@@ -1962,3 +1962,33 @@ class TestCheckBox(object):
         with pytest.raises(ValueError):
             wrongbox = np.ones((3, 3), dtype=np.float32)
             boxtype, checked_box = util.check_box(wrongbox)
+
+
+class TestCheckCompound(object):
+
+    @pytest.mark.parametrize('compound, ref', (
+        ('aToMs', 'atoms'),
+        ('gRoUp', 'group'),
+        ('rEsIdUeS', 'residues'),
+        ('sEgMeNtS', 'segments'),
+        ('mOlEcUlEs', 'molecules'),
+        ('fRaGmEnTs', 'fragments')
+    ))
+    @pytest.mark.parametrize('atoms', (True, False))
+    def test_check_compound(self, compound, ref, atoms):
+        if (not atoms) and (ref == 'atoms'):
+            with pytest.raises(ValueError):
+               check_compound(compound, atoms=atoms)
+        else: 
+            assert check_compound(compound, atoms=atoms) == ref
+
+    @pytest.mark.parametrize('atoms', (True, False))
+    def test_check_compound_wrongname(self, atoms):
+        with pytest.raises(ValueError):
+            check_compound('random_bs', atoms=atoms)
+
+    @pytest.mark.parametrize('compound', (("atoms",), ["molecules"], 0))
+    @pytest.mark.parametrize('atoms', (True, False))
+    def test_check_compound_wrong_type(self, compound, atoms):
+        with pytest.raises(AttributeError):
+            check_compound(compound, atoms=atoms)

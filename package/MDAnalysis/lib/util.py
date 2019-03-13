@@ -169,6 +169,7 @@ Data format checks
 ------------------
 
 .. autofunction:: check_box
+.. autofunction:: check_compound
 
 .. Rubric:: Footnotes
 
@@ -2334,3 +2335,41 @@ def check_box(box):
     if np.all(box[3:] == 90.):
         return 'ortho', box[:3]
     return 'tri_vecs', triclinic_vectors(box)
+
+
+def check_compound(compound, atoms=False):
+        """Checks if `compound` is a known compound.
+
+        `compound` is case-insensitive.
+
+        Parameters
+        ----------
+        compound: str
+            The `compound` keyword to check. Must be one of ``'group'``,
+            ``'segments'``, ``'residues'``, ``'molecules'``, or ``'fragments'``.
+        atoms: bool
+            If ``True``, ``'atoms'`` is also allowed as a `compound`.
+
+        Returns
+        -------
+        str
+            `compound` converted to lowercase.
+
+        Raises
+        ------
+        ValueError
+            If ``compound.lower()`` is none of ``'group'``, ``'segments'``,
+            ``'residues'``, ``'molecules'``, or ``'fragments'`` (or, if `atoms`
+            is ``True``, also ``'atoms'``).
+
+
+        .. versionadded:: 0.20.0
+        """
+        valid = ['group', 'segments', 'residues', 'molecules', 'fragments']
+        if atoms:
+            valid.append('atoms')
+        comp = compound.lower()
+        if comp not in valid:
+            raise ValueError("Unrecognized compound definition '{}'. "
+                             "Please use one of {}.".format(compound, valid))
+        return comp
