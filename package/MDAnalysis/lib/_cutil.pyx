@@ -45,8 +45,9 @@ from libcpp.vector cimport vector
 from cython.operator cimport dereference as deref
 
 
-__all__ = ['unique_int_1d', 'unique_masks_int_1d', 'iscontiguous_int_1d',
-           'argwhere_int_1d', 'make_whole', 'find_fragments']
+__all__ = ['coords_add_vec', 'unique_int_1d', 'unique_masks_int_1d',
+           'iscontiguous_int_1d', 'argwhere_int_1d', 'make_whole',
+           'find_fragments']
 
 cdef extern from "calc_distances.h":
     ctypedef float coordinate[3]
@@ -55,6 +56,54 @@ cdef extern from "calc_distances.h":
 
 ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
+
+
+def coords_add_vec(float[:, ::1] coordinates not None,
+                  np.ndarray vector not None):
+    """Add `vector` to each position in `coordinates`.
+
+    Equivalent to ``coordinates += vector`` but faster for C-contiguous
+    coordinate arrays. Coordinates are modified in place.
+
+    Parameters
+    ----------
+    coordinates: numpy.ndarray
+        C-contiguous coordinate array of dtype ``numpy.float32`` and shape
+        ``(n, 3)``.
+    vector: numpy.ndarray
+        Single coordinate vector of shape ``(3,)``, dtype will be converted to
+        ``np.float32``.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef np.intp_t cs1 = coordinates.shape[1]
+    cdef np.intp_t vn = vector.ndim
+    cdef np.intp_t vm = vector.shape[0]
+    if cs1 != 3:
+        raise ValueError("Wrong shape: positions.shape != (n, 3)")
+    if vn != 1 or vm != 3:
+        raise ValueError("Wrong shape: vector.shape != (3,)")
+    if vector.dtype == np.float32:
+        _coords_add_vec32(coordinates, vector)
+    else:
+        _coords_add_vec64(coordinates, vector.astype(np.float64, copy=False))
+
+
+cdef void _coords_add_vec32(float[:, ::1] coordinates, float[:] vector) nogil:
+    cdef np.intp_t i
+    for i in range(coordinates.shape[0]):
+        coordinates[i, 0] += vector[0]
+        coordinates[i, 1] += vector[1]
+        coordinates[i, 2] += vector[2]
+
+
+cdef void _coords_add_vec64(float[:, ::1] coordinates, double[:] vector) nogil:
+    cdef np.intp_t i
+    for i in range(coordinates.shape[0]):
+        coordinates[i, 0] = <float> (<double> coordinates[i, 0] + vector[0])
+        coordinates[i, 1] = <float> (<double> coordinates[i, 1] + vector[1])
+        coordinates[i, 2] = <float> (<double> coordinates[i, 2] + vector[2])
 
 
 def unique_int_1d(np.intp_t[:] values not None, bint return_counts=False,
@@ -86,10 +135,11 @@ def unique_int_1d(np.intp_t[:] values not None, bint return_counts=False,
     masks: numpy.ndarray, optional
         An array of dtype ``object`` containing a mask for each value in
         `unique`. Each of the masks allows accessing all occurrences of its
-        corresponding unique value in `values` and is equivalent to, such that
-        ``np.all(values[masks[i]] == unique[i]) == True``. Thus, the masks array
-        is roughly equivalent to
-        ``[numpy.where(values == i) for i in numpy.unique(values)]``.
+        corresponding unique value in `values` such that
+        ``numpy.all(values[masks[i]] == unique[i]) == True``. Thus, the masks
+        array is roughly equivalent to
+        ``[numpy.where(values == i) for i in numpy.unique(values)]``. Only
+        returned if `return_masks` is ``True``.
 
     Notes
     -----

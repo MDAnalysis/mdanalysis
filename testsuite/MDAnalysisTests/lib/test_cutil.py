@@ -26,9 +26,90 @@ import pytest
 import numpy as np
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib._cutil import (unique_int_1d, unique_masks_int_1d,
-                                   iscontiguous_int_1d, argwhere_int_1d,
-                                   find_fragments)
+from MDAnalysis.lib._cutil import (coords_add_vec, unique_int_1d,
+                                   unique_masks_int_1d, iscontiguous_int_1d,
+                                   argwhere_int_1d, find_fragments)
+
+
+@pytest.mark.parametrize('positions', (
+    np.zeros((0, 3), dtype=np.float32),
+    np.array([[1.0000001, -1.0000001, 0.0000001]], dtype=np.float32),
+    np.zeros((10, 3), dtype=np.float32),
+    np.ones((10, 3), dtype=np.float32),
+    np.reshape(np.arange(-30, 30, dtype=np.float32), (-1, 3))
+))
+@pytest.mark.parametrize('vector', (
+    np.array([-1, 2, 3], dtype=np.float32),
+    np.array([-1, 2, 3], dtype=np.float64),
+    np.array([-1, 2, 3], dtype=int),
+    np.array([-1, 0, 3], dtype=bool),
+    np.zeros(3, dtype=np.float32),
+    np.zeros(3, dtype=np.float64),
+    np.zeros(3, dtype=int),
+    np.zeros(3, dtype=bool),
+    np.array([1.000000051, 0.000000051, -1.000000051], dtype=np.float32),
+    np.array([1.000000051, 0.000000051, -1.000000051], dtype=np.float64),
+    np.array([np.nan, np.nan, np.nan], dtype=np.float32),
+    np.array([np.nan, np.nan, np.nan], dtype=np.float64),
+    np.array([np.inf, -np.inf, np.nan], dtype=np.float32),
+    np.array([np.inf, -np.inf, np.nan], dtype=np.float64),
+    np.array([1, 2, 3, 4, 5, 6], dtype=np.float32)[::2],
+    np.array([1, 2, 3, 4, 5, 6], dtype=np.float64)[::2],
+    np.array([1, 2, 3, 4, 5, 6], dtype=np.float32)[::-2],
+    np.array([1, 2, 3, 4, 5, 6], dtype=np.float64)[::-2],
+))
+def test_coords_add_vec(positions, vector):
+    ref = positions.copy()
+    ref += vector
+    coords_add_vec(positions, vector)
+    assert_equal(positions, ref)
+
+
+def test_coords_add_vec_wrong_types():
+    # wrong pos dtypes:
+    with pytest.raises(ValueError):
+        coords_add_vec(np.zeros((1, 3), dtype=np.float64),
+                       np.zeros(3, dtype=np.float32))
+    with pytest.raises(ValueError):
+        coords_add_vec(np.zeros((1, 3), dtype=np.int32),
+                       np.zeros(3, dtype=np.float64))
+    # wrong pos type:
+    with pytest.raises(TypeError):
+        coords_add_vec([[1, 2, 3]], np.zeros(3, dtype=np.float64))
+    # wrong vec dtype:
+    with pytest.raises(ValueError):
+        coords_add_vec(np.zeros((1, 3), dtype=np.float32),
+                       np.array(["x", "y", "z"], dtype='S8'))
+    # wrong vec type:
+    with pytest.raises(TypeError):
+        coords_add_vec(np.zeros((1, 3), dtype=np.float32), [0, 0, 0])
+
+
+@pytest.mark.parametrize('positions', (
+    np.array([[]], dtype=np.float32),
+    np.zeros(3, dtype=np.float32),
+    np.zeros((2, 2), dtype=np.float32),
+    np.zeros((1, 1, 3), dtype=np.float32),
+    np.zeros((1, 4), dtype=np.float32)
+))
+def test_coords_add_vec_wrong_pos_shape(positions):
+    with pytest.raises(ValueError):
+        coords_add_vec(positions, np.zeros(3, dtype=np.float32))
+
+
+@pytest.mark.parametrize('vector', (
+    np.array([], dtype=np.float32),
+    np.zeros((1, 3), dtype=np.float32),
+    np.zeros((1, 2, 3), dtype=np.float32),
+    np.zeros(1, dtype=np.float32),
+    np.zeros(4, dtype=np.float32)
+))
+def test_coords_add_vec_wrong_vec_shape(vector):
+    positions = np.zeros((1, 3), dtype=np.float32)
+    with pytest.raises(ValueError):
+        coords_add_vec(positions, vector)
+    with pytest.raises(ValueError):
+        coords_add_vec(positions, vector.astype(np.float64))
 
 
 @pytest.mark.parametrize('values', (

@@ -122,6 +122,7 @@ Arrays
 .. autofunction:: argwhere_int_1d(arr, value)
 .. autofunction:: unique_rows
 .. autofunction:: blocks_of
+.. autofunction:: coords_add_vec(coordinates, vector)
 
 File parsing
 ------------
@@ -211,8 +212,8 @@ from numpy.testing import assert_equal
 import inspect
 
 from ..exceptions import StreamWarning, DuplicateWarning
-from ._cutil import (unique_int_1d, unique_masks_int_1d, iscontiguous_int_1d,
-                     argwhere_int_1d)
+from ._cutil import (coords_add_vec, unique_int_1d, unique_masks_int_1d,
+                     iscontiguous_int_1d, argwhere_int_1d)
 
 
 # Python 3.0, 3.1 do not have the builtin callable()
