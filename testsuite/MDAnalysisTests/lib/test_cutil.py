@@ -26,8 +26,9 @@ import pytest
 import numpy as np
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib._cutil import (unique_int_1d, iscontiguous_int_1d,
-                                   argwhere_int_1d, find_fragments)
+from MDAnalysis.lib._cutil import (unique_int_1d, unique_masks_int_1d,
+                                   iscontiguous_int_1d, argwhere_int_1d,
+                                   find_fragments)
 
 
 @pytest.mark.parametrize('values', (
@@ -40,10 +41,14 @@ from MDAnalysis.lib._cutil import (unique_int_1d, iscontiguous_int_1d,
     [1, 2, 2, 6, 4, 4],  # duplicates, non-monotonic
     [4, 2, 6, 1, 4, 2]   # duplicates, scrambled
 ))
-def test_unique_int_1d(values):
+@pytest.mark.parametrize('counts', (True, False))
+@pytest.mark.parametrize('masks', (True, False))
+def test_unique_int_1d(values, counts, masks):
     array = np.array(values, dtype=np.intp)
     ref = np.unique(array)
-    res = unique_int_1d(array)
+    res = unique_int_1d(array, return_counts=counts, return_masks=masks)
+    if counts or masks:
+        res = res[0]
     assert_equal(res, ref)
     assert type(res) == type(ref)
     assert res.dtype == ref.dtype
@@ -59,17 +64,78 @@ def test_unique_int_1d(values):
     [1, 2, 2, 6, 4, 4],  # duplicates, non-monotonic
     [4, 2, 6, 1, 4, 2]   # duplicates, scrambled
 ))
-def test_unique_int_1d_return_counts(values):
+@pytest.mark.parametrize('masks', (True, False))
+def test_unique_int_1d_return_counts(values, masks):
     array = np.array(values, dtype=np.intp)
-    ref_unique, ref_counts = np.unique(array, return_counts=True)
-    unique, counts = unique_int_1d(array, return_counts=True)
-    assert_equal(unique, ref_unique)
+    _, ref_counts = np.unique(array, return_counts=True)
+    res = unique_int_1d(array, return_counts=True, return_masks=masks)
+    counts = res[1]
     assert_equal(counts, ref_counts)
-    assert type(unique) == type(ref_unique)
     assert type(counts) == type(ref_counts)
-    assert unique.dtype == ref_unique.dtype
     assert counts.dtype == ref_counts.dtype
 
+
+@pytest.mark.parametrize('values', (
+    [],                  # empty array
+    [-999],              # single value array
+    [1, 1, 1, 1],        # all identical
+    [2, 3, 5, 7],        # all different, monotonic
+    [5, 2, 7, 3],        # all different, non-monotonic
+    [1, 2, 2, 4, 4, 6],  # duplicates, monotonic
+    [1, 2, 2, 6, 4, 4],  # duplicates, non-monotonic
+    [4, 2, 6, 1, 4, 2]   # duplicates, scrambled
+))
+@pytest.mark.parametrize('counts', (True, False))
+def test_unique_int_1d_return_masks(values, counts):
+    array = np.array(values, dtype=np.intp)
+    ref_masks = unique_masks_int_1d(array)
+    res = unique_int_1d(array, return_counts=counts, return_masks=True)
+    if counts:
+        masks = res[2]
+    else:
+        masks = res[1]
+    assert type(masks) == type(ref_masks)
+    assert masks.dtype == ref_masks.dtype
+    assert len(masks) == len(ref_masks)
+    for i in range(len(masks)):
+        assert isinstance(masks[i], (tuple, slice))
+        assert_equal(masks[i], ref_masks[i])
+
+
+@pytest.mark.parametrize('values', (
+    [],                  # empty array
+    [-999],              # single value array
+    [1, 1, 1, 1],        # all identical
+    [2, 3, 5, 7],        # all different, monotonic
+    [5, 2, 7, 3],        # all different, non-monotonic
+    [1, 2, 2, 4, 4, 6],  # duplicates, monotonic
+    [1, 2, 2, 6, 4, 4],  # duplicates, non-monotonic
+    [4, 2, 6, 1, 4, 2]   # duplicates, scrambled
+))
+def test_unique_masks_int_1d(values):
+    array = np.array(values, dtype=np.intp)
+    ismonotonic = len(array) > 0
+    if len(array) > 1:
+        ismonotonic = np.all((array[1:] - array[:-1]) >= 0)
+    ref_unique = np.unique(values)
+    ref_masks = np.empty(len(ref_unique), dtype=object)
+    for i in range(len(ref_unique)):
+        ref_masks[i] = (array == ref_unique[i]).nonzero()
+        if ismonotonic:
+            ref_masks[i] = slice(ref_masks[i][0][0], ref_masks[i][0][-1] + 1, 1)
+    masks = unique_masks_int_1d(array)
+    assert type(masks) == type(ref_masks)
+    assert masks.dtype == ref_masks.dtype
+    assert len(masks) == len(ref_masks)
+    for i in range(len(masks)):
+        if ismonotonic:
+            assert isinstance(masks[i], slice)
+        else:
+            assert isinstance(masks[i], tuple)
+            assert len(masks[i]) == 1
+            assert isinstance(masks[i][0], np.ndarray)
+            assert masks[i][0].dtype == np.intp
+        assert_equal(masks[i], ref_masks[i])
 
 @pytest.mark.parametrize('values, ref', (
     ([-3], True),                   # length-1 array, negative

@@ -29,6 +29,10 @@
 # cython: embedsignature=False
 # Warning: Sphinx chokes if embedsignature is True
 
+from __future__ import division
+
+import cython
+cimport cython
 import numpy as np
 cimport numpy as np
 from libc.math cimport sqrt, fabs
@@ -41,9 +45,8 @@ from libcpp.vector cimport vector
 from cython.operator cimport dereference as deref
 
 
-__all__ = ['unique_int_1d', 'iscontiguous_int_1d', 'argwhere_int_1d',
-           'make_whole', 'find_fragments']
-
+__all__ = ['unique_int_1d', 'unique_masks_int_1d', 'iscontiguous_int_1d',
+           'argwhere_int_1d', 'make_whole', 'find_fragments']
 
 cdef extern from "calc_distances.h":
     ctypedef float coordinate[3]
@@ -54,7 +57,8 @@ ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
 
 
-def unique_int_1d(np.intp_t[:] values, bint return_counts=False):
+def unique_int_1d(np.intp_t[:] values not None, bint return_counts=False,
+                  bint return_masks=False):
     """Find the unique elements of a 1D array of integers.
 
     This function is optimal on sorted arrays.
@@ -67,6 +71,9 @@ def unique_int_1d(np.intp_t[:] values, bint return_counts=False):
     return_counts: bool, optional
         If ``True``, the number of occurrences of each unique value is returned
         as well.
+    return_masks: bool, optional
+        If ``True``, an array of masks (with one mask per unique value) will be
+        returned as well.
 
     Returns
     -------
@@ -76,6 +83,13 @@ def unique_int_1d(np.intp_t[:] values, bint return_counts=False):
         An array of the same length as `unique` containing the number of
         occurrences of each unique value in the original `values` array. Only
         returned if `return_counts` is ``True``.
+    masks: numpy.ndarray, optional
+        An array of dtype ``object`` containing a mask for each value in
+        `unique`. Each of the masks allows accessing all occurrences of its
+        corresponding unique value in `values` and is equivalent to, such that
+        ``np.all(values[masks[i]] == unique[i]) == True``. Thus, the masks array
+        is roughly equivalent to
+        ``[numpy.where(values == i) for i in numpy.unique(values)]``.
 
     Notes
     -----
@@ -88,30 +102,44 @@ def unique_int_1d(np.intp_t[:] values, bint return_counts=False):
     See Also
     --------
     :func:`numpy.unique`
+    :func:`unique_masks_int_1d`
 
 
     .. versionadded:: 0.19.0
     .. versionchanged:: 0.20.0
-       Added optional  `return_counts` parameter and changed dtype from
-       ``np.int64`` to ``np.intp`` (corresponds to atom indices).
+       Added optional  `return_counts` and `return_masks` parameters and changed
+       dtype from ``np.int64`` to ``np.intp`` (corresponds to atom indices).
     """
-    cdef np.intp_t[::1] result
+    cdef np.intp_t[::1] unique
     cdef np.intp_t[::1] counts
-    cdef np.intp_t n_values
+    cdef object[::1] masks
+    cdef np.intp_t n_values, n_unique
 
     if return_counts:
         n_values = values.shape[0]
-        counts = np.ones(n_values, dtype=np.intp)
-        result = _unique_int_1d_with_counts(values, counts)
-        n_values = result.shape[0]
-        return np.asarray(result), np.asarray(counts[:n_values])
+        counts = np.empty(n_values, dtype=np.intp)
+        if return_masks:
+            masks = np.empty(n_values, dtype=object)
+            unique = _unique_int_1d_counts_masks(values, counts, masks)
+            n_unique = unique.shape[0]
+            return np.asarray(unique), np.asarray(counts[:n_unique]), \
+                   np.asarray(masks[:n_unique])
+        else:
+            unique = _unique_int_1d_counts(values, counts)
+            n_unique = unique.shape[0]
+            return np.asarray(unique), np.asarray(counts[:n_unique])
+    if return_masks:
+        n_values = values.shape[0]
+        masks = np.empty(n_values, dtype=object)
+        unique = _unique_int_1d_masks(values, masks)
+        n_unique = unique.shape[0]
+        return np.asarray(unique), np.asarray(masks[:n_unique])
+    unique = _unique_int_1d(values)
+    return np.asarray(unique)
 
-    result = _unique_int_1d(values)
-    return np.asarray(result)
 
-
-cdef inline np.intp_t[::1] _unique_int_1d(np.intp_t[:] values):
-    """C/C++-level implementation of :func:`unique_int_1d` with
+cdef inline np.intp_t[::1] _unique_int_1d(np.intp_t[:]& values):
+    """Low-level implementation of :func:`unique_int_1d` with
     ``return_counts=False``.
 
 
@@ -121,38 +149,40 @@ cdef inline np.intp_t[::1] _unique_int_1d(np.intp_t[:] values):
     cdef np.intp_t i = 0
     cdef np.intp_t j = 0
     cdef np.intp_t n_values = values.shape[0]
-    cdef np.intp_t[::1] result = np.empty(n_values, dtype=np.intp)
-    cdef np.intp_t[::1] srt
+    cdef np.intp_t n_unique
+    cdef np.intp_t[::1] unique = np.empty(n_values, dtype=np.intp)
+    cdef np.intp_t[::1] sorted_values
     if n_values > 0:
-        result[0] = values[0]
+        unique[0] = values[0]
         if n_values > 1:
             for i in range(1, n_values):
-                if values[i] != result[j]:
+                if values[i] != unique[j]:
                     j += 1
-                    result[j] = values[i]
+                    unique[j] = values[i]
                 if values[i] < values[i - 1]:
                     is_monotonic = False
-            n_values = j + 1
+            n_unique = j + 1
             if is_monotonic:
-                result = result[:n_values]
+                unique = unique[:n_unique]
             else:
                 # Here could also call the function recursively but that would
                 # render inlining impossible
                 j = 0
-                srt = np.sort(result[:n_values])
-                result[0] = srt[0]
-                for i in range(1, n_values):
-                    if srt[i] != result[j]:
+                sorted_values = np.sort(unique[:n_unique])
+                unique[0] = sorted_values[0]
+                for i in range(1, n_unique):
+                    if sorted_values[i] != unique[j]:
                         j += 1
-                        result[j] = srt[i]
-                result = result[:j + 1]
-    return result
+                        unique[j] = sorted_values[i]
+                n_unique = j + 1
+                unique = unique[:n_unique]
+    return unique
 
 
-cdef inline np.intp_t[::1] _unique_int_1d_with_counts(np.intp_t[:] values,
-                                                      np.intp_t[::1] counts):
-    """C/C++-level implementation of :func:`unique_int_1d` with
-    ``return_counts=True``.
+cdef inline np.intp_t[::1] _unique_int_1d_counts(np.intp_t[:]& values,
+                                                 np.intp_t[::1]& counts):
+    """Low-level implementation of :func:`unique_int_1d` with
+    ``return_counts=True`` and ``return_masks=False``.
 
 
     .. versionadded:: 0.20.0
@@ -161,36 +191,248 @@ cdef inline np.intp_t[::1] _unique_int_1d_with_counts(np.intp_t[:] values,
     cdef np.intp_t i = 0
     cdef np.intp_t j = 0
     cdef np.intp_t n_values = values.shape[0]
-    cdef np.intp_t[::1] result = np.empty(n_values, dtype=np.intp)
-    cdef np.intp_t[::1] srt
+    cdef np.intp_t n_unique
+    cdef np.intp_t[::1] unique = np.empty(n_values, dtype=np.intp)
+    cdef np.intp_t[::1] sorted_values
     if n_values > 0:
-        result[0] = values[0]
+        unique[0] = values[0]
+        counts[0] = 1
         if n_values > 1:
             for i in range(1, n_values):
-                if values[i] == result[j]:
+                if values[i] == unique[j]:
                     counts[j] += 1
                 else:
                     j += 1
-                    result[j] = values[i]
+                    unique[j] = values[i]
+                    counts[j] = 1
                 if values[i] < values[i - 1]:
                     is_monotonic = False
                     break
             if is_monotonic:
-                result = result[:j + 1]
+                n_unique = j + 1
+                unique = unique[:n_unique]
             else:
-                # reset counts, sort the values and try again:
-                counts[:j + 1] = 1
+                # sort values and try again:
                 j = 0
-                srt = np.sort(values)
-                result[0] = srt[0]
+                sorted_values = np.sort(values)
+                unique[0] = sorted_values[0]
+                counts[0] = 1
                 for i in range(1, n_values):
-                    if srt[i] == result[j]:
+                    if sorted_values[i] == unique[j]:
                         counts[j] += 1
                     else:
                         j += 1
-                        result[j] = srt[i]
-                result = result[:j + 1]
-    return result
+                        unique[j] = sorted_values[i]
+                        counts[j] = 1
+                n_unique = j+ 1
+                unique = unique[:n_unique]
+    return unique
+
+
+cdef inline np.intp_t[::1] _unique_int_1d_masks(np.intp_t[:]& values,
+                                                object[::1]& masks):
+    """Low-level implementation of :func:`unique_int_1d` with
+    ``return_counts=False`` and ``return_masks=True``.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef bint is_monotonic = True
+    cdef np.intp_t i = 0
+    cdef np.intp_t j = 0
+    cdef np.intp_t n_values = values.shape[0]
+    cdef np.intp_t n_unique
+    cdef np.intp_t[::1] unique = np.empty(n_values, dtype=np.intp)
+    cdef np.intp_t[::1] sorted_unique
+    cdef np.intp_t[:, ::1] slices = np.empty((n_values, 2), dtype=np.intp)
+    cdef np.ndarray[np.intp_t, ndim=1] valarr
+    cdef np.ndarray[np.uint8_t, ndim=2, cast=True] bool_masks
+    if n_values > 0:
+        unique[0] = values[0]
+        slices[0, 0] = i
+        slices[0, 1] = i + 1
+        if n_values > 1:
+            for i in range(1, n_values):
+                if values[i] == unique[j]:
+                    slices[j, 1] += 1
+                else:
+                    j += 1
+                    unique[j] = values[i]
+                    slices[j, 0] = i
+                    slices[j, 1] = i + 1
+                if values[i] < values[i - 1]:
+                    is_monotonic = False
+            n_unique = j + 1
+            if is_monotonic:
+                unique = unique[:n_unique]
+                for i in range(n_unique):
+                    masks[i] = slice(slices[i, 0], slices[i, 1], 1)
+            else:
+                # sort values and try again:
+                j = 0
+                sorted_unique = np.sort(unique[:n_unique])
+                unique[0] = sorted_unique[0]
+                for i in range(1, n_unique):
+                    if sorted_unique[i] != unique[j]:
+                        j += 1
+                        unique[j] = sorted_unique[i]
+                n_unique = j + 1
+                unique = unique[:n_unique]
+                valarr = np.asarray(values)
+                bool_masks = (valarr == unique[:, None])
+                for i in range(n_unique):
+                    masks[i] = bool_masks[i].nonzero()
+        else:
+            masks[0] = slice(0, 1, 1)
+    return unique
+
+
+cdef inline np.intp_t[::1] _unique_int_1d_counts_masks(np.intp_t[:]& values,
+                                                       np.intp_t[::1]& counts,
+                                                       object[::1]& masks):
+    """Low-level implementation of :func:`unique_int_1d` with
+    ``return_counts=True`` and ``return_masks=True``.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef bint is_monotonic = True
+    cdef np.intp_t i = 0
+    cdef np.intp_t j = 0
+    cdef np.intp_t n_values = values.shape[0]
+    cdef np.intp_t n_unique
+    cdef np.intp_t[::1] unique = np.empty(n_values, dtype=np.intp)
+    cdef np.intp_t[::1] sorted_values
+    cdef np.intp_t[:, ::1] slices = np.empty((n_values, 2), dtype=np.intp)
+    cdef np.ndarray[np.intp_t, ndim=1] valarr
+    cdef np.ndarray[np.uint8_t, ndim=2, cast=True] bool_masks
+    if n_values > 0:
+        unique[0] = values[0]
+        counts[0] = 1
+        slices[0, 0] = i
+        slices[0, 1] = i + 1
+        if n_values > 1:
+            for i in range(1, n_values):
+                if values[i] == unique[j]:
+                    counts[j] += 1
+                    slices[j, 1] += 1
+                else:
+                    j += 1
+                    unique[j] = values[i]
+                    counts[j] = 1
+                    slices[j, 0] = i
+                    slices[j, 1] = i + 1
+                if values[i] < values[i - 1]:
+                    is_monotonic = False
+                    break
+            if is_monotonic:
+                n_unique = j + 1
+                unique = unique[:n_unique]
+                for i in range(n_unique):
+                    masks[i] = slice(slices[i, 0], slices[i, 1], 1)
+            else:
+                # sort values and try again:
+                j = 0
+                sorted_values = np.sort(values)
+                unique[0] = sorted_values[0]
+                counts[0] = 1
+                for i in range(1, n_values):
+                    if sorted_values[i] == unique[j]:
+                        counts[j] += 1
+                    else:
+                        j += 1
+                        unique[j] = sorted_values[i]
+                        counts[j] = 1
+                n_unique = j + 1
+                unique = unique[:n_unique]
+                valarr = np.asarray(values)
+                bool_masks = (valarr == unique[:, None])
+                for i in range(n_unique):
+                    masks[i] = bool_masks[i].nonzero()
+        else:
+            masks[0] = slice(0, 1, 1)
+    return unique
+
+
+def unique_masks_int_1d(np.intp_t[:] values not None):
+    """Find the indices of each unique element in a 1D array of integers and
+    return them as an array of index masks or equivalent slices, similar to
+    ``[numpy.where(values == i) for i in numpy.unique(values)]``.
+
+    This function is optimal on sorted arrays.
+
+    Parameters
+    ----------
+    values: numpy.ndarray
+        1D array of dtype ``numpy.intp`` (or equivalent) in which to find the
+        unique values.
+
+    Returns
+    -------
+    numpy.ndarray
+        An array of dtype ``object`` containing index masks for each unique
+        element in `values`.
+
+    See Also
+    --------
+    :func:`unique_int_1d`
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef object[::1] masks = _unique_masks_int_1d(values)
+    return np.asarray(masks)
+
+
+cdef inline object[::1] _unique_masks_int_1d(np.intp_t[:]& values):
+    """Low-level implementation of :func:`unique_masks_int_1d`.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef bint is_monotonic = True
+    cdef np.intp_t i = 0
+    cdef np.intp_t j = 0
+    cdef np.intp_t n_values = values.shape[0]
+    cdef np.intp_t n_unique
+    cdef np.intp_t[:, ::1] slices = np.empty((n_values, 2), dtype=np.intp)
+    cdef np.intp_t[::1] unique
+    cdef object[::1] masks
+    cdef np.ndarray[np.intp_t, ndim=1] valarr
+    cdef np.ndarray[np.uint8_t, ndim=2, cast=True] bool_masks
+    if n_values > 0:
+        slices[0, 0] = 0
+        slices[0, 1] = 1
+        if n_values > 1:
+            for i in range(1, n_values):
+                if values[i] == values[i - 1]:
+                    slices[j, 1] += 1
+                else:
+                    if values[i] < values[i - 1]:
+                        is_monotonic = False
+                        break
+                    j += 1
+                    slices[j, 0] = i
+                    slices[j, 1] = i + 1
+            if is_monotonic:
+                n_unique = j + 1
+                masks = np.empty(n_unique, dtype=object)
+                for i in range(n_unique):
+                    masks[i] = slice(slices[i, 0], slices[i, 1], 1)
+            else:
+                unique = _unique_int_1d(np.sort(values))
+                n_unique = unique.shape[0]
+                valarr = np.asarray(values)
+                bool_masks = (valarr == unique[:, None])
+                masks = np.empty(n_unique, dtype=object)
+                for i in range(n_unique):
+                    masks[i] = bool_masks[i].nonzero()
+        else:
+            masks = np.empty(1, dtype=object)
+            masks[0] = slice(0, 1, 1)
+    else:
+        masks = np.empty(0, dtype=object)
+    return masks
 
 
 def iscontiguous_int_1d(np.intp_t[:] values):
@@ -225,13 +467,10 @@ def iscontiguous_int_1d(np.intp_t[:] values):
     cdef bint iscontiguous = True
     with nogil:
         if n_values > 1:
-            if (values[n_values - 1] - values[0] + 1) == n_values:
-                for i in range(n_values - 1):
-                    if values[i] + 1 != values[i + 1]:
-                        iscontiguous = False
-                        break
-            else:
-                iscontiguous = False
+            for i in range(n_values - 1):
+                if values[i] + 1 != values[i + 1]:
+                    iscontiguous = False
+                    break
         elif n_values == 0:
             iscontiguous = False
     return iscontiguous
@@ -279,7 +518,7 @@ def argwhere_int_1d(np.intp_t[:] arr, np.intp_t value):
 
 cdef inline np.intp_t _argwhere_int_1d(np.intp_t[:] arr, np.intp_t value,
                                        np.intp_t[::1] result) nogil:
-    """C/C++-level implementation of :func:`argwhere_int_1d`.
+    """Low-level implementation of :func:`argwhere_int_1d`.
 
 
     .. versionadded:: 0.20.0
@@ -408,7 +647,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     # map of global indices to local indices
     ix_view = atomgroup.ix[:]
     natoms = atomgroup.ix.shape[0]
-    
+
     oldpos = atomgroup.positions
 
     # Nothing to do for less than 2 atoms
