@@ -3086,7 +3086,8 @@ class AtomGroup(GroupBase):
             format = os.path.splitext(filename)[1][1:]  # strip initial dot!
             format = format or file_format
             format = format.strip().upper()
-
+            if format == 'GZ':
+                format = filename.split('.')[-2]
             writer = get_writer_for(filename, format=format, multiframe=multiframe)
         except (ValueError, TypeError):
             pass
