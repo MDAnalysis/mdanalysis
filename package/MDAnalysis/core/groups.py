@@ -3080,15 +3080,7 @@ class AtomGroup(GroupBase):
         # Try and select a Class using get_ methods (becomes `writer`)
         # Once (and if!) class is selected, use it in with block
         try:
-            # format keyword works differently in get_writer and get_selection_writer
-            # here it overrides everything, in get_sel it is just a default
-            # apply sparingly here!
-            format = os.path.splitext(filename)[1][1:]  # strip initial dot!
-            format = format or file_format
-            format = format.strip().upper()
-            if format == 'GZ':
-                format = filename.split('.')[-2]
-            writer = get_writer_for(filename, format=format, multiframe=multiframe)
+            writer = get_writer_for(filename, format=None, multiframe=multiframe)
         except (ValueError, TypeError):
             pass
         else:
