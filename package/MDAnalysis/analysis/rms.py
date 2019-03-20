@@ -148,7 +148,7 @@ from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.util import (asiterable, iterable, get_weights, deprecate,
-                                 coords_add_vec)
+                                 coords_add_vector)
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
 
@@ -621,11 +621,11 @@ class RMSD(AnalysisBase):
             # Transform each atom in the trajectory (use inplace ops to
             # avoid copying arrays) (Marginally (~3%) faster than
             # "ts.positions[:] = (ts.positions - x_com) * R + ref_com".)
-            coords_add_vec(self._ts.positions, -mobile_com)
+            coords_add_vector(self._ts.positions, -mobile_com)
 
             # R acts to the left & is broadcasted N times.
             self._ts.positions[:] = np.dot(self._ts.positions, self._R)
-            coords_add_vec(self._ts.positions, self._ref_com)
+            coords_add_vector(self._ts.positions, self._ref_com)
 
             # 2) calculate secondary RMSDs (without any further
             #    superposition)

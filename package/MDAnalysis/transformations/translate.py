@@ -42,7 +42,7 @@ import numpy as np
 from functools import partial
 
 from ..lib.mdamath import triclinic_vectors
-from ..lib.util import coords_add_vec
+from ..lib.util import coords_add_vector
 
 def translate(vector):
     """
@@ -69,7 +69,7 @@ def translate(vector):
         raise ValueError("{} vector is too short".format(vector))
 
     def wrapped(ts):
-        coords_add_vec(ts.positions, vector)
+        coords_add_vector(ts.positions, vector)
 
         return ts
 
@@ -140,7 +140,7 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
         ag_center = center_method()
 
         vector = boxcenter - ag_center
-        coords_add_vec(ts.positions, vector)
+        coords_add_vector(ts.positions, vector)
 
         return ts
 

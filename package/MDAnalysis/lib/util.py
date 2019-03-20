@@ -116,13 +116,14 @@ Containers and lists
 Arrays
 ------
 
-.. autofunction:: unique_int_1d(values, return_counts=False, return_masks=False)
-.. autofunction:: unique_masks_int_1d(values)
+.. autofunction:: unique_int_1d(values, return_counts=False, \
+                                return_masks=False, assume_unsorted=False)
+.. autofunction:: unique_masks_int_1d(values, assume_unsorted=False)
 .. autofunction:: iscontiguous_int_1d(values)
 .. autofunction:: argwhere_int_1d(arr, value)
 .. autofunction:: unique_rows
 .. autofunction:: blocks_of
-.. autofunction:: coords_add_vec(coordinates, vector)
+.. autofunction:: coords_add_vector(coordinates, vector)
 
 File parsing
 ------------
@@ -213,7 +214,7 @@ from numpy.testing import assert_equal
 import inspect
 
 from ..exceptions import StreamWarning, DuplicateWarning
-from ._cutil import (coords_add_vec, unique_int_1d, unique_masks_int_1d,
+from ._cutil import (coords_add_vector, unique_int_1d, unique_masks_int_1d,
                      iscontiguous_int_1d, argwhere_int_1d, indices_to_slice_1d)
 
 
