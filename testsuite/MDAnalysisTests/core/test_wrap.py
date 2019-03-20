@@ -63,6 +63,8 @@ class TestWrap(object):
         # check for correct result:
         assert_almost_equal(wrapped_pos, ref_wrapped_pos,
                             decimal=self.precision)
+        # check that the returned positions are a copy:
+        assert wrapped_pos.flags['OWNDATA']
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
         # now, do the wrapping inplace:
@@ -70,6 +72,8 @@ class TestWrap(object):
                                   inplace=True)
         # check that result is the same as for out-of-place computation:
         assert_array_equal(wrapped_pos, wrapped_pos2)
+        # check that the returned positions are a copy:
+        assert wrapped_pos2.flags['OWNDATA']
         # check that wrapped positions are applied:
         assert_array_equal(group.atoms.positions, wrapped_pos)
         # check that nobody messed with the reference positions,

@@ -104,9 +104,7 @@ from numpy.lib.utils import deprecate
 
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
-from ..lib.util import (cached, warn_if_not_unique, unique_int_1d,
-                        iscontiguous_int_1d, unique_masks_int_1d,
-                        check_compound)
+from ..lib.util import cached, warn_if_not_unique
 from ..lib import distances
 from ..lib import c_distances
 from ..lib import transformations
@@ -608,6 +606,23 @@ class GroupBase(_MutableBase):
         return self._ix
 
     @property
+    @cached('ix_or_slice')
+    def _ix_or_slice(self):
+        """The indices of the components in the group represented as a slice
+        if possible.
+
+        See Also
+        --------
+        :attr:`ix`
+        """
+        ix_or_slice = util.indices_to_slice_1d(self._ix)
+        if isinstance(ix_or_slice, slice):
+            self._cache['iscontiguous'] = ix_or_slice.step == 1
+        else:
+            self._cache['iscontiguous'] = False
+        return ix_or_slice
+
+    @property
     def dimensions(self):
         """Obtain a copy of the dimensions of the currently loaded Timestep"""
         return self.universe.trajectory.ts.dimensions.copy()
@@ -677,18 +692,25 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.20.0
         """
-        return iscontiguous_int_1d(self._ix)
+        ix = self._ix
+        if util.iscontiguous_int_1d(ix):
+            self._cache['ix_or_slice'] = slice(ix[0], ix[-1] + 1, 1)
+            return True
+        self._cache['ix_or_slice'] = ix
+        return False
 
     @warn_if_not_unique
-    def center(self, weights, pbc=None, compound='group'):
+    def center(self, weights, pbc=None, compound='group', check_weights=False):
         """Weighted center of (compounds of) the group
 
         Computes the weighted center of :class:`Atoms<Atom>` in the group.
         Weighted centers per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
-        accordingly. If the weights of a compound sum up to zero, the
-        coordinates of that compound's weighted center will be ``nan`` (not a
-        number).
+        accordingly.
+
+        If the weights (of a compound) sum up to zero, the weighted center (of
+        that compound) will be ``nan`` (not a number). If `check_weights` is
+        set to ``True``, a :class:`ValueError` will be raised in that case.
 
         Parameters
         ----------
@@ -711,6 +733,9 @@ class GroupBase(_MutableBase):
             will be returned as an array of position vectors, i.e. a 2d array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
+        check_weights : bool, optional
+            If ``True``, raises a :class:`ValueError` if the weights (of any
+            compound) sum up to zero.
 
         Returns
         -------
@@ -730,6 +755,9 @@ class GroupBase(_MutableBase):
         ValueError
             If `pbc` is ``True`` but the unit cell is invalid (has non-positive
             values).
+        ValueError
+            If `check_weights` is ``True`` and the weights (of any compound) sum
+            up to zero.
         ~MDAnalysis.exceptions.NoDataError
             If `compound` is ``'molecules'`` but the topology doesn't
             contain molecule information (molnums) or if `compound` is
@@ -756,14 +784,14 @@ class GroupBase(_MutableBase):
 
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
-            compounds
+            compounds, added `check_weights` keyword.
         """
         if pbc is None:
             pbc = flags['use_pbc']
 
-        comp = check_compound(compound)
+        comp = util.check_compound(compound)
         atoms = self.atoms
-        coords = atoms._positions
+        coords = atoms._positions_view_or_copy
 
         # enforce calculations in double precision:
         dtype = np.float64
@@ -791,43 +819,14 @@ class GroupBase(_MutableBase):
         if comp == 'group':
             if pbc:
                 coords = distances.apply_PBC(coords, box)
-            if weights is None:
-                # promote coords to dtype:
-                coords = coords.astype(dtype)
-                return coords.mean(axis=0)
-            return (coords * weights[:, None]).sum(axis=0) / weights.sum()
+            return util.coords_center(coords, weights=weights,
+                                      check_weights=check_weights)[0]
 
         # comp != 'group':
         compound_indices = atoms.compound_indices(comp)
-        # Sort positions and weights by compound index:
-        sort_indices = np.argsort(compound_indices)
-        compound_indices = compound_indices[sort_indices]
-        coords = coords[sort_indices]
-        if weights is None:
-            # promote coords to dtype:
-            coords = coords.astype(dtype)
-        else:
-            weights = weights[sort_indices]
-        # Get sizes of compounds:
-        unique_compound_indices, compound_sizes = \
-            unique_int_1d(compound_indices, return_counts=True)
-        n_compounds = len(unique_compound_indices)
-        unique_compound_sizes = unique_int_1d(compound_sizes)
-        # Allocate output array:
-        centers = np.empty((n_compounds, 3), dtype=np.float32)
-        # Compute centers per compound for each compound size:
-        for compound_size in unique_compound_sizes:
-            compound_mask = (compound_sizes == compound_size).nonzero()
-            _compound_indices = unique_compound_indices[compound_mask]
-            atoms_mask = np.in1d(compound_indices, _compound_indices).nonzero()
-            _coords = coords[atoms_mask].reshape((-1, compound_size, 3))
-            if weights is None:
-                _centers = _coords.mean(axis=1)
-            else:
-                _weights = weights[atoms_mask].reshape((-1, compound_size))
-                _centers = (_coords * _weights[:, :, None]).sum(axis=1)
-                _centers /= _weights.sum(axis=1)[:, None]
-            centers[compound_mask] = _centers
+        centers = util.coords_center(coords, weights=weights,
+                                     compound_indices=compound_indices,
+                                     check_weights=check_weights)
         if pbc:
             centers = distances.apply_PBC(centers, box)
         return centers
@@ -963,7 +962,7 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.20.0
         """
-        comp = check_compound(compound)
+        comp = util.check_compound(compound)
         atoms = self.atoms
 
         if isinstance(attribute, string_types):
@@ -991,7 +990,7 @@ class GroupBase(_MutableBase):
         unique_compound_indices, compound_sizes = np.unique(compound_indices,
                                                             return_counts=True)
         n_compounds = len(unique_compound_indices)
-        unique_compound_sizes = unique_int_1d(compound_sizes)
+        unique_compound_sizes = util.unique_int_1d(compound_sizes)
         # Allocate output array:
         accumulation = np.zeros([n_compounds] + higher_dims)
         # Compute sums per compound for each compound size:
@@ -1332,8 +1331,8 @@ class GroupBase(_MutableBase):
         Returns
         -------
         numpy.ndarray
-            Array of wrapped atom coordinates of dtype `np.float32` and shape
-            ``(self.atoms.n_atoms, 3)``
+            An array of dtype `np.float32` and shape ``(self.atoms.n_atoms, 3)``
+            containing wrapped atom coordinates.
 
         Raises
         ------
@@ -1420,23 +1419,36 @@ class GroupBase(_MutableBase):
             restore_mask = atoms._unique_restore_mask
             atoms = _atoms
 
-        comp = check_compound(compound, atoms=True)
+        comp = util.check_compound(compound, atoms=True)
 
         if len(atoms) == 0:
             return np.empty((0, 3), dtype=np.float32)
 
-        if inplace:
-            positions = atoms._positions  # try to get a view
-        else:
-            positions = atoms.positions  # get a copy
-
         if comp == "atoms" or len(atoms) == 1:
-                pbc_func(positions, box)
+            if inplace:
+                # try to get a C-contiguous view:
+                positions = atoms._positions_c_view_or_copy
+                iscopy = positions.flags['OWNDATA']
+            else:
+                # get a copy:
+                positions = atoms.positions
+                iscopy = True
+            # wrap:
+            pbc_func(positions, box)
         else:
+            if inplace:
+                # try to get a view:
+                positions = atoms._positions_view_or_copy
+                iscopy = positions.flags['OWNDATA']
+            else:
+                # get a copy:
+                positions = atoms.positions
+                iscopy = True
             ctr = center.lower()
-            if ctr  == 'com':
+            weights = None
+            if ctr == 'com':
                 try:
-                    masses = atoms.masses
+                    weights = atoms.masses
                 except AttributeError:
                     raise NoDataError("Cannot perform wrap with center='com', "
                                       "this requires masses.")
@@ -1445,42 +1457,46 @@ class GroupBase(_MutableBase):
                                  "use one of 'com' or 'cog'.".format(center))
             if comp == 'group':
                 # compute and apply required shift:
-                if ctr == 'com':
-                    ctrpos = atoms.center(masses, pbc=False, compound=comp)
-                    if np.isnan(ctrpos[0]):
-                        raise ValueError("Cannot use compound='group' with "
-                                         "center='com' because the total mass "
-                                         "of the group is zero.")
-                else:  # ctr == 'cog'
-                    ctrpos = atoms.center(None, pbc=False, compound=comp)
-                ctrpos = ctrpos.astype(np.float32, copy=False)
-                target = ctrpos.reshape((1, 3)).copy()
+                try:
+                    ctrpos = util.coords_center(positions, weights=weights,
+                                                check_weights=True)
+                except ValueError:
+                    raise ValueError("Cannot use compound='group' with "
+                                     "center='com' because the total mass of "
+                                     "the group is zero.")
+                ctrpos = ctrpos.astype(np.float32)
+                target = ctrpos.copy()
                 pbc_func(target, box)
-                positions += target[0] - ctrpos
+                shift = target[0] - ctrpos[0]
+                util.coords_add_vector(positions, shift)
             else:
                 comp_ix = atoms.compound_indices(comp)
                 # compute required shifts:
-                if ctr == 'com':
-                    ctrpos = atoms.center(masses, pbc=False, compound=comp)
-                    if np.any(np.isnan(ctrpos)):
-                        raise ValueError("Cannot use compound='{0}' with "
-                                         "center='com' because the total mass "
-                                         "of at least one of the {0} is zero."
-                                         "".format(comp))
-                else:  # ctr == 'cog'
-                    ctrpos = atoms.center(None, pbc=False, compound=comp)
-                ctrpos = ctrpos.astype(np.float32, copy=False)
+                try:
+                    ctrpos, comp_masks = \
+                        util.coords_center(positions, weights=weights,
+                                           compound_indices=comp_ix,
+                                           check_weights=True,
+                                           return_compound_masks=True)
+                except ValueError:
+                    raise ValueError("Cannot use compound='{0}' with "
+                                     "center='com' because the total mass of "
+                                     "at least one of the {0} is zero."
+                                     "".format(comp))
+                ctrpos = ctrpos.astype(np.float32)
                 target = ctrpos.copy()
                 pbc_func(target, box)
                 shifts = target - ctrpos
-
                 # apply the shifts:
-                comp_masks = unique_masks_int_1d(comp_ix)
-                for i in range(len(comp_masks)):
-                    positions[comp_masks[i]] += shifts[i]
+                util._coords_add_vectors(positions, shifts,
+                                         compound_masks=comp_masks)
 
-        if inplace and not atoms.iscontiguous:
-            atoms.positions = positions
+        # check if we need to copy positions:
+        if inplace:
+            if iscopy:
+                atoms.positions = positions  # apply the result
+            else:
+                positions = positions.copy()  # don't return a view!
         if not self.isunique:
             positions = positions[restore_mask]
         return positions
@@ -1557,7 +1573,7 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.20.0
         """
         atoms = self.atoms
-        comp = check_compound(compound)
+        comp = util.check_compound(compound)
 
         # bail out early if no bonds in topology:
         if not hasattr(atoms, 'bonds'):
@@ -1600,7 +1616,7 @@ class GroupBase(_MutableBase):
         else:
             compound_indices = unique_atoms.compound_indices(comp)
             # Now process every compound:
-            unique_compound_indices = unique_int_1d(compound_indices)
+            unique_compound_indices = util.unique_int_1d(compound_indices)
             positions = unique_atoms.positions
             for i in unique_compound_indices:
                 mask = np.where(compound_indices == i)
@@ -2267,7 +2283,7 @@ class AtomGroup(GroupBase):
         """A sorted :class:`ResidueGroup` of the unique
         :class:`Residues<Residue>` present in the :class:`AtomGroup`.
         """
-        rg = self.universe.residues[unique_int_1d(self.resindices)]
+        rg = self.universe.residues[util.unique_int_1d(self.resindices)]
         rg._cache['isunique'] = True
         rg._cache['unique'] = rg
         return rg
@@ -2314,7 +2330,7 @@ class AtomGroup(GroupBase):
         """A sorted :class:`SegmentGroup` of the unique segments present in the
         :class:`AtomGroup`.
         """
-        sg = self.universe.segments[unique_int_1d(self.segindices)]
+        sg = self.universe.segments[util.unique_int_1d(self.segindices)]
         sg._cache['isunique'] = True
         sg._cache['unique'] = sg
         return sg
@@ -2489,39 +2505,39 @@ class AtomGroup(GroupBase):
     @positions.setter
     def positions(self, values):
         ts = self.universe.trajectory.ts
-        ts.positions[self.ix, :] = values
+        ts.positions[self._ix_or_slice, :] = values
 
     @property
-    def _positions(self):
+    def _positions_view_or_copy(self):
         """(View of) coordinates of the :class:`Atoms<Atom>` in the
         :class:`AtomGroup`.
 
         A :class:`numpy.ndarray` with shape ``(n_atoms, 3)`` and dtype
         ``numpy.float32``.
 
-        If the atomgroup is contiguous, a view of the its coordinates is
-        returned. Otherwise, the returned array will be a copy.
+        If the AtomGroup's indices can be represented by a slice, a view of the
+        current TimeStep's positions is returned. Otherwise, the returned array
+        will be a copy.
+        """
+        return self.universe.trajectory.ts.positions[self._ix_or_slice]
 
-        .. note:: Changing positions is not reflected in any files; reading any
-                  frame from the
-                  :attr:`~MDAnalysis.core.universe.Universe.trajectory` will
-                  replace the change with that from the file *except* if the
-                  :attr:`~MDAnalysis.core.universe.Universe.trajectory` is held
-                  in memory, e.g., when the
-                  :meth:`~MDAnalysis.core.universe.Universe.transfer_to_memory`
-                  method was used.
+    @property
+    def _positions_c_view_or_copy(self):
+        """C-contiguous (view of) coordinates of the :class:`Atoms<Atom>` in the
+        :class:`AtomGroup`.
 
-        Raises
-        ------
-        ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
-            does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.
+        A :class:`numpy.ndarray` with shape ``(n_atoms, 3)`` and dtype
+        ``numpy.float32``.
+
+        If the AtomGroup is contiguous, a view of the current TimeStep's
+        positions is returned. Otherwise, the returned array will be a copy.
         """
         if self.iscontiguous:
-            ix = self._ix
-            return self.universe.trajectory.ts.positions[ix[0]:ix[-1]+1]
-        return self.universe.trajectory.ts.positions[self._ix]
+            return self.universe.trajectory.ts.positions[self._ix_or_slice]
+        ix_or_slice = self._ix_or_slice
+        if isinstance(ix_or_slice, slice):
+            return self.universe.trajectory.ts.positions[ix_or_slice].copy()
+        return self.universe.trajectory.ts.positions[ix_or_slice]
 
     @property
     def velocities(self):
@@ -2930,7 +2946,7 @@ class AtomGroup(GroupBase):
                                                          accessors.keys()))
 
         return [self[levelindices == index] for index in
-                unique_int_1d(levelindices)]
+                util.unique_int_1d(levelindices)]
 
     def guess_bonds(self, vdwradii=None):
         """Guess bonds that exist within this :class:`AtomGroup` and add them to
@@ -3267,7 +3283,7 @@ class ResidueGroup(GroupBase):
         """Get sorted :class:`SegmentGroup` of the unique segments present in
         the :class:`ResidueGroup`.
         """
-        sg = self.universe.segments[unique_int_1d(self.segindices)]
+        sg = self.universe.segments[util.unique_int_1d(self.segindices)]
         sg._cache['isunique'] = True
         sg._cache['unique'] = sg
         return sg
@@ -3339,7 +3355,7 @@ class ResidueGroup(GroupBase):
         """
         if self.isunique:
             return self
-        _unique = self.universe.residues[unique_int_1d(self.ix)]
+        _unique = self.universe.residues[util.unique_int_1d(self.ix)]
         # Since we know that _unique is a unique ResidueGroup, we set its
         # uniqueness caches from here:
         _unique._cache['isunique'] = True
@@ -3485,7 +3501,7 @@ class SegmentGroup(GroupBase):
         """
         if self.isunique:
             return self
-        _unique = self.universe.segments[unique_int_1d(self.ix)]
+        _unique = self.universe.segments[util.unique_int_1d(self.ix)]
         # Since we know that _unique is a unique SegmentGroup, we set its
         # uniqueness caches from here:
         _unique._cache['isunique'] = True

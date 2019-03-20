@@ -671,21 +671,62 @@ class TestAtomGroupProperties(object):
         (uni.atoms[[]], False),
         (uni.atoms + uni.atoms[[0]], False),
         (uni.atoms[[0]] + uni.atoms, False),
+        (uni.atoms[[2, 1]], True),
+        (uni.atoms[[2, 1, 7, 40]], False),
+        (uni.atoms[::2], True),
+        (uni.atoms[::-1], True),
+        (uni.atoms[-1:-4:-1], True),
+        ))
+    def test_ag_positions_view_or_copy(self, atomgroup, isview):
+        """Test if ag._positions_view_or_copy returns a view if the atomgroup is
+        sliceable and a copy otherwise.
+        """
+        # get a coordinate copy:
+        pos = atomgroup.positions
+        assert pos.flags['OWNDATA']
+        # try to get a coordinate view:
+        _pos = atomgroup._positions_view_or_copy
+        # make sure both are equal:
+        assert_equal(pos, _pos)
+        # for contiguous atomgroups, _pos must be a view (a copy otherwise):
+        _isview = not _pos.flags['OWNDATA']
+        assert _isview == isview
+        assert isinstance(atomgroup._ix_or_slice, slice) == isview
+        # change an entry in _pos:
+        if len(atomgroup) > 0:
+            _pos -= 1.0
+            if isview:
+                assert_equal(_pos, atomgroup.positions)
+            else:
+                assert_almost_equal(atomgroup.positions - _pos,
+                                    np.ones_like(_pos), decimal=5)
+
+    @pytest.mark.parametrize('atomgroup, isview', (
+        (uni.atoms, True),
+        (uni.atoms[[1]], True),
+        (uni.atoms[[-1]], True),
+        (uni.atoms[[1, 2, 3, 4]], True),
+        (uni.atoms[-3:-1], True),
+        (uni.atoms[31:], True),
+        (uni.atoms[1:-20], True),
+        (uni.atoms[[]], False),
+        (uni.atoms + uni.atoms[[0]], False),
+        (uni.atoms[[0]] + uni.atoms, False),
         (uni.atoms[[2, 1]], False),
         (uni.atoms[[2, 1, 7, 40]], False),
         (uni.atoms[::2], False),
         (uni.atoms[::-1], False),
         (uni.atoms[-1:-4:-1], False),
         ))
-    def test_ag_positions_view(self, atomgroup, isview):
-        """Test if ag._positions returns a view if the atomgroup is
-        contiguous and a copy otherwise.
+    def test_ag_positions_c_view_or_copy(self, atomgroup, isview):
+        """Test if ag._positions_c_view_or_copy returns a view if the atomgroup
+        is contiguous and a copy otherwise.
         """
         # get a coordinate copy:
         pos = atomgroup.positions
         assert pos.flags['OWNDATA']
         # try to get a coordinate view:
-        _pos = atomgroup._positions
+        _pos = atomgroup._positions_c_view_or_copy
         # make sure both are equal:
         assert_equal(pos, _pos)
         # for contiguous atomgroups, _pos must be a view (a copy otherwise):
@@ -710,7 +751,9 @@ class TestAtomGroupProperties(object):
         with pytest.raises(NoDataError):
             ag.positions
         with pytest.raises(NoDataError):
-            ag._positions
+            ag._positions_view_or_copy
+        with pytest.raises(NoDataError):
+            ag._positions_c_view_or_copy
 
 
 class TestOrphans(object):
@@ -1175,7 +1218,7 @@ class TestAtomGroup(object):
         if weights is None or weights[0] != 0.0:
             ref = at.position.astype(np.float64)
         else:
-            ref = np.full((3,), np.nan,np.float64)
+            ref = np.full((3,), np.nan, np.float64)
         if compound != 'group':
             ref = ref.reshape((1, 3))
         ag_s = mda.AtomGroup([at])
@@ -1202,7 +1245,7 @@ class TestAtomGroup(object):
             ref = distances.apply_PBC(at.position, ag_molfrg.dimensions)
             ref = ref.astype(np.float64)
         else:
-            ref = np.full((3,), np.nan,np.float64)
+            ref = np.full((3,), np.nan, np.float64)
         if compound != 'group':
             ref = ref.reshape((1, 3))
         ag_s = mda.AtomGroup([at])
