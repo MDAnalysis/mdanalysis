@@ -59,6 +59,18 @@ ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
 
 
+cdef inline bint isinf(double x) nogil:
+    """Check if a double is ``inf`` or ``-inf``.
+
+    In contrast to ``libc.math.isfinite``, this function keeps working when
+    compiled with ``-ffast-math``.
+
+
+    .. versionadded:: 0.20.0
+    """
+    return (x == INFINITY) | (x == -INFINITY)
+
+
 def coords_add_vector(float[:, :] coordinates not None,
                       np.ndarray vector not None):
     """Add `vector` to each position in `coordinates`.
@@ -124,6 +136,364 @@ cdef inline void _coords_add_vector64(float[:, :]& coordinates,
         coordinates[i, 0] = coordinates[i, 0] + vector[0]
         coordinates[i, 1] = coordinates[i, 1] + vector[1]
         coordinates[i, 2] = coordinates[i, 2] + vector[2]
+
+
+def _coords_add_vectors(np.ndarray[np.float32_t, ndim=2] coordinates not None,
+                        np.ndarray vectors not None,
+                        object[::1] compound_masks=None):
+    """Add `vectors` to `coordinates`.
+
+    If `compound_masks` is supplied, the vectors are added to the coordinates
+    on a per-compound basis. Coordinates are modified in place.
+
+    Use the ``compound_masks`` keyword with extreme caution! Masks with invalid
+    indices *will cause undefined behavior* and lead to either a segmentation
+    fault or silent memory corruption!
+
+    Parameters
+    ----------
+    coordinates: numpy.ndarray
+        Coordinate array of dtype ``numpy.float32`` and shape ``(n, 3)``.
+    vectors: numpy.ndarray
+        Coordinate vectors of shape ``(n, 3)`` or ``(len(compound_masks), 3)``,
+        dtype will be converted to ``np.float32``.
+    compound_masks
+        A one-dimensional array of dtype ``object`` containing index masks for
+        each compound. See :func:`unique_masks_int_1d` for details.
+
+    Raises
+    ------
+    ValueError
+        If the shape of `coordinates` is not ``(n, 3)`` or if the shape of
+        `vectors` is not ``(n, 3)`` or ``(len(compound_masks), 3)``.
+
+    Notes
+    -----
+    * Each mask in `compound_masks` must be either a slice or an index array
+      with positive indices in the half-open interval ``[0, len(coordinates))``.
+      Masks with invalid indices **will** cause undefined behavior and lead to
+      either a segmentation fault or silent memory corruption!
+    * For ``compound_masks=None``, the following two lines are equivalent:
+
+      >>> coords_add_vectors(coordinates, vectors)
+
+      >>> coordinates += vectors
+
+      However, the following two constructs are *only* equivalent if *none* of the
+      masks is an index array with duplicate indices:
+
+      >>> coords_add_vectors(coordinates, vectors, compound_masks=masks)
+
+      >>> for i, mask in enumerate(masks):
+      >>>     coordinates[mask] += vectors[i]
+
+      The reason is that numpy contracts duplicate indices in masks to single
+      values. Nevertheless, the following two constructs are *always* equivalent
+      if all masks are index arrays (with or without duplicates):
+
+      >>> coords_add_vectors(coordinates, vectors, compound_masks=masks)
+
+      >>> for i, mask in enumerate(masks):
+      >>>     for j in mask:
+      >>>         coordinates[j] += vector[i]
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef float[:, :] coords = coordinates
+    cdef np.intp_t n = coords.shape[0]
+    cdef np.intp_t cshape1 = coords.shape[1]
+    cdef np.intp_t vndim = vectors.ndim
+    cdef np.intp_t nvec = vectors.shape[0]
+    cdef bint per_compound = compound_masks is not None
+    cdef np.intp_t i, j, k, start, stop, step
+    cdef np.intp_t[::1] mask
+    cdef float[:, :] fvecs
+    cdef double[:, :] dvecs
+    cdef slice slc
+    if cshape1 != 3:
+        raise ValueError("Wrong shape: positions.shape != (n, 3)")
+    if vndim != 2 or vectors.shape[1] != 3:
+        raise ValueError("Wrong shape: vector.shape != (n, 3)")
+    if per_compound:
+        if nvec != compound_masks.shape[0]:
+            raise ValueError("Number of vectors doesn't match number of "
+                             "compounds.")
+    elif nvec != n:
+            raise ValueError("Number of vectors doesn't match number of "
+                             "coordinates.")
+    if n == 0 or nvec == 0:
+        return
+    if vectors.dtype == np.float32:
+        if per_compound:
+            fvecs = vectors
+            if isinstance(compound_masks[0], slice):
+                for i in range(nvec):
+                    slc = compound_masks[i]
+                    start = slc.start
+                    stop = slc.stop
+                    step = slc.step
+                    _coords_add_vector32(coords[start:stop:step], fvecs[i])
+            else:
+                for i in range(nvec):
+                    mask = compound_masks[i]
+                    for j in range(mask.shape[0]):
+                        k = mask[j]
+                        coords[k, 0] += fvecs[i, 0]
+                        coords[k, 1] += fvecs[i, 1]
+                        coords[k, 2] += fvecs[i, 2]
+        else:
+            # if there's one float32 vector per coordinate, numpy's SIMD loops
+            # are faster than our plain C loops:
+            coordinates += vectors
+    else:
+        dvecs = vectors.astype(np.float64, copy=False)
+        if per_compound:
+            if isinstance(compound_masks[0], slice):
+                for i in range(nvec):
+                    start = compound_masks[i].start
+                    stop = compound_masks[i].stop
+                    _coords_add_vector64(coords[start:stop], dvecs[i])
+            else:
+                for i in range(nvec):
+                    mask = compound_masks[i]
+                    for j in range(mask.shape[0]):
+                        k = mask[j]
+                        # Don't use += here!
+                        coords[k, 0] = coords[k, 0] + dvecs[i, 0]
+                        coords[k, 1] = coords[k, 1] + dvecs[i, 1]
+                        coords[k, 2] = coords[k, 2] + dvecs[i, 2]
+        else:
+            for i in range(n):
+                coords[i, 0] = coords[i, 0] + dvecs[i, 0]
+                coords[i, 1] = coords[i, 1] + dvecs[i, 1]
+                coords[i, 2] = coords[i, 2] + dvecs[i, 2]
+
+
+def coords_center(float[:, :] coordinates not None, double[:] weights=None,
+                  np.intp_t[:] compound_indices=None, bint check_weights=False,
+                  bint return_compound_masks=False):
+    """Compute the center of a coordinate array.
+
+    If `weights` are supplied, the center will be computed as a weighted
+    average of the `coordinates`.
+
+    If `compound_indices` are supplied, the (weighted) centers per compound will
+    be computed.
+
+    If the weights (of a compound) sum up to zero, the weighted center (of that
+    compound) will be all ``nan`` (not a number). If `check_weights` is set to
+    ``True``, a :class:`ValueError` will be raised in that case.
+
+    Parameters
+    ----------
+    coordinates : numpy.ndarray
+        An array of dtype ``numpy.float32`` and shape ``(n, 3)`` containing the
+        coordinates to average.
+    weights : numpy.ndarray, optional
+        An array of dtype ``np.float64`` and shape ``(n,)`` containing the
+        weights for each coordinate.
+    compound_indices : numpy.ndarray, optional
+        An array of dtype ``numpy.intp`` and shape ``(n,)`` containing the
+        compound indices for each coordinate.
+    check_weights : bool, optional
+        If ``True``, raises a :class:`ValueError` if the weights (of any
+        compound) sum up to zero.
+    return_compound_masks : bool, optional
+        If ``True`` and `compound_indices` is not ``None``, an array of dtype
+        ``object`` containing index masks for each compound will be returned as
+        well. See :func:`unique_masks_int_1d` for details.
+
+    Returns
+    -------
+    numpy.ndarray
+        An array of dtype ``np.float64`` and shape ``(1, 3)`` or
+        ``(n_compounds, 3)`` containing the (weighted) center(s).
+
+    Raises
+    ------
+    ValueError
+        If the coordinates array has an invalid shape, or if the number of
+        coordinates, compound indices, or weights do not match.
+    ValueError
+        If `check_weights` is ``True`` and the weights (of any compound) sum up
+        to zero.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef np.intp_t n = coordinates.shape[0]
+    cdef np.ndarray[np.float64_t, ndim=2] center
+    cdef object[::1] comp_masks
+    cdef bint weighted = weights is not None
+    cdef bint per_compound = compound_indices is not None
+    cdef bint zero_weights = False
+    if coordinates.shape[1] != 3:
+        raise ValueError("coordinates.shape is not (n, 3)")
+    if per_compound and n != compound_indices.shape[0]:
+        raise ValueError("Length of coordinates and compound_indices don't "
+                         "match.")
+    if weighted and n != weights.shape[0]:
+        raise ValueError("Length of coordinates and weights don't match.")
+    if n < 2:
+        center = np.zeros((n, 3), dtype=np.float64)
+        if n == 1:
+            center[0, 0] = coordinates[0, 0]
+            center[0, 1] = coordinates[0, 1]
+            center[0, 2] = coordinates[0, 2]
+            if weighted:
+                if isinf(1.0 / weights[0]):
+                    zero_weights = True
+                    center[:] = NAN
+                if check_weights and zero_weights:
+                    raise ValueError("Weight is zero.")
+        if per_compound and return_compound_masks:
+            comp_masks = _unique_masks_int_1d(compound_indices, 1)
+    else:
+        if per_compound:
+            comp_masks = _unique_masks_int_1d(compound_indices, 1)
+            center = np.zeros((comp_masks.shape[0], 3), dtype=np.float64)
+            if weighted:
+                zero_weights = _coords_weighted_center_per_compound(coordinates,
+                                                                    comp_masks,
+                                                                    weights,
+                                                                    center)
+                if check_weights and zero_weights:
+                    raise ValueError("The weights of one or more compounds sum "
+                                     "up to zero.")
+            else:
+               _coords_center_per_compound(coordinates, comp_masks, center)
+        else:
+            center = np.zeros((1, 3), dtype=np.float64)
+            if weighted:
+                zero_weights = _coords_weighted_center(coordinates, weights,
+                                                       center[0])
+                if check_weights and zero_weights:
+                    raise ValueError("Weights sum up to zero.")
+            else:
+                _coords_center(coordinates, center[0])
+    if per_compound and return_compound_masks:
+        return center, np.asarray(comp_masks)
+    return center
+
+
+cdef inline void _coords_center(float[:, :]& coords,
+                                double[::1]& center) nogil:
+    """Low-level implementation of :func:`coords_center` with
+    ``weights == None`` and ``compound_indices == None``.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef np.intp_t i
+    cdef np.intp_t n = coords.shape[0]
+    cdef double inv_n = 1.0 / n
+    for i in range(n):
+        center[0] += coords[i, 0]
+        center[1] += coords[i, 1]
+        center[2] += coords[i, 2]
+    center[0] *= inv_n
+    center[1] *= inv_n
+    center[2] *= inv_n
+
+
+cdef inline bint _coords_weighted_center(float[:, :]& coords,
+                                         double[:]& weights,
+                                         double[::1]& center):
+    """Low-level implementation of :func:`coords_center` with
+    ``weights != None`` and ``compound_indices == None``.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef np.intp_t i
+    cdef np.intp_t n = coords.shape[0]
+    cdef double inv_sum_weights = 0.0
+    cdef bint zero_weights = False
+    for i in range(n):
+        center[0] += coords[i, 0] * weights[i]
+        center[1] += coords[i, 1] * weights[i]
+        center[2] += coords[i, 2] * weights[i]
+        inv_sum_weights += weights[i]
+    inv_sum_weights = 1.0 / inv_sum_weights
+    zero_weights = isinf(inv_sum_weights)
+    if zero_weights:
+        center[0] = NAN
+        center[1] = NAN
+        center[2] = NAN
+    else:
+        center[0] *= inv_sum_weights
+        center[1] *= inv_sum_weights
+        center[2] *= inv_sum_weights
+    return zero_weights
+
+
+cdef inline void _coords_center_per_compound(float[:, :]& coords,
+                                             object[::1]& comp_masks,
+                                             double[:, ::1]& center):
+    """Low-level implementation of :func:`coords_center` with
+    ``weights == None`` and ``compound_indices != None``.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef np.intp_t i, j, k
+    cdef np.intp_t n = comp_masks.shape[0]
+    cdef np.intp_t csize
+    cdef double inv_csize
+    cdef np.intp_t[:] cmask
+    for i in range(n):
+        cmask = comp_masks[i]
+        csize = cmask.shape[0]
+        inv_csize = 1.0 / csize
+        for j in range(csize):
+            k = cmask[j]
+            center[i, 0] += coords[k, 0]
+            center[i, 1] += coords[k, 1]
+            center[i, 2] += coords[k, 2]
+        center[i, 0] *= inv_csize
+        center[i, 1] *= inv_csize
+        center[i, 2] *= inv_csize
+
+
+cdef inline bint _coords_weighted_center_per_compound(float[:, :]& coords,
+                                                      object[::1]& comp_masks,
+                                                      double[:]& weights,
+                                                      double[:, ::1]& center):
+    """Low-level implementation of :func:`coords_center` with
+    ``weights != None`` and ``compound_indices != None``.
+
+
+    .. versionadded:: 0.20.0
+    """
+    cdef np.intp_t i, j, k
+    cdef np.intp_t n = comp_masks.shape[0]
+    cdef np.intp_t csize
+    cdef double weight, inv_sum_weights
+    cdef np.intp_t[:] cmask
+    cdef bint zero_weights = False
+    for i in range(n):
+        cmask = comp_masks[i]
+        csize = cmask.shape[0]
+        inv_sum_weights = 0.0
+        for j in range(csize):
+            k = cmask[j]
+            weight = weights[k]
+            inv_sum_weights += weight
+            center[i, 0] += coords[k, 0] * weight
+            center[i, 1] += coords[k, 1] * weight
+            center[i, 2] += coords[k, 2] * weight
+        inv_sum_weights = 1.0 / inv_sum_weights
+        if isinf(inv_sum_weights):
+            zero_weights = True
+            center[i, 0] = NAN
+            center[i, 1] = NAN
+            center[i, 2] = NAN
+        else:
+            center[i, 0] *= inv_sum_weights
+            center[i, 1] *= inv_sum_weights
+            center[i, 2] *= inv_sum_weights
+    return zero_weights
 
 
 def unique_int_1d(np.intp_t[:] values not None, bint return_counts=False,
