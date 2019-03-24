@@ -3054,7 +3054,7 @@ class AtomGroup(GroupBase):
         if filename is None:
             trjname, ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt.format(trjname=trjname, frame=trj.frame)
-        filename = util.filename(filename, ext=file_format, keep=True)
+        filename = util.filename(filename, ext='PDB', keep=True)
 
         # Some writer behave differently when they are given a "multiframe"
         # argument. It is the case of the PDB writer tht writes models when
