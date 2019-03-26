@@ -692,8 +692,8 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.20.0
         """
-        ix_or_slice = self._ix_or_slice
-        return isinstance(ix_or_slice, slice) and ix_or_slice.step == 1
+        self._ix_or_slice  # This already populates the cache
+        return self._cache['iscontiguous']
 
     @warn_if_not_unique
     def center(self, weights, pbc=None, compound='group', check_weights=False):
