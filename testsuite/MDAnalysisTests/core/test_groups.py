@@ -38,6 +38,7 @@ import MDAnalysis as mda
 from MDAnalysisTests import make_Universe, no_deprecated_call
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
+from MDAnalysis.lib import util
 
 
 class TestGroupProperties(object):
@@ -186,9 +187,81 @@ class TestGroupProperties(object):
         (uni.segments[-1:-4:-1], False)
         ))
     def test_group_iscontiguous(self, group, ref):
+        # make sure the group's cache is empty:
+        group._cache = {}
         res = group.iscontiguous
         assert res == ref
         assert type(res) == bool
+        # assert cache entries are set correctly:
+        assert group._cache['iscontiguous'] == ref
+        assert_equal(group._cache['ix_or_slice'],
+                     util.indices_to_slice_1d(group.ix))
+
+    @pytest.mark.parametrize('group, isslice, iscontiguous', (
+        (uni.atoms, True, True),
+        (uni.atoms[[1]], True, True),
+        (uni.atoms[[-1]], True, True),
+        (uni.atoms[[1, 2, 3, 4]], True, True),
+        (uni.atoms[-3:-1], True, True),
+        (uni.atoms[31:100], True, True),
+        (uni.atoms[1:-20], True, True),
+        (uni.residues, True, True),
+        (uni.residues[[1]], True, True),
+        (uni.residues[[-1]], True, True),
+        (uni.residues[[1, 2, 3, 4]], True, True),
+        (uni.residues[-3:-1], True, True),
+        (uni.residues[2:5], True, True),
+        (uni.residues[1:-1], True, True),
+        (uni.segments, True, True),
+        (uni.segments[[1]], True, True),
+        (uni.segments[[-1]], True, True),
+        (uni.segments[[1, 2, 3, 4]], True, True),
+        (uni.segments[-3:-1], True, True),
+        (uni.segments[2:5], True, True),
+        (uni.segments[1:-1], True, True),
+        (uni.atoms[[]], False, False),
+        (uni.atoms + uni.atoms[[0]], False, False),
+        (uni.atoms[[0]] + uni.atoms, False, False),
+        (uni.atoms[[2, 1]], True, False),
+        (uni.atoms[[2, 1, 7, 50]], False, False),
+        (uni.atoms[::2], True, False),
+        (uni.atoms[::-1], True, False),
+        (uni.atoms[-1:-4:-1], True, False),
+        (uni.residues[[]], False, False),
+        (uni.residues + uni.residues[[0]], False, False),
+        (uni.residues[[0]] + uni.residues, False, False),
+        (uni.residues[[2, 1]], True, False),
+        (uni.residues[[2, 1, 4, 3]], False, False),
+        (uni.residues[::2], True, False),
+        (uni.residues[::-1], True, False),
+        (uni.residues[-1:-4:-1], True, False),
+        (uni.segments[[]], False, False),
+        (uni.segments + uni.segments[[0]], False, False),
+        (uni.segments[[0]] + uni.segments, False, False),
+        (uni.segments[[2, 1]], True, False),
+        (uni.segments[[2, 1, 4, 3]], False, False),
+        (uni.segments[::2], True, False),
+        (uni.segments[::-1], True, False),
+        (uni.segments[-1:-4:-1], True, False)
+        ))
+    def test_group_ix_or_slice(self, group, isslice, iscontiguous):
+        # make sure the group's cache is empty:
+        group._cache = {}
+        ix_or_slice = group._ix_or_slice
+        if isinstance(group, groups.AtomGroup):
+            all_ix = group.universe.atoms.ix
+        elif isinstance(group, groups.ResidueGroup):
+            all_ix = group.universe.residues.ix
+        else:
+            all_ix = group.universe.segments.ix
+        if isslice:
+            assert isinstance(group._ix_or_slice, slice)
+        else:
+            assert isinstance(group._ix_or_slice, np.ndarray)
+        assert_equal(all_ix[ix_or_slice], group.ix)
+        # assert cache entries are set correctly:
+        assert_equal(group._cache['ix_or_slice'], ix_or_slice)
+        assert group._cache['iscontiguous'] == iscontiguous
 
 
 class TestGroupSlicing(object):

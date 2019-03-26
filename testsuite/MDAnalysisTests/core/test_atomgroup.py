@@ -730,12 +730,11 @@ class TestAtomGroupProperties(object):
         # make sure both are equal:
         assert_equal(pos, _pos)
         # for contiguous atomgroups, _pos must be a view (a copy otherwise):
-        _isview = not _pos.flags['OWNDATA']
-        assert _isview == isview
+        assert _pos.flags['OWNDATA'] == (not isview)
         assert atomgroup.iscontiguous == isview
         # in any case, _pos must be C-contiguous:
         assert _pos.flags['CARRAY']
-        # change an entry in _pos:
+        # change _pos:
         if len(atomgroup) > 0:
             _pos -= 1.0
             if isview:
