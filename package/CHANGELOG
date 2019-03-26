@@ -49,6 +49,17 @@ Enhancements
     distance_array. (Issue #2103, PR #2209)
   * updated analysis.distances.contact_matrix to use capped_distance. (Issue #2102,
     PR #2215)
+  * improved performance of *Group.center(), especially for per-compound
+    computations and contiguous AtomGroups (PR #2211)
+  * improved performance of *Group.wrap(), especially for per-compound
+    computations and  contiguous AtomGroups (PR #2211)
+  * Added boolean *Group.iscontiguous property stating whether a group's indices
+    (*Group.ix property) is a contiguous, increasing range of numbers (PR #2211)
+  * Added optional keywords return_counts, return_masks, and assume_unsorted
+    to lib.util.unique_int_1d() and improved its performance (PR #2211)
+  * Added several helper functions to lib.util: iscontiguous_int_1d(),
+    indices_to_slice_1d(), argwhere_int_1d(), unique_masks_int_1d(),
+    check_compound(), coords_add_vector() (PR #2211)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
@@ -58,6 +69,8 @@ Changes
     invalid, an all-zero array or zero is returned, respectively. (Issue #2200,
     PR #2201)
   * changed fudge_factor in guess_bonds to deal with new vdw radii (#2138, PR #2142)
+  * changed memory layout of Timestep.positions from FORTRAN- to C-contiguous
+    (Issue #2210, PR #2211)
 
 Fixes
   * fixed the segmentation fault in capped_distances (Issue #2164, PR #2169)
