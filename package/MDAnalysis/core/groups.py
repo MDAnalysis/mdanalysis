@@ -692,12 +692,8 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.20.0
         """
-        ix = self._ix
-        if util.iscontiguous_int_1d(ix):
-            self._cache['ix_or_slice'] = slice(ix[0], ix[-1] + 1, 1)
-            return True
-        self._cache['ix_or_slice'] = ix
-        return False
+        ix_or_slice = self._ix_or_slice
+        return isinstance(ix_or_slice, slice) and ix_or_slice.step == 1
 
     @warn_if_not_unique
     def center(self, weights, pbc=None, compound='group', check_weights=False):
