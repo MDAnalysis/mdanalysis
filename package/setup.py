@@ -330,6 +330,11 @@ def extensions(config):
                           include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
                           define_macros=define_macros,
                           extra_compile_args=extra_compile_args)
+    groparser = MDAExtension('MDAnalysis.topology.c_GROParser',
+                             ['MDAnalysis/topology/c_GROParser' + source_suffix],
+                             include_dirs = include_dirs + ['MDAnalysis/topology/include'],
+                             define_macros = define_macros,
+                             extra_compile_args= extra_compile_args)
     distances = MDAExtension('MDAnalysis.lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
@@ -416,7 +421,7 @@ def extensions(config):
                              extra_link_args= cpp_extra_link_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred, cutil, augment, nsgrid]
+                ap_clustering, spe_dimred, cutil, augment, nsgrid, groparser]
 
 
     cython_generated = []
