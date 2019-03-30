@@ -45,6 +45,10 @@ Enhancements
   * added more Van-der-Waals radii to improve guess_bonds (#2138, PR #2142)
   * added *Group.accumulate() (PR #2192)
   * added compound kwarg to total_mass and total_charge (PR #2192)
+  * updated HydrogenBondAutoCorrel to use capped_distance in place of
+    distance_array. (Issue #2103, PR #2209)
+  * updated analysis.distances.contact_matrix to use capped_distance. (Issue #2102,
+    PR #2215)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
@@ -85,6 +89,8 @@ Fixes
   * *Group.wrap() is now guaranteed to only work on atoms actually belonging to
     the calling group. (Issue #2203, PR #2204)
   * Fixed documentation of MDAnalysis.analysis.contacts
+  * Enforced consistent dtype (numpy.float32) of Universe.dimensions and
+    Timestep.dimensions for all Universes and Readers (Issue #2190, PR #2213)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
