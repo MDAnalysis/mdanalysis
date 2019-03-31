@@ -47,6 +47,7 @@ Classes
 from __future__ import absolute_import
 
 import numpy as np
+cimport numpy as np
 from six.moves import range
 
 from ..lib.util import openany
@@ -86,6 +87,12 @@ class GROParser(TopologyReaderBase):
         # resid, resname, name, index, (x,y,z)
         cdef int n_atoms;
         cdef int i;
+        cdef str line
+        cdef int count = 0
+        cdef np.ndarray[np.int32_t] resids
+        cdef np.ndarray[object] resnames
+        cdef np.ndarray[object] names
+        cdef np.ndarray[np.int32_t] indices
         with openany(self.filename) as inf:
             next(inf)
             n_atoms = int(next(inf))
@@ -95,18 +102,19 @@ class GROParser(TopologyReaderBase):
             resnames = np.zeros(n_atoms, dtype=object)
             names = np.zeros(n_atoms, dtype=object)
             indices = np.zeros(n_atoms, dtype=np.int32)
-            for i, line in enumerate(inf):
-                if i == n_atoms:
+            for line in inf:
+                if count == n_atoms:
                     break
                 try:
-                    resids[i] = int(line[:5])
-                    resnames[i] = line[5:10].strip()
-                    names[i] = line[10:15].strip()
-                    indices[i] = int(line[15:20])
+                    resids[count] = int(line[:5])
+                    resnames[count] = line[5:10].strip()
+                    names[count] = line[10:15].strip()
+                    indices[count] = int(line[15:20])
                 except (ValueError, TypeError):
                     raise IOError(
                         "Couldn't read the following line of the .gro file:\n"
                         "{0}".format(line))
+                count += 1
         # Check all lines had names
         if not np.all(names):
             missing = np.where(names == '')
