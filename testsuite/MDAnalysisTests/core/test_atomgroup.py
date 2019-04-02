@@ -167,7 +167,27 @@ class TestAtomGroupWriting(object):
             u.atoms.positions[None, ...], new_positions, decimal=2
         )
 
+    @pytest.mark.parametrize('extension', ('xtc', 'dcd', 'pdb', 'xyz'))
+    def test_compressed_write_frame_none(self, u, tmpdir, extension):
+        for ext in ('.gz', '.bz2'):
+            destination = str(tmpdir / 'test.' + extension + ext)
+            u.atoms.write(destination, frames=None)
+            u_new = mda.Universe(destination)
+            new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+            assert_array_almost_equal(
+                u.atoms.positions[None, ...], new_positions, decimal=2
+        )
+
     def test_write_frames_all(self, u, tmpdir):
+        for ext in ('.gz', '.bz2'):
+            destination = str(tmpdir / 'test.dcd') + ext
+            u.atoms.write(destination, frames='all')
+            u_new = mda.Universe(destination)
+            ref_positions = np.stack([ts.positions for ts in u.trajectory])
+            new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+            assert_array_almost_equal(new_positions, ref_positions)
+
+    def test_compressed_rite_frames_all(self, u, tmpdir):
         destination = str(tmpdir / 'test.dcd')
         u.atoms.write(destination, frames='all')
         u_new = mda.Universe(destination)
@@ -237,6 +257,16 @@ class _WriteAtoms(object):
             self.precision,
             err_msg=("atom coordinate mismatch between original and {0!s} file"
                      "".format(self.ext)))
+
+    def test_compressed_write_atoms(self, universe, outfile):
+        for compressed_ext in ('.gz', '.bz2'):
+            universe.atoms.write(outfile + compressed_ext)
+            u2 = self.universe_from_tmp(outfile + compressed_ext)
+            assert_almost_equal(
+                universe.atoms.positions, u2.atoms.positions,
+                self.precision,
+                err_msg=("atom coordinate mismatch between original and {0!s} file"
+                        "".format(self.ext)))
 
     def test_write_empty_atomgroup(self, universe, outfile):
         sel = universe.select_atoms('name doesntexist')
