@@ -704,10 +704,10 @@ def hydroxyl(universe, seg, i):
     .. versionadded:: 0.7.6
 
     """
-    h = universe.select_atoms(" atom {0!s} {1!s} C1\' ".format(seg, i),
-                              " atom {0!s} {1!s} C2\' ".format(seg, i),
-                              " atom {0!s} {1!s} O2\' ".format(seg, i),
-                              " atom {0!s} {1!s} H2\'\' ".format(seg, i))
+    h = universe.select_atoms("atom {0!s} {1!s} C1'".format(seg, i),
+                              "atom {0!s} {1!s} C2'".format(seg, i),
+                              "atom {0!s} {1!s} O2'".format(seg, i),
+                              "atom {0!s} {1!s} H2'".format(seg, i))
     try:
         hydr = h.dihedral.value() % 360
     except ValueError:
