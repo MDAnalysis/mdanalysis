@@ -42,7 +42,7 @@ from MDAnalysis.tests.datafiles import (
     PSF, DCD,
     PRMpbc, TRJpbc_bz2,
     PSF_NAMD, PDB_NAMD,
-    GRO, NUCL, NUCLsel, TPR, XTC,
+    GRO, RNA_PSF, NUCLsel, TPR, XTC,
     TRZ_psf, TRZ,
     PDB_icodes,
     PDB_HOLE,
@@ -449,20 +449,22 @@ class TestSelectionsTPR(object):
 
 
 class TestSelectionsNucleicAcids(object):
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def universe(self):
-        return MDAnalysis.Universe(NUCL)
+        return MDAnalysis.Universe(RNA_PSF)
+
+    @pytest.fixture(scope='class')
+    def universe2(self):
+        return MDAnalysis.Universe(NUCLsel)
+
 
     def test_nucleic(self, universe):
         rna = universe.select_atoms("nucleic")
         assert_equal(rna.n_atoms, 739)
         assert_equal(rna.n_residues, 23)
 
-    def test_nucleic_all(self, universe):
-        u = mda.Universe(NUCLsel)
-
-        sel = u.select_atoms('nucleic')
-
+    def test_nucleic_all(self, universe2):
+        sel = universe2.select_atoms('nucleic')
         assert len(sel) == 34
 
     def test_nucleicbackbone(self, universe):

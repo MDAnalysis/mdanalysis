@@ -91,6 +91,8 @@ Fixes
   * Fixed documentation of MDAnalysis.analysis.contacts
   * Enforced consistent dtype (numpy.float32) of Universe.dimensions and
     Timestep.dimensions for all Universes and Readers (Issue #2190, PR #2213)
+  * Fixed analysis.nucleic.hydroxyl() function: correctly recognize the
+    2'-hydroxyl hydrogen H2'; gave wrong results (Issue #2218)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
