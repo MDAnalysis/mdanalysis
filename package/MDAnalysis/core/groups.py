@@ -3054,7 +3054,9 @@ class AtomGroup(GroupBase):
         if filename is None:
             trjname, ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt.format(trjname=trjname, frame=trj.frame)
-        filename = util.filename(filename, ext= file_format or 'PDB', keep=True)
+        filename = util.filename(filename,
+                                 ext=file_format if file_format is not None else 'PDB',
+                                 keep=True)
         # Some writer behave differently when they are given a "multiframe"
         # argument. It is the case of the PDB writer tht writes models when
         # "multiframe" is True.
@@ -3098,7 +3100,8 @@ class AtomGroup(GroupBase):
         try:
             # here `file_format` is only used as default,
             # anything pulled off `filename` will be used preferentially
-            writer = get_selection_writer_for(filename, file_format or 'PDB')
+            writer = get_selection_writer_for(filename,
+                                              file_format if file_format is not None else 'PDB')
         except (TypeError, NotImplementedError):
             pass
         else:

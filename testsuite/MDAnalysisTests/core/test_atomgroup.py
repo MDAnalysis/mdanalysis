@@ -156,7 +156,7 @@ class TestAtomGroupWriting(object):
 
         assert_array_almost_equal(new_positions, ref_positions)
 
-    @pytest.mark.parametrize('extension', ('xtc', 'dcd', 'pdb', 'xyz'))
+    @pytest.mark.parametrize('extension', ('xtc', 'dcd', 'pdb', 'xyz', 'PDB'))
     def test_write_frame_none(self, u, tmpdir, extension):
         destination = str(tmpdir / 'test.' + extension)
         u.atoms.write(destination, frames=None)
@@ -167,7 +167,7 @@ class TestAtomGroupWriting(object):
             u.atoms.positions[None, ...], new_positions, decimal=2
         )
 
-    @pytest.mark.parametrize('extension', ('xtc', 'dcd', 'pdb', 'xyz'))
+    @pytest.mark.parametrize('extension', ('xtc', 'dcd', 'pdb', 'xyz', 'PDB'))
     def test_compressed_write_frame_none(self, u, tmpdir, extension):
         for ext in ('.gz', '.bz2'):
             destination = str(tmpdir / 'test.' + extension + ext)
@@ -187,7 +187,7 @@ class TestAtomGroupWriting(object):
             new_positions = np.stack([ts.positions for ts in u_new.trajectory])
             assert_array_almost_equal(new_positions, ref_positions)
 
-    def test_compressed_rite_frames_all(self, u, tmpdir):
+    def test_compressed_write_frames_all(self, u, tmpdir):
         destination = str(tmpdir / 'test.dcd')
         u.atoms.write(destination, frames='all')
         u_new = mda.Universe(destination)
