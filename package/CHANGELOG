@@ -60,8 +60,6 @@ Changes
     invalid, an all-zero array or zero is returned, respectively. (Issue #2200,
     PR #2201)
   * changed fudge_factor in guess_bonds to deal with new vdw radii (#2138, PR #2142)
-  * changed ag.write() so that preference is given to file_format over filename 
-    (Issue #2216,PR #2221)
 
 Fixes
   * fixed the segmentation fault in capped_distances (Issue #2164, PR #2169)
