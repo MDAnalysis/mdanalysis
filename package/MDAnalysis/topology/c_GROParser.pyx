@@ -93,8 +93,8 @@ class GROParser(TopologyReaderBase):
         cdef object[:] resnames
         cdef object[:] names
         cdef int[:] indices
-        cdef long[:] starts
-        cdef long[:] wraps
+        cdef long long[:] starts
+        cdef long long[:] wraps
         with openany(self.filename) as inf:
             next(inf)
             n_atoms = int(next(inf))
