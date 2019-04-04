@@ -89,10 +89,12 @@ class GROParser(TopologyReaderBase):
         cdef int i;
         cdef str line
         cdef int count = 0
-        cdef np.ndarray[np.int32_t] resids
-        cdef np.ndarray[object] resnames
-        cdef np.ndarray[object] names
-        cdef np.ndarray[np.int32_t] indices
+        cdef int[:] resids
+        cdef object[:] resnames
+        cdef object[:] names
+        cdef int[:] indices
+        cdef long[:] starts
+        cdef long[:] wraps
         with openany(self.filename) as inf:
             next(inf)
             n_atoms = int(next(inf))
@@ -117,20 +119,19 @@ class GROParser(TopologyReaderBase):
                 count += 1
         # Check all lines had names
         if not np.all(names):
-            missing = np.where(names == '')
+            missing = np.where(np.asarray(names) == '')
             raise IOError("Missing atom name on line: {0}"
                           "".format(missing[0][0] + 3))  # 2 header, 1 based
-
         # Fix wrapping of resids (if we ever saw a wrap)
-        if np.any(resids == 0):
+        if np.any(np.asarray(resids) == 0):
             # find places where resid hit zero again
-            wraps = np.where(resids == 0)[0]
+            wraps = np.where(np.asarray(resids) == 0)[0]
             # group these places together:
             # find indices of first 0 in each block of zeroes
             # 1) find large changes in index, (ie non sequential blocks)
-            diff = np.diff(wraps) != 1
+            diff = np.diff(np.asarray(wraps)) != 1
             # 2) make array of where 0-blocks start
-            starts = np.hstack([wraps[0], wraps[1:][diff]])
+            starts = np.hstack([np.asarray(wraps)[0], np.asarray(wraps)[1:][diff]])
 
             # remove 0 in starts, ie the first residue **can** be 0
             if starts[0] == 0:
@@ -138,15 +139,14 @@ class GROParser(TopologyReaderBase):
 
             # for each resid after a wrap, add 100k (5 digit wrap)
             for s in starts:
-                resids[s:] += 100000
+                np.asarray(resids)[s:] += 100000
 
         # Guess types and masses
-        atomtypes = guessers.guess_types(names)
+        atomtypes = guessers.guess_types(np.asarray(names, dtype=object))
         masses = guessers.guess_masses(atomtypes)
 
         residx, (new_resids, new_resnames) = change_squash(
-                                (resids, resnames), (resids, resnames))
-
+                                (np.asarray(resids, dtype=np.int32), np.asarray(resnames, dtype = object)), (np.asarray(resids, dtype=np.int32), np.asarray(resnames, dtype = object)))
         # new_resids is len(residues)
         # so resindex 0 has resid new_resids[0]
         attrs = [
