@@ -101,9 +101,9 @@ to find uncovered code.
    :alt: Documentation (development version)
    :target: https://www.mdanalysis.org/mdanalysis/
 
-.. |build| image:: https://travis-ci.org/MDAnalysis/mdanalysis.svg?branch=develop
+.. |build| image:: https://travis-ci.com/MDAnalysis/mdanalysis.svg?branch=develop
    :alt: Build Status
-   :target: https://travis-ci.org/MDAnalysis/mdanalysis
+   :target: https://travis-ci.com/MDAnalysis/mdanalysis
 
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
    :alt: Coverage Status
