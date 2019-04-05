@@ -1269,11 +1269,15 @@ class SurvivalProbability(object):
         """
         Pre-process Consecutive Intermittency with a single pass over the data.
         If an atom is absent for a number of frames equal or smaller
-        than the parameter intermittency, then correct the data and remove the absence.
+        than the `intermittency`, then correct the data and remove the absence.
         ie 7,A,A,7 with intermittency=2 will be replaced by 7,7,7,7, where A=absence
 
-        :param intermittency: the max gap allowed and to be corrected
-        :param selected_ids: modifies the selecteded IDs in place by adding atoms which left for <= :param intermittency
+        Parameters
+        ----------
+        intermittency : int
+            the max gap allowed and to be corrected
+        selected_ids: list of ids
+            modifies the selecteded IDs in place by adding atoms which left for <= `intermittency`
         """
         self.print('Correcting the selected IDs for intermittancy (gaps). ')
         if intermittency == 0:
