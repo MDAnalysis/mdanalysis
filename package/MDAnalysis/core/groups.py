@@ -2975,7 +2975,7 @@ class AtomGroup(GroupBase):
                 "improper only makes sense for a group with exactly 4 atoms")
         return topologyobjects.ImproperDihedral(self.ix, self.universe)
 
-    def write(self, filename=None, file_format="PDB",
+    def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
         """Write `AtomGroup` to a file.
 
@@ -3054,8 +3054,9 @@ class AtomGroup(GroupBase):
         if filename is None:
             trjname, ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt.format(trjname=trjname, frame=trj.frame)
-        filename = util.filename(filename, ext=file_format.lower(), keep=True)
-
+        filename = util.filename(filename,
+                                 ext=file_format if file_format is not None else 'PDB',
+                                 keep=True)
         # Some writer behave differently when they are given a "multiframe"
         # argument. It is the case of the PDB writer tht writes models when
         # "multiframe" is True.
@@ -3080,14 +3081,7 @@ class AtomGroup(GroupBase):
         # Try and select a Class using get_ methods (becomes `writer`)
         # Once (and if!) class is selected, use it in with block
         try:
-            # format keyword works differently in get_writer and get_selection_writer
-            # here it overrides everything, in get_sel it is just a default
-            # apply sparingly here!
-            format = os.path.splitext(filename)[1][1:]  # strip initial dot!
-            format = format or file_format
-            format = format.strip().upper()
-
-            writer = get_writer_for(filename, format=format, multiframe=multiframe)
+            writer = get_writer_for(filename, format=file_format, multiframe=multiframe)
         except (ValueError, TypeError):
             pass
         else:
@@ -3106,7 +3100,8 @@ class AtomGroup(GroupBase):
         try:
             # here `file_format` is only used as default,
             # anything pulled off `filename` will be used preferentially
-            writer = get_selection_writer_for(filename, file_format)
+            writer = get_selection_writer_for(filename,
+                                              file_format if file_format is not None else 'PDB')
         except (TypeError, NotImplementedError):
             pass
         else:
