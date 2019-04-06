@@ -97,6 +97,8 @@ Fixes
     Timestep.dimensions for all Universes and Readers (Issue #2190, PR #2213)
   * Fixed analysis.nucleic.hydroxyl() function: correctly recognize the
     2'-hydroxyl hydrogen H2'; gave wrong results (Issue #2218)
+  * A clear message that the .pdb universe cannot contain a different number of
+    atoms from frame to frame (Issue #1998, PR #2219)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
