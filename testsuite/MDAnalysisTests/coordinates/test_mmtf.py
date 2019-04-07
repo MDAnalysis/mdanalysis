@@ -28,7 +28,7 @@ from numpy.testing import (
     assert_almost_equal,
 )
 
-from MDAnalysisTests.datafiles import MMTF, MMTF_gz
+from MDAnalysisTests.datafiles import MMTF, MMTF_gz, MMTF_skinny2
 
 from MDAnalysis.coordinates.MMTF import MMTFReader
 
@@ -85,3 +85,8 @@ class TestMMTFReaderGZ(object):
     def test_len(self, r):
         # should be single frame
         assert len(r) == 1
+
+def test_dimensionless():
+    r = MMTFReader(MMTF_skinny2)
+
+    assert r.ts.dimensions is None

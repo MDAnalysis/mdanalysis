@@ -93,8 +93,10 @@ class TestDMSTimestep(BaseTimestepTest):
                 'z': np.array([0, 0, 12.])}
     uni_args = (DMS,)
 
-    def test_dimensions_set_box(self, ts):
-        ts.dimensions = self.newbox
+    @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
+    def test_dimensions_set_box(self, ts, dtype):
+        ts.dimensions = self.newbox.astype(dtype)
+        assert ts.dimensions.dtype == np.float32
         assert_equal(ts.dimensions, self.newbox)
         assert_equal(ts._unitcell, self.unitcell)
 

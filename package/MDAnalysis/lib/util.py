@@ -249,6 +249,7 @@ def filename(name, ext=None, keep=False):
        Also permits :class:`NamedStream` to pass through.
     """
     if ext is not None:
+        ext = ext.lower()
         if not ext.startswith(os.path.extsep):
             ext = os.path.extsep + ext
         root, origext = os.path.splitext(name)
