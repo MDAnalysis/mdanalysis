@@ -249,42 +249,32 @@ class TestWaterBridgeAnalysis(object):
 
     @staticmethod
     @pytest.fixture(scope='class')
-    def wb_multiframe(universe_DWA):
+    def wb_multiframe():
         '''A water bridge object with multipley frames'''
-        wb = WaterBridgeAnalysis(universe_DWA, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
+        grofile = '''Test gro file
+ 13
+    1ALA      O    1   0.000   0.000   0.000
+    1ALA      H    2   0.000   0.000   0.000
+    2SOL     OW    3   0.300   0.000   0.000
+    2SOL    HW1    4   0.200   0.000   0.000
+    2SOL    HW2    5   0.400   0.000   0.000
+    3SOL     OW    6   0.600   0.000   0.000
+    3SOL    HW1    7   0.700   0.000   0.000
+    4SOL     OW    8   0.900   0.000   0.000
+    4SOL    HW1    9   1.000   0.000   0.000
+    5SOL     OW   10   1.200   0.000   0.000
+    5SOL    HW1   11   1.300   0.000   0.000
+    6ALA      H   12   1.400   0.000   0.000
+    6ALA      O   13   1.400   0.000   0.000
+   10.0   10.0   10.0'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
         # Build an dummy WaterBridgeAnalysis object for testing
         wb._network = []
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW'), 2.0, 180.0): {
-            (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H'), 2.0, 180.0): None}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O'), 2.0, 180.0): None}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW'), 2.0, 180.0): {
-                    (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW'), 2.0, 180.0): {
-                        (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O'), 1.0, 180.0): None}}}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW'), 2.0, 180.0): {
-                (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O'), 2.0, 180.0): None,
-                (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'), 2.0, 180.0): None}}})
-        wb._network.append({(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1'), 2.0, 180.0): {
-            (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O'), 2.0, 180.0): None},
-            (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'), 2.0, 180.0): {
-                (8, 9, ('SOL', 6, 'HW2'), ('SOL', 7, 'OW'), 2.0, 180.0): {
-                    (10, 11, ('SOL', 7, 'HW1'), ('ALA', 8, 'O'), 2.0, 180.0): None}}})
+        wb._network.append({(1, 0, 12, None, 2.0, 180.0): None})
+        wb._network.append({(0, None, 12, 13, 2.0, 180.0): None})
+        wb._network.append({(1, 0, 3, None, 2.0, 180.0): {(4, 2, 12, None, 2.0, 180.0): None}})
+        wb._network.append({(0, None, 3, 2, 2.0, 180.0): {(4, 2, 5, None, 2.0, 180.0): {(5, None, 11, 12, 2.0, 180.0): None}}})
         wb.timesteps = range(len(wb._network))
         return wb
 
@@ -324,21 +314,21 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)', 'protein and (resid 4)', order=0, update_selection=True, debug=True)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('ALA', 4, 'O')))
+        assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
 
     def test_donor_accepter_pbc(self, universe_DA_PBC):
         '''Test zeroth order donor to acceptor hydrogen bonding in PBC conditions'''
         wb = WaterBridgeAnalysis(universe_DA_PBC, 'protein and (resid 1)', 'protein and (resid 4)', order=0, pbc=True)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('ALA', 4, 'O')))
+        assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
 
     def test_accepter_donor(self, universe_AD):
         '''Test zeroth order acceptor to donor hydrogen bonding'''
         wb = WaterBridgeAnalysis(universe_AD, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 1, ('ALA', 1, 'O'), ('ALA', 4, 'H')))
+        assert_equal(list(network.keys())[0][:4], (0, None, 1, 2))
 
     def test_acceptor_water_accepter(self, universe_AWA):
         '''Test case where the hydrogen bond acceptor from selection 1 form
@@ -346,9 +336,9 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWA, 'protein and (resid 1)', 'protein and (resid 4)')
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O')))
+        assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
         assert_equal(second[list(second.keys())[0]], None)
 
     def test_donor_water_accepter(self, universe_DWA):
@@ -357,9 +347,9 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_DWA, 'protein and (resid 1)', 'protein and (resid 4)')
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW')))
+        assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O')))
+        assert_equal(list(second.keys())[0][:4], (3, 2, 4, None))
         assert_equal(second[list(second.keys())[0]], None)
 
     def test_acceptor_water_donor(self, universe_AWD):
@@ -368,9 +358,9 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWD, 'protein and (resid 1)', 'protein and (resid 4)')
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (1, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H')))
+        assert_equal(list(second.keys())[0][:4], (1, None, 3, 4))
         assert_equal(second[list(second.keys())[0]], None)
 
     def test_donor_water_donor(self, universe_DWD):
@@ -379,9 +369,9 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_DWD, 'protein and (resid 1)', 'protein and (resid 4)')
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (1, 2, ('ALA', 1, 'H'), ('SOL', 2, 'OW')))
+        assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (2, 3, ('SOL', 2, 'OW'), ('ALA', 4, 'H')))
+        assert_equal(list(second.keys())[0][:4], (2, None, 3, 4))
         assert_equal(second[list(second.keys())[0]], None)
 
     def test_empty(self, universe_empty):
@@ -411,21 +401,21 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)', 'protein and (resid 4)', order=2)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
         third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')))
+        assert_equal(list(third.keys())[0][:4], (5, 4, 6, None))
         assert_equal(third[list(third.keys())[0]], None)
         # test third order
         wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)', 'protein and (resid 4)', order=3)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
         third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')))
+        assert_equal(list(third.keys())[0][:4], (5, 4, 6, None))
         assert_equal(third[list(third.keys())[0]], None)
 
     def test_acceptor_3water_accepter(self, universe_AWWWA):
@@ -438,25 +428,25 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)', 'protein and (resid 5)', order=3)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
         third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
+        assert_equal(list(third.keys())[0][:4], (5, 4, 6, None))
         fourth = third[list(third.keys())[0]]
-        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O')))
+        assert_equal(list(fourth.keys())[0][:4], (7, 6, 8, None))
         assert_equal(fourth[list(fourth.keys())[0]], None)
 
         wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)', 'protein and (resid 5)', order=4)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
         third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
+        assert_equal(list(third.keys())[0][:4], (5, 4, 6, None))
         fourth = third[list(third.keys())[0]]
-        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('ALA', 5, 'O')))
+        assert_equal(list(fourth.keys())[0][:4], (7, 6, 8, None))
         assert_equal(fourth[list(fourth.keys())[0]], None)
 
     def test_acceptor_4water_accepter(self, universe_AWWWWA):
@@ -469,29 +459,29 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)', 'protein and (resid 6)', order=4)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
         third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
+        assert_equal(list(third.keys())[0][:4], (5, 4, 6, None))
         fourth = third[list(third.keys())[0]]
-        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW')))
+        assert_equal(list(fourth.keys())[0][:4], (7, 6, 8, None))
         fifth = fourth[list(fourth.keys())[0]]
-        assert_equal(list(fifth.keys())[0][:4], (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O')))
+        assert_equal(list(fifth.keys())[0][:4], (9, 8, 10, None))
         assert_equal(fifth[list(fifth.keys())[0]], None)
 
         wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)', 'protein and (resid 6)', order=5)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
         third = second[list(second.keys())[0]]
-        assert_equal(list(third.keys())[0][:4], (5, 6, ('SOL', 3, 'HW1'), ('SOL', 4, 'OW')))
+        assert_equal(list(third.keys())[0][:4], (5, 4, 6, None))
         fourth = third[list(third.keys())[0]]
-        assert_equal(list(fourth.keys())[0][:4], (7, 8, ('SOL', 4, 'HW1'), ('SOL', 5, 'OW')))
+        assert_equal(list(fourth.keys())[0][:4], (7, 6, 8, None))
         fifth = fourth[list(fourth.keys())[0]]
-        assert_equal(list(fifth.keys())[0][:4], (9, 10, ('SOL', 5, 'HW1'), ('ALA', 6, 'O')))
+        assert_equal(list(fifth.keys())[0][:4], (9, 8, 10, None))
         assert_equal(fifth[list(fifth.keys())[0]], None)
 
     def test_acceptor_22water_accepter(self, universe_branch):
@@ -501,39 +491,51 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)', 'protein and (resid 4 or resid 5)', order=2)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
         third = second[list(second.keys())[0]]
-        assert_equal([(5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')), (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O'))],
+        assert_equal([(5, 4, 7, None), (6, 4, 8, None)],
                      sorted([key[:4] for key in list(third.keys())]))
 
-    def test_timeseries(self, universe_branch):
-        '''Test if the time series data is correctly generated'''
+    def test_timeseries_wba(self, universe_branch):
+        '''Test if the time series data is correctly generated in water bridge analysis format'''
         wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)', 'protein and (resid 4 or resid 5)', order=2)
+        wb.output_format = 'sele1_sele2'
         wb.run(verbose=False)
         timeseries = sorted(wb.timeseries[0])
+
         assert_equal(timeseries[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
-        assert_equal(timeseries[1][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
-        assert_equal(timeseries[2][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
-        assert_equal(timeseries[3][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
-        assert_equal(timeseries[4][:4], (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')))
-        assert_equal(timeseries[5][:4], (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O')))
+        assert_equal(timeseries[1][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        assert_equal(timeseries[2][:4], (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')))
+        assert_equal(timeseries[3][:4], (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O')))
+
+    def test_timeseries_hba(self, universe_branch):
+        '''Test if the time series data is correctly generated in hydrogen bond analysis format'''
+        wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)', 'protein and (resid 4 or resid 5)', order=2)
+        wb.output_format = 'donor_acceptor'
+        wb.run(verbose=False)
+        timeseries = sorted(wb.timeseries[0])
+
+        assert_equal(timeseries[0][:4], (2, 0, ('SOL', 2, 'HW1'), ('ALA', 1, 'O')))
+        assert_equal(timeseries[1][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
+        assert_equal(timeseries[2][:4], (5, 7, ('SOL', 3, 'HW1'), ('ALA', 4, 'O')))
+        assert_equal(timeseries[3][:4], (6, 8, ('SOL', 3, 'HW2'), ('ALA', 5, 'O')))
 
     def test_acceptor_12water_accepter(self, universe_AWA_AWWA):
         '''Test of independent first order and second can be recognised correctely'''
         wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=1)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal(list(network.keys())[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
+        assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
-        assert_equal(list(second.keys())[0][:4], (3, 4, ('SOL', 2, 'HW2'), ('ALA', 4, 'O')))
+        assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
         assert_equal(second[list(second.keys())[0]], None)
         network = wb._network[0]
         wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
         network = wb._network[0]
-        assert_equal([(0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')), (5, 7, ('ALA', 5, 'O'), ('SOL', 6, 'HW1'))],
+        assert_equal([(0, None, 2, 1), (5, None, 7, 6)],
                      sorted([key[:4] for key in list(network.keys())]))
 
     def test_count_by_type_single_link(self, universe_DWA):
@@ -558,15 +560,10 @@ class TestWaterBridgeAnalysis(object):
         This test tests if count_by_type() works in multiply situations.
         :return:
         '''
-        result = [(0, 3, 'ALA', 1, 'O', 'ALA', 4, 'H', 0.1),
-                  (0, 4, 'ALA', 1, 'O', 'ALA', 4, 'O', 0.3),
-                  (0, 6, 'ALA', 1, 'O', 'ALA', 4, 'O', 0.1),
-                  (0, 7, 'ALA', 1, 'O', 'ALA', 4, 'O', 0.1),
-                  (0, 8, 'ALA', 1, 'O', 'ALA', 5, 'O', 0.2),
-                  (0, 10, 'ALA', 1, 'O', 'ALA', 6, 'O', 0.1),
-                  (1, 3, 'ALA', 1, 'H', 'ALA', 4, 'H', 0.1),
-                  (1, 4, 'ALA', 1, 'H', 'ALA', 4, 'O', 0.1),
-                  (5, 11, 'ALA', 5, 'O', 'ALA', 8, 'O', 0.1)]
+        result = [[0, 11, 'ALA', 1, 'O', 'ALA', 6, 'H', 0.25],
+                  [0, 12, 'ALA', 1, 'O', 'ALA', 6, 'O', 0.25],
+                  [1, 12, 'ALA', 1, 'H', 'ALA', 6, 'O', 0.5]]
+
         assert_equal(sorted(wb_multiframe.count_by_type()), result)
 
     def test_count_by_type_filter(self, wb_multiframe):
@@ -575,16 +572,18 @@ class TestWaterBridgeAnalysis(object):
         allows some results to be filtered out in count_by_type().
         :return:
         '''
-        def analysis(current, output):
-            s1_index, to_index, (s1_resname, s1_resid, s1_name), (to_resname, to_resid, to_name), dist, angle = \
-                current[0]
-            from_index, s2_index, (from_resname, from_resid, from_name), (s2_resname, s2_resid, s2_name), dist, angle = \
-                current[-1]
-            key = (s1_index, s2_index, s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
+        def analysis(current, output, u):
+            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = current[0]
+            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = current[-1]
+            sele1 = u.atoms[sele1_index]
+            sele2 = u.atoms[sele2_index]
+            (s1_resname, s1_resid, s1_name) = (sele1.resname, sele1.resid, sele1.name)
+            (s2_resname, s2_resid, s2_name) = (sele2.resname, sele2.resid, sele2.name)
+
+            key = (sele1_index, sele2_index, s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
             if s2_name == 'H':
                 output[key] += 1
-        result = [((0, 3, 'ALA', 1, 'O', 'ALA', 4, 'H'), 0.1),
-                  ((1, 3, 'ALA', 1, 'H', 'ALA', 4, 'H'), 0.1)]
+        result = [((0, 11, 'ALA', 1, 'O', 'ALA', 6, 'H'), 0.25)]
         assert_equal(sorted(wb_multiframe.count_by_type(analysis_func=analysis)), result)
 
     def test_count_by_type_merge(self, wb_multiframe):
@@ -592,17 +591,17 @@ class TestWaterBridgeAnalysis(object):
         This test tests if modifying analysis_func
         allows some same residue to be merged in count_by_type().
         '''
-        def analysis(current, output):
-            s1_index, to_index, (s1_resname, s1_resid, s1_name), (to_resname, to_resid, to_name), dist, angle = \
-                current[0]
-            from_index, s2_index, (from_resname, from_resid, from_name), (s2_resname, s2_resid, s2_name), dist, angle = \
-                current[-1]
+        def analysis(current, output, u):
+            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = current[0]
+            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = current[-1]
+            sele1 = u.atoms[sele1_index]
+            sele2 = u.atoms[sele2_index]
+            (s1_resname, s1_resid, s1_name) = (sele1.resname, sele1.resid, sele1.name)
+            (s2_resname, s2_resid, s2_name) = (sele2.resname, sele2.resid, sele2.name)
+
             key = (s1_resname, s1_resid, s2_resname, s2_resid)
-            output[key] += 1
-        result = [(('ALA', 1, 'ALA', 4), 0.8),
-                  (('ALA', 1, 'ALA', 5), 0.2),
-                  (('ALA', 1, 'ALA', 6), 0.1),
-                  (('ALA', 5, 'ALA', 8), 0.1)]
+            output[key] = 1
+        result = [(('ALA', 1, 'ALA', 6), 1.0)]
         assert_equal(sorted(wb_multiframe.count_by_type(analysis_func=analysis)), result)
 
     def test_count_by_type_order(self, wb_multiframe):
@@ -611,19 +610,18 @@ class TestWaterBridgeAnalysis(object):
         allows the order of water bridge to be separated in count_by_type().
         :return:
         '''
-        def analysis(current, output):
-            s1_index, to_index, (s1_resname, s1_resid, s1_name), (to_resname, to_resid, to_name), dist, angle = \
-                current[0]
-            from_index, s2_index, (from_resname, from_resid, from_name), (s2_resname, s2_resid, s2_name), dist, angle = \
-                current[-1]
+        def analysis(current, output, u):
+            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = current[0]
+            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = current[-1]
+            sele1 = u.atoms[sele1_index]
+            sele2 = u.atoms[sele2_index]
+            (s1_resname, s1_resid, s1_name) = (sele1.resname, sele1.resid, sele1.name)
+            (s2_resname, s2_resid, s2_name) = (sele2.resname, sele2.resid, sele2.name)
             key = (s1_resname, s1_resid, s2_resname, s2_resid, len(current)-1)
-            output[key] += 1
-        result = [(('ALA', 1, 'ALA', 4, 1), 0.6),
-                  (('ALA', 1, 'ALA', 4, 2), 0.2),
-                  (('ALA', 1, 'ALA', 5, 2), 0.1),
-                  (('ALA', 1, 'ALA', 5, 3), 0.1),
-                  (('ALA', 1, 'ALA', 6, 4), 0.1),
-                  (('ALA', 5, 'ALA', 8, 2), 0.1)]
+            output[key] = 1
+        result = [(('ALA', 1, 'ALA', 6, 0), 0.5),
+                  (('ALA', 1, 'ALA', 6, 1), 0.25),
+                  (('ALA', 1, 'ALA', 6, 2), 0.25)]
         assert_equal(sorted(wb_multiframe.count_by_type(analysis_func=analysis)), result)
 
     def test_count_by_time(self, wb_multiframe):
@@ -631,7 +629,7 @@ class TestWaterBridgeAnalysis(object):
         This test tests if count_by_times() works.
         :return:
         '''
-        assert_equal(wb_multiframe.count_by_time(), [(0,1), (1,1), (2,1), (3,1), (4,1), (5,1), (6,1), (7,1), (8,2), (9,2)])
+        assert_equal(wb_multiframe.count_by_time(), [(0, 1), (1, 1), (2, 1), (3, 1)])
 
 
     def test_count_by_time_weight(self, universe_AWA_AWWA):
@@ -642,34 +640,40 @@ class TestWaterBridgeAnalysis(object):
         '''
         wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
-        def analysis(current, output):
-            s1_index, to_index, (s1_resname, s1_resid, s1_name), (to_resname, to_resid, to_name), dist, angle = \
-                current[0]
-            from_index, s2_index, (from_resname, from_resid, from_name), (s2_resname, s2_resid, s2_name), dist, angle = \
-                current[-1]
+        def analysis(current, output, u):
+            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = current[0]
+            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = current[-1]
+            sele1 = u.atoms[sele1_index]
+            sele2 = u.atoms[sele2_index]
+            (s1_resname, s1_resid, s1_name) = (sele1.resname, sele1.resid, sele1.name)
+            (s2_resname, s2_resid, s2_name) = (sele2.resname, sele2.resid, sele2.name)
             key = (s1_resname, s1_resid, s2_resname, s2_resid)
             output[key] += len(current)-1
         assert_equal(wb.count_by_time(analysis_func=analysis), [(0,3), ])
 
     def test_count_by_time_empty(self, universe_AWA_AWWA):
         '''
-        See if count_by_type() can handle zero well.
+        See if count_by_time() can handle zero well.
         :return:
         '''
         wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
-        def analysis(current, output):
+        def analysis(current, output, u):
             pass
         assert_equal(wb.count_by_time(analysis_func=analysis), [(0,0), ])
 
-    def test_generate_table(self, wb_multiframe):
-        '''Test generate table'''
-        wb_multiframe.generate_table()
-        table = wb_multiframe.table
-        assert_array_equal(sorted(wb_multiframe.table.donor_resid), [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-                                                          2, 2, 3, 3, 3, 3, 3, 4, 4, 5, 5, 6, 7])
+    def test_generate_table_hba(self, wb_multiframe):
+        '''Test generate table using hydrogen bond analysis format'''
+        wb_multiframe.generate_table(output_format='donor_acceptor')
+        assert_array_equal(sorted(wb_multiframe.table.donor_resid), [1, 1, 2, 2, 2, 6, 6])
+
+    def test_generate_table_s1s2(self, wb_multiframe):
+        '''Test generate table using hydrogen bond analysis format'''
+        wb_multiframe.generate_table(output_format='sele1_sele2')
+        assert_array_equal(sorted(wb_multiframe.table.sele1_resid), [1, 1, 1, 1, 2, 2, 3])
 
     def test_timesteps_by_type(self, wb_multiframe):
         '''Test the timesteps_by_type function'''
+
         timesteps = sorted(wb_multiframe.timesteps_by_type())
-        assert_array_equal(timesteps[3], [0, 4, 'ALA', 1, 'O', 'ALA', 4, 'O', 0, 1, 9])
+        assert_array_equal(timesteps[3], [1, 12, 'ALA', 1, 'H', 'ALA', 6, 'O', 0, 2])
