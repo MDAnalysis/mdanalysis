@@ -283,7 +283,6 @@ class TestWaterBridgeAnalysis(object):
         This is achieved by not runing the run() first.'''
         wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
         wb.generate_table()
-        assert_equal(wb.table, None)
         assert_equal(wb.timesteps_by_type(), None)
         assert_equal(wb.count_by_time(), None)
         assert_equal(wb.count_by_type(), None)

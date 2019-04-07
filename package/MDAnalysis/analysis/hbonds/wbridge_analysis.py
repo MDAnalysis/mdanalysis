@@ -1058,9 +1058,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             # Narrow down the water selection
             selection_resn_id = list(next_round_water)
             if (not selection_resn_id) or (not self._water):
-                self._network.append(defaultdict(dict))
                 logger.warning("No water forming hydrogen bonding with selection 1.")
-                return
+                break
             selection_resn_id = ['(resname {} and resid {})'.format(
                 resname, resid) for resname, resid in selection_resn_id]
             water_bridges = self._water.select_atoms(' or '.join(selection_resn_id))
