@@ -326,7 +326,7 @@ class GROWriter(base.WriterBase):
                w.write(u.atoms)
 
         """
-        self.filename = util.filename(filename, ext='gro')
+        self.filename = util.filename(filename, ext='gro', keep=True)
         self.n_atoms = n_atoms
         self.reindex = kwargs.pop('reindex', True)
 

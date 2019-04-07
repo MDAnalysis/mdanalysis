@@ -58,7 +58,7 @@ __all__ = [
     "XPDB_small",
     "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
     "ALIGN",  # Various way to align atom names in PDB files
-    "NUCL",  # nucleic acid (PDB)
+    "RNA_PSF", "RNA_PDB",  # nucleic acid (PDB 1K5I in CHARMM36m)
     "INC_PDB",  # incomplete PDB file (Issue #396)
     # for testing cryst before/after model headers
     "PDB_cm", "PDB_cm_bz2", "PDB_cm_gz",
@@ -151,7 +151,8 @@ __all__ = [
     "RANDOM_WALK_TOPO", # garbage topology to go along with XTC positions above
     "AUX_XVG", "XVG_BAD_NCOL", #for testing .xvg auxiliary reader
     "AUX_XVG_LOWF", "AUX_XVG_HIGHF",
-    "MMTF", "MMTF_gz",
+    "MMTF", "MMTF_gz", 'MMTF_skinny',  # skinny - some optional fields stripped out
+    "MMTF_skinny2",
     "ALIGN_BOUND",  # two component bound system
     "ALIGN_UNBOUND", # two component unbound system
     "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
@@ -229,7 +230,8 @@ PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 
 ALIGN = resource_filename(__name__, 'data/align.pdb')
-NUCL = resource_filename(__name__, 'data/1k5i.pdb')
+RNA_PSF = resource_filename(__name__, 'data/analysis/1k5i_c36.psf.gz')
+RNA_PDB = resource_filename(__name__, 'data/analysis/1k5i_c36.pdb.gz')
 INC_PDB = resource_filename(__name__, 'data/incomplete.pdb')
 PDB_cm = resource_filename(__name__, 'data/cryst_then_model.pdb')
 PDB_cm_gz = resource_filename(__name__, 'data/cryst_then_model.pdb.gz')
@@ -439,6 +441,8 @@ RANDOM_WALK_TOPO = resource_filename(__name__, 'data/RANDOM_WALK_TOPO.pdb')
 
 MMTF = resource_filename(__name__, 'data/173D.mmtf')
 MMTF_gz = resource_filename(__name__, 'data/5KIH.mmtf.gz')
+MMTF_skinny = resource_filename(__name__, 'data/1ubq-less-optional.mmtf')
+MMTF_skinny2 = resource_filename(__name__, 'data/3NJW-onlyrequired.mmtf')
 
 ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
 ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')

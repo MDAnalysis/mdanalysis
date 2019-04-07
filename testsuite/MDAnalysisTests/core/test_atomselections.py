@@ -42,9 +42,10 @@ from MDAnalysis.tests.datafiles import (
     PSF, DCD,
     PRMpbc, TRJpbc_bz2,
     PSF_NAMD, PDB_NAMD,
-    GRO, NUCL, NUCLsel, TPR, XTC,
+    GRO, RNA_PSF, NUCLsel, TPR, XTC,
     TRZ_psf, TRZ,
     PDB_icodes,
+    PDB_HOLE,
 )
 from MDAnalysisTests import make_Universe
 
@@ -448,20 +449,22 @@ class TestSelectionsTPR(object):
 
 
 class TestSelectionsNucleicAcids(object):
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def universe(self):
-        return MDAnalysis.Universe(NUCL)
+        return MDAnalysis.Universe(RNA_PSF)
+
+    @pytest.fixture(scope='class')
+    def universe2(self):
+        return MDAnalysis.Universe(NUCLsel)
+
 
     def test_nucleic(self, universe):
         rna = universe.select_atoms("nucleic")
         assert_equal(rna.n_atoms, 739)
         assert_equal(rna.n_residues, 23)
 
-    def test_nucleic_all(self, universe):
-        u = mda.Universe(NUCLsel)
-
-        sel = u.select_atoms('nucleic')
-
+    def test_nucleic_all(self, universe2):
+        sel = universe2.select_atoms('nucleic')
         assert len(sel) == 34
 
     def test_nucleicbackbone(self, universe):
@@ -1038,3 +1041,14 @@ def test_empty_sel():
         ag = u.atoms.select_atoms("")
     assert_equal(len(ag), 0)
     assert isinstance(ag, mda.AtomGroup)
+
+
+def test_record_type_sel():
+    u = mda.Universe(PDB_HOLE)
+
+    assert len(u.select_atoms('record_type ATOM')) == 264
+    assert len(u.select_atoms('not record_type HETATM')) == 264
+    assert len(u.select_atoms('record_type HETATM')) == 8
+
+    assert len(u.select_atoms('name CA and not record_type HETATM')) == 30
+    assert len(u.select_atoms('name CA and record_type HETATM')) == 2

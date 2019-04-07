@@ -223,9 +223,6 @@ class PDBReader(base.ReaderBase):
     --------
     :class:`PDBWriter`
     :class:`PDBReader`
-       implements a larger subset of the header records,
-       which are accessible as :attr:`PDBReader.metadata`.
-
 
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based
@@ -259,11 +256,11 @@ class PDBReader(base.ReaderBase):
             self.n_atoms = top.n_atoms
 
         self.model_offset = kwargs.pop("model_offset", 0)
-
-        self.header = header = ""
-        self.title = title = []
-        self.compound = compound = []
-        self.remarks = remarks = []
+        # dummy/default variables as these are read
+        header = ""
+        title = []
+        compound = []
+        remarks = []
 
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
@@ -306,6 +303,11 @@ class PDBReader(base.ReaderBase):
                 remarks.append(line[6:].strip().decode())
 
         end = pdbfile.tell()  # where the file ends
+
+        self.header = header
+        self.title = title
+        self.compound = compound
+        self.remarks = remarks
 
         if not models:
             # No model entries
@@ -391,14 +393,17 @@ class PDBReader(base.ReaderBase):
                                         line[24:33], line[33:40],
                                         line[40:47], line[47:54]]
 
-        # doing the conversion from list to array at the end is faster
-        self.ts.positions = tmp_buf
-
         # check if atom number changed
         if pos != self.n_atoms:
-            raise ValueError("Read an incorrect number of atoms\n"
-                             "Expected {expected} got {actual}"
-                             "".format(expected=self.n_atoms, actual=pos+1))
+            raise ValueError("Inconsistency in file '{}': The number of atoms "
+                             "({}) in trajectory frame {} differs from the "
+                             "number of atoms ({}) in the corresponding "
+                             "topology.\nTrajectories with varying numbers of "
+                             "atoms are currently not supported."
+                             "".format(self.filename, pos, frame, self.n_atoms))
+
+        # doing the conversion from list to array at the end is faster
+        self.ts.positions = tmp_buf
 
         if self.convert_units:
             # both happen inplace
@@ -671,12 +676,11 @@ class PDBWriter(base.WriterBase):
         if not self.obj or not hasattr(self.obj.universe, 'bonds'):
             return
 
-        bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
-
         mapping = {index: i for i, index in enumerate(self.obj.atoms.indices)}
 
-        # Write out only the bonds that were defined in CONECT records
+        bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
         if self.bonds == "conect":
+            # Write out only the bonds that were defined in CONECT records
             bonds = ((bond[0].index, bond[1].index) for bond in bondset if not bond.is_guessed)
         elif self.bonds == "all":
             bonds = ((bond[0].index, bond[1].index) for bond in bondset)
@@ -692,9 +696,8 @@ class PDBWriter(base.WriterBase):
 
         atoms = np.sort(self.obj.atoms.indices)
 
-        conect = ([a] + sorted(con[a])
+        conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
                   for a in atoms if a in con)
-        connect = ([mapping[x] for x in row] for row in conect)
 
         for c in conect:
             self.CONECT(c)

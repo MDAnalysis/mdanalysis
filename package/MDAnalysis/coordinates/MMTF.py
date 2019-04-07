@@ -28,6 +28,8 @@ Reads coordinates data from the Macromolecular Transmission Format format
 (MMTF_). This should generally be a quicker alternative to PDB.
 
 .. versionadded:: 0.16.0
+.. versionchanged:: 0.20.0
+   Unit cell is now properly treated as optional
 
 Classes
 -------
@@ -77,7 +79,11 @@ class MMTFReader(base.SingleFrameReaderBase):
         ts._pos[:, 0] = top.x_coord_list
         ts._pos[:, 1] = top.y_coord_list
         ts._pos[:, 2] = top.z_coord_list
-        ts.dimensions = top.unit_cell
+        if not top.unit_cell is None:
+            # optional field
+            ts.dimensions = top.unit_cell
+        else:
+            ts._unitcell = None
 
         return ts
 

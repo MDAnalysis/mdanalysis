@@ -89,6 +89,7 @@ import numpy as np
 import logging
 import copy
 import warnings
+import collections
 
 import MDAnalysis
 import sys
@@ -487,7 +488,7 @@ class Universe(object):
 
         if trajectory:
             coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
-            dims = np.zeros(6, dtype=np.float64)
+            dims = np.zeros(6, dtype=np.float32)
             vels = np.zeros_like(coords) if velocities else None
             forces = np.zeros_like(coords) if forces else None
 
@@ -657,7 +658,7 @@ class Universe(object):
 
             velocities = np.zeros_like(coordinates) if has_vels else None
             forces = np.zeros_like(coordinates) if has_fors else None
-            dimensions = (np.zeros((n_frames, 6), dtype=np.float64)
+            dimensions = (np.zeros((n_frames, 6), dtype=np.float32)
                           if has_dims else None)
 
             for i, ts in enumerate(self.trajectory[start:stop:step]):
@@ -1004,6 +1005,10 @@ class Universe(object):
            by their first atom index so their order is predictable.
         .. versionchanged:: 0.19.0
            Uses faster C++ implementation
+        .. versionchanged:: 0.20.0
+           * _fragdict keys are now atom indices instead of Atoms
+           * _fragdict items are now a namedtuple ``fraginfo(ix, fragment)``
+             storing the fragindex ``ix`` along with the fragment.
         """
         atoms = self.atoms.ix
         bonds = self.atoms.bonds.to_indices()
@@ -1012,9 +1017,10 @@ class Universe(object):
         frags = tuple([AtomGroup(np.sort(ix), self) for ix in frag_indices])
 
         fragdict = {}
-        for f in frags:
+        fraginfo = collections.namedtuple('fraginfo', 'ix, fragment')
+        for i, f in enumerate(frags):
             for a in f:
-                fragdict[a] = f
+                fragdict[a.ix] = fraginfo(i, f)
 
         return fragdict
 
