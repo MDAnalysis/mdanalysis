@@ -20,6 +20,8 @@ mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
   * 0.20.0
 
 Enhancements
+  * added position averaging transformation that makes use of the 
+    transformations API (PR #2208)
   * added find_hydrogen_donors to analysis.bonds.hbond_autocorrel to
     automatically determine donors where possible (#2181)
   * added analysis.polymer.sort_backbone to rearrange backbone atoms into
