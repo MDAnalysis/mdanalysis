@@ -458,6 +458,7 @@ import multiprocessing
 
 import MDAnalysis.analysis.hbonds
 from MDAnalysis.lib.log import ProgressMeter
+from .utils.autocorrelation import autocorrelation
 
 
 class HydrogenBondLifetimes(object):
@@ -1408,36 +1409,16 @@ class SurvivalProbability(object):
             frame_no += 1
             frame_loaded_counter += 1
 
-        # correct the dataset for gaps (intermittency)
-        self._correct_intermittency(intermittency, self.selected_ids)
-
-        # calculate Survival Probability
-        tau_timeseries = np.arange(1, tau_max + 1)
-        sp_timeseries_data = [[] for _ in range(tau_max)]
-
         # adjust for the frames that were not loaded (step>tau_max + 1),
         # and for extra frames that were loaded (intermittency)
         window_jump = step - num_frames_to_skip
 
-        for t in range(0, len(self.selected_ids), window_jump):
-            Nt = len(self.selected_ids[t])
-
-            if Nt == 0:
-                self.print(verbose,
-                           "At frame {} the selection did not find any molecule. Moving on to the next frame".format(t))
-                continue
-
-            for tau in tau_timeseries:
-                if t + tau >= len(self.selected_ids):
-                    break
-
-                # continuous: IDs that survive from t to t + tau and at every frame in between
-                Ntau = len(set.intersection(*self.selected_ids[t:t + tau + 1]))
-                sp_timeseries_data[tau - 1].append(Ntau / float(Nt))
+        tau_timeseries, sp_timeseries, sp_timeseries_data = \
+            autocorrelation(self.selected_ids, tau_max, window_jump,intermittency)
 
         # user can investigate the distribution and sample size
         self.sp_timeseries_data = sp_timeseries_data
 
         self.tau_timeseries = tau_timeseries
-        self.sp_timeseries = [np.mean(sp) for sp in sp_timeseries_data]
+        self.sp_timeseries = sp_timeseries
         return self
