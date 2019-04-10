@@ -49,8 +49,10 @@ Enhancements
     distance_array. (Issue #2103, PR #2209)
   * updated analysis.distances.contact_matrix to use capped_distance. (Issue #2102,
     PR #2215)
+  * added functionality to write files in compressed form(gz,bz2). (Issue #2216,
+    PR #2221)
   * survival probability additions: residues, intermittency, step with performance,
-    (PR #2226)
+    (PR #2226)   
 
 Changes
   * added official support for Python 3.7 (PR #1963)
@@ -95,6 +97,8 @@ Fixes
     Timestep.dimensions for all Universes and Readers (Issue #2190, PR #2213)
   * Fixed analysis.nucleic.hydroxyl() function: correctly recognize the
     2'-hydroxyl hydrogen H2'; gave wrong results (Issue #2218)
+  * A clear message that the .pdb universe cannot contain a different number of
+    atoms from frame to frame (Issue #1998, PR #2219)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
