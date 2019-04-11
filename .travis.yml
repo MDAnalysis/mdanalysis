@@ -104,6 +104,7 @@ script:
   - cd ${TRAVIS_BUILD_DIR}
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then ulimit -S -n 2048; fi
   - echo $MAIN_CMD $SETUP_CMD
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then pip install pytest; fi
   - eval $MAIN_CMD $SETUP_CMD
 
 after_success:
