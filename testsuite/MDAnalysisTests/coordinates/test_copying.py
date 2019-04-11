@@ -175,6 +175,8 @@ def test_timestep_copied(ref_reader):
 
     assert_equal(ref_reader.ts.positions, new.ts.positions)
     assert_almost_equal(new.ts.dimensions, newbox, decimal=4)
+    assert ref_reader.ts.positions.dtype == np.float32
+    assert new.ts.positions.dtype == np.float32
 
 
 @pytest.mark.skipif(shares_memory == False,

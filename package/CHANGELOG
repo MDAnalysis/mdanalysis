@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
-         ayushsuhane, picocentauri, NinadBhat
+         ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith
 
   * 0.20.0
 
@@ -45,6 +45,16 @@ Enhancements
     SegmentGroups via ResidueGroup.atoms or SegmentGroup.atoms, respectively.
     This speeds up all methods using these mechanisms. (Issue #2203, PR #2204)
   * added more Van-der-Waals radii to improve guess_bonds (#2138, PR #2142)
+  * added *Group.accumulate() (PR #2192)
+  * added compound kwarg to total_mass and total_charge (PR #2192)
+  * updated HydrogenBondAutoCorrel to use capped_distance in place of
+    distance_array. (Issue #2103, PR #2209)
+  * updated analysis.distances.contact_matrix to use capped_distance. (Issue #2102,
+    PR #2215)
+  * added functionality to write files in compressed form(gz,bz2). (Issue #2216,
+    PR #2221)
+  * survival probability additions: residues, intermittency, step with performance,
+    (PR #2226)   
 
 Changes
   * added official support for Python 3.7 (PR #1963)
@@ -56,6 +66,7 @@ Changes
   * changed fudge_factor in guess_bonds to deal with new vdw radii (#2138, PR #2142)
 
 Fixes
+  * fixed transformation tests not being run (Issue #2241)
   * fixed the segmentation fault in capped_distances (Issue #2164, PR #2169)
   * fixed gcc support in MacOS (Issue #2162, PR #2163)
   * fixed error when reading bonds/angles/dihedrals from gsd file (Issue #2152,
@@ -85,6 +96,12 @@ Fixes
   * *Group.wrap() is now guaranteed to only work on atoms actually belonging to
     the calling group. (Issue #2203, PR #2204)
   * Fixed documentation of MDAnalysis.analysis.contacts
+  * Enforced consistent dtype (numpy.float32) of Universe.dimensions and
+    Timestep.dimensions for all Universes and Readers (Issue #2190, PR #2213)
+  * Fixed analysis.nucleic.hydroxyl() function: correctly recognize the
+    2'-hydroxyl hydrogen H2'; gave wrong results (Issue #2218)
+  * A clear message that the .pdb universe cannot contain a different number of
+    atoms from frame to frame (Issue #1998, PR #2219)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()

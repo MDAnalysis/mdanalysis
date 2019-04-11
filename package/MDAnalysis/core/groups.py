@@ -854,6 +854,147 @@ class GroupBase(_MutableBase):
 
     centroid = center_of_geometry
 
+    @warn_if_not_unique
+    def accumulate(self, attribute, function=np.sum, compound='group'):
+        """Accumulates the attribute associated with (compounds of) the group.
+
+        Accumulates the attribute of :class:`Atoms<Atom>` in the group.
+        The accumulation per :class:`Residue`, :class:`Segment`, molecule,
+        or fragment can be obtained by setting the `compound` parameter
+        accordingly. By default, the method sums up all attributes per compound,
+        but any function that takes an array and returns an acuumulation over a
+        given axis can be used. For multi-dimensional input arrays, the
+        accumulation is performed along the first axis.
+
+        Parameters
+        ----------
+        attribute : str or array_like
+            Attribute or array of values to accumulate.
+            If a :class:`numpy.ndarray` (or compatible) is provided, its first
+            dimension must have the same length as the total number of atoms in
+            the group.
+        function : callable, optional
+            The function performing the accumulation. It must take the array of
+            attribute values to accumulate as its only positional argument and
+            accept an (optional) keyword argument ``axis`` allowing to specify
+            the axis along which the accumulation is performed.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            If ``'group'``, the accumulation of all attributes associated with
+            atoms in the group will be returned as a single value. Otherwise,
+            the accumulation of the attributes per :class:`Segment`,
+            :class:`Residue`, molecule, or fragment will be returned as a 1d
+            array. Note that, in any case, *only* the :class:`Atoms<Atom>`
+            *belonging to the group* will be taken into account.
+
+        Returns
+        -------
+        float or numpy.ndarray
+            Acuumulation of the `attribute`.
+            If `compound` is set to ``'group'``, the first dimension of the
+            `attribute` array will be contracted to a single value.
+            If `compound` is set to ``'segments'``, ``'residues'``,
+            ``'molecules'``, or ``'fragments'``, the length of the first
+            dimension will correspond to the number of compounds. In all cases,
+            the other dimensions of the returned array will be of the original
+            shape (without the first dimension).
+
+        Raises
+        ------
+        ValueError
+            If the length of a provided `attribute` array does not correspond to
+            the number of atoms in the group.
+        ValueError
+            If `compound` is not one of ``'group'``, ``'segments'``,
+            ``'residues'``, ``'molecules'``, or ``'fragments'``.
+        ~MDAnalysis.exceptions.NoDataError
+            If `compound` is ``'molecule'`` but the topology doesn't
+            contain molecule information (molnums), or if `compound` is
+            ``'fragments'`` but the topology doesn't contain bonds.
+
+        Examples
+        --------
+
+        To find the total charge of a given :class:`AtomGroup`::
+
+            >>> sel = u.select_atoms('prop mass > 4.0')
+            >>> sel.accumulate('charges')
+
+        To find the total mass per residue of all CA :class:`Atoms<Atom>`::
+
+            >>> sel = u.select_atoms('name CA')
+            >>> sel.accumulate('masses', compound='residues')
+
+        To find the maximum atomic charge per fragment of a given
+        :class:`AtomGroup`::
+
+            >>> sel.accumulate('charges', compound="fragments", function=np.max)
+
+
+        .. versionadded:: 0.20.0
+        """
+
+        atoms = self.atoms
+
+        if isinstance(attribute, string_types):
+            attribute_values = getattr(atoms, attribute)
+        else:
+            attribute_values = np.asarray(attribute)
+            if len(attribute_values) != len(atoms):
+                raise ValueError("The input array length ({}) does not match "
+                                 "the number of atoms ({}) in the group."
+                                 "".format(len(attribute_values), len(atoms)))
+
+        comp = compound.lower()
+
+        if comp == 'group':
+            return function(attribute_values, axis=0)
+        elif comp == 'residues':
+            compound_indices = atoms.resindices
+        elif comp == 'segments':
+            compound_indices = atoms.segindices
+        elif comp == 'molecules':
+            try:
+                compound_indices = atoms.molnums
+            except AttributeError:
+                raise NoDataError("Cannot use compound='molecules': "
+                                  "No molecule information in topology.")
+        elif comp == 'fragments':
+            try:
+                compound_indices = atoms.fragindices
+            except NoDataError:
+                raise NoDataError("Cannot use compound='fragments': "
+                                  "No bond information in topology.")
+        else:
+            raise ValueError("Unrecognized compound definition: '{}'. Please "
+                             "use one of 'group', 'residues', 'segments', "
+                             "'molecules', or 'fragments'.".format(compound))
+
+        higher_dims = list(attribute_values.shape[1:])
+
+        # Sort attribute values by compound
+        sort_indices = np.argsort(compound_indices)
+        compound_indices = compound_indices[sort_indices]
+
+        attribute_values = attribute_values[sort_indices]
+        # Get sizes of compounds:
+        unique_compound_indices, compound_sizes = np.unique(compound_indices,
+                                                            return_counts=True)
+        n_compounds = len(unique_compound_indices)
+        unique_compound_sizes = unique_int_1d(compound_sizes)
+        # Allocate output array:
+        accumulation = np.zeros([n_compounds] + higher_dims)
+        # Compute sums per compound for each compound size:
+        for compound_size in unique_compound_sizes:
+            compound_mask = compound_sizes == compound_size
+            _compound_indices = unique_compound_indices[compound_mask]
+            atoms_mask = np.in1d(compound_indices, _compound_indices)
+            _elements = attribute_values[atoms_mask].reshape([-1, compound_size]
+                                                             + higher_dims)
+            _accumulation = function(_elements, axis=1)
+            accumulation[compound_mask] = _accumulation
+        return accumulation
+
     def bbox(self, **kwargs):
         """Return the bounding box of the selection.
 
@@ -2834,7 +2975,7 @@ class AtomGroup(GroupBase):
                 "improper only makes sense for a group with exactly 4 atoms")
         return topologyobjects.ImproperDihedral(self.ix, self.universe)
 
-    def write(self, filename=None, file_format="PDB",
+    def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
         """Write `AtomGroup` to a file.
 
@@ -2913,8 +3054,9 @@ class AtomGroup(GroupBase):
         if filename is None:
             trjname, ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt.format(trjname=trjname, frame=trj.frame)
-        filename = util.filename(filename, ext=file_format.lower(), keep=True)
-
+        filename = util.filename(filename,
+                                 ext=file_format if file_format is not None else 'PDB',
+                                 keep=True)
         # Some writer behave differently when they are given a "multiframe"
         # argument. It is the case of the PDB writer tht writes models when
         # "multiframe" is True.
@@ -2939,14 +3081,7 @@ class AtomGroup(GroupBase):
         # Try and select a Class using get_ methods (becomes `writer`)
         # Once (and if!) class is selected, use it in with block
         try:
-            # format keyword works differently in get_writer and get_selection_writer
-            # here it overrides everything, in get_sel it is just a default
-            # apply sparingly here!
-            format = os.path.splitext(filename)[1][1:]  # strip initial dot!
-            format = format or file_format
-            format = format.strip().upper()
-
-            writer = get_writer_for(filename, format=format, multiframe=multiframe)
+            writer = get_writer_for(filename, format=file_format, multiframe=multiframe)
         except (ValueError, TypeError):
             pass
         else:
@@ -2965,7 +3100,8 @@ class AtomGroup(GroupBase):
         try:
             # here `file_format` is only used as default,
             # anything pulled off `filename` will be used preferentially
-            writer = get_selection_writer_for(filename, file_format)
+            writer = get_selection_writer_for(filename,
+                                              file_format if file_format is not None else 'PDB')
         except (TypeError, NotImplementedError):
             pass
         else:
