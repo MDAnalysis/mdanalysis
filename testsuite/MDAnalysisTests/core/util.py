@@ -127,6 +127,13 @@ class UnWrapUniverse(object):
     have_molnums : bool, optional
         If ``True``, the topology will have molecule information (molnums).
         If ``False``, that information will be missing.
+    have_charges : bool, optional
+        If ``False``, charges won't be present in the topology.
+        If ``True``, atoms will carry the following charges::
+        * atoms of molecule type A: 2 (total: 6)
+        * atoms of molecule type B: -0.5 (total: -6)
+        * atoms of molecule type C: -1.5 (total: -12)
+        * atoms of molecule type D: 0.5 (total: 12)
     is_triclinic : bool, optional
         If ``False``, the box will be a cube with an edge length of 10 Angstrom.
         If ``True``, the cubic box will be sheared by 1 Angstrom in the x and
@@ -134,7 +141,7 @@ class UnWrapUniverse(object):
     """
 
     def __new__(cls, have_bonds=True, have_masses=True, have_molnums=True,
-                is_triclinic=False):
+                have_charges=True, is_triclinic=False):
         # box:
         a = 10.0 # edge length
         tfac = 0.1  # factor for box vector shift of triclinic boxes (~84°)
@@ -305,6 +312,18 @@ class UnWrapUniverse(object):
             molnums += [7, 8]
             molnums += [9, 9, 10, 10, 11, 11]
             u.add_TopologyAttr(topologyattrs.Molnums(molnums))
+
+        # charges:
+        if have_charges:
+            # type A
+            charges = [2] * 3
+            # type B
+            charges += [-0.5] * 12
+            # type C
+            charges += [-1.5] * 8
+            # type C
+            charges += [0.5] * 24
+            u.add_TopologyAttr(topologyattrs.Charges(charges))
 
         # shamelessly monkey-patch some custom universe attributes:
         u._is_triclinic = is_triclinic

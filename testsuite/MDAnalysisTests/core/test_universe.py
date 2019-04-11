@@ -288,11 +288,13 @@ class TestUniverse(object):
         with pytest.raises(NotImplementedError):
             cPickle.dumps(u, protocol = cPickle.HIGHEST_PROTOCOL)
 
-    def test_set_dimensions(self):
+    @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
+    def test_set_dimensions(self, dtype):
         u = mda.Universe(PSF, DCD)
-        box = np.array([10, 11, 12, 90, 90, 90])
-        u.dimensions = np.array([10, 11, 12, 90, 90, 90])
+        box = np.array([10, 11, 12, 90, 90, 90], dtype=dtype)
+        u.dimensions = box
         assert_allclose(u.dimensions, box)
+        assert u.dimensions.dtype == np.float32
 
 
 # remove for 1.0
