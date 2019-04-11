@@ -43,18 +43,18 @@ class PositionAverager(object):
     """
    
     Averages the coordinates of a given timestep so that the coordinates
-    of the given atomgroup correspond to the average of the positions 
-    of the N previous frames. 
+    of the AtomGroup correspond to the average positions of the N previous
+    frames. 
     For frames < N, the average of the frames iterated up to that point will
     be returned.  
     
     Example
     -------
 
-    e.g. Average the coordinates of a given AtomGroup over the course of
-    the previous N frames. For N=3, the output will correspond to the
+    Average the coordinates of a given AtomGroup over the course of
+    the previous N frames. For ``N=3``, the output will correspond to the
     average of the coordinates over the last 3 frames.
-    When check_reset=True, the averager will be reset once the iteration is
+    When ``check_reset=True``, the averager will be reset once the iteration is
     complete, or if the frames iterated are not sequential.
 
     .. code-block:: python
@@ -65,10 +65,17 @@ class PositionAverager(object):
         for ts in u.trajectory:
             print(ts.positions)
     
-    e.g. When check_reset=False, the average of coordinates from non
+    In this case, ``ts.positions`` will return the average coordinates of the
+    last N iterated frames.
+
+
+    When ``check_reset=False``, the average of coordinates from non
     sequential timesteps can also be computed. However, the averager must be
-    manually reset before restarting an iteration.
-           
+    manually reset before restarting an iteration. In this case,
+    ``ts.positions`` will return the average coordinates of the last N
+    iterated frames, despite them not being sequential
+    (``frames = [0, 7, 1, 6]``). 
+
     .. code-block:: python
         
         N=3
@@ -79,10 +86,18 @@ class PositionAverager(object):
         for ts in u.trajectory[frames]:
             print(ts.positions)
     
-    e.g. For frames < N, the average is calculated with the frames iterated up
-    to that point and thus will not follow the same behaviour as for the
-    frames > N. This behaviour can be followed by comparing current_avg to 
-    avg_frames.For N=3, the first 2 frames should be skipped.
+    If ``check_reset=True``, the ``PositionAverager`` would have automatically
+    reset after detecting a non sequential iteration (i.e. when iterating from
+    frame 7 to frame 1 or when resetting the iterator from frame 6 back to
+    frame 0).
+
+
+    For frames < N, the average is calculated with the frames iterated up
+    to that point and thus will not follow the same behaviour as for
+    frames > N. This can be followed by comparing the number of frames being
+    used to compute the current averaged frame (``current_avg``) to the one
+    requested when calling ``PositionAverager`` (``avg_frames``) which in
+    these examples corresponds to ``N=3``.
 
     .. code-block:: python
         
@@ -93,13 +108,28 @@ class PositionAverager(object):
             if transformation.current_avg == transformation.avg_frames:
                 print(ts.positions)
     
+    In the case of ``N=3``, as the average is calculated with the frames
+    iterated up to the current iteration, the first frame returned will
+    not be averaged. During the first iteration no other frames are stored in
+    memory thus far and, consequently, ``transformation.current_avg = 1``.
+    The second frame iterated will return the average of frame 1 and frame 2,
+    with ``transformation.current_avg = 2``. Only during the third and
+    following iterations will ``ts.positions`` start returning the average of
+    the last 3 frames and thus ``transformation.current_avg = 3``
+    These initial frames are typically not desired during analysis, but one can
+    easily avoid them, as seen in the previous example with 
+    ``if transformation.current_avg == transformation.avg_frames:`` or by
+    simply removing the first ``avg_frames-1`` frames from the analysis. 
+
+
+
     Parameters
     ----------
     avg_frames: int
         Determines the number of frames to be used for the position averaging. 
     check_reset: bool, optional
-        If 'True', position averaging will be reset, and a warning raised,
-        if the trajectory iteration direction changes. If 'False', position
+        If ``True``, position averaging will be reset and a warning raised
+        when the trajectory iteration direction changes. If ``False``, position
         averaging will not reset, regardless of the iteration.
     
 
