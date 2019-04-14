@@ -29,13 +29,21 @@ import numpy as np
 
 # TODO add documentation
 def autocorrelation(list_of_sets, tau_max, window_jump=1, intermittency=0):
+    """
+
+    :param list_of_sets: Modifies in place!
+    :param tau_max:
+    :param window_jump:
+    :param intermittency:
+    :return:
+    """
     # FIXME - make sure that it is not just a list of numbers
 
     # correct the dataset for gaps (intermittency)
     _correct_intermittency(intermittency, list_of_sets)
 
     # calculate Survival Probability
-    tau_timeseries = np.arange(1, tau_max + 1)
+    tau_timeseries = list(range(1, tau_max + 1))
     sp_timeseries_data = [[] for _ in range(tau_max)]
 
     for t in range(0, len(list_of_sets), window_jump):
@@ -53,6 +61,11 @@ def autocorrelation(list_of_sets, tau_max, window_jump=1, intermittency=0):
             sp_timeseries_data[tau - 1].append(Ntau / float(Nt))
 
     sp_timeseries = [np.mean(sp) for sp in sp_timeseries_data]
+
+    # at time 0 the value has to be one
+    tau_timeseries.insert(0, 0)
+    sp_timeseries.insert(0, 1)
+
     return tau_timeseries, sp_timeseries, sp_timeseries_data
 
 
