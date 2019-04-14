@@ -45,8 +45,17 @@ def universe():
 def test_HydrogenBondLifetimes(universe):
     hbl = waterdynamics.HydrogenBondLifetimes(
         universe, SELECTION1, SELECTION1, 0, 5, 3)
+    hbl.run(stop=5)
+    assert_almost_equal(hbl.timeseries[2], 0.75)
+
+
+def test_HydrogenBondLifetimes_growing_continuous(universe):
+    # The autocorrelation cannot grow
+    hbl = waterdynamics.HydrogenBondLifetimes(
+        universe, SELECTION1, SELECTION1, t0=0, tf=9, dtmax=5)
     hbl.run()
-    assert_almost_equal(hbl.timeseries[2][1], 0.75, 5)
+    # Index 0 in frameX[0] refers to the continuous, 1 to intermittent
+    assert all([frameX >= frameXplus1 for frameX, frameXplus1 in zip(hbl.timeseries, hbl.timeseries[1:])])
 
 
 def test_WaterOrientationalRelaxation(universe):
