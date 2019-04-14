@@ -21,15 +21,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
-A flexible implementation of an autocorrelation function.
-"""
-
 import numpy as np
+
 
 # TODO add documentation
 def autocorrelation(list_of_sets, tau_max, window_jump=1, intermittency=0):
     """
+    The descrete implementation of the autocorrelation function.
+    fixme - change to the numpy documentation
 
     :param list_of_sets: Modifies in place!
     :param tau_max:
@@ -37,15 +36,16 @@ def autocorrelation(list_of_sets, tau_max, window_jump=1, intermittency=0):
     :param intermittency:
     :return:
     """
-    # FIXME - make sure that it is not just a list of numbers
+    # fixme - add checks if this is a list of sets
+    # fixme - check dimensions
 
     # correct the dataset for gaps (intermittency)
     _correct_intermittency(intermittency, list_of_sets)
 
-    # calculate Survival Probability
     tau_timeseries = list(range(1, tau_max + 1))
-    sp_timeseries_data = [[] for _ in range(tau_max)]
+    timeseries_data = [[] for _ in range(tau_max)]
 
+    # calculate autocorrelation
     for t in range(0, len(list_of_sets), window_jump):
         Nt = len(list_of_sets[t])
 
@@ -58,15 +58,15 @@ def autocorrelation(list_of_sets, tau_max, window_jump=1, intermittency=0):
 
             # continuous: IDs that survive from t to t + tau and at every frame in between
             Ntau = len(set.intersection(*list_of_sets[t:t + tau + 1]))
-            sp_timeseries_data[tau - 1].append(Ntau / float(Nt))
+            timeseries_data[tau - 1].append(Ntau / float(Nt))
 
-    sp_timeseries = [np.mean(sp) for sp in sp_timeseries_data]
+    timeseries = [np.mean(x) for x in timeseries_data]
 
     # at time 0 the value has to be one
     tau_timeseries.insert(0, 0)
-    sp_timeseries.insert(0, 1)
+    timeseries.insert(0, 1)
 
-    return tau_timeseries, sp_timeseries, sp_timeseries_data
+    return tau_timeseries, timeseries, timeseries_data
 
 
 def _correct_intermittency(intermittency, id_list, verbose=False):
