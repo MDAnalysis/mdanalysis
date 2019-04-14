@@ -297,10 +297,6 @@ the zone, on the other hand, a fast decay means a short permanence time::
   for tau, sp in zip(tau_timeseries, sp_timeseries):
         print("{time} {sp}".format(time=tau, sp=sp))
 
-  # SP is not calculated at tau=0, but if you would like to plot SP=1 at tau=0:
-  tau_timeseries.insert(0, 0)
-  sp_timeseries.insert(1, 0)
-
   # plot
   plt.xlabel('Time')
   plt.ylabel('SP')
@@ -464,19 +460,19 @@ from .utils.autocorrelation import autocorrelation
 class HydrogenBondLifetimes(object):
     r"""Hydrogen bond lifetime analysis
 
-    This is a autocorrelation function that gives the "Hydrogen Bond Lifetimes"
+    This is an autocorrelation function that gives the "Hydrogen Bond Lifetimes"
     (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this function we can
     obtain the continuous and intermittent behavior of hydrogen bonds in
     time. A fast decay in these parameters indicate a fast change in HBs
     connectivity. A slow decay indicate very stables hydrogen bonds, like in
     ice. The HBL is also know as "Hydrogen Bond Population Relaxation"
-    (HBPR). In the continuos case we have:
+    (HBPR). In the continuous case we have:
 
     .. math::
        C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h'_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
 
     where :math:`h'_{ij}(t_0+\tau)=1` if there is a H-bond between a pair
-    :math:`ij` during time interval :math:`t_0+\tau` (continuos) and
+    :math:`ij` during time interval :math:`t_0+\tau` (continuous) and
     :math:`h'_{ij}(t_0+\tau)=0` otherwise. In the intermittent case we have:
 
     .. math::
@@ -1373,6 +1369,9 @@ class SurvivalProbability(object):
         # preload the frames (atom IDs) to a list of sets
         self.selected_ids = []
 
+        # fixme - to parallise: the section should be rewritten so that this loop only creates a list of indices,
+        # on which the parallel _single_frame can be applied.
+
         # skip frames that will not be used
         # Example: step 5 and tau 2: LLLSS LLLSS, ... where L = Load, and S = Skip
         # Intermittency means that we have to load the extra frames to know if the atom is actually missing.
@@ -1415,6 +1414,11 @@ class SurvivalProbability(object):
 
         tau_timeseries, sp_timeseries, sp_timeseries_data = \
             autocorrelation(self.selected_ids, tau_max, window_jump,intermittency)
+
+        # warn the user if the NaN are found
+        if all(np.isnan(sp_timeseries[1:])):
+            # fixme - warn the user that the dataset. Use a standardised warning.
+            print('NaN Error: Most likely data was not found. Check your atom selections. ')
 
         # user can investigate the distribution and sample size
         self.sp_timeseries_data = sp_timeseries_data
