@@ -450,15 +450,16 @@ import warnings
 from six.moves import range, zip_longest
 
 import numpy as np
-import multiprocessing
 
 import MDAnalysis.analysis.hbonds
 from MDAnalysis.lib.log import ProgressMeter
 from .utils.autocorrelation import autocorrelation
 
 
+
 class HydrogenBondLifetimes(object):
     r"""Hydrogen bond lifetime analysis
+    fixme - update the definition of intermittency (refer the user to autocorrelation)
 
     This is an autocorrelation function that gives the "Hydrogen Bond Lifetimes"
     (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this function we can
@@ -492,48 +493,100 @@ class HydrogenBondLifetimes(object):
       It could be any selection available in MDAnalysis, not just water.
     selection2 : str
       Selection string to analize its HBL against selection1
-    t0 : int
-      frame  where analysis begins
-    tf : int
-      frame where analysis ends
-    dtmax : int
-      Maximum dt size, `dtmax` < `tf` or it will crash.
-    nproc : int
-      Number of processors to use, by default is 1.
-
+    verbose : Boolean, optional
+      When True, prints progress and comments to the console.
 
     .. versionadded:: 0.11.0
     """
 
-    def __init__(self, universe, selection1, selection2, t0, tf, dtmax,
-                 nproc=1):
-        # fixme - use the same interface you used in SP
+    def __init__(self, universe, selection1, selection2, t0=None, tf=None, dtmax=None, verbose=False):
         self.universe = universe
         self.selection1 = selection1
         self.selection2 = selection2
-        self.t0 = t0
-        self.tf = tf - 1
-        self.dtmax = dtmax
-        self.nproc = nproc
-        self.timeseries = None
+        self.verbose = verbose
+
+        # backward compatibility
+        self.start = self.stop = self.tau_max = None
+        if t0 is not None:
+            self.start = t0
+            warnings.warn("t0 is deprecated, use run(start) instead", category=DeprecationWarning)
+
+        if tf is not None:
+            self.stop = tf
+            warnings.warn("tf is deprecated, use run(stop) instead", category=DeprecationWarning)
+
+        if dtmax is not None:
+            self.tau_max = dtmax
+            warnings.warn("dtmax is deprecated, use run(tau_max) instead", category=DeprecationWarning)
 
 
-    def run(self, **kwargs):
+    def run(self, tau_max=20, start=0, stop=None, step=1, intermittency=0, verbose=False, **kwargs):
+        """
+        Computes and returns the Survival Probability (SP) timeseries
+
+        Parameters
+        ----------
+        start : int, optional
+            Zero-based index of the first frame to be analysed
+        stop : int, optional
+            Zero-based index of the last frame to be analysed (inclusive)
+        step : int, optional
+            Jump every `step`-th frame. This is compatible but independant of the taus used.
+            Note that `step` and `tau_max` work consistently with intermittency.
+        tau_max : int, optional
+            Survival probability is calculated for the range 1 <= `tau` <= `tau_max`
+        intermittency : int, optional
+            The maximum number of consecutive frames for which a bond can disappear but be counted as present if it
+            returns at the next frame. An intermittency of `0` is equivalent to a continuous autocorrelation, which does
+            not allow for the hydrogen bond disappearance. For example, for `intermittency=2`, any given hbond may
+            disappear for up to two consecutive frames yet be treated as being present at all frames.
+            The default is continuous (0).
+        verbose : Boolean, optional
+            Print the progress to the console
+
+        Returns
+        -------
+        tau_timeseries : list
+            tau from 1 to `tau_max`. Saved in the field tau_timeseries.
+        timeseries : list
+            survival probability for each value of `tau`. Saved in the field sp_timeseries.
+        timeseries_data: list
+            raw datapoints from which the average is taken (sp_timeseries).
+            Time dependancy and distribution can be extracted.
+        """
+
+        # backward compatibility (and priority)
+        start = self.start if self.start is not None else start
+        stop = self.stop if self.stop is not None else stop
+        tau_max = self.tau_max if self.tau_max is not None else tau_max
+
+        # sanity checks
+        if stop is not None and stop >= len(self.universe.trajectory):
+            raise ValueError("\"stop\" must be smaller than the number of frames in the trajectory.")
+
+        if stop is None:
+            stop = len(self.universe.trajectory)
+        else:
+            stop = stop + 1
+
+        if tau_max > (stop - start):
+            raise ValueError("Too few frames selected for given tau_max.")
+
         # Get all hydrogen bonds
+        # fixme - we should not have the frozen definition of the hydrogen bonds
+        # fixme - this will be upated with the new HydrogenBond interface
         hydrogen_bonds = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe,
                                                                  self.selection1,
                                                                  self.selection2,
                                                                  distance=3.5,
                                                                  angle=120.0)
-        # fixme - use it only for the time requested
-        # fixme - this currently ignores the constructor parameters t0 tf etc
-        hydrogen_bonds.run(**kwargs)
+        # Compute the minimal number of hydrogen bonds
+        hydrogen_bonds.run(start=start, stop=stop, step=step, verbose=verbose, **kwargs)
 
         # Extract the hydrogen bonds IDs only in the format [set(superset(x1,x2), superset(x3,x4)), set(), set()]
-        hb_ids = [{frozenset(bond[0:2]) for bond in frame} for frame in hydrogen_bonds.timeseries]
+        found_hydrogen_bonds = [{frozenset(bond[0:2]) for bond in frame} for frame in hydrogen_bonds.timeseries]
 
-        # Calculate the
-        tau_timeseries, timeseries, timeseries_data = autocorrelation(hb_ids, self.dtmax)
+        tau_timeseries, timeseries, timeseries_data = autocorrelation(found_hydrogen_bonds, self.dtmax)
 
         # fixme - document
         self.hydrogen_bonds = hydrogen_bonds.timeseries
@@ -1094,61 +1147,12 @@ class SurvivalProbability(object):
             self.tau_max = dtmax
             warnings.warn("dtmax is deprecated, use run(tau_max=dtmax) instead", category=DeprecationWarning)
 
+
     def print(self, verbose, *args):
         if self.verbose:
             print(args)
         elif verbose:
             print(args)
-
-    def _correct_intermittency(self, intermittency, selected_ids):
-        """
-        Pre-process Consecutive Intermittency with a single pass over the data.
-        If an atom is absent for a number of frames equal or smaller
-        than the `intermittency`, then correct the data and remove the absence.
-        ie 7,A,A,7 with intermittency=2 will be replaced by 7,7,7,7, where A=absence
-
-        Parameters
-        ----------
-        intermittency : int
-            the max gap allowed and to be corrected
-        selected_ids: list of ids
-            modifies the selecteded IDs in place by adding atoms which left for <= `intermittency`
-        """
-        self.print('Correcting the selected IDs for intermittancy (gaps). ')
-        if intermittency == 0:
-            return
-
-        for i, ids in enumerate(selected_ids):
-            # initially update each frame as seen 0 ago (now)
-            seen_frames_ago = {i: 0 for i in ids}
-            for j in range(1, intermittency + 2):
-                for atomid in seen_frames_ago.keys():
-                    # no more frames
-                    if i + j >= len(selected_ids):
-                        continue
-
-                    # if the atom is absent now
-                    if not atomid in selected_ids[i + j]:
-                        # increase its absence counter
-                        seen_frames_ago[atomid] += 1
-                        continue
-
-                    # the atom is found
-                    if seen_frames_ago[atomid] == 0:
-                        # the atom was present in the last frame
-                        continue
-
-                    # it was absent more times than allowed
-                    if seen_frames_ago[atomid] > intermittency:
-                        continue
-
-                    # the atom was absent but returned (within <= intermittency)
-                    # add it to the frames where it was absent.
-                    # Introduce the corrections.
-                    for k in range(seen_frames_ago[atomid], 0, -1):
-                        selected_ids[i + j - k].add(atomid)
-
-                    seen_frames_ago[atomid] = 0
 
 
     def run(self, tau_max=20, start=0, stop=None, step=1, residues=False, intermittency=0, verbose=False):
