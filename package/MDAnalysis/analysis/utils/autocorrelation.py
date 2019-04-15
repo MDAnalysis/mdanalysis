@@ -24,23 +24,48 @@
 import numpy as np
 
 
-# TODO add documentation
 def autocorrelation(list_of_sets, tau_max, window_jump=1, intermittency=0):
-    """
-    The descrete implementation of the autocorrelation function.
-    fixme - change to the numpy documentation
+    r"""The descrete implementation of the autocorrelation function.
 
-    :param list_of_sets: Modifies in place!
-    :param tau_max:
-    :param window_jump:
-    :param intermittency:
-    :return:
+    Here is a random equation that shows something.
+
+    .. math::
+       C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h'_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
+
+
+
+    fixme -  list_of_sets: Modifies in place!
+    Parameters
+    ----------
+    list_of_sets : list
+      List of sets,
+    tau_max : int
+      The last tau (inclusive) for which to carry out autocorrelation.
+    window_jump : int, optional
+      The step for the t0 to perform autocorrelation (without the overlap). Default is 1.
+    intermittency : int, optional
+      Helps with the graps in the data. If we want to remove some of the fluctuations and focus on the patterns,
+      intermittency removes the gaps. The default intermittency=0 which means that if the datapoint is missing at any
+      frame, it is not counted. With the value of 2 the datapoint can be missing for 2 consecutive frames but it will
+      be counted as present.
+
+    Returns
+    --------
+    tau_timeseries : list of int
+        the tau for which the autocorrelation was calculated
+    timeseries : list of int
+        the autocorelation values for each of the tau values
+    timeseries_data : list of list of int
+        the raw data from which the autocorrelation is computed. The time dependant evolution can be investigated.
+
+    .. versionadded:: 0.19.2
     """
     # fixme - add checks if this is a list of sets
     # fixme - check dimensions
+    # fixme - check parameters?
 
     # correct the dataset for gaps (intermittency)
-    _correct_intermittency(intermittency, list_of_sets)
+    correct_intermittency(intermittency, list_of_sets)
 
     tau_timeseries = list(range(1, tau_max + 1))
     timeseries_data = [[] for _ in range(tau_max)]
@@ -69,15 +94,21 @@ def autocorrelation(list_of_sets, tau_max, window_jump=1, intermittency=0):
     return tau_timeseries, timeseries, timeseries_data
 
 
-def _correct_intermittency(intermittency, id_list, verbose=False):
+def correct_intermittency(intermittency, id_list, verbose=False):
     """
     Pre-process Consecutive Intermittency with a single pass over the data.
     If an atom is absent for a number of frames equal or smaller
     than the parameter intermittency, then correct the data and remove the absence.
     ie 7,A,A,7 with intermittency=2 will be replaced by 7,7,7,7, where A=absence
 
-    :param intermittency: the max gap allowed and to be corrected
-    :param id_list: modifies the selecteded IDs in place by adding atoms which left for <= :param intermittency
+    Parameters
+    ----------
+    intermittency: int
+        the max gap allowed and to be corrected
+    id_list: fixme
+        modifies the selecteded IDs in place by adding atoms which left for <= :param intermittency
+    verbose: Boolean, optional
+        print
     """
     if intermittency == 0:
         return
