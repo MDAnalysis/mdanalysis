@@ -4,9 +4,9 @@
 # Script based on https://github.com/steveklabnik/automatically_update_github_pages_with_travis_example
 
 # Run this script from the top-level of the checked out git
-# repository. A github OAuth token must be available in the evironment
-# variable GH_TOKEN and is set up through the .travis.yml
-# env:global:secure parameter (encrypted with travis-ci's public key)/
+# repository. A github OAuth token must be available in the environment
+# variable GH_TOKEN and is set as a secret environment variable
+# in https://travis-ci.com/MDAnalysis/mdanalysis/settings
 #
 # Additional environment variables set in .travis.yml
 #  GH_REPOSITORY     repo to full from and push to
