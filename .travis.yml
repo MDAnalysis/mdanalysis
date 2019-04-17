@@ -12,7 +12,7 @@ os:
 
 env:
   global:
-    - secure: "f8EMSWeYC38elhpB4B/ddxlklEvQoycaxnt90Xw2tH/+ThdP1qteQ2vdgNFy1KL7Am/xnbrRhavI5K+ayfxJ93NoE2adaJ9f9aljXK+Oeu+buv5MVo2E2HhN9mX9opSSxiqGmnHIVYcdLP+1soIsDD78SGL7hB/u5nQ1aTzkbaM="
+    - secure: "VJ8cMKXuVe7e6vlBeUkd8j6wUbxYF0Yja6CHn0tmpzVGm3CCBXxoZcgvgtfyJTjf+2nqKIjsIy4FdYIkotXYaDwAX5XHHHWS/++7917pddJ2nZkBnBI069c2gLL6vU7E7jbGUzmKywsA73Of44pVsYgtGneK0F7/guLawpWBOOpLsui+pL2X4jYXZL4WHjTPGTphUN4uhQIkqKkuu9ZSR6uodzZDjzkH+q0FT5RLqmgVttnCD9ZmS2ppQsI9f0jZUd8V0M4NGaTHd439uj1UpMMriSJEzcq9DsKZEncjoJZGqfnXPUG9j5Z+jZ8TyxClma93HxeXbXa8A4B6V0wwNA2VG3ZCCeSQon2iNVl8YNZLPaMQleeoQ+uT6D4z26fHVGzk4knMeTROCfHoZo2T8as5EeFDvcbXGva82BnF+aCFxj/d9f1VC3too7bsY+gBBUu/oxVizDWDEby+2Iz2EzUGG3YltF0MjaLrFQ5ggox4vZVVgmlJo8KT6zonTNl8EdKwIzUDh1ZrpiNv3yMgt030heTFL6EJ30xRQJZkwwklJBPgDuARz2FxyKk+hO8IR7AuGLICwP1IpUASXaKeSD1K09qUnmB8W8RO5YhnLu7ABr6oghU9t63r1V0jLTCvYbO4SQIJ2muNsTay/rKo5QtzklPka/5Kud6KyIrsKb4="
     - GH_DOC_BRANCH=develop
     - GH_REPOSITORY=github.com/MDAnalysis/mdanalysis.git
     - GIT_CI_USER=TravisCI
