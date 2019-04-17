@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
@@ -95,13 +96,13 @@ the <code class="docutils literal notranslate"><span class="pre">has_*</span></c
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._pos">
 <code class="descname">_pos</code><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>coordinates of the atoms as a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite></p>
+<dd><p>coordinates of the atoms as a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._velocities">
 <code class="descname">_velocities</code><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
-<dd><p>velocities of the atoms as a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
+<dd><p>velocities of the atoms as a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
 only available if the trajectory contains velocities or if the
 <em>velocities</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword has been supplied.</p>
 </dd></dl>
@@ -109,7 +110,7 @@ only available if the trajectory contains velocities or if the
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._forces">
 <code class="descname">_forces</code><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._forces" title="Permalink to this definition">¶</a></dt>
-<dd><p>forces of the atoms as a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
+<dd><p>forces of the atoms as a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.16)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
 only available if the trajectory contains forces or if the
 <em>forces</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword has been supplied.</p>
 </dd></dl>
@@ -149,7 +150,7 @@ the trajectory, then <code class="xref py py-attr docutils literal notranslate">
 <li>only trajectories with time in ps and lengths in Angstroem are processed</li>
 <li>scale_factors are not supported (and not checked)</li>
 </ul>
-<p>The NCDF reader uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> and therefore <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code> must
+<p>The NCDF reader uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> and therefore <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code> must
 be installed. It supports the <em>mmap</em> keyword argument (when reading):
 <code class="docutils literal notranslate"><span class="pre">mmap=True</span></code> is memory efficient and directly maps the trajectory on disk
 to memory (using the <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a>); <code class="docutils literal notranslate"><span class="pre">mmap=False</span></code> may consume large
@@ -169,7 +170,7 @@ might be faster. The default is <code class="docutils literal notranslate"><span
 kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other Readers.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.17.0: </span>Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> and supports the <em>mmap</em> kwarg.</p>
+<p><span class="versionmodified">Changed in version 0.17.0: </span>Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> and supports the <em>mmap</em> kwarg.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader.Writer">
@@ -204,7 +205,7 @@ kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other R
 <dd><p>Close trajectory; any further access will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The underlying <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> module may open netcdf
+<p class="last">The underlying <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> module may open netcdf
 files with <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a> if <code class="docutils literal notranslate"><span class="pre">mmap=True</span></code> was
 set. Hence <em>any</em> reference to an array <em>must</em> be removed
 before the file can be closed.</p>
@@ -264,13 +265,13 @@ selects the value of <code class="xref py py-data docutils literal notranslate">
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>MDAnalysis uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> to access AMBER files, which are in
-netcdf 3 format. Although <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> is very fast at reading
+<p>MDAnalysis uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> to access AMBER files, which are in
+netcdf 3 format. Although <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> is very fast at reading
 these files, it is <em>very</em> slow when writing, and it becomes slower the
 longer the files are. On the other hand, the <a class="reference external" href="https://unidata.github.io/netcdf4-python/">netCDF4</a> package (which
 requires the compiled netcdf library to be installed) is fast at writing
 but slow at reading. Therefore, we try to use <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> for writing if
-available but otherwise fall back to the slower <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a>.</p>
+available but otherwise fall back to the slower <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a>.</p>
 <p><strong>AMBER users</strong> might have a hard time getting netCDF4 to work with a
 conda-based installation (as discussed in <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/506#issuecomment-225081416">Issue #506</a>) because of the way
 that AMBER itself handles netcdf: When the AMBER environment is loaded, the
@@ -308,7 +309,7 @@ environment before importing MDAnalysis.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.17.0: </span>Use fast <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> for writing but fall back to slow
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> if <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> is not available.</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#module-scipy.io.netcdf" title="(in SciPy v1.2.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code></a> if <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> is not available.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFWriter.close">
@@ -539,10 +540,10 @@ kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other R
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

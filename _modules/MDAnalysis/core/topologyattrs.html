@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
@@ -814,23 +815,27 @@
 <span class="sd">        Computes the center of mass of :class:`Atoms&lt;Atom&gt;` in the group.</span>
 <span class="sd">        Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or</span>
 <span class="sd">        fragment can be obtained by setting the `compound` parameter</span>
-<span class="sd">        accordingly.</span>
+<span class="sd">        accordingly. If the masses of a compound sum up to zero, the</span>
+<span class="sd">        center of mass coordinates of that compound will be ``nan`` (not a</span>
+<span class="sd">        number).</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        pbc : bool, optional</span>
-<span class="sd">            If ``True`` and `compound` is &#39;group&#39;, move all atoms to the primary</span>
-<span class="sd">            unit cell before calculation.</span>
-<span class="sd">            If ``True`` and `compound` is &#39;segments&#39; or &#39;residues&#39;, the centers</span>
-<span class="sd">            of mass of each compound will be calculated without moving any</span>
-<span class="sd">            atoms to keep the compounds intact. Instead, the resulting</span>
+<span class="sd">            If ``True`` and `compound` is ``&#39;group&#39;``, move all atoms to the</span>
+<span class="sd">            primary unit cell before calculation.</span>
+<span class="sd">            If ``True`` and `compound` is ``&#39;segments&#39;`` or ``&#39;residues&#39;``, the</span>
+<span class="sd">            centers of mass of each compound will be calculated without moving</span>
+<span class="sd">            any atoms to keep the compounds intact. Instead, the resulting</span>
 <span class="sd">            center-of-mass position vectors will be moved to the primary unit</span>
 <span class="sd">            cell after calculation.</span>
-<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, &#39;fragments&#39;}, optional</span>
-<span class="sd">            If &#39;group&#39;, the center of mass of all atoms in the atomgroup will</span>
-<span class="sd">            be returned as a single position vector. Else, the centers of mass</span>
-<span class="sd">            of each :class:`Segment`, :class:`Residue`, molecule, or fragment</span>
-<span class="sd">            will be returned as an array of position vectors, i.e. a 2d array.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, &#39;fragments&#39;},\</span>
+<span class="sd">                   optional</span>
+<span class="sd">            If ``&#39;group&#39;``, the center of mass of all atoms in the group will</span>
+<span class="sd">            be returned as a single position vector. Otherwise, the centers of</span>
+<span class="sd">            mass of each :class:`Segment`, :class:`Residue`, molecule, or</span>
+<span class="sd">            fragment will be returned as an array of position vectors, i.e. a 2d</span>
+<span class="sd">            array.</span>
 <span class="sd">            Note that, in any case, *only* the positions of :class:`Atoms&lt;Atom&gt;`</span>
 <span class="sd">            *belonging to the group* will be taken into account.</span>
 
@@ -838,11 +843,11 @@
 <span class="sd">        -------</span>
 <span class="sd">        center : numpy.ndarray</span>
 <span class="sd">            Position vector(s) of the center(s) of mass of the group.</span>
-<span class="sd">            If `compound` was set to &#39;group&#39;, the output will be a single</span>
+<span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
 <span class="sd">            position vector.</span>
-<span class="sd">            If `compound` was set to &#39;segments&#39; or &#39;residues&#39;, the output will</span>
-<span class="sd">            be a 2d array of shape ``(n, 3)`` where ``n`` is the number</span>
-<span class="sd">            compounds.</span>
+<span class="sd">            If `compound` was set to ``&#39;segments&#39;`` or ``&#39;residues&#39;``, the</span>
+<span class="sd">            output will be a 2d coordinate array of shape ``(n, 3)`` where ``n``</span>
+<span class="sd">            is the number of compounds.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -864,11 +869,37 @@
         <span class="p">(</span><span class="s1">&#39;center_of_mass&#39;</span><span class="p">,</span> <span class="n">center_of_mass</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Masses.total_mass"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.total_mass">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
-    <span class="k">def</span> <span class="nf">total_mass</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Total mass of the Group.</span>
+    <span class="k">def</span> <span class="nf">total_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Total mass of (compounds of) the group.</span>
+<span class="sd">        </span>
+<span class="sd">        Computes the total mass of :class:`Atoms&lt;Atom&gt;` in the group.</span>
+<span class="sd">        Total masses per :class:`Residue`, :class:`Segment`, molecule, or</span>
+<span class="sd">        fragment can be obtained by setting the `compound` parameter</span>
+<span class="sd">        accordingly.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, &#39;fragments&#39;},\</span>
+<span class="sd">                   optional</span>
+<span class="sd">            If ``&#39;group&#39;``, the total mass of all atoms in the group will be</span>
+<span class="sd">            returned as a single value. Otherwise, the total masses per</span>
+<span class="sd">            :class:`Segment`, :class:`Residue`, molecule, or fragment will be</span>
+<span class="sd">            returned as a 1d array.</span>
+<span class="sd">            Note that, in any case, *only* the masses of :class:`Atoms&lt;Atom&gt;`</span>
+<span class="sd">            *belonging to the group* will be taken into account.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or numpy.ndarray</span>
+<span class="sd">            Total mass of (compounds of) the group.</span>
+<span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
+<span class="sd">            value. Otherwise, the output will be a 1d array of shape ``(n,)``</span>
+<span class="sd">            where ``n`` is the number of compounds.</span>
+
+
+<span class="sd">        .. versionchanged:: 0.20.0 Added `compound` parameter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s2">&quot;masses&quot;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span></div>
 
     <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;total_mass&#39;</span><span class="p">,</span> <span class="n">total_mass</span><span class="p">))</span>
@@ -1197,11 +1228,37 @@
         <span class="k">return</span> <span class="n">charges</span></div>
 
 <div class="viewcode-block" id="Charges.total_charge"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.total_charge">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
-    <span class="k">def</span> <span class="nf">total_charge</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Total charge of the Group.</span>
+    <span class="k">def</span> <span class="nf">total_charge</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Total charge of (compounds of) the group.</span>
+<span class="sd">        </span>
+<span class="sd">        Computes the total charge of :class:`Atoms&lt;Atom&gt;` in the group.</span>
+<span class="sd">        Total charges per :class:`Residue`, :class:`Segment`, molecule, or</span>
+<span class="sd">        fragment can be obtained by setting the `compound` parameter</span>
+<span class="sd">        accordingly.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, &#39;fragments&#39;},\</span>
+<span class="sd">                   optional</span>
+<span class="sd">            If &#39;group&#39;, the total charge of all atoms in the group will</span>
+<span class="sd">            be returned as a single value. Otherwise, the total charges per</span>
+<span class="sd">            :class:`Segment`, :class:`Residue`, molecule, or fragment</span>
+<span class="sd">            will be returned as a 1d array.</span>
+<span class="sd">            Note that, in any case, *only* the charges of :class:`Atoms&lt;Atom&gt;`</span>
+<span class="sd">            *belonging to the group* will be taken into account.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or numpy.ndarray</span>
+<span class="sd">            Total charge of (compounds of) the group.</span>
+<span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
+<span class="sd">            value. Otherwise, the output will be a 1d array of shape ``(n,)``</span>
+<span class="sd">            where ``n`` is the number of compounds.</span>
+
+
+<span class="sd">        .. versionchanged:: 0.20.0 Added `compound` parameter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">charges</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s2">&quot;charges&quot;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span></div>
 
     <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;total_charge&#39;</span><span class="p">,</span> <span class="n">total_charge</span><span class="p">))</span></div>
@@ -1496,7 +1553,7 @@
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;molnums&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;molnum&#39;</span>
     <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span></div>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span></div>
 
 <span class="c1"># segment attributes</span>
 
@@ -1939,10 +1996,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

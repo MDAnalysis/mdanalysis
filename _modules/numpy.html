@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
@@ -50,10 +51,10 @@
 <span class="sd">----------------------------</span>
 <span class="sd">Documentation is available in two forms: docstrings provided</span>
 <span class="sd">with the code, and a loose standing reference guide, available from</span>
-<span class="sd">`the NumPy homepage &lt;http://www.scipy.org&gt;`_.</span>
+<span class="sd">`the NumPy homepage &lt;https://www.scipy.org&gt;`_.</span>
 
 <span class="sd">We recommend exploring the docstrings using</span>
-<span class="sd">`IPython &lt;http://ipython.scipy.org&gt;`_, an advanced Python shell with</span>
+<span class="sd">`IPython &lt;https://ipython.org&gt;`_, an advanced Python shell with</span>
 <span class="sd">TAB-completion and introspection capabilities.  See below for further</span>
 <span class="sd">instructions.</span>
 
@@ -172,18 +173,8 @@
     <span class="kn">from</span> <span class="nn">.version</span> <span class="k">import</span> <span class="n">git_revision</span> <span class="k">as</span> <span class="n">__git_revision__</span>
     <span class="kn">from</span> <span class="nn">.version</span> <span class="k">import</span> <span class="n">version</span> <span class="k">as</span> <span class="n">__version__</span>
 
-    <span class="kn">from</span> <span class="nn">._import_tools</span> <span class="k">import</span> <span class="n">PackageLoader</span>
-
-    <span class="k">def</span> <span class="nf">pkgload</span><span class="p">(</span><span class="o">*</span><span class="n">packages</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
-        <span class="n">loader</span> <span class="o">=</span> <span class="n">PackageLoader</span><span class="p">(</span><span class="n">infunc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">loader</span><span class="p">(</span><span class="o">*</span><span class="n">packages</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
-
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">add_newdocs</span>
-    <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;add_newdocs&#39;</span><span class="p">,</span>
-               <span class="s1">&#39;ModuleDeprecationWarning&#39;</span><span class="p">,</span>
+    <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ModuleDeprecationWarning&#39;</span><span class="p">,</span>
                <span class="s1">&#39;VisibleDeprecationWarning&#39;</span><span class="p">]</span>
-
-    <span class="n">pkgload</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">PackageLoader</span><span class="o">.</span><span class="fm">__call__</span><span class="o">.</span><span class="vm">__doc__</span>
 
     <span class="c1"># Allow distributors to run custom init code</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">_distributor_init</span>
@@ -212,9 +203,10 @@
         <span class="kn">from</span> <span class="nn">__builtin__</span> <span class="k">import</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">unicode</span><span class="p">,</span> <span class="nb">str</span>
 
     <span class="kn">from</span> <span class="nn">.core</span> <span class="k">import</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">abs</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="nb">min</span>
+    <span class="c1"># now that numpy modules are imported, can initialize limits</span>
+    <span class="n">core</span><span class="o">.</span><span class="n">getlimits</span><span class="o">.</span><span class="n">_register_known_types</span><span class="p">()</span>
 
-    <span class="n">__all__</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;__version__&#39;</span><span class="p">,</span> <span class="s1">&#39;pkgload&#39;</span><span class="p">,</span> <span class="s1">&#39;PackageLoader&#39;</span><span class="p">,</span>
-               <span class="s1">&#39;show_config&#39;</span><span class="p">])</span>
+    <span class="n">__all__</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;__version__&#39;</span><span class="p">,</span> <span class="s1">&#39;show_config&#39;</span><span class="p">])</span>
     <span class="n">__all__</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">__all__</span><span class="p">)</span>
     <span class="n">__all__</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_mat</span><span class="o">.</span><span class="n">__all__</span><span class="p">)</span>
     <span class="n">__all__</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="n">__all__</span><span class="p">)</span>
@@ -235,7 +227,7 @@
     <span class="kn">from</span> <span class="nn">.testing</span> <span class="k">import</span> <span class="n">Tester</span>
 
     <span class="c1"># Pytest testing</span>
-    <span class="kn">from</span> <span class="nn">numpy.testing._private.pytesttester</span> <span class="k">import</span> <span class="n">PytestTester</span>
+    <span class="kn">from</span> <span class="nn">numpy._pytesttester</span> <span class="k">import</span> <span class="n">PytestTester</span>
     <span class="n">test</span> <span class="o">=</span> <span class="n">PytestTester</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">PytestTester</span>
 
@@ -258,7 +250,9 @@
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The current Numpy installation (</span><span class="si">{!r}</span><span class="s2">) fails to &quot;</span>
                    <span class="s2">&quot;pass simple sanity checks. This can be caused for example &quot;</span>
-                   <span class="s2">&quot;by incorrect BLAS library being linked in.&quot;</span><span class="p">)</span>
+                   <span class="s2">&quot;by incorrect BLAS library being linked in, or by mixing &quot;</span>
+                   <span class="s2">&quot;package managers (pip, conda, apt, ...). Search closed &quot;</span>
+                   <span class="s2">&quot;numpy issues for similar problems.&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 
     <span class="n">_sanity_check</span><span class="p">()</span>
@@ -338,10 +332,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

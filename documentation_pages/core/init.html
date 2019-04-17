@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
@@ -83,51 +84,21 @@ raise a <a class="reference external" href="https://docs.python.org/3/library/ex
 <dl class="class">
 <dt id="MDAnalysis.core.__init__.flagsDocs">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.__init__.</code><code class="descname">flagsDocs</code><a class="reference internal" href="../../_modules/MDAnalysis/core/__init__.html#flagsDocs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.__init__.flagsDocs" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>speed_unit</strong> = <em>‘Angstrom/ps’</em></p>
+<dd><p><strong>use_periodic_selections</strong> = <em>True</em></p>
 <blockquote>
-<div><p>Base unit for speed (in particular velocities in trajectories)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;speed_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+<div><p>Determines if distance selections (AROUND, POINT) respect periodicity.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_periodic_selections&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
-</div></blockquote>
-<p><strong>force_unit</strong> = <em>‘kJ/(mol*Angstrom)’</em></p>
-<blockquote>
-<div><p>Base unit for forces (in particular forces in trajectories)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;force_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-</div></blockquote>
-<p><strong>use_pbc</strong> = <em>False</em></p>
-<blockquote>
-<div><p>Choose whether to consider periodic boundary conditions when
-performing many <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> methods.
-This is set to <code class="docutils literal notranslate"><span class="pre">False</span></code> by default but can be enabled with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_pbc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-</pre></div>
-</div>
-<p>Values for flag:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">True</span></code> - Move all atoms within the primary unit cell before calculation</li>
-<li><code class="docutils literal notranslate"><span class="pre">False</span></code> - Use coordinates as supplied</li>
+<dl class="docutils">
+<dt>Values of flag:</dt>
+<dd><ul class="first last simple">
+<li>True     - periodicity is taken into account if supported</li>
+<li>False    - periodicity is ignored</li>
 </ul>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Changing this to <code class="docutils literal notranslate"><span class="pre">True</span></code> changes the default behaviour of
-commonly used <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> methods
-such as <code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.center_of_mass()</span></code>
-and <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="MDAnalysis.core.groups.AtomGroup.center_of_geometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.center_of_geometry()</span></code></a>!</p>
-</div>
-</div></blockquote>
-<p><strong>length_unit</strong> = <em>‘Angstrom’</em></p>
-<blockquote>
-<div><p>Base unit for lengths (in particular coordinates in trajectories)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;length_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Do not change, only Angstrom fully supported.</p>
-</div>
+</dd>
+</dl>
+<p>The MDAnalysis preset of this flag is True.</p>
 </div></blockquote>
 <p><strong>use_KDTree_routines</strong> = <em>‘fast’</em></p>
 <blockquote>
@@ -167,21 +138,16 @@ presented as read from the trajectories.</p>
 <p class="last">The conversion of lengths also affects conversion of velocities.</p>
 </div>
 </div></blockquote>
-<p><strong>use_periodic_selections</strong> = <em>True</em></p>
+<p><strong>length_unit</strong> = <em>‘Angstrom’</em></p>
 <blockquote>
-<div><p>Determines if distance selections (AROUND, POINT) respect periodicity.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_periodic_selections&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+<div><p>Base unit for lengths (in particular coordinates in trajectories)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;length_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>Values of flag:</dt>
-<dd><ul class="first last simple">
-<li>True     - periodicity is taken into account if supported</li>
-<li>False    - periodicity is ignored</li>
-</ul>
-</dd>
-</dl>
-<p>The MDAnalysis preset of this flag is True.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Do not change, only Angstrom fully supported.</p>
+</div>
 </div></blockquote>
 <p><strong>time_unit</strong> = <em>‘ps’</em></p>
 <blockquote>
@@ -190,11 +156,46 @@ presented as read from the trajectories.</p>
 </pre></div>
 </div>
 </div></blockquote>
+<p><strong>speed_unit</strong> = <em>‘Angstrom/ps’</em></p>
+<blockquote>
+<div><p>Base unit for speed (in particular velocities in trajectories)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;speed_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>force_unit</strong> = <em>‘kJ/(mol*Angstrom)’</em></p>
+<blockquote>
+<div><p>Base unit for forces (in particular forces in trajectories)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;force_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+</div></blockquote>
 <p><strong>charge_unit</strong> = <em>‘e’</em></p>
 <blockquote>
 <div><p>Base unit for charge</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;charge_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
+</div>
+</div></blockquote>
+<p><strong>use_pbc</strong> = <em>False</em></p>
+<blockquote>
+<div><p>Choose whether to consider periodic boundary conditions when
+performing many <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> methods.
+This is set to <code class="docutils literal notranslate"><span class="pre">False</span></code> by default but can be enabled with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_pbc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>Values for flag:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">True</span></code> - Move all atoms within the primary unit cell before calculation</li>
+<li><code class="docutils literal notranslate"><span class="pre">False</span></code> - Use coordinates as supplied</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Changing this to <code class="docutils literal notranslate"><span class="pre">True</span></code> changes the default behaviour of
+commonly used <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> methods
+such as <code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.center_of_mass()</span></code>
+and <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="MDAnalysis.core.groups.AtomGroup.center_of_geometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.center_of_geometry()</span></code></a>!</p>
 </div>
 </div></blockquote>
 </dd></dl>
@@ -248,8 +249,10 @@ for more details.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.__init__.Flags.setdefault">
-<code class="descname">setdefault</code><span class="sig-paren">(</span><em>k</em><span class="optional">[</span>, <em>d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; D.get(k,d), also set D[k]=d if k not in D<a class="reference internal" href="../../_modules/MDAnalysis/core/__init__.html#Flags.setdefault"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.__init__.Flags.setdefault" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">setdefault</code><span class="sig-paren">(</span><em>k</em>, <em>d=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/__init__.html#Flags.setdefault"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.__init__.Flags.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert key with a value of default if key is not in the dictionary.</p>
+<p>Return the value for key if key is in the dictionary, else default.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.__init__.Flags.update">
@@ -404,10 +407,10 @@ all values are directly set.</li>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

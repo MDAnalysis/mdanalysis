@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
@@ -69,6 +70,7 @@
 
 <span class="sd">.. autodata:: atomelements</span>
 <span class="sd">.. autodata:: masses</span>
+<span class="sd">.. autodata:: vdwradii</span>
 
 <span class="sd">The original raw data are stored as multi-line strings that are</span>
 <span class="sd">translated into dictionaries with :func:`kv2dict`. In the future,</span>
@@ -81,6 +83,7 @@
 
 <span class="sd">.. autodata:: TABLE_ATOMELEMENTS</span>
 <span class="sd">.. autodata:: TABLE_MASSES</span>
+<span class="sd">.. autodata:: TABLE_VDWRADII</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">._elements</span> <span class="k">import</span> <span class="n">NUMBER_TO_ELEMENT</span>
@@ -335,20 +338,79 @@
 <span class="c1">#: :data:`atomelements`.</span>
 <span class="n">masses</span> <span class="o">=</span> <span class="n">kv2dict</span><span class="p">(</span><span class="n">TABLE_MASSES</span><span class="p">,</span> <span class="n">convertor</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
-<span class="c1">#: Van der Waals radii (taken from GROMACS_, ``/usr/share/gromacs/top/vdwradii.dat``)</span>
-<span class="c1">#: and converted to ångström.</span>
-<span class="c1">#: .. _GROMACS: http://www.gromacs.org</span>
-<span class="c1">#:</span>
+<span class="c1">#: Plain-text table with vdw radii.</span>
+<span class="n">TABLE_VDWRADII</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># Van der Waals radii taken from</span>
+<span class="s2"># [1] Bondi, A. (1964). &quot;Van der Waals Volumes and Radii&quot;.</span>
+<span class="s2">#     J. Phys. Chem. 68 (3): 441-451. doi:10.1021/j100785a001.</span>
+<span class="s2"># [2] Rowland and Taylor (1996). &quot;Intermolecular Nonbonded Contact Distances in Organic Crystal Structures:</span>
+<span class="s2">#                                 Comparison with Distances Expected from van der Waals Radii&quot;.</span>
+<span class="s2">#     J. Phys. Chem., 1996, 100 (18), 7384.7391. doi:10.1021/jp953141+.</span>
+<span class="s2"># [3] Mantina, et al. (2009). &quot;Consistent van der Waals Radii for the Whole Main Group&quot;.</span>
+<span class="s2">#     J. Phys. Chem. A, 2009, 113 (19), 5806-5812. doi:10.1021/jp8111556.</span>
+<span class="s2">#------------ -----------</span>
+<span class="s2"># atomtype    r_vdw</span>
+<span class="s2">#------------ -----------</span>
+<span class="s2">H    1.10</span>
+<span class="s2">HE   1.40</span>
+<span class="s2">LI   1.82</span>
+<span class="s2">BE   1.53</span>
+<span class="s2">B    1.92</span>
+<span class="s2">C    1.70</span>
+<span class="s2">N    1.55</span>
+<span class="s2">O    1.52</span>
+<span class="s2">F    1.47</span>
+<span class="s2">NE   1.54</span>
+<span class="s2">NA   2.27</span>
+<span class="s2">MG   1.73</span>
+<span class="s2">AL   1.84</span>
+<span class="s2">SI   2.10</span>
+<span class="s2">P    1.80</span>
+<span class="s2">S    1.80</span>
+<span class="s2">CL   1.75</span>
+<span class="s2">AR   1.88</span>
+<span class="s2">K    2.75</span>
+<span class="s2">CA   2.31</span>
+<span class="s2">NI   1.63</span>
+<span class="s2">CU   1.40</span>
+<span class="s2">ZN   1.39</span>
+<span class="s2">GA   1.87</span>
+<span class="s2">GE   2.11</span>
+<span class="s2">AA   1.85</span>
+<span class="s2">SE   1.90</span>
+<span class="s2">BR   1.85</span>
+<span class="s2">KR   2.02</span>
+<span class="s2">RR   3.03</span>
+<span class="s2">SR   2.49</span>
+<span class="s2">PD   1.63</span>
+<span class="s2">AG   1.72</span>
+<span class="s2">CD   1.58</span>
+<span class="s2">IN   1.93</span>
+<span class="s2">SN   2.17</span>
+<span class="s2">SB   2.06</span>
+<span class="s2">TE   2.06</span>
+<span class="s2">I    1.98</span>
+<span class="s2">XE   2.16</span>
+<span class="s2">CS   3.43</span>
+<span class="s2">BA   2.68</span>
+<span class="s2">PT   1.75</span>
+<span class="s2">AU   1.66</span>
+<span class="s2">HH   1.55</span>
+<span class="s2">TL   1.96</span>
+<span class="s2">PB   2.02</span>
+<span class="s2">BI   2.07</span>
+<span class="s2">PO   1.97</span>
+<span class="s2">AT   2.02</span>
+<span class="s2">RN   2.20</span>
+<span class="s2">FR   3.48</span>
+<span class="s2">RA   2.83</span>
+<span class="s2">U    1.86</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1">#: Dictionary table with vdw radii, indexed by the element from</span>
+<span class="c1">#: :data:`atomelements`.</span>
 <span class="c1">#: .. SeeAlso:: :func:`MDAnalysis.topology.core.guess_bonds`</span>
-<span class="n">vdwradii</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;C&quot;</span><span class="p">:</span>     <span class="mf">1.5</span><span class="p">,</span>
-    <span class="s2">&quot;F&quot;</span><span class="p">:</span>     <span class="mf">1.2</span><span class="p">,</span>
-    <span class="s2">&quot;H&quot;</span><span class="p">:</span>     <span class="mf">0.4</span><span class="p">,</span>
-    <span class="s2">&quot;N&quot;</span><span class="p">:</span>     <span class="mf">1.10</span><span class="p">,</span>
-    <span class="s2">&quot;O&quot;</span><span class="p">:</span>     <span class="mf">1.05</span><span class="p">,</span>
-    <span class="s2">&quot;S&quot;</span><span class="p">:</span>     <span class="mf">1.6</span><span class="p">,</span>
-    <span class="s2">&quot;P&quot;</span><span class="p">:</span>     <span class="mf">1.6</span><span class="p">,</span>
-<span class="p">}</span>
+<span class="n">vdwradii</span> <span class="o">=</span> <span class="n">kv2dict</span><span class="p">(</span><span class="n">TABLE_VDWRADII</span><span class="p">,</span> <span class="n">convertor</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -424,10 +486,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

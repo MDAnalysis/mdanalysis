@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
@@ -253,7 +254,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span><span class="p">,</span> <span class="n">cPickle</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span><span class="p">,</span> <span class="n">cPickle</span><span class="p">,</span> <span class="nb">zip</span>
 <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">string_types</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -1392,10 +1393,10 @@
 
         <span class="c1"># Set default directory names for storing topology/reference structures,</span>
         <span class="c1"># fitted trajectories, paths, distance matrices, and plots</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fitted_trajs&#39;</span> <span class="p">:</span> <span class="s1">&#39;/fitted_trajs&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;paths&#39;</span> <span class="p">:</span> <span class="s1">&#39;/paths&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;distance_matrices&#39;</span> <span class="p">:</span> <span class="s1">&#39;/distance_matrices&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;plots&#39;</span> <span class="p">:</span> <span class="s1">&#39;/plots&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fitted_trajs&#39;</span> <span class="p">:</span> <span class="s1">&#39;fitted_trajs&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;paths&#39;</span> <span class="p">:</span> <span class="s1">&#39;paths&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;distance_matrices&#39;</span> <span class="p">:</span> <span class="s1">&#39;distance_matrices&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;plots&#39;</span> <span class="p">:</span> <span class="s1">&#39;plots&#39;</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">full_dir_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">)</span>
@@ -1504,7 +1505,7 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universes</span><span class="p">):</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">u_reference</span><span class="p">,</span> <span class="n">ref_select</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_select</span><span class="p">,</span>
                      <span class="n">path_select</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path_select</span><span class="p">,</span> <span class="n">ref_frame</span><span class="o">=</span><span class="n">ref_frame</span><span class="p">)</span>
-            <span class="n">trj_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;fitted_trajs&#39;</span><span class="p">]</span>
+            <span class="n">trj_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;fitted_trajs&#39;</span><span class="p">])</span>
             <span class="n">postfix</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}{1}{2:03n}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">infix</span><span class="p">,</span> <span class="s1">&#39;_psa&#39;</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">top_name</span><span class="p">,</span> <span class="n">fit_trj_name</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">align</span><span class="o">=</span><span class="n">align</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
                                            <span class="n">postfix</span><span class="o">=</span><span class="n">postfix</span><span class="p">,</span>
@@ -1674,7 +1675,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="ow">or</span> <span class="s1">&#39;psa_distances&#39;</span>
-        <span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;distance_matrices&#39;</span><span class="p">]</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;distance_matrices&#39;</span><span class="p">])</span>
         <span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Distance matrix has not been calculated yet&quot;</span><span class="p">)</span>
@@ -1700,9 +1701,13 @@
 <span class="sd">        -------</span>
 <span class="sd">        filename : str</span>
 
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        load</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="ow">or</span> <span class="s1">&#39;path_psa&#39;</span>
-        <span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;paths&#39;</span><span class="p">]</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;paths&#39;</span><span class="p">])</span>
         <span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Paths have not been calculated yet&quot;</span><span class="p">)</span>
@@ -1721,6 +1726,13 @@
 <div class="viewcode-block" id="PSAnalysis.load"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load fitted paths specified by &#39;psa_path-names.pkl&#39; in</span>
 <span class="sd">        :attr:`PSAnalysis.targetdir`.</span>
+
+<span class="sd">        All filenames are determined by :class:`PSAnalysis`.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        save_paths</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paths_pkl</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Fitted trajectories cannot be loaded; save file&quot;</span> <span class="o">+</span>
@@ -1729,7 +1741,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span> <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_names</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels_pkl</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels_pkl</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loaded paths from &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths_pkl</span><span class="p">)</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loaded paths from </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths_pkl</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PSAnalysis.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="s1">&#39;ward&#39;</span><span class="p">,</span> <span class="n">count_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1835,7 +1847,7 @@
             <span class="n">tic</span><span class="o">.</span><span class="n">tick1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">tick2On</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">]</span>
+            <span class="n">head</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">])</span>
             <span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
             <span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 
@@ -1946,7 +1958,7 @@
             <span class="n">tic</span><span class="o">.</span><span class="n">tick1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">tick2On</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">]</span>
+            <span class="n">head</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">])</span>
             <span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
             <span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 
@@ -2050,7 +2062,7 @@
         <span class="n">tight_layout</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">]</span>
+            <span class="n">head</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">])</span>
             <span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
             <span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 
@@ -2388,10 +2400,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

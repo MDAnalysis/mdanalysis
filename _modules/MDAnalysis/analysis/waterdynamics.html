@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
@@ -315,10 +316,10 @@
 <span class="sd">SurvivalProbability</span>
 <span class="sd">~~~~~~~~~~~~~~~~~~~</span>
 
-<span class="sd">Analyzing survival probability (SP) :class:`SurvivalProbability` for water</span>
-<span class="sd">molecules. In this case we are analyzing how long water molecules remain in a</span>
-<span class="sd">sphere of radius 12.3 centered in the geometrical center of resid 42, 26, 34</span>
-<span class="sd">and 80.  A slow decay of SP means a long permanence time of water molecules in</span>
+<span class="sd">Analyzing survival probability (SP) :class:`SurvivalProbability` of molecules.</span>
+<span class="sd">In this case we are analyzing how long water molecules remain in a</span>
+<span class="sd">sphere of radius 12.3 centered in the geometrical center of resid 42 and 26.</span>
+<span class="sd">A slow decay of SP means a long permanence time of water molecules in</span>
 <span class="sd">the zone, on the other hand, a fast decay means a short permanence time::</span>
 
 <span class="sd">  import MDAnalysis</span>
@@ -326,7 +327,7 @@
 <span class="sd">  import matplotlib.pyplot as plt</span>
 
 <span class="sd">  universe = MDAnalysis.Universe(pdb, trajectory)</span>
-<span class="sd">  selection = &quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26 or resid 34 or resid 80) &quot;</span>
+<span class="sd">  selection = &quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26) &quot;</span>
 <span class="sd">  sp = SP(universe, selection, verbose=True)</span>
 <span class="sd">  sp.run(start=0, stop=100, tau_max=20)</span>
 <span class="sd">  tau_timeseries = sp.tau_timeseries</span>
@@ -336,6 +337,10 @@
 <span class="sd">  for tau, sp in zip(tau_timeseries, sp_timeseries):</span>
 <span class="sd">        print(&quot;{time} {sp}&quot;.format(time=tau, sp=sp))</span>
 
+<span class="sd">  # SP is not calculated at tau=0, but if you would like to plot SP=1 at tau=0:</span>
+<span class="sd">  tau_timeseries.insert(0, 0)</span>
+<span class="sd">  sp_timeseries.insert(1, 0)</span>
+
 <span class="sd">  # plot</span>
 <span class="sd">  plt.xlabel(&#39;Time&#39;)</span>
 <span class="sd">  plt.ylabel(&#39;SP&#39;)</span>
@@ -343,6 +348,39 @@
 <span class="sd">  plt.plot(tau_timeseries, sp_timeseries)</span>
 <span class="sd">  plt.show()</span>
 
+<span class="sd">Another example applies to the situation where you work with many different &quot;residues&quot;.</span>
+<span class="sd">Here we calculate the SP of a potassium ion around each lipid in a membrane and</span>
+<span class="sd">average the results. In this example, if the SP analysis were run without treating each lipid</span>
+<span class="sd">separately, potassium ions may hop from one lipid to another and still be counted as remaining</span>
+<span class="sd">in the specified region. That is, the survival probability of the potassium ion around the</span>
+<span class="sd">entire membrane will be calculated.</span>
+
+<span class="sd">Note, for this example, it is advisable to use `Universe(in_memory=True)` to ensure that the</span>
+<span class="sd">simulation is not being reloaded into memory for each lipid::</span>
+
+<span class="sd">  import MDAnalysis as mda</span>
+<span class="sd">  from MDAnalysis.analysis.waterdynamics import SurvivalProbability as SP</span>
+<span class="sd">  import numpy as np</span>
+
+<span class="sd">  u = mda.Universe(&quot;md.gro&quot;, &quot;md100ns.xtc&quot;, in_memory=True)</span>
+<span class="sd">  lipids = u.select_atoms(&#39;resname LIPIDS&#39;)</span>
+<span class="sd">  joined_sp_timeseries = [[] for _ in range(20)]</span>
+<span class="sd">  for lipid in lipids.residues:</span>
+<span class="sd">      print(&quot;Lipid ID: %d&quot; % lipid.resid)</span>
+
+<span class="sd">      selection = &quot;resname POTASSIUM and around 3.5 (resid %d and name O13 O14) &quot; % lipid.resid</span>
+<span class="sd">      sp = SP(u, selection, verbose=True)</span>
+<span class="sd">      sp.run(tau_max=20)</span>
+
+<span class="sd">      # Raw SP points for each tau:</span>
+<span class="sd">      for sps, new_sps in zip(joined_sp_timeseries, sp.sp_timeseries_data):</span>
+<span class="sd">          sps.extend(new_sps)</span>
+
+<span class="sd">  # average all SP datapoints</span>
+<span class="sd">  sp_data = [np.mean(sp) for sp in joined_sp_timeseries]</span>
+
+<span class="sd">  for tau, sp in zip(range(1, tau_max + 1), sp_data):</span>
+<span class="sd">      print(&quot;{time} {sp}&quot;.format(time=tau, sp=sp))</span>
 
 <span class="sd">.. _Output:</span>
 
@@ -417,13 +455,13 @@
 <span class="sd">SurvivalProbability</span>
 <span class="sd">~~~~~~~~~~~~~~~~~~~</span>
 
-<span class="sd">Survival Probability (SP) computes two lists: a list of taus (:attr:`SurvivalProbability.tau_timeseries`) and a list of their corresponding mean survival</span>
-<span class="sd">probabilities (:attr:`SurvivalProbability.sp_timeseries`). Additionally, a list :attr:`SurvivalProbability.sp_timeseries_data` is provided which contains</span>
-<span class="sd">a list of SPs for each tau, which can be used to compute their distribution, etc.</span>
+<span class="sd">Survival Probability (SP) computes two lists: a list of taus (:attr:`SurvivalProbability.tau_timeseries`) and a list of</span>
+<span class="sd">the corresponding survival probabilities (:attr:`SurvivalProbability.sp_timeseries`).</span>
 
 <span class="sd">    results = [ tau1, tau2, ..., tau_n ], [ sp_tau1, sp_tau2, ..., sp_tau_n]</span>
 
-<span class="sd">Additionally, for each</span>
+<span class="sd">Additionally, a list :attr:`SurvivalProbability.sp_timeseries_data`, is provided which contains</span>
+<span class="sd">a list of all SPs calculated for each tau. This can be used to compute the distribution or time dependence of SP, etc.</span>
 
 <span class="sd">Classes</span>
 <span class="sd">--------</span>
@@ -1215,18 +1253,16 @@
 
 
 <div class="viewcode-block" id="SurvivalProbability"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability">[docs]</a><span class="k">class</span> <span class="nc">SurvivalProbability</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Survival probability analysis</span>
-
-<span class="sd">    Function to evaluate the Survival Probability (SP). The SP gives the</span>
-<span class="sd">    probability for a group of particles to remain in certain region. The SP is</span>
-<span class="sd">    given by:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.</span>
+<span class="sd">    The SP is given by:</span>
 
 <span class="sd">    .. math::</span>
 <span class="sd">        P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}</span>
 
 <span class="sd">    where :math:`T` is the maximum time of simulation, :math:`\tau` is the</span>
-<span class="sd">    timestep, :math:`N(t)` the number of particles at time t, and</span>
-<span class="sd">    :math:`N(t, t+\tau)` is the number of particles at every frame from t to `\tau`.</span>
+<span class="sd">    timestep, :math:`N(t)` the number of particles at time :math:`t`, and</span>
+<span class="sd">    :math:`N(t, t+\tau)` is the number of particles at every frame from :math:`t` to `\tau`.</span>
 
 
 <span class="sd">    Parameters</span>
@@ -1235,10 +1271,9 @@
 <span class="sd">      Universe object</span>
 <span class="sd">    selection : str</span>
 <span class="sd">      Selection string; any selection is allowed. With this selection you</span>
-<span class="sd">      define the region/zone where to analyze, e.g.: &quot;resname SOL and around 5 (resname LIPID)&quot;</span>
-<span class="sd">      and &quot;resname ION and around 10 (resid 20)&quot; (see `SP-examples`_ )</span>
-<span class="sd">    verbose : Boolean</span>
-<span class="sd">      If True, prints progress and comments to the console.</span>
+<span class="sd">      define the region/zone where to analyze, e.g.: &quot;resname SOL and around 5 (resid 10)&quot;. See `SP-examples`_.</span>
+<span class="sd">    verbose : Boolean, optional</span>
+<span class="sd">      When True, prints progress and comments to the console.</span>
 
 
 <span class="sd">    .. versionadded:: 0.11.0</span>
@@ -1270,27 +1305,89 @@
         <span class="k">elif</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SurvivalProbability.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_correct_intermittency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intermittency</span><span class="p">,</span> <span class="n">selected_ids</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Computes and returns the survival probability timeseries</span>
+<span class="sd">        Pre-process Consecutive Intermittency with a single pass over the data.</span>
+<span class="sd">        If an atom is absent for a number of frames equal or smaller</span>
+<span class="sd">        than the `intermittency`, then correct the data and remove the absence.</span>
+<span class="sd">        ie 7,A,A,7 with intermittency=2 will be replaced by 7,7,7,7, where A=absence</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        start : int</span>
+<span class="sd">        intermittency : int</span>
+<span class="sd">            the max gap allowed and to be corrected</span>
+<span class="sd">        selected_ids: list of ids</span>
+<span class="sd">            modifies the selecteded IDs in place by adding atoms which left for &lt;= `intermittency`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s1">&#39;Correcting the selected IDs for intermittancy (gaps). &#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">intermittency</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ids</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">selected_ids</span><span class="p">):</span>
+            <span class="c1"># initially update each frame as seen 0 ago (now)</span>
+            <span class="n">seen_frames_ago</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">intermittency</span> <span class="o">+</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">atomid</span> <span class="ow">in</span> <span class="n">seen_frames_ago</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="c1"># no more frames</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_ids</span><span class="p">):</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># if the atom is absent now</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">atomid</span> <span class="ow">in</span> <span class="n">selected_ids</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]:</span>
+                        <span class="c1"># increase its absence counter</span>
+                        <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># the atom is found</span>
+                    <span class="k">if</span> <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c1"># the atom was present in the last frame</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># it was absent more times than allowed</span>
+                    <span class="k">if</span> <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">intermittency</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># the atom was absent but returned (within &lt;= intermittency)</span>
+                    <span class="c1"># add it to the frames where it was absent.</span>
+                    <span class="c1"># Introduce the corrections.</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                        <span class="n">selected_ids</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="o">-</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">atomid</span><span class="p">)</span>
+
+                    <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<div class="viewcode-block" id="SurvivalProbability.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">residues</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes and returns the Survival Probability (SP) timeseries</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : int, optional</span>
 <span class="sd">            Zero-based index of the first frame to be analysed</span>
-<span class="sd">        stop : int</span>
+<span class="sd">        stop : int, optional</span>
 <span class="sd">            Zero-based index of the last frame to be analysed (inclusive)</span>
-<span class="sd">        step : int</span>
-<span class="sd">            Jump every `step`&#39;th frame</span>
-<span class="sd">        tau_max : int</span>
-<span class="sd">            Survival probability is calculated for the range :math:`1 &lt;= \tau &lt;= tau_max`</span>
-<span class="sd">        verbose : Boolean</span>
-<span class="sd">            Overwrite the constructor&#39;s verbosity</span>
+<span class="sd">        step : int, optional</span>
+<span class="sd">            Jump every `step`-th frame. This is compatible but independant of the taus used, and it is good to consider</span>
+<span class="sd">            using the  `step` equal to `tau_max` to remove the overlap.</span>
+<span class="sd">            Note that `step` and `tau_max` work consistently with intermittency.</span>
+<span class="sd">        tau_max : int, optional</span>
+<span class="sd">            Survival probability is calculated for the range 1 &lt;= `tau` &lt;= `tau_max`</span>
+<span class="sd">        residues : Boolean, optional</span>
+<span class="sd">            If true, the analysis will be carried out on the residues (.resids) rather than on atom (.ids).</span>
+<span class="sd">            A single atom is sufficient to classify the residue as within the distance.</span>
+<span class="sd">        intermittency : int, optional</span>
+<span class="sd">            The maximum number of consecutive frames for which an atom can leave but be counted as present if it returns</span>
+<span class="sd">            at the next frame. An intermittency of `0` is equivalent to a continuous survival probability, which does</span>
+<span class="sd">            not allow for the leaving and returning of atoms. For example, for `intermittency=2`, any given atom may</span>
+<span class="sd">            leave a region of interest for up to two consecutive frames yet be treated as being present at all frames.</span>
+<span class="sd">            The default is continuous (0).</span>
+<span class="sd">        verbose : Boolean, optional</span>
+<span class="sd">            Print the progress to the console</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tau_timeseries : list</span>
-<span class="sd">            tau from 1 to tau_max. Saved in the field tau_timeseries.</span>
+<span class="sd">            tau from 1 to `tau_max`. Saved in the field tau_timeseries.</span>
 <span class="sd">        sp_timeseries : list</span>
 <span class="sd">            survival probability for each value of `tau`. Saved in the field sp_timeseries.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1312,17 +1409,58 @@
         <span class="k">if</span> <span class="n">tau_max</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too few frames selected for given tau_max.&quot;</span><span class="p">)</span>
 
-        <span class="c1"># load all frames to an array of sets</span>
-        <span class="n">selected_ids</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="s2">&quot;Loading frame:&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
-            <span class="n">selected_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span><span class="o">.</span><span class="n">ids</span><span class="p">))</span>
+        <span class="c1"># preload the frames (atom IDs) to a list of sets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span> <span class="o">=</span> <span class="p">[]</span>
 
+        <span class="c1"># skip frames that will not be used</span>
+        <span class="c1"># Example: step 5 and tau 2: LLLSS LLLSS, ... where L = Load, and S = Skip</span>
+        <span class="c1"># Intermittency means that we have to load the extra frames to know if the atom is actually missing.</span>
+        <span class="c1"># Say step=5 and tau=1, intermittency=0: LLSSS LLSSS</span>
+        <span class="c1"># Say step=5 and tau=1, intermittency=1: LLLSL LLLSL</span>
+        <span class="n">frame_loaded_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># only for the first window (frames before t are not used)</span>
+        <span class="n">frames_per_window</span> <span class="o">=</span> <span class="n">tau_max</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">intermittency</span>
+        <span class="c1"># This number will apply after the first windows was loaded</span>
+        <span class="n">frames_per_window_subsequent</span> <span class="o">=</span> <span class="p">(</span><span class="n">tau_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">intermittency</span><span class="p">)</span>
+        <span class="n">num_frames_to_skip</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">step</span> <span class="o">-</span> <span class="n">frames_per_window_subsequent</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">frame_no</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="k">while</span> <span class="n">frame_no</span> <span class="o">&lt;</span> <span class="n">stop</span><span class="p">:</span>      <span class="c1"># we have already added 1 to stop, therefore &lt;</span>
+            <span class="k">if</span> <span class="n">num_frames_to_skip</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">frame_loaded_counter</span> <span class="o">==</span> <span class="n">frames_per_window</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="s2">&quot;Skipping the next </span><span class="si">%d</span><span class="s2"> frames:&quot;</span> <span class="o">%</span> <span class="n">num_frames_to_skip</span><span class="p">)</span>
+                <span class="n">frame_no</span> <span class="o">+=</span> <span class="n">num_frames_to_skip</span>
+                <span class="n">frame_loaded_counter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="c1"># Correct the number of frames to be loaded after the first window (which starts at t=0, and</span>
+                <span class="c1"># intermittency does not apply to the frames before)</span>
+                <span class="n">frames_per_window</span> <span class="o">=</span> <span class="n">frames_per_window_subsequent</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># update the frame number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame_no</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="s2">&quot;Loading frame:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+
+            <span class="c1"># SP of residues or of atoms</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span> <span class="k">if</span> <span class="n">residues</span> <span class="k">else</span> <span class="n">atoms</span><span class="o">.</span><span class="n">ids</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span>
+
+            <span class="n">frame_no</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">frame_loaded_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># correct the dataset for gaps (intermittency)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_correct_intermittency</span><span class="p">(</span><span class="n">intermittency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="p">)</span>
+
+        <span class="c1"># calculate Survival Probability</span>
         <span class="n">tau_timeseries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">tau_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">sp_timeseries_data</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tau_max</span><span class="p">)]</span>
 
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_ids</span><span class="p">),</span> <span class="n">step</span><span class="p">):</span>
-            <span class="n">Nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_ids</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="c1"># adjust for the frames that were not loaded (step&gt;tau_max + 1),</span>
+        <span class="c1"># and for extra frames that were loaded (intermittency)</span>
+        <span class="n">window_jump</span> <span class="o">=</span> <span class="n">step</span> <span class="o">-</span> <span class="n">num_frames_to_skip</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="p">),</span> <span class="n">window_jump</span><span class="p">):</span>
+            <span class="n">Nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
 
             <span class="k">if</span> <span class="n">Nt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span>
@@ -1330,11 +1468,11 @@
                 <span class="k">continue</span>
 
             <span class="k">for</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">tau_timeseries</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_ids</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="p">):</span>
                     <span class="k">break</span>
 
-                <span class="c1"># ids that survive from t to t + tau and at every frame in between</span>
-                <span class="n">Ntau</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="n">selected_ids</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
+                <span class="c1"># continuous: IDs that survive from t to t + tau and at every frame in between</span>
+                <span class="n">Ntau</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
                 <span class="n">sp_timeseries_data</span><span class="p">[</span><span class="n">tau</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Ntau</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">Nt</span><span class="p">))</span>
 
         <span class="c1"># user can investigate the distribution and sample size</span>
@@ -1418,10 +1556,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

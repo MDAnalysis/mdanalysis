@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
@@ -314,17 +315,17 @@ water molecules, a weak rise mean slow movement of particles:</p>
 </div>
 <div class="section" id="survivalprobability">
 <span id="sp-examples"></span><h3>4.8.3.1.5. SurvivalProbability<a class="headerlink" href="#survivalprobability" title="Permalink to this headline">¶</a></h3>
-<p>Analyzing survival probability (SP) <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">SurvivalProbability</span></code></a> for water
-molecules. In this case we are analyzing how long water molecules remain in a
-sphere of radius 12.3 centered in the geometrical center of resid 42, 26, 34
-and 80.  A slow decay of SP means a long permanence time of water molecules in
+<p>Analyzing survival probability (SP) <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">SurvivalProbability</span></code></a> of molecules.
+In this case we are analyzing how long water molecules remain in a
+sphere of radius 12.3 centered in the geometrical center of resid 42 and 26.
+A slow decay of SP means a long permanence time of water molecules in
 the zone, on the other hand, a fast decay means a short permanence time:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="k">import</span> <span class="n">SurvivalProbability</span> <span class="k">as</span> <span class="n">SP</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">universe</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
-<span class="n">selection</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26 or resid 34 or resid 80) &quot;</span>
+<span class="n">selection</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26) &quot;</span>
 <span class="n">sp</span> <span class="o">=</span> <span class="n">SP</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">tau_timeseries</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">tau_timeseries</span>
@@ -334,12 +335,49 @@ the zone, on the other hand, a fast decay means a short permanence time:</p>
 <span class="k">for</span> <span class="n">tau</span><span class="p">,</span> <span class="n">sp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">sp_timeseries</span><span class="p">):</span>
       <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{time}</span><span class="s2"> </span><span class="si">{sp}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span> <span class="n">sp</span><span class="o">=</span><span class="n">sp</span><span class="p">))</span>
 
+<span class="c1"># SP is not calculated at tau=0, but if you would like to plot SP=1 at tau=0:</span>
+<span class="n">tau_timeseries</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">sp_timeseries</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
 <span class="c1"># plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;SP&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Survival Probability&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">sp_timeseries</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Another example applies to the situation where you work with many different “residues”.
+Here we calculate the SP of a potassium ion around each lipid in a membrane and
+average the results. In this example, if the SP analysis were run without treating each lipid
+separately, potassium ions may hop from one lipid to another and still be counted as remaining
+in the specified region. That is, the survival probability of the potassium ion around the
+entire membrane will be calculated.</p>
+<p>Note, for this example, it is advisable to use <cite>Universe(in_memory=True)</cite> to ensure that the
+simulation is not being reloaded into memory for each lipid:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="k">import</span> <span class="n">SurvivalProbability</span> <span class="k">as</span> <span class="n">SP</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;md.gro&quot;</span><span class="p">,</span> <span class="s2">&quot;md100ns.xtc&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">lipids</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname LIPIDS&#39;</span><span class="p">)</span>
+<span class="n">joined_sp_timeseries</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">lipid</span> <span class="ow">in</span> <span class="n">lipids</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lipid ID: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">lipid</span><span class="o">.</span><span class="n">resid</span><span class="p">)</span>
+
+    <span class="n">selection</span> <span class="o">=</span> <span class="s2">&quot;resname POTASSIUM and around 3.5 (resid </span><span class="si">%d</span><span class="s2"> and name O13 O14) &quot;</span> <span class="o">%</span> <span class="n">lipid</span><span class="o">.</span><span class="n">resid</span>
+    <span class="n">sp</span> <span class="o">=</span> <span class="n">SP</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="c1"># Raw SP points for each tau:</span>
+    <span class="k">for</span> <span class="n">sps</span><span class="p">,</span> <span class="n">new_sps</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">joined_sp_timeseries</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">sp_timeseries_data</span><span class="p">):</span>
+        <span class="n">sps</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_sps</span><span class="p">)</span>
+
+<span class="c1"># average all SP datapoints</span>
+<span class="n">sp_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span> <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">joined_sp_timeseries</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">tau</span><span class="p">,</span> <span class="n">sp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">tau_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">sp_data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{time}</span><span class="s2"> </span><span class="si">{sp}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span> <span class="n">sp</span><span class="o">=</span><span class="n">sp</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -413,12 +451,12 @@ represents a MSD value in its respective window timestep. Data is stored in
 </div>
 <div class="section" id="id13">
 <h3>4.8.3.2.5. SurvivalProbability<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
-<p>Survival Probability (SP) computes two lists: a list of taus (<code class="xref py py-attr docutils literal notranslate"><span class="pre">SurvivalProbability.tau_timeseries</span></code>) and a list of their corresponding mean survival
-probabilities (<code class="xref py py-attr docutils literal notranslate"><span class="pre">SurvivalProbability.sp_timeseries</span></code>). Additionally, a list <code class="xref py py-attr docutils literal notranslate"><span class="pre">SurvivalProbability.sp_timeseries_data</span></code> is provided which contains
-a list of SPs for each tau, which can be used to compute their distribution, etc.</p>
+<p>Survival Probability (SP) computes two lists: a list of taus (<code class="xref py py-attr docutils literal notranslate"><span class="pre">SurvivalProbability.tau_timeseries</span></code>) and a list of
+the corresponding survival probabilities (<code class="xref py py-attr docutils literal notranslate"><span class="pre">SurvivalProbability.sp_timeseries</span></code>).</p>
 <blockquote>
 <div>results = [ tau1, tau2, …, tau_n ], [ sp_tau1, sp_tau2, …, sp_tau_n]</div></blockquote>
-<p>Additionally, for each</p>
+<p>Additionally, a list <code class="xref py py-attr docutils literal notranslate"><span class="pre">SurvivalProbability.sp_timeseries_data</span></code>, is provided which contains
+a list of all SPs calculated for each tau. This can be used to compute the distribution or time dependence of SP, etc.</p>
 </div>
 </div>
 <div class="section" id="classes">
@@ -535,7 +573,7 @@ of lists, see <a class="reference internal" href="#output">Output</a>. The AD is
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Selection string to evaluate its angular distribution [‘byres name OH2’]</li>
-<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins to create the histogram by means of <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html#numpy.histogram" title="(in NumPy v1.15)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogram()</span></code></a></li>
+<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins to create the histogram by means of <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html#numpy.histogram" title="(in NumPy v1.16)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogram()</span></code></a></li>
 <li><strong>axis</strong> (<em>{'x'</em><em>, </em><em>'y'</em><em>, </em><em>'z'}</em><em> (</em><em>optional</em><em>)</em>) – Axis to create angle with the vector (HH, OH or dipole) and calculate
 cosine theta [‘z’].</li>
 </ul>
@@ -595,15 +633,13 @@ average distance that particles travels. The MSD is given by:</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.waterdynamics.SurvivalProbability">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">SurvivalProbability</code><span class="sig-paren">(</span><em>universe</em>, <em>selection</em>, <em>t0=None</em>, <em>tf=None</em>, <em>dtmax=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="Permalink to this definition">¶</a></dt>
-<dd><p>Survival probability analysis</p>
-<p>Function to evaluate the Survival Probability (SP). The SP gives the
-probability for a group of particles to remain in certain region. The SP is
-given by:</p>
+<dd><p>Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.
+The SP is given by:</p>
 <div class="math notranslate nohighlight">
 \[P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}\]</div>
 <p>where <span class="math notranslate nohighlight">\(T\)</span> is the maximum time of simulation, <span class="math notranslate nohighlight">\(\tau\)</span> is the
-timestep, <span class="math notranslate nohighlight">\(N(t)\)</span> the number of particles at time t, and
-<span class="math notranslate nohighlight">\(N(t, t+\tau)\)</span> is the number of particles at every frame from t to <cite>tau</cite>.</p>
+timestep, <span class="math notranslate nohighlight">\(N(t)\)</span> the number of particles at time <span class="math notranslate nohighlight">\(t\)</span>, and
+<span class="math notranslate nohighlight">\(N(t, t+\tau)\)</span> is the number of particles at every frame from <span class="math notranslate nohighlight">\(t\)</span> to <cite>tau</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -611,9 +647,8 @@ timestep, <span class="math notranslate nohighlight">\(N(t)\)</span> the number 
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
 <li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Selection string; any selection is allowed. With this selection you
-define the region/zone where to analyze, e.g.: “resname SOL and around 5 (resname LIPID)”
-and “resname ION and around 10 (resid 20)” (see <a class="reference internal" href="#sp-examples">SP-examples</a> )</li>
-<li><strong>verbose</strong> (<em>Boolean</em>) – If True, prints progress and comments to the console.</li>
+define the region/zone where to analyze, e.g.: “resname SOL and around 5 (resid 10)”. See <a class="reference internal" href="#sp-examples">SP-examples</a>.</li>
+<li><strong>verbose</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – When True, prints progress and comments to the console.</li>
 </ul>
 </td>
 </tr>
@@ -624,23 +659,32 @@ and “resname ION and around 10 (resid 20)” (see <a class="reference internal
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>tau_max=20</em>, <em>start=0</em>, <em>stop=None</em>, <em>step=1</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes and returns the survival probability timeseries</p>
+<code class="descname">run</code><span class="sig-paren">(</span><em>tau_max=20</em>, <em>start=0</em>, <em>stop=None</em>, <em>step=1</em>, <em>residues=False</em>, <em>intermittency=0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes and returns the Survival Probability (SP) timeseries</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Zero-based index of the first frame to be analysed</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Zero-based index of the last frame to be analysed (inclusive)</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Jump every <cite>step</cite>’th frame</li>
-<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Survival probability is calculated for the range <span class="math notranslate nohighlight">\(1 &lt;=        au &lt;= tau_max\)</span></li>
-<li><strong>verbose</strong> (<em>Boolean</em>) – Overwrite the constructor’s verbosity</li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the first frame to be analysed</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the last frame to be analysed (inclusive)</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Jump every <cite>step</cite>-th frame. This is compatible but independant of the taus used, and it is good to consider
+using the  <cite>step</cite> equal to <cite>tau_max</cite> to remove the overlap.
+Note that <cite>step</cite> and <cite>tau_max</cite> work consistently with intermittency.</li>
+<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Survival probability is calculated for the range 1 &lt;= <cite>tau</cite> &lt;= <cite>tau_max</cite></li>
+<li><strong>residues</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – If true, the analysis will be carried out on the residues (.resids) rather than on atom (.ids).
+A single atom is sufficient to classify the residue as within the distance.</li>
+<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum number of consecutive frames for which an atom can leave but be counted as present if it returns
+at the next frame. An intermittency of <cite>0</cite> is equivalent to a continuous survival probability, which does
+not allow for the leaving and returning of atoms. For example, for <cite>intermittency=2</cite>, any given atom may
+leave a region of interest for up to two consecutive frames yet be treated as being present at all frames.
+The default is continuous (0).</li>
+<li><strong>verbose</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – Print the progress to the console</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>tau_timeseries</strong> (<em>list</em>) – tau from 1 to tau_max. Saved in the field tau_timeseries.</li>
+<li><strong>tau_timeseries</strong> (<em>list</em>) – tau from 1 to <cite>tau_max</cite>. Saved in the field tau_timeseries.</li>
 <li><strong>sp_timeseries</strong> (<em>list</em>) – survival probability for each value of <cite>tau</cite>. Saved in the field sp_timeseries.</li>
 </ul>
 </p>
@@ -754,10 +798,10 @@ and “resname ION and around 10 (resid 20)” (see <a class="reference internal
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

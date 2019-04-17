@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.19.3-dev documentation"
@@ -146,6 +147,7 @@
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span> <span class="n">unique_int_1d</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">distances</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">transformations</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">mdamath</span>
 <span class="kn">from</span> <span class="nn">..selections</span> <span class="k">import</span> <span class="n">get_writer</span> <span class="k">as</span> <span class="n">get_selection_writer_for</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">selection</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">flags</span>
@@ -693,7 +695,9 @@
 <span class="sd">        Computes the weighted center of :class:`Atoms&lt;Atom&gt;` in the group.</span>
 <span class="sd">        Weighted centers per :class:`Residue`, :class:`Segment`, molecule, or</span>
 <span class="sd">        fragment can be obtained by setting the `compound` parameter</span>
-<span class="sd">        accordingly.</span>
+<span class="sd">        accordingly. If the weights of a compound sum up to zero, the</span>
+<span class="sd">        coordinates of that compound&#39;s weighted center will be ``nan`` (not a</span>
+<span class="sd">        number).</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -722,7 +726,7 @@
 <span class="sd">            Position vector(s) of the weighted center(s) of the group.</span>
 <span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
 <span class="sd">            position vector.</span>
-<span class="sd">            If `compound` was set to ``&#39;segments&#39;``, ``&#39;residues&#39;``, </span>
+<span class="sd">            If `compound` was set to ``&#39;segments&#39;``, ``&#39;residues&#39;``,</span>
 <span class="sd">            ``&#39;molecules&#39;``, or ``&#39;fragments&#39;``, the output will be a 2d array</span>
 <span class="sd">            of shape ``(n, 3)`` where ``n`` is the number of compounds.</span>
 
@@ -889,6 +893,147 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
 
     <span class="n">centroid</span> <span class="o">=</span> <span class="n">center_of_geometry</span>
+
+    <span class="nd">@warn_if_not_unique</span>
+    <span class="k">def</span> <span class="nf">accumulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Accumulates the attribute associated with (compounds of) the group.</span>
+
+<span class="sd">        Accumulates the attribute of :class:`Atoms&lt;Atom&gt;` in the group.</span>
+<span class="sd">        The accumulation per :class:`Residue`, :class:`Segment`, molecule,</span>
+<span class="sd">        or fragment can be obtained by setting the `compound` parameter</span>
+<span class="sd">        accordingly. By default, the method sums up all attributes per compound,</span>
+<span class="sd">        but any function that takes an array and returns an acuumulation over a</span>
+<span class="sd">        given axis can be used. For multi-dimensional input arrays, the</span>
+<span class="sd">        accumulation is performed along the first axis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        attribute : str or array_like</span>
+<span class="sd">            Attribute or array of values to accumulate.</span>
+<span class="sd">            If a :class:`numpy.ndarray` (or compatible) is provided, its first</span>
+<span class="sd">            dimension must have the same length as the total number of atoms in</span>
+<span class="sd">            the group.</span>
+<span class="sd">        function : callable, optional</span>
+<span class="sd">            The function performing the accumulation. It must take the array of</span>
+<span class="sd">            attribute values to accumulate as its only positional argument and</span>
+<span class="sd">            accept an (optional) keyword argument ``axis`` allowing to specify</span>
+<span class="sd">            the axis along which the accumulation is performed.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, &#39;fragments&#39;},\</span>
+<span class="sd">                   optional</span>
+<span class="sd">            If ``&#39;group&#39;``, the accumulation of all attributes associated with</span>
+<span class="sd">            atoms in the group will be returned as a single value. Otherwise,</span>
+<span class="sd">            the accumulation of the attributes per :class:`Segment`,</span>
+<span class="sd">            :class:`Residue`, molecule, or fragment will be returned as a 1d</span>
+<span class="sd">            array. Note that, in any case, *only* the :class:`Atoms&lt;Atom&gt;`</span>
+<span class="sd">            *belonging to the group* will be taken into account.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or numpy.ndarray</span>
+<span class="sd">            Acuumulation of the `attribute`.</span>
+<span class="sd">            If `compound` is set to ``&#39;group&#39;``, the first dimension of the</span>
+<span class="sd">            `attribute` array will be contracted to a single value.</span>
+<span class="sd">            If `compound` is set to ``&#39;segments&#39;``, ``&#39;residues&#39;``,</span>
+<span class="sd">            ``&#39;molecules&#39;``, or ``&#39;fragments&#39;``, the length of the first</span>
+<span class="sd">            dimension will correspond to the number of compounds. In all cases,</span>
+<span class="sd">            the other dimensions of the returned array will be of the original</span>
+<span class="sd">            shape (without the first dimension).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the length of a provided `attribute` array does not correspond to</span>
+<span class="sd">            the number of atoms in the group.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If `compound` is not one of ``&#39;group&#39;``, ``&#39;segments&#39;``,</span>
+<span class="sd">            ``&#39;residues&#39;``, ``&#39;molecules&#39;``, or ``&#39;fragments&#39;``.</span>
+<span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
+<span class="sd">            If `compound` is ``&#39;molecule&#39;`` but the topology doesn&#39;t</span>
+<span class="sd">            contain molecule information (molnums), or if `compound` is</span>
+<span class="sd">            ``&#39;fragments&#39;`` but the topology doesn&#39;t contain bonds.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        To find the total charge of a given :class:`AtomGroup`::</span>
+
+<span class="sd">            &gt;&gt;&gt; sel = u.select_atoms(&#39;prop mass &gt; 4.0&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; sel.accumulate(&#39;charges&#39;)</span>
+
+<span class="sd">        To find the total mass per residue of all CA :class:`Atoms&lt;Atom&gt;`::</span>
+
+<span class="sd">            &gt;&gt;&gt; sel = u.select_atoms(&#39;name CA&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; sel.accumulate(&#39;masses&#39;, compound=&#39;residues&#39;)</span>
+
+<span class="sd">        To find the maximum atomic charge per fragment of a given</span>
+<span class="sd">        :class:`AtomGroup`::</span>
+
+<span class="sd">            &gt;&gt;&gt; sel.accumulate(&#39;charges&#39;, compound=&quot;fragments&quot;, function=np.max)</span>
+
+
+<span class="sd">        .. versionadded:: 0.20.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+            <span class="n">attribute_values</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attribute_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">attribute_values</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The input array length (</span><span class="si">{}</span><span class="s2">) does not match &quot;</span>
+                                 <span class="s2">&quot;the number of atoms (</span><span class="si">{}</span><span class="s2">) in the group.&quot;</span>
+                                 <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">attribute_values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)))</span>
+
+        <span class="n">comp</span> <span class="o">=</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="n">attribute_values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;residues&#39;</span><span class="p">:</span>
+            <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">resindices</span>
+        <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;segments&#39;</span><span class="p">:</span>
+            <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">segindices</span>
+        <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;molecules&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">molnums</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;molecules&#39;: &quot;</span>
+                                  <span class="s2">&quot;No molecule information in topology.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;fragments&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">fragindices</span>
+            <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;fragments&#39;: &quot;</span>
+                                  <span class="s2">&quot;No bond information in topology.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized compound definition: &#39;</span><span class="si">{}</span><span class="s2">&#39;. Please &quot;</span>
+                             <span class="s2">&quot;use one of &#39;group&#39;, &#39;residues&#39;, &#39;segments&#39;, &quot;</span>
+                             <span class="s2">&quot;&#39;molecules&#39;, or &#39;fragments&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">compound</span><span class="p">))</span>
+
+        <span class="n">higher_dims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">attribute_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+        <span class="c1"># Sort attribute values by compound</span>
+        <span class="n">sort_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">)</span>
+        <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">compound_indices</span><span class="p">[</span><span class="n">sort_indices</span><span class="p">]</span>
+
+        <span class="n">attribute_values</span> <span class="o">=</span> <span class="n">attribute_values</span><span class="p">[</span><span class="n">sort_indices</span><span class="p">]</span>
+        <span class="c1"># Get sizes of compounds:</span>
+        <span class="n">unique_compound_indices</span><span class="p">,</span> <span class="n">compound_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">,</span>
+                                                            <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">n_compounds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_compound_indices</span><span class="p">)</span>
+        <span class="n">unique_compound_sizes</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">compound_sizes</span><span class="p">)</span>
+        <span class="c1"># Allocate output array:</span>
+        <span class="n">accumulation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_compounds</span><span class="p">]</span> <span class="o">+</span> <span class="n">higher_dims</span><span class="p">)</span>
+        <span class="c1"># Compute sums per compound for each compound size:</span>
+        <span class="k">for</span> <span class="n">compound_size</span> <span class="ow">in</span> <span class="n">unique_compound_sizes</span><span class="p">:</span>
+            <span class="n">compound_mask</span> <span class="o">=</span> <span class="n">compound_sizes</span> <span class="o">==</span> <span class="n">compound_size</span>
+            <span class="n">_compound_indices</span> <span class="o">=</span> <span class="n">unique_compound_indices</span><span class="p">[</span><span class="n">compound_mask</span><span class="p">]</span>
+            <span class="n">atoms_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">,</span> <span class="n">_compound_indices</span><span class="p">)</span>
+            <span class="n">_elements</span> <span class="o">=</span> <span class="n">attribute_values</span><span class="p">[</span><span class="n">atoms_mask</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">compound_size</span><span class="p">]</span>
+                                                             <span class="o">+</span> <span class="n">higher_dims</span><span class="p">)</span>
+            <span class="n">_accumulation</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">_elements</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">accumulation</span><span class="p">[</span><span class="n">compound_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">_accumulation</span>
+        <span class="k">return</span> <span class="n">accumulation</span>
 
     <span class="k">def</span> <span class="nf">bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the bounding box of the selection.</span>
@@ -1172,6 +1317,10 @@
 <span class="sd">        Works with either orthogonal or triclinic box types.</span>
 
 <span class="sd">        .. note::</span>
+<span class="sd">           :meth:`pack_into_box` is identical to :meth:`wrap` with all default</span>
+<span class="sd">           keywords.</span>
+
+<span class="sd">        .. note::</span>
 <span class="sd">            :meth:`AtomGroup.pack_into_box` is currently faster than</span>
 <span class="sd">            :meth:`ResidueGroup.pack_into_box` or</span>
 <span class="sd">            :meth:`SegmentGroup.pack_into_box`.</span>
@@ -1179,67 +1328,82 @@
 
 <span class="sd">        .. versionadded:: 0.8</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Try and auto detect box dimensions:</span>
-        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">)</span>
 
-        <span class="c1"># For a vector representation, the diagonal must not be zero, for a</span>
-        <span class="c1"># [x, y, z, alpha, beta, gamma] representation, no element must be zero:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">())</span> \
-            <span class="ow">or</span> <span class="p">(</span><span class="n">box</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;One or more box dimensions is zero.&quot;</span>
-                                 <span class="s2">&quot;  You can specify a box with &#39;box =&#39;&quot;</span><span class="p">)</span>
-        <span class="c1"># no matter what kind of group we have, we need to work on its atoms:</span>
-        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="c1"># If self is unique, so are its atoms. Thus, if the group is unique, we</span>
-        <span class="c1"># can use its atoms as is.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
-            <span class="n">packed_coords</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
-                <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">packed_coords</span>
-                <span class="k">return</span> <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">packed_coords</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">unique_ag</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">unique</span>
-            <span class="n">unique_ix</span> <span class="o">=</span> <span class="n">unique_ag</span><span class="o">.</span><span class="n">ix</span>
-            <span class="n">restore_mask</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">_unique_restore_mask</span>
-            <span class="n">coords</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">unique_ix</span><span class="p">]</span>
-            <span class="n">packed_coords</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
-                <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">unique_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">packed_coords</span>
-                <span class="k">return</span> <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">unique_ix</span><span class="p">[</span><span class="n">restore_mask</span><span class="p">]]</span>
-            <span class="k">return</span> <span class="n">packed_coords</span><span class="p">[</span><span class="n">restore_mask</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s2">&quot;com&quot;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Shift the contents of this group back into the primary unit cell</span>
+<span class="sd">        according to periodic boundary conditions.</span>
 
-    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s2">&quot;com&quot;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Shift the contents of this group back into the unit cell.</span>
-
-<span class="sd">        This is a more powerful version of :meth:`pack_into_box`, allowing</span>
-<span class="sd">        groups of :class:`Atoms&lt;Atom&gt;` to be kept together through the process.</span>
+<span class="sd">        Specifying a `compound` will keep the :class:`Atoms&lt;Atom&gt;` in each</span>
+<span class="sd">        compound together during the process. If `compound` is different from</span>
+<span class="sd">        ``&#39;atoms&#39;``, each compound as a whole will be shifted so that its</span>
+<span class="sd">        `center` lies within the primary unit cell.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        compound : {&#39;atoms&#39;, &#39;group&#39;, &#39;residues&#39;, &#39;segments&#39;, &#39;fragments&#39;}</span>
-<span class="sd">            The group which will be kept together through the shifting process.</span>
+<span class="sd">        compound : {&#39;atoms&#39;, &#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, \</span>
+<span class="sd">                    &#39;fragments&#39;}, optional</span>
+<span class="sd">            Which type of component to keep together during wrapping. Note that,</span>
+<span class="sd">            in any case, *only* the positions of :class:`Atoms&lt;Atom&gt;`</span>
+<span class="sd">            *belonging to the group* will be taken into account.</span>
 <span class="sd">        center : {&#39;com&#39;, &#39;cog&#39;}</span>
-<span class="sd">            How to define the center of a given group of atoms.</span>
-<span class="sd">        box : array_like</span>
-<span class="sd">            Box dimensions, can be either orthogonal or triclinic information.</span>
-<span class="sd">            Cell dimensions must be in an identical to format to those returned</span>
-<span class="sd">            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,</span>
-<span class="sd">            ``[lx, ly, lz, alpha, beta, gamma]``. If ``None``, uses these</span>
-<span class="sd">            timestep dimensions.</span>
+<span class="sd">            How to define the center of a given group of atoms. If `compound` is</span>
+<span class="sd">            ``&#39;atoms&#39;``, this parameter is meaningless and therefore ignored.</span>
+<span class="sd">        box : array_like, optional</span>
+<span class="sd">            The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">            triclinic and must be provided in the same format as returned by</span>
+<span class="sd">            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n</span>
+<span class="sd">            ``[lx, ly, lz, alpha, beta, gamma]``.\n</span>
+<span class="sd">            If ``None``, uses the</span>
+<span class="sd">            dimensions of the current time step.</span>
+<span class="sd">        inplace: bool, optional</span>
+<span class="sd">            If ``True``, coordinates will be changed in place.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Array of wrapped atom coordinates of dtype `np.float32` and shape</span>
+<span class="sd">            ``(len(self.atoms.n_atoms), 3)``</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If `compound` is not one of ``&#39;atoms&#39;``, ``&#39;group&#39;``,</span>
+<span class="sd">            ``&#39;segments&#39;``, ``&#39;residues&#39;``, ``&#39;molecules&#39;``, or ``&#39;fragments&#39;``.</span>
+<span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
+<span class="sd">            If `compound` is ``&#39;molecule&#39;`` but the topology doesn&#39;t</span>
+<span class="sd">            contain molecule information (molnums) or if `compound` is</span>
+<span class="sd">            ``&#39;fragments&#39;`` but the topology doesn&#39;t contain bonds or if</span>
+<span class="sd">            `center` is ``&#39;com&#39;`` but the topology doesn&#39;t contain masses.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
+<span class="sd">        All atoms of the group will be moved so that the centers of its</span>
+<span class="sd">        compounds lie within the primary periodic image. For orthorhombic unit</span>
+<span class="sd">        cells, the primary periodic image is defined as the half-open interval</span>
+<span class="sd">        :math:`[0,L_i)` between :math:`0` and boxlength :math:`L_i` in all</span>
+<span class="sd">        dimensions :math:`i\in\{x,y,z\}`, i.e., the origin of the of the</span>
+<span class="sd">        simulation box is taken to be at the origin :math:`(0,0,0)` of the</span>
+<span class="sd">        euclidian coordinate system. A compound center residing at position</span>
+<span class="sd">        :math:`x_i` in dimension :math:`i` will be shifted to :math:`x_i&#39;`</span>
+<span class="sd">        according to</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           x_i&#39; = x_i - \left\lfloor\\frac{x_i}{L_i}\\right\\rfloor\,.</span>
+
 <span class="sd">        When specifying a `compound`, the translation is calculated based on</span>
 <span class="sd">        each compound. The same translation is applied to all atoms</span>
 <span class="sd">        within this compound, meaning it will not be broken by the shift.</span>
-<span class="sd">        This might however mean that not all atoms from the compound are</span>
-<span class="sd">        inside the unit cell, but rather the center of the compound is.</span>
+<span class="sd">        This might however mean that not all atoms of a compound will be</span>
+<span class="sd">        inside the unit cell after wrapping, but rather will be the center of</span>
+<span class="sd">        the compound.\n</span>
+<span class="sd">        Be aware of the fact that only atoms *belonging to the group* will be</span>
+<span class="sd">        taken into account!</span>
 
-<span class="sd">        `center` allows the definition of the center of each group to be</span>
-<span class="sd">        specified. This can be either ``&#39;com&#39;`` for center of mass, or ``&#39;cog&#39;``</span>
-<span class="sd">        for center of geometry.</span>
+<span class="sd">        `center` allows to define how the center of each group is computed.</span>
+<span class="sd">        This can be either ``&#39;com&#39;`` for center of mass, or ``&#39;cog&#39;`` for center</span>
+<span class="sd">        of geometry.</span>
 
 <span class="sd">        `box` allows a unit cell to be given for the transformation. If not</span>
 <span class="sd">        specified, the :attr:`~MDAnalysis.coordinates.base.Timestep.dimensions`</span>
@@ -1247,50 +1411,281 @@
 <span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep` will be used.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">           :meth:`wrap` with all default keywords is identical to</span>
-<span class="sd">           :meth:`pack_into_box`</span>
+<span class="sd">            :meth:`AtomGroup.wrap` is currently faster than</span>
+<span class="sd">            :meth:`ResidueGroup.wrap` or :meth:`SegmentGroup.wrap`.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :meth:`pack_into_box`</span>
+<span class="sd">        :meth:`unwrap`</span>
+<span class="sd">        :meth:`MDanalysis.lib.distances.apply_PBC`</span>
 
 
 <span class="sd">        .. versionadded:: 0.9.2</span>
+<span class="sd">        .. versionchanged:: 0.20.0</span>
+<span class="sd">           The method only acts on atoms *belonging to the group* and returns</span>
+<span class="sd">           the wrapped positions as a :class:`numpy.ndarray`.</span>
+<span class="sd">           Added optional argument `inplace`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unique</span>
-        <span class="k">if</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
-            <span class="n">objects</span> <span class="o">=</span> <span class="p">[</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">atoms</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;residues&#39;</span><span class="p">:</span>
-            <span class="n">objects</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">residues</span>
-        <span class="k">elif</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;segments&#39;</span><span class="p">:</span>
-            <span class="n">objects</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">segments</span>
-        <span class="k">elif</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;fragments&#39;</span><span class="p">:</span>
-            <span class="n">objects</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">fragments</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized compound definition: </span><span class="si">{0}</span><span class="s2">&quot;</span>
-                             <span class="s2">&quot;Please use one of &#39;group&#39; &#39;residues&#39; &#39;segments&#39;&quot;</span>
-                             <span class="s2">&quot;or &#39;fragments&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">compound</span><span class="p">))</span>
-
-        <span class="c1"># TODO: ADD TRY-EXCEPT FOR MASSES PRESENCE</span>
-        <span class="k">if</span> <span class="n">center</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;com&#39;</span><span class="p">,</span> <span class="s1">&#39;centerofmass&#39;</span><span class="p">):</span>
-            <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="n">center</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cog&#39;</span><span class="p">,</span> <span class="s1">&#39;centroid&#39;</span><span class="p">,</span> <span class="s1">&#39;centerofgeometry&#39;</span><span class="p">):</span>
-            <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized center definition: </span><span class="si">{0}</span><span class="s2">&quot;</span>
-                             <span class="s2">&quot;Please use one of &#39;com&#39; or &#39;cog&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">center</span><span class="p">))</span>
-        <span class="n">centers</span> <span class="o">=</span> <span class="n">centers</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-
+        <span class="c1"># Try and auto detect box dimensions:</span>
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">box</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">dimensions</span>
+            <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">box</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">box</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid box: Box has invalid shape or not all &quot;</span>
+                             <span class="s2">&quot;box dimensions are positive. You can specify a &quot;</span>
+                             <span class="s2">&quot;valid box using the &#39;box&#39; argument.&quot;</span><span class="p">)</span>
 
-        <span class="c1"># calculate shift per object center</span>
-        <span class="n">dests</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-        <span class="n">shifts</span> <span class="o">=</span> <span class="n">dests</span> <span class="o">-</span> <span class="n">centers</span>
+        <span class="c1"># no matter what kind of group we have, we need to work on its (unique)</span>
+        <span class="c1"># atoms:</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
+            <span class="n">_atoms</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">unique</span>
+            <span class="n">restore_mask</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">_unique_restore_mask</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="n">_atoms</span>
 
-        <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">shifts</span><span class="p">):</span>
-            <span class="c1"># Save some needless shifts</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">):</span>
-                <span class="n">o</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">comp</span> <span class="o">=</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">comp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="s1">&#39;segments&#39;</span><span class="p">,</span> <span class="s1">&#39;residues&#39;</span><span class="p">,</span> <span class="s1">&#39;molecules&#39;</span><span class="p">,</span> \
+                        <span class="s1">&#39;fragments&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized compound definition &#39;</span><span class="si">{}</span><span class="s2">&#39;. &quot;</span>
+                             <span class="s2">&quot;Please use one of &#39;atoms&#39;, &#39;group&#39;, &#39;segments&#39;, &quot;</span>
+                             <span class="s2">&quot;&#39;residues&#39;, &#39;molecules&#39;, or &#39;fragments&#39;.&quot;</span>
+                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">compound</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ctr</span> <span class="o">=</span> <span class="n">center</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ctr</span>  <span class="o">==</span> <span class="s1">&#39;com&#39;</span><span class="p">:</span>
+                <span class="c1"># Don&#39;t use hasattr(self, &#39;masses&#39;) because that&#39;s incredibly</span>
+                <span class="c1"># slow for ResidueGroups or SegmentGroups</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot perform wrap with center=&#39;com&#39;, &quot;</span>
+                                      <span class="s2">&quot;this requires masses.&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">ctr</span> <span class="o">!=</span> <span class="s1">&#39;cog&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized center definition &#39;</span><span class="si">{}</span><span class="s2">&#39;. Please &quot;</span>
+                                 <span class="s2">&quot;use one of &#39;com&#39; or &#39;cog&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">center</span><span class="p">))</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
+            <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
+                <span class="c1"># compute and apply required shift:</span>
+                <span class="k">if</span> <span class="n">ctr</span> <span class="o">==</span> <span class="s1">&#39;com&#39;</span><span class="p">:</span>
+                    <span class="n">ctrpos</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">comp</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ctrpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;group&#39; with &quot;</span>
+                                         <span class="s2">&quot;center=&#39;com&#39; because the total mass &quot;</span>
+                                         <span class="s2">&quot;of the group is zero.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># ctr == &#39;cog&#39;</span>
+                    <span class="n">ctrpos</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">comp</span><span class="p">)</span>
+                <span class="n">ctrpos</span> <span class="o">=</span> <span class="n">ctrpos</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">ctrpos</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
+                <span class="n">positions</span> <span class="o">+=</span> <span class="n">target</span> <span class="o">-</span> <span class="n">ctrpos</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;segments&#39;</span><span class="p">:</span>
+                    <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">segindices</span>
+                <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;residues&#39;</span><span class="p">:</span>
+                    <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">resindices</span>
+                <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;molecules&#39;</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">molnums</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;molecules&#39;, &quot;</span>
+                                          <span class="s2">&quot;this requires molnums.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># comp == &#39;fragments&#39;</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">fragindices</span>
+                    <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;fragments&#39;, &quot;</span>
+                                          <span class="s2">&quot;this requires bonds.&quot;</span><span class="p">)</span>
+
+                <span class="c1"># compute required shifts:</span>
+                <span class="k">if</span> <span class="n">ctr</span> <span class="o">==</span> <span class="s1">&#39;com&#39;</span><span class="p">:</span>
+                    <span class="n">ctrpos</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">comp</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ctrpos</span><span class="p">)):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;</span><span class="si">{0}</span><span class="s2">&#39; with &quot;</span>
+                                         <span class="s2">&quot;center=&#39;com&#39; because the total mass &quot;</span>
+                                         <span class="s2">&quot;of at least one of the </span><span class="si">{0}</span><span class="s2"> is zero.&quot;</span>
+                                         <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># ctr == &#39;cog&#39;</span>
+                    <span class="n">ctrpos</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">comp</span><span class="p">)</span>
+                <span class="n">ctrpos</span> <span class="o">=</span> <span class="n">ctrpos</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">ctrpos</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
+                <span class="n">shifts</span> <span class="o">=</span> <span class="n">target</span> <span class="o">-</span> <span class="n">ctrpos</span>
+
+                <span class="c1"># apply the shifts:</span>
+                <span class="n">unique_compound_indices</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">)</span>
+                <span class="n">shift_idx</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unique_compound_indices</span><span class="p">:</span>
+                    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">compound_indices</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span>
+                    <span class="n">positions</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">+=</span> <span class="n">shifts</span><span class="p">[</span><span class="n">shift_idx</span><span class="p">]</span>
+                    <span class="n">shift_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">positions</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">restore_mask</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">positions</span>
+
+    <span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="s1">&#39;com&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Move atoms of this group so that bonds within the</span>
+<span class="sd">        group&#39;s compounds aren&#39;t split across periodic boundaries.</span>
+
+<span class="sd">        This function is most useful when atoms have been packed into the</span>
+<span class="sd">        primary unit cell, causing breaks mid-molecule, with the molecule then</span>
+<span class="sd">        appearing on either side of the unit cell. This is problematic for</span>
+<span class="sd">        operations such as calculating the center of mass of the molecule. ::</span>
+
+<span class="sd">           +-----------+       +-----------+</span>
+<span class="sd">           |           |       |           |</span>
+<span class="sd">           | 6       3 |       |         3 | 6</span>
+<span class="sd">           | !       ! |       |         ! | !</span>
+<span class="sd">           |-5-8   1-2-|  ==&gt;  |       1-2-|-5-8</span>
+<span class="sd">           | !       ! |       |         ! | !</span>
+<span class="sd">           | 7       4 |       |         4 | 7</span>
+<span class="sd">           |           |       |           |</span>
+<span class="sd">           +-----------+       +-----------+</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, \</span>
+<span class="sd">                    &#39;fragments&#39;}, optional</span>
+<span class="sd">            Which type of component to unwrap. Note that, in any case, all</span>
+<span class="sd">            atoms within each compound must be interconnected by bonds, i.e.,</span>
+<span class="sd">            compounds must correspond to (parts of) molecules.</span>
+<span class="sd">        reference : {&#39;com&#39;, &#39;cog&#39;, None}, optional</span>
+<span class="sd">            If ``&#39;com&#39;`` (center of mass) or ``&#39;cog&#39;`` (center of geometry), the</span>
+<span class="sd">            unwrapped compounds will be shifted so that their individual</span>
+<span class="sd">            reference point lies within the primary unit cell.</span>
+<span class="sd">            If ``None``, no such shift is performed.</span>
+<span class="sd">        inplace : bool, optional</span>
+<span class="sd">            If ``True``, coordinates are modified in place.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        coords : numpy.ndarray</span>
+<span class="sd">            Unwrapped atom coordinate array of shape ``(n, 3)``.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NoDataError</span>
+<span class="sd">            If `compound` is ``&#39;molecules&#39;`` but the underlying topology does</span>
+<span class="sd">            not contain molecule information, or if `reference` is ``&#39;com&#39;``</span>
+<span class="sd">            but the topology does not contain masses.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If `reference` is not one of ``&#39;com&#39;``, ``&#39;cog&#39;``, or ``None``, or</span>
+<span class="sd">            if `reference` is ``&#39;com&#39;`` and the total mass of any `compound` is</span>
+<span class="sd">            zero.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        Be aware of the fact that only atoms *belonging to the group* will</span>
+<span class="sd">        be unwrapped! If you want entire molecules to be unwrapped, make sure</span>
+<span class="sd">        that all atoms of these molecules are part of the group.\n</span>
+<span class="sd">        An AtomGroup containing all atoms of all fragments in the group ``ag``</span>
+<span class="sd">        can be created with::</span>
+
+<span class="sd">          all_frag_atoms = sum(ag.fragments)</span>
+
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :func:`~MDAnalysis.lib.mdamath.make_whole`,</span>
+<span class="sd">        :meth:`wrap`,</span>
+<span class="sd">        :meth:`pack_into_box`,</span>
+<span class="sd">        :func:`~MDanalysis.lib.distances.apply_PBC`</span>
+
+
+<span class="sd">        .. versionadded:: 0.20.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="c1"># bail out early if no bonds in topology:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.unwrap() not available; this requires Bonds&quot;</span>
+                              <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="n">unique_atoms</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">unique</span>
+        <span class="k">if</span> <span class="n">reference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ref</span>  <span class="o">==</span> <span class="s1">&#39;com&#39;</span><span class="p">:</span>
+                <span class="c1"># Don&#39;t use hasattr(self, &#39;masses&#39;) because that&#39;s incredibly</span>
+                <span class="c1"># slow for ResidueGroups or SegmentGroups</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">unique_atoms</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot perform unwrap with &quot;</span>
+                                      <span class="s2">&quot;reference=&#39;com&#39;, this requires masses.&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">ref</span> <span class="o">!=</span> <span class="s1">&#39;cog&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized reference &#39;</span><span class="si">{}</span><span class="s2">&#39;. Please use one &quot;</span>
+                                 <span class="s2">&quot;of &#39;com&#39;, &#39;cog&#39;, or None.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reference</span><span class="p">))</span>
+        <span class="n">comp</span> <span class="o">=</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">comp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="s1">&#39;residues&#39;</span><span class="p">,</span> <span class="s1">&#39;segments&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;molecules&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized compound definition &#39;</span><span class="si">{}</span><span class="s2">&#39;. Please &quot;</span>
+                             <span class="s2">&quot;use one of &#39;group&#39;, &#39;residues&#39;, &#39;segments&#39;, &quot;</span>
+                             <span class="s2">&quot;&#39;molecules&#39;, or &#39;fragments&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">compound</span><span class="p">))</span>
+        <span class="c1"># The &#39;group&#39; needs no splitting:</span>
+        <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="n">mdamath</span><span class="o">.</span><span class="n">make_whole</span><span class="p">(</span><span class="n">unique_atoms</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># Apply reference shift if required:</span>
+            <span class="k">if</span> <span class="n">reference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="s1">&#39;com&#39;</span><span class="p">:</span>
+                    <span class="n">masses</span> <span class="o">=</span> <span class="n">unique_atoms</span><span class="o">.</span><span class="n">masses</span>
+                    <span class="n">total_mass</span> <span class="o">=</span> <span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">total_mass</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot perform unwrap with &quot;</span>
+                                         <span class="s2">&quot;reference=&#39;com&#39; because the total &quot;</span>
+                                         <span class="s2">&quot;mass of the group is zero.&quot;</span><span class="p">)</span>
+                    <span class="n">refpos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">positions</span> <span class="o">*</span> <span class="n">masses</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">refpos</span> <span class="o">/=</span> <span class="n">total_mass</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># ref == &#39;cog&#39;</span>
+                    <span class="n">refpos</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">refpos</span> <span class="o">=</span> <span class="n">refpos</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">refpos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+                <span class="n">positions</span> <span class="o">+=</span> <span class="n">target</span> <span class="o">-</span> <span class="n">refpos</span>
+        <span class="c1"># We need to split the group into compounds:</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;fragments&#39;</span><span class="p">:</span>
+                <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">unique_atoms</span><span class="o">.</span><span class="n">fragindices</span>
+            <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;residues&#39;</span><span class="p">:</span>
+                <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">unique_atoms</span><span class="o">.</span><span class="n">resindices</span>
+            <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;segments&#39;</span><span class="p">:</span>
+                <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">unique_atoms</span><span class="o">.</span><span class="n">segindices</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># comp == &#39;molecules&#39;</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">unique_atoms</span><span class="o">.</span><span class="n">molnums</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;molecules&#39;, this &quot;</span>
+                                      <span class="s2">&quot;requires molnums.&quot;</span><span class="p">)</span>
+            <span class="c1"># Now process every compound:</span>
+            <span class="n">unique_compound_indices</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">)</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="n">unique_atoms</span><span class="o">.</span><span class="n">positions</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unique_compound_indices</span><span class="p">:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">compound_indices</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">unique_atoms</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+                <span class="n">positions</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdamath</span><span class="o">.</span><span class="n">make_whole</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="c1"># Apply reference shift if required:</span>
+                <span class="k">if</span> <span class="n">reference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="s1">&#39;com&#39;</span><span class="p">:</span>
+                        <span class="n">masses</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">masses</span>
+                        <span class="n">total_mass</span> <span class="o">=</span> <span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">total_mass</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">):</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot perform unwrap with &quot;</span>
+                                             <span class="s2">&quot;reference=&#39;com&#39; because the &quot;</span>
+                                             <span class="s2">&quot;total mass of at least one of &quot;</span>
+                                             <span class="s2">&quot;the </span><span class="si">{}</span><span class="s2"> is zero.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
+                        <span class="n">refpos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">*</span> <span class="n">masses</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span>
+                                        <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">refpos</span> <span class="o">/=</span> <span class="n">total_mass</span>
+                    <span class="k">else</span><span class="p">:</span>  <span class="c1"># ref == &#39;cog&#39;</span>
+                        <span class="n">refpos</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">refpos</span> <span class="o">=</span> <span class="n">refpos</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">target</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">apply_PBC</span><span class="p">(</span><span class="n">refpos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+                    <span class="n">positions</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">+=</span> <span class="n">target</span> <span class="o">-</span> <span class="n">refpos</span>
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="n">unique_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">positions</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">atoms</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">atoms</span><span class="o">.</span><span class="n">_unique_restore_mask</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">positions</span>
 
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get another group identical to this one.</span>
@@ -1881,11 +2276,11 @@
         <span class="c1">#</span>
         <span class="c1"># is this a known attribute failure?</span>
         <span class="c1"># TODO: Generalise this to cover many attributes</span>
-        <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="s1">&#39;fragindices&#39;</span><span class="p">,</span> <span class="s1">&#39;n_fragments&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="s1">&#39;fragindices&#39;</span><span class="p">,</span> <span class="s1">&#39;n_fragments&#39;</span><span class="p">,</span> <span class="s1">&#39;unwrap&#39;</span><span class="p">):</span>
             <span class="c1"># eg:</span>
             <span class="c1"># if attr in _ATTR_ERRORS:</span>
             <span class="c1"># raise NDE(_ATTR_ERRORS[attr])</span>
-            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;AtomGroup has no </span><span class="si">{}</span><span class="s2">; this requires Bonds&quot;</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;AtomGroup.</span><span class="si">{}</span><span class="s2"> not available; this requires Bonds&quot;</span>
                               <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span>
         <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="s1">&#39;names&#39;</span><span class="p">):</span>
             <span class="c1"># Ugly hack to make multiple __getattr__s work</span>
@@ -2620,7 +3015,7 @@
                 <span class="s2">&quot;improper only makes sense for a group with exactly 4 atoms&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">topologyobjects</span><span class="o">.</span><span class="n">ImproperDihedral</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AtomGroup.write"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;PDB&quot;</span><span class="p">,</span>
+<div class="viewcode-block" id="AtomGroup.write"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">filenamefmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{trjname}</span><span class="s2">_</span><span class="si">{frame}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write `AtomGroup` to a file.</span>
 
@@ -2699,8 +3094,9 @@
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">trjname</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">trj</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">filenamefmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">trjname</span><span class="o">=</span><span class="n">trjname</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">trj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="n">file_format</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
+                                 <span class="n">ext</span><span class="o">=</span><span class="n">file_format</span> <span class="k">if</span> <span class="n">file_format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;PDB&#39;</span><span class="p">,</span>
+                                 <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># Some writer behave differently when they are given a &quot;multiframe&quot;</span>
         <span class="c1"># argument. It is the case of the PDB writer tht writes models when</span>
         <span class="c1"># &quot;multiframe&quot; is True.</span>
@@ -2725,14 +3121,7 @@
         <span class="c1"># Try and select a Class using get_ methods (becomes `writer`)</span>
         <span class="c1"># Once (and if!) class is selected, use it in with block</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># format keyword works differently in get_writer and get_selection_writer</span>
-            <span class="c1"># here it overrides everything, in get_sel it is just a default</span>
-            <span class="c1"># apply sparingly here!</span>
-            <span class="nb">format</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># strip initial dot!</span>
-            <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span> <span class="ow">or</span> <span class="n">file_format</span>
-            <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-
-            <span class="n">writer</span> <span class="o">=</span> <span class="n">get_writer_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="n">multiframe</span><span class="p">)</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">get_writer_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">file_format</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="n">multiframe</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2751,7 +3140,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># here `file_format` is only used as default,</span>
             <span class="c1"># anything pulled off `filename` will be used preferentially</span>
-            <span class="n">writer</span> <span class="o">=</span> <span class="n">get_selection_writer_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">file_format</span><span class="p">)</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">get_selection_writer_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
+                                              <span class="n">file_format</span> <span class="k">if</span> <span class="n">file_format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;PDB&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">NotImplementedError</span><span class="p">):</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2788,11 +3178,8 @@
 <span class="sd">        The :class:`Atoms&lt;Atom&gt;` are ordered locally by :class:`Residue` in the</span>
 <span class="sd">        :class:`ResidueGroup`.  Duplicates are *not* removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># If indices is an empty list np.concatenate will fail (Issue #1999).</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span>
+        <span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">residues2atoms_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ix</span><span class="p">)]</span>
         <span class="c1"># If the ResidueGroup is known to be unique, this also holds for the</span>
         <span class="c1"># atoms therein, since atoms can only belong to one residue at a time.</span>
         <span class="c1"># On the contrary, if the ResidueGroup is not unique, this does not</span>
@@ -2951,11 +3338,8 @@
 <span class="sd">        are further ordered by :class:`Segment` in the :class:`SegmentGroup`.</span>
 <span class="sd">        Duplicates are *not* removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># If indices is an empty list np.concatenate will fail (Issue #1999).</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span>
+        <span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">segments2atoms_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ix</span><span class="p">)]</span>
         <span class="c1"># If the SegmentGroup is known to be unique, this also holds for the</span>
         <span class="c1"># residues therein, and thus, also for the atoms in those residues.</span>
         <span class="c1"># On the contrary, if the SegmentGroup is not unique, this does not</span>
@@ -3751,10 +4135,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, and Oliver Beckstein.
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
