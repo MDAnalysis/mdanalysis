@@ -66,6 +66,7 @@ Changes
   * changed fudge_factor in guess_bonds to deal with new vdw radii (#2138, PR #2142)
 
 Fixes
+  * fixed reading PDB files with partial CRYST lines (Issue #2252)
   * fixed transformation tests not being run (Issue #2241)
   * fixed the segmentation fault in capped_distances (Issue #2164, PR #2169)
   * fixed gcc support in MacOS (Issue #2162, PR #2163)
