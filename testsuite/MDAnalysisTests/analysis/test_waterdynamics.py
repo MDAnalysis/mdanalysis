@@ -44,9 +44,10 @@ def universe():
 
 def test_HydrogenBondLifetimes(universe):
     hbl = waterdynamics.HydrogenBondLifetimes(
-        universe, SELECTION1, SELECTION1, 0, 5, 3)
+        universe, SELECTION1, SELECTION1, 0, 4, 3)
     hbl.run(stop=5)
-    assert_almost_equal(hbl.timeseries[2], 0.75)
+    assert_almost_equal(hbl.timeseries[3], 0.75)
+
 
 
 def test_HydrogenBondLifetimes_growing_continuous(universe):
