@@ -23,7 +23,7 @@
 from __future__ import print_function, absolute_import
 import MDAnalysis
 from MDAnalysis.analysis import waterdynamics
-from MDAnalysis.analysis.utils.autocorrelation import autocorrelation
+from MDAnalysis.analysis.utils.autocorrelation import autocorrelation, correct_intermittency
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 
@@ -40,23 +40,6 @@ SELECTION2 = "byres name P1"
 @pytest.fixture(scope='module')
 def universe():
     return MDAnalysis.Universe(waterPSF, waterDCD)
-
-
-def test_HydrogenBondLifetimes(universe):
-    hbl = waterdynamics.HydrogenBondLifetimes(
-        universe, SELECTION1, SELECTION1, 0, 4, 3)
-    hbl.run(stop=5)
-    assert_almost_equal(hbl.timeseries[3], 0.75)
-
-
-
-def test_HydrogenBondLifetimes_growing_continuous(universe):
-    # The autocorrelation cannot grow
-    hbl = waterdynamics.HydrogenBondLifetimes(
-        universe, SELECTION1, SELECTION1, t0=0, tf=9, dtmax=5)
-    hbl.run()
-    # Index 0 in frameX[0] refers to the continuous, 1 to intermittent
-    assert all([frameX >= frameXplus1 for frameX, frameXplus1 in zip(hbl.timeseries, hbl.timeseries[1:])])
 
 
 def test_WaterOrientationalRelaxation(universe):
@@ -94,6 +77,150 @@ def test_MeanSquareDisplacement_zeroMolecules(universe):
         universe, SELECTION2, 0, 10, 2)
     msd_zero.run()
     assert_almost_equal(msd_zero.timeseries[1], 0.0)
+
+
+def test_SurvivalProbability_intermittency1and2(universe):
+    """
+    Intermittency of 2 means that we still count an atom if it is not present for up to 2 consecutive frames,
+    but then returns at the following step.
+    """
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        ids = [(9, 8), (), (8,), (9,), (8,), (), (9, 8), (), (8,), (9, 8)]
+        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        sp.run(tau_max=3, stop=9, verbose=True, intermittency=2)
+        assert all(x == {9, 8} for x in sp._intermittent_selected_ids)
+        assert_almost_equal(sp.sp_timeseries, [1, 1, 1, 1])
+
+
+def test_SurvivalProbability_intermittency2lacking(universe):
+    """
+    If an atom is not present for more than 2 consecutive frames,
+    it is considered to have left the region.
+    """
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        ids = [(9,), (), (), (), (9,), (), (), (), (9,)]
+        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        sp.run(tau_max=3, stop=8, verbose=True, intermittency=2)
+        assert_almost_equal(sp.sp_timeseries, [1, 0, 0, 0])
+
+
+def test_SurvivalProbability_intermittency1_step5_noSkipping(universe):
+    """
+    Step leads to skipping frames if (tau_max + 1) + (intermittency * 2) < step.
+    No frames should be skipped.
+    """
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        ids = [(2, 3), (3,), (2, 3), (3,), (2,), (3,), (2, 3), (3,), (2, 3), (2, 3)]
+        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        sp.run(tau_max=2, stop=9, verbose=True, intermittency=1, step=5)
+        assert all((x == {2, 3} for x in sp._intermittent_selected_ids))
+        assert_almost_equal(sp.sp_timeseries, [1, 1, 1])
+
+
+def test_SurvivalProbability_intermittency1_step5_Skipping(universe):
+    """
+    Step leads to skipping frames if (tau_max + 1) * (intermittency * 2) < step.
+    In this case one frame will be skipped per window.
+    """
+    with patch.object(universe, 'select_atoms') as select_atoms_mock:
+        ids = [(1,), (), (1,), (), (1,), (), (1,), (), (1,), (1,)]
+        beforepopsing = len(ids) - 2
+        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
+        sp = waterdynamics.SurvivalProbability(universe, "")
+        sp.run(tau_max=1, stop=9, verbose=True, intermittency=1, step=5)
+        assert all((x == {1} for x in sp._intermittent_selected_ids))
+        assert len(sp._selected_ids) == beforepopsing
+        assert_almost_equal(sp.sp_timeseries, [1, 1])
+
+
+def test_intermittency_none():
+    # No changes asked - returns the same data
+    input_ids = [{1}, {1}, {1}, set(), set(), {1}, {1}, {1}, set(), set(), {1}, set(), set(), {1}]
+    corrected = correct_intermittency(input_ids, intermittency=0)
+    assert all(x == y for x,y in zip(input_ids, corrected))
+
+
+def test_intermittency_1and2():
+    # The maximum gap in the dataset is 2, so the IDs are always present after correction
+    input_ids = [{9, 8}, set(), {8, }, {9, }, {8, }, set(), {9, 8}, set(), {8, }, {9, 8, }]
+    corrected = correct_intermittency(input_ids, intermittency=2)
+    assert all((x == {9, 8} for x in corrected))
+
+
+def test_intermittency_2tooShort():
+    #The IDs are abscent for too long/
+    input_ids = [{9,}, {}, {}, {}, {9,}, {}, {}, {}, {9,}]
+    corrected = correct_intermittency(input_ids, intermittency=2)
+    assert all(x == y for x, y in zip(input_ids, corrected))
+
+
+def test_intermittency_setsOfSets():
+    # Verificaiton for the case of hydrogen bonds (sets of sets)
+    input_ids = [{frozenset({1,2}), frozenset({3, 4})},set(), set(),
+                 {frozenset({1, 2}), frozenset({3, 4})}, set(), set(),
+                 {frozenset({1, 2}), frozenset({3, 4})}, set(), set(),
+                 {frozenset({1, 2}), frozenset({3, 4})}]
+    corrected = correct_intermittency(input_ids, intermittency=2)
+    assert all((x == {frozenset({1, 2}), frozenset({3, 4})} for x in corrected))
+
+
+def test_autocorrelation_alwaysPresent():
+    input = [{1, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 2}]
+    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input, tau_max=3)
+    assert all(np.equal(sp_timeseries, 1))
+
+
+def test_autocorrelation_definedTaus():
+    input_ids = [{9, 8, 7}, {8, 7, 6}, {7, 6, 5}, {6, 5, 4}, {5, 4, 3}, {4, 3, 2}, {3, 2, 1}]
+    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input_ids, tau_max=3)
+    assert_almost_equal(sp_timeseries, [1, 2/3., 1/3., 0])
+
+
+def test_autocorrelation_intermittency1_windowJump_intermittencyAll():
+    """
+    Step leads to skipping frames if (tau_max + 1) + (intermittency * 2) < step.
+    No frames should be skipped so intermittency should be applied to all.
+    """
+    input_ids = [{2, 3}, {3,}, {2, 3}, {3,}, {2,}, {3,}, {2, 3}, {3,}, {2, 3}, {2, 3}]
+    corrected = correct_intermittency(input_ids, intermittency=1)
+    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(corrected, tau_max=2,
+                                                                        window_step=5)
+    assert all((x == {2, 3} for x in corrected))
+    assert_almost_equal(sp_timeseries, [1, 1, 1])
+
+
+def test_autocorrelation_windowBigJump():
+    #The empty sets are ignored (no intermittency)
+    input_ids = [{1}, {1}, {1}, set(), set(), {1}, {1}, {1}, set(), set(), {1}, {1}, {1}]
+    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input_ids, tau_max=2, window_step=5)
+    assert_almost_equal(sp_timeseries, [1, 1, 1])
+
+
+def test_autocorrelation_windowBigJump_absence():
+    # In the last frame the molecules are absent
+    input_ids = [{1}, {1}, {1}, set(), set(), {1}, {1}, {1}, set(), set(), {1}, set(), set()]
+    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input_ids, tau_max=2, window_step=5)
+    assert_almost_equal(sp_timeseries, [1, 2/3., 2/3.])
+
+
+def test_autocorrelation_intermittency1_many():
+    input_ids = [{1}, set(), {1}, set(), {1}, set(), {1}, set(), {1}, set(), {1}, set(), {1}, set(), {1}]
+    corrected = correct_intermittency(input_ids, intermittency=1)
+    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(corrected, tau_max=14,
+                                                                        window_step=5)
+    assert_almost_equal(sp_timeseries, [1] * 15)
+
+
+def test_autocorrelation_intermittency2_windowBigJump():
+    # The intermittency corrects the last frame
+    input_ids = [{1}, {1}, {1}, set(), set(), {1}, {1}, {1}, set(), set(), {1}, set(), set(), {1}]
+    corrected = correct_intermittency(input_ids, intermittency=2)
+    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(corrected, tau_max=2,
+                                                                        window_step=5)
+    assert_almost_equal(sp_timeseries, [1, 1, 1])
 
 
 def test_SurvivalProbability_t0tf(universe):
@@ -148,132 +275,3 @@ def test_SurvivalProbability_stepEqualDtMax(universe):
         sp.run(tau_max=4, step=5, stop=9, verbose=True)
         # all frames from 0, with 9 inclusive
         assert_equal(select_atoms_mock.call_count, 10)
-
-
-def test_SurvivalProbability_intermittency1and2(universe):
-    """
-    Intermittency of 2 means that we still count an atom if it is not present for up to 2 consecutive frames,
-    but then returns at the following step.
-    """
-    with patch.object(universe, 'select_atoms') as select_atoms_mock:
-        ids = [(9, 8), (), (8,), (9,), (8,), (), (9,8), (), (8,), (9,8,)]
-        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
-        sp = waterdynamics.SurvivalProbability(universe, "")
-        sp.run(tau_max=3, stop=9, verbose=True, intermittency=2)
-        assert all((x == {9, 8} for x in sp.selected_ids))
-        assert_almost_equal(sp.sp_timeseries, [1, 1, 1, 1])
-
-
-def test_SurvivalProbability_intermittency2lacking(universe):
-    """
-    If an atom is not present for more than 2 consecutive frames, it is considered to have left the region.
-    """
-    with patch.object(universe, 'select_atoms') as select_atoms_mock:
-        ids = [(9,), (), (), (), (9,), (), (), (), (9,)]
-        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
-        sp = waterdynamics.SurvivalProbability(universe, "")
-        sp.run(tau_max=3, stop=8, verbose=True, intermittency=2)
-        assert_almost_equal(sp.sp_timeseries, [1, 0, 0, 0])
-
-
-def test_SurvivalProbability_intermittency1_step5_noSkipping(universe):
-    """
-    Step leads to skipping frames if (tau_max + 1) + (intermittency * 2) < step.
-    No frames should be skipped.
-    """
-    with patch.object(universe, 'select_atoms') as select_atoms_mock:
-        ids = [(2, 3), (3,), (2, 3), (3,), (2,), (3,), (2, 3), (3,), (2, 3), (2, 3)]
-        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
-        sp = waterdynamics.SurvivalProbability(universe, "")
-        sp.run(tau_max=2, stop=9, verbose=True, intermittency=1, step=5)
-        assert all((x == {2, 3} for x in sp.selected_ids))
-        assert_almost_equal(sp.sp_timeseries, [1, 1, 1])
-
-
-def test_SurvivalProbability_intermittency1_step5_Skipping(universe):
-    """
-    Step leads to skipping frames if (tau_max + 1) * (intermittency * 2) < step.
-    In this case one frame will be skipped per window.
-    """
-    with patch.object(universe, 'select_atoms') as select_atoms_mock:
-        ids = [(1,), (), (1,), (), (1,), (), (1,), (), (1,), (1,)]
-        beforepopsing = len(ids) - 2
-        select_atoms_mock.side_effect = lambda selection: Mock(ids=ids.pop())   # atom IDs fed set by set
-        sp = waterdynamics.SurvivalProbability(universe, "")
-        sp.run(tau_max=1, stop=9, verbose=True, intermittency=1, step=5)
-        assert all((x == {1} for x in sp.selected_ids))
-        assert len(sp.selected_ids) == beforepopsing
-        assert_almost_equal(sp.sp_timeseries, [1, 1])
-
-
-def test_autocorrelation_alwaysPresent():
-    input = [{1, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 2}]
-    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input, tau_max=3)
-    assert all(np.equal(sp_timeseries, 1))
-
-
-def test_autocorrelation_definedTaus():
-    input_ids = [{9, 8, 7}, {8, 7, 6}, {7, 6, 5}, {6, 5, 4}, {5, 4, 3}, {4, 3, 2}, {3, 2, 1}]
-    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input_ids, tau_max=3)
-    assert_almost_equal(sp_timeseries, [1, 2/3., 1/3., 0])
-
-
-def test_autocorrelation_intermittency1and2():
-    """
-    Intermittency of 2 means that we still count an atom if it is not present for up to 2 consecutive frames,
-    but then returns at the following step.
-    """
-    input_ids = [{9, 8}, set(), {8,}, {9,}, {8,}, set(), {9, 8}, set(), {8,}, {9, 8,}]
-    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input_ids, tau_max=3, intermittency=2)
-    # input_ids are modified in place, check if the gaps have been removed correctly
-    assert all((x == {9, 8} for x in input_ids))
-    assert_almost_equal(sp_timeseries, [1, 1, 1, 1])
-    
-
-def test_autocorrelation_intermittency2lacking():
-    """
-    If an atom is not present for more than 2 consecutive frames, it is considered to have left the region.
-    """
-    input_ids = [{9,}, {}, {}, {}, {9,}, {}, {}, {}, {9,}]
-    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input_ids, tau_max=3, intermittency=2)
-    assert_almost_equal(sp_timeseries, [1, 0, 0, 0])
-
-
-def test_autocorrelation_intermittency1_windowJump_intermittencyAll():
-    """
-    Step leads to skipping frames if (tau_max + 1) + (intermittency * 2) < step.
-    No frames should be skipped so intermittency should be applied to all.
-    """
-    input_ids = [{2, 3}, {3,}, {2, 3}, {3,}, {2,}, {3,}, {2, 3}, {3,}, {2, 3}, {2, 3}]
-    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input_ids, tau_max=2,
-                                                                        intermittency=1, window_jump=5)
-    assert all((x == {2, 3} for x in input_ids))
-    assert_almost_equal(sp_timeseries, [1, 1, 1])
-
-
-def test_autocorrelation_intermittency0_windowBigJump():
-    """
-    The empty sets are ignored (no interrttency)
-    """
-    input_ids = [{1}, {1}, {1}, set(), set(), {1}, {1}, {1}, set(), set(), {1}, {1}, {1}]
-    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input_ids, tau_max=2, window_jump=5)
-    assert_almost_equal(sp_timeseries, [1, 1, 1])
-
-
-def test_autocorrelation_intermittency0_windowBigJump_absence():
-    """
-    In the last frame the molecules are absent
-    """
-    input_ids = [{1}, {1}, {1}, set(), set(), {1}, {1}, {1}, set(), set(), {1}, set(), set()]
-    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input_ids, tau_max=2, window_jump=5)
-    assert_almost_equal(sp_timeseries, [1, 2/3., 2/3.])
-
-
-def test_autocorrelation_intermittency2_windowBigJump():
-    """
-    The intermittency corrects the last frame
-    """
-    input_ids = [{1}, {1}, {1}, set(), set(), {1}, {1}, {1}, set(), set(), {1}, set(), set(), {1}]
-    tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(input_ids, tau_max=2,
-                                                                        intermittency=2, window_jump=5)
-    assert_almost_equal(sp_timeseries, [1, 1, 1])

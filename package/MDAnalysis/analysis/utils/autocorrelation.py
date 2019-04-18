@@ -22,16 +22,16 @@
 #
 
 import numpy as np
+from copy import deepcopy
 
 
-def autocorrelation(list_of_sets, tau_max, window_jump=1, intermittency=0):
+def autocorrelation(list_of_sets, tau_max, window_step=1):
     r"""The descrete implementation of the autocorrelation function.
 
     Here is a random equation that shows something.
 
     .. math::
        C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h'_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
-
 
 
     fixme -  list_of_sets: Modifies in place!
@@ -41,8 +41,9 @@ def autocorrelation(list_of_sets, tau_max, window_jump=1, intermittency=0):
       List of sets,
     tau_max : int
       The last tau (inclusive) for which to carry out autocorrelation.
-    window_jump : int, optional
+    window_step : int, optional
       The step for the t0 to perform autocorrelation (without the overlap). Default is 1.
+    fixme - move intermittency to the right place
     intermittency : int, optional
       Helps with the graps in the data. If we want to remove some of the fluctuations and focus on the patterns,
       intermittency removes the gaps. The default intermittency=0 which means that if the datapoint is missing at any
@@ -64,14 +65,11 @@ def autocorrelation(list_of_sets, tau_max, window_jump=1, intermittency=0):
     # fixme - check dimensions
     # fixme - check parameters?
 
-    # correct the dataset for gaps (intermittency)
-    correct_intermittency(intermittency, list_of_sets)
-
     tau_timeseries = list(range(1, tau_max + 1))
     timeseries_data = [[] for _ in range(tau_max)]
 
     # calculate autocorrelation
-    for t in range(0, len(list_of_sets), window_jump):
+    for t in range(0, len(list_of_sets), window_step):
         Nt = len(list_of_sets[t])
 
         if Nt == 0:
@@ -93,8 +91,8 @@ def autocorrelation(list_of_sets, tau_max, window_jump=1, intermittency=0):
 
     return tau_timeseries, timeseries, timeseries_data
 
-
-def correct_intermittency(intermittency, id_list, verbose=False):
+# fixme - is intermittency consitent with list of sets of sets? (hydrogen bonds)
+def correct_intermittency(list_of_sets, intermittency):
     """
     Pre-process Consecutive Intermittency with a single pass over the data.
     If an atom is absent for a number of frames equal or smaller
@@ -103,30 +101,27 @@ def correct_intermittency(intermittency, id_list, verbose=False):
 
     Parameters
     ----------
+    id_list: list of sets
+        returns a new list with the IDs with added IDs which disappeared for <= :param intermittency
     intermittency: int
         the max gap allowed and to be corrected
-    id_list: fixme
-        modifies the selecteded IDs in place by adding atoms which left for <= :param intermittency
-    verbose: Boolean, optional
-        print
     """
     if intermittency == 0:
-        return
+        return list_of_sets
 
-    if verbose:
-        print('Correcting the selected IDs for intermittancy (gaps). ')
+    list_of_sets = deepcopy(list_of_sets)
 
-    for i, ids in enumerate(id_list):
+    for i, ids in enumerate(list_of_sets):
         # initially update each frame as seen 0 ago (now)
         seen_frames_ago = {i: 0 for i in ids}
         for j in range(1, intermittency + 2):
             for atomid in seen_frames_ago.keys():
                 # no more frames
-                if i + j >= len(id_list):
+                if i + j >= len(list_of_sets):
                     continue
 
                 # if the atom is absent now
-                if not atomid in id_list[i + j]:
+                if not atomid in list_of_sets[i + j]:
                     # increase its absence counter
                     seen_frames_ago[atomid] += 1
                     continue
@@ -140,10 +135,11 @@ def correct_intermittency(intermittency, id_list, verbose=False):
                 if seen_frames_ago[atomid] > intermittency:
                     continue
 
-                # the atom was absent but returned (within <= intermittency)
+                # the atom was absent but returned (within <= intermittency_value)
                 # add it to the frames where it was absent.
                 # Introduce the corrections.
                 for k in range(seen_frames_ago[atomid], 0, -1):
-                    id_list[i + j - k].add(atomid)
+                    list_of_sets[i + j - k].add(atomid)
 
                 seen_frames_ago[atomid] = 0
+    return list_of_sets

@@ -450,32 +450,30 @@ import logging
 import warnings
 import numpy as np
 
-import MDAnalysis.analysis.hbonds
 from MDAnalysis.lib.log import ProgressMeter
-from .utils.autocorrelation import autocorrelation
+from .utils.autocorrelation import autocorrelation, correct_intermittency
 
 logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
 
 
 class HydrogenBondLifetimes(object):
     r"""Hydrogen bond lifetime analysis
-    fixme - update the definition of intermittency (refer the user to autocorrelation)
+    fixme - deprecate it
 
-    This is an autocorrelation function that gives the "Hydrogen Bond Lifetimes"
+    This is a autocorrelation function that gives the "Hydrogen Bond Lifetimes"
     (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this function we can
     obtain the continuous and intermittent behavior of hydrogen bonds in
     time. A fast decay in these parameters indicate a fast change in HBs
-    connectivity. A slow decay indicate stable hydrogen bonds (e.g. ice).
-    The HBL is also know as "Hydrogen Bond Population Relaxation"
-    (HBPR). In the continuous case we have:
+    connectivity. A slow decay indicate very stables hydrogen bonds, like in
+    ice. The HBL is also know as "Hydrogen Bond Population Relaxation"
+    (HBPR). In the continuos case we have:
 
     .. math::
        C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h'_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
 
     where :math:`h'_{ij}(t_0+\tau)=1` if there is a H-bond between a pair
-    :math:`ij` during time interval :math:`t_0+\tau` (continuous) and
+    :math:`ij` during time interval :math:`t_0+\tau` (continuos) and
     :math:`h'_{ij}(t_0+\tau)=0` otherwise. In the intermittent case we have:
-    -fixme - update the intermittent definition
 
     .. math::
        C_{HB}^i(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
@@ -494,111 +492,24 @@ class HydrogenBondLifetimes(object):
       It could be any selection available in MDAnalysis, not just water.
     selection2 : str
       Selection string to analize its HBL against selection1
-    verbose : Boolean, optional
-      When True, prints progress and comments to the console.
+    t0 : int
+      frame  where analysis begins
+    tf : int
+      frame where analysis ends
+    dtmax : int
+      Maximum dt size, `dtmax` < `tf` or it will crash.
+    nproc : int
+      Number of processors to use, by default is 1.
+
 
     .. versionadded:: 0.11.0
     """
 
     def __init__(self, universe, selection1, selection2, t0=None, tf=None, dtmax=None, verbose=False):
-        self.universe = universe
-        self.selection1 = selection1
-        self.selection2 = selection2
-        self.verbose = verbose
-
-        # backward compatibility
-        self.start = self.stop = self.tau_max = None
-        if t0 is not None:
-            self.start = t0
-            warnings.warn("t0 is deprecated, use run(start) instead", category=DeprecationWarning)
-
-        if tf is not None:
-            self.stop = tf
-            warnings.warn("tf is deprecated, use run(stop) instead", category=DeprecationWarning)
-
-        if dtmax is not None:
-            self.tau_max = dtmax
-            warnings.warn("dtmax is deprecated, use run(tau_max) instead", category=DeprecationWarning)
-
-
-    def run(self, tau_max=20, start=0, stop=None, step=1, intermittency=0, verbose=False, **kwargs):
-        """
-        Computes and returns the Survival Probability (SP) timeseries
-
-        Parameters
-        ----------
-        start : int, optional
-            Zero-based index of the first frame to be analysed
-        stop : int, optional
-            Zero-based index of the last frame to be analysed (inclusive)
-        step : int, optional
-            Jump every `step`-th frame. This is compatible but independant of the taus used.
-            Note that `step` and `tau_max` work consistently with intermittency.
-        tau_max : int, optional
-            Survival probability is calculated for the range 1 <= `tau` <= `tau_max`
-        intermittency : int, optional
-            The maximum number of consecutive frames for which a bond can disappear but be counted as present if it
-            returns at the next frame. An intermittency of `0` is equivalent to a continuous autocorrelation, which does
-            not allow for the hydrogen bond disappearance. For example, for `intermittency=2`, any given hbond may
-            disappear for up to two consecutive frames yet be treated as being present at all frames.
-            The default is continuous (0).
-        verbose : Boolean, optional
-            Print the progress to the console
-
-        Returns
-        -------
-        tau_timeseries : list
-            tau from 1 to `tau_max`. Saved in the field tau_timeseries.
-        timeseries : list
-            survival probability for each value of `tau`. Saved in the field sp_timeseries.
-        timeseries_data: list
-            raw datapoints from which the average is taken (sp_timeseries).
-            Time dependancy and distribution can be extracted.
-        """
-
-        # backward compatibility (and priority)
-        start = self.start if self.start is not None else start
-        stop = self.stop if self.stop is not None else stop
-        tau_max = self.tau_max if self.tau_max is not None else tau_max
-
-        # sanity checks
-        if stop is not None and stop >= len(self.universe.trajectory):
-            raise ValueError("\"stop\" must be smaller than the number of frames in the trajectory.")
-
-        if stop is None:
-            stop = len(self.universe.trajectory)
-        else:
-            stop = stop + 1
-
-        if tau_max > (stop - start):
-            raise ValueError("Too few frames selected for given tau_max.")
-
-        # Get all hydrogen bonds
-        # fixme - we should not have the frozen definition of the hydrogen bonds
-        # fixme - this will be upated with the new HydrogenBond interface
-        # fixme - remove this from here and insert it into the example
-        hydrogen_bonds = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe,
-                                                                 self.selection1,
-                                                                 self.selection2,
-                                                                 distance=3.5,
-                                                                 angle=120.0)
-        # Compute the minimal number of hydrogen bonds
-        hydrogen_bonds.run(start=start, stop=stop, step=step, verbose=verbose, **kwargs)
-
-        # Extract the hydrogen bonds IDs only in the format [set(superset(x1,x2), superset(x3,x4)), set(), set()]
-        found_hydrogen_bonds = [{frozenset(bond[0:2]) for bond in frame} for frame in hydrogen_bonds.timeseries]
-
-        tau_timeseries, timeseries, timeseries_data = autocorrelation(found_hydrogen_bonds, self.tau_max)
-
-        # fixme - document
-        self.hydrogen_bonds = hydrogen_bonds.timeseries
-
-        # user can investigate the distribution and sample size
-        self.sp_timeseries_data = timeseries_data
-        self.tau_timeseries = tau_timeseries
-        self.timeseries = timeseries
-        return self
-
+        warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
+                      "which has .autocorrelation function",
+                      category=DeprecationWarning)
+        pass
 
 
 class WaterOrientationalRelaxation(object):
@@ -1207,7 +1118,7 @@ class SurvivalProbability(object):
             raise ValueError("Too few frames selected for given tau_max.")
 
         # preload the frames (atom IDs) to a list of sets
-        self.selected_ids = []
+        self._selected_ids = []
 
         # fixme - to parallise: the section should be rewritten so that this loop only creates a list of indices,
         # on which the parallel _single_frame can be applied.
@@ -1243,7 +1154,7 @@ class SurvivalProbability(object):
 
             # SP of residues or of atoms
             ids = atoms.residues.resids if residues else atoms.ids
-            self.selected_ids.append(set(ids))
+            self._selected_ids.append(set(ids))
 
             frame_no += 1
             frame_loaded_counter += 1
@@ -1252,8 +1163,9 @@ class SurvivalProbability(object):
         # and for extra frames that were loaded (intermittency)
         window_jump = step - num_frames_to_skip
 
-        tau_timeseries, sp_timeseries, sp_timeseries_data = \
-            autocorrelation(self.selected_ids, tau_max, window_jump,intermittency)
+        self._intermittent_selected_ids = correct_intermittency(self._selected_ids, intermittency=intermittency)
+        tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(self._intermittent_selected_ids,
+                                                                            tau_max, window_jump)
 
         # warn the user if the NaN are found
         if all(np.isnan(sp_timeseries[1:])):
