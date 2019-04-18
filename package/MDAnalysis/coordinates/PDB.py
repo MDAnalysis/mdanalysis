@@ -394,7 +394,8 @@ class PDBReader(base.ReaderBase):
                                             line[24:33], line[33:40],
                                             line[40:47], line[47:54]]
                 except ValueError:
-                    warnings.warn("Failed to read CRYST entry, got:\n{}"
+                    warnings.warn("Failed to read CRYST1 record, "
+                                  "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
 
         # check if atom number changed
