@@ -445,16 +445,16 @@ Classes
 """
 from __future__ import print_function, division, absolute_import
 
-import warnings
-
 from six.moves import range, zip_longest
-
+import logging
+import warnings
 import numpy as np
 
 import MDAnalysis.analysis.hbonds
 from MDAnalysis.lib.log import ProgressMeter
 from .utils.autocorrelation import autocorrelation
 
+logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
 
 
 class HydrogenBondLifetimes(object):
@@ -475,6 +475,7 @@ class HydrogenBondLifetimes(object):
     where :math:`h'_{ij}(t_0+\tau)=1` if there is a H-bond between a pair
     :math:`ij` during time interval :math:`t_0+\tau` (continuous) and
     :math:`h'_{ij}(t_0+\tau)=0` otherwise. In the intermittent case we have:
+    -fixme - update the intermittent definition
 
     .. math::
        C_{HB}^i(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
@@ -575,6 +576,7 @@ class HydrogenBondLifetimes(object):
         # Get all hydrogen bonds
         # fixme - we should not have the frozen definition of the hydrogen bonds
         # fixme - this will be upated with the new HydrogenBond interface
+        # fixme - remove this from here and insert it into the example
         hydrogen_bonds = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe,
                                                                  self.selection1,
                                                                  self.selection2,
@@ -586,7 +588,7 @@ class HydrogenBondLifetimes(object):
         # Extract the hydrogen bonds IDs only in the format [set(superset(x1,x2), superset(x3,x4)), set(), set()]
         found_hydrogen_bonds = [{frozenset(bond[0:2]) for bond in frame} for frame in hydrogen_bonds.timeseries]
 
-        tau_timeseries, timeseries, timeseries_data = autocorrelation(found_hydrogen_bonds, self.dtmax)
+        tau_timeseries, timeseries, timeseries_data = autocorrelation(found_hydrogen_bonds, self.tau_max)
 
         # fixme - document
         self.hydrogen_bonds = hydrogen_bonds.timeseries
@@ -1148,13 +1150,6 @@ class SurvivalProbability(object):
             warnings.warn("dtmax is deprecated, use run(tau_max=dtmax) instead", category=DeprecationWarning)
 
 
-    def print(self, verbose, *args):
-        if self.verbose:
-            print(args)
-        elif verbose:
-            print(args)
-
-
     def run(self, tau_max=20, start=0, stop=None, step=1, residues=False, intermittency=0, verbose=False):
         """
         Computes and returns the Survival Probability (SP) timeseries
@@ -1232,7 +1227,7 @@ class SurvivalProbability(object):
         frame_no = start
         while frame_no < stop:      # we have already added 1 to stop, therefore <
             if num_frames_to_skip != 0 and frame_loaded_counter == frames_per_window:
-                self.print(verbose, "Skipping the next %d frames:" % num_frames_to_skip)
+                logger.info("Skipping the next %d frames:" % num_frames_to_skip)
                 frame_no += num_frames_to_skip
                 frame_loaded_counter = 0
                 # Correct the number of frames to be loaded after the first window (which starts at t=0, and
@@ -1243,7 +1238,7 @@ class SurvivalProbability(object):
             # update the frame number
             self.universe.trajectory[frame_no]
 
-            self.print(verbose, "Loading frame:", self.universe.trajectory.ts)
+            logging.info("Loading frame:", self.universe.trajectory.ts)
             atoms = self.universe.select_atoms(self.selection)
 
             # SP of residues or of atoms
@@ -1262,8 +1257,7 @@ class SurvivalProbability(object):
 
         # warn the user if the NaN are found
         if all(np.isnan(sp_timeseries[1:])):
-            # fixme - warn the user that the dataset. Use a standardised warning.
-            print('NaN Error: Most likely data was not found. Check your atom selections. ')
+            logging.warning('NaN Error: Most likely data was not found. Check your atom selections. ')
 
         # user can investigate the distribution and sample size
         self.sp_timeseries_data = sp_timeseries_data
