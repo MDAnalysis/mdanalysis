@@ -389,9 +389,14 @@ class PDBReader(base.ReaderBase):
                 pos += 1
             elif line[:6] == 'CRYST1':
                 # does an implicit str -> float conversion
-                self.ts._unitcell[:] = [line[6:15], line[15:24],
-                                        line[24:33], line[33:40],
-                                        line[40:47], line[47:54]]
+                try:
+                    self.ts._unitcell[:] = [line[6:15], line[15:24],
+                                            line[24:33], line[33:40],
+                                            line[40:47], line[47:54]]
+                except ValueError:
+                    warnings.warn("Failed to read CRYST1 record, "
+                                  "possibly invalid PDB file, got:\n{}"
+                                  "".format(line))
 
         # check if atom number changed
         if pos != self.n_atoms:

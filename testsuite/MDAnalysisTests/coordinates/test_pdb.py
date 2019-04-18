@@ -913,3 +913,20 @@ def test_atom_not_match(tmpdir):
     with pytest.raises(ValueError) as excinfo:
         reader._read_frame(1)
     assert 'Inconsistency in file' in str(excinfo.value)
+
+
+def test_partially_missing_cryst():
+    # issue 2252
+    raw = open(INC_PDB, 'r').readlines()
+    # mangle the cryst lines so that only box angles are left
+    # this mimics '6edu' from PDB
+    raw = [line if not line.startswith('CRYST')
+           else line[:6] + ' ' * 28 + line[34:]
+           for line in raw]
+
+    with pytest.warns(UserWarning):
+        u = mda.Universe(StringIO('\n'.join(raw)), format='PDB')
+
+    assert len(u.atoms) == 3
+    assert len(u.trajectory) == 2
+    assert_array_almost_equal(u.dimensions, 0.0)
