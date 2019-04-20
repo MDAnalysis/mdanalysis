@@ -424,7 +424,7 @@ def extensions(config):
         extensions = cythonize(
             pre_exts,
             compiler_directives={'linetrace' : cython_linetrace,
-                                 'embedsignature' : cython_linetrace},
+                                 'embedsignature' : False},
         )
         if cython_linetrace:
             print("Cython coverage will be enabled")
