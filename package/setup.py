@@ -94,7 +94,7 @@ try:
               "parallelization module".format(
                Cython.__version__, required_version))
         cython_found = False
-    cython_linetrace = True
+    cython_linetrace = bool(os.environ.get('CYTHON_TRACE_NOGIL', False))
 except ImportError:
     cython_found = False
     if not is_release:
