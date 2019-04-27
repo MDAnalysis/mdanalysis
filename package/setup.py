@@ -330,8 +330,8 @@ def extensions(config):
                           include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
                           define_macros=define_macros,
                           extra_compile_args=extra_compile_args)
-    groparser = MDAExtension('MDAnalysis.topology.c_GROParser',
-                             ['MDAnalysis/topology/c_GROParser' + source_suffix],
+    groparser = MDAExtension('MDAnalysis.topology.GROParser',
+                             ['MDAnalysis/topology/GROParser' + source_suffix],
                              include_dirs = include_dirs + ['MDAnalysis/topology/include'],
                              define_macros = define_macros,
                              extra_compile_args= extra_compile_args)
