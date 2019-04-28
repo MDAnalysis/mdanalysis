@@ -19,7 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
+from __future__ import division, print_function, absolute_import
 
 import numpy as np
 import pytest
@@ -110,6 +110,11 @@ def test_fit_translation_no_options(fit_universe):
     # what happens when no options are passed?
     assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=6)
 
+def test_fit_translation_residue_mismatch(fit_universe):
+    test_u = fit_universe[0]
+    ref_u = fit_universe[1].residues[:-1].atoms
+    with pytest.raises(ValueError, match='number of residues'):
+        fit_translation(test_u, ref_u)(test_u.trajectory.ts)
 
 def test_fit_translation_com(fit_universe):
     test_u = fit_universe[0]
