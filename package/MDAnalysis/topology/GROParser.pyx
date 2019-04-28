@@ -47,7 +47,6 @@ Classes
 from __future__ import absolute_import
 
 import numpy as np
-cimport numpy as np
 from six.moves import range
 
 from ..lib.util import openany
@@ -93,8 +92,8 @@ class GROParser(TopologyReaderBase):
         cdef object[:] resnames
         cdef object[:] names
         cdef int[:] indices
-        cdef long long[:] starts
-        cdef long long[:] wraps
+        cdef int[:] starts
+        cdef int[:] wraps
         with openany(self.filename) as inf:
             next(inf)
             n_atoms = int(next(inf))
@@ -125,13 +124,13 @@ class GROParser(TopologyReaderBase):
         # Fix wrapping of resids (if we ever saw a wrap)
         if np.any(np.asarray(resids) == 0):
             # find places where resid hit zero again
-            wraps = np.where(np.asarray(resids) == 0)[0]
+            wraps = np.where(np.asarray(resids) == 0)[0].astype(np.int32)
             # group these places together:
             # find indices of first 0 in each block of zeroes
             # 1) find large changes in index, (ie non sequential blocks)
             diff = np.diff(np.asarray(wraps)) != 1
             # 2) make array of where 0-blocks start
-            starts = np.hstack([np.asarray(wraps)[0], np.asarray(wraps)[1:][diff]])
+            starts = np.hstack([np.asarray(wraps)[0], np.asarray(wraps)[1:][diff]]).astype(np.int32)
 
             # remove 0 in starts, ie the first residue **can** be 0
             if starts[0] == 0:
