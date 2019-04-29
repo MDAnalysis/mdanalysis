@@ -509,7 +509,6 @@ class HydrogenBondLifetimes(object):
         warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
                       "which has .autocorrelation function",
                       category=DeprecationWarning)
-        pass
 
 
 class WaterOrientationalRelaxation(object):
@@ -1138,7 +1137,7 @@ class SurvivalProbability(object):
         frame_no = start
         while frame_no < stop:      # we have already added 1 to stop, therefore <
             if num_frames_to_skip != 0 and frame_loaded_counter == frames_per_window:
-                logger.info("Skipping the next %d frames:" % num_frames_to_skip)
+                logger.info("Skipping the next %d frames:", num_frames_to_skip)
                 frame_no += num_frames_to_skip
                 frame_loaded_counter = 0
                 # Correct the number of frames to be loaded after the first window (which starts at t=0, and
@@ -1149,7 +1148,7 @@ class SurvivalProbability(object):
             # update the frame number
             self.universe.trajectory[frame_no]
 
-            logging.info("Loading frame:", self.universe.trajectory.ts)
+            logger.info("Loading frame: %d", self.universe.trajectory.frame)
             atoms = self.universe.select_atoms(self.selection)
 
             # SP of residues or of atoms
@@ -1169,7 +1168,7 @@ class SurvivalProbability(object):
 
         # warn the user if the NaN are found
         if all(np.isnan(sp_timeseries[1:])):
-            logging.warning('NaN Error: Most likely data was not found. Check your atom selections. ')
+            logger.warning('NaN Error: Most likely data was not found. Check your atom selections. ')
 
         # user can investigate the distribution and sample size
         self.sp_timeseries_data = sp_timeseries_data
