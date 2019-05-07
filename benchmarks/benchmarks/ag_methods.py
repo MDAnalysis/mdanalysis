@@ -4,7 +4,9 @@ import MDAnalysis
 import numpy as np
 
 try:
-    from MDAnalysisTests.datafiles import GRO, TPR, XTC
+    from MDAnalysisTests.datafiles import (GRO, TPR, XTC, 
+                                           PSF, DCD, 
+                                           TRZ_psf, TRZ)
     from MDAnalysis.exceptions import NoDataError
 except:
     pass
