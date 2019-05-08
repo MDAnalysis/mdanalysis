@@ -20,7 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 """
-Chemfiles interface with MDAnalysis --- :mod:`MDAnalysis.coordinates.CHEMFILES`
+Chemfiles interface with MDAnalysis --- :mod:`MDAnalysis.coordinates.chemfiles`
 ==============================================================================
 
 Classes to read and write files using the chemfiles library
@@ -69,16 +69,16 @@ class ChemfilesReader(base.ReaderBase):
     matching format is found, a ``ChemfilesError`` is raised. It is also
     possible to manually specify the format to use for a given file.
     """
-    format = 'CHEMFILES'
+    format = 'chemfiles'
     units = {'time': 'fs', 'length': 'Angstrom'}
 
-    def __init__(self, filename, format="", **kwargs):
+    def __init__(self, filename, chemfiles_format="", **kwargs):
         """
         Parameters
         ----------
         filename : str
             trajectory filename
-        format : str (optional)
+        chemfiles_format : str (optional)
             use the given format name instead of guessing from the extension.
             The list of supported formats and their names is available in
             chemfiles documentation, at
@@ -87,17 +87,20 @@ class ChemfilesReader(base.ReaderBase):
             General reader arguments.
         """
         super(ChemfilesReader, self).__init__(filename, **kwargs)
-        self._format = format
+        self._format = chemfiles_format
         self._cached_n_atoms = None
         self._open()
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self.next()
+        print(kwargs)
 
     def _open(self):
-        self._file = Trajectory(self.filename, 'r', self._format)
         self._closed = False
         self._step = 0
         self._frame = -1
+        # Open file last to ensure that all other attributes are set
+        # in case of exception
+        self._file = Trajectory(self.filename, 'r', self._format)
 
     def close(self):
         """close reader"""
@@ -116,7 +119,6 @@ class ChemfilesReader(base.ReaderBase):
         if self._cached_n_atoms is None:
             self._cached_n_atoms = len(self._file.read_step(0).atoms)
         return self._cached_n_atoms
-
 
     def _reopen(self):
         """reopen trajectory"""
@@ -177,7 +179,7 @@ class ChemfilesWriter(base.WriterBase):
     possible to manually specify the format to use for a given file.
     """
 
-    format = 'CHEMFILES'
+    format = 'chemfiles'
     multiframe = True
     units = {'time': 'fs', 'length': 'Angstrom'}
 
@@ -221,7 +223,6 @@ class ChemfilesWriter(base.WriterBase):
         """
         frame = self._ts_to_frame(ts)
         self._file.write(frame)
-
 
     def _ts_to_frame(self, ts):
         """

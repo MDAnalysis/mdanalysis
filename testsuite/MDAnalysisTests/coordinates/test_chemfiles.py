@@ -25,11 +25,11 @@ import pytest
 
 import MDAnalysis as mda
 import numpy as np
-from numpy.testing import assert_almost_equal
+from unittest import TestCase
 
-from MDAnalysis.coordinates.CHEMFILES import ChemfilesReader
+from MDAnalysis.coordinates.chemfiles import ChemfilesReader, ChemfilesWriter
 
-from MDAnalysisTests.datafiles import COORDINATES_XYZ
+from MDAnalysisTests import datafiles
 from MDAnalysisTests.coordinates.base import (
     MultiframeReaderTest, BaseWriterTest, BaseReference
 )
@@ -38,10 +38,10 @@ from MDAnalysisTests.coordinates.base import (
 class ChemfilesXYZReference(BaseReference):
     def __init__(self):
         super(ChemfilesXYZReference, self).__init__()
-        self.trajectory = COORDINATES_XYZ
-        self.topology = COORDINATES_XYZ
-        self.reader = mda.coordinates.CHEMFILES.ChemfilesReader
-        self.writer = mda.coordinates.CHEMFILES.ChemfilesWriter
+        self.trajectory = datafiles.COORDINATES_XYZ
+        self.topology = datafiles.COORDINATES_XYZ
+        self.reader = ChemfilesReader
+        self.writer = ChemfilesWriter
         self.ext = 'xyz'
         self.volume = 0
         self.dimensions = np.zeros(6)
@@ -65,3 +65,16 @@ class TestChemfilesWriter(BaseWriterTest):
     # extension.
     def test_no_container(self, ref):
         pass
+
+
+class TestChemfiles(TestCase):
+    def test_read_chemfiles_format(self):
+        u = mda.Universe(
+            datafiles.LAMMPSdata,
+            format="chemfiles",
+            topology_format="data",
+            chemfiles_format="LAMMPS Data"
+        )
+
+        for ts in u.trajectory:
+            self.assertEqual(ts.n_atoms, 18364)
