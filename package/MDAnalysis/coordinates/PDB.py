@@ -389,18 +389,26 @@ class PDBReader(base.ReaderBase):
                 pos += 1
             elif line[:6] == 'CRYST1':
                 # does an implicit str -> float conversion
-                self.ts._unitcell[:] = [line[6:15], line[15:24],
-                                        line[24:33], line[33:40],
-                                        line[40:47], line[47:54]]
-
-        # doing the conversion from list to array at the end is faster
-        self.ts.positions = tmp_buf
+                try:
+                    self.ts._unitcell[:] = [line[6:15], line[15:24],
+                                            line[24:33], line[33:40],
+                                            line[40:47], line[47:54]]
+                except ValueError:
+                    warnings.warn("Failed to read CRYST1 record, "
+                                  "possibly invalid PDB file, got:\n{}"
+                                  "".format(line))
 
         # check if atom number changed
         if pos != self.n_atoms:
-            raise ValueError("Read an incorrect number of atoms\n"
-                             "Expected {expected} got {actual}"
-                             "".format(expected=self.n_atoms, actual=pos+1))
+            raise ValueError("Inconsistency in file '{}': The number of atoms "
+                             "({}) in trajectory frame {} differs from the "
+                             "number of atoms ({}) in the corresponding "
+                             "topology.\nTrajectories with varying numbers of "
+                             "atoms are currently not supported."
+                             "".format(self.filename, pos, frame, self.n_atoms))
+
+        # doing the conversion from list to array at the end is faster
+        self.ts.positions = tmp_buf
 
         if self.convert_units:
             # both happen inplace

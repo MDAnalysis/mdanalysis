@@ -214,7 +214,7 @@ Classes, methods, and functions
 from __future__ import division, absolute_import, print_function
 
 import six
-from six.moves import range, cPickle
+from six.moves import range, cPickle, zip
 from six import string_types
 
 import os
@@ -1353,10 +1353,10 @@ class PSAnalysis(object):
 
         # Set default directory names for storing topology/reference structures,
         # fitted trajectories, paths, distance matrices, and plots
-        self.datadirs = {'fitted_trajs' : '/fitted_trajs',
-                         'paths' : '/paths',
-                         'distance_matrices' : '/distance_matrices',
-                         'plots' : '/plots'}
+        self.datadirs = {'fitted_trajs' : 'fitted_trajs',
+                         'paths' : 'paths',
+                         'distance_matrices' : 'distance_matrices',
+                         'plots' : 'plots'}
         for dir_name, directory in six.iteritems(self.datadirs):
             try:
                 full_dir_name = os.path.join(self.targetdir, dir_name)
@@ -1465,7 +1465,7 @@ class PSAnalysis(object):
         for i, u in enumerate(self.universes):
             p = Path(u, self.u_reference, ref_select=self.ref_select,
                      path_select=self.path_select, ref_frame=ref_frame)
-            trj_dir = self.targetdir + self.datadirs['fitted_trajs']
+            trj_dir = os.path.join(self.targetdir, self.datadirs['fitted_trajs'])
             postfix = '{0}{1}{2:03n}'.format(infix, '_psa', i+1)
             top_name, fit_trj_name = p.run(align=align, filename=filename,
                                            postfix=postfix,
@@ -1635,7 +1635,7 @@ class PSAnalysis(object):
 
         """
         filename = filename or 'psa_distances'
-        head = self.targetdir + self.datadirs['distance_matrices']
+        head = os.path.join(self.targetdir, self.datadirs['distance_matrices'])
         outfile = os.path.join(head, filename)
         if self.D is None:
             raise NoDataError("Distance matrix has not been calculated yet")
@@ -1661,9 +1661,13 @@ class PSAnalysis(object):
         -------
         filename : str
 
+        See Also
+        --------
+        load
+
         """
         filename = filename or 'path_psa'
-        head = self.targetdir + self.datadirs['paths']
+        head = os.path.join(self.targetdir, self.datadirs['paths'])
         outfile = os.path.join(head, filename)
         if self.paths is None:
             raise NoDataError("Paths have not been calculated yet")
@@ -1682,6 +1686,13 @@ class PSAnalysis(object):
     def load(self):
         """Load fitted paths specified by 'psa_path-names.pkl' in
         :attr:`PSAnalysis.targetdir`.
+
+        All filenames are determined by :class:`PSAnalysis`.
+
+        See Also
+        --------
+        save_paths
+
         """
         if not os.path.exists(self._paths_pkl):
             raise NoDataError("Fitted trajectories cannot be loaded; save file" +
@@ -1690,7 +1701,7 @@ class PSAnalysis(object):
         self.paths = [np.load(pname) for pname in self.path_names]
         if os.path.exists(self._labels_pkl):
             self.labels = np.load(self._labels_pkl)
-        print("Loaded paths from " + self._paths_pkl)
+        logger.info("Loaded paths from %r", self._paths_pkl)
 
 
     def plot(self, filename=None, linkage='ward', count_sort=False,
@@ -1796,7 +1807,7 @@ class PSAnalysis(object):
             tic.tick1On = tic.tick2On = False
 
         if filename is not None:
-            head = self.targetdir + self.datadirs['plots']
+            head = os.path.join(self.targetdir, self.datadirs['plots'])
             outfile = os.path.join(head, filename)
             savefig(outfile, dpi=300, bbox_inches='tight')
 
@@ -1907,7 +1918,7 @@ class PSAnalysis(object):
             tic.tick1On = tic.tick2On = False
 
         if filename is not None:
-            head = self.targetdir + self.datadirs['plots']
+            head = os.path.join(self.targetdir, self.datadirs['plots'])
             outfile = os.path.join(head, filename)
             savefig(outfile, dpi=600, bbox_inches='tight')
 
@@ -2011,7 +2022,7 @@ class PSAnalysis(object):
         tight_layout()
 
         if filename is not None:
-            head = self.targetdir + self.datadirs['plots']
+            head = os.path.join(self.targetdir, self.datadirs['plots'])
             outfile = os.path.join(head, filename)
             savefig(outfile, dpi=300, bbox_inches='tight')
 

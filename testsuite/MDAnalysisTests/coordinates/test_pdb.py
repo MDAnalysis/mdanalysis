@@ -894,3 +894,39 @@ def test_write_pdb_zero_atoms():
         with mda.Writer(outfile, ag.n_atoms) as w:
             with pytest.raises(IndexError):
                 w.write(ag)
+
+
+def test_atom_not_match(tmpdir):
+    # issue 1998
+    outfile = str(tmpdir.mkdir("PDBReader").join('test_atom_not_match' + ".pdb"))
+    u = mda.Universe(PSF, DCD)
+    # select two groups of atoms
+    protein = u.select_atoms("protein and name CA")
+    atoms = u.select_atoms(
+        'resid 1 or resid 10 or resid 100 or resid 1000 or resid 10000')
+    with mda.Writer(outfile, multiframe=True, n_atoms=10) as pdb:
+        # write these two groups of atoms to pdb
+        # Then the n_atoms will not match
+        pdb.write(protein)
+        pdb.write(atoms)
+    reader = mda.coordinates.PDB.PDBReader(outfile)
+    with pytest.raises(ValueError) as excinfo:
+        reader._read_frame(1)
+    assert 'Inconsistency in file' in str(excinfo.value)
+
+
+def test_partially_missing_cryst():
+    # issue 2252
+    raw = open(INC_PDB, 'r').readlines()
+    # mangle the cryst lines so that only box angles are left
+    # this mimics '6edu' from PDB
+    raw = [line if not line.startswith('CRYST')
+           else line[:6] + ' ' * 28 + line[34:]
+           for line in raw]
+
+    with pytest.warns(UserWarning):
+        u = mda.Universe(StringIO('\n'.join(raw)), format='PDB')
+
+    assert len(u.atoms) == 3
+    assert len(u.trajectory) == 2
+    assert_array_almost_equal(u.dimensions, 0.0)
