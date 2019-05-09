@@ -102,7 +102,7 @@ class TestMol2(TestCase):
         assert_equal(len(u.atoms), 9)
         assert_equal(u.trajectory.n_frames, 2)
         u.trajectory[1]
-        assert_array_almost_equal(u.atoms.position[2], [-12.2710, -1.9540, -16.0480])
+        assert_array_almost_equal(u.atoms.positions[2], [-12.2710, -1.9540, -16.0480])
 
 
 class TestMol2_traj(TestCase):
