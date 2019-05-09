@@ -151,7 +151,8 @@ class MOL2Reader(base.ReaderBase):
                 # found new molecules
                 if "@<TRIPOS>MOLECULE" in line:
                     blocks.append({"start_line": i, "lines": []})
-                blocks[-1]["lines"].append(line)
+                if len(blocks):
+                    blocks[-1]["lines"].append(line)
         self.n_frames = len(blocks)
         self.frames = blocks
 
