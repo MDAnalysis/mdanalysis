@@ -100,7 +100,8 @@ class MOL2Parser(TopologyReaderBase):
                     if len(blocks):
                         break
                     blocks.append({"start_line": i, "lines": []})
-                blocks[-1]["lines"].append(line)
+                if len(blocks):
+                    blocks[-1]["lines"].append(line)
 
         if not len(blocks):
             raise ValueError("The mol2 file '{0}' needs to have at least one"
