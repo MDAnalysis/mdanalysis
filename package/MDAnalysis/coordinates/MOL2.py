@@ -127,6 +127,8 @@ class MOL2Reader(base.ReaderBase):
        Frames now 0-based instead of 1-based.
        MOL2 now reuses the same Timestep object for every frame,
        previously created a new instance of Timestep each frame.
+    .. versionchanged:: 0.19.3
+       Allows for comments at top of file.
     """
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
