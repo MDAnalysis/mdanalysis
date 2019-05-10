@@ -127,6 +127,8 @@ class MOL2Reader(base.ReaderBase):
        Frames now 0-based instead of 1-based.
        MOL2 now reuses the same Timestep object for every frame,
        previously created a new instance of Timestep each frame.
+    .. versionchanged:: 0.20.0
+       Allows for comments at top of file.
     """
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
@@ -151,7 +153,8 @@ class MOL2Reader(base.ReaderBase):
                 # found new molecules
                 if "@<TRIPOS>MOLECULE" in line:
                     blocks.append({"start_line": i, "lines": []})
-                blocks[-1]["lines"].append(line)
+                if len(blocks):
+                    blocks[-1]["lines"].append(line)
         self.n_frames = len(blocks)
         self.frames = blocks
 

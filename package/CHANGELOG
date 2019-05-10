@@ -15,7 +15,8 @@ The rules for this file:
 ------------------------------------------------------------------------------
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
-         ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp
+         ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
+         IAlibay
 
   * 0.20.0
 
@@ -66,6 +67,7 @@ Changes
   * changed fudge_factor in guess_bonds to deal with new vdw radii (#2138, PR #2142)
 
 Fixes
+  * fixed mol2 comment header handling (Issue #2261)
   * fixed reading PDB files with partial CRYST lines (Issue #2252)
   * fixed transformation tests not being run (Issue #2241)
   * fixed the segmentation fault in capped_distances (Issue #2164, PR #2169)
