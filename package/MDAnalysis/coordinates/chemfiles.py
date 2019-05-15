@@ -20,35 +20,31 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 """
-Chemfiles interface with MDAnalysis --- :mod:`MDAnalysis.coordinates.chemfiles`
-==============================================================================
+Reading trajectory with Chemfiles --- :mod:`MDAnalysis.coordinates.chemfiles`
+=============================================================================
 
-Classes to read and write files using the chemfiles library
-(https://chemfiles.org). This library provides C++ implementation of multiple
-formats readers and writers.
+Classes to read and write files using the `chemfiles`_ library. This library
+provides C++ implementation of multiple formats readers and writers, the full
+list if available `here <formats>`_.
 
-See Also
---------
+This module only contains the coordinate reader and writer, which means that the
+topology read by chemfiles is ignored when reading a file, and no topology is
+written either. This can be surprising when using formats where topology and
+coordinates are not separated, such as XYZ or PDB.
 
-.. _Chemfiles main documentation:
-   https://chemfiles.org/chemfiles/latest/
-
-
-.. _Chemfiles Python interface:
-   https://chemfiles.org/chemfiles.py/latest/
-
+.. _chemfiles: https://chemfiles.org
+.. _formats: http://chemfiles.org/chemfiles/latest/formats.html
 
 Classes
 -------
 
 .. autoclass:: ChemfilesReader
-   :inherited-members:
 
 .. autoclass:: ChemfilesWriter
-   :inherited-members:
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, division
+from __future__ import print_function, unicode_literals
 
 import numpy as np
 
@@ -80,11 +76,13 @@ class ChemfilesReader(base.ReaderBase):
             trajectory filename
         chemfiles_format : str (optional)
             use the given format name instead of guessing from the extension.
-            The list of supported formats and their names is available in
-            chemfiles documentation, at
-            http://chemfiles.org/chemfiles/latest/formats.html
+            The `list of supported formats <formats>`_ and the associated names
+            is available in chemfiles documentation.
         **kwargs : dict
             General reader arguments.
+
+
+        .. _formats: http://chemfiles.org/chemfiles/latest/formats.html
         """
         super(ChemfilesReader, self).__init__(filename, **kwargs)
         self._format = chemfiles_format
@@ -147,7 +145,7 @@ class ChemfilesReader(base.ReaderBase):
         """convert a chemfiles frame to a :class:`TimeStep`"""
         if len(frame.atoms) != self.n_atoms:
             raise IOError(
-                "The number of atom changed in the trajectory. This is not " +
+                "The number of atom changed in the trajectory. This is not "
                 "supported by MDAnalysis."
             )
 
@@ -177,35 +175,44 @@ class ChemfilesWriter(base.WriterBase):
     The file format to used is guessed based on the file extension. If no
     matching format is found, a ``ChemfilesError`` is raised. It is also
     possible to manually specify the format to use for a given file.
+
+    Chemfiles support writting to files with varying number of atoms if the
+    underlying format support it. This is the case of most of text-based
+    formats.
     """
 
     format = 'chemfiles'
     multiframe = True
     units = {'time': 'fs', 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=0, mode="w", format="", **kwargs):
-        """Initialize the Chemfiles trajectory writer
-
+    def __init__(self, filename, n_atoms=0, mode="w", chemfiles_format="", **kwargs):
+        """
         Parameters
         ----------
         filename: str
             filename of trajectory file.
         n_atoms: int
-            number of atoms in the trajectory to write
+            number of atoms in the trajectory to write. This value is not
+            used and can vary during trajectory, if the underlying format
+            support it
         mode : str (optional)
             file opening mode: use 'a' to append to an existing file or 'w' to
             create a new file
-        format : str (optional)
+        chemfiles_format : str (optional)
             use the given format name instead of guessing from the extension.
-            The list of supported formats and their names is available in
-            chemfiles documentation, at
-            http://chemfiles.org/chemfiles/latest/formats.html
+            The `list of supported formats <formats>`_ and the associated names
+            is available in chemfiles documentation.
+        **kwargs : dict
+            General writer arguments.
+
+
+        .. _formats: http://chemfiles.org/chemfiles/latest/formats.html
         """
         self.filename = filename
         self.n_atoms = n_atoms
         if mode != "a" and mode != "w":
             raise IOError("Expected 'a' or 'w' as mode in ChemfilesWriter")
-        self._file = Trajectory(self.filename, mode, format)
+        self._file = Trajectory(self.filename, mode, chemfiles_format)
         self._closed = False
 
     def close(self):
@@ -228,9 +235,6 @@ class ChemfilesWriter(base.WriterBase):
         """
         Convert a Timestep to a chemfiles Frame
         """
-        if ts.n_atoms != self.n_atoms:
-            # TODO: warning ? error ?
-            pass
         frame = Frame()
         frame.resize(ts.n_atoms)
         if ts.has_positions:
