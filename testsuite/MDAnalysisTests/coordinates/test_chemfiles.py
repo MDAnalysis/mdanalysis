@@ -29,7 +29,7 @@ from unittest import TestCase
 
 from MDAnalysis.coordinates.chemfiles import ChemfilesReader, ChemfilesWriter
 
-from MDAnalysisTests import datafiles
+from MDAnalysisTests import datafiles, tempdir
 from MDAnalysisTests.coordinates.base import (
     MultiframeReaderTest, BaseWriterTest, BaseReference
 )
@@ -78,3 +78,75 @@ class TestChemfiles(TestCase):
 
         for ts in u.trajectory:
             self.assertEqual(ts.n_atoms, 18364)
+
+    def test_changing_system_size(self):
+        outfile = tempdir.TempDir().name + "chemfiles-changing-size.xyz"
+        with open(outfile, "w") as fd:
+            fd.write(VARYING_XYZ)
+
+        u = mda.Universe(outfile, format="chemfiles", topology_format="XYZ")
+
+        with self.assertRaises(IOError):
+            u.trajectory._read_next_timestep()
+
+    def test_wrong_open_mode(self):
+        with self.assertRaises(IOError):
+            _ = ChemfilesWriter("", mode="r")
+
+    def check_topology(self, reference, file):
+        u = mda.Universe(reference)
+        atoms = set([
+            (atom.name, atom.type, atom.record_type)
+            for atom in u.atoms
+        ])
+        bonds = set([
+            (bond.atoms[0].ix, bond.atoms[1].ix)
+            for bond in u.bonds
+        ])
+
+        check = mda.Universe(file)
+        np.testing.assert_equal(
+            u.trajectory.ts.positions,
+            check.trajectory.ts.positions
+        )
+
+        for atom in check.atoms:
+            self.assertIn((atom.name, atom.type, atom.record_type), atoms)
+
+        for bond in check.bonds:
+            self.assertIn((bond.atoms[0].ix, bond.atoms[1].ix), bonds)
+
+    def test_write_topology(self):
+        u = mda.Universe(datafiles.CONECT)
+        outfile = tempdir.TempDir().name + "chemfiles-write-topology.pdb"
+        with ChemfilesWriter(outfile) as writer:
+            writer.write(u)
+        self.check_topology(datafiles.CONECT, outfile)
+
+        # Manually setting the topology when creating the ChemfilesWriter
+        # (1) from an object
+        with ChemfilesWriter(outfile, topology=u) as writer:
+            writer.write_next_timestep(u.trajectory.ts)
+        self.check_topology(datafiles.CONECT, outfile)
+
+        # (2) from a file
+        with ChemfilesWriter(outfile, topology=datafiles.CONECT) as writer:
+            writer.write_next_timestep(u.trajectory.ts)
+        # FIXME: this does not work, since chemfiles also insert the bonds
+        # which are implicit in PDB format (bewteen standard residues), while
+        # MDAnalysis only read the explicit CONNECT records.
+
+        # self.check_topology(datafiles.CONECT, outfile)
+
+
+VARYING_XYZ = """2
+
+A 0 0 0
+A 0 0 0
+4
+
+A 0 0 0
+A 0 0 0
+A 0 0 0
+A 0 0 0
+"""
