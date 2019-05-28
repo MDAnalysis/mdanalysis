@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -41,9 +42,10 @@ from MDAnalysis.tests.datafiles import (
     PSF, DCD,
     PRMpbc, TRJpbc_bz2,
     PSF_NAMD, PDB_NAMD,
-    GRO, NUCL, NUCLsel, TPR, XTC,
+    GRO, RNA_PSF, NUCLsel, TPR, XTC,
     TRZ_psf, TRZ,
     PDB_icodes,
+    PDB_HOLE,
 )
 from MDAnalysisTests import make_Universe
 
@@ -344,9 +346,6 @@ class TestSelectionsAMBER(object):
         assert_equal(sel.names, ['HH31', 'HH32', 'HH33', 'HB1', 'HB2', 'HB3'])
 
 
-@pytest.mark.xfail(os.name == 'nt',
-                   strict=True,
-                   reason="Not supported on Windows yet.")
 class TestSelectionsNAMD(object):
     @pytest.fixture()
     def universe(self):
@@ -450,20 +449,22 @@ class TestSelectionsTPR(object):
 
 
 class TestSelectionsNucleicAcids(object):
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def universe(self):
-        return MDAnalysis.Universe(NUCL)
+        return MDAnalysis.Universe(RNA_PSF)
+
+    @pytest.fixture(scope='class')
+    def universe2(self):
+        return MDAnalysis.Universe(NUCLsel)
+
 
     def test_nucleic(self, universe):
         rna = universe.select_atoms("nucleic")
         assert_equal(rna.n_atoms, 739)
         assert_equal(rna.n_residues, 23)
 
-    def test_nucleic_all(self, universe):
-        u = mda.Universe(NUCLsel)
-
-        sel = u.select_atoms('nucleic')
-
+    def test_nucleic_all(self, universe2):
+        sel = universe2.select_atoms('nucleic')
         assert len(sel) == 34
 
     def test_nucleicbackbone(self, universe):
@@ -530,7 +531,7 @@ class BaseDistanceSelection(object):
 
         r1 = u.select_atoms('resid 1')
         box = u.dimensions if periodic else None
-        cog = r1.center_of_geometry(pbc=periodic).reshape(1, 3)
+        cog = r1.center_of_geometry().reshape(1, 3)
         d = distance_array(u.atoms.positions, cog, box=box)
         ref = set(np.where((d > 2.4) & (d < 6.0))[0])
 
@@ -548,7 +549,7 @@ class BaseDistanceSelection(object):
 
         r1 = u.select_atoms('resid 1')
         box = u.dimensions if periodic else None
-        cog = r1.center_of_geometry(pbc=periodic).reshape(1, 3)
+        cog = r1.center_of_geometry().reshape(1, 3)
         d = distance_array(u.atoms.positions, cog, box=box)
         ref = set(np.where(d < 5.0)[0])
 
@@ -602,6 +603,12 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
         ref = set(u.atoms[mask].indices)
 
         assert ref == set(result.indices)
+
+    @pytest.mark.parametrize('periodic,expected', ([True, 33], [False, 25]))
+    def test_sphzone(self, u, periodic, expected):
+        sel = u.select_atoms('sphzone 5.0 resid 1', periodic=periodic)
+
+        assert len(sel) == expected
 
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
@@ -1026,3 +1033,22 @@ def test_arbitrary_atom_group_raises_error():
     u = make_Universe(trajectory=True)
     with pytest.raises(TypeError):
         u.select_atoms('around 2.0 group this', this=u.atoms[0])
+
+
+def test_empty_sel():
+    u = make_Universe(trajectory=True)
+    with pytest.warns(UserWarning):
+        ag = u.atoms.select_atoms("")
+    assert_equal(len(ag), 0)
+    assert isinstance(ag, mda.AtomGroup)
+
+
+def test_record_type_sel():
+    u = mda.Universe(PDB_HOLE)
+
+    assert len(u.select_atoms('record_type ATOM')) == 264
+    assert len(u.select_atoms('not record_type HETATM')) == 264
+    assert len(u.select_atoms('record_type HETATM')) == 8
+
+    assert len(u.select_atoms('name CA and not record_type HETATM')) == 30
+    assert len(u.select_atoms('name CA and record_type HETATM')) == 2

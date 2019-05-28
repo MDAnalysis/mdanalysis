@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -25,8 +26,8 @@
 Base classes --- :mod:`MDAnalysis.coordinates.base`
 ===================================================
 
-Derive other Timestep, Reader and Writer classes from the classes in
-this module. The derived classes must follow the :ref:`Trajectory API`
+Derive other Timestep, FrameIterator, Reader and Writer classes from the classes
+in this module. The derived classes must follow the :ref:`Trajectory API`
 in :mod:`MDAnalysis.coordinates.__init__`.
 
 Timestep
@@ -113,6 +114,20 @@ MDAnalysis.
    .. automethod:: __iter__
    .. automethod:: copy
    .. automethod:: copy_slice
+
+
+FrameIterators
+--------------
+
+Iterator classes used by the by the :class:`ProtoReader`.
+
+.. autoclass:: FrameIteratorBase
+
+.. autoclass:: FrameIteratorSliced
+
+.. autoclass:: FrameIteratorAll
+
+.. autoclass:: FrameIteratorIndices
 
 
 Readers
@@ -489,7 +504,7 @@ class Timestep(object):
         """
         # Detect the size of the Timestep by doing a dummy slice
         try:
-            pos = self.positions[sel]
+            pos = self.positions[sel, :]
         except NoDataError:
             # It's cool if there's no Data, we'll live
             pos = None
@@ -497,14 +512,14 @@ class Timestep(object):
             raise TypeError("Selection type must be compatible with slicing"
                             " the coordinates")
         try:
-            vel = self.velocities[sel]
+            vel = self.velocities[sel, :]
         except NoDataError:
             vel = None
         except:
             raise TypeError("Selection type must be compatible with slicing"
                             " the coordinates")
         try:
-            force = self.forces[sel]
+            force = self.forces[sel, :]
         except NoDataError:
             force = None
         except:
@@ -867,11 +882,6 @@ class FrameIteratorBase(object):
     function, and can be indexed similarly to a full trajectory. When indexed,
     indices are resolved relative to the iterable and not relative to the
     trajectory.
-
-    Parameters
-    ----------
-    trajectory: ProtoReader
-        The trajectory over which to iterate.
 
     .. versionadded:: 0.19.0
 
@@ -1316,7 +1326,7 @@ class IOBase(object):
 
     def close(self):
         """Close the trajectory file."""
-        pass
+        pass # pylint: disable=unnecessary-pass
 
     def __enter__(self):
         return self
@@ -1501,7 +1511,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
         Calling next after this should return the first frame
         """
-        pass
+        pass # pylint: disable=unnecessary-pass
 
     def _apply_limits(self, frame):
         if frame < 0:
@@ -1959,7 +1969,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             raise ValueError("Transformations are already set")
 
     def add_transformations(self, *transformations):
-        """ Add all transformations to be applied to the trajectory.
+        """Add all transformations to be applied to the trajectory.
 
         This function take as list of transformations as an argument. These
         transformations are functions that will be called by the Reader and given
@@ -1976,14 +1986,27 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
           workflow = [some_transform, another_transform, this_transform]
           u.trajectory.add_transformations(*workflow)
 
+        The transformations are applied in the order given in the list
+        `transformations`, i.e., the first transformation is the first
+        or innermost one to be applied to the :class:`Timestep`. The
+        example above would be equivalent to
+
+        .. code-block:: python
+
+          for ts in u.trajectory:
+             ts = this_transform(another_transform(some_transform(ts)))
+
+
         Parameters
         ----------
         transform_list : list
             list of all the transformations that will be applied to the coordinates
+            in the order given in the list
 
         See Also
         --------
         :mod:`MDAnalysis.transformations`
+
         """
 
         try:

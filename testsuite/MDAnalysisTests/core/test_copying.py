@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -27,7 +28,7 @@ from numpy.testing import assert_equal
 import pytest
 
 from MDAnalysisTests.datafiles import (
-    PSF, DCD
+    PSF, DCD, PDB_small
 )
 
 import MDAnalysis as mda
@@ -94,6 +95,7 @@ TA_FILLER = {
     object: np.array(['dave', 'steve', 'hugo'], dtype=object),
     int: np.array([5, 4, 6]),
     float: np.array([15.4, 5.7, 22.2]),
+    'record': np.array(['ATOM', 'ATOM', 'HETATM'], dtype='object'),
     'bond': [(0, 1), (1, 2), (5, 6)],
     'angles': [(0, 1, 2), (1, 2, 3), (4, 5, 6)],
     'dihe': [(0, 1, 2, 3), (1, 2, 3, 4), (5, 6, 7, 8)],
@@ -105,6 +107,7 @@ TA_FILLER = {
     (ta.Atomtypes, object),
     (ta.Elements, object),
     (ta.Radii, float),
+    (ta.RecordTypes, 'record'),
     (ta.ChainIDs, object),
     (ta.Tempfactors, float),
     (ta.Masses, float),
@@ -130,6 +133,7 @@ def refTA(request):
 def test_copy_attr(refTA):
     new = refTA.copy()
 
+    assert_equal(new.values, refTA.values)
     assert new.values is not refTA.values
 
 
@@ -203,3 +207,10 @@ class TestCopyUniverse(object):
 
         assert new.atoms[0].name == previous
         assert refUniverse.atoms[0].name == 'newname'
+
+def test_pdb_copy():
+    u = mda.Universe(PDB_small)
+
+    u2 = u.copy()
+
+    assert_equal(u.atoms.record_types, u2.atoms.record_types)

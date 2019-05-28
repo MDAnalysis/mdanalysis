@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -80,6 +81,8 @@ class MOL2Parser(TopologyReaderBase):
 
     .. versionchanged:: 0.9
        Now subclasses TopologyReaderBase
+    .. versionchanged:: 0.20.0
+       Allows for comments at the top of the file
     """
     format = 'MOL2'
 
@@ -99,7 +102,8 @@ class MOL2Parser(TopologyReaderBase):
                     if len(blocks):
                         break
                     blocks.append({"start_line": i, "lines": []})
-                blocks[-1]["lines"].append(line)
+                if len(blocks):
+                    blocks[-1]["lines"].append(line)
 
         if not len(blocks):
             raise ValueError("The mol2 file '{0}' needs to have at least one"

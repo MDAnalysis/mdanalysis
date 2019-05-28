@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -287,11 +288,13 @@ class TestUniverse(object):
         with pytest.raises(NotImplementedError):
             cPickle.dumps(u, protocol = cPickle.HIGHEST_PROTOCOL)
 
-    def test_set_dimensions(self):
+    @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
+    def test_set_dimensions(self, dtype):
         u = mda.Universe(PSF, DCD)
-        box = np.array([10, 11, 12, 90, 90, 90])
-        u.dimensions = np.array([10, 11, 12, 90, 90, 90])
+        box = np.array([10, 11, 12, 90, 90, 90], dtype=dtype)
+        u.dimensions = box
         assert_allclose(u.dimensions, box)
+        assert u.dimensions.dtype == np.float32
 
 
 # remove for 1.0
@@ -345,7 +348,7 @@ class TestGuessBonds(object):
     """
     @pytest.fixture()
     def vdw(self):
-        return {'A': 1.05, 'B': 0.4}
+        return {'A': 1.4, 'B': 0.5}
 
     def _check_universe(self, u):
         """Verify that the Universe is created correctly"""
@@ -690,3 +693,30 @@ class TestEmpty(object):
         with pytest.warns(UserWarning):
             u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=1,
                                    atom_resindex=res)
+
+    def test_trajectory(self):
+        u = mda.Universe.empty(10, trajectory=True)
+
+        assert len(u.atoms) == 10
+        assert u.atoms.positions.shape == (10, 3)
+
+    def test_trajectory_iteration(self):
+        u = mda.Universe.empty(10, trajectory=True)
+
+        assert len(u.trajectory) == 1
+        timesteps =[]
+        for ts in u.trajectory:
+            timesteps.append(ts.frame)
+        assert len(timesteps) == 1
+
+    def test_velocities(self):
+        u = mda.Universe.empty(10, trajectory=True, velocities=True)
+
+        assert u.atoms.positions.shape == (10, 3)
+        assert u.atoms.velocities.shape == (10, 3)
+
+    def test_forces(self):
+        u = mda.Universe.empty(10, trajectory=True, forces=True)
+
+        assert u.atoms.positions.shape == (10, 3)
+        assert u.atoms.forces.shape == (10, 3)

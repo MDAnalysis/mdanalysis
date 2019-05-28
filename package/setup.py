@@ -15,6 +15,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -45,6 +46,7 @@ Google groups forbids any name that contains the string `anal'.)
 from __future__ import print_function
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
+from distutils.sysconfig import customize_compiler
 import codecs
 import os
 import sys
@@ -65,9 +67,13 @@ if sys.version_info[0] < 3:
 else:
     import configparser
 
+if sys.version_info[0] >= 3:
+    from subprocess import getoutput
+else:
+    from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.18.1-dev"
+RELEASE = "0.19.3-dev"
 
 is_release = 'dev' not in RELEASE
 
@@ -88,6 +94,7 @@ try:
               "parallelization module".format(
                Cython.__version__, required_version))
         cython_found = False
+    cython_linetrace = bool(os.environ.get('CYTHON_TRACE_NOGIL', False))
 except ImportError:
     cython_found = False
     if not is_release:
@@ -227,6 +234,7 @@ def detect_openmp():
     """Does this compiler support OpenMP parallelization?"""
     print("Attempting to autodetect OpenMP support... ", end="")
     compiler = new_compiler()
+    customize_compiler(compiler)
     compiler.add_library('gomp')
     include = '<omp.h>'
     extra_postargs = ['-fopenmp']
@@ -237,6 +245,14 @@ def detect_openmp():
     else:
         print("Did not detect OpenMP support.")
     return hasopenmp
+
+
+def using_clang():
+    """Will we be using a clang compiler?"""
+    compiler = new_compiler()
+    customize_compiler(compiler)
+    compiler_ver = getoutput("{0} -v".format(compiler.compiler[0]))
+    return 'clang' in compiler_ver
 
 
 def extensions(config):
@@ -258,9 +274,13 @@ def extensions(config):
 
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
+    cpp_extra_link_args=[]
     # needed to specify c++ runtime library on OSX
-    if platform.system() == 'Darwin':
+    if platform.system() == 'Darwin' and using_clang():
         cpp_extra_compile_args.append('-stdlib=libc++')
+        cpp_extra_compile_args.append('-mmacosx-version-min=10.9')
+        cpp_extra_link_args.append('-stdlib=libc++')
+        cpp_extra_link_args.append('-mmacosx-version-min=10.7')
 
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
@@ -289,6 +309,7 @@ def extensions(config):
         print('Will not attempt to use Cython.')
 
     source_suffix = '.pyx' if use_cython else '.c'
+    cpp_source_suffix = '.pyx' if use_cython else '.cpp'
 
     # The callable is passed so that it is only evaluated at install time.
 
@@ -299,6 +320,10 @@ def extensions(config):
         mathlib = []
     else:
         mathlib = ['m']
+
+    if cython_linetrace:
+        extra_compile_args.append("-DCYTHON_TRACE_NOGIL")
+        cpp_extra_compile_args.append("-DCYTHON_TRACE_NOGIL")
 
     libdcd = MDAExtension('MDAnalysis.lib.formats.libdcd',
                           ['MDAnalysis/lib/formats/libdcd' + source_suffix],
@@ -347,18 +372,20 @@ def extensions(config):
                         define_macros=define_macros,
                         extra_compile_args=extra_compile_args)
     cutil = MDAExtension('MDAnalysis.lib._cutil',
-                         sources=['MDAnalysis/lib/_cutil' + source_suffix],
+                         sources=['MDAnalysis/lib/_cutil' + cpp_source_suffix],
                          language='c++',
                          libraries=mathlib,
                          include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                          define_macros=define_macros,
-                         extra_compile_args=cpp_extra_compile_args)
+                         extra_compile_args=cpp_extra_compile_args,
+                         extra_link_args= cpp_extra_link_args)
     augment = MDAExtension('MDAnalysis.lib._augment',
-                         sources=['MDAnalysis/lib/_augment' + source_suffix],
+                         sources=['MDAnalysis/lib/_augment' + cpp_source_suffix],
                          language='c++',
                          include_dirs=include_dirs,
                          define_macros=define_macros,
-                         extra_compile_args=cpp_extra_compile_args)
+                         extra_compile_args=cpp_extra_compile_args,
+                         extra_link_args= cpp_extra_link_args)
 
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
@@ -381,11 +408,12 @@ def extensions(config):
                               define_macros=define_macros,
                               extra_compile_args=extra_compile_args)
     nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
-                             ['MDAnalysis/lib/nsgrid' + source_suffix],
+                             ['MDAnalysis/lib/nsgrid' + cpp_source_suffix],
                              include_dirs=include_dirs,
                              language='c++',
                              define_macros=define_macros,
-                             extra_compile_args=cpp_extra_compile_args)
+                             extra_compile_args=cpp_extra_compile_args,
+                             extra_link_args= cpp_extra_link_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
                 ap_clustering, spe_dimred, cutil, augment, nsgrid]
@@ -393,7 +421,13 @@ def extensions(config):
 
     cython_generated = []
     if use_cython:
-        extensions = cythonize(pre_exts)
+        extensions = cythonize(
+            pre_exts,
+            compiler_directives={'linetrace' : cython_linetrace,
+                                 'embedsignature' : False},
+        )
+        if cython_linetrace:
+            print("Cython coverage will be enabled")
         for pre_ext, post_ext in zip(pre_exts, extensions):
             for source in post_ext.sources:
                 if source not in pre_ext.sources:
@@ -495,13 +529,14 @@ if __name__ == '__main__':
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -510,6 +545,21 @@ if __name__ == '__main__':
     ]
     config = Config()
     exts, cythonfiles = extensions(config)
+
+    install_requires = [
+          'numpy>=1.10.4',
+          'biopython>=1.71',
+          'networkx>=1.0',
+          'GridDataFormats>=0.4.0',
+          'six>=1.4.0',
+          'mmtf-python>=1.0.0',
+          'joblib',
+          'scipy>=1.0.0',
+          'matplotlib>=1.5.1',
+          'mock',
+    ]
+    if not os.name == 'nt':
+        install_requires.append('gsd>=1.4.0')
 
     setup(name='MDAnalysis',
           version=RELEASE,
@@ -545,19 +595,7 @@ if __name__ == '__main__':
           setup_requires=[
               'numpy>=1.10.4',
           ],
-          install_requires=[
-              'gsd>=1.4.0',
-              'numpy>=1.10.4',
-              'biopython>=1.71',
-              'networkx>=1.0',
-              'GridDataFormats>=0.4.0',
-              'six>=1.4.0',
-              'mmtf-python>=1.0.0',
-              'joblib',
-              'scipy>=1.0.0',
-              'matplotlib>=1.5.1',
-              'mock',
-          ],
+          install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
           # packaging system
@@ -581,7 +619,7 @@ if __name__ == '__main__':
     )
 
     # Releases keep their cythonized stuff for shipping.
-    if not config.get('keep_cythonized', default=is_release):
+    if not config.get('keep_cythonized', default=is_release) and not cython_linetrace:
         for cythonized in cythonfiles:
             try:
                 os.unlink(cythonized)

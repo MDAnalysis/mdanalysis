@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -703,10 +704,10 @@ def hydroxyl(universe, seg, i):
     .. versionadded:: 0.7.6
 
     """
-    h = universe.select_atoms(" atom {0!s} {1!s} C1\' ".format(seg, i),
-                              " atom {0!s} {1!s} C2\' ".format(seg, i),
-                              " atom {0!s} {1!s} O2\' ".format(seg, i),
-                              " atom {0!s} {1!s} H2\'\' ".format(seg, i))
+    h = universe.select_atoms("atom {0!s} {1!s} C1'".format(seg, i),
+                              "atom {0!s} {1!s} C2'".format(seg, i),
+                              "atom {0!s} {1!s} O2'".format(seg, i),
+                              "atom {0!s} {1!s} H2'".format(seg, i))
     try:
         hydr = h.dihedral.value() % 360
     except ValueError:

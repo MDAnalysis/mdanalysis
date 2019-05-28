@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -117,40 +118,57 @@ class TestFragments(object):
             case2()
     ))
     def test_total_frags(self, u):
+        fragments = u.atoms.fragments
+        fragindices = u.atoms.fragindices
         # should be 5 fragments of 25 atoms
-        assert len(u.atoms.fragments) == 5
-        for i, frag in enumerate(u.atoms.fragments):
+        assert len(fragments) == 5
+        for frag in fragments:
             assert len(frag) == 25
+        # number of fragindices must correspond to number of atoms:
+        assert len(fragindices) == len(u.atoms)
+        # number of unique fragindices must correspond to number of fragments:
+        assert len(np.unique(fragindices)) == len(fragments)
+        # check fragindices dtype:
+        assert fragindices.dtype == np.int64
+        #check n_fragments
+        assert u.atoms.n_fragments == len(fragments)
 
     @pytest.mark.parametrize('u', (
             case1(),
             case2()
     ))
     def test_frag_external_ordering(self, u):
-        # check fragments are sorted
+        # check fragments and fragindices are sorted correctly:
         for i, frag in enumerate(u.atoms.fragments):
             assert frag[0].index == i * 25
+            assert np.unique(frag.fragindices)[0] == i
 
     @pytest.mark.parametrize('u', (
             case1(),
             case2()
     ))
     def test_frag_internal_ordering(self, u):
-        # check atoms are sorted within fragments
+        # check atoms are sorted within fragments and have the same fragindex:
         for i, frag in enumerate(u.atoms.fragments):
             assert_equal(frag.ix, np.arange(25) + i * 25)
+            assert len(np.unique(frag.fragindices)) == 1
+            assert frag.n_fragments == 1
 
     @pytest.mark.parametrize('u', (
             case1(),
             case2()
     ))
     def test_atom_access(self, u):
-        # check atom can access fragment
+        # check atom can access fragment and fragindex:
         for at in (u.atoms[0], u.atoms[76], u.atoms[111]):
             frag = at.fragment
             assert isinstance(frag, groups.AtomGroup)
             assert len(frag) == 25
             assert at in frag
+            fragindex = at.fragindex
+            assert isinstance(fragindex, int)
+            with pytest.raises(AttributeError):
+                x = at.n_fragments
 
     @pytest.mark.parametrize('u', (
             case1(),
@@ -160,26 +178,50 @@ class TestFragments(object):
         # check atomgroup can access fragments
         # first 60 atoms have 3 fragments, given as tuple
         # each fragment should still be 25 atoms
-        frags = u.atoms[:60].fragments
+        ag = u.atoms[:60]
+        frags = ag.fragments
         assert len(frags) == 3
         assert isinstance(frags, tuple)
         for frag in frags:
             assert len(frag) == 25
+        # same for fragindices:
+        fragindices = ag.fragindices
+        assert len(fragindices) == 60
+        assert len(np.unique(fragindices)) == 3
+        assert ag.n_fragments == 3
+
+    def test_empty_atomgroup_access(self):
+        ag = mda.AtomGroup([], case1())
+        assert ag.fragments == tuple()
+        assert_equal(ag.fragindices, np.array([], dtype=np.int64))
+        assert ag.n_fragments == 0
 
     def test_atomgroup_fragments_nobonds_NDE(self):
         # should raise NDE
         u = make_Universe()
+        ag = u.atoms[:10]
         with pytest.raises(NoDataError):
-            getattr(u.atoms[:10], 'fragments')
+            getattr(ag, 'fragments')
+        with pytest.raises(NoDataError):
+            getattr(ag, 'fragindices')
+        with pytest.raises(NoDataError):
+            getattr(ag, 'n_fragments')
 
     def test_atom_fragment_nobonds_NDE(self):
         # should raise NDE
         u = make_Universe()
         with pytest.raises(NoDataError):
             getattr(u.atoms[10], 'fragment')
+        with pytest.raises(NoDataError):
+            getattr(u.atoms[10], 'fragindex')
 
 
 def test_tpr_fragments():
-    frags = mda.Universe(TPR, XTC).atoms.fragments
+    ag = mda.Universe(TPR, XTC).atoms
+    frags = ag.fragments
+    fragindices = ag.fragindices
 
     assert len(frags[0]) == 3341
+    assert len(fragindices) == len(ag)
+    assert len(np.unique(fragindices)) == len(frags)
+    assert ag.n_fragments == len(frags)

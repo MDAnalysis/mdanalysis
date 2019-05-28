@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -160,6 +161,10 @@ class PCA(AnalysisBase):
     Notes
     -----
     Computation can be speed up by supplying a precalculated mean structure
+
+    .. versionchanged:: 0.19.0
+       The start frame is used when performing selections and calculating
+       mean positions.  Previously the 0th frame was always used.
     """
 
     def __init__(self, universe, select='all', align=False, mean=None,
@@ -181,46 +186,39 @@ class PCA(AnalysisBase):
         n_components : int, optional
             The number of principal components to be saved, default saves
             all principal components, Default: None
-        start : int, optional
-            First frame of trajectory to use for generation
-            of covariance matrix, Default: None
-        stop : int, optional
-            Last frame of trajectory to use for generation
-            of covariance matrix, Default: None
-        step : int, optional
-            Step between frames of trajectory to use for generation
-            of covariance matrix, Default: None
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
         """
-        super(PCA, self).__init__(universe.trajectory,
-                                  **kwargs)
-        if self.n_frames == 1:
-            raise ValueError('No covariance information can be gathered from a'
-                             'single trajectory frame.\n')
-
+        super(PCA, self).__init__(universe.trajectory, **kwargs)
         self._u = universe
 
         # for transform function
         self.align = align
-        # access 0th index
-        self._u.trajectory[0]
-        # reference will be 0th index
-        self._reference = self._u.select_atoms(select)
-        self._atoms = self._u.select_atoms(select)
-        self.n_components = n_components
-        self._n_atoms = self._atoms.n_atoms
-        self._calculated = False
 
-        if mean is None:
+        self._calculated = False
+        self.n_components = n_components
+        self._select = select
+        self._mean = mean
+
+    def _prepare(self):
+        # access start index
+        self._u.trajectory[self.start]
+        # reference will be start index
+        self._reference = self._u.select_atoms(self._select)
+        self._atoms = self._u.select_atoms(self._select)
+        self._n_atoms = self._atoms.n_atoms
+
+        if self._mean is None:
             self.mean = np.zeros(self._n_atoms*3)
             self._calc_mean = True
         else:
-            self.mean = mean.positions
+            self.mean = self._mean.positions
             self._calc_mean = False
 
-    def _prepare(self):
+        if self.n_frames == 1:
+            raise ValueError('No covariance information can be gathered from a'
+                             'single trajectory frame.\n')
         n_dim = self._n_atoms * 3
         self.cov = np.zeros((n_dim, n_dim))
         self._ref_atom_positions = self._reference.positions
@@ -303,9 +301,13 @@ class PCA(AnalysisBase):
         Returns
         -------
         pca_space : array, shape (number of frames, number of components)
+
+        .. versionchanged:: 0.19.0
+           Transform now requires that :meth:`run` has been called before,
+           otherwise a :exc:`ValueError` is raised.
         """
         if not self._calculated:
-            self.run()
+            raise ValueError('Call run() on the PCA before using transform')
 
         if isinstance(atomgroup, Universe):
             atomgroup = atomgroup.atoms

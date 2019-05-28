@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -52,7 +53,10 @@ Classes
 """
 from __future__ import absolute_import
 
-import gsd.hoomd
+import os
+if os.name != 'nt':
+    # not supported on windows
+    import gsd.hoomd
 import numpy as np
 
 from . import guessers
@@ -106,6 +110,9 @@ class GSDParser(TopologyReaderBase):
 
         .. versionadded:: 0.17.0
         """
+        if os.name == 'nt':
+            raise NotImplementedError("GSD format not supported on Windows")
+
         attrs = {}
 
         with gsd.hoomd.open(self.filename,mode='rb') as t :
@@ -130,14 +137,14 @@ class GSDParser(TopologyReaderBase):
 
             # set bonds, angles, dihedrals, impropers
             for attrname, attr, in (
-                    ('bond', Bonds),
-                    ('angle', Angles),
-                    ('dihedral', Dihedrals),
-                    ('improper', Impropers),
+                    ('bonds', Bonds),
+                    ('angles', Angles),
+                    ('dihedrals', Dihedrals),
+                    ('impropers', Impropers),
             ):
                 try:
                     val = getattr(snap,attrname)
-                    vals = val.group
+                    vals = [tuple(b_instance) for b_instance in val.group]
                 except:
                     pass
                 else:

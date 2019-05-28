@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -25,15 +26,15 @@ import pytest
 from six import StringIO
 from six.moves import zip
 import os
-from unittest import TestCase
 
 import MDAnalysis as mda
 import numpy as np
 from MDAnalysisTests import tempdir, make_Universe
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
-from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
+from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
                                                    RefAdK)
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
+                                       PDB_full,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
@@ -69,23 +70,44 @@ class TestPDBReader(_SingleFrameReader):
         assert isinstance(self.universe.trajectory, PDBReader), "failed to choose PDBReader"
 
 
-class _PDBMetadata(TestCase, Ref4e43):
-    __test__ = False
+class TestPDBMetadata(object):
+    header = 'HYDROLASE                               11-MAR-12   4E43'
+    title = ['HIV PROTEASE (PR) DIMER WITH ACETATE IN EXO SITE AND PEPTIDE '
+             'IN ACTIVE', '2 SITE']
+    compnd = ['MOL_ID: 1;',
+              '2 MOLECULE: PROTEASE;',
+              '3 CHAIN: A, B;',
+              '4 ENGINEERED: YES;',
+              '5 MUTATION: YES;',
+              '6 MOL_ID: 2;',
+              '7 MOLECULE: RANDOM PEPTIDE;',
+              '8 CHAIN: C;',
+              '9 ENGINEERED: YES;',
+              '10 OTHER_DETAILS: UNKNOWN IMPURITY', ]
+    num_remarks = 333
+    # only first 5 remarks for comparison
+    nmax_remarks = 5
+    remarks = [
+        '2',
+        '2 RESOLUTION.    1.54 ANGSTROMS.',
+        '3',
+        '3 REFINEMENT.',
+        '3   PROGRAM     : REFMAC 5.5.0110',
+    ]
 
-    def setUp(self):
-        self.universe = mda.Universe(self.filename)
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        return mda.Universe(PDB_full)
 
-    def tearDown(self):
-        del self.universe
-
-    def test_HEADER(self):
-        assert_equal(self.universe.trajectory.header,
+    def test_HEADER(self, universe):
+        assert_equal(universe.trajectory.header,
                      self.header,
                      err_msg="HEADER record not correctly parsed")
 
-    def test_TITLE(self):
+    def test_TITLE(self, universe):
         try:
-            title = self.universe.trajectory.title
+            title = universe.trajectory.title
         except AttributeError:
             raise AssertionError("Reader does not have a 'title' attribute.")
         assert_equal(len(title),
@@ -97,9 +119,9 @@ class _PDBMetadata(TestCase, Ref4e43):
                          reference,
                          err_msg="TITLE line {0} do not match".format(lineno))
 
-    def test_COMPND(self):
+    def test_COMPND(self, universe):
         try:
-            compound = self.universe.trajectory.compound
+            compound = universe.trajectory.compound
         except AttributeError:
             raise AssertionError(
                 "Reader does not have a 'compound' attribute.")
@@ -113,9 +135,9 @@ class _PDBMetadata(TestCase, Ref4e43):
                          reference,
                          err_msg="COMPND line {0} do not match".format(lineno))
 
-    def test_REMARK(self):
+    def test_REMARK(self, universe):
         try:
-            remarks = self.universe.trajectory.remarks
+            remarks = universe.trajectory.remarks
         except AttributeError:
             raise AssertionError("Reader does not have a 'remarks' attribute.")
         assert_equal(len(remarks),
@@ -333,26 +355,23 @@ class TestPDBWriter(object):
             assert int(line[10:14]) == model % 10000
 
 
-@pytest.mark.xfail(os.name == 'nt',
-                   strict=True,
-                   reason="PDB multiframe reading not yet supported "
-                          "on Windows.")
-class TestMultiPDBReader(TestCase):
-    def setUp(self):
-        self.multiverse = mda.Universe(PDB_multiframe,
-                                       guess_bonds=True)
-        self.conect = mda.Universe(CONECT, guess_bonds=True)
+class TestMultiPDBReader(object):
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def multiverse():
+        return mda.Universe(PDB_multiframe, guess_bonds=True)
 
-    def tearDown(self):
-        del self.multiverse
-        del self.conect
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def conect():
+        return mda.Universe(CONECT, guess_bonds=True)
 
-    def test_n_frames(self):
-        assert_equal(self.multiverse.trajectory.n_frames, 24,
+    def test_n_frames(self, multiverse):
+        assert_equal(multiverse.trajectory.n_frames, 24,
                      "Wrong number of frames read from PDB muliple model file")
 
-    def test_n_atoms_frame(self):
-        u = self.multiverse
+    def test_n_atoms_frame(self, multiverse):
+        u = multiverse
         desired = 392
         for frame in u.trajectory:
             assert_equal(len(u.atoms), desired, err_msg="The number of atoms "
@@ -360,8 +379,8 @@ class TestMultiPDBReader(TestCase):
                                                         "of atoms in the test case (%d) at frame %d" % (
                                                             len(u.atoms), desired, u.trajectory.frame))
 
-    def test_rewind(self):
-        u = self.multiverse
+    def test_rewind(self, multiverse):
+        u = multiverse
         u.trajectory[11]
         assert_equal(u.trajectory.ts.frame, 11,
                      "Failed to forward to 11th frame (frame index 11)")
@@ -369,8 +388,8 @@ class TestMultiPDBReader(TestCase):
         assert_equal(u.trajectory.ts.frame, 0,
                      "Failed to rewind to 0th frame (frame index 0)")
 
-    def test_iteration(self):
-        u = self.multiverse
+    def test_iteration(self, multiverse):
+        u = multiverse
         frames = []
         for frame in u.trajectory:
             pass
@@ -384,8 +403,8 @@ class TestMultiPDBReader(TestCase):
             "trajectory iterator fails to rewind" %
             (len(frames), u.trajectory.n_frames))
 
-    def test_slice_iteration(self):
-        u = self.multiverse
+    def test_slice_iteration(self, multiverse):
+        u = multiverse
         frames = []
         for ts in u.trajectory[4:-2:4]:
             frames.append(ts.frame)
@@ -393,24 +412,19 @@ class TestMultiPDBReader(TestCase):
                      np.arange(u.trajectory.n_frames)[4:-2:4],
                      err_msg="slicing did not produce the expected frames")
 
-    def test_conect_bonds_conect(self):
-        conect = self.conect
+    def test_conect_bonds_conect(self, tmpdir, conect):
         assert_equal(len(conect.atoms), 1890)
         assert_equal(len(conect.bonds), 1922)
 
-        with tempdir.in_tempdir():
-            try:
-                outfile = 'test-pdb-hbonds.pdb'
-                self.conect.atoms.write(outfile, bonds="conect")
-                u1 = mda.Universe(outfile, guess_bonds=True)
-            finally:
-                os.unlink(outfile)
-            assert_equal(len(u1.atoms), 1890)
-            assert_equal(len(u1.bonds), 1922)
+        outfile = str(tmpdir.join('test-pdb-hbonds.pdb'))
+        conect.atoms.write(outfile, bonds="conect")
+        u1 = mda.Universe(outfile, guess_bonds=True)
 
+        assert_equal(len(u1.atoms), 1890)
+        assert_equal(len(u1.bonds), 1922)
 
-    def test_numconnections(self):
-        u = self.multiverse
+    def test_numconnections(self, multiverse):
+        u = multiverse
 
         # the bond list is sorted - so swaps in input pdb sequence should not
         # be a problem
@@ -462,8 +476,7 @@ class TestMultiPDBReader(TestCase):
 
             return conect
 
-        conect = helper(self.multiverse.atoms, [b for b in u.bonds
-                                                if not b.is_guessed])
+        conect = helper(u.atoms, [b for b in u.bonds if not b.is_guessed])
         assert_equal(conect, desired, err_msg="The bond list does not match "
                                               "the test reference; len(actual) is %d, len(desired) "
                                               "is %d" % (len(u._topology.bonds.values), len(desired)))
@@ -483,47 +496,59 @@ def test_conect_bonds_all(tmpdir):
 
     # assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
 
-@pytest.mark.xfail(os.name == 'nt',
-                   strict=True,
-                   reason="PDB multiframe reading not yet supported "
-                          "on Windows.")
-class TestMultiPDBWriter(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small)
-        self.multiverse = mda.Universe(PDB_multiframe)
-        self.universe2 = mda.Universe(PSF, DCD)
-        # 3 decimals in PDB spec
-        # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
-        self.prec = 3
-        ext = ".pdb"
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/multiwriter-test-1' + ext
-        self.outfile2 = self.tmpdir.name + '/multiwriter-test-2' + ext
+def test_write_bonds_partial(tmpdir):
+    u = mda.Universe(CONECT)
+    # grab all atoms with bonds
+    ag = (u.atoms.bonds.atom1 + u.atoms.bonds.atom2).unique
 
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        try:
-            os.unlink(self.outfile2)
-        except OSError:
-            pass
-        del self.universe, self.multiverse, self.universe2
-        del self.tmpdir
+    outfile = os.path.join(str(tmpdir), 'test.pdb')
+    ag.write(outfile)
 
-    def test_write_atomselection(self):
+    u2 = mda.Universe(outfile)
+
+    assert len(u2.atoms.bonds) > 0
+    # check bonding is correct in new universe
+    for a_ref, atom in zip(ag, u2.atoms):
+        assert len(a_ref.bonds) == len(atom.bonds)
+
+
+class TestMultiPDBWriter(object):
+    # 3 decimals in PDB spec
+    # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+    prec = 3
+
+    @staticmethod
+    @pytest.fixture
+    def universe():
+        return mda.Universe(PSF, PDB_small)
+
+    @staticmethod
+    @pytest.fixture
+    def multiverse():
+        return mda.Universe(PDB_multiframe)
+
+    @staticmethod
+    @pytest.fixture
+    def universe2():
+        return mda.Universe(PSF, DCD)
+
+    @staticmethod
+    @pytest.fixture
+    def outfile(tmpdir):
+        return os.path.join(str(tmpdir), 'multiwriter-test-1.pdb')
+
+    def test_write_atomselection(self, multiverse, outfile):
         """Test if multiframe writer can write selected frames for an
         atomselection."""
-        u = self.multiverse
+        u = multiverse
         group = u.select_atoms('name CA', 'name C')
         desired_group = 56
         desired_frames = 6
-        pdb = mda.Writer(self.outfile, multiframe=True, start=12, step=2)
+        pdb = mda.Writer(outfile, multiframe=True, start=12, step=2)
         for ts in u.trajectory[-6:]:
             pdb.write(group)
         pdb.close()
-        u2 = mda.Universe(self.outfile)
+        u2 = mda.Universe(outfile)
         assert_equal(len(u2.atoms), desired_group,
                      err_msg="MultiPDBWriter trajectory written for an "
                              "AtomGroup contains %d atoms, it should contain %d" % (
@@ -534,19 +559,19 @@ class TestMultiPDBWriter(TestCase):
                              "AtomGroup contains %d frames, it should have %d" % (
                                  len(u.trajectory), desired_frames))
 
-    def test_write_all_timesteps(self):
+    def test_write_all_timesteps(self, multiverse, outfile):
         """
         Test write_all_timesteps() of the  multiframe writer (selected frames
         for an atomselection)
         """
-        u = self.multiverse
+        u = multiverse
         group = u.select_atoms('name CA', 'name C')
         desired_group = 56
         desired_frames = 6
 
-        pdb = mda.Writer(self.outfile, multiframe=True, start=12, step=2)
-        pdb.write_all_timesteps(group)
-        u2 = mda.Universe(self.outfile)
+        with mda.Writer(outfile, multiframe=True, start=12, step=2) as W:
+            W.write_all_timesteps(group)
+        u2 = mda.Universe(outfile)
         assert_equal(len(u2.atoms), desired_group,
                      err_msg="MultiPDBWriter trajectory written for an "
                              "AtomGroup contains %d atoms, it should contain %d" % (
@@ -557,131 +582,117 @@ class TestMultiPDBWriter(TestCase):
                              "AtomGroup contains %d frames, it should have %d" % (
                                  len(u.trajectory), desired_frames))
 
-    def test_write_atoms(self):
-        u = self.universe2
-        W = mda.Writer(self.outfile, multiframe=True)
-        # 2 frames expceted
-        for ts in u.trajectory[-2:]:
-            W.write(u.atoms)
-        W.close()
-        u0 = mda.Universe(self.outfile)
+    def test_write_atoms(self, universe2, outfile):
+        u = universe2
+        with mda.Writer(outfile, multiframe=True) as W:
+            # 2 frames expected
+            for ts in u.trajectory[-2:]:
+                W.write(u.atoms)
+
+        u0 = mda.Universe(outfile)
         assert_equal(u0.trajectory.n_frames,
                      2,
-                     err_msg="The number of frames should be 3.")
+                     err_msg="The number of frames should be 2.")
 
 
-class TestPDBReaderBig(TestCase, RefAdK):
-    def setUp(self):
-        self.universe = mda.Universe(PDB)
-        self.prec = 6
+class TestPDBReaderBig(RefAdK):
+    prec = 6
 
-    def tearDown(self):
-        del self.universe
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        return mda.Universe(PDB)
 
-
-    def test_load_pdb(self):
-        U = self.universe
+    def test_load_pdb(self, universe):
+        U = universe
         assert_equal(len(U.atoms), self.ref_n_atoms,
                      "load Universe from big PDB")
         assert_equal(U.atoms.select_atoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
-
-    def test_selection(self):
-        na = self.universe.select_atoms('resname NA+')
+    def test_selection(self, universe):
+        na = universe.select_atoms('resname NA+')
         assert_equal(len(na), self.ref_Na_sel_size,
                      "Atom selection of last atoms in file")
 
-
-    def test_n_atoms(self):
-        assert_equal(self.universe.trajectory.n_atoms, self.ref_n_atoms,
+    def test_n_atoms(self, universe):
+        assert_equal(universe.trajectory.n_atoms, self.ref_n_atoms,
                      "wrong number of atoms")
 
-
-    def test_n_frames(self):
-        assert_equal(self.universe.trajectory.n_frames, 1,
+    def test_n_frames(self, universe):
+        assert_equal(universe.trajectory.n_frames, 1,
                      "wrong number of frames")
 
-
-    def test_time(self):
-        assert_equal(self.universe.trajectory.time, 0.0,
+    def test_time(self, universe):
+        assert_equal(universe.trajectory.time, 0.0,
                      "wrong time of the frame")
 
+    def test_frame(self, universe):
+        assert_equal(universe.trajectory.frame, 0, "wrong frame number")
 
-    def test_frame(self):
-        assert_equal(self.universe.trajectory.frame, 0, "wrong frame number")
-
-
-    def test_dt(self):
+    def test_dt(self, universe):
         """testing that accessing universe.trajectory.dt returns the default
         of 1.0 ps"""
-        assert_equal(self.universe.trajectory.dt, 1.0)
+        assert_equal(universe.trajectory.dt, 1.0)
 
-
-    def test_coordinates(self):
-        A10CA = self.universe.select_atoms('name CA')[10]
+    def test_coordinates(self, universe):
+        A10CA = universe.select_atoms('name CA')[10]
         assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
                             err_msg="wrong coordinates for A10:CA")
 
-
-    def test_distances(self):
-        NTERM = self.universe.atoms.N[0]
-        CTERM = self.universe.atoms.C[-1]
+    def test_distances(self, universe):
+        NTERM = universe.atoms.N[0]
+        CTERM = universe.atoms.C[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="wrong distance between M1:N and G214:C")
 
-
-    def test_selection(self):
-        na = self.universe.select_atoms('resname NA+')
+    def test_selection(self, universe):
+        na = universe.select_atoms('resname NA+')
         assert_equal(len(na), self.ref_Na_sel_size,
                      "Atom selection of last atoms in file")
 
-
-    def test_unitcell(self):
+    def test_unitcell(self, universe):
         assert_array_almost_equal(
-            self.universe.coord.dimensions,
+            universe.dimensions,
             self.ref_unitcell,
             self.prec,
             err_msg="unit cell dimensions (rhombic dodecahedron), issue 60")
 
-
-    def test_volume(self):
+    def test_volume(self, universe):
         assert_almost_equal(
-            self.universe.coord.volume,
+            universe.coord.volume,
             self.ref_volume,
             0,
             err_msg="wrong volume for unitcell (rhombic dodecahedron)")
 
-    def test_n_residues(self):
+    def test_n_residues(self, universe):
         # Should have first 10000 residues, then another 1302
-        assert len(self.universe.residues) == 10000 + 1302
+        assert len(universe.residues) == 10000 + 1302
 
-    def test_first_residue(self):
+    def test_first_residue(self, universe):
         # First residue is a MET, shouldn't be smushed together
         # with a water
-        assert len(self.universe.residues[0].atoms) == 19
+        assert len(universe.residues[0].atoms) == 19
 
 
-class TestIncompletePDB(TestCase):
+class TestIncompletePDB(object):
     """Tests for Issue #396
 
     Reads an incomplete (but still intelligible) PDB file
     """
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def u():
+        return mda.Universe(INC_PDB)
 
-    def setUp(self):
-        self.u = mda.Universe(INC_PDB)
+    def test_natoms(self, u):
+        assert_equal(len(u.atoms), 3)
 
-    def tearDown(self):
-        del self.u
-
-    def test_natoms(self):
-        assert_equal(len(self.u.atoms), 3)
-
-    def test_coords(self):
-        assert_array_almost_equal(self.u.atoms.positions,
+    def test_coords(self, u):
+        assert_array_almost_equal(u.atoms.positions,
                                   np.array([[111.2519989, 98.3730011,
                                              98.18699646],
                                             [111.20300293, 101.74199677,
@@ -690,53 +701,48 @@ class TestIncompletePDB(TestCase):
                                                             96.31600189]],
                                            dtype=np.float32))
 
-    def test_dims(self):
-        assert_array_almost_equal(self.u.dimensions,
+    def test_dims(self, u):
+        assert_array_almost_equal(u.dimensions,
                                   np.array([216.48899841, 216.48899841,
                                             216.48899841, 90., 90., 90.],
                                            dtype=np.float32))
 
-    def test_names(self):
-        assert all(self.u.atoms.names == 'CA')
+    def test_names(self, u):
+        assert all(u.atoms.names == 'CA')
 
-    def test_residues(self):
-        assert_equal(len(self.u.residues), 3)
+    def test_residues(self, u):
+        assert_equal(len(u.residues), 3)
 
-    def test_resnames(self):
-        assert_equal(len(self.u.atoms.resnames), 3)
-        assert 'VAL' in self.u.atoms.resnames
-        assert 'LYS' in self.u.atoms.resnames
-        assert 'PHE' in self.u.atoms.resnames
+    def test_resnames(self, u):
+        assert_equal(len(u.atoms.resnames), 3)
+        assert 'VAL' in u.atoms.resnames
+        assert 'LYS' in u.atoms.resnames
+        assert 'PHE' in u.atoms.resnames
 
-    def test_reading_trajectory(self):
-        for ts in self.u.trajectory:
-            pass
+    def test_reading_trajectory(self, u):
+        counter = 0
+        for ts in u.trajectory:
+            counter += 1
+        assert counter == 2
 
 
-class TestPDBXLSerial(TestCase):
+class TestPDBXLSerial(object):
     """For Issue #446"""
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def u():
+        return mda.Universe(PDB_xlserial)
 
-    def setUp(self):
-        self.u = mda.Universe(PDB_xlserial)
-
-    def tearDown(self):
-        del self.u
-
-    def test_load(self):
+    def test_load(self, u):
         # Check that universe loads ok, should be 4 atoms
-        assert len(self.u.atoms) == 4
+        assert len(u.atoms) == 4
 
-    def test_serials(self):
+    def test_serials(self, u):
         # These should be none
-        assert self.u.atoms[0].id == 99998
-        assert self.u.atoms[1].id == 99999
-        assert self.u.atoms[2].id == 100000
-        assert self.u.atoms[3].id == 100001
-
-
-# Does not implement Reader.remarks, Reader.header, Reader.title,
-# Reader.compounds because the PDB header data in trajectory.metadata are
-# already parsed; should perhaps update the PrimitivePDBReader to do the same.
+        assert u.atoms[0].id == 99998
+        assert u.atoms[1].id == 99999
+        assert u.atoms[2].id == 100000
+        assert u.atoms[3].id == 100001
 
 
 class TestPSF_CRDReader(_SingleFrameReader):
@@ -888,3 +894,39 @@ def test_write_pdb_zero_atoms():
         with mda.Writer(outfile, ag.n_atoms) as w:
             with pytest.raises(IndexError):
                 w.write(ag)
+
+
+def test_atom_not_match(tmpdir):
+    # issue 1998
+    outfile = str(tmpdir.mkdir("PDBReader").join('test_atom_not_match' + ".pdb"))
+    u = mda.Universe(PSF, DCD)
+    # select two groups of atoms
+    protein = u.select_atoms("protein and name CA")
+    atoms = u.select_atoms(
+        'resid 1 or resid 10 or resid 100 or resid 1000 or resid 10000')
+    with mda.Writer(outfile, multiframe=True, n_atoms=10) as pdb:
+        # write these two groups of atoms to pdb
+        # Then the n_atoms will not match
+        pdb.write(protein)
+        pdb.write(atoms)
+    reader = mda.coordinates.PDB.PDBReader(outfile)
+    with pytest.raises(ValueError) as excinfo:
+        reader._read_frame(1)
+    assert 'Inconsistency in file' in str(excinfo.value)
+
+
+def test_partially_missing_cryst():
+    # issue 2252
+    raw = open(INC_PDB, 'r').readlines()
+    # mangle the cryst lines so that only box angles are left
+    # this mimics '6edu' from PDB
+    raw = [line if not line.startswith('CRYST')
+           else line[:6] + ' ' * 28 + line[34:]
+           for line in raw]
+
+    with pytest.warns(UserWarning):
+        u = mda.Universe(StringIO('\n'.join(raw)), format='PDB')
+
+    assert len(u.atoms) == 3
+    assert len(u.trajectory) == 2
+    assert_array_almost_equal(u.dimensions, 0.0)

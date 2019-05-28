@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -78,8 +79,40 @@ Input
 Three AtomGroup selections representing the **hydrogens**, **donors** and
 **acceptors** that you wish to analyse.  Note that the **hydrogens** and
 **donors** selections must be aligned, that is **hydrogens[0]** and
-**donors[0]** must represent a bonded pair.  If a single donor therefore has
-two hydrogens, it must feature twice in the **donors** AtomGroup.
+**donors[0]** must represent a bonded pair.  For systems such as water,
+this will mean that each oxygen appears twice in the **donors** AtomGroup.
+The function :func:`find_hydrogen_donors` can be used to construct the donor
+AtomGroup
+::
+
+  import MDAnalysis as mda
+  from MDAnalysis.analysis import hbonds
+  from MDAnalysis.tests.datafiles import waterPSF, waterDCD
+  u = mda.Universe(waterPSF, waterDCD)
+  hydrogens = u.select_atoms('name H*')
+  donors = hbonds.find_hydrogen_donors(hydrogens)
+
+
+Note that this requires the Universe to have bond information.  If this isn't
+present in the topology file, the
+:meth:`MDAnalysis.core.groups.AtomGroup.guess_bonds` method can be used
+as so
+::
+
+  import MDAnalysis as mda
+  from MDAnalysis.analysis import hbonds
+  from MDAnalysis.tests.datafiles import GRO
+  # we could load the Universe with guess_bonds=True
+  # but this would guess **all** bonds
+  u = mda.Universe(GRO)
+  water = u.select_atoms('resname SOL and not type DUMMY')
+  # guess bonds only within our water atoms
+  # this adds the bond information directly to the Universe
+  water.guess_bonds()
+  hydrogens = water.select_atoms('type H')
+  # this is now possible as we guessed the bonds
+  donors = hbonds.find_hydrogen_donors(hydrogens)
+
 
 The keyword **exclusions** allows a tuple of array addresses to be provided,
 (Hidx, Aidx),these pairs of hydrogen-acceptor are then not permitted to be
@@ -118,25 +151,44 @@ The *results* and *time* values are only filled after the :meth:`run` method,
 used.
 
 
-Examples
---------
+Worked Example for Polyamide
+----------------------------
+
+This example finds the continuous hydrogen bond lifetime between N-H..O in a
+polyamide system.  This will use the default geometric definition for hydrogen
+bonds of length 3.0 Å and angle of 130 degrees.
+It will observe a window of 2.0 ps (`sample_time`) and try to gather 1000
+sample point within this time window (this relies upon the trajectory being
+sampled frequently enough).  This process is repeated for 20 different start
+points to build a better average.
 
 ::
 
+  import MDAnalysis as mda
   from MDAnalysis.analysis import hbonds
+  from MDAnalysis.tests.datafiles import TRZ_psf, TRZ
   import matplotlib.pyplot as plt
+  # load system
+  u = mda.Universe(TRZ_psf, TRZ)
+  # select atoms of interest into AtomGroups
   H = u.select_atoms('name Hn')
-  O = u.select_atoms('name O')
   N = u.select_atoms('name N')
-  hb_ac = hbonds.HydrogenBondAutoCorrel(u, acceptors = u.atoms.O,
-              hydrogens = u.atoms.Hn, donors = u.atoms.N,bond_type='continuous',
-              sample_time = 2, nruns = 20, nsamples = 1000)
+  O = u.select_atoms('name O')
+  # create analysis object
+  hb_ac = hbonds.HydrogenBondAutoCorrel(u,
+              acceptors=O, hydrogens=H, donors=N,
+              bond_type='continuous',
+              sample_time=2.0, nsamples=1000, nruns=20)
+  # call run to gather results
   hb_ac.run()
+  # attempt to fit results to exponential equation
   hb_ac.solve()
+  # grab results from inside object
   tau = hb_ac.solution['tau']
   time = hb_ac.solution['time']
   results = hb_ac.solution['results']
   estimate = hb_ac.solution['estimate']
+  # plot to check!
   plt.plot(time, results, 'ro')
   plt.plot(time, estimate)
   plt.show()
@@ -144,6 +196,8 @@ Examples
 
 Classes
 -------
+
+.. autofunction:: find_hydrogen_donors
 
 .. autoclass:: HydrogenBondAutoCorrel
    :members:
@@ -159,8 +213,9 @@ import scipy.optimize
 import warnings
 
 from MDAnalysis.lib.log import ProgressMeter
-from MDAnalysis.lib.distances import distance_array, calc_angles, calc_bonds
+from MDAnalysis.lib.distances import capped_distance, calc_angles, calc_bonds
 from MDAnalysis.lib.util import deprecate
+from MDAnalysis.core.groups import requires
 
 from MDAnalysis.due import due, Doi
 due.cite(Doi("10.1063/1.4922445"),
@@ -168,6 +223,26 @@ due.cite(Doi("10.1063/1.4922445"),
          path='MDAnalysis.analysis.hbonds.hbond_autocorrel',
 )
 del Doi
+
+
+@requires('bonds')
+def find_hydrogen_donors(hydrogens):
+    """Returns the donor atom for each hydrogen
+
+    Parameters
+    ----------
+    hydrogens : AtomGroup
+      the hydrogens that will form hydrogen bonds
+
+    Returns
+    -------
+    donors : AtomGroup
+      the donor atom for each hydrogen, found via bond information
+
+
+    .. versionadded:: 0.20.0
+    """
+    return sum(h.bonded_atoms[0] for h in hydrogens)
 
 
 class HydrogenBondAutoCorrel(object):
@@ -185,8 +260,8 @@ class HydrogenBondAutoCorrel(object):
         The atoms which are connected to the hydrogens.  This group
         must be identical in length to the hydrogen group and matched,
         ie hydrogens[0] is bonded to donors[0].
-        For many cases, this will mean a donor appears twice in this
-        group.
+        For water, this will mean a donor appears twice in this
+        group, once for each hydrogen.
     bond_type : str
         Which definition of hydrogen bond lifetime to consider, either
         'continuous' or 'intermittent'.
@@ -232,7 +307,8 @@ class HydrogenBondAutoCorrel(object):
         self.a = acceptors
         self.d = donors
         if not len(self.h) == len(self.d):
-            raise ValueError("Donors and Hydrogen groups must be matched")
+            raise ValueError("Donors and Hydrogen groups must be identical "
+                             "length.  Try using `find_hydrogen_donors`.")
 
         self.exclusions = exclusions
         if self.exclusions:
@@ -344,13 +420,14 @@ class HydrogenBondAutoCorrel(object):
         box = self.u.dimensions if self.pbc else None
 
         # 2d array of all distances
-        d = distance_array(self.h.positions, self.a.positions, box=box)
+        pair, d = capped_distance(self.h.positions, self.a.positions, max_cutoff=self.d_crit, box=box)
         if self.exclusions:
             # set to above dist crit to exclude
-            d[self.exclusions] = self.d_crit + 1.0
+            exclude = np.column_stack((self.exclusions[0], self.exclusions[1]))
+            pair = np.delete(pair, np.where(pair==exclude), 0)
+        
+        hidx, aidx = np.transpose(pair)
 
-        # find which partners satisfy distance criteria
-        hidx, aidx = np.where(d < self.d_crit)
 
         a = calc_angles(self.d.positions[hidx], self.h.positions[hidx],
                         self.a.positions[aidx], box=box)

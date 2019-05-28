@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -26,7 +27,7 @@ r"""Dihedral angles analysis --- :mod:`MDAnalysis.analysis.dihedrals`
 :Year: 2018
 :Copyright: GNU Public License v2
 
-.. versionadded:: 0.18.1
+.. versionadded:: 0.19.0
 
 This module contains classes for calculating dihedral angles for a given set of
 atoms or residues. This can be done for selected frames or whole trajectories.

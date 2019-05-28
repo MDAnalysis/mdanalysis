@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -170,7 +171,7 @@ class TestContacts(object):
     def universe():
         return mda.Universe(PSF, DCD)
 
-    def _run_Contacts(self, universe, **kwargs):
+    def _run_Contacts(self, universe, start=None, stop=None, step=None, **kwargs):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
         return contacts.Contacts(
@@ -178,7 +179,7 @@ class TestContacts(object):
             selection=(self.sel_acidic, self.sel_basic),
             refgroup=(acidic, basic),
             radius=6.0,
-            **kwargs).run()
+            **kwargs).run(start=start, stop=stop, step=step)
 
     def test_startframe(self, universe):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of

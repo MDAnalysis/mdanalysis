@@ -16,6 +16,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -65,11 +66,12 @@ neighboring cells only. Care must be taken to ensure that `cellsize` is
 greater than the desired search distance, otherwise all of the neighbours might
 not reflect in the results.
 
-
 .. [#] a pair correspond to two particles that are considered as neighbors .
 
-
 .. versionadded:: 0.19.0
+
+Classes
+-------
 """
 
 # Used to handle memory allocation
@@ -88,21 +90,22 @@ DEF EPSILON = 1e-5
 
 ctypedef np.int_t ns_int
 ctypedef np.float32_t real
+ctypedef np.float64_t dreal
 ctypedef real rvec[DIM]
+ctypedef dreal drvec[DIM]
 ctypedef ns_int ivec[DIM]
 ctypedef real matrix[DIM][DIM]
 
 ctypedef vector[ns_int] intvec
 ctypedef vector[real] realvec
+ctypedef vector[dreal] drealvec
 
 # Useful Functions
 cdef real rvec_norm2(const rvec a) nogil:
     return a[XX]*a[XX] + a[YY]*a[YY] + a[ZZ]*a[ZZ]
 
-cdef void rvec_clear(rvec a) nogil:
-    a[XX] = 0.0
-    a[YY] = 0.0
-    a[ZZ] = 0.0
+cdef dreal drvec_norm2(const drvec a) nogil:
+    return a[XX]*a[XX] + a[YY]*a[YY] + a[ZZ]*a[ZZ]
 
 ###############################
 # Utility class to handle PBC #
@@ -112,16 +115,16 @@ cdef struct cPBCBox_t:
     rvec       fbox_diag
     rvec       hbox_diag
     rvec       mhbox_diag
-    real       max_cutoff2
+    dreal      max_cutoff2
 
 
 # Class to handle PBC calculations
-cdef class PBCBox(object):
+cdef class _PBCBox(object):
     """
     Cython implementation of
     `PBC-related <https://en.wikipedia.org/wiki/Periodic_boundary_conditions>`_
     operations. This class is used by classes :class:`FastNS`
-    and :class:`NSGrid` to put all particles inside a brick-shaped box
+    and :class:`_NSGrid` to put all particles inside a brick-shaped box
     and to compute PBC-aware distance. The class can also handle
     non-PBC aware distance evaluations through ``periodic`` argument.
 
@@ -165,7 +168,7 @@ cdef class PBCBox(object):
 
         """
         cdef ns_int i, j
-        cdef real min_hv2, min_ss, tmp
+        cdef dreal min_hv2, min_ss, tmp
 
         # Update matrix
         self.is_triclinic = False
@@ -174,7 +177,10 @@ cdef class PBCBox(object):
                 self.c_pbcbox.box[i][j] = box[i, j]
 
                 if i != j:
-                    if box[i, j] > EPSILON:
+                    # mdamath.triclinic_vectors explicitly sets the off-diagonal
+                    # elements to zero if the box is orthogonal, so we can
+                    # safely check floating point values for equality here
+                    if box[i, j] != 0.0:
                         self.is_triclinic = True
 
         # Update diagonals
@@ -228,7 +234,7 @@ cdef class PBCBox(object):
             raise ValueError("Box does not correspond to PBC=xyz")
         self.fast_update(box)
 
-    cdef void fast_pbc_dx(self, rvec ref, rvec other, rvec dx) nogil:
+    cdef void fast_pbc_dx(self, rvec ref, rvec other, drvec dx) nogil:
         """Dislacement between two points for both
         PBC and non-PBC conditions
 
@@ -254,20 +260,20 @@ cdef class PBCBox(object):
                     for j in range(i, -1, -1):
                         dx[j] += self.c_pbcbox.box[i][j]
 
-    cdef real fast_distance2(self, rvec a, rvec b) nogil:
+    cdef dreal fast_distance2(self, rvec a, rvec b) nogil:
         """Distance calculation between two points
         for both PBC and non-PBC aware calculations
 
         Returns the distance obeying minimum
         image convention if periodic is set to ``True`` while
-        instantiating the ``PBCBox`` object.
+        instantiating the :class:`_PBCBox` object.
         """
 
-        cdef rvec dx
+        cdef drvec dx
         self.fast_pbc_dx(a, b, dx)
-        return rvec_norm2(dx)
+        return drvec_norm2(dx)
 
-    cdef real[:, ::1]fast_put_atoms_in_bbox(self, real[:, ::1] coords) nogil:
+    cdef real[:, ::1] fast_put_atoms_in_bbox(self, real[:, ::1] coords) nogil:
         """Shifts all ``coords`` to an orthogonal brick shaped box
 
         All the coordinates are brought into an orthogonal
@@ -310,10 +316,9 @@ cdef class PBCBox(object):
 cdef class NSResults(object):
     """Class to store the results
 
-    All the required outputs from :class:`FastNS` is stored in the
-    instance of this class. All the methods of :class:`FastNS` returns
-    an instance of this class, which can be used to  generate the desired
-    results on demand.
+    All outputs from :class:`FastNS` are stored in an instance of this class.
+    All methods of :class:`FastNS` return an instance of this class, which can
+    be used to  generate the desired results on demand.
     """
 
     cdef readonly real cutoff
@@ -323,12 +328,12 @@ cdef class NSResults(object):
     cdef real[:, ::1] searchcoords
 
     cdef vector[intvec] indices_buffer
-    cdef vector[realvec] distances_buffer
+    cdef vector[drealvec] distances_buffer
     cdef vector[ns_int] pairs_buffer
-    cdef vector[real] pair_distances_buffer
-    cdef vector[real] pair_distances2_buffer
+    cdef vector[dreal] pair_distances_buffer
+    cdef vector[dreal] pair_distances2_buffer
 
-    def __init__(self, real cutoff, real[:, ::1]coords, real[:, ::1]searchcoords):
+    def __init__(self, dreal cutoff, real[:, ::1]coords, real[:, ::1]searchcoords):
         """
         Parameters
         ----------
@@ -348,7 +353,7 @@ cdef class NSResults(object):
 
         self.npairs = 0
 
-    cdef void add_neighbors(self, ns_int beadid_i, ns_int beadid_j, real distance2) nogil:
+    cdef void add_neighbors(self, ns_int beadid_i, ns_int beadid_j, dreal distance2) nogil:
         """Internal function to add pairs and distances to buffers
 
         The buffers populated using this method are used by
@@ -380,7 +385,7 @@ cdef class NSResults(object):
             and initial atom coordinates of shape ``(N, 2)``
         """
 
-        return np.asarray(self.pairs_buffer).reshape(self.npairs, 2)
+        return np.asarray(self.pairs_buffer, dtype=np.int64).reshape(self.npairs, 2)
 
     def get_pair_distances(self):
         """Returns all the distances corresponding to each pair of neighbors
@@ -399,7 +404,7 @@ cdef class NSResults(object):
 
         See Also
         --------
-        MDAnalysis.lib.nsgrid.NSResults.get_pairs
+        :meth:`~NSResults.get_pairs`
 
         """
 
@@ -415,17 +420,17 @@ cdef class NSResults(object):
 
         cdef ns_int i, beadid_i, beadid_j
         cdef ns_int idx, nsearch
-        cdef real dist2, dist
+        cdef dreal dist2, dist
 
         nsearch = self.searchcoords.shape[0]
 
         self.indices_buffer = vector[intvec]()
-        self.distances_buffer = vector[realvec]()
+        self.distances_buffer = vector[drealvec]()
 
         # initialize rows corresponding to search
         for i in range(nsearch):
             self.indices_buffer.push_back(intvec())
-            self.distances_buffer.push_back(realvec())
+            self.distances_buffer.push_back(drealvec())
 
         for i in range(0, 2*self.npairs, 2):
             beadid_i = self.pairs_buffer[i]
@@ -453,15 +458,15 @@ cdef class NSResults(object):
             size ``m`` where m is the number of neighbours of
             query atom[i].
 
-        .. code-block:: python
+            .. code-block:: python
 
                 results = NSResults()
                 indices = results.get_indices()
 
-        ``indices[i]`` will output a list of neighboring
-        atoms of ``atom[i]`` from query atoms ``atom``.
-        ``indices[i][j]`` will give the atom-id of initial coordinates
-        such that ``initial_atom[indices[i][j]]`` is a neighbor of ``atom[i]``
+            ``indices[i]`` will be a list of neighboring atoms of
+            ``atom[i]`` from query atoms ``atom``. ``indices[i][j]`` will give
+            the atom-id of initial coordinates such that
+            ``initial_atom[indices[i][j]]`` is a neighbor of ``atom[i]``.
 
         """
 
@@ -482,24 +487,19 @@ cdef class NSResults(object):
 
         Returns
         -------
-        distances : np.ndarray
+        distances : list
             Every element i.e. ``distances[i]`` will be an array of
             shape ``m`` where m is the number of neighbours of
             query atom[i].
 
-        .. code-block:: python
+            .. code-block:: python
 
                 results = NSResults()
                 distances = results.get_distances()
 
-
-        atoms of ``atom[i]`` and query atoms ``atom``.
-        ``indices[i][j]`` will give the atom-id of initial coordinates
-        such that ``initial_atom[indices[i][j]]`` is a neighbor of ``atom[i]``
-
         See Also
         --------
-        MDAnalysis.lib.nsgrid.NSResults.get_indices
+        :meth:`~NSResults.get_indices`
 
         """
 
@@ -507,11 +507,12 @@ cdef class NSResults(object):
             self.create_buffers()
         return list(self.distances_buffer)
 
-cdef class NSGrid(object):
+
+cdef class _NSGrid(object):
     """Constructs a uniform cuboidal grid for a brick-shaped box
 
-    This class uses :class:`PBCBox` to define the brick shaped box
-    It is essential to initialize the box with :class:`PBCBox`
+    This class uses :class:`_PBCBox` to define the brick shaped box
+    It is essential to initialize the box with :class:`_PBCBox`
     inorder to form the grid.
 
     The domain is subdivided into number of cells based on the desired search
@@ -526,27 +527,29 @@ cdef class NSGrid(object):
     This class assumes that all the coordinates are already
     inside the brick shaped box. Care must be taken to ensure
     all the particles are within the brick shaped box as
-    defined by :class:`PBCBox`. This can be ensured by using
-    :func:`~MDAnalysis.lib.nsgrid.PBCBox.fast_put_atoms_in_bbox`
+    defined by :class:`_PBCBox`. This can be ensured by using
+    :func:`~MDAnalysis.lib.nsgrid._PBCBox.fast_put_atoms_in_bbox`
 
     .. warning::
         This class is not meant to be used by end users.
 
     """
 
-    cdef readonly real cutoff  # cutoff
+    cdef readonly dreal cutoff  # cutoff
     cdef ns_int size  # total cells
     cdef ns_int ncoords  # number of coordinates
     cdef ns_int[DIM] ncells  # individual cells in every dimension
     cdef ns_int[DIM] cell_offsets  # Cell Multipliers
-    cdef real[DIM] cellsize  # cell size in every dimension
+    # cellsize MUST be double precision, otherwise coord2cellid() may fail for
+    # coordinates very close to the upper box boundaries! See Issue #2132
+    cdef dreal[DIM] cellsize  # cell size in every dimension
     cdef ns_int nbeads_per_cell  # maximum beads
     cdef ns_int *nbeads  # size (Number of beads in every cell)
     cdef ns_int *beadids  # size * nbeads_per_cell (Beadids in every cell)
     cdef ns_int *cellids  # ncoords (Cell occupation id for every atom)
     cdef bint force  # To negate the effects of optimized cutoff
 
-    def __init__(self, ncoords, cutoff, PBCBox box, max_size, force=False):
+    def __init__(self, ncoords, cutoff, _PBCBox box, max_size, force=False):
         """
         Parameters
         ----------
@@ -554,8 +557,8 @@ cdef class NSGrid(object):
             Number of coordinates to fill inside the brick shaped box
         cutoff : float
             Desired cutoff radius
-        box : PBCBox
-            Instance of :class:`PBCBox`
+        box : _PBCBox
+            Instance of :class:`_PBCBox`
         max_size : int
             Maximum total number of cells
         force : boolean
@@ -563,18 +566,24 @@ cdef class NSGrid(object):
         """
 
         cdef ns_int i
-        cdef ns_int ncellx, ncelly, ncellz, size, nbeadspercell
+        cdef ns_int ncellx, ncelly, ncellz
         cdef ns_int xi, yi, zi
         cdef real bbox_vol
+        cdef dreal relative_cutoff_margin
 
         self.ncoords = ncoords
 
         # Calculate best cutoff
         self.cutoff = cutoff
         if not force:
+            # First, we add a small margin to the cell size so that we can safely
+            # use the condition d <= cutoff (instead of d < cutoff) for neighbor
+            # search.
+            relative_cutoff_margin = 1.0e-8
+            while self.cutoff == cutoff:
+                self.cutoff = cutoff * (1.0 + relative_cutoff_margin)
+                relative_cutoff_margin *= 10.0
             bbox_vol = box.c_pbcbox.box[XX][XX] * box.c_pbcbox.box[YY][YY] * box.c_pbcbox.box[YY][YY]
-            size = bbox_vol/cutoff**3
-            nbeadspercell = ncoords/size
             while bbox_vol/self.cutoff**3 > max_size:
                 self.cutoff *= 1.2
 
@@ -591,12 +600,12 @@ cdef class NSGrid(object):
         # Number of beads in every cell
         self.nbeads = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.size)
         if not self.nbeads:
-            raise MemoryError("Could not allocate memory from NSGrid.nbeads ({} bits requested)".format(sizeof(ns_int) * self.size))
+            raise MemoryError("Could not allocate memory from _NSGrid.nbeads ({} bits requested)".format(sizeof(ns_int) * self.size))
         self.beadids = NULL
         # Cellindex of every bead
         self.cellids = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.ncoords)
         if not self.cellids:
-            raise MemoryError("Could not allocate memory from NSGrid.cellids ({} bits requested)".format(sizeof(ns_int) * self.ncoords))
+            raise MemoryError("Could not allocate memory from _NSGrid.cellids ({} bits requested)".format(sizeof(ns_int) * self.ncoords))
         self.nbeads_per_cell = 0
 
         for i in range(self.size):
@@ -671,7 +680,7 @@ cdef class NSGrid(object):
         # Allocate memory
         self.beadids = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.size * self.nbeads_per_cell)  # np.empty((self.size, nbeads_max), dtype=np.int)
         if not self.beadids:
-            raise MemoryError("Could not allocate memory for NSGrid.beadids ({} bits requested)".format(sizeof(ns_int) * self.size * self.nbeads_per_cell))
+            raise MemoryError("Could not allocate memory for _NSGrid.beadids ({} bits requested)".format(sizeof(ns_int) * self.size * self.nbeads_per_cell))
 
         with nogil:
             # Second loop: fill grid
@@ -686,18 +695,18 @@ cdef class NSGrid(object):
 cdef class FastNS(object):
     """Grid based search between two group of atoms
 
-    Instantiates a class object which uses :class:`PBCBox` and
-    :class:`NSGrid` to construct a cuboidal
+    Instantiates a class object which uses :class:`_PBCBox` and
+    :class:`_NSGrid` to construct a cuboidal
     grid in an orthogonal brick shaped box.
 
     Minimum image convention is used for distance evaluations
     if pbc is set to ``True``.
     """
-    cdef PBCBox box
+    cdef _PBCBox box
     cdef real[:, ::1] coords
     cdef real[:, ::1] coords_bbox
-    cdef readonly real cutoff
-    cdef NSGrid grid
+    cdef readonly dreal cutoff
+    cdef _NSGrid grid
     cdef ns_int max_gridsize
     cdef bint periodic
 
@@ -705,8 +714,8 @@ cdef class FastNS(object):
         """
         Initialize the grid and sort the coordinates in respective
         cells by shifting the coordinates in a brick shaped box.
-        The brick shaped box is defined by :class:`PBCBox`
-        and cuboidal grid is initialize by :class:`NSGrid`.
+        The brick shaped box is defined by :class:`_PBCBox`
+        and cuboidal grid is initialize by :class:`_NSGrid`.
         If box is supplied, periodic shifts along box vectors are used
         to contain all the coordinates inside the brick shaped box.
         If box is not supplied, the range of coordinates i.e.
@@ -751,7 +760,7 @@ cdef class FastNS(object):
           ``[10, 10, 10, 90, 90, 90]``
         * Following operations are advisable for non-PBC calculations
 
-        ..code-block:: python
+        .. code-block:: python
 
             lmax = all_coords.max(axis=0)
             lmin = all_coords.min(axis=0)
@@ -778,7 +787,7 @@ cdef class FastNS(object):
         if box.shape != (3, 3):
             box = triclinic_vectors(box)
 
-        self.box = PBCBox(box, self.periodic)
+        self.box = _PBCBox(box, self.periodic)
 
         if cutoff < 0:
             raise ValueError("Cutoff must be positive!")
@@ -791,7 +800,7 @@ cdef class FastNS(object):
         self.max_gridsize = max_gridsize
         # Note that self.cutoff might be different from self.grid.cutoff
         # due to optimization
-        self.grid = NSGrid(self.coords_bbox.shape[0], self.cutoff, self.box, self.max_gridsize)
+        self.grid = _NSGrid(self.coords_bbox.shape[0], self.cutoff, self.box, self.max_gridsize)
 
         self.grid.fill_grid(self.coords_bbox)
 
@@ -815,21 +824,17 @@ cdef class FastNS(object):
 
         Returns
         -------
-        results : NSResults object
-           The object from :class:NSResults
-           contains ``get_indices``, ``get_distances``.
-           ``get_pairs``, ``get_pair_distances``
+        results : NSResults
+           An :class:`NSResults` object holding neighbor search results, which
+           can be accessed by its methods :meth:`~NSResults.get_indices`,
+           :meth:`~NSResults.get_distances`, :meth:`~NSResults.get_pairs`, and
+           :meth:`~NSResults.get_pair_distances`.
 
         Note
         ----
         For non-PBC aware calculations, the current implementation doesn't work
-        if any of the query coordinates is beyond the range specified in
-        ``box`` in :func:`MDAnalysis.lib.nsgrid.FastNS`.
-
-        See Also
-        --------
-        MDAnalysis.lib.nsgrid.NSResults
-
+        if any of the query coordinates lies outside the `box` supplied to
+        :class:`~MDAnalysis.lib.nsgrid.FastNS`.
         """
 
         cdef ns_int i, j, size_search
@@ -840,15 +845,15 @@ cdef class FastNS(object):
 
         cdef NSResults results
 
-        cdef real d2
+        cdef dreal d2
         cdef rvec probe
 
         cdef real[:, ::1] searchcoords
         cdef real[:, ::1] searchcoords_bbox
-        cdef NSGrid searchgrid
+        cdef _NSGrid searchgrid
         cdef bint check
 
-        cdef real cutoff2 = self.cutoff * self.cutoff
+        cdef dreal cutoff2 = self.cutoff * self.cutoff
         cdef ns_int npairs = 0
 
         if (search_coords.ndim != 2 or search_coords.shape[1] != 3):
@@ -858,7 +863,7 @@ cdef class FastNS(object):
         # Generate another grid to search
         searchcoords = search_coords.astype(np.float32, order='C', copy=False)
         searchcoords_bbox = self.box.fast_put_atoms_in_bbox(searchcoords)
-        searchgrid = NSGrid(searchcoords_bbox.shape[0], self.grid.cutoff, self.box, self.max_gridsize, force=True)
+        searchgrid = _NSGrid(searchcoords_bbox.shape[0], self.grid.cutoff, self.box, self.max_gridsize, force=True)
         searchgrid.fill_grid(searchcoords_bbox)
 
         size_search = searchcoords.shape[0]
@@ -905,7 +910,7 @@ cdef class FastNS(object):
                                 bid = self.grid.beadids[cellindex_probe * self.grid.nbeads_per_cell + j]
                                 # find distance between search coords[i] and coords[bid]
                                 d2 = self.box.fast_distance2(&searchcoords_bbox[current_beadid, XX], &self.coords_bbox[bid, XX])
-                                if d2 < cutoff2:
+                                if d2 <= cutoff2:
                                     results.add_neighbors(current_beadid, bid, d2)
                                     npairs += 1
         return results
@@ -920,15 +925,11 @@ cdef class FastNS(object):
 
         Returns
         -------
-        results : NSResults object
-           The object from :class:NSResults
-           contains ``get_indices``, ``get_distances``.
-           ``get_pairs``, ``get_pair_distances``
-
-        See Also
-        --------
-        MDAnalysis.lib.nsgrid.NSResults
-
+        results : NSResults
+           An :class:`NSResults` object holding neighbor search results, which
+           can be accessed by its methods :meth:`~NSResults.get_indices`,
+           :meth:`~NSResults.get_distances`, :meth:`~NSResults.get_pairs`, and
+           :meth:`~NSResults.get_pair_distances`.
         """
 
         cdef ns_int i, j, size_search
@@ -938,10 +939,10 @@ cdef class FastNS(object):
         cdef ns_int xi, yi, zi
 
         cdef NSResults results
-        cdef real d2
+        cdef dreal d2
         cdef rvec probe
 
-        cdef real cutoff2 = self.cutoff * self.cutoff
+        cdef dreal cutoff2 = self.cutoff * self.cutoff
         cdef ns_int npairs = 0
         cdef bint check
 
@@ -978,7 +979,7 @@ cdef class FastNS(object):
                                     if probe[m] < 0:
                                         check = False
                                         break
-                                    elif probe[m] >= self.box.c_pbcbox.box[m][m]:
+                                    elif probe[m] > self.box.c_pbcbox.box[m][m]:
                                         check = False
                                         break
                             if not check:
@@ -992,7 +993,7 @@ cdef class FastNS(object):
                                     continue
                                 # find distance between search coords[i] and coords[bid]
                                 d2 = self.box.fast_distance2(&self.coords_bbox[current_beadid, XX], &self.coords_bbox[bid, XX])
-                                if d2 < cutoff2 and d2 > EPSILON:
+                                if d2 <= cutoff2 and d2 > EPSILON:
                                     results.add_neighbors(current_beadid, bid, d2)
                                     results.add_neighbors(bid, current_beadid, d2)
                                     npairs += 2

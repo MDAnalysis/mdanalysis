@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -156,7 +157,7 @@ def guess_bonds(atoms, coords, box=None, **kwargs):
          coordinates of the atoms (i.e., `AtomGroup.positions)`)
     fudge_factor : float, optional
         The factor by which atoms must overlap eachother to be considered a
-        bond.  Larger values will increase the number of bonds found. [0.72]
+        bond.  Larger values will increase the number of bonds found. [0.55]
     vdwradii : dict, optional
         To supply custom vdwradii for atoms in the algorithm. Must be a dict
         of format {type:radii}. The default table of van der Waals radii is
@@ -202,7 +203,7 @@ def guess_bonds(atoms, coords, box=None, **kwargs):
     if len(atoms) != len(coords):
         raise ValueError("'atoms' and 'coord' must be the same length")
 
-    fudge_factor = kwargs.get('fudge_factor', 0.72)
+    fudge_factor = kwargs.get('fudge_factor', 0.55)
 
     vdwradii = tables.vdwradii.copy()  # so I don't permanently change it
     user_vdwradii = kwargs.get('vdwradii', None)

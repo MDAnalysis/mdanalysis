@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -32,7 +33,7 @@ from numpy.testing import (
 
 from MDAnalysisTests.datafiles import (
     mol2_molecules, mol2_molecule, mol2_broken_molecule,
-    mol2_zinc,
+    mol2_zinc, mol2_comments_header
 )
 from MDAnalysis import Universe
 import MDAnalysis as mda
@@ -95,6 +96,13 @@ class TestMol2(TestCase):
         #    u = Universe(mol2_broken_molecule)
         #self.assertEqual("The mol2 block (BrokenMolecule.mol2:0) has no atoms" in context.exception.message,
         # True)
+
+    def test_comments_header(self):
+        u = Universe(mol2_comments_header)
+        assert_equal(len(u.atoms), 9)
+        assert_equal(u.trajectory.n_frames, 2)
+        u.trajectory[1]
+        assert_array_almost_equal(u.atoms.positions[2], [-12.2710, -1.9540, -16.0480])
 
 
 class TestMol2_traj(TestCase):

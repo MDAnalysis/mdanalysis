@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -26,10 +27,37 @@ Polymer analysis --- :mod:`MDAnalysis.analysis.polymer`
 
 
 :Author: Richard J. Gowers
-:Year: 2015
+:Year: 2015, 2018
 :Copyright: GNU Public License v3
 
 This module contains various commonly used tools in analysing polymers.
+
+
+Persistence length worked example
+---------------------------------
+
+This example shows how to find the persistence length of a polymer
+using MDAnalysis.
+::
+
+  from MDAnalysis.tests.datafiles import TRZ_psf, TRZ
+  import MDAnalysis as mda
+  from MDAnalysis.analysis import polymer
+  u = mda.Universe(TRZ_psf, TRZ)
+  # this system is a pure polymer melt of polyamide,
+  # so we can select the chains by using the .fragments attribute
+  chains = u.atoms.fragments
+  # select only the backbone atoms for each chain
+  backbones = [chain.select_atoms('not name O* H') for chain in chains]
+  # sort the chains, removing any non-backbone atoms
+  sorted_backbones = [polymer.sort_backbone(bb) for bb in backbones]
+  lp = polymer.PersistenceLength(sorted_backbones)
+  # Run the analysis, this will average over all polymer chains
+  # and all timesteps in trajectory
+  lp = lp.run()
+  print('The persistence length is: {}'.format(lp.pl))
+  # always check the visualisation of this:
+  lp.plot()
 
 """
 from __future__ import division, absolute_import
@@ -37,50 +65,131 @@ from six.moves import range
 
 import numpy as np
 import scipy.optimize
-
+import warnings
 import logging
 
 from .. import NoDataError
+from ..core.groups import requires, AtomGroup
 from ..lib.distances import calc_bonds
 from .base import AnalysisBase
 
 logger = logging.getLogger(__name__)
 
 
+@requires('bonds')
+def sort_backbone(backbone):
+    """Rearrange a linear AtomGroup into backbone order
+
+    Requires that the backbone has bond information,
+    and that only backbone atoms are provided (ie no side
+    chains or hydrogens).
+
+    Parameters
+    ----------
+    backbone : AtomGroup
+      the backbone atoms, not necessarily in order
+
+    Returns
+    -------
+    sorted_backbone : AtomGroup
+      backbone in order, so `sorted_backbone[i]` is bonded to
+      `sorted_backbone[i - 1]` and `sorted_backbone[i + 1]`
+
+
+    .. versionadded:: 0.20.0
+    """
+    if not backbone.n_fragments == 1:
+        raise ValueError("{} fragments found in backbone.  "
+                         "backbone must be a single contiguous AtomGroup"
+                         "".format(backbone.n_fragments))
+
+    branches = [at for at in backbone
+                if len(at.bonded_atoms & backbone) > 2]
+    if branches:
+        # find which atom has too many bonds for easier debug
+        raise ValueError(
+            "Backbone is not linear.  "
+            "The following atoms have more than two bonds in backbone: {}."
+            "".format(','.join(str(a) for a in branches)))
+
+    caps = [atom for atom in backbone
+           if len(atom.bonded_atoms & backbone) == 1]
+    if not caps:
+        # cyclical structure
+        raise ValueError("Could not find starting point of backbone, "
+                         "is the backbone cyclical?")
+
+    # arbitrarily choose one of the capping atoms to be the startpoint
+    sorted_backbone = AtomGroup([caps[0]])
+
+    # iterate until the sorted chain length matches the backbone size
+    while len(sorted_backbone) < len(backbone):
+        # current end of the chain
+        end_atom = sorted_backbone[-1]
+
+        # look at all bonded atoms which are also part of the backbone
+        # and subtract any that have already been added
+        next_atom = (end_atom.bonded_atoms & backbone) - sorted_backbone
+
+        # append this to the sorted backbone
+        sorted_backbone += next_atom
+
+    return sorted_backbone
+
+
 class PersistenceLength(AnalysisBase):
     r"""Calculate the persistence length for polymer chains
 
     The persistence length is the length at which two points on the polymer
-    chain become decorrelated.
+    chain become decorrelated.  This is determined by first measuring the
+    autocorrelation (:math:`C(n)`) of two bond vectors
+    (:math:`\mathbf{a}_i, \mathbf{a}_{i + n}`) separated by :math:`n` bonds
 
-    Notes
-    -----
-    This analysis requires that the trajectory supports indexing.
+    .. math::
 
+       C(n) = \langle \cos\theta_{i, i+n} \rangle =
+               \langle \mathbf{a_i} \cdot \mathbf{a_{i+n}} \rangle
+
+    An exponential decay is then fitted to this, which yields the
+    persistence length
+
+    .. math::
+
+       C(n) \approx \exp\left( - \frac{n \bar{l_B}}{l_P} \right)
+
+    where :math:`\bar{l_B}` is the average bond length, and :math:`l_P` is
+    the persistence length which is fitted
+
+    Parameters
+    ----------
+    atomgroups : iterable
+       List of AtomGroups.  Each should represent a single
+       polymer chain, ordered in the correct order.
+    verbose : bool (optional)
+       Show detailed progress of the calculation if set to ``True``; the
+       default is ``False``.
+
+    Attributes
+    ----------
+    results : numpy.ndarray
+       the measured bond autocorrelation
+    lb : float
+       the average bond length
+    lp : float
+       calculated persistence length
+    fit : numpy.ndarray
+       the modelled backbone decorrelation predicted by *lp*
+
+    See Also
+    --------
+    :func:`sort_backbone`
+       for producing the sorted AtomGroup required for input.
 
     .. versionadded:: 0.13.0
+    .. versionchanged:: 0.20.0
+       The run method now automatically performs the exponential fit
     """
     def __init__(self, atomgroups, **kwargs):
-        """Calculate the persistence length for polymer chains
-
-        Parameters
-        ----------
-        atomgroups : list
-            List of atomgroups.  Each atomgroup should represent a single
-            polymer chain, ordered in the correct order.
-        start : int, optional
-            First frame of trajectory to analyse, Default: None becomes 0.
-        stop : int, optional
-            Last frame of trajectory to analyse, Default: None becomes
-            n_frames.
-        step : int, optional
-            Frame index to stop analysis. Default: None becomes
-            n_frames. Iteration stops *before* this frame number.
-        verbose : bool (optional)
-            Show detailed progress of the calculation if set to ``True``; the
-            default is ``False``.
-
-        """
         super(PersistenceLength, self).__init__(
             atomgroups[0].universe.trajectory, **kwargs)
         self._atomgroups = atomgroups
@@ -119,6 +228,8 @@ class PersistenceLength(AnalysisBase):
         self.results = self._results / norm
         self._calc_bond_length()
 
+        self._perform_fit()
+
     def _calc_bond_length(self):
         """calculate average bond length"""
         bs = []
@@ -129,8 +240,11 @@ class PersistenceLength(AnalysisBase):
         self.lb = np.mean(bs)
 
     def perform_fit(self):
-        """Fit the results to an exponential decay"""
+        warnings.warn("perform_fit is now called automatically from run",
+                      DeprecationWarning)
 
+    def _perform_fit(self):
+        """Fit the results to an exponential decay"""
         try:
             self.results
         except AttributeError:
@@ -142,21 +256,35 @@ class PersistenceLength(AnalysisBase):
         self.fit = np.exp(-self.x/self.lp)
 
     def plot(self, ax=None):
-        """Oooh fancy"""
+        """Visualise the results and fit
+
+        Parameters
+        ----------
+        ax : matplotlib.Axes, optional
+          if provided, the graph is plotted on this axis
+
+        Returns
+        -------
+        ax : the axis that the graph was plotted on
+        """
         import matplotlib.pyplot as plt
         if ax is None:
             ax = plt.gca()
         ax.plot(self.x, self.results, 'ro', label='Result')
         ax.plot(self.x, self.fit, label='Fit')
-        ax.set(xlabel='x', ylabel='C(x)', xlim=[0.0, 40 * self.lb])
+        ax.set_xlabel(r'x')
+        ax.set_ylabel(r'$C(x)$')
+        ax.set_xlim(0.0, 40 * self.lb)
+
         ax.legend(loc='best')
+
         return ax
 
 
 def fit_exponential_decay(x, y):
     r"""Fit a function to an exponential decay
 
-    .. math::  y = \exp(-x/a)
+    .. math::  y = \exp\left(- \frac{x}{a}\right)
 
     Parameters
     ----------

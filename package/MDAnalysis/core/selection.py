@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -288,8 +289,7 @@ class SphericalLayerSelection(DistanceSelection):
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
-        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).astype(
-            np.float32)
+        ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.exRadius,
                                           min_cutoff=self.inRadius,
                                           box=box,
@@ -314,8 +314,7 @@ class SphericalZoneSelection(DistanceSelection):
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
-        ref = sel.center_of_geometry(pbc=periodic).reshape(1, 3).astype(
-            np.float32)
+        ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.cutoff,
                                           box=box,
                                           return_distances=False)
@@ -548,6 +547,12 @@ class AtomTypeSelection(StringSelection):
     """Select atoms based on 'types' attribute"""
     token = 'type'
     field = 'types'
+
+
+class RecordTypeSelection(StringSelection):
+    """Select atoms based on 'record_type' attribute"""
+    token = 'record_type'
+    field = 'record_types'
 
 
 class AtomICodeSelection(StringSelection):

@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -25,13 +26,18 @@ import pytest
 import six
 from six.moves import range
 
-from MDAnalysisTests.datafiles import TRZ, TRZ_psf
+from MDAnalysisTests.datafiles import (
+    TRZ, TRZ_psf,
+    waterPSF, waterDCD,
+    XYZ_mini,
+)
 from numpy.testing import assert_almost_equal
 import numpy as np
 import mock
 import os
 
 import MDAnalysis as mda
+from MDAnalysis.analysis import hbonds
 from MDAnalysis.analysis.hbonds import HydrogenBondAutoCorrel as HBAC
 
 
@@ -301,3 +307,21 @@ class TestHydrogenBondAutocorrel(object):
                      sample_time=0.06,
         )
         assert isinstance(repr(hbond), six.string_types)
+
+def test_find_donors():
+    u = mda.Universe(waterPSF, waterDCD)
+
+    H = u.select_atoms('name H*')
+
+    D = hbonds.find_hydrogen_donors(H)
+
+    assert len(H) == len(D)
+    # check each O is bonded to the corresponding H
+    for h_atom, o_atom in zip(H, D):
+        assert o_atom in h_atom.bonded_atoms
+
+def test_donors_nobonds():
+    u = mda.Universe(XYZ_mini)
+
+    with pytest.raises(mda.NoDataError):
+        hbonds.find_hydrogen_donors(u.atoms)

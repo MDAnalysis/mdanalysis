@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -174,6 +175,8 @@ def test_timestep_copied(ref_reader):
 
     assert_equal(ref_reader.ts.positions, new.ts.positions)
     assert_almost_equal(new.ts.dimensions, newbox, decimal=4)
+    assert ref_reader.ts.positions.dtype == np.float32
+    assert new.ts.positions.dtype == np.float32
 
 
 @pytest.mark.skipif(shares_memory == False,

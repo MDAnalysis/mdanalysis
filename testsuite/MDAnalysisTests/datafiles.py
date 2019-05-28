@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -57,7 +58,7 @@ __all__ = [
     "XPDB_small",
     "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
     "ALIGN",  # Various way to align atom names in PDB files
-    "NUCL",  # nucleic acid (PDB)
+    "RNA_PSF", "RNA_PDB",  # nucleic acid (PDB 1K5I in CHARMM36m)
     "INC_PDB",  # incomplete PDB file (Issue #396)
     # for testing cryst before/after model headers
     "PDB_cm", "PDB_cm_bz2", "PDB_cm_gz",
@@ -78,8 +79,8 @@ __all__ = [
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
-    "TPR2018",
-    "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded",
+    "TPR2018", "TPR2019B3",
+    "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -94,6 +95,8 @@ __all__ = [
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
     "PRMcs", # Amber (format, Issue 1331)
+    "PRMNCRST", # Amber ncrst with positions/forces/velocities
+    "PRMErr1", "PRMErr2", "PRMErr3", # Amber TOP files to check raised errors
     "PQR",  # PQR v1
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
@@ -110,7 +113,7 @@ __all__ = [
     "TRR_multi_frame",
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
-    "mol2_zinc",
+    "mol2_zinc", "mol2_comments_header",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
     "contacts_villin_folded", "contacts_villin_unfolded", "contacts_file",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
@@ -148,21 +151,36 @@ __all__ = [
     "RANDOM_WALK_TOPO", # garbage topology to go along with XTC positions above
     "AUX_XVG", "XVG_BAD_NCOL", #for testing .xvg auxiliary reader
     "AUX_XVG_LOWF", "AUX_XVG_HIGHF",
-    "MMTF", "MMTF_gz",
+    "MMTF", "MMTF_gz", 'MMTF_skinny',  # skinny - some optional fields stripped out
+    "MMTF_skinny2",
     "ALIGN_BOUND",  # two component bound system
     "ALIGN_UNBOUND", # two component unbound system
     "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
     "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
-    "GSD",
+    "GSD", "GSD_bonds",
     "GRO_MEMPROT", "XTC_MEMPROT", # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
     "DihedralArray", "DihedralsArray", # time series of single dihedral
     "RamaArray", "GLYRamaArray", # time series of phi/psi angles
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
-    "PDB_rama", "PDB_janin" # for testing failures of Ramachandran and Janin classes
+    "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
+
+    # DOS line endings
+    "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
 ]
 
 from pkg_resources import resource_filename
+
+WIN_PDB_multiframe = resource_filename(__name__,
+                                       'data/windows/WIN_nmr_neopetrosiamide.pdb')
+WIN_DLP_HISTORY = resource_filename(__name__,
+                                    'data/windows/WIN_HISTORY')
+WIN_TRJ = resource_filename(__name__,
+                            'data/windows/WIN_ache.mdcrd')
+WIN_ARC = resource_filename(__name__,
+                            'data/windows/WIN_test.arc')
+WIN_LAMMPSDUMP = resource_filename(__name__,
+                                   'data/windows/WIN_wat.lammpstrj')
 
 legacy_DCD_NAMD_coords = resource_filename(__name__,
 'data/legacy_DCD_NAMD_coords.npy')
@@ -212,7 +230,8 @@ PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 
 ALIGN = resource_filename(__name__, 'data/align.pdb')
-NUCL = resource_filename(__name__, 'data/1k5i.pdb')
+RNA_PSF = resource_filename(__name__, 'data/analysis/1k5i_c36.psf.gz')
+RNA_PDB = resource_filename(__name__, 'data/analysis/1k5i_c36.pdb.gz')
 INC_PDB = resource_filename(__name__, 'data/incomplete.pdb')
 PDB_cm = resource_filename(__name__, 'data/cryst_then_model.pdb')
 PDB_cm_gz = resource_filename(__name__, 'data/cryst_then_model.pdb.gz')
@@ -281,6 +300,7 @@ TPR505 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.5.tpr')
 TPR510 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.1.tpr')
 TPR2016 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2016.tpr')
 TPR2018 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2018.tpr')
+TPR2019B3 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2019-beta3.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
@@ -289,6 +309,7 @@ TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
 TPR510_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_5.1.tpr')
 TPR2016_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2016.tpr')
 TPR2018_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2018.tpr')
+TPR2019B3_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2019-beta3.tpr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
@@ -321,6 +342,12 @@ NCDFtruncoct =  resource_filename(__name__, 'data/Amber/tz2.truncoct.nc')
 
 PRMcs = resource_filename(__name__, 'data/Amber/chitosan.prmtop')
 
+PRMNCRST = resource_filename(__name__, 'data/Amber/ace_mbondi3.parm7')
+
+PRMErr1 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error1.parm7')
+PRMErr2 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error2.parm7')
+PRMErr3 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error3.parm7')
+
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 PQR_icodes = resource_filename(__name__, 'data/1A2C.pqr')
 
@@ -352,6 +379,7 @@ merge_water = resource_filename(__name__, "data/merge/2zmm/water.pdb")
 mol2_molecules = resource_filename(__name__, "data/mol2/Molecules.mol2")
 mol2_molecule = resource_filename(__name__, "data/mol2/Molecule.mol2")
 mol2_broken_molecule = resource_filename(__name__, "data/mol2/BrokenMolecule.mol2")
+mol2_comments_header = resource_filename(__name__, "data/mol2/Molecule_comments_header.mol2")
 # MOL2 file without substructure field
 mol2_zinc = resource_filename(__name__, "data/mol2/zinc_856218.mol2")
 
@@ -414,11 +442,14 @@ RANDOM_WALK_TOPO = resource_filename(__name__, 'data/RANDOM_WALK_TOPO.pdb')
 
 MMTF = resource_filename(__name__, 'data/173D.mmtf')
 MMTF_gz = resource_filename(__name__, 'data/5KIH.mmtf.gz')
+MMTF_skinny = resource_filename(__name__, 'data/1ubq-less-optional.mmtf')
+MMTF_skinny2 = resource_filename(__name__, 'data/3NJW-onlyrequired.mmtf')
 
 ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
 ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')
 
 GSD = resource_filename(__name__, 'data/example.gsd')
+GSD_bonds = resource_filename(__name__, 'data/example_bonds.gsd')
 
 DihedralArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral.npy')
 DihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral_list.npy')

@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -45,7 +46,10 @@ __all__ = ['distance_array', 'self_distance_array',
 import numpy as np
 import scipy.sparse
 
-from MDAnalysis.lib.distances import distance_array, self_distance_array
+from MDAnalysis.lib.distances import (
+           capped_distance,
+           self_distance_array, distance_array,  # legacy reasons
+)
 from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib.distances import calc_bonds
@@ -98,7 +102,12 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     '''
 
     if returntype == "numpy":
-        adj = (distance_array(coord, coord, box=box) < cutoff)
+        adj = np.full((len(coord), len(coord)), False, dtype=bool)
+        pairs = capped_distance(coord, coord, max_cutoff=cutoff, box=box, return_distances=False)
+        
+        idx, idy = np.transpose(pairs)
+        adj[idx, idy]=True
+        
         return adj
     elif returntype == "sparse":
         # Initialize square List of Lists matrix of dimensions equal to number

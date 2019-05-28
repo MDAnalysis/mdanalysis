@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -32,7 +33,8 @@ from MDAnalysis.tests.datafiles import (
     TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407,
     TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double,
     TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded,
-    TPR2016, TPR2018, TPR2016_bonded, TPR2018_bonded,
+    TPR2016, TPR2018, TPR2019B3, TPR2016_bonded, TPR2018_bonded,
+    TPR2019B3_bonded,
 )
 from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
@@ -52,6 +54,7 @@ class TPRAttrs(ParserBase):
     def test_molnums(self, top):
         molnums = top.molnums.values
         assert_equal(molnums, self.ref_molnums)
+        assert molnums.dtype == np.int64
 
 
 class TestTPR(TPRAttrs):
@@ -83,7 +86,7 @@ class TestTPRGromacsVersions(TPRAttrs):
     @pytest.fixture(params=[TPR400, TPR402, TPR403, TPR404, TPR405, TPR406,
                             TPR407, TPR450, TPR451, TPR452, TPR453, TPR454,
                             TPR455, TPR502, TPR504, TPR505, TPR510, TPR2016,
-                            TPR2018,])
+                            TPR2018, TPR2019B3])
     def filename(self, request):
         return request.param
 
@@ -135,6 +138,7 @@ def _test_is_in_topology(name, elements, topology_path, topology_section):
         TPR510_bonded,
         TPR2016_bonded,
         TPR2018_bonded,
+        TPR2019B3_bonded,
 ))
 @pytest.mark.parametrize('bond', (
         ('BONDS', [(0, 1)]),
@@ -233,3 +237,5 @@ def bonds_water(request):
 def test_settle(bonds_water):
     # There are 101 water molecule with 2 bonds each
     assert len(bonds_water) == 202
+    # The last index corresponds to the last water atom
+    assert bonds_water[-1][1] == 2262

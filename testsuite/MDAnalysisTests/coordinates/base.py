@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -694,10 +695,12 @@ class BaseTimestepTest(object):
             with pytest.raises(NotImplementedError):
                 getattr(ts, "dimensions")
 
-    def test_dimensions_set_box(self, ts):
+    @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
+    def test_dimensions_set_box(self, ts, dtype):
         if self.set_box:
-            ts.dimensions = self.newbox
-            assert_allclose(ts._unitcell, self.unitcell)
+            ts.dimensions = self.newbox.astype(dtype)
+            assert ts.dimensions.dtype == np.float32
+            assert_equal(ts._unitcell, self.unitcell)
             assert_allclose(ts.dimensions, self.newbox)
         else:
             pass
@@ -725,9 +728,9 @@ class BaseTimestepTest(object):
     def test_coordinate_getter_shortcuts(self, ts):
         """testing that reading _x, _y, and _z works as expected
         # (Issue 224) (TestTimestep)"""
-        assert_allclose(ts._x, ts._pos[:, 0])
-        assert_allclose(ts._y, ts._pos[:, 1])
-        assert_allclose(ts._z, ts._pos[:, 2])
+        assert_equal(ts._x, ts._pos[:, 0])
+        assert_equal(ts._y, ts._pos[:, 1])
+        assert_equal(ts._z, ts._pos[:, 2])
 
     def test_coordinate_setter_shortcuts(self, ts):
         # Check that _x _y and _z are read only

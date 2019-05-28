@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -226,6 +227,17 @@ class Timestep(base.Timestep):
         self.has_positions = True
         self._pos = new
 
+    def _replace_velocities_array(self, new):
+        self.has_velocities = True
+        self._velocities = new
+
+    def _replace_forces_array(self, new):
+        self.has_forces = True
+        self._forces = new
+
+    def _replace_dimensions(self, new):
+        self._unitcell = new
+
 
 class MemoryReader(base.ProtoReader):
     """
@@ -243,7 +255,9 @@ class MemoryReader(base.ProtoReader):
     _Timestep = Timestep
 
     def __init__(self, coordinate_array, order='fac',
-                 dimensions=None, dt=1, filename=None, **kwargs):
+                 dimensions=None, dt=1, filename=None,
+                 velocities=None, forces=None,
+                 **kwargs):
         """
         Parameters
         ----------
@@ -259,13 +273,20 @@ class MemoryReader(base.ProtoReader):
         dimensions: [A, B, C, alpha, beta, gamma] (optional)
             unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
             lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
-            angles are in degrees.
+            angles are in degrees. An array of dimensions can be given,
+            which must then be shape (nframes, 6)
         dt: float (optional)
             The time difference between frames (ps).  If :attr:`time`
             is set, then `dt` will be ignored.
         filename: string (optional)
             The name of the file from which this instance is created. Set to ``None``
             when created from an array
+        velocities : numpy.ndarray (optional)
+            Atom velocities.  Must match shape of coordinate_array.  Will share order
+            with coordinates.
+        forces : numpy.ndarray (optional)
+            Atom forces.  Must match shape of coordinate_array  Will share order
+            with coordinates
 
         Raises
         ------
@@ -279,9 +300,9 @@ class MemoryReader(base.ProtoReader):
 
         .. _`#1041`: https://github.com/MDAnalysis/mdanalysis/issues/1041
 
-        .. versionchanged:: 0.18.1
+        .. versionchanged:: 0.19.0
             The input to the MemoryReader now must be a np.ndarray
-
+            Added optional velocities and forces
         """
 
         super(MemoryReader, self).__init__()
@@ -292,8 +313,8 @@ class MemoryReader(base.ProtoReader):
         # passed is of shape (N, 3) and if it is, the coordiante array is
         # reshaped to (1, N, 3)
         try:
-            if len(coordinate_array.shape) == 2 and coordinate_array.shape[1] == 3:
-                    coordinate_array = coordinate_array[np.newaxis, :, :]
+            if coordinate_array.ndim == 2 and coordinate_array.shape[1] == 3:
+                coordinate_array = coordinate_array[np.newaxis, :, :]
         except AttributeError as e:
             raise TypeError("The input has to be a numpy.ndarray that "
                             "corresponds to the layout specified by the "
@@ -305,6 +326,41 @@ class MemoryReader(base.ProtoReader):
         self.n_atoms = \
             self.coordinate_array.shape[self.stored_order.find('a')]
 
+        if velocities is not None:
+            try:
+                velocities = np.asarray(velocities, dtype=np.float32)
+            except ValueError:
+                raise TypeError("'velocities' must be array-like got {}"
+                                "".format(type(velocities)))
+            # if single frame, make into array of 1 frame
+            if velocities.ndim == 2:
+                velocities = velocities[np.newaxis, :, :]
+            if not velocities.shape == self.coordinate_array.shape:
+                raise ValueError('Velocities has wrong shape {} '
+                                 'to match coordinates {}'
+                                 ''.format(velocities.shape,
+                                           self.coordinate_array.shape))
+            self.velocity_array = velocities.astype(np.float32, copy=False)
+        else:
+            self.velocity_array = None
+
+        if forces is not None:
+            try:
+                forces = np.asarray(forces, dtype=np.float32)
+            except ValueError:
+                raise TypeError("'forces' must be array like got {}"
+                                "".format(type(forces)))
+            if forces.ndim == 2:
+                forces = forces[np.newaxis, :, :]
+            if not forces.shape == self.coordinate_array.shape:
+                raise ValueError('Forces has wrong shape {} '
+                                 'to match coordinates {}'
+                                 ''.format(forces.shape,
+                                           self.coordinate_array.shape))
+            self.force_array = forces.astype(np.float32, copy=False)
+        else:
+            self.force_array = None
+
         provided_n_atoms = kwargs.pop("n_atoms", None)
         if (provided_n_atoms is not None and
             provided_n_atoms != self.n_atoms):
@@ -315,8 +371,23 @@ class MemoryReader(base.ProtoReader):
 
         self.ts = self._Timestep(self.n_atoms, **kwargs)
         self.ts.dt = dt
-        if dimensions is not None:
-            self.ts.dimensions = dimensions
+        if dimensions is None:
+            dimensions = np.zeros((self.n_frames, 6), dtype=np.float32)
+        else:
+            try:
+                dimensions = np.asarray(dimensions, dtype=np.float32)
+            except ValueError:
+                raise TypeError("'dimensions' must be array-like got {}"
+                                "".format(type(dimensions)))
+            if dimensions.shape == (6,):
+                # single box, tile this to trajectory length
+                # allows modifying the box of some frames
+                dimensions = np.tile(dimensions, (self.n_frames, 1))
+            elif dimensions.shape != (self.n_frames, 6):
+                raise ValueError("Provided dimensions array has shape {}. "
+                                 "This must be a array of shape (6,) or "
+                                 "(n_frames, 6)".format(dimensions.shape))
+        self.dimensions_array = dimensions
         self.ts.frame = -1
         self.ts.time = -1
         self._read_next_timestep()
@@ -346,15 +417,23 @@ class MemoryReader(base.ProtoReader):
 
     def copy(self):
         """Return a copy of this Memory Reader"""
+        vels = (self.velocity_array.copy()
+                if self.velocity_array is not None else None)
+        fors = (self.force_array.copy()
+                if self.force_array is not None else None)
+        dims = self.dimensions_array.copy()
+
         new = self.__class__(
             self.coordinate_array.copy(),
             order=self.stored_order,
-            dimensions=self.ts.dimensions,
+            dimensions=dims,
+            velocities=vels,
+            forces=fors,
             dt=self.ts.dt,
             filename=self.filename,
         )
         new[self.ts.frame]
-        new.ts = self.ts.copy()
+
         for auxname, auxread in self._auxs.items():
             new.add_auxiliary(auxname, auxread.copy())
         # since transformations are already applied to the whole trajectory
@@ -463,7 +542,7 @@ class MemoryReader(base.ProtoReader):
         # Return a view if either:
         #   1) asel is None
         #   2) asel corresponds to the selection of all atoms.
-        array = array[basic_slice]
+        array = array[tuple(basic_slice)]
         if (asel is None or asel is asel.universe.atoms):
             return array
         else:
@@ -482,9 +561,14 @@ class MemoryReader(base.ProtoReader):
         basic_slice = ([slice(None)]*(f_index) +
                        [self.ts.frame] +
                        [slice(None)]*(2-f_index))
-        ts._replace_positions_array(self.coordinate_array[basic_slice])
+        ts._replace_positions_array(self.coordinate_array[tuple(basic_slice)])
+        ts._replace_dimensions(self.dimensions_array[self.ts.frame])
+        if self.velocity_array is not None:
+            ts._replace_velocities_array(self.velocity_array[tuple(basic_slice)])
+        if self.force_array is not None:
+            ts._replace_forces_array(self.force_array[tuple(basic_slice)])
 
-        ts.time = self.ts.frame*self.dt
+        ts.time = self.ts.frame * self.dt
         return ts
 
     def _read_frame(self, i):

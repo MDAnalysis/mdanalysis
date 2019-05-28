@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -385,7 +386,7 @@ def generate_streamlines_3d(topology_file_path, trajectory_file_path, grid_spaci
     --------
     Generate 3D streamlines and visualize in `mayavi`_::
 
-        import np as np
+        import numpy as np
 
         import MDAnalysis
         import MDAnalysis.visualization.streamlines_3D

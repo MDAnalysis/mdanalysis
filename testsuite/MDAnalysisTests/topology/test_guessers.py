@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -31,8 +32,7 @@ from MDAnalysis.core.topologyattrs import Angles
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.core.test_fragments import make_starshape
-from MDAnalysisTests.datafiles import two_water_gro
-
+import MDAnalysis.tests.datafiles as datafiles
 
 class TestGuessMasses(object):
     def test_guess_masses(self):
@@ -103,10 +103,24 @@ def test_guess_impropers():
     assert_equal(len(vals), 12)
 
 
-def test_guess_bonds():
-    u = mda.Universe(two_water_gro)
+def test_guess_bonds_water():
+    u = mda.Universe(datafiles.two_water_gro)
     bonds = guessers.guess_bonds(u.atoms, u.atoms.positions, u.dimensions)
     assert_equal(bonds, ((0, 1),
                          (0, 2),
                          (3, 4),
                          (3, 5)))
+
+def test_guess_bonds_adk():
+    u = mda.Universe(datafiles.PSF, datafiles.DCD)
+    u.atoms.types = guessers.guess_types(u.atoms.names)
+    bonds = guessers.guess_bonds(u.atoms, u.atoms.positions)
+    assert_equal(np.sort(u.bonds.indices, axis=0),
+                 np.sort(bonds, axis=0))
+
+def test_guess_bonds_peptide():
+    u = mda.Universe(datafiles.PSF_NAMD, datafiles.PDB_NAMD)
+    u.atoms.types = guessers.guess_types(u.atoms.names)
+    bonds = guessers.guess_bonds(u.atoms, u.atoms.positions)
+    assert_equal(np.sort(u.bonds.indices, axis=0),
+                 np.sort(bonds, axis=0))

@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -44,9 +45,30 @@ class TestHoomdXMLParser(ParserBase):
 
     def test_bonds(self, top):
         assert len(top.bonds.values) == 704
+        assert isinstance(top.bonds.values[0], tuple)
 
     def test_angles(self, top):
         assert len(top.angles.values) == 640
+        assert isinstance(top.angles.values[0], tuple)
 
     def test_dihedrals(self, top):
         assert len(top.dihedrals.values) == 576
+        assert isinstance(top.dihedrals.values[0], tuple)
+
+    def test_bonds_identity(self, top):
+        vals = top.bonds.values
+        for b in ((0, 1), (1, 2), (2, 3), (3, 4)):
+            assert (b in vals) or (b[::-1] in vals)
+        assert ((0, 450) not in vals)
+
+    def test_angles_identity(self, top):
+        vals = top.angles.values
+        for b in ((0, 1, 2), (1, 2, 3), (2, 3, 4), (3, 4, 5)):
+            assert (b in vals) or (b[::-1] in vals)
+        assert ((0, 350, 450) not in vals)
+
+    def test_dihedrals_identity(self, top):
+        vals = top.dihedrals.values
+        for b in ((0, 1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5, 6)):
+            assert (b in vals) or (b[::-1] in vals)
+        assert ((0, 250, 350, 450) not in vals)

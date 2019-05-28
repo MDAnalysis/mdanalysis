@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -29,6 +30,7 @@ tables are dictionaries that are indexed by the element.
 
 .. autodata:: atomelements
 .. autodata:: masses
+.. autodata:: vdwradii
 
 The original raw data are stored as multi-line strings that are
 translated into dictionaries with :func:`kv2dict`. In the future,
@@ -41,6 +43,7 @@ The raw tables are stored in the strings
 
 .. autodata:: TABLE_ATOMELEMENTS
 .. autodata:: TABLE_MASSES
+.. autodata:: TABLE_VDWRADII
 """
 from __future__ import absolute_import
 from ._elements import NUMBER_TO_ELEMENT
@@ -295,17 +298,76 @@ DUMMY 0.0
 #: :data:`atomelements`.
 masses = kv2dict(TABLE_MASSES, convertor=float)
 
-#: Van der Waals radii (taken from GROMACS_, ``/usr/share/gromacs/top/vdwradii.dat``)
-#: and converted to ångström.
-#: .. _GROMACS: http://www.gromacs.org
-#:
+#: Plain-text table with vdw radii.
+TABLE_VDWRADII = r"""
+# Van der Waals radii taken from
+# [1] Bondi, A. (1964). "Van der Waals Volumes and Radii".
+#     J. Phys. Chem. 68 (3): 441-451. doi:10.1021/j100785a001.
+# [2] Rowland and Taylor (1996). "Intermolecular Nonbonded Contact Distances in Organic Crystal Structures:
+#                                 Comparison with Distances Expected from van der Waals Radii".
+#     J. Phys. Chem., 1996, 100 (18), 7384.7391. doi:10.1021/jp953141+.
+# [3] Mantina, et al. (2009). "Consistent van der Waals Radii for the Whole Main Group".
+#     J. Phys. Chem. A, 2009, 113 (19), 5806-5812. doi:10.1021/jp8111556.
+#------------ -----------
+# atomtype    r_vdw
+#------------ -----------
+H    1.10
+HE   1.40
+LI   1.82
+BE   1.53
+B    1.92
+C    1.70
+N    1.55
+O    1.52
+F    1.47
+NE   1.54
+NA   2.27
+MG   1.73
+AL   1.84
+SI   2.10
+P    1.80
+S    1.80
+CL   1.75
+AR   1.88
+K    2.75
+CA   2.31
+NI   1.63
+CU   1.40
+ZN   1.39
+GA   1.87
+GE   2.11
+AA   1.85
+SE   1.90
+BR   1.85
+KR   2.02
+RR   3.03
+SR   2.49
+PD   1.63
+AG   1.72
+CD   1.58
+IN   1.93
+SN   2.17
+SB   2.06
+TE   2.06
+I    1.98
+XE   2.16
+CS   3.43
+BA   2.68
+PT   1.75
+AU   1.66
+HH   1.55
+TL   1.96
+PB   2.02
+BI   2.07
+PO   1.97
+AT   2.02
+RN   2.20
+FR   3.48
+RA   2.83
+U    1.86
+"""
+
+#: Dictionary table with vdw radii, indexed by the element from
+#: :data:`atomelements`.
 #: .. SeeAlso:: :func:`MDAnalysis.topology.core.guess_bonds`
-vdwradii = {
-    "C":     1.5,
-    "F":     1.2,
-    "H":     0.4,
-    "N":     1.10,
-    "O":     1.05,
-    "S":     1.6,
-    "P":     1.6,
-}
+vdwradii = kv2dict(TABLE_VDWRADII, convertor=float)

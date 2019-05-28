@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -28,28 +29,37 @@ Reads an AMBER top file to build the system.
 
 Amber keywords are turned into the following attributes:
 
-+-----------------+----------------------+
-| AMBER flag      | MDAnalysis attribute |
-+-----------------+----------------------+
-| ATOM_NAME       | names                |
-+-----------------+----------------------+
-| CHARGE          | charges              |
-+-----------------+----------------------+
-| ATOMIC_NUMBER   | elements             |
-+-----------------+----------------------+
-| MASS            | masses               |
-+-----------------+----------------------+
-| ATOM_TYPE_INDEX | type_indices         |
-+-----------------+----------------------+
-| AMBER_ATOM_TYPE | types                |
-+-----------------+----------------------+
-| RESIDUE_LABEL   | resnames             |
-+-----------------+----------------------+
-| RESIDUE_POINTER | residues             |
-+-----------------+----------------------+
++----------------------------+----------------------+
+| AMBER flag                 | MDAnalysis attribute |
++----------------------------+----------------------+
+| ATOM_NAME                  | names                |
++----------------------------+----------------------+
+| CHARGE                     | charges              |
++----------------------------+----------------------+
+| ATOMIC_NUMBER              | elements             |
++----------------------------+----------------------+
+| MASS                       | masses               |
++----------------------------+----------------------+
+| BONDS_INC_HYDROGEN         | bonds                |
+| BONDS_WITHOUT_HYDROGEN     |                      |
++----------------------------+----------------------+
+| ANGLES_INC_HYDROGEN        | angles               |
+| ANGLES_WITHOUT_HYDROGEN    |                      |
++----------------------------+----------------------+
+| DIHEDRALS_INC_HYDROGEN     | dihedrals / improper |
+| DIHEDRALS_WITHOUT_HYDROGEN |                      |
++----------------------------+----------------------+
+| ATOM_TYPE_INDEX            | type_indices         |
++----------------------------+----------------------+
+| AMBER_ATOM_TYPE            | types                |
++----------------------------+----------------------+
+| RESIDUE_LABEL              | resnames             |
++----------------------------+----------------------+
+| RESIDUE_POINTER            | residues             |
++----------------------------+----------------------+
 
 TODO:
-  Add reading of bonds etc
+  More stringent tests
 
 .. Note::
 
@@ -74,6 +84,7 @@ from six.moves import range, zip
 import numpy as np
 import functools
 from math import ceil
+import itertools
 
 from . import guessers
 from .tables import NUMBER_TO_ELEMENT
@@ -92,6 +103,10 @@ from ..core.topologyattrs import (
     Resnums,
     Segids,
     AtomAttr,
+    Bonds,
+    Angles,
+    Dihedrals,
+    Impropers
 )
 
 
@@ -113,6 +128,9 @@ class TOPParser(TopologyReaderBase):
     - Atomtypes
     - Resnames
     - Type_indices
+    - Bonds
+    - Angles
+    - Dihedrals (inc. impropers)
 
     Guesses the following attributes:
      - Elements (if not included in topology)
@@ -124,8 +142,10 @@ class TOPParser(TopologyReaderBase):
     .. _`PARM parameter/topology file specification`:
        http://ambermd.org/formats.html#topology
 
-   .. versionchanged:: 0.7.6
+    .. versionchanged:: 0.7.6
       parses both amber10 and amber12 formats
+    .. versionchanged:: 0.19.0
+      parses bonds, angles, dihedrals, and impropers
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
 
@@ -145,7 +165,13 @@ class TOPParser(TopologyReaderBase):
             "ATOM_TYPE_INDEX": (1, 10, self.parse_type_indices, "type_indices", 0),
             "AMBER_ATOM_TYPE": (1, 20, self.parse_types, "types", 0),
             "RESIDUE_LABEL": (1, 20, self.parse_resnames, "resname", 11),
-            "RESIDUE_POINTER": (2, 10, self.parse_residx, "respoint", 11),
+            "RESIDUE_POINTER": (1, 10, self.parse_residx, "respoint", 11),
+            "BONDS_INC_HYDROGEN": (3, 10, self.parse_bonded, "bondh", 2),
+            "BONDS_WITHOUT_HYDROGEN": (3, 10, self.parse_bonded, "bonda", 3),
+            "ANGLES_INC_HYDROGEN": (4, 10, self.parse_bonded, "angh", 4),
+            "ANGLES_WITHOUT_HYDROGEN": (4, 10, self.parse_bonded, "anga", 5),
+            "DIHEDRALS_INC_HYDROGEN": (5, 10, self.parse_bonded, "dihh", 6),
+            "DIHEDRALS_WITHOUT_HYDROGEN": (5, 10, self.parse_bonded, "diha", 7)
         }
 
         attrs = {}  # empty dict for attrs that we'll fill
@@ -176,28 +202,36 @@ class TOPParser(TopologyReaderBase):
 
             while next_section is not None:
                 try:
-                    (atoms_per, per_line,
+                    (num_per_record, per_line,
                      func, name, sect_num) = sections[next_section]
                 except KeyError:
                     def next_getter():
                         return self.skipper()
                 else:
-                    num = sys_info[sect_num]
+                    num = sys_info[sect_num] * num_per_record
                     numlines = (num // per_line)
                     if num % per_line != 0:
                         numlines += 1
 
-                    attrs[name] = func(atoms_per, numlines)
+                    attrs[name] = func(num_per_record, numlines)
 
                     def next_getter():
                         return next(self.topfile)
 
                 try:
                     line = next_getter()
+                    # Capture case where section is empty w/ 1 empty line
+                    if numlines == 0 and not line.strip():
+                        line = next_getter()
                 except StopIteration:
                     next_section = None
                 else:
-                    next_section = line.split("%FLAG")[1].strip()
+                    try:
+                        next_section = line.split("%FLAG")[1].strip()
+                    except IndexError:
+                        msg = ("%FLAG section not found, formatting error "
+                               "for PARM7 file {0} ".format(self.filename))
+                        raise IndexError(msg)
 
         # strip out a few values to play with them
         n_atoms = len(attrs['name'])
@@ -209,6 +243,16 @@ class TOPParser(TopologyReaderBase):
             residx[x:y] = i
 
         n_res = len(attrs['resname'])
+
+        # Deal with recreating bonds and angle records here
+        attrs['bonds'] = Bonds([i for i in itertools.chain(
+                                attrs.pop('bonda'), attrs.pop('bondh'))])
+
+        attrs['angles'] = Angles([i for i in itertools.chain(
+                                attrs.pop('anga'), attrs.pop('angh'))])
+
+        attrs['dihedrals'], attrs['impropers'] = self.parse_dihedrals(
+                              attrs.pop('diha'), attrs.pop('dihh'))
 
         # Guess elements if not in topology
         if not 'elements' in attrs:
@@ -230,73 +274,248 @@ class TOPParser(TopologyReaderBase):
         return top
 
     def skipper(self):
-        """Skip until we find the next %FLAG entry and return that"""
+        """TOPParser :class: helper function, skips lines of input parm7 file
+        until we find the next %FLAG entry and return that
+
+        Returns
+        -------
+        line : string
+            String containing the current line of the parm7 file
+        """
         line = next(self.topfile)
         while not line.startswith("%FLAG"):
             line = next(self.topfile)
         return line
 
-    def parse_names(self, atoms_per, numlines):
-        vals = self.parsesection_mapper(
-            atoms_per, numlines, lambda x: x)
+    def parse_names(self, num_per_record, numlines):
+        """Extracts atoms names from parm7 file
+
+        Parameters
+        ----------
+        num_per_record : int
+            The number of entries for each record in the section (unused input)
+        numlines : int
+            The number of lines to be parsed in current section
+
+        Returns
+        -------
+        attr : :class:`Atomnames`
+            A :class:`Atomnames` instance containing the names of each atom as
+            defined in the parm7 file
+        """
+        vals = self.parsesection_mapper(numlines, lambda x: x)
         attr = Atomnames(np.array(vals, dtype=object))
         return attr
 
-    def parse_resnames(self, atoms_per, numlines):
-        vals = self.parsesection_mapper(
-            atoms_per, numlines, lambda x: x)
+    def parse_resnames(self, num_per_record, numlines):
+        """Extracts the names of each residue
+
+        Parameters
+        ----------
+        num_per_record : int
+            The number of entries for each recrod in section (unused input)
+        numlines : int
+            The number of lines to be parsed in current section
+
+        Returns
+        -------
+        attr : :class:`Resnames`
+            A :class:`Resnames` instance containing the names of each residue
+            as defined in the parm7 file
+        """
+        vals = self.parsesection_mapper(numlines, lambda x: x)
         attr = Resnames(np.array(vals, dtype=object))
         return attr
 
-    def parse_charges(self, atoms_per, numlines):
-        vals = self.parsesection_mapper(
-            atoms_per, numlines, lambda x: float(x))
+    def parse_charges(self, num_per_record, numlines):
+        """Extracts the partial charges for each atom
+
+        Parameters
+        ----------
+        num_per_record : int
+            The number of entries for each record in section (unused input)
+        numlines : int
+            The number of lines to be parsed in current section
+
+        Returns
+        -------
+        attr : :class:`Charges`
+            A :class:`Charges` instance containing the partial charges of each
+            atom as defined in the parm7 file
+        """
+        vals = self.parsesection_mapper(numlines, lambda x: float(x))
         charges = np.array(vals, dtype=np.float32)
         charges /= 18.2223  # to electron charge units
         attr = Charges(charges)
         return attr
 
-    def parse_masses(self, atoms_per, numlines):
-        vals = self.parsesection_mapper(
-            atoms_per, numlines, lambda x: float(x))
+    def parse_masses(self, num_per_record, numlines):
+        """Extracts the mass of each atom
+
+        Parameters
+        ----------
+        num_per_record : int
+            The number of entries for each record in section (unused input)
+        numlines : int
+            The number of lines to be parsed in current section
+
+        Returns
+        -------
+        attr : :class:`Masses`
+            A :class:`Masses` instance containing the mass of each atom as
+            defined in the parm7 file
+        """
+        vals = self.parsesection_mapper(numlines, lambda x: float(x))
         attr = Masses(vals)
         return attr
 
-    def parse_elements(self, atoms_per, numlines):
+    def parse_elements(self, num_per_record, numlines):
+        """Extracts the atomic numbers of each atom and converts to element type
+
+        Parameters
+        ----------
+        num_per_record : int
+            The number of entries for each record in section(unused input)
+        numlines : int
+            The number of lines to be pasred in current section
+
+        Returns
+        -------
+        attr : :class:`Elements`
+            A :class:`Elements` instance containing the element of each atom
+            as defined in the parm7 file
+        """
         vals = self.parsesection_mapper(
-            atoms_per, numlines, lambda x: NUMBER_TO_ELEMENT[int(x)])
+                numlines, lambda x: NUMBER_TO_ELEMENT[int(x)])
         attr = Elements(np.array(vals, dtype=object))
         return attr
 
-    def parse_types(self, atoms_per, numlines):
-        vals = self.parsesection_mapper(
-            atoms_per, numlines, lambda x: x)
+    def parse_types(self, num_per_record, numlines):
+        """Extracts the force field atom types of each atom
+
+        Parameters
+        ----------
+        num_per_record : int
+            The number of entries for each record in section (unused input)
+        numlines : int
+            The number of lines to be parsed in current section
+
+        Returns
+        -------
+        attr : :class:`Atomtypes`
+            A :class:`Atomtypes` instance containing the atom types for each
+            atom as defined in the parm7 file
+        """
+        vals = self.parsesection_mapper(numlines, lambda x: x)
         attr = Atomtypes(np.array(vals, dtype=object))
         return attr
 
-    def parse_type_indices(self, atoms_per, numlines):
-        vals = self.parsesection_mapper(
-            atoms_per, numlines, lambda x: int(x))
+    def parse_type_indices(self, num_per_record, numlines):
+        """Extracts the index of atom types of the each atom involved in Lennard
+        Jones (6-12) interactions.
+
+        Parameters
+        ----------
+        num_per_record : int
+            The number of entries for each record in section (unused input)
+        numlines : int
+            The number of lines to be parsed in current section
+
+        Returns
+        -------
+        attr :class:`TypeIndices`
+            A :class:`TypeIndices` instance containing the LJ 6-12 atom type
+            index for each atom
+        """
+        vals = self.parsesection_mapper(numlines, lambda x: int(x))
         attr = TypeIndices(np.array(vals, dtype=np.int32))
         return attr
 
-    def parse_residx(self, atoms_per, numlines):
-        vals = self.parsesection_mapper(
-            atoms_per, numlines, lambda x: int(x) - 1)
+    def parse_residx(self, num_per_record, numlines):
+        """Extracts the residue pointers for each atom
+
+        Parameters
+        ----------
+        num_per_record : int
+            The number of entries for each record in section (unused input)
+        numlines : int
+            The number of lines to be parsed in current section
+
+        Returns
+        -------
+        vals : list of int
+            A list of zero-formatted residue pointers for each atom
+        """
+        vals = self.parsesection_mapper(numlines, lambda x: int(x) - 1)
         return vals
 
-    def parsebond(self, atoms_per, numlines):
-        y = next(self.topfile).strip("%FORMAT(")
-        section = []
-        for i in range(numlines):
-            l = next(self.topfile)
-            # Subtract 1 from each number to ensure zero-indexing for the atoms
-            fields = np.int64(l.split()) - 1
-            for j in range(0, len(fields), atoms_per):
-                section.append(tuple(fields[j:j+atoms_per]))
+    def parse_chunks(self, data, chunksize):
+        """Helper function to parse AMBER PRMTOP bonds/angles.
+
+        Parameters
+        ----------
+        data : list of int
+            Input list of the parm7 bond/angle section, zero-indexed
+        num_per_record : int
+            The number of entries for each record in the input list
+
+        Returns
+        -------
+        vals : list of int tuples
+            A list of tuples containing the atoms involved in a given bonded
+            interaction
+
+        Note
+        ----
+        In the parm7 format this information is structured in the following
+        format: [ atoms 1:n, internal index ]
+        Where 1:n represent the ids of the n atoms involved in the bond/angle
+        and the internal index links to a given set of FF parameters.
+        Therefore, to extract the required information, we split out the list
+        into chunks of size num_per_record, and only extract the atom ids.
+        """
+        vals = [tuple(data[x:x+chunksize-1])
+                for x in range(0, len(data), chunksize)]
+        return vals
+
+    def parse_bonded(self, num_per_record, numlines):
+        """Extracts bond information from PARM7 format files
+
+        Parameters
+        ----------
+        num_per_record : int
+            The number of entries for each record in section
+        numlines : int
+            The number of lines to be parsed for this section
+
+        Note
+        ----
+        For the bond/angle sections of parm7 files, the atom numbers are set to
+        coordinate array index values. As detailed in
+        http://ambermd.org/formats.html to recover the actual atom number, one
+        should divide the values by 3 and add 1. Here, since we want to satisfy
+        zero-indexing, we only divide by 3.
+        """
+        fields = self.parsesection_mapper(numlines, lambda x: int(x) // 3)
+        section = self.parse_chunks(fields, num_per_record)
         return section
 
-    def parsesection_mapper(self, atoms_per, numlines, mapper):
+    def parsesection_mapper(self, numlines, mapper):
+        """Parses FORTRAN formatted section, and returns a list of all entries
+        in each line
+
+        Parameters
+        ----------
+        numlines : int
+            The number of lines to be parsed in this section
+        mapper : lambda operator
+            Operator to format entries in current section
+
+        Returns
+        -------
+        section : list
+            A list of all entries in a given parm7 section
+        """
         section = []
         y = next(self.topfile).strip("%FORMAT(")
         y.strip(")")
@@ -308,3 +527,50 @@ class TOPParser(TopologyReaderBase):
                 if val:
                     section.append(mapper(val))
         return section
+
+    def parse_dihedrals(self, diha, dihh):
+        """Combines hydrogen and non-hydrogen containing AMBER dihedral lists
+        and extracts sublists for conventional dihedrals and improper angles
+
+        Parameters
+        ----------
+        diha : list of tuples
+            The atom ids of dihedrals not involving hydrogens
+        dihh : list of tuples
+            The atom ids of dihedrals involving hydrogens
+
+        Returns
+        -------
+        dihedrals : :class:`Dihedrals`
+            A :class:`Dihedrals` instance containing a list of all unique
+            dihedrals as defined by the parm7 file
+        impropers : :class:`Impropers`
+            A :class:`Impropers` instance containing a list of all unique
+            improper dihedrals as defined by the parm7 file
+
+        Note
+        ----
+        As detailed in http://ambermd.org/formats.html, the dihedral sections
+        of parm7 files contain information about both conventional dihedrals
+        and impropers. The following must be accounted for:
+        1) If the fourth atom in a dihedral entry is given a negative value,
+        this indicates that it is an improper.
+        2) If the third atom in a dihedral entry is given a negative value,
+        this indicates that it 1-4 NB interactions are ignored for this
+        dihedrals. This could be due to the dihedral within a ring, or if it is
+        part of a multi-term dihedral definition or if it is an improper.
+        """
+        improp = []
+        dihed = []
+        for i in itertools.chain(diha, dihh):
+            if i[3] < 0:
+                improp.append(i[:2]+(abs(i[2]),)+(abs(i[3]),))
+            elif i[2] < 0:
+                vals = i[:2] + (abs(i[2]),) + i[3:]
+                dihed.append(vals)
+            else:
+                dihed.append(i)
+        dihed = sorted(set(dihed))
+        dihedrals = Dihedrals(dihed)
+        impropers = Impropers(improp)
+        return dihedrals, impropers

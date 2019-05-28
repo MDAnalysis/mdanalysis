@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -51,7 +52,7 @@ class TestDihedral(object):
                             "match test values")
 
     def test_dihedral_single_frame(self, atomgroup):
-        dihedral = Dihedral([atomgroup], start=5, stop=6).run()
+        dihedral = Dihedral([atomgroup]).run(start=5, stop=6)
         test_dihedral = [np.load(DihedralArray)[5]]
 
         assert_almost_equal(dihedral.angles, test_dihedral, 5,
@@ -88,8 +89,8 @@ class TestRamachandran(object):
                             "match test values")
 
     def test_ramachandran_single_frame(self, universe, rama_ref_array):
-        rama = Ramachandran(universe.select_atoms("protein"),
-                            start=5, stop=6).run()
+        rama = Ramachandran(universe.select_atoms("protein")).run(
+            start=5, stop=6)
 
         assert_almost_equal(rama.angles[0], rama_ref_array[5], 5,
                             err_msg="error: dihedral angles should "
@@ -140,7 +141,7 @@ class TestJanin(object):
                             "match test values")
 
     def test_janin_single_frame(self, universe, janin_ref_array):
-        janin = Janin(universe.select_atoms("protein"), start=5, stop=6).run()
+        janin = Janin(universe.select_atoms("protein")).run(start=5, stop=6)
 
         assert_almost_equal(janin.angles[0], janin_ref_array[5], 3,
                             err_msg="error: dihedral angles should "

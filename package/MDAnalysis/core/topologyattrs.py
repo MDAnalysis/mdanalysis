@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -48,7 +49,8 @@ import warnings
 from numpy.lib.utils import deprecate
 
 from . import flags
-from ..lib.util import cached, convert_aa_code, iterable, warn_if_not_unique
+from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
+                        unique_int_1d)
 from ..lib import transformations, mdamath
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
@@ -674,32 +676,18 @@ class RecordTypes(AtomAttr):
     """For PDB-like formats, indicates if ATOM or HETATM
 
     Defaults to 'ATOM'
+
+    .. versionchanged:: 0.20.0
+       Now stores array of dtype object rather than boolean mapping
     """
-    # internally encodes {True: 'ATOM', False: 'HETATM'}
     attrname = 'record_types'
     singular = 'record_type'
     per_object = 'atom'
-
-    def __init__(self, values, guessed=False):
-        self.values = np.where(values == 'ATOM', True, False)
-        self._guessed = guessed
+    dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.array(['ATOM'] * na, dtype=object)
-
-    def get_atoms(self, atomgroup):
-        return np.where(self.values[atomgroup.ix], 'ATOM', 'HETATM')
-
-    @_check_length
-    def set_atoms(self, atomgroup, values):
-        self.values[atomgroup.ix] = np.where(values == 'ATOM', True, False)
-
-    def get_residues(self, rg):
-        return [self.get_atoms(r.atoms) for r in rg]
-
-    def get_segments(self, sg):
-        return [self.get_atoms(s.atoms) for s in sg]
 
 
 class ChainIDs(AtomAttr):
@@ -773,7 +761,7 @@ class Masses(AtomAttr):
 
         if isinstance(sg._ix, numbers.Integral):
             # for a single segment
-            masses = self.values[segatoms].sum()
+            masses = self.values[tuple(segatoms)].sum()
         else:
             # for a segmentgroup
             masses = np.array([self.values[row].sum() for row in segatoms])
@@ -784,46 +772,55 @@ class Masses(AtomAttr):
     def center_of_mass(group, pbc=None, compound='group'):
         """Center of mass of (compounds of) the group.
 
-        Computes the center of mass of atoms in the group.
-        Centers of mass per residue or per segment can be obtained by setting
-        the `compound` parameter accordingly.
+        Computes the center of mass of :class:`Atoms<Atom>` in the group.
+        Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly. If the masses of a compound sum up to zero, the
+        center of mass coordinates of that compound will be ``nan`` (not a
+        number).
 
         Parameters
         ----------
         pbc : bool, optional
-            If ``True`` and `compound` is 'group', move all atoms to the primary
-            unit cell before calculation.
-            If ``True`` and `compound` is 'segments' or 'residues', the centers
-            of mass of each compound will be calculated without moving any
-            atoms to keep the compounds intact. Instead, the resulting
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is ``'segments'`` or ``'residues'``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact. Instead, the resulting
             center-of-mass position vectors will be moved to the primary unit
             cell after calculation.
-        compound : {'group', 'segments', 'residues'}, optional
-            If 'group', the center of mass of all atoms in the atomgroup will
-            be returned as a single position vector. Else, the centers of mass
-            of each segment or residue will be returned as an array of position
-            vectors, i.e. a 2d array. Note that, in any case, *only* the
-            positions of atoms *belonging to the atomgroup* will be
-            taken into account.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            If ``'group'``, the center of mass of all atoms in the group will
+            be returned as a single position vector. Otherwise, the centers of
+            mass of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e. a 2d
+            array.
+            Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
+            *belonging to the group* will be taken into account.
 
         Returns
         -------
         center : numpy.ndarray
             Position vector(s) of the center(s) of mass of the group.
-            If `compound` was set to 'group', the output will be a single
+            If `compound` was set to ``'group'``, the output will be a single
             position vector.
-            If `compound` was set to 'segments' or 'residues', the output will
-            be a 2d array of shape ``(n, 3)`` where ``n`` is the number
-            compounds.
+            If `compound` was set to ``'segments'`` or ``'residues'``, the
+            output will be a 2d coordinate array of shape ``(n, 3)`` where ``n``
+            is the number of compounds.
 
         Note
         ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
+        * This method can only be accessed if the underlying topology has
+          information about atomic masses.
+        * The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+          ``True`` allows the *pbc* flag to be used by default.
 
 
         .. versionchanged:: 0.8 Added `pbc` parameter
         .. versionchanged:: 0.19.0 Added `compound` parameter
+        .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
+            compounds
         """
         atoms = group.atoms
         return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound)
@@ -832,11 +829,37 @@ class Masses(AtomAttr):
         ('center_of_mass', center_of_mass))
 
     @warn_if_not_unique
-    def total_mass(group):
-        """Total mass of the Group.
+    def total_mass(group, compound='group'):
+        """Total mass of (compounds of) the group.
+        
+        Computes the total mass of :class:`Atoms<Atom>` in the group.
+        Total masses per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
 
+        Parameters
+        ----------
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            If ``'group'``, the total mass of all atoms in the group will be
+            returned as a single value. Otherwise, the total masses per
+            :class:`Segment`, :class:`Residue`, molecule, or fragment will be
+            returned as a 1d array.
+            Note that, in any case, *only* the masses of :class:`Atoms<Atom>`
+            *belonging to the group* will be taken into account.
+
+        Returns
+        -------
+        float or numpy.ndarray
+            Total mass of (compounds of) the group.
+            If `compound` was set to ``'group'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,)``
+            where ``n`` is the number of compounds.
+
+
+        .. versionchanged:: 0.20.0 Added `compound` parameter
         """
-        return group.masses.sum()
+        return group.accumulate("masses", compound=compound)
 
     transplants[GroupBase].append(
         ('total_mass', total_mass))
@@ -1157,7 +1180,7 @@ class Charges(AtomAttr):
 
         if isinstance(sg._ix, numbers.Integral):
             # for a single segment
-            charges = self.values[segatoms].sum()
+            charges = self.values[tuple(segatoms)].sum()
         else:
             # for a segmentgroup
             charges = np.array([self.values[row].sum() for row in segatoms])
@@ -1165,11 +1188,37 @@ class Charges(AtomAttr):
         return charges
 
     @warn_if_not_unique
-    def total_charge(group):
-        """Total charge of the Group.
+    def total_charge(group, compound='group'):
+        """Total charge of (compounds of) the group.
+        
+        Computes the total charge of :class:`Atoms<Atom>` in the group.
+        Total charges per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
 
+        Parameters
+        ----------
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            If 'group', the total charge of all atoms in the group will
+            be returned as a single value. Otherwise, the total charges per
+            :class:`Segment`, :class:`Residue`, molecule, or fragment
+            will be returned as a 1d array.
+            Note that, in any case, *only* the charges of :class:`Atoms<Atom>`
+            *belonging to the group* will be taken into account.
+
+        Returns
+        -------
+        float or numpy.ndarray
+            Total charge of (compounds of) the group.
+            If `compound` was set to ``'group'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,)``
+            where ``n`` is the number of compounds.
+
+
+        .. versionchanged:: 0.20.0 Added `compound` parameter
         """
-        return group.charges.sum()
+        return group.accumulate("charges", compound=compound)
 
     transplants[GroupBase].append(
         ('total_charge', total_charge))
@@ -1464,7 +1513,7 @@ class Molnums(ResidueAttr):
     attrname = 'molnums'
     singular = 'molnum'
     target_classes = [AtomGroup, ResidueGroup, Atom, Residue]
-    dtype = int
+    dtype = np.int64
 
 # segment attributes
 
@@ -1672,7 +1721,9 @@ class Bonds(_Connection):
     transplants = defaultdict(list)
 
     def bonded_atoms(self):
-        """An AtomGroup of all atoms bonded to this Atom"""
+        """An :class:`~MDAnalysis.core.groups.AtomGroup` of all
+        :class:`Atoms<MDAnalysis.core.groups.Atom>` bonded to this
+        :class:`~MDAnalysis.core.groups.Atom`."""
         idx = [b.partner(self).index for b in self.bonds]
         return self.universe.atoms[idx]
 
@@ -1680,34 +1731,129 @@ class Bonds(_Connection):
         ('bonded_atoms', property(bonded_atoms, None, None,
                                   bonded_atoms.__doc__)))
 
+    def fragindex(self):
+        """The index (ID) of the
+        :class:`~MDAnalysis.core.topologyattrs.Bonds.fragment` this
+        :class:`~MDAnalysis.core.groups.Atom` is part of.
+
+        Note
+        ----
+        This property is only accessible if the underlying topology contains
+        bond information.
+
+
+        .. versionadded:: 0.20.0
+        """
+        return self.universe._fragdict[self.ix].ix
+
+    def fragindices(self):
+        """The
+        :class:`fragment indices<MDAnalysis.core.topologyattrs.Bonds.fragindex>`
+        of all :class:`Atoms<MDAnalysis.core.groups.Atom>` in this
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+
+        A :class:`numpy.ndarray` with
+        :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``,)``
+        and :attr:`~numpy.ndarray.dtype`\ ``=numpy.int64``.
+
+        Note
+        ----
+        This property is only accessible if the underlying topology contains
+        bond information.
+
+
+        .. versionadded:: 0.20.0
+        """
+        fragdict = self.universe._fragdict
+        return np.array([fragdict[aix].ix for aix in self.ix], dtype=np.int64)
+
     def fragment(self):
-        """The fragment that this Atom is part of
+        """An :class:`~MDAnalysis.core.groups.AtomGroup` representing the
+        fragment this :class:`~MDAnalysis.core.groups.Atom` is part of.
+
+        A fragment is a
+        :class:`group of atoms<MDAnalysis.core.groups.AtomGroup>` which are
+        interconnected by :class:`~MDAnalysis.core.topologyattrs.Bonds`, i.e.,
+        there exists a path along one
+        or more :class:`~MDAnalysis.core.topologyattrs.Bonds` between any pair
+        of :class:`Atoms<MDAnalysis.core.groups.Atom>`
+        within a fragment. Thus, a fragment typically corresponds to a molecule.
+
+        Note
+        ----
+        This property is only accessible if the underlying topology contains
+        bond information.
+
 
         .. versionadded:: 0.9.0
         """
-        return self.universe._fragdict[self]
+        return self.universe._fragdict[self.ix].fragment
 
     def fragments(self):
-        """Read-only list of fragments.
+        """Read-only :class:`tuple` of
+        :class:`fragments<MDAnalysis.core.topologyattrs.Bonds.fragment>`.
 
-        Contains all fragments that any Atom in this AtomGroup is
-        part of, the contents of the fragments may extend beyond the
-        contents of this AtomGroup.
+        Contains all fragments that
+        any :class:`~MDAnalysis.core.groups.Atom` in this
+        :class:`~MDAnalysis.core.groups.AtomGroup` is part of.
 
-        .. versionadded 0.9.0
+        A fragment is a
+        :class:`group of atoms<MDAnalysis.core.groups.AtomGroup>` which are
+        interconnected by :class:`~MDAnalysis.core.topologyattrs.Bonds`, i.e.,
+        there exists a path along one
+        or more :class:`~MDAnalysis.core.topologyattrs.Bonds` between any pair
+        of :class:`Atoms<MDAnalysis.core.groups.Atom>`
+        within a fragment. Thus, a fragment typically corresponds to a molecule.
+
+        Note
+        ----
+        * This property is only accessible if the underlying topology contains
+          bond information.
+        * The contents of the fragments may extend beyond the contents of this
+          :class:`~MDAnalysis.core.groups.AtomGroup`.
+
+
+        .. versionadded:: 0.9.0
         """
-        return tuple(sorted(
-            set(a.fragment for a in self),
-            key=lambda x: x[0].index
-        ))
+        fragdict = self.universe._fragdict
+        return tuple(sorted(set(fragdict[aix].fragment for aix in self.ix),
+                            key=lambda x: x[0].ix))
+
+    def n_fragments(self):
+        """The number of unique
+        :class:`~MDAnalysis.core.topologyattrs.Bonds.fragments` the
+        :class:`Atoms<MDAnalysis.core.groups.Atom>` of this
+        :class:`~MDAnalysis.core.groups.AtomGroup` are part of.
+
+        Note
+        ----
+        This property is only accessible if the underlying topology contains
+        bond information.
+
+
+        .. versionadded:: 0.20.0
+        """
+        return len(unique_int_1d(self.fragindices))
 
     transplants[Atom].append(
         ('fragment', property(fragment, None, None,
                               fragment.__doc__)))
 
+    transplants[Atom].append(
+        ('fragindex', property(fragindex, None, None,
+                               fragindex.__doc__)))
+
     transplants[AtomGroup].append(
         ('fragments', property(fragments, None, None,
                                fragments.__doc__)))
+
+    transplants[AtomGroup].append(
+        ('fragindices', property(fragindices, None, None,
+                                 fragindices.__doc__)))
+
+    transplants[AtomGroup].append(
+        ('n_fragments', property(n_fragments, None, None,
+                                 n_fragments.__doc__)))
 
 
 class Angles(_Connection):

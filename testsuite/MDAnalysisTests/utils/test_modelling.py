@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -141,9 +142,6 @@ def u_water():
 
 
 class TestMerge(object):
-    @pytest.mark.xfail(os.name == 'nt',
-                       strict=True,
-                       reason="Setup fixtures fail on Windows.")
     def test_merge(self, u_protein, u_ligand, u_water, tmpdir):
         ids_before = [a.index for u in [u_protein, u_ligand, u_water] for a in u.atoms]
         # Do the merge
@@ -182,26 +180,17 @@ class TestMerge(object):
         ids_new2 = [a.index for a in u.atoms]
         assert_equal(ids_new, ids_new2)
 
-    @pytest.mark.xfail(os.name == 'nt',
-                       strict=True,
-                       reason="Setup fixtures fail on Windows.")
     def test_merge_same_universe(self, u_protein):
         u0 = MDAnalysis.Merge(u_protein.atoms, u_protein.atoms, u_protein.atoms)
         assert_equal(len(u0.atoms), 3 * len(u_protein.atoms))
         assert_equal(len(u0.residues), 3 * len(u_protein.residues))
         assert_equal(len(u0.segments), 3 * len(u_protein.segments))
 
-    @pytest.mark.xfail(os.name == 'nt',
-                       strict=True,
-                       reason="Setup fixtures fail on Windows.")
     def test_residue_references(self, u_protein, u_ligand):
         m = Merge(u_protein.atoms, u_ligand.atoms)
         assert_equal(m.atoms.residues[0].universe, m,
                      "wrong universe reference for residues after Merge()")
 
-    @pytest.mark.xfail(os.name == 'nt',
-                       strict=True,
-                       reason="Setup fixtures fail on Windows.")
     def test_segment_references(self, u_protein, u_ligand):
         m = Merge(u_protein.atoms, u_ligand.atoms)
         assert_equal(m.atoms.segments[0].universe, m,
@@ -215,9 +204,6 @@ class TestMerge(object):
         with pytest.raises(TypeError):
             Merge(['1', 2])
 
-    @pytest.mark.xfail(os.name == 'nt',
-                       strict=True,
-                       reason="Setup fixtures fail on Windows.")
     def test_emptyAG_ValueError(self, u_protein):
         a = AtomGroup([], u_protein)
         b = AtomGroup([], u_protein)
@@ -251,9 +237,6 @@ class TestMergeTopology(object):
         # One of these bonds isn't in the merged Universe
         assert(len(ag2[0].bonds) - 1 == len(u_merge.atoms[20].bonds))
 
-    @pytest.mark.xfail(os.name == 'nt',
-                       strict=True,
-                       reason="Setup fixtures fail on Windows.")
     def test_merge_with_topology_from_different_universes(self, u, u_ligand):
         u_merge = MDAnalysis.Merge(u.atoms[:110], u_ligand.atoms)
 
