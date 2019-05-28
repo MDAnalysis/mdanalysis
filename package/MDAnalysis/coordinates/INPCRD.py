@@ -146,7 +146,7 @@ class INPReader(base.SingleFrameReaderBase):
 class NCRSTReader(base.SingleFrameReaderBase):
     """Reader for `AMBER NETCDF format`_ (version 1.0 rev C) restart files.
 
-    This reader is :class:`SingleFrameReaderBase` adaptation of the
+    This reader is a :class:`SingleFrameReaderBase` adaptation of the
     :class:`NCDFReader` AMBER NETCDF trajectory reader.
 
     AMBER binary restart files are automatically recognised by the file
@@ -323,7 +323,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
             except KeyError:
                 # As of AMBER16 the NetCDF restart files created by
                 # minimizations ignore convention and default to 0.0 ps
-                # Warn and do the same thing here
+                # Warn and do the same thing here (IA: need to check this)
                 wmsg = ("Restart file {0} does not contain time information "
                         "time will default to 0.0 ps").format(self.filename)
                 warnings.warn(wmsg)
