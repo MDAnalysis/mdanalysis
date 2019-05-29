@@ -1489,7 +1489,7 @@ class GroupBase(_MutableBase):
             positions = positions[restore_mask]
         return positions
 
-    def unwrap(self, compound='fragments', reference='com', inplace=True):
+    def unwrap(self, compound='fragments', reference='com', reference_point=None, inplace=True):
         """Move atoms of this group so that bonds within the
         group's compounds aren't split across periodic boundaries.
 
@@ -1520,6 +1520,8 @@ class GroupBase(_MutableBase):
             unwrapped compounds will be shifted so that their individual
             reference point lies within the primary unit cell.
             If ``None``, no such shift is performed.
+        reference_point: coordinate, option
+            position where molecule should be unwrapped
         inplace : bool, optional
             If ``True``, coordinates are modified in place.
 
@@ -1587,6 +1589,7 @@ class GroupBase(_MutableBase):
         if comp == 'group':
             positions = mdamath.make_whole(unique_atoms, inplace=False)
             # Apply reference shift if required:
+
             if reference is not None and len(positions) > 0:
                 if ref == 'com':
                     masses = unique_atoms.masses
@@ -1602,6 +1605,7 @@ class GroupBase(_MutableBase):
                 refpos = refpos.astype(np.float32, copy=False)
                 target = distances.apply_PBC(refpos, self.dimensions)
                 positions += target - refpos
+
         # We need to split the group into compounds:
         else:
             if comp == 'fragments':
@@ -1624,7 +1628,6 @@ class GroupBase(_MutableBase):
                 c = unique_atoms[mask]
                 positions[mask] = mdamath.make_whole(c, inplace=False)
                 # Apply reference shift if required:
-                if reference is not None:
                     if ref == 'com':
                         masses = c.masses
                         total_mass = masses.sum()
@@ -1641,11 +1644,44 @@ class GroupBase(_MutableBase):
                     refpos = refpos.astype(np.float32, copy=False)
                     target = distances.apply_PBC(refpos, self.dimensions)
                     positions[mask] += target - refpos
+
+
         if inplace:
             unique_atoms.positions = positions
         if not atoms.isunique:
             positions = positions[atoms._unique_restore_mask]
         return positions
+
+    def choose_periodic_image(self, reference_point, centre='com', inplace=True):
+        atoms = self.atoms
+
+        unique_atoms = atoms.unique
+
+        if centre is not None:
+            ref = centre.lower()
+            if ref  == 'com':
+                # Don't use hasattr(self, 'masses') because that's incredibly
+                # slow for ResidueGroups or SegmentGroups
+                if not hasattr(unique_atoms, 'masses'):
+                    raise NoDataError("Cannot perform choose_image with "
+                                      "reference='com', this requires masses.")
+                ctrpos = unique_atoms.center_of_mass(pbc=False)
+            elif ref == 'cog':
+                ctrpos = unique_atoms.center_of_geometry(pbc=False)
+            else:
+                raise ValueError("Unrecognized reference '{}'. Please use one "
+                                 "of 'com', 'cog', or None.".format(centre))
+
+        difference = reference_point - ctrpos
+
+        shift = np.rint(np.divide(difference, unique_atoms.dimensions[:3]))
+
+        translation = np.multiply(shift, unique_atoms.dimensions[:3])
+        if inplace:
+            unique_atoms.positions = unique_atoms.positions + translation
+        else:
+            return unique_atoms.positions + translation
+
 
     def copy(self):
         """Get another group identical to this one.
