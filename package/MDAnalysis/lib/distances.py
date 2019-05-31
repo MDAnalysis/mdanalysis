@@ -122,7 +122,9 @@ from .c_distances import (calc_distance_array,
                           calc_dihedral_ortho,
                           calc_dihedral_triclinic,
                           ortho_pbc,
-                          triclinic_pbc)
+                          triclinic_pbc,
+                          periodic_image,
+                          periodic_image_triclinic)
 
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
@@ -1489,6 +1491,7 @@ def apply_PBC(coords, box, backend="serial"):
 
     Parameters
     ----------
+
     coords : numpy.ndarray
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is arbitrary,
         will be converted to ``numpy.float32`` internally).
@@ -1523,3 +1526,16 @@ def apply_PBC(coords, box, backend="serial"):
         _run("triclinic_pbc", args=(coords, box), backend=backend)
 
     return coords
+
+def minimizing_vector(reference_point, ctrpos, box, backend="serial"):
+    dx = reference_point - ctrpos
+    if len(dx) == 0:
+        return dx
+    boxtype, box = check_box(box)
+    inverse_box = np.array([1.0/box[0], 1.0/box[1], 1.0/box[2]])
+    if boxtype == 'ortho':
+        _run("periodic_image", args=(dx, box[:3], inverse_box), backend=backend)
+    else:
+        _run("periodic_image_triclinic", args=(dx, box[:3], inverse_box), backend=backend)
+
+    return dx
