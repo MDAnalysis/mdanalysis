@@ -222,12 +222,3 @@ def triclinic_pbc(numpy.ndarray coords, numpy.ndarray box):
     numcoords = coords.shape[0]
 
     _triclinic_pbc(<coordinate*> coords.data, numcoords, <float*> box.data)
-
-def periodic_image(numpy.ndarray coords, numpy.ndarray box, numpy.ndarray inverse_box):
-
-    minimum_image(<coordinate*> coords.data, <float*> box.data, <float*> inverse_box.data)
-
-
-def periodic_image_triclinic(numpy.ndarray coords, numpy.ndarray box, numpy.ndarray inverse_box):
-
-    minimum_image_triclinic(<coordinate*> coords.data, <float*> box.data, <float*> inverse_box.data)

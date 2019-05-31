@@ -223,11 +223,11 @@ def triclinic_pbc(numpy.ndarray coords, numpy.ndarray box):
 
 def periodic_image(numpy.ndarray coords, numpy.ndarray box, numpy.ndarray inverse_box):
 
-    minimum_image(<coordinate*> coords.data, <float*> box.data, <float*> inverse_box.data)
+    minimum_image(<double*> coords.data, <float*> box.data, <float*> inverse_box.data)
 
-def periodic_image_triclinic(numpy.ndarray coords, numpy.ndarray box, numpy.ndarray inverse_box):
+def periodic_image_triclinic(numpy.ndarray coords, numpy.ndarray box):
 
-    minimum_image_triclinic(<coordinate*> coords.data, <float*> box.data, <float*> inverse_box.data)
+    minimum_image_triclinic(<double*> coords.data, <float*> box.data)
 
 @cython.boundscheck(False)
 def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):

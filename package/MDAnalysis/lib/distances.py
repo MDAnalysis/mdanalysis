@@ -1527,7 +1527,7 @@ def apply_PBC(coords, box, backend="serial"):
 
     return coords
 
-def minimizing_vector(reference_point, ctrpos, box, backend="serial"):
+def minimize_periodic_vector(reference_point, ctrpos, box, backend="serial"):
     dx = reference_point - ctrpos
     if len(dx) == 0:
         return dx
@@ -1536,6 +1536,6 @@ def minimizing_vector(reference_point, ctrpos, box, backend="serial"):
     if boxtype == 'ortho':
         _run("periodic_image", args=(dx, box[:3], inverse_box), backend=backend)
     else:
-        _run("periodic_image_triclinic", args=(dx, box[:3], inverse_box), backend=backend)
+        _run("periodic_image_triclinic", args=(dx, box[:3]), backend=backend)
 
     return dx
