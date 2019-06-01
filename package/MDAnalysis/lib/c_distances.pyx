@@ -58,7 +58,7 @@ cdef extern from "calc_distances.h":
     void _ortho_pbc(coordinate* coords, int numcoords, float* box)
     void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
     void minimum_image(double* x, float* box, float* inverse_box)
-    void minimum_image_triclinic(double* x, float* box, float* inverse_box)
+    void minimum_image_triclinic(double* x, float* box)
 
 OPENMP_ENABLED = True if USED_OPENMP else False
 

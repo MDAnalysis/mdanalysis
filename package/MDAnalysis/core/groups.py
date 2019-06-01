@@ -1655,6 +1655,7 @@ class GroupBase(_MutableBase):
                 c = unique_atoms[mask]
                 positions[mask] = mdamath.make_whole(c, inplace=False)
                 # Apply reference shift if required:
+                if reference is not None:
                     if ref == 'com':
                         masses = c.masses
                         total_mass = masses.sum()
