@@ -1595,6 +1595,8 @@ class GroupBase(_MutableBase):
             raise NoDataError("{}.unwrap() not available; this requires Bonds"
                               "".format(self.__class__.__name__))
         unique_atoms = atoms.unique
+        if reference_point is None:
+            reference_point = self.dimensions[:3]/2
         if reference is not None:
             ref = reference.lower()
             if ref  == 'com':
@@ -1672,7 +1674,10 @@ class GroupBase(_MutableBase):
                         refpos = positions[mask].mean(axis=0)
 
                     refpos = refpos.astype(np.float32, copy=False)
-                    target = distances.apply_PBC(refpos, self.dimensions)
+
+                    target = distances.minimize_periodic_vector(reference_point=reference_point, ctrpos=refpos,
+                                                                box=self.dimensions)
+
                     positions[mask] += target - refpos
 
 
@@ -1681,36 +1686,6 @@ class GroupBase(_MutableBase):
         if not atoms.isunique:
             positions = positions[atoms._unique_restore_mask]
         return positions
-
-    def choose_periodic_image(self, reference_point, centre='com', inplace=True):
-        atoms = self.atoms
-
-        unique_atoms = atoms.unique
-
-        if centre is not None:
-            ref = centre.lower()
-            if ref  == 'com':
-                # Don't use hasattr(self, 'masses') because that's incredibly
-                # slow for ResidueGroups or SegmentGroups
-                if not hasattr(unique_atoms, 'masses'):
-                    raise NoDataError("Cannot perform choose_image with "
-                                      "reference='com', this requires masses.")
-                ctrpos = unique_atoms.center_of_mass(pbc=False)
-            elif ref == 'cog':
-                ctrpos = unique_atoms.center_of_geometry(pbc=False)
-            else:
-                raise ValueError("Unrecognized reference '{}'. Please use one "
-                                 "of 'com', 'cog', or None.".format(centre))
-
-        difference = reference_point - ctrpos
-
-        shift = np.rint(np.divide(difference, unique_atoms.dimensions[:3]))
-
-        translation = np.multiply(shift, unique_atoms.dimensions[:3])
-        if inplace:
-            unique_atoms.positions = unique_atoms.positions + translation
-        else:
-            return unique_atoms.positions + translation
 
 
     def copy(self):

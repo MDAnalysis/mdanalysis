@@ -86,7 +86,7 @@ static void minimum_image_triclinic(double* dx, float* box)
     dx[2] = dx_min[2];
 }
 
-static void _translate_periodic_ortho(double* reference, double* centre, float* box)
+static void _translate_periodic_ortho(float* reference, float* centre, float* result, float* box)
 {
   double dx[3];
   float inverse_box[3];
@@ -98,25 +98,27 @@ static void _translate_periodic_ortho(double* reference, double* centre, float* 
   dx[0] = reference[0] - centre[0];
   dx[1] = reference[1] - centre[1];
   dx[2] = reference[2] - centre[2];
+
   minimum_image(dx, box, inverse_box);
 
-      for (int i=0; i<3; i++) {
-          *(centre+i)= centre[i] + dx[i];
-      }
+  for (int i=0; i<3; i++) {
+      *(result+i)= reference[i] - dx[i];
+  }
 }
 
-static void _translate_periodic_triclinic(double* reference, double* centre, float* box)
+static void _translate_periodic_triclinic(float* reference, float* centre, float* result, float* box)
 {
   double dx[3];
 
   dx[0] = reference[0] - centre[0];
   dx[1] = reference[1] - centre[1];
   dx[2] = reference[2] - centre[2];
+
   minimum_image_triclinic(dx, box);
 
-      for (int i=0; i<3; i++) {
-          *(centre+i)= centre[i] + dx[i];
-      }
+  for (int i=0; i<3; i++) {
+      *(result+i)= reference[i] - dx[i];
+  }
 }
 
 

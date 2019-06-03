@@ -1533,12 +1533,12 @@ def minimize_periodic_vector(reference_point, ctrpos, box, backend="serial"):
 
     if len(dx) == 0:
         return dx
-
+    result = np.array([0, 0, 0], dtype=np.float32)
     boxtype, box = check_box(box)
 
     if boxtype == 'ortho':
-        _run("translate_periodic_ortho", args=(reference_point, ctrpos, box[:3]), backend=backend)
+        _run("translate_periodic_ortho", args=(reference_point, ctrpos, result, box[:3]), backend=backend)
     else:
-        _run("translate_periodic_triclinic", args=(reference_point, ctrpos, box), backend=backend)
+        _run("translate_periodic_triclinic", args=(reference_point, ctrpos, result, box), backend=backend)
 
-    return ctrpos
+    return result
