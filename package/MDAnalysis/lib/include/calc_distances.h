@@ -20,7 +20,6 @@
 #define __DISTANCES_H
 
 #include <math.h>
-
 #include <float.h>
 typedef float coordinate[3];
 
@@ -86,6 +85,40 @@ static void minimum_image_triclinic(double* dx, float* box)
     dx[1] = dx_min[1];
     dx[2] = dx_min[2];
 }
+
+static void _translate_periodic_ortho(double* reference, double* centre, float* box)
+{
+  double dx[3];
+  float inverse_box[3];
+
+  inverse_box[0] = 1.0 / box[0];
+  inverse_box[1] = 1.0 / box[1];
+  inverse_box[2] = 1.0 / box[2];
+
+  dx[0] = reference[0] - centre[0];
+  dx[1] = reference[1] - centre[1];
+  dx[2] = reference[2] - centre[2];
+  minimum_image(dx, box, inverse_box);
+
+      for (int i=0; i<3; i++) {
+          *(centre+i)= centre[i] + dx[i];
+      }
+}
+
+static void _translate_periodic_triclinic(double* reference, double* centre, float* box)
+{
+  double dx[3];
+
+  dx[0] = reference[0] - centre[0];
+  dx[1] = reference[1] - centre[1];
+  dx[2] = reference[2] - centre[2];
+  minimum_image_triclinic(dx, box);
+
+      for (int i=0; i<3; i++) {
+          *(centre+i)= centre[i] + dx[i];
+      }
+}
+
 
 static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
 {

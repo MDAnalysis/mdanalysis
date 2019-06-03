@@ -1628,6 +1628,7 @@ class GroupBase(_MutableBase):
                 c = unique_atoms[mask]
                 positions[mask] = mdamath.make_whole(c, inplace=False)
                 # Apply reference shift if required:
+
                 if reference is not None:
                     if ref == 'com':
                         masses = c.masses
@@ -1642,6 +1643,7 @@ class GroupBase(_MutableBase):
                         refpos /= total_mass
                     else:  # ref == 'cog'
                         refpos = positions[mask].mean(axis=0)
+
                     refpos = refpos.astype(np.float32, copy=False)
                     target = distances.apply_PBC(refpos, self.dimensions)
                     positions[mask] += target - refpos

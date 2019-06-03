@@ -123,8 +123,8 @@ from .c_distances import (calc_distance_array,
                           calc_dihedral_triclinic,
                           ortho_pbc,
                           triclinic_pbc,
-                          periodic_image,
-                          periodic_image_triclinic)
+                          translate_periodic_ortho,
+                          translate_periodic_triclinic)
 
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
@@ -1527,15 +1527,18 @@ def apply_PBC(coords, box, backend="serial"):
 
     return coords
 
+
 def minimize_periodic_vector(reference_point, ctrpos, box, backend="serial"):
     dx = reference_point - ctrpos
+
     if len(dx) == 0:
         return dx
-    boxtype, box = check_box(box)
-    inverse_box = np.array([1.0/box[0], 1.0/box[1], 1.0/box[2]])
-    if boxtype == 'ortho':
-        _run("periodic_image", args=(dx, box[:3], inverse_box), backend=backend)
-    else:
-        _run("periodic_image_triclinic", args=(dx, box[:3]), backend=backend)
 
-    return dx
+    boxtype, box = check_box(box)
+
+    if boxtype == 'ortho':
+        _run("translate_periodic_ortho", args=(reference_point, ctrpos, box[:3]), backend=backend)
+    else:
+        _run("translate_periodic_triclinic", args=(reference_point, ctrpos, box), backend=backend)
+
+    return ctrpos
