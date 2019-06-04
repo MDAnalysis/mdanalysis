@@ -1595,8 +1595,6 @@ class GroupBase(_MutableBase):
             raise NoDataError("{}.unwrap() not available; this requires Bonds"
                               "".format(self.__class__.__name__))
         unique_atoms = atoms.unique
-        if reference_point is None:
-            reference_point = self.dimensions[:3]/2
         if reference is not None:
             ref = reference.lower()
             if ref  == 'com':
@@ -1675,7 +1673,10 @@ class GroupBase(_MutableBase):
 
                     refpos = refpos.astype(np.float32, copy=False)
 
-                    target = distances.minimize_periodic_vector(reference_point=reference_point, ctrpos=refpos,
+                    if reference_point is None:
+                        target = distances.apply_PBC(refpos, self.dimensions)
+                    else:
+                        target = distances.minimize_periodic_vector(reference_point=reference_point, ctrpos=refpos,
                                                                 box=self.dimensions)
 
                     positions[mask] += target - refpos
