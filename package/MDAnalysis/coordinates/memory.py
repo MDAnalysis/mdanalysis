@@ -90,21 +90,32 @@ Constructing a Reader from a numpy array
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The :class:`MemoryReader` provides great flexibility because it
-becomes possible to create a :class:`~MDAnalysis.core.universe.Universe` directly
-from a numpy array.
+becomes possible to create a
+:class:`~MDAnalysis.core.universe.Universe` directly from a numpy
+array. Using the :class:`MemoryReader` is signified by providing a
+coordinate array instead of a trajectory file and setting the
+``format`` keyword to "MEMORY" (or to the :class:`MemoryReader` class
+itself): either ::
+
+   u = Universe(..., array, format="MEMORY")
+
+or ::
+
+   from MDAnalysis.coordinates.memory import MemoryReader
+   u = Universe(..., array, format=MemoryReader)
+
+will work.
 
 A simple example consists of a new universe created from the array
-extracted from a DCD
-:meth:`~MDAnalysis.coordinates.DCD.DCDReader.timeseries`::
+extracted from a :meth:`~MDAnalysis.coordinates.base.ProtoReader.timeseries`::
 
     import MDAnalysis as mda
     from MDAnalysisTests.datafiles import DCD, PSF
-    from MDAnalysis.coordinates.memory import MemoryReader
 
     universe = mda.Universe(PSF, DCD)
 
     coordinates = universe.trajectory.timeseries(universe.atoms)
-    universe2 = mda.Universe(PSF, coordinates, format=MemoryReader, order='afc')
+    universe2 = mda.Universe(PSF, coordinates, format="MEMORY", order='afc')
 
 
 .. _create-in-memory-trajectory-with-AnalysisFromFunction:
@@ -112,23 +123,22 @@ extracted from a DCD
 .. rubric:: Creating an in-memory trajectory with
             :func:`~MDAnalysis.analysis.base.AnalysisFromFunction`
 
-The :meth:`~MDAnalysis.coordinates.DCD.DCDReader.timeseries` is
-currently only implemented for the
-:class:`~MDAnalysis.coordinates.DCD.DCDReader`. However, the
+The :meth:`~MDAnalysis.coordinates.base.ProtoReader.timeseries` is
+available for all formats. However, as an alternative the
 :func:`MDAnalysis.analysis.base.AnalysisFromFunction` can provide the
-same functionality for any supported trajectory format::
+same functionality and the example shows how one can manually extract
+coordinates and load them into a new universe::
 
   import MDAnalysis as mda
   from MDAnalysis.tests.datafiles import PDB, XTC
 
-  from MDAnalysis.coordinates.memory import MemoryReader
   from MDAnalysis.analysis.base import AnalysisFromFunction
 
   u = mda.Universe(PDB, XTC)
 
   coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
                                      u.atoms).run().results
-  u2 = mda.Universe(PDB, coordinates, format=MemoryReader)
+  u2 = mda.Universe(PDB, coordinates, format="MEMORY")
 
 .. _creating-in-memory-trajectory-label:
 
@@ -147,7 +157,6 @@ only the protein is created::
   import MDAnalysis as mda
   from MDAnalysis.tests.datafiles import PDB, XTC
 
-  from MDAnalysis.coordinates.memory import MemoryReader
   from MDAnalysis.analysis.base import AnalysisFromFunction
 
   u = mda.Universe(PDB, XTC)
@@ -156,7 +165,7 @@ only the protein is created::
   coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
                                      protein).run().results
   u2 = mda.Merge(protein)            # create the protein-only Universe
-  u2.load_new(coordinates, format=MemoryReader)
+  u2.load_new(coordinates, format="MEMORY")
 
 The protein coordinates are extracted into ``coordinates`` and then
 the in-memory trajectory is loaded from these coordinates. In
@@ -165,7 +174,7 @@ principle, this could have all be done in one line::
   u2 = mda.Merge(protein).load_new(
            AnalysisFromFunction(lambda ag: ag.positions.copy(),
                                 protein).run().results,
-           format=MemoryReader)
+           format="MEMORY")
 
 The new :class:`~MDAnalysis.core.universe.Universe` ``u2`` can be used
 to, for instance, write out a new trajectory or perform fast analysis

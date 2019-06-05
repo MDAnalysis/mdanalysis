@@ -1693,14 +1693,14 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         ))
 
     def timeseries(self, asel=None, start=None, stop=None, step=None,
-                   format='fac'):
+                   order='fac'):
         """Return a subset of coordinate data for an AtomGroup
 
         Parameters
         ----------
-        asel : :class:`~MDAnalysis.core.groups.AtomGroup` (optional)
+        asel : AtomGroup (optional)
             The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
-            coordinates from. Defaults to None, in which case the full set of
+            coordinates from. Defaults to ``None``, in which case the full set of
             coordinate data is returned.
         start :  int (optional)
              Begin reading the trajectory at frame index `start` (where 0 is the index
@@ -1712,13 +1712,22 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         step : int (optional)
              Step size for reading; the default ``None`` is equivalent to 1 and means to
              read every frame.
-        format : str (optional)
+        order : str (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
             coordinates)
 
+            .. note:: Only `"fac"` implemented.
+
+
+        See Also
+        --------
+        MDAnalysis.coordinates.memory
+
+
+        .. versionadded:: 0.20.0
         """
         start, stop, step = self.check_slice_indices(start, stop, step)
         nframes = len(range(start, stop, step))
@@ -1733,8 +1742,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             atom_numbers = None
             natoms = self.n_atoms
 
-        if not format in ('fac', None):
+        if not order in ('fac', None):
             # need to add swapping around axes etc
+            # see MemoryReader.timeseries() and lib.formats.libdcd.DCDfile.readframe()
             raise NotImplementedError
 
         # allocate output array

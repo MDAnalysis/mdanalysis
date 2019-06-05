@@ -55,8 +55,10 @@ Enhancements
   * added functionality to write files in compressed form(gz,bz2). (Issue #2216,
     PR #2221)
   * survival probability additions: residues, intermittency, step with performance,
-    (PR #2226)   
-
+    (PR #2226)
+  * add timeseries() method to all readers to extract all coordinates into
+    a numpy array (see PR #1400)
+        
 Changes
   * added official support for Python 3.7 (PR #1963)
   * stopped official support of Python 3.4 (#2066, PR #2174)
