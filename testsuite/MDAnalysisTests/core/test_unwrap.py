@@ -61,21 +61,21 @@ class TestUnwrap(object):
         # store original positions:
         orig_pos = group.atoms.positions
         # get the expected result:
-        ref_unwrapped_pos = u.unwrapped_coords(compound, reference)
+        ref_unwrapped_pos = u.unwrapped_coords(compound, reference, reference_point=np.array([15, 15, 15], dtype=np.float32))
         if compound == 'group':
             ref_unwrapped_pos = ref_unwrapped_pos[39:47] # molecule 12
         elif compound == 'segments':
             ref_unwrapped_pos = ref_unwrapped_pos[23:47] # molecules 10, 11, 12
         # first, do the unwrapping out-of-place:
         unwrapped_pos = group.unwrap(compound=compound, reference=reference,
-                                     inplace=False)
+                                     reference_point=np.array([15, 15, 15], dtype=np.float32), inplace=False)
         # check for correct result:
         assert_almost_equal(unwrapped_pos, ref_unwrapped_pos,
                             decimal=self.precision)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
         # now, do the unwrapping inplace:
-        unwrapped_pos2 = group.unwrap(compound=compound, reference=reference,
+        unwrapped_pos2 = group.unwrap(compound=compound, reference=reference, reference_point=np.array([15, 15, 15], dtype=np.float32),
                                      inplace=True)
         # check that result is the same as for out-of-place computation:
         assert_array_equal(unwrapped_pos, unwrapped_pos2)
@@ -359,3 +359,4 @@ class TestUnwrap(object):
             group.unwrap(compound='molecules', reference=reference,
                          inplace=True)
         assert_array_equal(group.atoms.positions, orig_pos)
+
