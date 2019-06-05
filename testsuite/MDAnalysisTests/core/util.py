@@ -336,7 +336,7 @@ class UnWrapUniverse(object):
 
         return u
 
-    def unwrapped_coords(self, compound, reference):
+    def unwrapped_coords(self, compound, reference, reference_point=None):
         """Returns coordinates which correspond to the unwrapped system.
 
         Parameters
@@ -365,6 +365,8 @@ class UnWrapUniverse(object):
 
         # get relative positions:
         relpos = self._relpos.copy()
+
+
         # type B
         # molecule 5, atom 2 & molecule 6, atom 1 & 2
         relpos[8, :] = [0.05, 0.2, -0.05]
@@ -438,7 +440,29 @@ class UnWrapUniverse(object):
                                              [0.44, 0.65, 0.6]],
                                             dtype=np.float32)
 
-        # apply y- and z-dependent shift of x and y coords for triclinic boxes:
+            if reference_point is not None and compound is not "group":
+                for base in range(3):
+                    loc_centre = np.mean(relpos[base, :], axis=0)
+                    shift = np.rint((reference_point - loc_centre) / self._box_edge)
+                    relpos[base, :] += shift
+
+                for base in range(3, 15, 3):
+                    loc_centre = np.mean(relpos[base:base + 3, :], axis=0)
+                    shift = np.rint((reference_point - loc_centre) / self._box_edge)
+                    relpos[base:base + 3, :] += shift
+
+                # type C
+                for base in range(15, 23, 4):
+                    loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
+                    shift = np.rint((reference_point - loc_centre) /self._box_edge)
+                    relpos[base:base + 4, :] += shift
+
+                # type D
+                for base in range(23, 47, 8):
+                    loc_centre = np.mean(relpos[base:base + 8, :], axis=0)
+                    shift = np.rint((reference_point - loc_centre) / self._box_edge)
+                    relpos[base:base + 8, :] += shift
+
         if self._is_triclinic:
             # x-coord shift depends on y- and z-coords
             relpos[:, 0] += self._tfac * relpos[:, 1:].sum(axis=1)
@@ -448,7 +472,6 @@ class UnWrapUniverse(object):
         # scale relative to absolute positions:
         a = self._box_edge
         positions = relpos * np.array([a, a, a])
-
         return positions.astype(np.float32)
 
     def wrapped_coords(self, compound, center):
@@ -545,3 +568,4 @@ class UnWrapUniverse(object):
         positions = relpos * np.array([a, a, a])
 
         return positions.astype(np.float32)
+
