@@ -1529,6 +1529,32 @@ def apply_PBC(coords, box, backend="serial"):
 
 
 def minimize_periodic_vector(reference_point, ctrpos, box, backend="serial"):
+    """Returns the periodic image of ctrpos which is closest to the reference_point
+
+    Parameters
+    ----------
+
+    reference_point : numpy.ndarray
+        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the
+        position of reference_point (dtype is arbitrary, will be converted to
+        ``numpy.float32`` internally)
+    ctrpos : numpy.ndarray
+        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the
+        position of centre (dtype is arbitrary, will be converted to
+        ``numpy.float32`` internally)
+    box : numpy.ndarray
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
+    Returns
+    -------
+    results : numpy.ndarray
+        Coordinate of the periodic image of ctrpos which is closest to
+        the reference_point
+    """
     dx = reference_point - ctrpos
 
     if len(dx) == 0:

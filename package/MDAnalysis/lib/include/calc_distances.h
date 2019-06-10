@@ -87,7 +87,11 @@ static void minimum_image_triclinic(double* dx, float* box)
 }
 
 static void _translate_periodic_ortho(float* reference, float* centre, float* result, float* box)
-{
+{  /*
+    Moves result to the periodic image of centre which is
+    closest to the reference point in orthorhombic unit cell.
+    */
+
   double dx[3];
   float inverse_box[3];
 
@@ -107,7 +111,10 @@ static void _translate_periodic_ortho(float* reference, float* centre, float* re
 }
 
 static void _translate_periodic_triclinic(float* reference, float* centre, float* result, float* box)
-{
+{ /*
+    Moves result to the periodic image of centre which is
+    closest to the reference point in triclinic unit cell.
+  */
   double dx[3];
 
   dx[0] = reference[0] - centre[0];
