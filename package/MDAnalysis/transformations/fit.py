@@ -59,7 +59,7 @@ def fit_translation(ag, reference, plane=None, weights=None):
         ag = u.select_atoms("protein")
         ref = mda.Universe("reference.pdb")
         transform = mda.transformations.fit_translation(ag, ref, plane="xy",
-                                                        center_of="mass")
+                                                        weights="mass")
         u.trajectory.add_transformations(transform)
     
     Parameters
@@ -121,9 +121,9 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
     """Perform a spatial superposition by minimizing the RMSD.
 
     Spatially align the group of atoms `ag` to `reference` by doing a RMSD
-    fit on `select` atoms.
+    fit.
     
-    This fit works as a way o remove translations and rotations of a given
+    This fit works as a way to remove translations and rotations of a given
     AtomGroup in a trajectory. A plane can be given using the flag `plane`
     so that only translations and rotations in that particular plane are
     removed. This is useful for protein-membrane systems to where the membrane
@@ -145,7 +145,7 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
     Parameters
     ----------
     ag : Universe or AtomGroup
-       structure to translate, a
+       structure to translate and rotate, a
        :class:`~MDAnalysis.core.groups.AtomGroup` or a whole 
        :class:`~MDAnalysis.core.universe.Universe`
     reference : Universe or AtomGroup
@@ -153,7 +153,7 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
        :class:`~MDAnalysis.core.universe.Universe`
     plane: str, optional
         used to define the plane on which the rotations and translations will be removed. 
-        Defined as a string of the plane. Suported planes are "yz", "xz" and "xy" planes.
+        Defined as a string of the plane. Supported planes are "yz", "xz" and "xy" planes.
     weights : {"mass", ``None``} or array_like, optional
        choose weights. With ``"mass"`` uses masses as weights; with ``None``
        weigh each atom equally. If a float array of the same length as
