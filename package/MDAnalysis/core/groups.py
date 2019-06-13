@@ -1586,10 +1586,10 @@ class GroupBase(_MutableBase):
                              "use one of 'group', 'residues', 'segments', "
                              "'molecules', or 'fragments'.".format(compound))
         # The 'group' needs no splitting:
+
         if comp == 'group':
             positions = mdamath.make_whole(unique_atoms, inplace=False)
             # Apply reference shift if required:
-
             if reference is not None and len(positions) > 0:
                 if ref == 'com':
                     masses = unique_atoms.masses
@@ -1623,36 +1623,20 @@ class GroupBase(_MutableBase):
             # Now process every compound:
             unique_compound_indices = unique_int_1d(compound_indices)
             positions = unique_atoms.positions
+
+            if reference_point is None:
+                reference_point = self.dimensions[:3]/2
             for i in unique_compound_indices:
                 mask = np.where(compound_indices == i)
                 c = unique_atoms[mask]
-                positions[mask] = mdamath.make_whole(c, inplace=False)
+                orig_pos = c.positions
+                positions[mask] = mdamath.make_whole(c, inplace=True)
                 # Apply reference shift if required:
 
                 if reference is not None:
-                    if ref == 'com':
-                        masses = c.masses
-                        total_mass = masses.sum()
-                        if np.isclose(total_mass, 0.0):
-                            raise ValueError("Cannot perform unwrap with "
-                                             "reference='com' because the "
-                                             "total mass of at least one of "
-                                             "the {} is zero.".format(comp))
-                        refpos = np.sum(positions[mask] * masses[:, None],
-                                        axis=0)
-                        refpos /= total_mass
-                    else:  # ref == 'cog'
-                        refpos = positions[mask].mean(axis=0)
-
-                    refpos = refpos.astype(np.float32, copy=False)
-
-                    if reference_point is None:
-                        target = distances.apply_PBC(refpos, self.dimensions)
-                    else:
-                        target = distances.minimize_periodic_vector(reference_point=reference_point, ctrpos=refpos,
-                                                                box=self.dimensions)
-
-                    positions[mask] += target - refpos
+                    positions[mask] = c.arrange_closest(reference_point, reference, inplace)
+                if not inplace:
+                    c.positions = orig_pos
 
 
         if inplace:
@@ -1661,6 +1645,45 @@ class GroupBase(_MutableBase):
             positions = positions[atoms._unique_restore_mask]
         return positions
 
+    def arrange_closest(self, target_position=None, reference='com', inplace=True):
+
+        atoms = self.atoms
+        unique_atoms = atoms.unique
+        positions = unique_atoms.positions
+        ref = reference.lower()
+        if ref  == 'com':
+            # Don't use hasattr(self, 'masses') because that's incredibly
+            # slow for ResidueGroups or SegmentGroups
+            if not hasattr(unique_atoms, 'masses'):
+                raise NoDataError("Cannot perform unwrap with "
+                                  "reference='com', this requires masses.")
+        elif ref != 'cog':
+            raise ValueError("Unrecognized reference '{}'. Please use one "
+                             "of 'com', 'cog'".format(reference))
+
+
+        if ref == 'com':
+            masses = unique_atoms.masses
+            total_mass = masses.sum()
+            if np.isclose(total_mass, 0.0):
+                raise ValueError("Cannot perform unwrap with "
+                                 "reference='com' because the total "
+                                 "mass of the group is zero.")
+            refpos = np.sum(positions * masses[:, None], axis=0)
+            refpos /= total_mass
+        else:  # ref == 'cog'
+            refpos = positions.mean(axis=0)
+        refpos = refpos.astype(np.float32, copy=False)
+        target = distances.minimize_periodic_vector(reference_point=target_position, ctrpos=refpos,
+                                                            box=self.dimensions)
+
+        positions += target - refpos
+
+        if inplace:
+            unique_atoms.positions = positions
+        if not atoms.isunique:
+            positions = positions[atoms._unique_restore_mask]
+        return positions
 
     def copy(self):
         """Get another group identical to this one.
