@@ -451,7 +451,6 @@ class UnWrapUniverse(object):
                     loc_centre = np.mean(relpos[base:base + 3, :], axis=0)
                     shift = np.rint((reference_point - loc_centre) / self._box_edge)
                     relpos[base:base + 3, :] += shift
-
                 # type C
                 for base in range(15, 23, 4):
                     loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
