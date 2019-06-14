@@ -1624,17 +1624,16 @@ class GroupBase(_MutableBase):
             unique_compound_indices = unique_int_1d(compound_indices)
             positions = unique_atoms.positions
 
-            if reference_point is None:
-                reference_point = self.dimensions[:3]/2
             for i in unique_compound_indices:
                 mask = np.where(compound_indices == i)
                 c = unique_atoms[mask]
                 orig_pos = c.positions
                 positions[mask] = mdamath.make_whole(c, inplace=True)
-                # Apply reference shift if required:
 
+                # Apply reference shift if required:
                 if reference is not None:
-                    positions[mask] = c.arrange_closest(reference_point, reference, inplace)
+                    positions[mask] = c.arrange_closest(reference_point, reference, inplace=True)
+
                 if not inplace:
                     c.positions = orig_pos
 
@@ -1673,10 +1672,13 @@ class GroupBase(_MutableBase):
             refpos /= total_mass
         else:  # ref == 'cog'
             refpos = positions.mean(axis=0)
-        refpos = refpos.astype(np.float32, copy=False)
-        target = distances.minimize_periodic_vector(reference_point=target_position, ctrpos=refpos,
-                                                            box=self.dimensions)
 
+        refpos = refpos.astype(np.float32, copy=False)
+        if target_position is None:
+            target = distances.apply_PBC(refpos, self.dimensions)
+        else:
+            target = distances.minimize_periodic_vector(reference_point=target_position, ctrpos=refpos,
+                                                            box=self.dimensions)
         positions += target - refpos
 
         if inplace:
