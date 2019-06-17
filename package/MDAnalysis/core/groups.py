@@ -690,8 +690,11 @@ class GroupBase(_MutableBase):
             will be returned as an array of position vectors, i.e. a 2d array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
-        unwrap : bool, optional
-            If ``True``, compounds will be unwrapped before computing their centers.
+        unwrap : bool or None, optional
+            If ``True`` and `compound` is ``'group'``, the atoms will be unwrapped
+            before calculations. If ``True`` and `compound` is
+            ``'segments'`` or ``'residues'``, all molecules will be unwrapped before
+             calculation to keep the compounds intact.
 
         Returns
         -------
@@ -750,6 +753,8 @@ class GroupBase(_MutableBase):
 
         comp = compound.lower()
         if comp == 'group':
+            if unwrap:
+                coords = atoms.unwrap(inplace=False)
             if pbc:
                 coords = atoms.pack_into_box(inplace=False)
             elif unwrap:
@@ -787,6 +792,8 @@ class GroupBase(_MutableBase):
                              " one of 'group', 'residues', 'segments', "
                              "'molecules', or 'fragments'.".format(compound))
 
+
+
         # Sort positions and weights by compound index and promote to dtype if
         # required:
         sort_indices = np.argsort(compound_indices)
@@ -797,6 +804,7 @@ class GroupBase(_MutableBase):
             coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
         else:
             coords = atoms.positions[sort_indices]
+
         if weights is None:
             coords = coords.astype(dtype, copy=False)
         else:
