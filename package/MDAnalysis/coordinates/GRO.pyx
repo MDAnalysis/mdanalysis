@@ -116,6 +116,10 @@ from .core import triclinic_box, triclinic_vectors
 from ..core import flags
 from ..exceptions import NoDataError
 from ..lib import util
+cimport cython
+@cython.boundscheck(False)  # Deactivate bounds checking
+@cython.wraparound(False) 
+
 
 
 class Timestep(base.Timestep):
@@ -167,11 +171,17 @@ class GROReader(base.SingleFrameReaderBase):
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
-    format = 'GRO'
-    units = {'time': None, 'length': 'nm', 'velocity': 'nm/ps'}
     _Timestep = Timestep
-
     def _read_first_frame(self):
+        cdef str format = 'GRO'
+        cpdef dict units = {'time': None, 'length': 'nm', 'velocity': 'nm/ps'}
+        cdef int n_atoms
+        cdef str first_atomline
+        cdef int cs
+        cdef float[:,:] velocities
+        cdef int pos
+        cdef str line
+        cdef float unitcell
         with util.openany(self.filename, 'rt') as grofile:
             # Read first two lines to get number of atoms
             grofile.readline()

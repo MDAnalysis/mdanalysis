@@ -335,6 +335,11 @@ def extensions(config):
                              include_dirs = include_dirs + ['MDAnalysis/topology/include'],
                              define_macros = define_macros,
                              extra_compile_args= extra_compile_args)
+    groreader = MDAExtension('MDAnalysis.coordinates.GRO',
+                             ['MDAnalysis/coordinates/GRO' + source_suffix],
+                             include_dirs = include_dirs + ['MDAnalysis/coordinates/include'],
+                             define_macros = define_macros,
+                             extra_compile_args= extra_compile_args)
     distances = MDAExtension('MDAnalysis.lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
@@ -421,7 +426,7 @@ def extensions(config):
                              extra_link_args= cpp_extra_link_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred, cutil, augment, nsgrid, groparser]
+                ap_clustering, spe_dimred, cutil, augment, nsgrid, groparser, groreader]
 
 
     cython_generated = []
