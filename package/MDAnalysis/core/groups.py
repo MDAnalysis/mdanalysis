@@ -740,7 +740,7 @@ class GroupBase(_MutableBase):
         comp = compound.lower()
         if comp == 'group':
             if unwrap:
-                coords = atoms.unwrap(inplace=False)
+                coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
             if pbc:
                 coords = atoms.pack_into_box(inplace=False)
             else:
@@ -785,10 +785,9 @@ class GroupBase(_MutableBase):
 
         # Unwrap Atoms
         if unwrap:
-            coords = atoms.unwrap(inplace=False)
+            coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
         else:
             coords = atoms.positions[sort_indices]
-
         if weights is None:
             coords = coords.astype(dtype, copy=False)
         else:

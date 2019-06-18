@@ -52,7 +52,7 @@ from MDAnalysisTests.datafiles import (
     GRO
 )
 from MDAnalysisTests import make_Universe, no_deprecated_call
-
+from MDAnalysisTests.core.util import UnWrapUniverse
 import pytest
 
 
@@ -517,6 +517,31 @@ class TestCenter(object):
 
         with pytest.raises(ValueError):
             ag.center(weights)
+
+    @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
+    @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
+                                          'group', 'segments'))
+    @pytest.mark.parametrize('is_triclinic', (False, True))
+    def test_center_unwrap(self, level, compound, is_triclinic):
+        u = UnWrapUniverse(is_triclinic=is_triclinic)
+        # select group appropriate for compound:
+        if compound == 'group':
+            group = u.atoms[39:47] # molecule 12
+        elif compound == 'segments':
+            group = u.atoms[23:47] # molecules 10, 11, 12
+        else:
+            group = u.atoms
+        # select topology level:
+        if level == 'residues':
+            group = group.residues
+        elif level == 'segments':
+            group = group.segments
+
+        # get the expected results
+        center = group.center(weights=None, compound=compound, unwrap=True)
+
+        ref_center = u.center(compound=compound)
+        assert_almost_equal(ref_center, center, decimal=4)
 
 
 class TestSplit(object):
