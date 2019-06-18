@@ -585,7 +585,7 @@ class UnWrapUniverse(object):
 
         for base in range(3, 15, 3):
             loc_center = np.mean(relpos[base:base + 3, :], axis=0)
-            center_pos[pos,:] = loc_center
+            center_pos[pos,:] = loc_center  
             pos+=1
 
         if compound=="residues":
