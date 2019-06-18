@@ -601,6 +601,17 @@ class UnWrapUniverse(object):
             for base in range(23, 47, 8):
                 loc_center = np.mean(relpos[base:base + 8, :], axis=0)
                 center_pos[pos,:] = loc_center
+                loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
+                center_pos[pos,:] = loc_centre
+                pos+=1
+        else:
+            for base in range(15, 23, 4):
+                loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
+                center_pos[pos,:] = loc_centre
+                pos+=1
+            for base in range(23, 47, 8):
+                loc_centre = np.mean(relpos[base:base + 8, :], axis=0)
+                center_pos[pos,:] = loc_centre
                 pos+=1
 
         if compound == "group":
