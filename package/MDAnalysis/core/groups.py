@@ -1654,15 +1654,32 @@ class GroupBase(_MutableBase):
             for i in unique_compound_indices:
                 mask = np.where(compound_indices == i)
                 c = unique_atoms[mask]
-                orig_pos = c.positions
-                positions[mask] = mdamath.make_whole(c, inplace=True)
+                positions[mask] = mdamath.make_whole(c, inplace=False)
 
                 # Apply reference shift if required:
                 if reference is not None:
-                    positions[mask] = c.arrange_closest(reference_point, reference, inplace=True)
+                    if ref == 'com':
+                        masses = c.masses
+                        total_mass = masses.sum()
+                        if np.isclose(total_mass, 0.0):
+                            raise ValueError("Cannot perform unwrap with "
+                                             "reference='com' because the "
+                                             "total mass of at least one of "
+                                             "the {} is zero.".format(comp))
+                        refpos = np.sum(positions[mask] * masses[:, None],
+                                        axis=0)
+                        refpos /= total_mass
 
-                if not inplace:
-                    c.positions = orig_pos
+                    else:  # ref == 'cog'
+                        refpos = positions[mask].mean(axis=0)
+                    refpos = refpos.astype(np.float32, copy=False)
+
+                    if reference_point is None:
+                        target = distances.apply_PBC(refpos, self.dimensions)
+                    else:
+                        target = distances.minimize_periodic_vector(reference_point=reference_point, ctrpos=refpos,
+                                                                    box=self.dimensions)
+                    positions[mask] += target - refpos
 
 
         if inplace:
@@ -1686,7 +1703,6 @@ class GroupBase(_MutableBase):
         elif ref != 'cog':
             raise ValueError("Unrecognized reference '{}'. Please use one "
                              "of 'com', 'cog'".format(reference))
-
 
         if ref == 'com':
             masses = unique_atoms.masses
