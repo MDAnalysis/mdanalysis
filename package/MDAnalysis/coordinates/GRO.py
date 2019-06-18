@@ -176,27 +176,29 @@ class GROReader(base.SingleFrameReaderBase):
             # Read first two lines to get number of atoms
             grofile.readline()
             self.n_atoms = n_atoms = int(grofile.readline())
+            self.ts = ts = self._Timestep(n_atoms, **self._ts_kwargs)
+            # Always try, and maybe add them later
+            velocities = np.zeros((n_atoms, 3), dtype=np.float32)
+            missed_vel = False
+
             # and the third line to get the spacing between coords (cs)
             # (dependent upon the GRO file precision)
             first_atomline = grofile.readline()
             cs = first_atomline[25:].find('.') + 1
+            ts._pos[0] = [first_atomline[20 + cs * i:20 + cs * (i + 1)]
+                          for i in range(3)]
+            try:
+                velocities[0] = [first_atomline[20 + cs * i:20 + cs * (i + 1)]
+                                 for i in range(3, 6)]
+            except ValueError:
+                # Remember that we got this error
+                missed_vel = True
 
-            # Always try, and maybe add them later
-            velocities = np.zeros((n_atoms, 3), dtype=np.float32)
-
-            self.ts = ts = self._Timestep(n_atoms,
-                                          **self._ts_kwargs)
-
-            missed_vel = False
-
-            grofile.seek(0)
-            for pos, line in enumerate(grofile, start=-2):
+            for pos, line in enumerate(grofile, start=1):
                 # 2 header lines, 1 box line at end
                 if pos == n_atoms:
                     unitcell = np.float32(line.split())
-                    continue
-                if pos < 0:
-                    continue
+                    break
 
                 ts._pos[pos] = [line[20 + cs * i:20 + cs * (i + 1)] for i in range(3)]
                 try:
