@@ -38,12 +38,12 @@ class TestUnwrap(object):
     """
     precision = 5
     reference_point_pos = (None,
-                           np.array([5, 5, 5], dtype=np.float32),
-                           np.array([15, 15, 15], dtype=np.float32),
-                           np.array([-15, -15, -15], dtype=np.float32),
-                           np.array([-15, 15, 15], dtype=np.float32),
-                           np.array([15, -15, 15], dtype=np.float32),
-                           np.array([15, 15, -15], dtype=np.float32))
+                           np.array([4.2, 8.1, 4.5], dtype=np.float32),
+                           np.array([15.1, 15.45, 15.67], dtype=np.float32),
+                           np.array([-14.34, -15.45, -16.76], dtype=np.float32),
+                           np.array([-12.34, 11.65, 11.34], dtype=np.float32),
+                           np.array([17.34, -13.54, 11.23], dtype=np.float32),
+                           np.array([15.45, 14.34, -12.76], dtype=np.float32))
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
@@ -200,9 +200,8 @@ class TestUnwrap(object):
 
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
-    @pytest.mark.parametrize('reference_point', reference_point_pos)
     @pytest.mark.parametrize('is_triclinic', (False, True))
-    def test_unwrap_com_cog_difference(self, compound, reference_point, is_triclinic):
+    def test_unwrap_com_cog_difference(self, compound, is_triclinic):
         # get a pristine test universe:
         u = UnWrapUniverse(is_triclinic=is_triclinic)
         # select molecule 5:
@@ -214,15 +213,15 @@ class TestUnwrap(object):
         group.masses = [100.0, 1.0, 1.0]
         # unwrap with center of geometry as reference:
         unwrapped_pos_cog = group.unwrap(compound=compound, reference='cog',
-                                         reference_point=reference_point, inplace=False)
+                                         reference_point=None, inplace=False)
         # get expected result:
-        ref_unwrapped_pos = u.unwrapped_coords(compound, 'cog', reference_point=reference_point)[6:9]
+        ref_unwrapped_pos = u.unwrapped_coords(compound, 'cog', reference_point=None)[6:9]
         # check for correctness:
         assert_almost_equal(unwrapped_pos_cog, ref_unwrapped_pos,
                             decimal=self.precision)
         # unwrap with center of mass as reference:
         unwrapped_pos_com = group.unwrap(compound=compound, reference='com',
-                                         reference_point=reference_point, inplace=False)
+                                         reference_point=None, inplace=False)
         # assert that the com result is shifted with respect to the cog result
         # by one box length in the x-direction:
         shift = np.array([10.0, 0.0, 0.0], dtype=np.float32)
