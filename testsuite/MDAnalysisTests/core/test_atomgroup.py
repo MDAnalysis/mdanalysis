@@ -539,7 +539,6 @@ class TestCenter(object):
 
         # get the expected results
         center = group.center(weights=None, pbc=False, compound=compound, unwrap=True)
-
         ref_center = u.center(compound=compound)
         assert_almost_equal(ref_center, center, decimal=4)
 
