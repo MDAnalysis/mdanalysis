@@ -750,6 +750,9 @@ class GroupBase(_MutableBase):
 
         comp = compound.lower()
         if comp == 'group':
+            if unwrap and pbc:
+                raise ValueError("'unwrap' and 'pbc' cannot be true at the same time "
+                                 "for compound='group")
             if unwrap:
                 coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
             if pbc:
@@ -788,8 +791,6 @@ class GroupBase(_MutableBase):
             raise ValueError("Unrecognized compound definition: {}\nPlease use"
                              " one of 'group', 'residues', 'segments', "
                              "'molecules', or 'fragments'.".format(compound))
-
-
 
         # Sort positions and weights by compound index and promote to dtype if
         # required:
