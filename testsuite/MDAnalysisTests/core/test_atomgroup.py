@@ -839,6 +839,7 @@ class TestUnwrapFlag(object):
     prec = 3
 
     @pytest.fixture()
+<<<<<<< HEAD
     def ag(self):
         universe = mda.Universe(TRZ_psf, TRZ)
         group = universe.residues[0:3]
@@ -923,9 +924,11 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.moment_of_inertia(), ref_noUnwrap['MOI'], self.prec)
         assert_almost_equal(group.asphericity(), ref_noUnwrap['Asph'], self.prec)
 
+
     def test_UnWrapFlag(self, ref_Unwrap):
         u = UnWrapUniverse(is_triclinic=False)
         group = u.atoms[31:39]  # molecules  11
+
         # Changing masses for center_of_mass
         group.masses = [100.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         assert_almost_equal(group.center_of_geometry(unwrap=True), ref_Unwrap['COG'], self.prec)
