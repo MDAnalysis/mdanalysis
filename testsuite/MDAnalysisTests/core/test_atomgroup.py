@@ -543,11 +543,7 @@ class TestCenter(object):
         ref_center = u.center(compound=compound)
         assert_almost_equal(ref_center, center, decimal=4)
 
-<<<<<<< HEAD
     def test_center_unwrap_pbc_true_group(self):
-=======
-    def test_center_unwrap_pbc_true(self):
->>>>>>> Review changes
         u = UnWrapUniverse(is_triclinic=False)
         # select group appropriate for compound:
         group = u.atoms[39:47]  # molecule 12
@@ -930,6 +926,7 @@ class TestUnwrapFlag(object):
     def test_UnWrapFlag(self, ref_Unwrap):
         u = UnWrapUniverse(is_triclinic=False)
         group = u.atoms[31:39]  # molecules  11
+
         # Changing masses for center_of_mass
         group.masses = [100.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         assert_almost_equal(group.center_of_geometry(unwrap=True), ref_Unwrap['COG'], self.prec)
