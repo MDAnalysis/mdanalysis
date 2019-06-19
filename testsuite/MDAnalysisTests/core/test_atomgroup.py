@@ -543,6 +543,13 @@ class TestCenter(object):
         ref_center = u.center(compound=compound)
         assert_almost_equal(ref_center, center, decimal=4)
 
+    def test_center_unwrap_pbc_true(self):
+        u = UnWrapUniverse(is_triclinic=False)
+        # select group appropriate for compound:
+        group = u.atoms[39:47]  # molecule 12
+        with pytest.raises(ValueError):
+            group.center(weights=None, compound="group", unwrap=True, pbc=True)
+
 
 class TestSplit(object):
 

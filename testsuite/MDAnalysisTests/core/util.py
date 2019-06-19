@@ -579,28 +579,28 @@ class UnWrapUniverse(object):
             center_pos = np.zeros((12, 3), dtype=np.float32)
 
         for base in range(3):
-            loc_centre = relpos[base, :]
-            center_pos[pos,:] = loc_centre
+            loc_center = relpos[base, :]
+            center_pos[pos,:] = loc_center
             pos+=1
 
         for base in range(3, 15, 3):
-            loc_centre = np.mean(relpos[base:base + 3, :], axis=0)
-            center_pos[pos,:] = loc_centre
+            loc_center = np.mean(relpos[base:base + 3, :], axis=0)
+            center_pos[pos,:] = loc_center
             pos+=1
 
         if compound=="residues":
             for base in range(15, 47, 4):
-                loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
-                center_pos[pos,:] = loc_centre
+                loc_center = np.mean(relpos[base:base + 4, :], axis=0)
+                center_pos[pos,:] = loc_center
                 pos+=1
         else:
             for base in range(15, 23, 4):
-                loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
-                center_pos[pos,:] = loc_centre
+                loc_center = np.mean(relpos[base:base + 4, :], axis=0)
+                center_pos[pos,:] = loc_center
                 pos+=1
             for base in range(23, 47, 8):
-                loc_centre = np.mean(relpos[base:base + 8, :], axis=0)
-                center_pos[pos,:] = loc_centre
+                loc_center = np.mean(relpos[base:base + 8, :], axis=0)
+                center_pos[pos,:] = loc_center
                 pos+=1
 
         if compound == "group":
