@@ -739,12 +739,13 @@ class GroupBase(_MutableBase):
             if unwrap and pbc:
                 raise ValueError("'unwrap' and 'pbc' cannot be true at the same time "
                                  "for compound='group")
-            if unwrap:
-                coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
             if pbc:
                 coords = atoms.pack_into_box(inplace=False)
             else:
                 coords = atoms.positions
+            if unwrap:
+                coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
+
             # If there's no atom, return its (empty) coordinates unchanged.
             if len(atoms) == 0:
                 return coords
@@ -816,7 +817,7 @@ class GroupBase(_MutableBase):
         return centers
 
     @warn_if_not_unique
-    def center_of_geometry(self, pbc=None, compound='group'):
+    def center_of_geometry(self, pbc=None, compound='group', unwrap=False):
         """Center of geometry of (compounds of) the group.
 
         Computes the center of geometry (a.k.a. centroid) of
@@ -840,6 +841,8 @@ class GroupBase(_MutableBase):
             will be returned as an array of position vectors, i.e. a 2d array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
 
         Returns
         -------
@@ -862,7 +865,7 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         """
-        return self.center(None, pbc=pbc, compound=compound)
+        return self.center(None, pbc=pbc, compound=compound, unwrap=unwrap)
 
     centroid = center_of_geometry
 

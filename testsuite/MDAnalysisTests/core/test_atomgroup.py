@@ -834,6 +834,32 @@ class TestDihedralSelections(object):
             sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
 
 
+class TestUnwrapFlag(object):
+
+    prec = 3
+
+    @pytest.fixture()
+    def ref_noUnwrap(self):
+        return {
+            'COG': np.array([5.1, 7.5, 7. ], dtype=np.float32),
+        }
+
+    @pytest.fixture()
+    def ref_Unwrap(self):
+        return {
+            'COG': np.array([10.1,  7.5,  7. ], dtype=np.float32),
+        }
+
+    def test_default(self, ref_noUnwrap):
+        u = UnWrapUniverse(is_triclinic=False)
+        group = u.atoms[31:39]  # molecules  11
+        assert_almost_equal(group.center_of_geometry(), ref_noUnwrap['COG'], self.prec)
+
+    def test_UnWrapFlag(self, ref_Unwrap):
+        u = UnWrapUniverse(is_triclinic=False)
+        group = u.atoms[31:39]  # molecules  11
+        assert_almost_equal(group.center_of_geometry(unwrap=True), ref_Unwrap['COG'], self.prec)
+
 class TestPBCFlag(object):
 
     prec = 3
