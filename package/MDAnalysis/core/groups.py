@@ -750,11 +750,10 @@ class GroupBase(_MutableBase):
         if comp == 'group':
             if pbc:
                 coords = atoms.pack_into_box(inplace=False)
+            elif unwrap:
+                coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
             else:
                 coords = atoms.positions
-            if unwrap:
-                coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
-
             # If there's no atom, return its (empty) coordinates unchanged.
             if len(atoms) == 0:
                 return coords
