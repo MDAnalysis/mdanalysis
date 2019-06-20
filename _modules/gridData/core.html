@@ -67,9 +67,12 @@
 <span class="c1"># its behavior is fully consistent in Python 2 and Python 3.</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">six</span>
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="n">cPickle</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span>
 
 <span class="c1"># For interpolated grids: need scipy.ndimage but we import it only when needed:</span>
@@ -103,7 +106,8 @@
     <span class="n">default_format</span> <span class="o">=</span> <span class="s1">&#39;DX&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">metadata</span><span class="o">=</span><span class="p">{},</span> <span class="n">interpolation_spline_order</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+                 <span class="n">metadata</span><span class="o">=</span><span class="p">{},</span> <span class="n">interpolation_spline_order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                 <span class="n">file_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a Grid object from data.</span>
 
@@ -127,7 +131,7 @@
 
 <span class="sd">        :Arguments:</span>
 <span class="sd">          grid</span>
-<span class="sd">            histogram or density, defined on numpy nD array</span>
+<span class="sd">            histogram or density, defined on numpy nD array, or filename</span>
 <span class="sd">          edges</span>
 <span class="sd">            list of arrays, the lower and upper bin edges along the axes</span>
 <span class="sd">            (both are output by numpy.histogramdd())</span>
@@ -142,6 +146,14 @@
 <span class="sd">            metadata[] but stores it with save()</span>
 <span class="sd">          interpolation_spline_order</span>
 <span class="sd">            order of interpolation function for resampling; cubic splines = 3 [3]</span>
+<span class="sd">          file_format</span>
+<span class="sd">             file format; only necessary when ``grid`` is a filename (see :meth:`Grid.load`);</span>
+<span class="sd">             default is ``None`` and the file format is autodetected.</span>
+
+
+<span class="sd">        .. versionchanged:: 0.5.0</span>
+<span class="sd">           New *file_format* keyword argument.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># file formats are guess from extension == lower case key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exporters</span> <span class="o">=</span> <span class="p">{</span>
@@ -154,7 +166,7 @@
             <span class="s1">&#39;CCP4&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_cpp4</span><span class="p">,</span>
             <span class="s1">&#39;DX&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_dx</span><span class="p">,</span>
             <span class="s1">&#39;PLT&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_plt</span><span class="p">,</span>
-            <span class="s1">&#39;PKL&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export_python</span><span class="p">,</span>
+            <span class="s1">&#39;PKL&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_python</span><span class="p">,</span>
             <span class="s1">&#39;PICKLE&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_python</span><span class="p">,</span>  <span class="c1"># compatibility</span>
             <span class="s1">&#39;PYTHON&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_python</span><span class="p">,</span>  <span class="c1"># compatibility</span>
         <span class="p">}</span>
@@ -164,38 +176,59 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__interpolation_spline_order</span> <span class="o">=</span> <span class="n">interpolation_spline_order</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">interpolation_cval</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># default to using min(grid)</span>
 
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="n">grid</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">edges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="c1"># set up from histogramdd-type data</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">edges</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="n">grid</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">delta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="c1"># setup from generic data</span>
-            <span class="n">origin</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
-            <span class="n">delta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span> <span class="o">!=</span> <span class="n">grid</span><span class="o">.</span><span class="n">ndim</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Dimension of origin is not the same as grid dimension.&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">delta</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">()</span> <span class="ow">and</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
-                <span class="n">delta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta</span>
-            <span class="k">elif</span> <span class="n">delta</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                    <span class="s2">&quot;Non-rectangular grids are not supported.&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span> <span class="o">!=</span> <span class="n">grid</span><span class="o">.</span><span class="n">ndim</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;delta should be scalar or array-like of&quot;</span>
-                                <span class="s2">&quot;len(grid.ndim)&quot;</span><span class="p">)</span>
-            <span class="c1"># note that origin is CENTER so edges must be shifted by -0.5*delta</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">origin</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">+</span>
-                          <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span>
-                          <span class="k">for</span> <span class="n">dim</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># empty, must manually populate with load()</span>
-            <span class="c1"># print &quot;Setting up empty grid object. Use Grid.load(filename).&quot;</span>
-            <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">grid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+                <span class="c1"># can probably safely try to load() it...</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">grid</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># Can we read this as a file?</span>
+                    <span class="c1"># Use str(x) to work with py.path.LocalPath and pathlib.Path instances</span>
+                    <span class="c1"># even for Python &lt; 3.6</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">grid</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">):</span>
+                        <span class="k">pass</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
+                    <span class="c1"># no, this is probably an array-like thingy</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># yes, let&#39;s use it as a file</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="n">file_format</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">edges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># set up from histogramdd-type data</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">edges</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">origin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">delta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># setup from generic data</span>
+                    <span class="n">origin</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
+                    <span class="n">delta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span> <span class="o">!=</span> <span class="n">grid</span><span class="o">.</span><span class="n">ndim</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                            <span class="s2">&quot;Dimension of origin is not the same as grid dimension.&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">delta</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">()</span> <span class="ow">and</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+                        <span class="n">delta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta</span>
+                    <span class="k">elif</span> <span class="n">delta</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                            <span class="s2">&quot;Non-rectangular grids are not supported.&quot;</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span> <span class="o">!=</span> <span class="n">grid</span><span class="o">.</span><span class="n">ndim</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;delta should be scalar or array-like of&quot;</span>
+                                        <span class="s2">&quot;len(grid.ndim)&quot;</span><span class="p">)</span>
+                    <span class="c1"># note that origin is CENTER so edges must be shifted by -0.5*delta</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">origin</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">+</span>
+                                  <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span>
+                                  <span class="k">for</span> <span class="n">dim</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong/missing data to set up Grid. Use Grid() or &quot;</span>
+                                     <span class="s2">&quot;Grid(grid=&lt;array&gt;, edges=&lt;list&gt;) or &quot;</span>
+                                     <span class="s2">&quot;Grid(grid=&lt;array&gt;, origin=(x0, y0, z0), delta=(dx, dy, dz)):</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                     <span class="s2">&quot;grid=</span><span class="si">{0}</span><span class="s2"> edges=</span><span class="si">{1}</span><span class="s2"> origin=</span><span class="si">{2}</span><span class="s2"> delta=</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                         <span class="n">grid</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">delta</span><span class="p">))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">interpolation_spline_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -416,6 +449,12 @@
 <span class="sd">        The load() method calls the class&#39;s constructor method and</span>
 <span class="sd">        completely resets all values, based on the loaded data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="c1"># check before we try to detect the file type because</span>
+            <span class="c1"># _guess_fileformat() does not work well with things that</span>
+            <span class="c1"># are not really a file</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">,</span> <span class="s2">&quot;file not found&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
         <span class="n">loader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_loader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="n">file_format</span><span class="p">)</span>
         <span class="n">loader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
@@ -447,7 +486,7 @@
         <span class="n">grid</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">typequote</span><span class="o">=</span><span class="s1">&#39;&quot;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;export density to file using the given format.</span>
 
 <span class="sd">        The format can also be deduced from the suffix of the filename</span>
@@ -466,25 +505,33 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+
 <span class="sd">        filename : str</span>
 <span class="sd">            name of the output file</span>
+
 <span class="sd">        file_format : {&#39;dx&#39;, &#39;pickle&#39;, None} (optional)</span>
 <span class="sd">            output file format, the default is &quot;dx&quot;</span>
+
 <span class="sd">        type : str (optional)</span>
-<span class="sd">            for DX, set the output DX array type, e.g., &quot;double&quot; or</span>
-<span class="sd">            &quot;float&quot;; note that PyMOL only understands &quot;double&quot; (see</span>
-<span class="sd">            issue `#35`_). By default (``None``), the DX type is</span>
-<span class="sd">            determined from the numpy dtype of the array of the grid</span>
-<span class="sd">            (and this will typically result in &quot;double&quot;).</span>
+<span class="sd">            for DX, set the output DX array type, e.g., &quot;double&quot; or &quot;float&quot;.</span>
+<span class="sd">            By default (``None``), the DX type is determined from the numpy</span>
+<span class="sd">            dtype of the array of the grid (and this will typically result in</span>
+<span class="sd">            &quot;double&quot;).</span>
 
 <span class="sd">            .. versionadded:: 0.4.0</span>
 
+<span class="sd">        typequote : str (optional)</span>
+<span class="sd">            For DX, set the character used to quote the type string;</span>
+<span class="sd">            by default this is a double-quote character, &#39;&quot;&#39;.</span>
+<span class="sd">            Custom parsers like the one from NAMD-GridForces (backend for MDFF)</span>
+<span class="sd">            expect no quotes, and typequote=&#39;&#39; may be used to appease them.</span>
 
-<span class="sd">        .. _`#35`: https://github.com/MDAnalysis/GridDataFormats/issues/35</span>
+<span class="sd">            .. versionadded:: 0.5.0</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="n">exporter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_exporter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="n">file_format</span><span class="p">)</span>
-        <span class="n">exporter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+        <span class="n">exporter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span> <span class="n">typequote</span><span class="o">=</span><span class="n">typequote</span><span class="p">)</span>
 
     <span class="c1"># note: the _export_FORMAT() methods all take the filename as a mandatory</span>
     <span class="c1"># argument. They can process kwargs but they are not required to do</span>
@@ -500,7 +547,7 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_export_dx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_export_dx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">typequote</span><span class="o">=</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Export the density grid to an OpenDX file.</span>
 
 <span class="sd">        The file format is the simplest regular grid array and it is</span>
@@ -534,7 +581,7 @@
             <span class="n">positions</span><span class="o">=</span><span class="n">OpenDX</span><span class="o">.</span><span class="n">gridpositions</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span>
                                            <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">),</span>
             <span class="n">connections</span><span class="o">=</span><span class="n">OpenDX</span><span class="o">.</span><span class="n">gridconnections</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
-            <span class="n">data</span><span class="o">=</span><span class="n">OpenDX</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">),</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">OpenDX</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span> <span class="n">typequote</span><span class="o">=</span><span class="n">typequote</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="n">dx</span> <span class="o">=</span> <span class="n">OpenDX</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="n">components</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="n">comments</span><span class="p">)</span>
         <span class="n">dx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>

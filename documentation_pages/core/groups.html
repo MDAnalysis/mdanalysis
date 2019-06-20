@@ -883,9 +883,8 @@ duplicate elements</td>
 <p>Intersections can be used when the select atoms string would
 become too complicated.  For example to find the water atoms
 which are within 4.0A of two segments:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">water</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;around 4.0 segid 1&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell2</span> <span class="o">=</span> <span class="n">water</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;around 4.0 segid 2&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shell2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 2&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">common</span> <span class="o">=</span> <span class="n">shell1</span> <span class="o">&amp;</span> <span class="n">shell2</span>  <span class="c1"># or shell1.intersection(shell2)</span>
 </pre></div>
 </div>
@@ -2556,9 +2555,8 @@ duplicate elements</td>
 <p>Intersections can be used when the select atoms string would
 become too complicated.  For example to find the water atoms
 which are within 4.0A of two segments:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">water</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;around 4.0 segid 1&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell2</span> <span class="o">=</span> <span class="n">water</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;around 4.0 segid 2&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shell2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 2&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">common</span> <span class="o">=</span> <span class="n">shell1</span> <span class="o">&amp;</span> <span class="n">shell2</span>  <span class="c1"># or shell1.intersection(shell2)</span>
 </pre></div>
 </div>
@@ -3818,9 +3816,8 @@ duplicate elements</td>
 <p>Intersections can be used when the select atoms string would
 become too complicated.  For example to find the water atoms
 which are within 4.0A of two segments:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">water</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;around 4.0 segid 1&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell2</span> <span class="o">=</span> <span class="n">water</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;around 4.0 segid 2&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shell2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 2&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">common</span> <span class="o">=</span> <span class="n">shell1</span> <span class="o">&amp;</span> <span class="n">shell2</span>  <span class="c1"># or shell1.intersection(shell2)</span>
 </pre></div>
 </div>

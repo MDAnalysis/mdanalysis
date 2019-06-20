@@ -301,13 +301,13 @@ standard conditions</p>
 <h2>4.8.1.3. Supporting classes and functions<a class="headerlink" href="#supporting-classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <p>The main output of the density creation functions is a
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> instance, which is derived from a
-<a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>. A <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> is essentially, a 3D
+<a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>. A <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> is essentially, a 3D
 array with origin and lengths together with associated metadata (which
 can be used in downstream processing).</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.density.Density">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">Density</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></p>
 <p>Class representing a density on a regular cartesian grid.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -449,7 +449,7 @@ that the data are in fact a density.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></dt>
+<dt><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></dt>
 <dd>the base class of <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a>.</dd>
 </dl>
 </div>
@@ -611,7 +611,7 @@ histogram and a length unit and use <a class="reference internal" href="#MDAnaly
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.Density.export">
-<code class="descname">export</code><span class="sig-paren">(</span><em>filename</em>, <em>file_format=None</em>, <em>type=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.export" title="Permalink to this definition">¶</a></dt>
+<code class="descname">export</code><span class="sig-paren">(</span><em>filename</em>, <em>file_format=None</em>, <em>type=None</em>, <em>typequote='&quot;'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.export" title="Permalink to this definition">¶</a></dt>
 <dd><p>export density to file using the given format.</p>
 <p>The format can also be deduced from the suffix of the filename
 though the <em>format</em> keyword takes precedence.</p>
@@ -632,13 +632,20 @@ is simpler than <code class="docutils literal notranslate"><span class="pre">exp
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of the output file</li>
 <li><strong>file_format</strong> (<em>{'dx'</em><em>, </em><em>'pickle'</em><em>, </em><em>None}</em><em> (</em><em>optional</em><em>)</em>) – output file format, the default is “dx”</li>
-<li><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>for DX, set the output DX array type, e.g., “double” or
-“float”; note that PyMOL only understands “double” (see
-issue <a class="reference external" href="https://github.com/MDAnalysis/GridDataFormats/issues/35">#35</a>). By default (<code class="docutils literal notranslate"><span class="pre">None</span></code>), the DX type is
-determined from the numpy dtype of the array of the grid
-(and this will typically result in “double”).</p>
+<li><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>for DX, set the output DX array type, e.g., “double” or “float”.
+By default (<code class="docutils literal notranslate"><span class="pre">None</span></code>), the DX type is determined from the numpy
+dtype of the array of the grid (and this will typically result in
+“double”).</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.4.0.</span></p>
+</div>
+</li>
+<li><strong>typequote</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>For DX, set the character used to quote the type string;
+by default this is a double-quote character, ‘”’.
+Custom parsers like the one from NAMD-GridForces (backend for MDFF)
+expect no quotes, and typequote=’’ may be used to appease them.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.5.0.</span></p>
 </div>
 </li>
 </ul>
@@ -686,7 +693,7 @@ especially at the boundary between 0 and high values.</p>
 <dd><p>Order of the B-spline interpolation of the data.</p>
 <p>3 = cubic; 4 &amp; 5 are also supported</p>
 <p>Only choose values that are acceptable to
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.spline_filter.html#scipy.ndimage.spline_filter" title="(in SciPy v1.2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.spline_filter()</span></code></a>!</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.spline_filter.html#scipy.ndimage.spline_filter" title="(in SciPy v1.3.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.spline_filter()</span></code></a>!</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.analysis.density.Density.interpolated" title="MDAnalysis.analysis.density.Density.interpolated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolated</span></code></a></p>
@@ -919,7 +926,7 @@ a different cut-off:</p>
 <table class="docutils footnote" frame="void" id="pbc" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id7">3</a>)</em> <p>Making molecules whole can be accomplished with the
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id6">3</a>)</em> <p>Making molecules whole can be accomplished with the
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.wrap" title="MDAnalysis.core.groups.AtomGroup.wrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.wrap()</span></code></a> of
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms</span></code> (use <code class="docutils literal notranslate"><span class="pre">compound=&quot;fragments&quot;</span></code>).</p>
 <p>When using, for instance, the <a class="reference external" href="http://www.gromacs.org">Gromacs</a> command <a class="reference external" href="http://manual.gromacs.org/programs/gmx-trjconv.html">gmx trjconv</a></p>
@@ -943,7 +950,7 @@ representation, which can be useful for density generation.</p>
 </div>
 <p class="last">will also accomplish such a superposition. Note that the fitting has
 to be done in a <em>separate</em> step from the treatment of the periodic
-boundaries <a class="footnote-reference" href="#pbc" id="id7">[1]</a>.</p>
+boundaries <a class="footnote-reference" href="#pbc" id="id6">[1]</a>.</p>
 </td></tr>
 </tbody>
 </table>

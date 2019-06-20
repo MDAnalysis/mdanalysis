@@ -1867,9 +1867,8 @@
 <span class="sd">        become too complicated.  For example to find the water atoms</span>
 <span class="sd">        which are within 4.0A of two segments:</span>
 
-<span class="sd">        &gt;&gt;&gt; water = u.select_atoms(&#39;resname SOL&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; shell1 = water.select_atoms(&#39;around 4.0 segid 1&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; shell2 = water.select_atoms(&#39;around 4.0 segid 2&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; shell1 = u.select_atoms(&#39;resname SOL and around 4.0 segid 1&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; shell2 = u.select_atoms(&#39;resname SOL and around 4.0 segid 2&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; common = shell1 &amp; shell2  # or shell1.intersection(shell2)</span>
 
 <span class="sd">        See Also</span>
