@@ -1827,9 +1827,8 @@ class GroupBase(_MutableBase):
         become too complicated.  For example to find the water atoms
         which are within 4.0A of two segments:
 
-        >>> water = u.select_atoms('resname SOL')
-        >>> shell1 = water.select_atoms('around 4.0 segid 1')
-        >>> shell2 = water.select_atoms('around 4.0 segid 2')
+        >>> shell1 = u.select_atoms('resname SOL and around 4.0 segid 1')
+        >>> shell2 = u.select_atoms('resname SOL and around 4.0 segid 2')
         >>> common = shell1 & shell2  # or shell1.intersection(shell2)
 
         See Also
