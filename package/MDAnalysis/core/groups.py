@@ -349,7 +349,15 @@ class _ImmutableBase(object):
     #  cache lookup if the class is reused (as in ag._derived_class(...)).
     __new__ = object.__new__
 
-
+def check_pbc_and_unwrap(function):
+    """Decorator to raise ValueError when both 'pbc' and 'unwrap' are set to True.
+    """
+    @functools.wraps(function)
+    def wrapped(group, *args, **kwargs):
+        if kwargs.get('pbc', False) and kwargs.get('unwrap', False):
+            raise ValueError("both 'pbc' and 'unwrap' can not be set to true")
+        return function(group, *args, **kwargs)
+    return wrapped
 
 def _only_same_level(function):
     @functools.wraps(function)
@@ -648,7 +656,9 @@ class GroupBase(_MutableBase):
         #    return ``not np.any(mask)`` here but using the following is faster:
         return not np.count_nonzero(mask)
 
+
     @warn_if_not_unique
+    @check_pbc_and_unwrap
     def center(self, weights, pbc=None, compound='group', unwrap=False):
         """Weighted center of (compounds of) the group
 
@@ -697,6 +707,8 @@ class GroupBase(_MutableBase):
         ValueError
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
+        ValueError
+            If both 'pbc' and 'unwrap' set to true.
         ~MDAnalysis.exceptions.NoDataError
             If `compound` is ``'molecule'`` but the topology doesn't
             contain molecule information (molnums) or if `compound` is
@@ -736,15 +748,13 @@ class GroupBase(_MutableBase):
 
         comp = compound.lower()
         if comp == 'group':
-            if unwrap and pbc:
-                raise ValueError("'unwrap' and 'pbc' cannot be true at the same time "
-                                 "for compound='group")
-            if unwrap:
-                coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
             if pbc:
                 coords = atoms.pack_into_box(inplace=False)
             else:
                 coords = atoms.positions
+            if unwrap:
+                coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
+
             # If there's no atom, return its (empty) coordinates unchanged.
             if len(atoms) == 0:
                 return coords
