@@ -725,6 +725,7 @@ __all__ = ['reader', 'writer']
 import six
 
 from . import base
+from .base import _READERS
 from .core import reader, writer
 from . import chain
 from . import CRD
@@ -749,3 +750,5 @@ from . import memory
 from . import MMTF
 from . import GSD
 from . import null
+
+_READERS['GRO'] = GRO.GROReader

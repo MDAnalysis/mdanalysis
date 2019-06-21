@@ -117,9 +117,6 @@ from ..core import flags
 from ..exceptions import NoDataError
 from ..lib import util
 cimport cython
-@cython.boundscheck(False)  # Deactivate bounds checking
-@cython.wraparound(False) 
-
 
 
 class Timestep(base.Timestep):
