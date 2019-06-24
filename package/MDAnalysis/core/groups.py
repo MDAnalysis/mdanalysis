@@ -354,8 +354,9 @@ def check_pbc_and_unwrap(function):
     """
     @functools.wraps(function)
     def wrapped(group, *args, **kwargs):
-        if kwargs.get('pbc', False) and kwargs.get('unwrap', False):
-            raise ValueError("both 'pbc' and 'unwrap' can not be set to true")
+        if kwargs.get('compound') == 'group':
+            if kwargs.get('pbc') and kwargs.get('unwrap'):
+                raise ValueError("both 'pbc' and 'unwrap' can not be set to true")
         return function(group, *args, **kwargs)
     return wrapped
 
