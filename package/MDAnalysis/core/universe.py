@@ -246,113 +246,141 @@ class Universe(object):
 
     """
 
-    def __init__(self, *args, **kwargs):
-        # Store the segments for the deprecated instant selector feature.
-        # This attribute has to be defined early to avoid recursion in
-        # __getattr__.
-        self._instant_selectors = {}
-        # hold on to copy of kwargs; used by external libraries that
-        # reinitialize universes
-        self._kwargs = copy.deepcopy(kwargs)
-
-        # managed attribute holding Reader
-        self._trajectory = None
-        self._cache = {}
-
-        if not args:
-            # create an empty universe
-            self._topology = None
-            self.atoms = None
+    @classmethod
+    def from_streams(cls, topology, *args, **kwargs):
+        if isinstance(topology, NamedStream):
+            filename = topology
+        elif isstream(topology):
+            if hasattr(topology, 'name'):
+                _name = topology.name
+            else:
+                _name = None
+            filename = NamedStream(topology, _name)
         else:
-            topology_format = kwargs.pop('topology_format', None)
-            if len(args) == 1:
-                # special hacks to treat a coordinate file as a coordinate AND
-                # topology file
-                if kwargs.get('format', None) is None:
-                    kwargs['format'] = topology_format
-                elif topology_format is None:
-                    topology_format = kwargs.get('format', None)
+            raise ValueError('topology parameter must be a stream')
+        return cls.from_files(filename, *args, **kwargs)
 
-            # if we're given a Topology object, we don't need to parse anything
-            if isinstance(args[0], Topology):
-                self._topology = args[0]
-                self.filename = None
+    @classmethod
+    def from_files(cls, topology_file, *coordinates, topology_format=None,
+                   format=None, all_coordinates=False, **kwargs):
+        """
+        Parameters
+        ----------
+        topology : str
+            A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
+            define the list of atoms. If the file includes bond information,
+            partial charges, atom masses, ... then these data will be available to
+            MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
+            topology) is always required.
+        """
+        
+        if not coordinates:
+            if format is None:
+                format = topology_format
+            elif topology_format is None:
+                topology_format = format
+        
+        parser = get_parser_for(topology_file, format=topology_format)
+        try:
+            with parser(topology_file) as p:
+                topology = p.parse(**kwargs)
+        except (IOError, OSError) as err:
+            # There are 2 kinds of errors that might be raised here:
+            # one because the file isn't present
+            # or the permissions are bad, second when the parser fails
+            if (err.errno is not None and
+                errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
+                # Runs if the error is propagated due to no permission / file not found
+                six.reraise(*sys.exc_info())
             else:
-                if isinstance(args[0], NamedStream):
-                    self.filename = args[0]
-                elif isstream(args[0]):
-                    filename = None
-                    if hasattr(args[0], 'name'):
-                        filename = args[0].name
-                    self.filename = NamedStream(args[0], filename)
-                else:
-                    self.filename = args[0]
-                parser = get_parser_for(self.filename, format=topology_format)
-                try:
-                    with parser(self.filename) as p:
-                        self._topology = p.parse(**kwargs)
-                except (IOError, OSError) as err:
-                    # There are 2 kinds of errors that might be raised here:
-                    # one because the file isn't present
-                    # or the permissions are bad, second when the parser fails
-                    if (err.errno is not None and
-                        errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
-                        # Runs if the error is propagated due to no permission / file not found
-                        six.reraise(*sys.exc_info())
-                    else:
-                        # Runs when the parser fails
-                        six.raise_from(IOError(
-                            "Failed to load from the topology file {0}"
-                            " with parser {1}.\n"
-                            "Error: {2}".format(self.filename, parser, err)),
-                            None)
-                except (ValueError, NotImplementedError) as err:
-                    six.raise_from(ValueError(
-                        "Failed to construct topology from file {0}"
-                        " with parser {1}.\n"
-                        "Error: {2}".format(self.filename, parser, err)), None)
-
-            # generate and populate Universe version of each class
-            self._generate_from_topology()
-
-            # Load coordinates
-            if len(args) == 1 or kwargs.get('all_coordinates', False):
-                if self.filename is None:
-                    # If we got the topology as a Topology object, then we
-                    # cannot read coordinates from it.
-                    coordinatefile = args[1:]
-                else:
-                    # Can the topology file also act as coordinate file?
-                    try:
-                        _ = get_reader_for(self.filename,
-                                           format=kwargs.get('format', None))
-                    except ValueError:
-                        coordinatefile = args[1:]
-                    else:
-                        coordinatefile = (self.filename,) + args[1:]
+                # Runs when the parser fails
+                raise IOError("Failed to load from the topology file {0}"
+                              " with parser {1}.\n"
+                              "Error: {2}".format(topology_file, parser, err))
+        except (ValueError, NotImplementedError) as err:
+            raise ValueError(
+                "Failed to construct topology from file {0}"
+                " with parser {1}.\n"
+                "Error: {2}".format(topology_file, parser, err))
+        
+        if all_coordinates or not coordinates:
+            try:
+                get_reader_for(topology_file, format)
+            except ValueError:
+                warnings.warn('No coordinate reader found for {}. Skipping '
+                              'this file.'.format(topology_file))
             else:
-                coordinatefile = args[1:]
+                coordinates = (topology_file,) + coordinates
+        
+        # trajectory = load_new(coordinates, format=format, n_atoms=topology.n_atoms)
 
-            if not coordinatefile:
-                coordinatefile = None
-                
-            self.load_new(coordinatefile, **kwargs)
-            # parse transformations
-            trans_arg = kwargs.pop('transformations', None)
-            if trans_arg:
-                transforms =[trans_arg] if callable(trans_arg) else trans_arg
-                self.trajectory.add_transformations(*transforms)
+        obj = cls(topology, *coordinates, topology_file=topology_file, format=format,
+                  topology_format=topology_format,
+                  all_coordinates=all_coordinates, **kwargs)
+        return obj
 
-        # Check for guess_bonds
-        if kwargs.pop('guess_bonds', False):
-            self.atoms.guess_bonds(vdwradii=kwargs.pop('vdwradii', None))
+    def __new__(cls, topology, *coordinates, **kwargs):
+        _type = type(Topology)
+        if _type is not Topology:
+            raise DeprecationWarning('The new API only supports passing'
+                                     'MDAnalysis.Topology objects through '
+                                     '__init__. Invalid type: {}. Please '
+                                     'use Universe.from_files or '
+                                     'Universe.from_streams'.format(_type))
+            if _type is str:
+                return cls.from_files(topology, *coordinates, **kwargs)
+            else:
+                return cls.from_streams(topology, *coordinates, **kwargs)
+        return super(Universe, cls).__new__(cls, topology, *coordinates, **kwargs)
 
-        # None causes generic hash to get used.
-        # We store the name ieven if is_anchor is False in case the user later
-        #  wants to make the universe an anchor.
-        self._anchor_name = kwargs.get('anchor_name', None)
-        # Universes are anchors by default
-        self.is_anchor = kwargs.get('is_anchor', True)
+
+    
+    def __init__(self, topology, *coordinates, topology_file=None,
+                 transformations=None, guess_bonds=False, vdwradii=None,
+                 anchor_name=None, is_anchor=False,  **kwargs):
+        """
+        Parameters
+        ----------
+
+        anchor_name: str, None
+            None causes generic hash to get used.
+        is_anchor: bool
+            Universe are anchors by default.
+        """
+
+        self._instant_selectors = {}  # for storing segments. Deprecated?
+        self._trajectory = None  # managed attribute holding Reader
+        self._cache = {}
+        self._anchor_name = anchor_name
+        self._is_anchor = is_anchor
+        self.atoms = None
+        self.residues = None
+        self.segments = None
+        self._topology = topology
+        self.filename = topology_file
+
+
+        if topology:
+            self._generate_from_topology()  # make real atoms, res, segments
+        
+        self.load_new(coordinates, **kwargs)
+
+        if transformations:
+            if callable(transformations):
+                transformations = [transformations]
+            self._trajectory.add_transformations(*transformations)
+        
+        if guess_bonds:
+            self.atoms.guess_bonds(vdwradii=vdwradii)
+        
+        self._kwargs = {
+            'transformations': transformations,
+            'guess_bonds': guess_bonds,
+            'vdwradii': vdwradii,
+            'anchor_name': anchor_name,
+            'is_anchor': is_anchor,
+        }
+        self._kwargs.update(kwargs)
         
 
     def copy(self):
@@ -591,7 +619,7 @@ class Universe(object):
            and detected file type.
         """
         # filename==None happens when only a topology is provided
-        if filename is None:
+        if not filename:
             return self
 
         if len(util.asiterable(filename)) == 1:
