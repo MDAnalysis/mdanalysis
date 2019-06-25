@@ -273,29 +273,7 @@ class Universe(object):
     _topology = None
 
     @classmethod
-    def from_streams(cls, topology, *coordinates, **kwargs):
-        """
-        Construct a Universe with the topology from a stream.
-
-        Parameters
-        ----------
-        topology : stream
-            A stream of a CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
-            define the list of atoms. If the file includes bond information,
-            partial charges, atom masses, ... then these data will be available to
-            MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
-            topology) is always required.
-        coordinates : str, stream, list of str, list of stream (optional)
-            Coordinates can be provided either as a single frame (eg a PDB, CRD, 
-            or GRO file); a list of single frames; or a trajectory file (in 
-            CHARMM/NAMD/LAMMPS DCD, Gromacs XTC/TRR, or generic XYZ format). 
-            The coordinates have to be ordered in the same way as the list of 
-            atoms in the topology. See :ref:`Supported coordinate formats` 
-            for what can be read as coordinates.
-        kwargs:
-            Optional arguments for file formats, transformations, vdwradii and 
-            anchoring are passed to :func:`~MDAnalysis.Universe.from_files`.
-        """
+    def from_streams(cls, topology, *args, **kwargs):
         if isinstance(topology, NamedStream):
             filename = topology
         elif isstream(topology):
@@ -305,13 +283,12 @@ class Universe(object):
                 _name = None
             filename = NamedStream(topology, _name)
         else:
-            raise ValueError('topology parameter must be a stream. '
-                             'Given: {}'.format(type(topology)))
-        return cls.from_files(filename, *coordinates, **kwargs)
+            raise ValueError('topology parameter must be a stream')
+        return cls.from_files(filename, *args, **kwargs)
 
     @classmethod
     def from_files(cls, topology_file, *coordinates, topology_format=None,
-                   format=None, **kwargs):
+                   format=None, all_coordinates=False, **kwargs):
         """
         Parameters
         ----------
@@ -321,36 +298,6 @@ class Universe(object):
             partial charges, atom masses, ... then these data will be available to
             MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
             topology) is always required.
-        coordinates : str, stream, list of str, list of stream (optional)
-            Coordinates can be provided as streams of filenames either of 
-            a single frame (eg a PDB, CRD, or GRO file); a list of single 
-            frames; or a trajectory file (in CHARMM/NAMD/LAMMPS DCD, Gromacs 
-            XTC/TRR, or generic XYZ format). The coordinates have to be 
-            ordered in the same way as the list of atoms in the topology. 
-            See :ref:`Supported coordinate formats` for what can be read 
-            as coordinates.
-        topology_format: str, ``None``, default ``None``
-            Provide the file format of the topology file; ``None`` guesses it from
-            the file extension. Can also pass a subclass of
-            :class:`MDAnalysis.topology.base.TopologyReaderBase` to define a custom
-            reader to be used on the topology file.
-        format: str, ``None``, default ``None``
-            Provide the file format of the coordinate or trajectory file; ``None``
-            guesses it from the file extension. Note that this keyword has no
-            effect if a list of file names is supplied because the "chained" reader
-            has to guess the file format for each individual list member.
-            Can also pass a subclass of :class:`MDAnalysis.coordinates.base.ProtoReader` 
-            to define a custom reader to be used on the trajectory file.
-        all_coordinates : bool, default ``False``
-            If set to ``True`` specifies that if more than one filename is passed
-            they are all to be used, if possible, as coordinate files (employing a
-            :class:`MDAnalysis.coordinates.chain.ChainReader`). The
-            default behavior is to take the first file as a topology and the
-            remaining as coordinates. The first argument will always always be used
-            to infer a topology regardless of *all_coordinates*. 
-        kwargs:
-            Optional arguments for transformations, vdwradii and 
-            anchoring are passed to :func:`~MDAnalysis.Universe`.
         """
         
         if not coordinates:
@@ -382,21 +329,50 @@ class Universe(object):
                 " with parser {1}.\n"
                 "Error: {2}".format(topology_file, parser, err))
         
+        if all_coordinates or not coordinates:
+            try:
+                get_reader_for(topology_file, format)
+            except ValueError:
+                warnings.warn('No coordinate reader found for {}. Skipping '
+                              'this file.'.format(topology_file))
+            else:
+                coordinates = (topology_file,) + coordinates
+        
+        # trajectory = load_new(coordinates, format=format, n_atoms=topology.n_atoms)
+
         obj = cls(topology, *coordinates, topology_file=topology_file, format=format,
-                  topology_format=topology_format, **kwargs)
+                  topology_format=topology_format,
+                  all_coordinates=all_coordinates, **kwargs)
         return obj
 
-    
-    def __init__(self, topology, *coordinates, topology_file=None, 
-                 all_coordinates=False, 
-                 format=None, transformations=None, guess_bonds=False,
-                 vdwradii=None, anchor_name=None, is_anchor=False,
-                 in_memory=False, in_memory_step=1, **kwargs):
-        _type = type(topology)
+    def __new__(cls, topology, *coordinates, **kwargs):
+        _type = type(Topology)
         if _type is not Topology:
-            raise ValueError('Only MDAnalysis.Topology objects should be '
-                             'passed to Universe(); {} passed '
-                             'instead.'.format(_type))
+            raise DeprecationWarning('The new API only supports passing'
+                                     'MDAnalysis.Topology objects through '
+                                     '__init__. Invalid type: {}. Please '
+                                     'use Universe.from_files or '
+                                     'Universe.from_streams'.format(_type))
+            if _type is str:
+                return cls.from_files(topology, *coordinates, **kwargs)
+            else:
+                return cls.from_streams(topology, *coordinates, **kwargs)
+        return super(Universe, cls).__new__(cls, topology, *coordinates, **kwargs)
+
+
+    
+    def __init__(self, topology, *coordinates, topology_file=None,
+                 transformations=None, guess_bonds=False, vdwradii=None,
+                 anchor_name=None, is_anchor=False,  **kwargs):
+        """
+        Parameters
+        ----------
+
+        anchor_name: str, None
+            None causes generic hash to get used.
+        is_anchor: bool
+            Universe are anchors by default.
+        """
 
         self._instant_selectors = {}  # for storing segments. Deprecated?
         self._trajectory = None  # managed attribute holding Reader
@@ -409,20 +385,11 @@ class Universe(object):
         self._topology = topology
         self.filename = topology_file
 
-        if topology is not None:
+
+        if topology:
             self._generate_from_topology()  # make real atoms, res, segments
         
-        if all_coordinates or not len(coordinates) and topology_file is not None:
-            try:
-                get_reader_for(topology_file, format)
-            except ValueError:
-                warnings.warn('No coordinate reader found for {}. Skipping '
-                              'this file.'.format(topology_file))
-            else:
-                coordinates = (topology_file,) + coordinates
-        
-        self.load_new(coordinates, format=format, in_memory=in_memory, 
-                      in_memory_step=in_memory_step, **kwargs)
+        self.load_new(coordinates, **kwargs)
 
         if transformations:
             if callable(transformations):
