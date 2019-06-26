@@ -38,12 +38,11 @@ def deprecate_class(class_new, message):
 
     return new_class
 
-
-Universe = deprecate_class(
-    universe.Universe,
-    "MDAnalysis.core.AtomGroup.Universe has been removed."
-    "Please use MDAnalysis.Universe."
-    "This stub will be removed in 1.0")
+def Universe(*args, **kwargs):
+    warnings.warn("MDAnalysis.core.AtomGroup.Universe has been removed."
+                    "Please use MDAnalysis.Universe."
+                    "This stub will be removed in 1.0")
+    return universe.Universe(*args, **kwargs)
 
 _group_message = ("MDAnalysis.core.AtomGroup.{0} has been removed."
                   "Please use MDAnalysis.groups.{0}"
