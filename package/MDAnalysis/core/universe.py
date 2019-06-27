@@ -141,13 +141,17 @@ def reformat_universe(cls):
                                 'Universe.from_streams. Only MDAnalysis.Topology '
                                 'objects should be passed to Universe(); {} '
                                 'passed instead'.format(_type), DeprecationWarning)
-                if _type is str:
-                    return cls.from_files(topology, *coordinates, **kwargs)
+                if isinstance(topology, NamedStream) or isstream(topology):
+                    return klass.from_streams(topology, *coordinates, **kwargs)
                 else:
-                    return cls.from_streams(topology, *coordinates, **kwargs)
+                    return klass.from_files(topology, *coordinates, **kwargs)
 
             else:
-                return cls(topology, *coordinates, **kwargs)
+                return super(Wrapper, klass).__new__(klass)
+        
+        def __init__(self, topology, *coordinates, **kwargs):
+            if not self._topology:  # ugly ugly ugly but passes tests
+                super(Wrapper, self).__init__(topology, *coordinates, **kwargs)
         
     return Wrapper
 
@@ -388,8 +392,6 @@ class Universe(object):
                  format=None, transformations=None, guess_bonds=False,
                  vdwradii=None, anchor_name=None, is_anchor=False,
                  in_memory=False, in_memory_step=1, **kwargs):
-        
-        print('INITING, ', topology)
         _type = type(topology)
         if _type is not Topology:
             raise ValueError('Only MDAnalysis.Topology objects should be '
@@ -407,10 +409,10 @@ class Universe(object):
         self._topology = topology
         self.filename = topology_file
 
-        if topology:
+        if topology is not None:
             self._generate_from_topology()  # make real atoms, res, segments
         
-        if all_coordinates or not coordinates and topology_file:
+        if all_coordinates or not len(coordinates) and topology_file is not None:
             try:
                 get_reader_for(topology_file, format)
             except ValueError:
@@ -419,7 +421,8 @@ class Universe(object):
             else:
                 coordinates = (topology_file,) + coordinates
         
-        self.load_new(coordinates, format=format, in_memory=in_memory, in_memory_step=in_memory_step)
+        self.load_new(coordinates, format=format, in_memory=in_memory, 
+                      in_memory_step=in_memory_step, **kwargs)
 
         if transformations:
             if callable(transformations):
