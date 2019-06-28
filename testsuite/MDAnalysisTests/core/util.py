@@ -365,7 +365,12 @@ class UnWrapUniverse(object):
 
         # get relative positions:
         relpos = self._relpos.copy()
+        refpos = np.copy(reference_point)
 
+        if self._is_triclinic and reference_point is not None:
+            refpos[2] =  reference_point[2]
+            refpos[1] += - self._tfac * reference_point[2]
+            refpos[0] += - self._tfac * sum(reference_point[1:])
 
         # type B
         # molecule 5, atom 2 & molecule 6, atom 1 & 2
@@ -421,20 +426,20 @@ class UnWrapUniverse(object):
                                              [0.44, 0.65,  0.6]],
                                             dtype=np.float32)
 
-                if reference_point is not None and compound is not "group":
+                if reference_point is not None:
                     for base in range(3):
                         loc_centre = relpos[base]
-                        shift = np.rint((reference_point / self._box_edge - loc_centre))
+                        shift = np.rint((refpos / self._box_edge - loc_centre))
                         relpos[base, :] += shift
 
                     for base in range(3, 15, 3):
                         loc_centre = np.mean(relpos[base:base + 3, :], axis=0)
-                        shift = np.rint((reference_point / self._box_edge - loc_centre))
+                        shift = np.rint((refpos / self._box_edge - loc_centre))
                         relpos[base:base + 3, :] += shift
                     # type C
                     for base in range(15, 47, 4):
                         loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
-                        shift = np.rint((reference_point / self._box_edge - loc_centre))
+                        shift = np.rint((refpos / self._box_edge - loc_centre))
                         relpos[base:base + 4, :] += shift
 
 
@@ -461,23 +466,23 @@ class UnWrapUniverse(object):
                 if reference_point is not None and compound is not "group":
                     for base in range(3):
                         loc_centre = relpos[base]
-                        shift = np.rint((reference_point/ self._box_edge - loc_centre) )
+                        shift = np.rint((refpos/ self._box_edge - loc_centre) )
                         relpos[base, :] += shift
 
                     for base in range(3, 15, 3):
                         loc_centre = np.mean(relpos[base:base + 3, :], axis=0)
-                        shift = np.rint((reference_point/ self._box_edge - loc_centre))
+                        shift = np.rint((refpos/ self._box_edge - loc_centre))
                         relpos[base:base + 3, :] += shift
                     # type C
                     for base in range(15, 23, 4):
                         loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
-                        shift = np.rint((reference_point/ self._box_edge - loc_centre) )
+                        shift = np.rint((refpos/ self._box_edge - loc_centre) )
                         relpos[base:base + 4, :] += shift
 
                     # type D
                     for base in range(23, 47, 8):
                         loc_centre = np.mean(relpos[base:base + 8, :], axis=0)
-                        shift = np.rint((reference_point/ self._box_edge - loc_centre))
+                        shift = np.rint((refpos/ self._box_edge - loc_centre))
                         relpos[base:base + 8, :] += shift
 
         if self._is_triclinic:
