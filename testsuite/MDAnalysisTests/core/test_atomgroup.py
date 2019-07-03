@@ -538,12 +538,12 @@ class TestCenter(object):
             group = group.segments
 
         # get the expected results
-        center = group.center(weights=None, compound=compound, unwrap=True)
+        center = group.center(weights=None, pbc=False, compound=compound, unwrap=True)
 
         ref_center = u.center(compound=compound)
         assert_almost_equal(ref_center, center, decimal=4)
 
-    def test_center_unwrap_pbc_true(self):
+    def test_center_unwrap_pbc_true_group(self):
         u = UnWrapUniverse(is_triclinic=False)
         # select group appropriate for compound:
         group = u.atoms[39:47]  # molecule 12

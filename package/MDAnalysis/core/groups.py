@@ -349,7 +349,16 @@ class _ImmutableBase(object):
     #  cache lookup if the class is reused (as in ag._derived_class(...)).
     __new__ = object.__new__
 
-
+def check_pbc_and_unwrap(function):
+    """Decorator to raise ValueError when both 'pbc' and 'unwrap' are set to True.
+    """
+    @functools.wraps(function)
+    def wrapped(group, *args, **kwargs):
+        if kwargs.get('compound') == 'group':
+            if kwargs.get('pbc') and kwargs.get('unwrap'):
+                raise ValueError("both 'pbc' and 'unwrap' can not be set to true")
+        return function(group, *args, **kwargs)
+    return wrapped
 
 def _only_same_level(function):
     @functools.wraps(function)
@@ -648,7 +657,9 @@ class GroupBase(_MutableBase):
         #    return ``not np.any(mask)`` here but using the following is faster:
         return not np.count_nonzero(mask)
 
+
     @warn_if_not_unique
+    @check_pbc_and_unwrap
     def center(self, weights, pbc=None, compound='group', unwrap=False):
         """Weighted center of (compounds of) the group
 
@@ -697,6 +708,8 @@ class GroupBase(_MutableBase):
         ValueError
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
+        ValueError
+            If both 'pbc' and 'unwrap' set to true.
         ~MDAnalysis.exceptions.NoDataError
             If `compound` is ``'molecule'`` but the topology doesn't
             contain molecule information (molnums) or if `compound` is
@@ -724,6 +737,7 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
         """
 
         if pbc is None:
@@ -741,6 +755,8 @@ class GroupBase(_MutableBase):
                                  "for compound='group")
             if pbc:
                 coords = atoms.pack_into_box(inplace=False)
+            elif unwrap:
+                coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
             else:
                 coords = atoms.positions
             if unwrap:
@@ -1842,9 +1858,8 @@ class GroupBase(_MutableBase):
         become too complicated.  For example to find the water atoms
         which are within 4.0A of two segments:
 
-        >>> water = u.select_atoms('resname SOL')
-        >>> shell1 = water.select_atoms('around 4.0 segid 1')
-        >>> shell2 = water.select_atoms('around 4.0 segid 2')
+        >>> shell1 = u.select_atoms('resname SOL and around 4.0 segid 1')
+        >>> shell2 = u.select_atoms('resname SOL and around 4.0 segid 2')
         >>> common = shell1 & shell2  # or shell1.intersection(shell2)
 
         See Also
