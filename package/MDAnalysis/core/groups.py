@@ -833,6 +833,7 @@ class GroupBase(_MutableBase):
         return centers
 
     @warn_if_not_unique
+    @check_pbc_and_unwrap
     def center_of_geometry(self, pbc=None, compound='group', unwrap=False):
         """Center of geometry of (compounds of) the group.
 
@@ -880,6 +881,7 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
         """
         return self.center(None, pbc=pbc, compound=compound, unwrap=unwrap)
 

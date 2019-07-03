@@ -57,6 +57,7 @@ Enhancements
   * survival probability additions: residues, intermittency, step with performance,
     (PR #2226)   
   * added unwrap keyword to center (PR #2275)
+  * added unwrap keyword to center_of_geometry (PR #2279)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
