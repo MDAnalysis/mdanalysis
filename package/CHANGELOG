@@ -62,6 +62,7 @@ Enhancements
   * added unwrap keyword to moment_of_inertia (PR #2287)
   * added unwrap keyword to asphericity (PR #2290)
 
+
 Changes
   * added official support for Python 3.7 (PR #1963)
   * stopped official support of Python 3.4 (#2066, PR #2174)
