@@ -389,7 +389,16 @@
     <span class="c1">#  cache lookup if the class is reused (as in ag._derived_class(...)).</span>
     <span class="fm">__new__</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span>
 
-
+<span class="k">def</span> <span class="nf">check_pbc_and_unwrap</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorator to raise ValueError when both &#39;pbc&#39; and &#39;unwrap&#39; are set to True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;compound&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pbc&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;unwrap&#39;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;both &#39;pbc&#39; and &#39;unwrap&#39; can not be set to true&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapped</span>
 
 <span class="k">def</span> <span class="nf">_only_same_level</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
@@ -688,8 +697,10 @@
         <span class="c1">#    return ``not np.any(mask)`` here but using the following is faster:</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
 
+
     <span class="nd">@warn_if_not_unique</span>
-    <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+    <span class="nd">@check_pbc_and_unwrap</span>
+    <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Weighted center of (compounds of) the group</span>
 
 <span class="sd">        Computes the weighted center of :class:`Atoms&lt;Atom&gt;` in the group.</span>
@@ -719,6 +730,8 @@
 <span class="sd">            will be returned as an array of position vectors, i.e. a 2d array.</span>
 <span class="sd">            Note that, in any case, *only* the positions of :class:`Atoms&lt;Atom&gt;`</span>
 <span class="sd">            *belonging to the group* will be taken into account.</span>
+<span class="sd">        unwrap : bool, optional</span>
+<span class="sd">            If ``True``, compounds will be unwrapped before computing their centers.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -735,6 +748,8 @@
 <span class="sd">        ValueError</span>
 <span class="sd">            If `compound` is not one of ``&#39;group&#39;``, ``&#39;segments&#39;``,</span>
 <span class="sd">            ``&#39;residues&#39;``, ``&#39;molecules&#39;``, or ``&#39;fragments&#39;``.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If both &#39;pbc&#39; and &#39;unwrap&#39; set to true.</span>
 <span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
 <span class="sd">            If `compound` is ``&#39;molecule&#39;`` but the topology doesn&#39;t</span>
 <span class="sd">            contain molecule information (molnums) or if `compound` is</span>
@@ -762,6 +777,7 @@
 <span class="sd">        .. versionchanged:: 0.19.0 Added `compound` parameter</span>
 <span class="sd">        .. versionchanged:: 0.20.0 Added ``&#39;molecules&#39;`` and ``&#39;fragments&#39;``</span>
 <span class="sd">            compounds</span>
+<span class="sd">        .. versionchanged:: 0.20.0 Added `unwrap` parameter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">pbc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -776,6 +792,8 @@
         <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
                 <span class="n">coords</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unwrap</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="n">comp</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">coords</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
             <span class="c1"># If there&#39;s no atom, return its (empty) coordinates unchanged.</span>
@@ -813,7 +831,12 @@
         <span class="c1"># required:</span>
         <span class="n">sort_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">)</span>
         <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">compound_indices</span><span class="p">[</span><span class="n">sort_indices</span><span class="p">]</span>
-        <span class="n">coords</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">sort_indices</span><span class="p">]</span>
+
+        <span class="c1"># Unwrap Atoms</span>
+        <span class="k">if</span> <span class="n">unwrap</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="n">comp</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">sort_indices</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

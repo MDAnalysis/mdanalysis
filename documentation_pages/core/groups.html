@@ -463,7 +463,7 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.center">
-<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -491,6 +491,7 @@ of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" tit
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
 </ul>
 </td>
 </tr>
@@ -508,6 +509,7 @@ of shape <code class="docutils literal notranslate"><span class="pre">(n,</span>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
 <li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>compound</cite> is not one of <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>,
 <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>.</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If both ‘pbc’ and ‘unwrap’ set to true.</li>
 <li><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> – If <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'molecule'</span></code> but the topology doesn’t
 contain molecule information (molnums) or if <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code> but the topology doesn’t contain bonds.</li>
@@ -536,6 +538,9 @@ contain molecule information (molnums) or if <cite>compound</cite> is
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
 compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
 </div>
 </dd></dl>
 
@@ -2216,7 +2221,7 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.center">
-<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -2244,6 +2249,7 @@ of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" tit
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
 </ul>
 </td>
 </tr>
@@ -2261,6 +2267,7 @@ of shape <code class="docutils literal notranslate"><span class="pre">(n,</span>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
 <li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>compound</cite> is not one of <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>,
 <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>.</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If both ‘pbc’ and ‘unwrap’ set to true.</li>
 <li><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> – If <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'molecule'</span></code> but the topology doesn’t
 contain molecule information (molnums) or if <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code> but the topology doesn’t contain bonds.</li>
@@ -2289,6 +2296,9 @@ contain molecule information (molnums) or if <cite>compound</cite> is
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
 compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
 </div>
 </dd></dl>
 
@@ -3477,7 +3487,7 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.center">
-<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -3505,6 +3515,7 @@ of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" tit
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
 </ul>
 </td>
 </tr>
@@ -3522,6 +3533,7 @@ of shape <code class="docutils literal notranslate"><span class="pre">(n,</span>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
 <li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>compound</cite> is not one of <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>,
 <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>.</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If both ‘pbc’ and ‘unwrap’ set to true.</li>
 <li><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> – If <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'molecule'</span></code> but the topology doesn’t
 contain molecule information (molnums) or if <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code> but the topology doesn’t contain bonds.</li>
@@ -3550,6 +3562,9 @@ contain molecule information (molnums) or if <cite>compound</cite> is
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
 compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
 </div>
 </dd></dl>
 
