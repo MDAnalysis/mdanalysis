@@ -57,7 +57,7 @@ class TestPSFParser(ParserBase):
         if request.param == 'uncompressed':
             return self.ref_filename
         else:
-            fn = tmpdir.join('file.psf.bz2')
+            fn = str(tmpdir.join('file.psf.bz2'))
             with open(self.ref_filename, 'rb') as f:
                 stuff = f.read()
             buf = bz2.compress(stuff)
