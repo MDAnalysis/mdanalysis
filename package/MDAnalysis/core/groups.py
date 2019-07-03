@@ -737,6 +737,7 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
         """
 
         if pbc is None:
