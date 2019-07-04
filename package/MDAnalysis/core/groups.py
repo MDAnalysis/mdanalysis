@@ -827,7 +827,8 @@ class GroupBase(_MutableBase):
         return centers
 
     @warn_if_not_unique
-    def center_of_geometry(self, pbc=None, compound='group'):
+    @check_pbc_and_unwrap
+    def center_of_geometry(self, pbc=None, compound='group', unwrap=False):
         """Center of geometry of (compounds of) the group.
 
         Computes the center of geometry (a.k.a. centroid) of
@@ -851,6 +852,8 @@ class GroupBase(_MutableBase):
             will be returned as an array of position vectors, i.e. a 2d array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
 
         Returns
         -------
@@ -872,8 +875,9 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
         """
-        return self.center(None, pbc=pbc, compound=compound)
+        return self.center(None, pbc=pbc, compound=compound, unwrap=unwrap)
 
     centroid = center_of_geometry
 
