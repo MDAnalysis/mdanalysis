@@ -546,7 +546,7 @@ compounds</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.center_of_geometry">
-<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -569,6 +569,7 @@ centers of geometry of each <a class="reference internal" href="#MDAnalysis.core
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
 </ul>
 </td>
 </tr>
@@ -597,12 +598,15 @@ number of compounds.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
 compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.centroid">
-<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.centroid" title="Permalink to this definition">¶</a></dt>
+<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.centroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -625,6 +629,7 @@ centers of geometry of each <a class="reference internal" href="#MDAnalysis.core
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
 </ul>
 </td>
 </tr>
@@ -653,6 +658,9 @@ number of compounds.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
 compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
 </div>
 </dd></dl>
 
@@ -2304,7 +2312,7 @@ compounds</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.center_of_geometry">
-<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -2327,6 +2335,7 @@ centers of geometry of each <a class="reference internal" href="#MDAnalysis.core
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
 </ul>
 </td>
 </tr>
@@ -2355,12 +2364,15 @@ number of compounds.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
 compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.centroid">
-<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.centroid" title="Permalink to this definition">¶</a></dt>
+<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.centroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -2383,6 +2395,7 @@ centers of geometry of each <a class="reference internal" href="#MDAnalysis.core
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
 </ul>
 </td>
 </tr>
@@ -2411,6 +2424,9 @@ number of compounds.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
 compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
 </div>
 </dd></dl>
 
@@ -3570,7 +3586,7 @@ compounds</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.center_of_geometry">
-<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -3593,6 +3609,7 @@ centers of geometry of each <a class="reference internal" href="#MDAnalysis.core
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
 </ul>
 </td>
 </tr>
@@ -3621,12 +3638,15 @@ number of compounds.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
 compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.centroid">
-<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.centroid" title="Permalink to this definition">¶</a></dt>
+<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.centroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -3649,6 +3669,7 @@ centers of geometry of each <a class="reference internal" href="#MDAnalysis.core
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
 </ul>
 </td>
 </tr>
@@ -3677,6 +3698,9 @@ number of compounds.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
 compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
 </div>
 </dd></dl>
 

@@ -867,7 +867,8 @@
         <span class="k">return</span> <span class="n">centers</span>
 
     <span class="nd">@warn_if_not_unique</span>
-    <span class="k">def</span> <span class="nf">center_of_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+    <span class="nd">@check_pbc_and_unwrap</span>
+    <span class="k">def</span> <span class="nf">center_of_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Center of geometry of (compounds of) the group.</span>
 
 <span class="sd">        Computes the center of geometry (a.k.a. centroid) of</span>
@@ -891,6 +892,8 @@
 <span class="sd">            will be returned as an array of position vectors, i.e. a 2d array.</span>
 <span class="sd">            Note that, in any case, *only* the positions of :class:`Atoms&lt;Atom&gt;`</span>
 <span class="sd">            *belonging to the group* will be taken into account.</span>
+<span class="sd">        unwrap : bool, optional</span>
+<span class="sd">            If ``True``, compounds will be unwrapped before computing their centers.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -912,8 +915,9 @@
 <span class="sd">        .. versionchanged:: 0.19.0 Added `compound` parameter</span>
 <span class="sd">        .. versionchanged:: 0.20.0 Added ``&#39;molecules&#39;`` and ``&#39;fragments&#39;``</span>
 <span class="sd">            compounds</span>
+<span class="sd">        .. versionchanged:: 0.20.0 Added `unwrap` parameter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">)</span>
 
     <span class="n">centroid</span> <span class="o">=</span> <span class="n">center_of_geometry</span>
 
