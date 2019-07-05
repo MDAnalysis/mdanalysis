@@ -57,7 +57,8 @@ from .topologyobjects import TopologyGroup
 from . import selection
 from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
-                     AtomGroup, ResidueGroup, SegmentGroup)
+                     AtomGroup, ResidueGroup, SegmentGroup,
+                     check_pbc_and_unwrap)
 from .. import _TOPOLOGY_ATTRS
 
 
@@ -769,6 +770,7 @@ class Masses(AtomAttr):
         return masses
 
     @warn_if_not_unique
+    @check_pbc_and_unwrap
     def center_of_mass(group, pbc=None, compound='group', unwrap=False):
         """Center of mass of (compounds of) the group.
 
