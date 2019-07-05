@@ -842,23 +842,32 @@ class TestUnwrapFlag(object):
     def ref_noUnwrap(self):
         return {
             'COG': np.array([5.1, 7.5, 7. ], dtype=np.float32),
+            'COM': np.array([6.48785, 7.5, 7.0], dtype=np.float32),
         }
 
     @pytest.fixture()
     def ref_Unwrap(self):
         return {
             'COG': np.array([10.1,  7.5,  7. ], dtype=np.float32),
+            'COM': np.array([6.8616, 7.5, 7.], dtype=np.float32),
         }
 
     def test_default(self, ref_noUnwrap):
         u = UnWrapUniverse(is_triclinic=False)
         group = u.atoms[31:39]  # molecules  11
+        # Changing masses for center_of_mass
+        group.masses = [100.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
         assert_almost_equal(group.center_of_geometry(), ref_noUnwrap['COG'], self.prec)
+        assert_almost_equal(group.center_of_mass(), ref_noUnwrap['COM'], self.prec)
 
     def test_UnWrapFlag(self, ref_Unwrap):
         u = UnWrapUniverse(is_triclinic=False)
         group = u.atoms[31:39]  # molecules  11
+        # Changing masses for center_of_mass
+        group.masses = [100.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         assert_almost_equal(group.center_of_geometry(unwrap=True), ref_Unwrap['COG'], self.prec)
+        assert_almost_equal(group.center_of_mass(unwrap=True), ref_Unwrap['COM'], self.prec)
 
 class TestPBCFlag(object):
 
