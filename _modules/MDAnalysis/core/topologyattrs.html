@@ -97,7 +97,8 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">selection</span>
 <span class="kn">from</span> <span class="nn">.groups</span> <span class="k">import</span> <span class="p">(</span><span class="n">ComponentBase</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
                      <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span>
-                     <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">)</span>
+                     <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span>
+                     <span class="n">check_pbc_and_unwrap</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_TOPOLOGY_ATTRS</span>
 
 
@@ -809,7 +810,8 @@
         <span class="k">return</span> <span class="n">masses</span></div>
 
 <div class="viewcode-block" id="Masses.center_of_mass"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.center_of_mass">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
-    <span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+    <span class="nd">@check_pbc_and_unwrap</span>
+    <span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Center of mass of (compounds of) the group.</span>
 
 <span class="sd">        Computes the center of mass of :class:`Atoms&lt;Atom&gt;` in the group.</span>
@@ -838,6 +840,8 @@
 <span class="sd">            array.</span>
 <span class="sd">            Note that, in any case, *only* the positions of :class:`Atoms&lt;Atom&gt;`</span>
 <span class="sd">            *belonging to the group* will be taken into account.</span>
+<span class="sd">        unwrap : bool, optional</span>
+<span class="sd">            If ``True``, compounds will be unwrapped before computing their centers.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -861,9 +865,10 @@
 <span class="sd">        .. versionchanged:: 0.19.0 Added `compound` parameter</span>
 <span class="sd">        .. versionchanged:: 0.20.0 Added ``&#39;molecules&#39;`` and ``&#39;fragments&#39;``</span>
 <span class="sd">            compounds</span>
+<span class="sd">        .. versionchanged:: 0.20.0 Added `unwrap` parameter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">)</span></div>
 
     <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;center_of_mass&#39;</span><span class="p">,</span> <span class="n">center_of_mass</span><span class="p">))</span>

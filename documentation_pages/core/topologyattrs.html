@@ -576,7 +576,7 @@ proteins. <em>J Phys Chem B</em>, 108(21),
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Masses.center_of_mass">
-<code class="descname">center_of_mass</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.center_of_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.center_of_mass" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center_of_mass</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.center_of_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.center_of_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of mass of (compounds of) the group.</p>
 <p>Computes the center of mass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code> in the group.
 Centers of mass per <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, molecule, or
@@ -603,6 +603,7 @@ fragment will be returned as an array of position vectors, i.e. a 2d
 array.
 Note that, in any case, <em>only</em> the positions of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code>
 <em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
 </ul>
 </td>
 </tr>
@@ -637,6 +638,9 @@ information about atomic masses.</li>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
 compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
 </div>
 </dd></dl>
 
