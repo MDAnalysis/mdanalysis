@@ -870,6 +870,7 @@ class Masses(AtomAttr):
         ('total_mass', total_mass))
 
     @warn_if_not_unique
+    @check_pbc_and_unwrap
     def moment_of_inertia(group, **kwargs):
         """Tensor moment of inertia relative to center of mass as 3x3 numpy
         array.
@@ -891,9 +892,13 @@ class Masses(AtomAttr):
         """
         atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
+        unwrap = kwargs.pop('unwrap', flags['use_unwrap'])
+        compound = kwargs.pop('compound', 'group')
 
-        # Convert to local coordinates
-        com = atomgroup.center_of_mass(pbc=pbc)
+        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound is not 'group':
+            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+
         if pbc:
             pos = atomgroup.pack_into_box(inplace=False) - com
         else:

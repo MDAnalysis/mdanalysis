@@ -447,6 +447,29 @@ _flags = [
            such as :meth:`MDAnalysis.core.groups.AtomGroup.center_of_mass`
            and :meth:`MDAnalysis.core.groups.AtomGroup.center_of_geometry`!
         """),
+    _Flag(
+        'use_unwrap',
+        False,
+        {True: True, False: False},
+        """
+        Choose whether to unwrap molecules before
+        performing many :class:`MDAnalysis.core.groups.AtomGroup` methods.
+        This is set to ``False`` by default but can be enabled with:
+
+        >>> MDAnalysis.core.flags['use_unwrap'] = False
+
+        Values for flag:
+
+        * ``True`` - Unwrap molecules before calculation
+        * ``False`` - Use coordinates as supplied
+
+        .. Warning::
+
+           Changing this to ``True`` changes the default behaviour of
+           commonly used :class:`MDAnalysis.core.groups.AtomGroup` methods
+           such as :meth:`MDAnalysis.core.groups.AtomGroup.center_of_mass`
+           and :meth:`MDAnalysis.core.groups.AtomGroup.center_of_geometry`!
+        """),
 
 ]
 
