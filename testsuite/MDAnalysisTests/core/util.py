@@ -333,8 +333,41 @@ class UnWrapUniverse(object):
         # bind custom methods to universe:
         u.unwrapped_coords = cls.unwrapped_coords.__get__(u)
         u.wrapped_coords = cls.wrapped_coords.__get__(u)
+        u.closest_image = cls.closest_image.__get__(u)
+        u.shift_triclinic = cls.shift_triclinic.__get__(u)
 
         return u
+
+    def shift_triclinic(self, cubic_positions):
+        tri_pos = np.copy(cubic_positions)
+        tri_pos[:, 0] += self._tfac * tri_pos[:, 1:].sum(axis=1)
+        # y-coord shift depends on z-coords only
+        tri_pos[:, 1] += self._tfac * tri_pos[:, 2]
+
+        return tri_pos
+
+    def closest_image(self, positions, reference_point):
+        orig_pos = positions
+        a = self._box_edge
+        orig_tri_pos = self.shift_triclinic(positions) * np.array([a, a, a])
+        orig_mean_pos = np.mean(orig_tri_pos, axis=0)
+        dist = np.linalg.norm(orig_mean_pos - reference_point)
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                for k in range(-1, 2):
+                    shift = np.array([i, j, k])
+
+                    current_positions = positions + shift
+
+                    tri_pos = self.shift_triclinic(current_positions)* np.array([a, a, a])
+
+                    current_mean_pos = np.mean(tri_pos, axis=0)
+                    current_dist = np.linalg.norm(current_mean_pos - reference_point)
+
+                    if current_dist < dist:
+                        orig_pos = current_positions
+                        dist = current_dist
+        return orig_pos
 
     def unwrapped_coords(self, compound, reference, reference_point=None):
         """Returns coordinates which correspond to the unwrapped system.
@@ -436,11 +469,15 @@ class UnWrapUniverse(object):
                         loc_centre = np.mean(relpos[base:base + 3, :], axis=0)
                         shift = np.rint((refpos / self._box_edge - loc_centre))
                         relpos[base:base + 3, :] += shift
+                        if self._is_triclinic:
+                            relpos[base:base + 3, :] = self.closest_image(relpos[base:base + 3, :], reference_point)
                     # type C
                     for base in range(15, 47, 4):
                         loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
                         shift = np.rint((refpos / self._box_edge - loc_centre))
                         relpos[base:base + 4, :] += shift
+                        if self._is_triclinic:
+                            relpos[base:base + 4, :] = self.closest_image(relpos[base:base + 4, :], reference_point)
 
 
             else:
@@ -473,17 +510,24 @@ class UnWrapUniverse(object):
                         loc_centre = np.mean(relpos[base:base + 3, :], axis=0)
                         shift = np.rint((refpos/ self._box_edge - loc_centre))
                         relpos[base:base + 3, :] += shift
+                        if self._is_triclinic:
+                            relpos[base:base + 3, :] = self.closest_image(relpos[base:base + 3, :], reference_point)
+
                     # type C
                     for base in range(15, 23, 4):
                         loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
                         shift = np.rint((refpos/ self._box_edge - loc_centre) )
                         relpos[base:base + 4, :] += shift
+                        if self._is_triclinic:
+                            relpos[base:base + 4, :] = self.closest_image(relpos[base:base + 4, :], reference_point)
 
                     # type D
                     for base in range(23, 47, 8):
                         loc_centre = np.mean(relpos[base:base + 8, :], axis=0)
                         shift = np.rint((refpos/ self._box_edge - loc_centre))
                         relpos[base:base + 8, :] += shift
+                        if self._is_triclinic:
+                            relpos[base:base + 8, :] = self.closest_image(relpos[base:base + 8, :], reference_point)
 
         if self._is_triclinic:
             # x-coord shift depends on y- and z-coords
