@@ -204,6 +204,9 @@
 <div class="viewcode-block" id="GROReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GRO.html#MDAnalysis.coordinates.GRO.GROReader">[docs]</a><span class="k">class</span> <span class="nc">GROReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reader for the Gromacs GRO structure format.</span>
 
+<span class="sd">    .. note::</span>
+<span class="sd">       This Reader will only read the first frame present in a file.</span>
+
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Frames now 0-based instead of 1-based</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -216,27 +219,29 @@
             <span class="c1"># Read first two lines to get number of atoms</span>
             <span class="n">grofile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">grofile</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
+            <span class="c1"># Always try, and maybe add them later</span>
+            <span class="n">velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">missed_vel</span> <span class="o">=</span> <span class="kc">False</span>
+
             <span class="c1"># and the third line to get the spacing between coords (cs)</span>
             <span class="c1"># (dependent upon the GRO file precision)</span>
             <span class="n">first_atomline</span> <span class="o">=</span> <span class="n">grofile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="n">cs</span> <span class="o">=</span> <span class="n">first_atomline</span><span class="p">[</span><span class="mi">25</span><span class="p">:]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">first_atomline</span><span class="p">[</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+                          <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">velocities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">first_atomline</span><span class="p">[</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+                                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)]</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c1"># Remember that we got this error</span>
+                <span class="n">missed_vel</span> <span class="o">=</span> <span class="kc">True</span>
 
-            <span class="c1"># Always try, and maybe add them later</span>
-            <span class="n">velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span>
-                                          <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
-
-            <span class="n">missed_vel</span> <span class="o">=</span> <span class="kc">False</span>
-
-            <span class="n">grofile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grofile</span><span class="p">,</span> <span class="n">start</span><span class="o">=-</span><span class="mi">2</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grofile</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
                 <span class="c1"># 2 header lines, 1 box line at end</span>
                 <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="n">n_atoms</span><span class="p">:</span>
                     <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-                    <span class="k">continue</span>
-                <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">continue</span>
+                    <span class="k">break</span>
 
                 <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
                 <span class="k">try</span><span class="p">:</span>

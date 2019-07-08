@@ -117,6 +117,10 @@ the <code class="docutils literal notranslate"><span class="pre">has_*</span></c
 <dt id="MDAnalysis.coordinates.GRO.GROReader">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.GRO.</code><code class="descname">GROReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=None</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reader for the Gromacs GRO structure format.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This Reader will only read the first frame present in a file.</p>
+</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
 </div>
