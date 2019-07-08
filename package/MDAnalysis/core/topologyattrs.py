@@ -888,6 +888,7 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
 
         """
         atomgroup = group.atoms
@@ -901,6 +902,8 @@ class Masses(AtomAttr):
 
         if pbc:
             pos = atomgroup.pack_into_box(inplace=False) - com
+        elif unwrap:
+            pos = atomgroup.unwrap(compound=compound, inplace=False) - com
         else:
             pos = atomgroup.positions - com
 
