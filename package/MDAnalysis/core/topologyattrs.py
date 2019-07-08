@@ -57,7 +57,8 @@ from .topologyobjects import TopologyGroup
 from . import selection
 from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
-                     AtomGroup, ResidueGroup, SegmentGroup)
+                     AtomGroup, ResidueGroup, SegmentGroup,
+                     check_pbc_and_unwrap)
 from .. import _TOPOLOGY_ATTRS
 
 
@@ -769,7 +770,8 @@ class Masses(AtomAttr):
         return masses
 
     @warn_if_not_unique
-    def center_of_mass(group, pbc=None, compound='group'):
+    @check_pbc_and_unwrap
+    def center_of_mass(group, pbc=None, compound='group', unwrap=False):
         """Center of mass of (compounds of) the group.
 
         Computes the center of mass of :class:`Atoms<Atom>` in the group.
@@ -798,6 +800,8 @@ class Masses(AtomAttr):
             array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
 
         Returns
         -------
@@ -821,9 +825,10 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
         """
         atoms = group.atoms
-        return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound)
+        return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound, unwrap=unwrap)
 
     transplants[GroupBase].append(
         ('center_of_mass', center_of_mass))

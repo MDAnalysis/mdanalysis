@@ -335,6 +335,7 @@ class UnWrapUniverse(object):
         u.wrapped_coords = cls.wrapped_coords.__get__(u)
         u.closest_image = cls.closest_image.__get__(u)
         u.shift_triclinic = cls.shift_triclinic.__get__(u)
+        u.center = cls.center.__get__(u)
 
         return u
 
@@ -634,4 +635,68 @@ class UnWrapUniverse(object):
         positions = relpos * np.array([a, a, a])
 
         return positions.astype(np.float32)
+
+
+    def center(self, compound):
+        """Returns centers which correspond to the unwrapped system.
+
+        Parameters
+        ----------
+        compound : {'atoms', 'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}
+            Which type of component is unwrapped. Note that for ``'group'``,
+            the result will only be correct *if the group is the entire system*.
+
+        Note
+        ----
+        This function assumes that all atom masses are equal. Therefore, the
+        returned coordinates for ``center='com'`` and ``center='cog'`` are
+        identical.
+        """
+
+        relpos = self.unwrapped_coords(compound, reference=None)
+
+        comp = compound.lower()
+        if comp not in ['group', 'segments', 'residues', 'molecules',
+                        'fragments']:
+            raise ValueError("Unknown unwrap compound: {}".format(compound))
+
+        pos = 0
+
+        if compound=="residues":
+            center_pos = np.zeros((15, 3), dtype=np.float32)
+        else:
+            center_pos = np.zeros((12, 3), dtype=np.float32)
+
+        for base in range(3):
+            loc_center = relpos[base, :]
+            center_pos[pos,:] = loc_center
+            pos+=1
+
+        for base in range(3, 15, 3):
+            loc_center = np.mean(relpos[base:base + 3, :], axis=0)
+            center_pos[pos,:] = loc_center
+            pos+=1
+
+        if compound=="residues":
+            for base in range(15, 47, 4):
+                loc_center = np.mean(relpos[base:base + 4, :], axis=0)
+                center_pos[pos,:] = loc_center
+                pos+=1
+        else:
+            for base in range(15, 23, 4):
+                loc_center = np.mean(relpos[base:base + 4, :], axis=0)
+                center_pos[pos,:] = loc_center
+                pos+=1
+            for base in range(23, 47, 8):
+                loc_center = np.mean(relpos[base:base + 8, :], axis=0)
+                center_pos[pos,:] = loc_center
+                pos+=1
+
+        if compound == "group":
+            center_pos = center_pos[11]
+        elif compound == "segments":
+            center_pos = center_pos[9:]
+
+        return center_pos
 
