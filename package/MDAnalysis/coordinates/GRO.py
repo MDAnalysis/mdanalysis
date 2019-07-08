@@ -164,6 +164,9 @@ class Timestep(base.Timestep):
 class GROReader(base.SingleFrameReaderBase):
     """Reader for the Gromacs GRO structure format.
 
+    .. note::
+       This Reader will only read the first frame present in a file.
+
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
