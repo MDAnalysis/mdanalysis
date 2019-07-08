@@ -184,7 +184,11 @@ class TestChemFileXYZ(MultiframeReaderTest):
     @staticmethod
     @pytest.fixture
     def ref():
-        return XYZReference()
+        base = XYZReference()
+        base.writer = chemfiles.ChemfilesWriter
+        base.dimensions = np.array([0, 0, 0, 90, 90, 90], dtype=np.float32)
+
+        return base
 
     @pytest.fixture
     def reader(self, ref):
