@@ -110,6 +110,8 @@ Fixes
     2'-hydroxyl hydrogen H2'; gave wrong results (Issue #2218)
   * A clear message that the .pdb universe cannot contain a different number of
     atoms from frame to frame (Issue #1998, PR #2219)
+  * Fixed reading multiframe GRO files, currently only the first frame will be
+    read. (Issue #2276 PR #2277)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
