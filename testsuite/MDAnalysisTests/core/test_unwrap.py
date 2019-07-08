@@ -126,9 +126,8 @@ class TestUnwrap(object):
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
     @pytest.mark.parametrize('reference', ('com', 'cog', None))
-    @pytest.mark.parametrize('reference_point', reference_point_pos)
     @pytest.mark.parametrize('is_triclinic', (False, True))
-    def test_unwrap_partial_frags(self, compound, reference, reference_point, is_triclinic):
+    def test_unwrap_partial_frags(self, compound, reference, is_triclinic):
         # get a pristine test universe:
         u = UnWrapUniverse(is_triclinic=is_triclinic)
         # select group with one atom missing
@@ -136,9 +135,9 @@ class TestUnwrap(object):
         # store original position of last atom of molecule 12:
         orig_pos = u.atoms[46].position
         # get the expected result:
-        ref_unwrapped_pos = u.unwrapped_coords(compound, reference, reference_point)[39:46]
+        ref_unwrapped_pos = u.unwrapped_coords(compound, reference)[39:46]
         # first, do the unwrapping out-of-place:
-        group.unwrap(compound=compound, reference=reference, reference_point=reference_point, inplace=True)
+        group.unwrap(compound=compound, reference=reference, inplace=True)
         # check for correct result:
         assert_almost_equal(group.positions, ref_unwrapped_pos,
                             decimal=self.precision)
