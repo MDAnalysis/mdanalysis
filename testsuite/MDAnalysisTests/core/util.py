@@ -340,6 +340,17 @@ class UnWrapUniverse(object):
         return u
 
     def shift_triclinic(self, cubic_positions):
+        """
+        Shifts coordinates from cubic lattice to triclinic lattice
+        Parameters
+        ----------
+        cubic_positions : numpy.ndarray
+            Positions in cubic lattice
+        Returns
+        -------
+        tri_pos : numpy.ndarray
+            Positions in triclinic cells
+        """
         tri_pos = np.copy(cubic_positions)
         tri_pos[:, 0] += self._tfac * tri_pos[:, 1:].sum(axis=1)
         # y-coord shift depends on z-coords only
@@ -348,6 +359,17 @@ class UnWrapUniverse(object):
         return tri_pos
 
     def closest_image(self, positions, reference_point):
+        """
+        Find the image closest to the reference_point by
+        iterating over all 27 neighbouring images.
+        ----------
+        positions : numpy.ndarray
+            Positions in cubic lattice
+        Returns
+        -------
+        orig_pos : numpy.ndarray
+            Positions of the closest image
+        """
         orig_pos = positions
         a = self._box_edge
         orig_tri_pos = self.shift_triclinic(positions) * np.array([a, a, a])
@@ -401,8 +423,9 @@ class UnWrapUniverse(object):
         relpos = self._relpos.copy()
         refpos = np.copy(reference_point)
 
+        # If cell is triclinic shift the reference_point to cubic equivalent
         if self._is_triclinic and reference_point is not None:
-            refpos[2] =  reference_point[2]
+            refpos[2] = reference_point[2]
             refpos[1] += - self._tfac * reference_point[2]
             refpos[0] += - self._tfac * sum(reference_point[1:])
 
@@ -460,6 +483,7 @@ class UnWrapUniverse(object):
                                              [0.44, 0.65,  0.6]],
                                             dtype=np.float32)
 
+                # Shift to closest periodic image
                 if reference_point is not None:
                     for base in range(3):
                         loc_centre = relpos[base]
@@ -472,7 +496,7 @@ class UnWrapUniverse(object):
                         relpos[base:base + 3, :] += shift
                         if self._is_triclinic:
                             relpos[base:base + 3, :] = self.closest_image(relpos[base:base + 3, :], reference_point)
-                    # type C
+
                     for base in range(15, 47, 4):
                         loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
                         shift = np.rint((refpos / self._box_edge - loc_centre))
@@ -482,7 +506,7 @@ class UnWrapUniverse(object):
 
 
             else:
-                #molecule 11 & 12
+                # molecule 11 & 12
                 relpos[31:47, :] = np.array([[-0.34, 0.75, 0.7],
                                              [-0.24, 0.75, 0.7],
                                              [-0.14, 0.75, 0.7],
@@ -501,6 +525,7 @@ class UnWrapUniverse(object):
                                              [0.44, 0.65, 0.6]],
                                             dtype=np.float32)
 
+                # Shift to closest periodic image
                 if reference_point is not None and compound is not "group":
                     for base in range(3):
                         loc_centre = relpos[base]
@@ -514,7 +539,6 @@ class UnWrapUniverse(object):
                         if self._is_triclinic:
                             relpos[base:base + 3, :] = self.closest_image(relpos[base:base + 3, :], reference_point)
 
-                    # type C
                     for base in range(15, 23, 4):
                         loc_centre = np.mean(relpos[base:base + 4, :], axis=0)
                         shift = np.rint((refpos/ self._box_edge - loc_centre) )
@@ -522,7 +546,6 @@ class UnWrapUniverse(object):
                         if self._is_triclinic:
                             relpos[base:base + 4, :] = self.closest_image(relpos[base:base + 4, :], reference_point)
 
-                    # type D
                     for base in range(23, 47, 8):
                         loc_centre = np.mean(relpos[base:base + 8, :], axis=0)
                         shift = np.rint((refpos/ self._box_edge - loc_centre))
