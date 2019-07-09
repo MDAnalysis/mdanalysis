@@ -848,16 +848,18 @@ class TestUnwrapFlag(object):
     @pytest.fixture()
     def ref_noUnwrap_residues(self):
         return {
+
             'COG': np.array([[21.356, 28.52 , 36.762],
                              [32.062, 36.16 , 27.679],
                              [27.071, 29.997, 28.506]], dtype=np.float32),
             'COM': np.array([[21.286, 28.407, 36.629],
                              [31.931, 35.814, 27.916],
-                             [26.817, 29.41 , 29.05 ]]),
+                             [26.817, 29.41, 29.05]]),
             'MOI': np.array([
                 [7333.79167791, -211.8997285, -721.50785456],
                 [-211.8997285, 7059.07470427, -91.32156884],
                 [-721.50785456, -91.32156884, 6509.31735029]]),
+            'Asph': 0.02060121,
 
         }
 
@@ -866,13 +868,15 @@ class TestUnwrapFlag(object):
         return {
             'COG': np.array([[21.356, 41.685, 40.501],
                              [44.577, 43.312, 79.039],
+
                              [ 2.204, 27.722, 54.023]], dtype=np.float32),
             'COM': np.array([[20.815, 42.013, 39.802],
                              [44.918, 43.282, 79.325],
                              [2.045, 28.243, 54.127]], dtype=np.float32),
             'MOI': np.array([[16747.486, -1330.489,  2938.243],
                              [-1330.489, 19315.253,  3306.212],
-                             [ 2938.243,  3306.212,  8990.481]])
+                             [ 2938.243,  3306.212,  8990.481]]),
+            'Asph': 0.2969491080,
         }
 
     @pytest.fixture()
@@ -884,6 +888,7 @@ class TestUnwrapFlag(object):
                 [0.0, 0.0, 0.0],
                 [0.0, 98.6542, 0.0],
                 [0.0, 0.0, 98.65421327]]),
+            'Asph': 1.0,
         }
 
     @pytest.fixture()
@@ -895,17 +900,21 @@ class TestUnwrapFlag(object):
                 [0.0, 0.0, 0.0],
                 [0.0, 132.673, 0.0],
                 [0.0, 0.0, 132.673]]),
+            'Asph': 1.0,
         }
 
     def test_default_residues(self, ag, ref_noUnwrap_residues):
         assert_almost_equal(ag.center_of_geometry(compound='residues'), ref_noUnwrap_residues['COG'], self.prec)
         assert_almost_equal(ag.center_of_mass(compound='residues'), ref_noUnwrap_residues['COM'], self.prec)
         assert_almost_equal(ag.moment_of_inertia(compound='residues'), ref_noUnwrap_residues['MOI'], self.prec)
+        assert_almost_equal(ag.asphericity(compound='residues'), ref_noUnwrap_residues['Asph'], self.prec)
 
     def test_UnWrapFlag_residues(self, ag, ref_Unwrap_residues):
         assert_almost_equal(ag.center_of_geometry(unwrap=True, compound='residues'), ref_Unwrap_residues['COG'], self.prec)
         assert_almost_equal(ag.center_of_mass(unwrap=True, compound='residues'), ref_Unwrap_residues['COM'], self.prec)
         assert_almost_equal(ag.moment_of_inertia(unwrap=True, compound='residues'), ref_Unwrap_residues['MOI'], self.prec)
+        assert_almost_equal(ag.asphericity(unwrap=True, compound='residues'), ref_Unwrap_residues['Asph'], self.prec)
+
 
     def test_default(self, ref_noUnwrap):
         u = UnWrapUniverse(is_triclinic=False)
@@ -916,6 +925,7 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.center_of_geometry(), ref_noUnwrap['COG'], self.prec)
         assert_almost_equal(group.center_of_mass(), ref_noUnwrap['COM'], self.prec)
         assert_almost_equal(group.moment_of_inertia(), ref_noUnwrap['MOI'], self.prec)
+        assert_almost_equal(group.asphericity(), ref_noUnwrap['Asph'], self.prec)
 
     def test_UnWrapFlag(self, ref_Unwrap):
         u = UnWrapUniverse(is_triclinic=False)
@@ -925,6 +935,8 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.center_of_geometry(unwrap=True), ref_Unwrap['COG'], self.prec)
         assert_almost_equal(group.center_of_mass(unwrap=True), ref_Unwrap['COM'], self.prec)
         assert_almost_equal(group.moment_of_inertia(unwrap=True), ref_Unwrap['MOI'], self.prec)
+        assert_almost_equal(group.asphericity(unwrap=True), ref_Unwrap['Asph'], self.prec)
+
 
 class TestPBCFlag(object):
 
