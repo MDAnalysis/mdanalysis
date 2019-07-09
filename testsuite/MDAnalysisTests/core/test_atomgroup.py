@@ -839,10 +839,42 @@ class TestUnwrapFlag(object):
     prec = 3
 
     @pytest.fixture()
+    def ag(self):
+        universe = mda.Universe(TRZ_psf, TRZ)
+        group = universe.residues[0:3]
+        group.wrap(inplace=True)
+        return group
+
+    @pytest.fixture()
+    def ref_noUnwrap_residues(self):
+        return {
+            'COG': np.array([[21.356, 28.52, 36.762],
+                             [32.062, 36.16, 27.679],
+                             [27.071, 29.997, 28.506]], dtype=np.float32),
+            'COM': np.array([[21.286, 28.407, 36.629],
+                             [31.931, 35.814, 27.916],
+                             [26.817, 29.41, 29.05]]),
+            'Asph': 0.53054563878,
+
+        }
+
+    @pytest.fixture()
+    def ref_Unwrap_residues(self):
+        return {
+            'COG': np.array([[21.356, 41.685, 40.501],
+                             [44.577, 43.312, 79.039],
+                             [2.204, 27.722, 54.023]], dtype=np.float32),
+            'COM': np.array([[20.815, 42.013, 39.802],
+                             [44.918, 43.282, 79.325],
+                             [2.045, 28.243, 54.127]], dtype=np.float32),
+            'Asph': 0.2969491080,
+        }
+    @pytest.fixture()
     def ref_noUnwrap(self):
         return {
             'COG': np.array([5.1, 7.5, 7. ], dtype=np.float32),
             'COM': np.array([6.48785, 7.5, 7.0], dtype=np.float32),
+            'Asph': 1.0,
         }
 
     @pytest.fixture()
@@ -850,6 +882,7 @@ class TestUnwrapFlag(object):
         return {
             'COG': np.array([10.1,  7.5,  7. ], dtype=np.float32),
             'COM': np.array([6.8616, 7.5, 7.], dtype=np.float32),
+            'Asph': 1.0,
         }
 
     def test_default(self, ref_noUnwrap):
@@ -860,6 +893,7 @@ class TestUnwrapFlag(object):
 
         assert_almost_equal(group.center_of_geometry(), ref_noUnwrap['COG'], self.prec)
         assert_almost_equal(group.center_of_mass(), ref_noUnwrap['COM'], self.prec)
+        assert_almost_equal(group.asphericity(), ref_noUnwrap['Asph'], self.prec)
 
     def test_UnWrapFlag(self, ref_Unwrap):
         u = UnWrapUniverse(is_triclinic=False)
@@ -868,6 +902,8 @@ class TestUnwrapFlag(object):
         group.masses = [100.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         assert_almost_equal(group.center_of_geometry(unwrap=True), ref_Unwrap['COG'], self.prec)
         assert_almost_equal(group.center_of_mass(unwrap=True), ref_Unwrap['COM'], self.prec)
+        assert_almost_equal(group.asphericity(unwrap=True), ref_Unwrap['Asph'], self.prec)
+
 
 class TestPBCFlag(object):
 
