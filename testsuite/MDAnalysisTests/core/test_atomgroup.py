@@ -860,7 +860,10 @@ class TestUnwrapFlag(object):
                 [-721.50785456, -91.32156884, 6509.31735029]]),
             'Asph': 0.02060121,
             'ROG': 27.713009,
+<<<<<<< HEAD
 
+=======
+>>>>>>> Add unwrap to group.radius_of_gyration
         }
 
     @pytest.fixture()
@@ -942,6 +945,7 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.moment_of_inertia(unwrap=True), ref_Unwrap['MOI'], self.prec)
         assert_almost_equal(group.asphericity(unwrap=True), ref_Unwrap['Asph'], self.prec)
         assert_almost_equal(group.radius_of_gyration(unwrap=True), ref_Unwrap['ROG'], self.prec)
+
 
 class TestPBCFlag(object):
 
