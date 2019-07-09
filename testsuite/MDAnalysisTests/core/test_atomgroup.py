@@ -858,6 +858,10 @@ class TestUnwrapFlag(object):
                 [7333.79167791, -211.8997285, -721.50785456],
                 [-211.8997285, 7059.07470427, -91.32156884],
                 [-721.50785456, -91.32156884, 6509.31735029]]),
+            'PAxes': np.array([
+                [-0.85911708, 0.19258726, 0.4741603],
+                [-0.07520116, -0.96394227, 0.25526473],
+                [-0.50622389, -0.18364489, -0.84262206]])
 
         }
 
@@ -872,7 +876,11 @@ class TestUnwrapFlag(object):
                              [2.045, 28.243, 54.127]], dtype=np.float32),
             'MOI': np.array([[16747.486, -1330.489,  2938.243],
                              [-1330.489, 19315.253,  3306.212],
-                             [ 2938.243,  3306.212,  8990.481]])
+                             [ 2938.243,  3306.212,  8990.481]]),
+            'PAxes': np.array(
+                [[-0.15999399, 0.9581568, 0.23735515],
+                 [-0.93680726, -0.0715994, -0.34244077],
+                 [-0.31111746, -0.27714449, 0.90906372]]),
         }
 
     @pytest.fixture()
@@ -884,6 +892,10 @@ class TestUnwrapFlag(object):
                 [0.0, 0.0, 0.0],
                 [0.0, 98.6542, 0.0],
                 [0.0, 0.0, 98.65421327]]),
+            'PAxes': np.array(
+                [[0., 0., 1.],
+                 [0., 1., 0.],
+                 [1., 0., 0.]]),
         }
 
     @pytest.fixture()
@@ -895,17 +907,23 @@ class TestUnwrapFlag(object):
                 [0.0, 0.0, 0.0],
                 [0.0, 132.673, 0.0],
                 [0.0, 0.0, 132.673]]),
+            'PAxes': np.array(
+                [[0., 0., 1.],
+                 [0., 1., 0.],
+                 [1., 0., 0.]]),
         }
 
     def test_default_residues(self, ag, ref_noUnwrap_residues):
         assert_almost_equal(ag.center_of_geometry(compound='residues'), ref_noUnwrap_residues['COG'], self.prec)
         assert_almost_equal(ag.center_of_mass(compound='residues'), ref_noUnwrap_residues['COM'], self.prec)
         assert_almost_equal(ag.moment_of_inertia(compound='residues'), ref_noUnwrap_residues['MOI'], self.prec)
+        assert_almost_equal(ag.principal_axes(compound='residues'), ref_noUnwrap_residues['PAxes'], self.prec)
 
     def test_UnWrapFlag_residues(self, ag, ref_Unwrap_residues):
         assert_almost_equal(ag.center_of_geometry(unwrap=True, compound='residues'), ref_Unwrap_residues['COG'], self.prec)
         assert_almost_equal(ag.center_of_mass(unwrap=True, compound='residues'), ref_Unwrap_residues['COM'], self.prec)
         assert_almost_equal(ag.moment_of_inertia(unwrap=True, compound='residues'), ref_Unwrap_residues['MOI'], self.prec)
+        assert_almost_equal(ag.principal_axes(unwrap=True, compound='residues'), ref_Unwrap_residues['PAxes'], self.prec)
 
     def test_default(self, ref_noUnwrap):
         u = UnWrapUniverse(is_triclinic=False)
@@ -916,6 +934,7 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.center_of_geometry(), ref_noUnwrap['COG'], self.prec)
         assert_almost_equal(group.center_of_mass(), ref_noUnwrap['COM'], self.prec)
         assert_almost_equal(group.moment_of_inertia(), ref_noUnwrap['MOI'], self.prec)
+        assert_almost_equal(group.principal_axes(), ref_noUnwrap['PAxes'], self.prec)
 
     def test_UnWrapFlag(self, ref_Unwrap):
         u = UnWrapUniverse(is_triclinic=False)
@@ -925,6 +944,7 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.center_of_geometry(unwrap=True), ref_Unwrap['COG'], self.prec)
         assert_almost_equal(group.center_of_mass(unwrap=True), ref_Unwrap['COM'], self.prec)
         assert_almost_equal(group.moment_of_inertia(unwrap=True), ref_Unwrap['MOI'], self.prec)
+        assert_almost_equal(group.principal_axes(unwrap=True), ref_Unwrap['PAxes'], self.prec)
 
 class TestPBCFlag(object):
 

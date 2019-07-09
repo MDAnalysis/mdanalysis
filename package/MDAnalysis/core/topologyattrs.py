@@ -880,6 +880,10 @@ class Masses(AtomAttr):
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
 
         Note
         ----
@@ -1089,7 +1093,8 @@ class Masses(AtomAttr):
         ('asphericity', asphericity))
 
     @warn_if_not_unique
-    def principal_axes(group, pbc=None):
+    @check_pbc_and_unwrap
+    def principal_axes(group, pbc=None, unwrap=False, compound='group'):
         """Calculate the principal axes from the moment of inertia.
 
         e1,e2,e3 = AtomGroup.principal_axes()
@@ -1103,6 +1108,10 @@ class Masses(AtomAttr):
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. If ``None`` use value defined in setup flags.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
 
         Returns
         -------
@@ -1119,10 +1128,9 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.8 Added *pbc* keyword
 
         """
-        atomgroup = group.atoms
         if pbc is None:
             pbc = flags['use_pbc']
-        e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
+        e_val, e_vec = np.linalg.eig(group.moment_of_inertia(pbc=pbc, unwrap=unwrap, compound=compound))
 
         # Sort
         indices = np.argsort(e_val)[::-1]
