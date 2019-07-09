@@ -945,6 +945,10 @@ class Masses(AtomAttr):
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
 
         Note
         ----
