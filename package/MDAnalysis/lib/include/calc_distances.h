@@ -394,7 +394,7 @@ static void _translate_periodic_triclinic(float* reference, float* centre, float
   dx[2] = reference[2] - centre[2];
 
 
-  coordinate temp_dx[1] = {dx[0], dx[1], dx[2]};
+  coordinate temp_dx[1] = {(float)dx[0], (float)dx[1], (float)dx[2]};
   _triclinic_pbc(temp_dx, 1, box);
 
 
