@@ -888,13 +888,8 @@ class TestUnwrapFlag(object):
                 [0.0, 98.6542, 0.0],
                 [0.0, 0.0, 98.65421327]]),
             'Asph': 1.0,
-<<<<<<< HEAD
             'ROG': 0.9602093,
         }
-=======
-
-    }
->>>>>>> add unwrap to 'cog'
 
     @pytest.fixture()
     def ref_Unwrap(self):
@@ -934,7 +929,6 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.moment_of_inertia(), ref_noUnwrap['MOI'], self.prec)
         assert_almost_equal(group.asphericity(), ref_noUnwrap['Asph'], self.prec)
         assert_almost_equal(group.radius_of_gyration(), ref_noUnwrap['ROG'], self.prec)
-
 
     def test_UnWrapFlag(self, ref_Unwrap):
         u = UnWrapUniverse(is_triclinic=False)
