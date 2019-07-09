@@ -910,6 +910,7 @@
         <span class="p">(</span><span class="s1">&#39;total_mass&#39;</span><span class="p">,</span> <span class="n">total_mass</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Masses.moment_of_inertia"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.moment_of_inertia">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
+    <span class="nd">@check_pbc_and_unwrap</span>
     <span class="k">def</span> <span class="nf">moment_of_inertia</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tensor moment of inertia relative to center of mass as 3x3 numpy</span>
 <span class="sd">        array.</span>
@@ -927,15 +928,22 @@
 
 
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
+<span class="sd">        .. versionchanged:: 0.20.0 Added `unwrap` parameter</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
         <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;pbc&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_pbc&#39;</span><span class="p">])</span>
+        <span class="n">unwrap</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;unwrap&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">compound</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;compound&#39;</span><span class="p">,</span> <span class="s1">&#39;group&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Convert to local coordinates</span>
-        <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">)</span>
+        <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">compound</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
+            <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">com</span> <span class="o">*</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">com</span>
+        <span class="k">elif</span> <span class="n">unwrap</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">com</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">com</span>
 
