@@ -447,7 +447,6 @@ _flags = [
            such as :meth:`MDAnalysis.core.groups.AtomGroup.center_of_mass`
            and :meth:`MDAnalysis.core.groups.AtomGroup.center_of_geometry`!
         """),
-
 ]
 
 #: Global flag registry for :mod:`MDAnalysis.core`.
