@@ -953,15 +953,23 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.20.0 Added *unwrap* parameter
 
         """
         atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
+        unwrap = kwargs.pop('unwrap', False)
+        compound = kwargs.pop('compound', 'group')
 
-        com = atomgroup.center_of_mass(pbc=pbc)
+        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound is not 'group':
+            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+
         if pbc:
             recenteredpos = atomgroup.pack_into_box(inplace=False) - com
+        elif unwrap:
+            recenteredpos = atomgroup.unwrap(compound=compound) - com
         else:
             recenteredpos = atomgroup.positions - com
 
