@@ -893,7 +893,7 @@ class Masses(AtomAttr):
         """
         atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
-        unwrap = kwargs.pop('unwrap', flags['use_unwrap'])
+        unwrap = kwargs.pop('unwrap', False)
         compound = kwargs.pop('compound', 'group')
 
         com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
