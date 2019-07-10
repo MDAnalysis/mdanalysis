@@ -60,7 +60,7 @@ Enhancements
   * added unwrap keyword to center_of_geometry (PR #2279)
   * added unwrap keyword to center_of_mass (PR #2286)
   * added unwrap keyword to moment_of_inertia (PR #2287)
-  * added unwrap keyword to as
+  * added unwrap keyword to asphericity (PR #2290)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
