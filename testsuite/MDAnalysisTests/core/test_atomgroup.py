@@ -933,6 +933,7 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.moment_of_inertia(unwrap=True), ref_Unwrap['MOI'], self.prec)
         assert_almost_equal(group.asphericity(unwrap=True), ref_Unwrap['Asph'], self.prec)
 
+
 class TestPBCFlag(object):
 
     prec = 3
