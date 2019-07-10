@@ -1028,7 +1028,8 @@ class Masses(AtomAttr):
         ('shape_parameter', shape_parameter))
 
     @warn_if_not_unique
-    def asphericity(group, pbc=None):
+    @check_pbc_and_unwrap
+    def asphericity(group, pbc=None, unwrap=None, compound='group'):
         """Asphericity.
 
         See [Dima2004b]_ for background information.
@@ -1039,6 +1040,10 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. If ``None`` use value defined in
             MDAnalysis.core.flags['use_pbc']
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
 
         Note
         ----
@@ -1059,6 +1064,7 @@ class Masses(AtomAttr):
 
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter
 
         """
         atomgroup = group.atoms
@@ -1066,12 +1072,16 @@ class Masses(AtomAttr):
             pbc = flags['use_pbc']
         masses = atomgroup.masses
 
+        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound is not 'group':
+            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+
         if pbc:
-            recenteredpos = (atomgroup.pack_into_box(inplace=False) -
-                             atomgroup.center_of_mass(pbc=True))
+            recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
+        elif unwrap:
+            recenteredpos = (atomgroup.unwrap(inplace=False) - com)
         else:
-            recenteredpos = (atomgroup.positions -
-                             atomgroup.center_of_mass(pbc=False))
+            recenteredpos = (atomgroup.positions - com)
 
         tensor = np.zeros((3, 3))
         for x in range(recenteredpos.shape[0]):
