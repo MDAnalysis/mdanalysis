@@ -937,6 +937,7 @@ class Masses(AtomAttr):
         ('moment_of_inertia', moment_of_inertia))
 
     @warn_if_not_unique
+    @check_pbc_and_unwrap
     def radius_of_gyration(group, **kwargs):
         """Radius of gyration.
 
@@ -953,8 +954,7 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: 0.20.0 Added *unwrap* parameter
-
+        .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter
         """
         atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
