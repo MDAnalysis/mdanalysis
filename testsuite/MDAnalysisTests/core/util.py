@@ -333,6 +333,8 @@ class UnWrapUniverse(object):
         # bind custom methods to universe:
         u.unwrapped_coords = cls.unwrapped_coords.__get__(u)
         u.wrapped_coords = cls.wrapped_coords.__get__(u)
+        u.closest_image = cls.closest_image.__get__(u)
+        u.shift_triclinic = cls.shift_triclinic.__get__(u)
         u.center = cls.center.__get__(u)
         u.closest_image = cls.closest_image.__get__(u)
         u.shift_triclinic = cls.shift_triclinic.__get__(u)
@@ -658,6 +660,7 @@ class UnWrapUniverse(object):
         positions = relpos * np.array([a, a, a])
 
         return positions.astype(np.float32)
+
 
     def center(self, compound):
         """Returns centers which correspond to the unwrapped system.
