@@ -859,6 +859,7 @@ class TestUnwrapFlag(object):
                 [-211.8997285, 7059.07470427, -91.32156884],
                 [-721.50785456, -91.32156884, 6509.31735029]]),
             'Asph': 0.02060121,
+            'BSph': (47.923367, np.array([26.82960892, 31.5592289, 30.98238945], dtype=np.float32)),
         }
 
     @pytest.fixture()
@@ -874,6 +875,7 @@ class TestUnwrapFlag(object):
                              [-1330.489, 19315.253,  3306.212],
                              [ 2938.243,  3306.212,  8990.481]]),
             'Asph': 0.2969491080,
+            'BSph': (83.43581226337612, np.array([22.71217509, 37.57285251, 57.85406408], dtype=np.float32)),
         }
 
     @pytest.fixture()
@@ -886,6 +888,7 @@ class TestUnwrapFlag(object):
                 [0.0, 98.6542, 0.0],
                 [0.0, 0.0, 98.65421327]]),
             'Asph': 1.0,
+            'BSph': (4.500000037252903, np.array([5.1, 7.5, 7.])),
         }
 
     @pytest.fixture()
@@ -898,6 +901,7 @@ class TestUnwrapFlag(object):
                 [0.0, 132.673, 0.0],
                 [0.0, 0.0, 132.673]]),
             'Asph': 1.0,
+            'BSph': (3.5000001788139343, np.array([10.1000002,  7.5,  7.], dtype=np.float32)),
         }
 
     def test_default_residues(self, ag, ref_noUnwrap_residues):
@@ -905,12 +909,17 @@ class TestUnwrapFlag(object):
         assert_almost_equal(ag.center_of_mass(compound='residues'), ref_noUnwrap_residues['COM'], self.prec)
         assert_almost_equal(ag.moment_of_inertia(compound='residues'), ref_noUnwrap_residues['MOI'], self.prec)
         assert_almost_equal(ag.asphericity(compound='residues'), ref_noUnwrap_residues['Asph'], self.prec)
+        assert_almost_equal(ag.bsphere(compound='residues')[0], ref_noUnwrap_residues['BSph'][0], self.prec)
+        assert_almost_equal(ag.bsphere(compound='residues')[1], ref_noUnwrap_residues['BSph'][1], self.prec)
+
 
     def test_UnWrapFlag_residues(self, ag, ref_Unwrap_residues):
         assert_almost_equal(ag.center_of_geometry(unwrap=True, compound='residues'), ref_Unwrap_residues['COG'], self.prec)
         assert_almost_equal(ag.center_of_mass(unwrap=True, compound='residues'), ref_Unwrap_residues['COM'], self.prec)
         assert_almost_equal(ag.moment_of_inertia(unwrap=True, compound='residues'), ref_Unwrap_residues['MOI'], self.prec)
         assert_almost_equal(ag.asphericity(unwrap=True, compound='residues'), ref_Unwrap_residues['Asph'], self.prec)
+        assert_almost_equal(ag.bsphere(unwrap=True, compound='residues')[0], ref_Unwrap_residues['BSph'][0], self.prec)
+        assert_almost_equal(ag.bsphere(unwrap=True, compound='residues')[1], ref_Unwrap_residues['BSph'][1], self.prec)
 
     def test_default(self, ref_noUnwrap):
         u = UnWrapUniverse(is_triclinic=False)
@@ -922,6 +931,8 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.center_of_mass(), ref_noUnwrap['COM'], self.prec)
         assert_almost_equal(group.moment_of_inertia(), ref_noUnwrap['MOI'], self.prec)
         assert_almost_equal(group.asphericity(), ref_noUnwrap['Asph'], self.prec)
+        assert_almost_equal(group.bsphere()[0], ref_noUnwrap['BSph'][0], self.prec)
+        assert_almost_equal(group.bsphere()[1], ref_noUnwrap['BSph'][1], self.prec)
 
     def test_UnWrapFlag(self, ref_Unwrap):
         u = UnWrapUniverse(is_triclinic=False)
@@ -932,6 +943,8 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.center_of_mass(unwrap=True), ref_Unwrap['COM'], self.prec)
         assert_almost_equal(group.moment_of_inertia(unwrap=True), ref_Unwrap['MOI'], self.prec)
         assert_almost_equal(group.asphericity(unwrap=True), ref_Unwrap['Asph'], self.prec)
+        assert_almost_equal(group.bsphere(unwrap=True)[0], ref_Unwrap['BSph'][0], self.prec)
+        assert_almost_equal(group.bsphere(unwrap=True)[1], ref_Unwrap['BSph'][1], self.prec)
 
 
 class TestPBCFlag(object):
