@@ -1068,7 +1068,8 @@
         <span class="p">(</span><span class="s1">&#39;shape_parameter&#39;</span><span class="p">,</span> <span class="n">shape_parameter</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Masses.asphericity"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.asphericity">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
-    <span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nd">@check_pbc_and_unwrap</span>
+    <span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Asphericity.</span>
 
 <span class="sd">        See [Dima2004b]_ for background information.</span>
@@ -1079,6 +1080,10 @@
 <span class="sd">            If ``True``, move all atoms within the primary unit cell before</span>
 <span class="sd">            calculation. If ``None`` use value defined in</span>
 <span class="sd">            MDAnalysis.core.flags[&#39;use_pbc&#39;]</span>
+<span class="sd">        unwrap : bool, optional</span>
+<span class="sd">            If ``True``, compounds will be unwrapped before computing their centers.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, &#39;fragments&#39;}, optional</span>
+<span class="sd">            Which type of component to keep together during unwrapping.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -1099,6 +1104,7 @@
 
 <span class="sd">        .. versionadded:: 0.7.7</span>
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
+<span class="sd">        .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
@@ -1106,12 +1112,16 @@
             <span class="n">pbc</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_pbc&#39;</span><span class="p">]</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">masses</span>
 
+        <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">compound</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
+            <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">com</span> <span class="o">*</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
-            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span>
-                             <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">com</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">unwrap</span><span class="p">:</span>
+            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">com</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span>
-                             <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">com</span><span class="p">)</span>
 
         <span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">recenteredpos</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
