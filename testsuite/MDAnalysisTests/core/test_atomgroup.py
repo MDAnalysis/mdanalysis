@@ -942,6 +942,7 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.radius_of_gyration(unwrap=True), ref_Unwrap['ROG'], self.prec)
 
 
+
 class TestPBCFlag(object):
 
     prec = 3
