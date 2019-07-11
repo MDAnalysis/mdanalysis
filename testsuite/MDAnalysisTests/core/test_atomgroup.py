@@ -839,7 +839,6 @@ class TestUnwrapFlag(object):
     prec = 3
 
     @pytest.fixture()
-<<<<<<< HEAD
     def ag(self):
         universe = mda.Universe(TRZ_psf, TRZ)
         group = universe.residues[0:3]
@@ -915,14 +914,11 @@ class TestUnwrapFlag(object):
         assert_almost_equal(ag.moment_of_inertia(compound='residues'), ref_noUnwrap_residues['MOI'], self.prec)
         assert_almost_equal(ag.shape_parameter(compound='residues'), ref_noUnwrap_residues['Shape'], self.prec)
         assert_almost_equal(ag.asphericity(compound='residues'), ref_noUnwrap_residues['Asph'], self.prec)
-        assert_almost_equal(ag.shape_parameter(compound='residues'), ref_noUnwrap_residues['Shape'], self.prec)
 
     def test_UnWrapFlag_residues(self, ag, ref_Unwrap_residues):
         assert_almost_equal(ag.center_of_geometry(unwrap=True, compound='residues'), ref_Unwrap_residues['COG'], self.prec)
         assert_almost_equal(ag.center_of_mass(unwrap=True, compound='residues'), ref_Unwrap_residues['COM'], self.prec)
         assert_almost_equal(ag.moment_of_inertia(unwrap=True, compound='residues'), ref_Unwrap_residues['MOI'], self.prec)
-        assert_almost_equal(ag.shape_parameter(unwrap=True, compound='residues'), ref_Unwrap_residues['Shape'], self.prec)
-        assert_almost_equal(ag.asphericity(unwrap=True, compound='residues'), ref_Unwrap_residues['Asph'], self.prec)
         assert_almost_equal(ag.shape_parameter(unwrap=True, compound='residues'), ref_Unwrap_residues['Shape'], self.prec)
 
     def test_default(self, ref_noUnwrap):
@@ -936,7 +932,6 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.moment_of_inertia(), ref_noUnwrap['MOI'], self.prec)
         assert_almost_equal(group.shape_parameter(), ref_noUnwrap['Shape'], self.prec)
         assert_almost_equal(group.asphericity(), ref_noUnwrap['Asph'], self.prec)
-        assert_almost_equal(group.shape_parameter(), ref_noUnwrap['Shape'], self.prec)
 
     def test_UnWrapFlag(self, ref_Unwrap):
         u = UnWrapUniverse(is_triclinic=False)
@@ -949,7 +944,6 @@ class TestUnwrapFlag(object):
         assert_almost_equal(group.moment_of_inertia(unwrap=True), ref_Unwrap['MOI'], self.prec)
         assert_almost_equal(group.shape_parameter(unwrap=True), ref_Unwrap['Shape'], self.prec)
         assert_almost_equal(group.asphericity(unwrap=True), ref_Unwrap['Asph'], self.prec)
-        assert_almost_equal(group.shape_parameter(unwrap=True), ref_Unwrap['Shape'], self.prec)
 
 
 class TestPBCFlag(object):
