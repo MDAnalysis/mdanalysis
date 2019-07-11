@@ -974,6 +974,7 @@ class Masses(AtomAttr):
         ('radius_of_gyration', radius_of_gyration))
 
     @warn_if_not_unique
+    @check_pbc_and_unwrap
     def shape_parameter(group, **kwargs):
         """Shape parameter.
 
