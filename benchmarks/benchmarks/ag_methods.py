@@ -26,7 +26,7 @@ class AtomGroupMethodsBench(object):
         self.u = MDAnalysis.Universe(GRO)
         self.u_unwrap = mda.Universe(TRZ_psf, TRZ)
         self.ag = self.u.atoms[:num_atoms]
-        self.ag_unrap = self.u_unwrap.residues[0:3]
+        self.ag_unwrap = self.u_unwrap.residues[0:3]
         self.weights = np.ones(num_atoms)
         self.vdwradii = {'H':1.0,
                          'C':1.0,
@@ -221,7 +221,7 @@ class AtomGroupMethodsBench(object):
         """Benchmark center_of_mass calculation with
         unwrap active.
         """
-        self.ag_unrap.center_of_mass(unwrap=True, compound='residues')
+        self.ag_unwrap.center_of_mass(unwrap=True, compound='residues')
 
     def time_center_of_geometry_default(self, num_atoms):
         """Benchmark center_of_geometry calculation with
@@ -239,7 +239,7 @@ class AtomGroupMethodsBench(object):
         """Benchmark center_of_geometry calculation with
         unwrap active.
         """
-        self.ag_unrap.center_of_geometry(unwrap=True, compound='residues')
+        self.ag_unwrap.center_of_geometry(unwrap=True, compound='residues')
 
     def time_moment_of_inertia_default(self, num_atoms):
         """Benchmark moment_of_inertia calculation with
@@ -257,7 +257,7 @@ class AtomGroupMethodsBench(object):
         """Benchmark moment_of_inertia calculation with
         unwrap active.
         """
-        self.ag_unrap.moment_of_inertia(unwrap=True, compound='residues')
+        self.ag_unwrap.moment_of_inertia(unwrap=True, compound='residues')
 
     def time_asphericity_default(self, num_atoms):
         """Benchmark asphericity calculation with
