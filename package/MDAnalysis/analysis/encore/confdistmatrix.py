@@ -56,7 +56,7 @@ from .utils import TriangularMatrix, trm_indices
 
 def conformational_distance_matrix(ensemble,
                                    conf_dist_function, selection="",
-                                   superimposition_selection="", n_jobs=1, pairwise_align=True, weights='mass',
+                                   superimposition_selection="", n_jobs=1, max_nbytes='1M', pairwise_align=True, weights='mass',
                                    metadata=True, verbose=False):
     """
     Run the conformational distance matrix calculation.
@@ -169,7 +169,7 @@ def conformational_distance_matrix(ensemble,
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
     indices = trm_indices((0, 0), (framesn - 1, framesn - 1))
-    Parallel(n_jobs=n_jobs, verbose=verbose)(delayed(conf_dist_function)(
+    Parallel(n_jobs=n_jobs, verbose=verbose, max_nbytes=max_nbytes)(delayed(conf_dist_function)(
         np.int64(element),
         rmsd_coordinates,
         distmat,
@@ -256,6 +256,7 @@ def get_distance_matrix(ensemble,
                         superimposition_subset="name CA",
                         weights='mass',
                         n_jobs=1,
+                        max_nbytes='1M',
                         verbose=False,
                         *conf_dist_args,
                         **conf_dist_kwargs):
@@ -361,6 +362,7 @@ def get_distance_matrix(ensemble,
                                                         pairwise_align=superimpose,
                                                         weights=weights,
                                                         n_jobs=n_jobs,
+                                                        max_nbytes=max_nbytes,
                                                         verbose=verbose)
 
         logging.info("    Done!")
