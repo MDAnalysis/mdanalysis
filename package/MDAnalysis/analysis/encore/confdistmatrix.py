@@ -86,6 +86,10 @@ def conformational_distance_matrix(ensemble,
     n_jobs : int, optional
         Number of cores to be used for parallel calculation
         Default is 1. -1 uses all available cores
+    max_nbytes : str, optional
+        Threshold on the size of arrays passed to the joblib.Parallel workers 
+        that triggers automated memory mapping in temp_folder. (default is '1M')
+        (from `joblib docs <https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html>`_.)
     verbose : bool, optional
         enable verbose output
 
@@ -297,6 +301,10 @@ def get_distance_matrix(ensemble,
         weights to be used for fit. Can be either 'mass' or an array_like
     n_jobs : int, optional
         Maximum number of cores to be used (default is 1). If -1 use all cores.
+    max_nbytes : str, optional
+        Threshold on the size of arrays passed to the joblib.Parallel workers 
+        that triggers automated memory mapping in temp_folder. (default is '1M')
+        (from `joblib docs <https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html>`_.)
     verbose : bool, optional
         print progress
 
