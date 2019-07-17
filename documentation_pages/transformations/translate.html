@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>7.1. Trajectory translation — MDAnalysis.transformations.translate &#8212; MDAnalysis 0.19.3-dev documentation</title>
+    <title>7.5.1. Trajectory translation — MDAnalysis.transformations.translate &#8212; MDAnalysis 0.19.3-dev documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -21,8 +21,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="7.2. Trajectory rotation — MDAnalysis.transformations.rotate" href="rotate.html" />
-    <link rel="prev" title="7. Trajectory transformations" href="../trajectory_transformations.html" />
+    <link rel="next" title="7.5.2. Trajectory rotation — MDAnalysis.transformations.rotate" href="rotate.html" />
+    <link rel="prev" title="7. Trajectory transformations (“on-the-fly” transformations)" href="../trajectory_transformations.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -40,7 +40,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.transformations.translate"></span><div class="section" id="trajectory-translation-mdanalysis-transformations-translate">
-<h1>7.1. Trajectory translation — <a class="reference internal" href="#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a><a class="headerlink" href="#trajectory-translation-mdanalysis-transformations-translate" title="Permalink to this headline">¶</a></h1>
+<h1>7.5.1. Trajectory translation — <a class="reference internal" href="#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a><a class="headerlink" href="#trajectory-translation-mdanalysis-transformations-translate" title="Permalink to this headline">¶</a></h1>
 <p>Translate the coordinates of a given trajectory by a given vector.
 The vector can either be user defined, using the function <a class="reference internal" href="#MDAnalysis.transformations.translate.translate" title="MDAnalysis.transformations.translate.translate"><code class="xref py py-func docutils literal notranslate"><span class="pre">translate()</span></code></a>
 or defined by centering an AtomGroup in the unit cell using the function
@@ -143,11 +143,18 @@ to the atom coordinates are done before calculating the center of the AtomGroup.
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">7.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="rotate.html">7.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="positionaveraging.html">7.3. Trajectory Coordinate Averaging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="fit.html">7.4. Fitting transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#workflows">7.1. Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#creating-transformations">7.2. Creating transformations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#transformations-in-mdanalysis">7.3. Transformations in MDAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#how-to-transformations">7.4. How to transformations</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../trajectory_transformations.html#currently-implemented-transformations">7.5. Currently implemented transformations</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">7.5.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rotate.html">7.5.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="positionaveraging.html">7.5.3. Trajectory Coordinate Averaging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fit.html">7.5.4. Fitting transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
@@ -165,9 +172,9 @@ to the atom coordinates are done before calculating the center of the AtomGroup.
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../trajectory_transformations.html">7. Trajectory transformations</a><ul>
-      <li>Previous: <a href="../trajectory_transformations.html" title="previous chapter">7. Trajectory transformations</a></li>
-      <li>Next: <a href="rotate.html" title="next chapter">7.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
+  <li><a href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a><ul>
+      <li>Previous: <a href="../trajectory_transformations.html" title="previous chapter">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+      <li>Next: <a href="rotate.html" title="next chapter">7.5.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
