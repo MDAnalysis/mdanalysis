@@ -836,7 +836,7 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     def total_mass(group, compound='group'):
         """Total mass of (compounds of) the group.
-        
+
         Computes the total mass of :class:`Atoms<Atom>` in the group.
         Total masses per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
@@ -1213,7 +1213,7 @@ class Charges(AtomAttr):
     @warn_if_not_unique
     def total_charge(group, compound='group'):
         """Total charge of (compounds of) the group.
-        
+
         Computes the total charge of :class:`Atoms<Atom>` in the group.
         Total charges per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
@@ -1468,6 +1468,7 @@ class Resnames(ResidueAttr):
         select protein residues.
 
         :exc:`TypeError` if an unknown *format* is selected.
+
 
         .. versionadded:: 0.9.0
         """
