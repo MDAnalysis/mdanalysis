@@ -114,6 +114,7 @@ Fixes
     atoms from frame to frame (Issue #1998, PR #2219)
   * Fixed reading multiframe GRO files, currently only the first frame will be
     read. (Issue #2276 PR #2277)
+  * Fixed parallelization failure in get_distance_matrix() (Issue #2060, PR #2301)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
