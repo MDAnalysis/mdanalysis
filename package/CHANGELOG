@@ -16,7 +16,7 @@ The rules for this file:
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay, tyler.je.reddy
+         IAlibay, tyler.je.reddy, aakognole
 
   * 0.20.0
 
@@ -114,6 +114,8 @@ Fixes
     atoms from frame to frame (Issue #1998, PR #2219)
   * Fixed reading multiframe GRO files, currently only the first frame will be
     read. (Issue #2276 PR #2277)
+  * fixed calculation of Chi torsion in nucleic acid analysis (Issue #2248)
+
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()

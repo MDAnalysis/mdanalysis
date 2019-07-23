@@ -445,13 +445,13 @@ def tors(universe, seg, i):
                               " atom {0!s} {1!s} O5\' ".format(seg, i + 1))
     c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                               " atom {0!s} {1!s} C1\' ".format(seg, i),
-                              " atom {0!s} {1!s} N1 ".format(seg, i),
-                              " atom {0!s} {1!s} C2  ".format(seg, i))
+                              " atom {0!s} {1!s} N9 ".format(seg, i),
+                              " atom {0!s} {1!s} C4  ".format(seg, i))
     if len(c) < 4:
         c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                                   " atom {0!s} {1!s} C1\' ".format(seg, i),
-                                  " atom {0!s} {1!s} N9 ".format(seg, i),
-                                  " atom {0!s} {1!s} C4  ".format(seg, i))
+                                  " atom {0!s} {1!s} N1 ".format(seg, i),
+                                  " atom {0!s} {1!s} C2  ".format(seg, i))
 
     alpha = a.dihedral.value() % 360
     beta = b.dihedral.value() % 360
@@ -668,13 +668,13 @@ def tors_chi(universe, seg, i):
     """
     c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                               " atom {0!s} {1!s} C1\' ".format(seg, i),
-                              " atom {0!s} {1!s} N1 ".format(seg, i),
-                              " atom {0!s} {1!s} C2  ".format(seg, i))
+                              " atom {0!s} {1!s} N9 ".format(seg, i),
+                              " atom {0!s} {1!s} C4  ".format(seg, i))
     if len(c) < 4:
         c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                                   " atom {0!s} {1!s} C1\' ".format(seg, i),
-                                  " atom {0!s} {1!s} N9 ".format(seg, i),
-                                  " atom {0!s} {1!s} C4  ".format(seg, i))
+                                  " atom {0!s} {1!s} N1 ".format(seg, i),
+                                  " atom {0!s} {1!s} C2  ".format(seg, i))
     chi = c.dihedral.value() % 360
     return chi
 
