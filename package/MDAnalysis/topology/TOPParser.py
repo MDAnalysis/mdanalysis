@@ -385,8 +385,10 @@ class TOPParser(TopologyReaderBase):
             A :class:`Elements` instance containing the element of each atom
             as defined in the parm7 file
         """
+
         vals = self.parsesection_mapper(
-                numlines, lambda x: NUMBER_TO_ELEMENT[int(x)])
+                numlines,
+                lambda x: NUMBER_TO_ELEMENT[int(x)] if int(x) > 0 else "DU")
         attr = Elements(np.array(vals, dtype=object))
         return attr
 
