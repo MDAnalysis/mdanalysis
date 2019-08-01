@@ -109,6 +109,11 @@ from ..core.topologyattrs import (
     Impropers
 )
 
+import warnings
+import logging
+
+logger = logging.getLogger('MDAnalysis.topology.TOPParser')
+
 
 class TypeIndices(AtomAttr):
     """Numerical type of each Atom"""
@@ -254,11 +259,27 @@ class TOPParser(TopologyReaderBase):
         attrs['dihedrals'], attrs['impropers'] = self.parse_dihedrals(
                               attrs.pop('diha'), attrs.pop('dihh'))
 
-        # Guess elements if not in topology
+        # Guess elements if not in topology or if any dummy atoms are found
         if not 'elements' in attrs:
+            msg = ("ATOMIC_NUMBER record not found, guessing atom elements "
+                   "based on their atom types")
+            logger.warning(msg)
+            warnings.warn(msg)
             attrs['elements'] = Elements(
                 guessers.guess_types(attrs['types'].values),
                 guessed=True)
+        elif np.any(attrs['elements'].values == "DUMMY"):
+            # This approach assumes np.any is much faster than np.where
+            attrs['elements']._guessed = True
+            for dummy_idx in np.where(attrs['elements'].values == 'DUMMY')[0]:
+                atom_type = attrs['types'].values[dummy_idx]
+                atom_ele = guessers.guess_atom_element(atom_type)
+                msg = ("Unknown ATOMIC_NUMBER value found, guessing atom "
+                       "element from type: {0} assigned to {1}".format(
+                        atom_type, atom_ele))
+                logger.warning(msg)
+                warnings.warn(msg)
+                attrs['elements'].values[dummy_idx] = atom_ele
 
         # atom ids are mandatory
         attrs['atomids'] = Atomids(np.arange(n_atoms) + 1)
@@ -384,11 +405,17 @@ class TOPParser(TopologyReaderBase):
         attr : :class:`Elements`
             A :class:`Elements` instance containing the element of each atom
             as defined in the parm7 file
+
+        Note
+        ----
+        If the record contains atomic numbers <= 0, these will be treated as
+        dummy elements and an attempt will be made to guess the element based
+        on atom type. See issue #2306 for more details.
         """
 
         vals = self.parsesection_mapper(
                 numlines,
-                lambda x: NUMBER_TO_ELEMENT[int(x)] if int(x) > 0 else "DU")
+                lambda x: NUMBER_TO_ELEMENT[int(x)] if int(x) > 0 else "DUMMY")
         attr = Elements(np.array(vals, dtype=object))
         return attr
 

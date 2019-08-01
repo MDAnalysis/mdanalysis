@@ -31,6 +31,7 @@ from MDAnalysisTests.datafiles import (
     PRM7,  # tz2.truncoct.parm7.bz2
     PRMpbc,
     PRMNCRST,
+    PRMNEGATIVE,
     PRMErr1,
     PRMErr2,
     PRMErr3
@@ -346,6 +347,40 @@ class TestPRMNCRST(TOPBase):
     atom_i_dihedral_values = ((0, 1, 4, 5), (2, 1, 4, 5), (3, 1, 4, 5))
     atom_zero_improper_values = ()
     atom_i_improper_values = ()
+
+
+class TestPRMNCRST_negative(TOPBase):
+    # Same as above but with negative ATOMIC_NUMBER values (Issue 2306)
+    ref_filename = PRMNEGATIVE
+    guessed_attrs = ['elements']
+    expected_n_atoms = 6
+    expected_n_residues = 1
+    ref_proteinatoms = 6
+    expected_n_bonds = 5
+    expected_n_angles = 7
+    expected_n_dihedrals = 3
+    expected_n_impropers = 0
+    atom_i = 4
+    expected_n_zero_bonds = 1
+    expected_n_i_bonds = 2
+    expected_n_zero_angles = 3
+    expected_n_i_angles = 4
+    expected_n_zero_dihedrals = 1
+    expected_n_i_dihedrals = 3
+    expected_n_zero_impropers = 0
+    expected_n_i_impropers = 0
+    atom_zero_bond_values = ((0, 1),)
+    atom_i_bond_values = ((1, 4), (4, 5))
+    atom_zero_angle_values = ((0, 1, 2), (0, 1, 3), (0, 1, 4))
+    atom_i_angle_values = ((0, 1, 4), (1, 4, 5), (2, 1, 4), (3, 1, 4))
+    atom_zero_dihedral_values = ((0, 1, 4, 5),)
+    atom_i_dihedral_values = ((0, 1, 4, 5), (2, 1, 4, 5), (3, 1, 4, 5))
+    atom_zero_improper_values = ()
+    atom_i_improper_values = ()
+
+    def test_elements(self, top):
+        assert(top.elements.values[1] == 'C')
+        assert(top.elements.values[5] == 'O')
 
 
 class TestErrors(object):
