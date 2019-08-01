@@ -172,6 +172,15 @@ class TestPRMParser(TOPBase):
     atom_i_improper_values = ((74, 79, 77, 78), (77, 80, 79, 83),
                               (79, 81, 80, 82), (79, 84, 83, 85))
 
+    def test_warning(self, filename):
+        with pytest.warns(UserWarning) as record:
+            u = mda.Universe(filename)
+
+        assert len(record) == 1
+        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
+                "based on their atom types")
+        assert str(record[0].message.args[0]) == wmsg
+
 
 class TestPRM12Parser(TOPBase):
     ref_filename = PRM12
@@ -280,6 +289,15 @@ class TestParm7Parser(TOPBase):
     atom_zero_improper_values = ()
     atom_i_improper_values = ((131, 135, 133, 134), (135, 157, 155, 156))
 
+    def test_warning(self, filename):
+        with pytest.warns(UserWarning) as record:
+            u = mda.Universe(filename)
+
+        assert len(record) == 1
+        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
+                "based on their atom types")
+        assert str(record[0].message.args[0]) == wmsg
+
 
 class TestPRM2(TOPBase):
     ref_filename = PRMpbc
@@ -318,6 +336,15 @@ class TestPRM2(TOPBase):
                               (15, 14, 16, 17), (15, 14, 16, 18))
     atom_zero_improper_values = ()
     atom_i_improper_values = ((8, 16, 14, 15), (14, 18, 16, 17))
+
+    def test_warning(self, filename):
+        with pytest.warns(UserWarning) as record:
+            u = mda.Universe(filename)
+
+        assert len(record) == 1
+        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
+                "based on their atom types")
+        assert str(record[0].message.args[0]) == wmsg
 
 
 class TestPRMNCRST(TOPBase):
@@ -381,6 +408,18 @@ class TestPRMNCRST_negative(TOPBase):
     def test_elements(self, top):
         assert(top.elements.values[1] == 'C')
         assert(top.elements.values[5] == 'O')
+
+    def test_warning(self, filename):
+        with pytest.warns(UserWarning) as record:
+            u = mda.Universe(filename)
+
+        assert len(record) == 2
+        wmsg1 = ("Unknown ATOMIC_NUMBER value found, guessing atom element "
+                 "from type: CT assigned to C")
+        wmsg2 = ("Unknown ATOMIC_NUMBER value found, guessing atom element "
+                 "from type: O assigned to O")
+        assert str(record[0].message.args[0]) == wmsg1
+        assert str(record[1].message.args[0]) == wmsg2
 
 
 class TestErrors(object):
