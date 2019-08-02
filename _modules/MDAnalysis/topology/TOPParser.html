@@ -149,6 +149,11 @@
     <span class="n">Impropers</span>
 <span class="p">)</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.topology.TOPParser&#39;</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">TypeIndices</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Numerical type of each Atom&quot;&quot;&quot;</span>
@@ -294,11 +299,27 @@
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;impropers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_dihedrals</span><span class="p">(</span>
                               <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;diha&#39;</span><span class="p">),</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;dihh&#39;</span><span class="p">))</span>
 
-        <span class="c1"># Guess elements if not in topology</span>
+        <span class="c1"># Guess elements if not in topology or if any dummy atoms are found</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;elements&#39;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ATOMIC_NUMBER record not found, guessing atom elements &quot;</span>
+                   <span class="s2">&quot;based on their atom types&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Elements</span><span class="p">(</span>
                 <span class="n">guessers</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;types&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
                 <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="s2">&quot;DUMMY&quot;</span><span class="p">):</span>
+            <span class="c1"># This approach assumes np.any is much faster than np.where</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">dummy_idx</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="s1">&#39;DUMMY&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">atom_type</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;types&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">dummy_idx</span><span class="p">]</span>
+                <span class="n">atom_ele</span> <span class="o">=</span> <span class="n">guessers</span><span class="o">.</span><span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atom_type</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Unknown ATOMIC_NUMBER value found, guessing atom &quot;</span>
+                       <span class="s2">&quot;element from type: </span><span class="si">{0}</span><span class="s2"> assigned to </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">atom_type</span><span class="p">,</span> <span class="n">atom_ele</span><span class="p">))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">dummy_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom_ele</span>
 
         <span class="c1"># atom ids are mandatory</span>
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;atomids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atomids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -424,9 +445,17 @@
 <span class="sd">        attr : :class:`Elements`</span>
 <span class="sd">            A :class:`Elements` instance containing the element of each atom</span>
 <span class="sd">            as defined in the parm7 file</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        If the record contains atomic numbers &lt;= 0, these will be treated as</span>
+<span class="sd">        dummy elements and an attempt will be made to guess the element based</span>
+<span class="sd">        on atom type. See issue #2306 for more details.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span>
-                <span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">NUMBER_TO_ELEMENT</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)])</span>
+                <span class="n">numlines</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">NUMBER_TO_ELEMENT</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;DUMMY&quot;</span><span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">attr</span></div>
 
