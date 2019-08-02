@@ -22,7 +22,9 @@ environment:
         APPVEYOR_SKIP_FINALIZE_ON_EXIT: true
         TEST_TIMEOUT: 1000
         PYTHON: "C:\\conda"
-        MINICONDA_VERSION: "latest"
+        # Temporarily fall back to default MINICONDA_VERSION in ci-helpers until https://github.com/MDAnalysis/mdanalysis/issues/2311
+        # is fixed in ci-helpers https://github.com/astropy/ci-helpers/issues/406
+        # MINICONDA_VERSION: "latest"
 
     matrix:
         - PYTHON_VERSION: 3.6
