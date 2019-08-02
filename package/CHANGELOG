@@ -73,6 +73,8 @@ Changes
   * bump minimum numpy version to 1.13.3
 
 Fixes
+  * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
+  * fixes ProgressMeter behaviour for non-AnalysisBase methods (Issue #2084)
   * fixed reading bz2 compressed psf files (Issue #2232)
   * fixed mol2 comment header handling (Issue #2261)
   * fixed reading PDB files with partial CRYST lines (Issue #2252)
