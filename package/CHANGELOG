@@ -16,7 +16,7 @@ The rules for this file:
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay
+         IAlibay, tyler.je.reddy, aakognole
 
   * 0.20.0
 
@@ -56,6 +56,11 @@ Enhancements
     PR #2221)
   * survival probability additions: residues, intermittency, step with performance,
     (PR #2226)   
+  * added unwrap keyword to center (PR #2275)
+  * added unwrap keyword to center_of_geometry (PR #2279)
+  * added unwrap keyword to center_of_mass (PR #2286)
+  * added unwrap keyword to moment_of_inertia (PR #2287)
+  * added unwrap keyword to asphericity (PR #2290)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
@@ -65,8 +70,11 @@ Changes
     invalid, an all-zero array or zero is returned, respectively. (Issue #2200,
     PR #2201)
   * changed fudge_factor in guess_bonds to deal with new vdw radii (#2138, PR #2142)
+  * bump minimum numpy version to 1.13.3
 
 Fixes
+  * fixed reading AMBER topologies with negative ATOMIC_NUMBERS (Issue #2306)
+  * fixed reading bz2 compressed psf files (Issue #2232)
   * fixed mol2 comment header handling (Issue #2261)
   * fixed reading PDB files with partial CRYST lines (Issue #2252)
   * fixed transformation tests not being run (Issue #2241)
@@ -105,6 +113,10 @@ Fixes
     2'-hydroxyl hydrogen H2'; gave wrong results (Issue #2218)
   * A clear message that the .pdb universe cannot contain a different number of
     atoms from frame to frame (Issue #1998, PR #2219)
+  * Fixed reading multiframe GRO files, currently only the first frame will be
+    read. (Issue #2276 PR #2277)
+  * fixed calculation of Chi torsion in nucleic acid analysis (Issue #2248)
+
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()

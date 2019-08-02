@@ -349,7 +349,16 @@ class _ImmutableBase(object):
     #  cache lookup if the class is reused (as in ag._derived_class(...)).
     __new__ = object.__new__
 
-
+def check_pbc_and_unwrap(function):
+    """Decorator to raise ValueError when both 'pbc' and 'unwrap' are set to True.
+    """
+    @functools.wraps(function)
+    def wrapped(group, *args, **kwargs):
+        if kwargs.get('compound') == 'group':
+            if kwargs.get('pbc') and kwargs.get('unwrap'):
+                raise ValueError("both 'pbc' and 'unwrap' can not be set to true")
+        return function(group, *args, **kwargs)
+    return wrapped
 
 def _only_same_level(function):
     @functools.wraps(function)
@@ -648,8 +657,10 @@ class GroupBase(_MutableBase):
         #    return ``not np.any(mask)`` here but using the following is faster:
         return not np.count_nonzero(mask)
 
+
     @warn_if_not_unique
-    def center(self, weights, pbc=None, compound='group'):
+    @check_pbc_and_unwrap
+    def center(self, weights, pbc=None, compound='group', unwrap=False):
         """Weighted center of (compounds of) the group
 
         Computes the weighted center of :class:`Atoms<Atom>` in the group.
@@ -679,6 +690,8 @@ class GroupBase(_MutableBase):
             will be returned as an array of position vectors, i.e. a 2d array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
 
         Returns
         -------
@@ -695,6 +708,8 @@ class GroupBase(_MutableBase):
         ValueError
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
+        ValueError
+            If both 'pbc' and 'unwrap' set to true.
         ~MDAnalysis.exceptions.NoDataError
             If `compound` is ``'molecule'`` but the topology doesn't
             contain molecule information (molnums) or if `compound` is
@@ -722,6 +737,7 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
         """
 
         if pbc is None:
@@ -736,6 +752,8 @@ class GroupBase(_MutableBase):
         if comp == 'group':
             if pbc:
                 coords = atoms.pack_into_box(inplace=False)
+            elif unwrap:
+                coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
             else:
                 coords = atoms.positions
             # If there's no atom, return its (empty) coordinates unchanged.
@@ -773,7 +791,12 @@ class GroupBase(_MutableBase):
         # required:
         sort_indices = np.argsort(compound_indices)
         compound_indices = compound_indices[sort_indices]
-        coords = atoms.positions[sort_indices]
+
+        # Unwrap Atoms
+        if unwrap:
+            coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
+        else:
+            coords = atoms.positions[sort_indices]
         if weights is None:
             coords = coords.astype(dtype, copy=False)
         else:
@@ -804,7 +827,8 @@ class GroupBase(_MutableBase):
         return centers
 
     @warn_if_not_unique
-    def center_of_geometry(self, pbc=None, compound='group'):
+    @check_pbc_and_unwrap
+    def center_of_geometry(self, pbc=None, compound='group', unwrap=False):
         """Center of geometry of (compounds of) the group.
 
         Computes the center of geometry (a.k.a. centroid) of
@@ -828,6 +852,8 @@ class GroupBase(_MutableBase):
             will be returned as an array of position vectors, i.e. a 2d array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
 
         Returns
         -------
@@ -849,8 +875,9 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
         """
-        return self.center(None, pbc=pbc, compound=compound)
+        return self.center(None, pbc=pbc, compound=compound, unwrap=unwrap)
 
     centroid = center_of_geometry
 
@@ -1827,9 +1854,8 @@ class GroupBase(_MutableBase):
         become too complicated.  For example to find the water atoms
         which are within 4.0A of two segments:
 
-        >>> water = u.select_atoms('resname SOL')
-        >>> shell1 = water.select_atoms('around 4.0 segid 1')
-        >>> shell2 = water.select_atoms('around 4.0 segid 2')
+        >>> shell1 = u.select_atoms('resname SOL and around 4.0 segid 1')
+        >>> shell2 = u.select_atoms('resname SOL and around 4.0 segid 2')
         >>> common = shell1 & shell2  # or shell1.intersection(shell2)
 
         See Also

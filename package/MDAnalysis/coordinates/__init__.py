@@ -228,8 +228,9 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | and radius information. Module                       |
    |               |           |       | :mod:`MDAnalysis.coordinates.PQR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (velocities as well). Module   |
-   | [#a]_         |           |       | :mod:`MDAnalysis.coordinates.GRO`                    |
+   | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (velocities as well).  Only    |
+   |               |           |       | the first frame present will be read.                |
+   | [#a]_         |           |       | Module :mod:`MDAnalysis.coordinates.GRO`             |
    +---------------+-----------+-------+------------------------------------------------------+
    | CHARMM        | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
    | CARD [#a]_    |           |       | either standard or EXTended format. Module           |

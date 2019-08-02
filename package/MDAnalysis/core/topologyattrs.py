@@ -57,7 +57,8 @@ from .topologyobjects import TopologyGroup
 from . import selection
 from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
-                     AtomGroup, ResidueGroup, SegmentGroup)
+                     AtomGroup, ResidueGroup, SegmentGroup,
+                     check_pbc_and_unwrap)
 from .. import _TOPOLOGY_ATTRS
 
 
@@ -769,7 +770,8 @@ class Masses(AtomAttr):
         return masses
 
     @warn_if_not_unique
-    def center_of_mass(group, pbc=None, compound='group'):
+    @check_pbc_and_unwrap
+    def center_of_mass(group, pbc=None, compound='group', unwrap=False):
         """Center of mass of (compounds of) the group.
 
         Computes the center of mass of :class:`Atoms<Atom>` in the group.
@@ -798,6 +800,8 @@ class Masses(AtomAttr):
             array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
 
         Returns
         -------
@@ -821,9 +825,10 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
         """
         atoms = group.atoms
-        return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound)
+        return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound, unwrap=unwrap)
 
     transplants[GroupBase].append(
         ('center_of_mass', center_of_mass))
@@ -831,7 +836,7 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     def total_mass(group, compound='group'):
         """Total mass of (compounds of) the group.
-        
+
         Computes the total mass of :class:`Atoms<Atom>` in the group.
         Total masses per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
@@ -865,6 +870,7 @@ class Masses(AtomAttr):
         ('total_mass', total_mass))
 
     @warn_if_not_unique
+    @check_pbc_and_unwrap
     def moment_of_inertia(group, **kwargs):
         """Tensor moment of inertia relative to center of mass as 3x3 numpy
         array.
@@ -882,15 +888,22 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
 
         """
         atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
+        unwrap = kwargs.pop('unwrap', False)
+        compound = kwargs.pop('compound', 'group')
 
-        # Convert to local coordinates
-        com = atomgroup.center_of_mass(pbc=pbc)
+        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound is not 'group':
+            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+
         if pbc:
             pos = atomgroup.pack_into_box(inplace=False) - com
+        elif unwrap:
+            pos = atomgroup.unwrap(compound=compound, inplace=False) - com
         else:
             pos = atomgroup.positions - com
 
@@ -1015,7 +1028,8 @@ class Masses(AtomAttr):
         ('shape_parameter', shape_parameter))
 
     @warn_if_not_unique
-    def asphericity(group, pbc=None):
+    @check_pbc_and_unwrap
+    def asphericity(group, pbc=None, unwrap=None, compound='group'):
         """Asphericity.
 
         See [Dima2004b]_ for background information.
@@ -1026,6 +1040,10 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. If ``None`` use value defined in
             MDAnalysis.core.flags['use_pbc']
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
 
         Note
         ----
@@ -1046,6 +1064,7 @@ class Masses(AtomAttr):
 
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter
 
         """
         atomgroup = group.atoms
@@ -1053,12 +1072,16 @@ class Masses(AtomAttr):
             pbc = flags['use_pbc']
         masses = atomgroup.masses
 
+        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound is not 'group':
+            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+
         if pbc:
-            recenteredpos = (atomgroup.pack_into_box(inplace=False) -
-                             atomgroup.center_of_mass(pbc=True))
+            recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
+        elif unwrap:
+            recenteredpos = (atomgroup.unwrap(inplace=False) - com)
         else:
-            recenteredpos = (atomgroup.positions -
-                             atomgroup.center_of_mass(pbc=False))
+            recenteredpos = (atomgroup.positions - com)
 
         tensor = np.zeros((3, 3))
         for x in range(recenteredpos.shape[0]):
@@ -1190,7 +1213,7 @@ class Charges(AtomAttr):
     @warn_if_not_unique
     def total_charge(group, compound='group'):
         """Total charge of (compounds of) the group.
-        
+
         Computes the total charge of :class:`Atoms<Atom>` in the group.
         Total charges per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
@@ -1445,6 +1468,7 @@ class Resnames(ResidueAttr):
         select protein residues.
 
         :exc:`TypeError` if an unknown *format* is selected.
+
 
         .. versionadded:: 0.9.0
         """

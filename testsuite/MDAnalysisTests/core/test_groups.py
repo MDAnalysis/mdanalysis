@@ -1407,3 +1407,21 @@ class TestInitGroup(object):
 
         with pytest.raises(TypeError):
             cls(0, 2, 4)  # missing Universe
+
+
+class TestDecorator(object):
+    @groups.check_pbc_and_unwrap
+    def dummy_funtion(cls, compound="group", pbc=True, unwrap=True):
+        return 0
+
+    @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
+                                          'group', 'segments'))
+    @pytest.mark.parametrize('pbc', (True, False))
+    @pytest.mark.parametrize('unwrap', (True, False))
+    def test_decorator(self, compound, pbc, unwrap):
+
+        if compound == 'group' and pbc and unwrap:
+            with pytest.raises(ValueError):
+                self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap)
+        else:
+            assert_equal(self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap), 0)
