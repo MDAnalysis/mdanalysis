@@ -7,9 +7,6 @@ max_jobs: 100
 cache:
     - '%LOCALAPPDATA%\pip\Cache'
 
-image:
-    - Visual Studio 2015
-
 environment:
     global:
         CONDA_CHANNELS: conda-forge
