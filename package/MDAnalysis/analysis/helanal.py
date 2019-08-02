@@ -124,7 +124,6 @@ import os
 import numpy as np
 
 import MDAnalysis
-from MDAnalysis import FinishTimeException
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib import mdamath
 
@@ -213,7 +212,9 @@ def helanal_trajectory(universe, selection="name CA",
 
     Raises
     ------
-    FinishTimeException
+    ValueError
+          If the specified start (begin) time occurs after the end of the
+          trajectory object.
           If the specified finish time precedes the specified start time or
           current time stamp of trajectory object.
 
@@ -279,13 +280,13 @@ def helanal_trajectory(universe, selection="name CA",
             # finish occurs before begin time
             msg = ("The input finish time ({0} ps) precedes the input begin "
                    "time ({1} ps)".format(finish, begin))
-            raise FinishTimeException(msg)
+            raise ValueError(msg)
         elif trajectory.ts.time > finish:
             # you'd be starting with a finish time(in ps) that has already
             # passed or is not available
             msg = ("The input finish time ({0} ps) precedes the current "
                    "trajectory time ({1} ps)".format(finish, trajectory.time))
-            raise FinishTimeException(msg)
+            raise ValueError(msg)
         elif traj_end_time < finish:
             # finish time occurs after the end of trajectory, warn
             msg = ("The input finish time ({0} ps) occurs after the end of "

@@ -29,7 +29,6 @@ from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.helanal
-from MDAnalysis import FinishTimeException
 from MDAnalysisTests.datafiles import (GRO, XTC, PSF, DCD, PDB_small,
                                        HELANAL_BENDING_MATRIX,
                                        HELANAL_BENDING_MATRIX_SUBSET)
@@ -170,13 +169,13 @@ def test_exceptions(tmpdir):
 
     # Testing xtc striding: Check for resolution of Issue #188
     with tmpdir.as_cwd():
-        with pytest.raises(FinishTimeException):
+        with pytest.raises(ValueError):
             MDAnalysis.analysis.helanal.helanal_trajectory(
                 u, selection="name CA", finish=5
             )
 
     with tmpdir.as_cwd():
-        with pytest.raises(FinishTimeException):
+        with pytest.raises(ValueError):
             MDAnalysis.analysis.helanal.helanal_trajectory(
                 u, selection="name CA", begin=1, finish=0
             )
