@@ -413,6 +413,7 @@ class TestMultiPDBReader(object):
                      err_msg="slicing did not produce the expected frames")
 
     def test_conect_bonds_conect(self, tmpdir, conect):
+        print(conect.atoms)
         assert_equal(len(conect.atoms), 1890)
         assert_equal(len(conect.bonds), 1922)
 
