@@ -51,7 +51,8 @@ def guess_masses(atom_types):
     atom_masses : np.ndarray dtype float64
     """
     validate_atom_types(atom_types)
-    masses = np.array([get_atom_mass(atom_t) for atom_t in atom_types], dtype=np.float64)
+    masses = np.array([get_atom_mass(atom_t)
+                       for atom_t in atom_types], dtype=np.float64)
     return masses
 
 
@@ -71,7 +72,8 @@ def validate_atom_types(atom_types):
         try:
             tables.masses[atom_type]
         except KeyError:
-            warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
+            warnings.warn(
+                "Failed to guess the mass for the following atom types: {}".format(atom_type))
 
 
 def guess_types(atom_names):
@@ -87,7 +89,6 @@ def guess_types(atom_names):
     atom_types : np.ndarray dtype object
     """
     return np.array([guess_atom_element(name) for name in atom_names], dtype=object)
-
 
 
 def guess_atom_type(atomname):
@@ -106,7 +107,9 @@ def guess_atom_type(atomname):
     """
     return guess_atom_element(atomname)
 
+
 SYMBOLS = re.compile(r'[0-9\*\+\-]')
+
 
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.
@@ -140,11 +143,10 @@ def guess_atom_element(atomname):
                 return name[1:]
             if len(name) <= 2:
                 return name[0]
-            name = name[1:-1]
-                
+            name = name[:-1]  # probably element is on left not right
+
         # if it's numbers
         return atomname
-
 
 
 def guess_bonds(atoms, coords, box=None, **kwargs):
