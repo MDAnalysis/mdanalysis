@@ -21,6 +21,8 @@ mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
   * 0.20.0
 
 Enhancements
+  * improved atom element guessing in topology.guessers to check for elements
+    after the first element (#2313)
   * added position averaging transformation that makes use of the 
     transformations API (PR #2208)
   * added find_hydrogen_donors to analysis.bonds.hbond_autocorrel to
