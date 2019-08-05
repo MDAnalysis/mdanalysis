@@ -141,7 +141,7 @@ def guess_atom_element(atomname):
             if len(name) <= 2:
                 return name[0]
             name = name[1:-1]
-        
+                
         # if it's numbers
         return atomname
 
