@@ -230,10 +230,26 @@ class TestSelectionsCHARMM(object):
         assert_equal(subsel[0].index, 1)
         assert_equal(subsel[-1].index, 4)
 
+    def test_index(self, universe):
+        "Tests the index selection, also from AtomGroup instances (Issue 275)"
+        sel = universe.select_atoms('index 4')
+        assert_equal(sel[0].index, 4)
+        sel = universe.select_atoms('index 0:9')
+        assert_equal(len(sel), 10)
+        assert_equal(sel[0].index, 0)
+        assert_equal(sel[-1].index, 9)
+        subsel = sel.select_atoms('index 4')
+        assert_equal(subsel[0].index, 4)
+        subsel = sel.select_atoms('index 1:4')
+        assert_equal(len(subsel), 4)
+        assert_equal(subsel[0].index, 1)
+        assert_equal(subsel[-1].index, 4)
+
     def test_byres(self, universe):
         sel = universe.select_atoms('byres bynum 0:5')
 
         assert_equal(len(sel), len(universe.residues[0].atoms))
+
 
     def test_same_resname(self, universe):
         """Test the 'same ... as' construct (Issue 217)"""
