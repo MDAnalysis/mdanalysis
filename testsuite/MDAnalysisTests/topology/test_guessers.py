@@ -79,6 +79,10 @@ class TestGuessTypes(object):
     def test_guess_atom_element_1H(self):
         assert guessers.guess_atom_element('1H') == 'H'
         assert guessers.guess_atom_element('2H') == 'H'
+    
+    def test_guess_element_symbols(self):
+        assert guessers.guess_atom_element('AO5*') == 'O'
+        assert guessers.guess_atom_element('F-') == 'F'
 
 
 def test_guess_charge():
