@@ -179,24 +179,34 @@ class TestSelectionsCHARMM(object):
         assert_equal(len(sel), 2486)
 
     def test_around(self, universe):
-        sel = universe.select_atoms('around 4.0 bynum 1943')
-        assert_equal(len(sel), 32)
+        for atom in ['bynum 1943', 'index 1942']:
+            sel_string = 'around 4.0 ' + atom
+            sel = universe.select_atoms(sel_string)
+            assert_equal(len(sel), 32)
 
     def test_sphlayer(self, universe):
-        sel = universe.select_atoms('sphlayer 4.0 6.0 bynum 1281')
-        assert_equal(len(sel), 66)
+        for atom in ['bynum 1281', 'index 1280']:
+            sel_string = 'sphlayer 4.0 6.0 ' + atom
+            sel = universe.select_atoms(sel_string)
+            assert_equal(len(sel), 66)
 
     def test_sphzone(self, universe):
-        sel = universe.select_atoms('sphzone 6.0 bynum 1281')
-        assert_equal(len(sel), 86)
+        for atom in ['bynum 1281', 'index 1280']:
+            sel_string = 'sphzone 6.0 ' + atom
+            sel = universe.select_atoms(sel_string)
+            assert_equal(len(sel), 86)
 
     def test_cylayer(self, universe):
-        sel = universe.select_atoms('cylayer 4.0 6.0 10 -10 bynum 1281')
-        assert_equal(len(sel), 88)
+        for atom in ['bynum 1281', 'index 1280']:
+            sel_string = 'cylayer 4.0 6.0 10 -10 ' + atom
+            sel = universe.select_atoms(sel_string)
+            assert_equal(len(sel), 88)
 
     def test_cyzone(self, universe):
-        sel = universe.select_atoms('cyzone 6.0 10 -10 bynum 1281')
-        assert_equal(len(sel), 166)
+        for atom in ['bynum 1281', 'index 1280']:
+            sel_string = 'cyzone 6.0 10 -10 ' + atom
+            sel = universe.select_atoms(sel_string)
+            assert_equal(len(sel), 166)
 
     def test_point(self, universe):
         ag = universe.select_atoms('point 5.0 5.0 5.0 3.5')
@@ -247,9 +257,11 @@ class TestSelectionsCHARMM(object):
 
     def test_byres(self, universe):
         sel = universe.select_atoms('byres bynum 0:5')
-
         assert_equal(len(sel), len(universe.residues[0].atoms))
 
+        sel_index = universe.select_atoms('byres index 0:19')
+        assert_equal(len(sel_index), (len(universe.residues[0].atoms) +
+                                      len(universe.residues[1].atoms)))
 
     def test_same_resname(self, universe):
         """Test the 'same ... as' construct (Issue 217)"""
@@ -408,25 +420,32 @@ class TestSelectionsGRO(object):
 
     def test_same_coordinate(self, universe):
         """Test the 'same ... as' construct (Issue 217)"""
-        sel = universe.select_atoms("same x as bynum 1 or bynum 10")
-        assert_equal(len(sel), 12,
-                     "Found a wrong number of atoms with same x as ids 1 or 10")
-        target_ids = np.array([0, 8, 9, 224, 643, 3515,
-                               11210, 14121, 18430, 25418, 35811, 43618])
-        assert_equal(sel.indices, target_ids,
-                     "Found wrong atoms with same x as ids 1 or 10")
+        for atoms in ['bynum 1 or bynum 10', 'index 0 or index 9']:
+            sel_string = "same x as " + atoms
+            sel = universe.select_atoms(sel_string)
+            errmsg = ("Found a wrong number of atoms with same "
+                      "x as ids 1 or 10")
+            assert_equal(len(sel), 12, errmsg) 
+            target_ids = np.array([0, 8, 9, 224, 643, 3515, 11210, 14121,
+                                   18430, 25418, 35811, 43618])
+            assert_equal(sel.indices, target_ids,
+                         "Found wrong atoms with same x as ids 1 or 10")
 
     def test_cylayer(self, universe):
         """Cylinder layer selections with tricilinic periodicity (Issue 274)"""
         atgp = universe.select_atoms('name OW')
-        sel = atgp.select_atoms('cylayer 10 20 20 -20 bynum 3554')
-        assert_equal(len(sel), 1155)
+        for atom in ['bynum 3554', 'index 3553']:
+            sel_string = 'cylayer 10 20 20 -20 ' + atom
+            sel = atgp.select_atoms(sel_string)
+            assert_equal(len(sel), 1155)
 
     def test_cyzone(self, universe):
         """Cylinder zone selections with tricilinic periodicity (Issue 274)"""
         atgp = universe.select_atoms('name OW')
-        sel = atgp.select_atoms('cyzone 20 20 -20 bynum 3554')
-        assert_equal(len(sel), 1556)
+        for atom in ['bynum 3554', 'index 3553']:
+            sel_string = 'cyzone 20 20 -20 ' + atom
+            sel = atgp.select_atoms(sel_string)
+            assert_equal(len(sel), 1556)
 
 
 class TestSelectionsTPR(object):
@@ -439,13 +458,16 @@ class TestSelectionsTPR(object):
         """Test the 'same ... as' construct (Issue 217)"""
         # This test comes here because it's a system with solvent,
         # and thus multiple fragments.
-        sel = universe.select_atoms("same fragment as bynum 1")
-        assert_equal(
-            len(sel), 3341,
-            "Found a wrong number of atoms on the same fragment as id 1")
-        assert_equal(
-            sel.indices, universe.atoms[0].fragment.indices,
-            "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
+        for atom in ['bynum 1', 'index 0']:
+            sel_string = "same fragment as " + atom
+            sel = universe.select_atoms(sel_string)
+            errmsg = ("Found a wrong number of atoms "
+                      "on the same fragment as id 1")
+            assert_equal(len(sel), 3341, errmsg)
+            errmsg = ("Found a differ set of atoms when using the 'same "
+                      "fragment as' construct vs. the .fragment property")
+            assert_equal(sel.indices, universe.atoms[0].fragment.indices,
+                         errmsg)
 
     def test_moltype(self, universe):
         sel = universe.select_atoms("moltype NA+")
@@ -868,6 +890,7 @@ class TestSelectionErrors(object):
         'resid and name C',  # rangesel not finding vals
         'resnum ',
         'bynum or protein',
+        'index or protein',
         'prop mass < 4.0 hello',  # unused token
         'prop mass > 10. and group this',  # missing group
         'prop mass > 10. and fullgroup this',  # missing fullgroup
