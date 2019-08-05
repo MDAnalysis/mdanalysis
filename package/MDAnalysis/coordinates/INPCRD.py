@@ -65,13 +65,12 @@ suffix '.ncrst', '.ncrestrt' or '.ncrst7' and read by the :class:`NCRSTReader`.
 
 Binary restart files can also contain velocity and force information, and can
 record the simulation time step. Whilst the `AMBER netcdf`_ format details
-default unit values of ångström and picoseconds, these can in theory occupy any
-unit type. However, at the moment MDAnalysis only supports the default types
-and will raise a :exc:`NotImplementedError` if anything else is detected.
+default unit values of ångström and picoseconds, these can in theory occupy
+any unit type. However, at the moment MDAnalysis only supports the default
+types and will raise a :exc:`NotImplementedError` if anything else is detected.
 
 .. autoclass:: NCRSTReader
    :members:
-
 
 
 .. Links
@@ -166,13 +165,18 @@ class NCRSTReader(base.SingleFrameReaderBase):
     attribute.
 
     Periodic unit cell information is detected and used to populate the
-    :attr:`Timestep.dimensions` attribute. (If not unit cell is available in
+    :attr:`Timestep.dimensions` attribute. (If no unit cell is available in
     the restart file, then :attr:`Timestep.dimensions` will return
     ``[0,0,0,0,0,0]``).
 
     The NCRST reader uses :mod:`scipy.io.netcdf` and therefore :mod:`scipy`
-    must be installed. Support for the *mmap* keyword is available as detailed
-    in :class:`NCDFReader` and :mod:`scipy.io.netcdf.netcdf_file`.
+    must be installed. 
+
+    Support for the *mmap* keyword is available as detailed
+    in :class:`NCDFReader` and :mod:`scipy.io.netcdf.netcdf_file`. When
+    mmap = True, the 
+It is
+    enabled by default
 
     The NCRST reader also uses a custom Timestep object with C-style memory
     mapping in order to match the NCDFReader.
@@ -180,7 +184,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
     .. rubric:: Limitations
 
     * Only NCRST files with time in ps and lengths in Angstroem are processed.
-    * scale_factors are not supported (and not checked).
+    * scale_factors are not supported (raises NotImplementedError).
     * Restart files without coordinate information are not supported.
     * Replica exchange variables are not supported.
 
@@ -191,7 +195,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
     :class:`NCDFReader`
     :class:`NCDFWriter`
 
-    .. versionadded: 0.18.1
+    .. versionadded: 0.20.0
 
     """
 
@@ -205,14 +209,11 @@ class NCRSTReader(base.SingleFrameReaderBase):
     class Timestep(base.Timestep):
         """ Modified Timestep class for AMBER
 
-        Uses C order memory mapping to match the style used AMBER TRAJ
+        Uses C order memory mapping to match the style used by AMBER TRAJ
 
         The Timestep can be initialized with `arg` being an integer
         (the number of atoms) and an optional keyword arguments to allocate
         space for velocities, and forces.
-
-        .. versionchanged:: 0.10.0
-           Added ability to contain Forces
         """
         order = 'C'
 
@@ -321,14 +322,13 @@ class NCRSTReader(base.SingleFrameReaderBase):
                          rstfile.variables['time'].units))
                 self.ts.time = rstfile.variables['time'].getValue()
             except KeyError:
-                # As of AMBER16 the NetCDF restart files created by
-                # minimizations ignore convention and default to 0.0 ps
-                # Warn and do the same thing here (IA: need to check this)
-                wmsg = ("Restart file {0} does not contain time information "
-                        "time will default to 0.0 ps").format(self.filename)
+                # Warn the user and move on
+                wmsg = ("Restart file {0} does not contain time information. "
+                        "This is should be expected if the file was not "
+                        "created from an MD trajectory (e.g. a "
+                        "minimization)".format(self.filename))
                 warnings.warn(wmsg)
                 logger.warning(wmsg)
-                self.ts.time = 0.0
 
             # Single frame so we assign it to 0
             self.ts.frame = 0
@@ -338,7 +338,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
                 units = rstfile.variables['coordinates'].units.decode('utf-8')
                 if units != "angstrom":
                     raise NotImplementedError(
-                        "NCRSTReader currently assumes that the restart file "
+                        "NCRSTReader currently expects that the restart file "
                         "uses a length unit of Angstroem and not {0}.".format(
                          rstfile.variables['coordinates'].units))
                 self.ts._pos[:] = rstfile.variables['coordinates'][:]
