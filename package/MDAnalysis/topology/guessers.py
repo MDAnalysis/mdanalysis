@@ -137,9 +137,9 @@ def guess_atom_element(atomname):
         while name:
             if name in tables.elements:
                 return name
-            elif name[:-1] in tables.elements:
+            if name[:-1] in tables.elements:
                 return name[:-1]
-            elif name[1:] in tables.elements:
+            if name[1:] in tables.elements:
                 return name[1:]
             if len(name) <= 2:
                 return name[0]
