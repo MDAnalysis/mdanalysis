@@ -24,7 +24,6 @@ class AtomGroupMethodsBench(object):
 
     def setup(self, num_atoms):
         self.u = MDAnalysis.Universe(GRO)
-        self.u_unwrap = mda.Universe(TRZ_psf, TRZ)
         self.ag = self.u.atoms[:num_atoms]
         self.weights = np.ones(num_atoms)
         self.vdwradii = {'H':1.0,
@@ -262,6 +261,7 @@ class AtomGroupMethodsBenchWithUnwrap(object):
     param_names = ['num_atoms']
 
     def setup(self, num_atoms):
+        self.u_unwrap = mda.Universe(TRZ_psf, TRZ)
         self.ag_unwrap = self.u_unwrap.residues[0:3]
 
         if MDAnalysis.__version__ < '0.20':
