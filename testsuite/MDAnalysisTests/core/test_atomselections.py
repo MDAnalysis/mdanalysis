@@ -178,35 +178,45 @@ class TestSelectionsCHARMM(object):
         sel = universe.select_atoms('not backbone')
         assert_equal(len(sel), 2486)
 
-    def test_around(self, universe):
-        for atom in ['bynum 1943', 'index 1942']:
-            sel_string = 'around 4.0 ' + atom
-            sel = universe.select_atoms(sel_string)
-            assert_equal(len(sel), 32)
+    @pytest.mark.parametrize('selstr', [
+        'around 4.0 bynum 1943', 
+        'around 4.0 index 1942'
+    ])
+    def test_around(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), 32)
 
-    def test_sphlayer(self, universe):
-        for atom in ['bynum 1281', 'index 1280']:
-            sel_string = 'sphlayer 4.0 6.0 ' + atom
-            sel = universe.select_atoms(sel_string)
-            assert_equal(len(sel), 66)
+    @pytest.mark.parametrize('selstr', [
+        'sphlayer 4.0 6.0 bynum 1281',
+        'sphlayer 4.0 6.0 index 1280'
+    ])
+    def test_sphlayer(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), 66)
 
-    def test_sphzone(self, universe):
-        for atom in ['bynum 1281', 'index 1280']:
-            sel_string = 'sphzone 6.0 ' + atom
-            sel = universe.select_atoms(sel_string)
-            assert_equal(len(sel), 86)
+    @pytest.mark.parametrize('selstr', [
+        'sphzone 6.0 bynum 1281',
+        'sphzone 6.0 index 1280'
+    ])
+    def test_sphzone(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), 86)
 
-    def test_cylayer(self, universe):
-        for atom in ['bynum 1281', 'index 1280']:
-            sel_string = 'cylayer 4.0 6.0 10 -10 ' + atom
-            sel = universe.select_atoms(sel_string)
-            assert_equal(len(sel), 88)
+    @pytest.mark.parametrize('selstr', [
+        'cylayer 4.0 6.0 10 -10 bynum 1281',
+        'cylayer 4.0 6.0 10 -10 index 1280'
+    ])
+    def test_cylayer(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), 88)
 
-    def test_cyzone(self, universe):
-        for atom in ['bynum 1281', 'index 1280']:
-            sel_string = 'cyzone 6.0 10 -10 ' + atom
-            sel = universe.select_atoms(sel_string)
-            assert_equal(len(sel), 166)
+    @pytest.mark.parametrize('selstr', [
+        'cyzone 6.0 10 -10 bynum 1281',
+        'cyzone 6.0 10 -10 index 1280'
+    ])
+    def test_cyzone(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), 166)
 
     def test_point(self, universe):
         ag = universe.select_atoms('point 5.0 5.0 5.0 3.5')
@@ -255,13 +265,13 @@ class TestSelectionsCHARMM(object):
         assert_equal(subsel[0].index, 1)
         assert_equal(subsel[-1].index, 4)
 
-    def test_byres(self, universe):
-        sel = universe.select_atoms('byres bynum 0:5')
-        assert_equal(len(sel), len(universe.residues[0].atoms))
-
-        sel_index = universe.select_atoms('byres index 0:19')
-        assert_equal(len(sel_index), (len(universe.residues[0].atoms) +
-                                      len(universe.residues[1].atoms)))
+    @pytest.mark.parametrize('selstr,expected', (
+        ['byres bynum 0:5', 19],
+        ['byres index 0:19', 43]
+    ))
+    def test_byres(self, universe, selstr, expected):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), expected)
 
     def test_same_resname(self, universe):
         """Test the 'same ... as' construct (Issue 217)"""
@@ -418,34 +428,42 @@ class TestSelectionsGRO(object):
         assert_equal(sel.n_atoms, 7)
         assert_equal(sel.residues.resnames, ['GLY'])
 
-    def test_same_coordinate(self, universe):
+    @pytest.mark.parametrize('selstr', [
+        'same x as bynum 1 or bynum 10',
+        'same x as bynum 1 10',
+        'same x as index 0 or index 9',
+        'same x as index 0 9'
+    ])
+    def test_same_coordinate(self, universe, selstr):
         """Test the 'same ... as' construct (Issue 217)"""
-        for atoms in ['bynum 1 or bynum 10', 'index 0 or index 9']:
-            sel_string = "same x as " + atoms
-            sel = universe.select_atoms(sel_string)
-            errmsg = ("Found a wrong number of atoms with same "
-                      "x as ids 1 or 10")
-            assert_equal(len(sel), 12, errmsg) 
-            target_ids = np.array([0, 8, 9, 224, 643, 3515, 11210, 14121,
-                                   18430, 25418, 35811, 43618])
-            assert_equal(sel.indices, target_ids,
-                         "Found wrong atoms with same x as ids 1 or 10")
+        sel = universe.select_atoms(selstr)
+        errmsg = ("Found a wrong number of atoms with same "
+                  "x as ids 1 or 10")
+        assert_equal(len(sel), 12, errmsg) 
+        target_ids = np.array([0, 8, 9, 224, 643, 3515, 11210, 14121,
+                               18430, 25418, 35811, 43618])
+        assert_equal(sel.indices, target_ids,
+                     "Found wrong atoms with same x as ids 1 or 10")
 
-    def test_cylayer(self, universe):
+    @pytest.mark.parametrize('selstr', [
+        'cylayer 10 20 20 -20 bynum 3554',
+        'cylayer 10 20 20 -20 index 3553'
+    ])
+    def test_cylayer(self, universe, selstr):
         """Cylinder layer selections with tricilinic periodicity (Issue 274)"""
         atgp = universe.select_atoms('name OW')
-        for atom in ['bynum 3554', 'index 3553']:
-            sel_string = 'cylayer 10 20 20 -20 ' + atom
-            sel = atgp.select_atoms(sel_string)
-            assert_equal(len(sel), 1155)
+        sel = atgp.select_atoms(selstr)
+        assert_equal(len(sel), 1155)
 
-    def test_cyzone(self, universe):
+    @pytest.mark.parametrize('selstr', [
+        'cyzone 20 20 -20 bynum 3554',
+        'cyzone 20 20 -20 index 3553'
+    ])
+    def test_cyzone(self, universe, selstr):
         """Cylinder zone selections with tricilinic periodicity (Issue 274)"""
         atgp = universe.select_atoms('name OW')
-        for atom in ['bynum 3554', 'index 3553']:
-            sel_string = 'cyzone 20 20 -20 ' + atom
-            sel = atgp.select_atoms(sel_string)
-            assert_equal(len(sel), 1556)
+        sel = atgp.select_atoms(selstr)
+        assert_equal(len(sel), 1556)
 
 
 class TestSelectionsTPR(object):
@@ -454,20 +472,21 @@ class TestSelectionsTPR(object):
     def universe():
         return MDAnalysis.Universe(TPR,XTC)
 
-    def test_same_fragment(self, universe):
+    @pytest.mark.parametrize('selstr', [
+        'same fragment as bynum 1',
+        'same fragment as index 0'
+    ])
+    def test_same_fragment(self, universe, selstr):
         """Test the 'same ... as' construct (Issue 217)"""
         # This test comes here because it's a system with solvent,
         # and thus multiple fragments.
-        for atom in ['bynum 1', 'index 0']:
-            sel_string = "same fragment as " + atom
-            sel = universe.select_atoms(sel_string)
-            errmsg = ("Found a wrong number of atoms "
-                      "on the same fragment as id 1")
-            assert_equal(len(sel), 3341, errmsg)
-            errmsg = ("Found a differ set of atoms when using the 'same "
-                      "fragment as' construct vs. the .fragment property")
-            assert_equal(sel.indices, universe.atoms[0].fragment.indices,
-                         errmsg)
+        sel = universe.select_atoms(selstr)
+        errmsg = ("Found a wrong number of atoms "
+                  "on the same fragment as id 1")
+        assert_equal(len(sel), 3341, errmsg)
+        errmsg = ("Found a differ set of atoms when using the 'same "
+                  "fragment as' construct vs. the .fragment property")
+        assert_equal(sel.indices, universe.atoms[0].fragment.indices, errmsg)
 
     def test_moltype(self, universe):
         sel = universe.select_atoms("moltype NA+")
@@ -936,7 +955,7 @@ class TestImplicitOr(object):
     def test_string_selections(self, ref, sel, universe):
         self._check_sels(ref, sel, universe)
 
-    @pytest.mark.parametrize("seltype", ['resid', 'resnum', 'bynum'])
+    @pytest.mark.parametrize("seltype", ['resid', 'resnum', 'bynum', 'index'])
     @pytest.mark.parametrize('ref, sel', [
         ('{typ} 1 or {typ} 2', '{typ} 1 2'),
         ('{typ} 1:10 or {typ} 22', '{typ} 1:10 22'),
