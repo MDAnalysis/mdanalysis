@@ -173,10 +173,10 @@ MW           DUMMY
 #: with :func:`MDAnalysis.topology.core.guess_atom_type`.
 atomelements = kv2dict(TABLE_ATOMELEMENTS)
 
-elements = ['H', 'He',
-            'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
-            'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'O', 'Ar', 
-            'K', 'Ca', 'Sc', 'Ti']
+elements = ['H', 'HE',
+            'Li', 'BE', 'B', 'C', 'N', 'O', 'F', 'NE',
+            'NA', 'MG', 'AL', 'SI', 'P', 'S', 'O', 'AR', 
+            'K', 'CA', 'SC', 'TI']
 
 #: Plain-text table with atomic masses in u.
 TABLE_MASSES = """
