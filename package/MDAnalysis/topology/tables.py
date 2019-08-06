@@ -77,6 +77,7 @@ def kv2dict(s, convertor=str):
         d[values[0]] = convertor(values[1])
     return d
 
+
 #: Table with hard-coded special atom names, used for guessing atom types
 #: with :func:`MDAnalysis.topology.core.guess_atom_element`.
 TABLE_ATOMELEMENTS = """
@@ -173,10 +174,10 @@ MW           DUMMY
 #: with :func:`MDAnalysis.topology.core.guess_atom_type`.
 atomelements = kv2dict(TABLE_ATOMELEMENTS)
 
-elements = ['H', 'HE',
-            'Li', 'BE', 'B', 'C', 'N', 'O', 'F', 'NE',
-            'NA', 'MG', 'AL', 'SI', 'P', 'S', 'O', 'AR', 
-            'K', 'CA', 'SC', 'TI']
+elements = ['H',
+            'LI', 'BE', 'B', 'C', 'N', 'O', 'F',
+            'NA', 'MG', 'AL', 'P', 'SI', 'S', 'CL',
+            'K']
 
 #: Plain-text table with atomic masses in u.
 TABLE_MASSES = """
