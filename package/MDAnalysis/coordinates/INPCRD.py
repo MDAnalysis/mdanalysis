@@ -244,17 +244,21 @@ class NCRSTReader(base.SingleFrameReaderBase):
                                          mmap=self._mmap) as rstfile:
             # Global attribute checks
             # Conventions should contain the AMBERRESTART string
-            if not ('AMBERRESTART' in
-                    rstfile.Conventions.decode('utf-8').split(',') or
-                    'AMBERRESTART' in
-                    rstfile.Conventions.decode('utf-8').split()):
-                errmsg = ("NetCDF restart file {0} does not conform to AMBER "
-                          "specifications, as detailed in "
-                          "http://ambermd.org/netcdf/nctraj.xhtml "
-                          "('AMBERRESTART' must be one of the tokens in "
-                          "attribute Conventions)".format(self.filename))
-                logger.fatal(errmsg)
-                raise TypeError(errmsg)
+            try:
+                if not ('AMBERRESTART' in
+                        rstfile.Conventions.decode('utf-8').split(',') or
+                        'AMBERRESTART' in
+                        rstfile.Conventions.decode('utf-8').split()):
+                    errmsg = ("NetCDF restart file {0} does not conform to "
+                              "AMBER specifications, as detailed in "
+                              "http://ambermd.org/netcdf/nctraj.xhtml "
+                              "('AMBERRESTART' must be one of the tokens in "
+                              "attribute Conventions)".format(self.filename))
+                    logger.fatal(errmsg)
+                    raise TypeError(errmsg)
+            except KeyError:
+                errmsg = "NetCDF file is missign Conventions"
+                raise KeyError(errmsg)
 
             # The AMBER NetCDF standard enforces 64 bit offsets
             if not rstfile.version_byte == 2:
@@ -275,13 +279,18 @@ class NCRSTReader(base.SingleFrameReaderBase):
                 errmsg = "NCRST file does not contain sptial dimension"
                 raise KeyError(errmsg)
 
-            # ConventionVersion should exist and be equal to 1.0
-            if not rstfile.ConventionVersion.decode('utf-8') == self.version:
-                wmsg = ("NCRST format is {0!s} but the reader implements "
-                        "format {1!s}".format(
-                         rstfile.ConventionVersion, self.version))
-                warnings.warn(wmsg)
-                logger.warning(wmsg)
+            try:
+                # ConventionVersion should exist and be equal to 1.0
+                if not rstfile.ConventionVersion.decode('utf-8') == 
+                       self.version:
+                    wmsg = ("NCRST format is {0!s} but the reader implements "
+                            "format {1!s}".format(
+                             rstfile.ConventionVersion, self.version))
+                    warnings.warn(wmsg)
+                    logger.warning(wmsg)
+            except KeyError:
+                errmsg = "ConventionVersion not present in NetCDF file"
+                raise KeyError(errmsg)
 
             # The specs define Program and ProgramVersion as required. Here we
             # just warn the users instead of raising an Error.
@@ -294,8 +303,11 @@ class NCRSTReader(base.SingleFrameReaderBase):
                 logger.warning(wmsg)
 
             # The use of scale_factor is currently unsupported
-            if hasattr(rstfile.variables['coordinates'], 'scale_factor'):
-                raise NotImplementedError("scale_factors are not implemented")
+            # Note scale_factor can be an attribute of any variable
+            for variable in rstfile.variables:
+                if hasattr(rstfile.variables[variable], 'scale_factor'):
+                    errmsg = "scale_factors are not implemented"
+                    raise NotImplementedError(errmsg)
 
             # Note: SingleFrameReaderBase class sets parsed n_atoms value to
             # self.n_atom which makes for a confusing check
