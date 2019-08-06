@@ -170,13 +170,14 @@ class NCRSTReader(base.SingleFrameReaderBase):
     ``[0,0,0,0,0,0]``).
 
     The NCRST reader uses :mod:`scipy.io.netcdf` and therefore :mod:`scipy`
-    must be installed. 
+    must be installed.
 
     Support for the *mmap* keyword is available as detailed
-    in :class:`NCDFReader` and :mod:`scipy.io.netcdf.netcdf_file`. When
-    mmap = True, the 
-It is
-    enabled by default
+    in :class:`NCDFReader` and :mod:`scipy.io.netcdf.netcdf_file`. The use of
+    ``mmap=True`` leads to around a 2x read speed improvement in a ~ 1 million
+    atom system (AMBER STMV benchmark). As per the :class:`NCDFReader`, the
+    default behaviour is ``mmap=None``, which means that the default behaviour
+    of :class:`scipy.io.netcdf.netcdf_file` prevails.
 
     The NCRST reader also uses a custom Timestep object with C-style memory
     mapping in order to match the NCDFReader.
@@ -239,7 +240,8 @@ It is
         Overrides :class:`SingleFrameReaderBase` placeholder function
         """
         # Open netcdf file via context manager
-        with scipy.io.netcdf.netcdf_file(self.filename, mode='r', mmap=self._mmap) as rstfile:
+        with scipy.io.netcdf.netcdf_file(self.filename, mode='r',
+                                         mmap=self._mmap) as rstfile:
             # Global attribute checks
             # Conventions should contain the AMBERRESTART string
             if not ('AMBERRESTART' in
@@ -264,11 +266,30 @@ It is
                 logger.fatal(errmsg)
                 raise TypeError(errmsg)
 
+            # The specs require that dimensions->spatial == 3 exists
+            try:
+                if not rstfile.dimensions['spatial'] == 3:
+                    errmsg = "Incorrect spatial value for NCRST file"
+                    raise TypeError(errmsg)
+            except KeyError:
+                errmsg = "NCRST file does not contain sptial dimension"
+                raise KeyError(errmsg)
+
             # ConventionVersion should exist and be equal to 1.0
             if not rstfile.ConventionVersion.decode('utf-8') == self.version:
-                wmsg = ("NCDF restart format is {0!s} but the reader "
-                        "implements format {1!s}".format(
+                wmsg = ("NCRST format is {0!s} but the reader implements "
+                        "format {1!s}".format(
                          rstfile.ConventionVersion, self.version))
+                warnings.warn(wmsg)
+                logger.warning(wmsg)
+
+            # The specs define Program and ProgramVersion as required. Here we
+            # just warn the users instead of raising an Error.
+            if not (hasattr(rstfile, 'program') or
+                    hasattr(rstfile, 'programVersion')):
+                wmsg = ("This NCRST file may not fully adhere to AMBER "
+                        "standards as either the `program` or "
+                        "`programVersion` attributes are missing")
                 warnings.warn(wmsg)
                 logger.warning(wmsg)
 
