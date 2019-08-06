@@ -217,12 +217,6 @@ class AtomGroupMethodsBench(object):
         """
         self.ag.center_of_mass(pbc=True)
 
-    def time_center_of_mass_unwrap(self, num_atoms):
-        """Benchmark center_of_mass calculation with
-        unwrap active.
-        """
-        self.ag_unwrap.center_of_mass(unwrap=True, compound='residues')
-
     def time_center_of_geometry_default(self, num_atoms):
         """Benchmark center_of_geometry calculation with
         pbc and unwrap inactive.
@@ -234,12 +228,6 @@ class AtomGroupMethodsBench(object):
         pbc active.
         """
         self.ag.center_of_geometry(pbc=True)
-
-    def time_center_of_geometry_unwrap(self, num_atoms):
-        """Benchmark center_of_geometry calculation with
-        unwrap active.
-        """
-        self.ag_unwrap.center_of_geometry(unwrap=True, compound='residues')
 
     def time_moment_of_inertia_default(self, num_atoms):
         """Benchmark moment_of_inertia calculation with
@@ -253,12 +241,6 @@ class AtomGroupMethodsBench(object):
         """
         self.ag.moment_of_inertia(pbc=True)
 
-    def time_moment_of_inertia_unwrap(self, num_atoms):
-        """Benchmark moment_of_inertia calculation with
-        unwrap active.
-        """
-        self.ag_unwrap.moment_of_inertia(unwrap=True, compound='residues')
-
     def time_asphericity_default(self, num_atoms):
         """Benchmark asphericity calculation with
         pbc and unwrap inactive.
@@ -270,6 +252,40 @@ class AtomGroupMethodsBench(object):
         pbc active.
         """
         self.ag.asphericity(pbc=True)
+
+
+class AtomGroupMethodsBenchWithUnwrap(object):
+    """Benchmarks for the various MDAnalysis
+    atomgroup attributes using unwrap.
+    """
+
+    params = (10, 100, 1000, 10000)
+    param_names = ['num_atoms']
+
+    def setup(self, num_atoms):
+        self.u_unwrap = mda.Universe(TRZ_psf, TRZ)
+        self.ag_unwrap = self.u_unwrap.residues[0:3]
+
+        if MDAnalysis.__version__ < '0.20':
+            raise NotImplementedError
+
+    def time_center_of_geometry_unwrap(self, num_atoms):
+        """Benchmark center_of_geometry calculation with
+        unwrap active.
+        """
+        self.ag_unwrap.center_of_geometry(unwrap=True, compound='residues')
+
+    def time_moment_of_inertia_unwrap(self, num_atoms):
+        """Benchmark moment_of_inertia calculation with
+        unwrap active.
+        """
+        self.ag_unwrap.moment_of_inertia(unwrap=True, compound='residues')
+
+    def time_center_of_mass_unwrap(self, num_atoms):
+        """Benchmark center_of_mass calculation with
+        unwrap active.
+        """
+        self.ag_unwrap.center_of_mass(unwrap=True, compound='residues')
 
     def time_asphericity_unwrap(self, num_atoms):
         """Benchmark asphericity calculation with
