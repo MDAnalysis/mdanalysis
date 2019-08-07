@@ -16,7 +16,7 @@ The rules for this file:
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay, tyler.je.reddy, aakognole
+         IAlibay, tyler.je.reddy, aakognole, RMeli
 
   * 0.20.0
 
@@ -73,6 +73,7 @@ Changes
   * bump minimum numpy version to 1.13.3
 
 Fixes
+  * fixed mol2 parser for status bit strings (Issue ##2318)
   * fixed reading AMBER topologies with negative ATOMIC_NUMBERS (Issue #2306)
   * fixed reading bz2 compressed psf files (Issue #2232)
   * fixed mol2 comment header handling (Issue #2261)
