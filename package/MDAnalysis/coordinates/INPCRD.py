@@ -258,7 +258,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
                     raise TypeError(errmsg)
             except AttributeError:
                 errmsg = "NetCDF file is missign Conventions"
-                raise KeyError(errmsg)
+                raise AttributeError(errmsg)
 
             # The AMBER NetCDF standard enforces 64 bit offsets
             if not rstfile.version_byte == 2:
@@ -285,7 +285,8 @@ class NCRSTReader(base.SingleFrameReaderBase):
                        self.version):
                     wmsg = ("NCRST format is {0!s} but the reader implements "
                             "format {1!s}".format(
-                             rstfile.ConventionVersion, self.version))
+                             rstfile.ConventionVersion.decode('utf-8'),
+                             self.version))
                     warnings.warn(wmsg)
                     logger.warning(wmsg)
             except KeyError:
@@ -294,7 +295,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
 
             # The specs define Program and ProgramVersion as required. Here we
             # just warn the users instead of raising an Error.
-            if not (hasattr(rstfile, 'program') or
+            if not (hasattr(rstfile, 'program') and
                     hasattr(rstfile, 'programVersion')):
                 wmsg = ("This NCRST file may not fully adhere to AMBER "
                         "standards as either the `program` or "
