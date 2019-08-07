@@ -162,7 +162,9 @@ is chosen [<code class="docutils literal notranslate"><span class="pre">None</sp
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">FinishTimeException</span></code> – If the specified finish time precedes the specified start time or
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If the specified start (begin) time occurs after the end of the
+trajectory object.
+If the specified finish time precedes the specified start time or
 current time stamp of trajectory object.</p>
 </td>
 </tr>
@@ -184,6 +186,9 @@ are directly obtained from the selection.</p>
 <div class="deprecated">
 <p><span class="versionmodified">Deprecated since version 0.16.0: </span>The <cite>quiet</cite> keyword argument is deprecated in favor of the new
 <cite>verbose</cite> one.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>ProgressMeter now iterates over the number of frames analysed.</p>
 </div>
 </dd></dl>
 

@@ -164,10 +164,10 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="n">FinishTimeException</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="k">import</span> <span class="n">mdamath</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.helanal&quot;</span><span class="p">)</span>
 
@@ -252,7 +252,9 @@
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
-<span class="sd">    FinishTimeException</span>
+<span class="sd">    ValueError</span>
+<span class="sd">          If the specified start (begin) time occurs after the end of the</span>
+<span class="sd">          trajectory object.</span>
 <span class="sd">          If the specified finish time precedes the specified start time or</span>
 <span class="sd">          current time stamp of trajectory object.</span>
 
@@ -276,6 +278,8 @@
 <span class="sd">       The `quiet` keyword argument is deprecated in favor of the new</span>
 <span class="sd">       `verbose` one.</span>
 
+<span class="sd">    .. versionchanged:: 0.20.0</span>
+<span class="sd">       ProgressMeter now iterates over the number of frames analysed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ref_axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ref_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
@@ -288,13 +292,60 @@
     <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">resids</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
     <span class="n">trajectory</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span>
 
+    <span class="c1"># Validate user supplied begin / end times</span>
+    <span class="n">traj_end_time</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">+</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">totaltime</span>
+
+    <span class="k">if</span> <span class="n">begin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">traj_end_time</span> <span class="o">&lt;</span> <span class="n">begin</span><span class="p">:</span>
+            <span class="c1"># Begin occurs after the end of the trajectory, throw error</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The input begin time (</span><span class="si">{0}</span><span class="s2"> ps) occurs after the end &quot;</span>
+                   <span class="s2">&quot;of the trajectory (</span><span class="si">{1}</span><span class="s2"> ps)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">begin</span><span class="p">,</span> <span class="n">traj_end_time</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">&gt;</span> <span class="n">begin</span><span class="p">:</span>
+            <span class="c1"># Begin occurs before trajectory start, warn and reset</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The input begin time (</span><span class="si">{0}</span><span class="s2"> ps) precedes the starting &quot;</span>
+                   <span class="s2">&quot;trajectory time --- Setting starting frame to 0&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">begin</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">start_frame</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start_frame</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">begin</span> <span class="o">-</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+                                      <span class="o">/</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">start_frame</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="k">if</span> <span class="n">finish</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">&gt;</span> <span class="n">finish</span><span class="p">:</span>
-            <span class="c1"># you&#39;d be starting with a finish time (in ps) that has already passed or not</span>
-            <span class="c1"># available</span>
-            <span class="k">raise</span> <span class="n">FinishTimeException</span><span class="p">(</span>
-                <span class="s1">&#39;The input finish time (</span><span class="si">{finish}</span><span class="s1"> ps) precedes the current trajectory time of </span><span class="si">{traj_time}</span><span class="s1"> ps.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">finish</span><span class="o">=</span><span class="n">finish</span><span class="p">,</span> <span class="n">traj_time</span><span class="o">=</span><span class="n">trajectory</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">begin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">begin</span> <span class="o">&gt;</span> <span class="n">finish</span><span class="p">):</span>
+            <span class="c1"># finish occurs before begin time</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The input finish time (</span><span class="si">{0}</span><span class="s2"> ps) precedes the input begin &quot;</span>
+                   <span class="s2">&quot;time (</span><span class="si">{1}</span><span class="s2"> ps)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">finish</span><span class="p">,</span> <span class="n">begin</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">&gt;</span> <span class="n">finish</span><span class="p">:</span>
+            <span class="c1"># you&#39;d be starting with a finish time(in ps) that has already</span>
+            <span class="c1"># passed or is not available</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The input finish time (</span><span class="si">{0}</span><span class="s2"> ps) precedes the current &quot;</span>
+                   <span class="s2">&quot;trajectory time (</span><span class="si">{1}</span><span class="s2"> ps)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">finish</span><span class="p">,</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">traj_end_time</span> <span class="o">&lt;</span> <span class="n">finish</span><span class="p">:</span>
+            <span class="c1"># finish time occurs after the end of trajectory, warn</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The input finish time (</span><span class="si">{0}</span><span class="s2"> ps) occurs after the end of &quot;</span>
+                   <span class="s2">&quot;the trajectory (</span><span class="si">{1}</span><span class="s2"> ps). Finish time will be set to the &quot;</span>
+                   <span class="s2">&quot;end of the trajectory&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">finish</span><span class="p">,</span> <span class="n">traj_end_time</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">end_frame</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># To replicate the original behaviour of break when</span>
+            <span class="c1"># trajectory.time &gt; finish, we add 1 here.</span>
+            <span class="n">end_frame</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">finish</span> <span class="o">-</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+                            <span class="o">//</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">end_frame</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">,</span> <span class="n">frame_step</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span>
+                                          <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">,</span> <span class="n">frame_step</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Analysing from residue </span><span class="si">%d</span><span class="s2"> to </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
@@ -332,17 +383,13 @@
     <span class="n">global_fitted_tilts</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">global_screw</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                       <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;Frame </span><span class="si">%(step)10d</span><span class="s2">: </span><span class="si">%(time)20.1f</span><span class="s2"> ps</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">:</span>
-        <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+    <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                       <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;Frame </span><span class="si">{step:5d}</span><span class="s2">/</span><span class="si">{numsteps}</span><span class="s2"> &quot;</span>
+                       <span class="s2">&quot;  [</span><span class="si">{percentage:5.1f}</span><span class="s2">%]&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start_frame</span><span class="p">:</span><span class="n">end_frame</span><span class="p">:</span><span class="n">frame_step</span><span class="p">]):</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
-        <span class="k">if</span> <span class="n">begin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">time</span> <span class="o">&lt;</span> <span class="n">begin</span><span class="p">:</span>
-                <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">finish</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">time</span> <span class="o">&gt;</span> <span class="n">finish</span><span class="p">:</span>
-                <span class="k">break</span>
 
         <span class="n">ca_positions</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">positions</span>
         <span class="n">twist</span><span class="p">,</span> <span class="n">bending_angles</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">rnou</span><span class="p">,</span> <span class="n">origins</span><span class="p">,</span> <span class="n">local_helix_axes</span><span class="p">,</span> <span class="n">local_screw_angles</span> <span class="o">=</span> \
