@@ -31,10 +31,7 @@ from numpy.testing import (
     assert_almost_equal
 )
 
-from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
-                                       GRO, TRR, XYZ_mini)
-from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
-
+from MDAnalysisTests.datafiles import (PRMNCRSTbox, NCRSTbox)
 
 class _NCRestartTest(object):
 
@@ -105,195 +102,231 @@ class _NCRestartTest(object):
         assert_equal(self.has_forces, universe.trajectory.has_forces)
 
 
-class Read_ACECFV(_NCRestartTest):
+class TestReadACEBox(_NCRestartTest):
     """ACE in water with Coordinates, Forces and Velocities"""
 
     # Placeholder values
-    # topology = ACE
-    # filename = ACE-PARM7
+    topology = PRMNCRSTbox
+    filename = NCRSTbox
     title = 'Cpptraj Generated Restart'
     n_atoms = 1398
     n_res = 465
     time = 1.0
     has_velocities = True
     has_forces = True
+    mmap = None
 
-    def test_positions(self, universe, selstr, expected):
-        ag = universe.select_atoms(selstr)
+    def test_positions_resid1(self, universe):
+        ag = universe.select_atoms('resid 1')
+        expected = np.array([[16.91830635, 11.8711319, 15.46306515],
+                             [16.02449417, 12.34413528, 15.86983871],
+                             [16.05173683, 12.2475071, 16.95520592],
+                             [15.09445763, 12.00988102, 15.41004944],
+                             [16.09916306, 13.7953701, 15.57103825],
+                             [16.00987625, 14.24524307, 14.39752007]],
+                            dtype=np.float32)
         assert_almost_equal(expected, ag.positions, self.prec)
 
-    def test_velocities(self, universe, selstr, expected):
-        ag = universe.select_atoms(selstr)
-        assert_almost_equal(expected, ag.velocities, self.prec)
+    def test_positions_resid42(self, universe):
+        ag = universe.select_atoms('resid 42')
+        expected = np.array([[20.67843246, 21.18344688, 20.79789162],
+                             [19.85808182, 21.5282135, 21.15058327],
+                             [20.97104073, 20.54719162, 21.45041847]],
+                            dtype=np.float32)
+        assert_almost_equal(expected, ag.positions, self.prec)
 
-    def test_forces(self, universe, selstr, expected):
-        ag = universe.select_atoms(selstr)
-        # We convert from kj back to the original kcal value
-        assert_almost_equal(expected, ag.forces * 4.184, self.prec)
+#    def test_velocities(self, universe, selstr, expected):
+#        ag = universe.select_atoms(selstr)
+#        assert_almost_equal(expected, ag.velocities, self.prec)
+#
+#    def test_forces(self, universe, selstr, expected):
+#        ag = universe.select_atoms(selstr)
+#        # We convert from kj back to the original kcal value
+#        assert_almost_equal(expected, ag.forces * 4.184, self.prec)
 
 
-class ExceptionsNCRSTGenerator(object):
+class _NCRSTGenerator(object):
     """A basic modular ncrst writer based on :class:`NCDFWriter`"""
 
-    def create_ncrst(self):
+    def create_ncrst(self, params):
         # Create under context manager
-        with netcdf.netcdf_file(self.filename, mode='w',
-                                version=self.version_byte) as ncrst:
+        with netcdf.netcdf_file(params['filename'], mode='w',
+                                version=params['version_byte']) as ncrst:
             # Top level attributes
-            if self.Conventions:
-                setattr(ncrst, 'Conventions', self.Conventions)
-            if self.ConventionVersion:
-                setattr(ncrst, 'ConventionVersion', self.ConventionVersion)
-            if self.program:
-                setattr(ncrst, 'program', self.program)
-            if self.programVersion:
-                setattr(ncrst, 'programVersion', self.programVersion)
+            if params['Conventions']:
+                setattr(ncrst, 'Conventions', params['Conventions'])
+            if params['ConventionVersion']:
+                setattr(ncrst, 'ConventionVersion',
+                        params['ConventionVersion'])
+            if params['program']:
+                setattr(ncrst, 'program', params['program'])
+            if params['programVersion']:
+                setattr(ncrst, 'programVersion', params['programVersion'])
 
             # Dimensions
-            if self.n_atoms:
-                ncrst.createDimension('atom', self.n_atoms)
-            if self.spatial:
-                ncrst.createDimension('spatial', self.spatial)
+            if params['n_atoms']:
+                ncrst.createDimension('atom', params['n_atoms'])
+            if params['spatial']:
+                ncrst.createDimension('spatial', params['spatial'])
+            if params['time']:
+                ncrst.createDimension('time', 1)
 
             # Variables
-            if self.time:
-                time = ncrst.createVariable('time', 'f8')
-                time = 1.0
-                setattr(time, 'units', self.time)
+            if params['time']:
+                time = ncrst.createVariable('time', 'd', ('time',))
+                setattr(time, 'units', params['time'])
+                time[:] = 1.0
             # Spatial or atom dependent variables
-            if (self.spatial) and (self.n_atoms):
-                if self.coords:
+            if (params['spatial']) and (params['n_atoms']):
+                if params['coords']:
                     coords = ncrst.createVariable('coordinates', 'f8',
                                                   ('atom', 'spatial'))
-                    setattr(coords, 'units', self.coords)
-                    coords[:] = np.asarray(range(self.spatial),
+                    setattr(coords, 'units', params['coords'])
+                    coords[:] = np.asarray(range(params['spatial']),
                                            dtype=np.float32)
                 spatial = ncrst.createVariable('spatial', 'c', ('spatial',))
-                spatial[:] = np.asarray(list('xyz'))
+                spatial[:] = np.asarray(list('xyz')[:params['spatial']])
                 velocs = ncrst.createVariable('velocities', 'f8',
                                               ('atom', 'spatial'))
                 setattr(velocs, 'units', 'angstrom/picosecond')
-                velocs[:] = np.asarray(range(self.spatial), dtype=np.float32)
+                velocs[:] = np.asarray(range(params['spatial']),
+                                       dtype=np.float32)
                 forces = ncrst.createVariable('forces', 'f8',
                                               ('atom', 'spatial'))
                 setattr(forces, 'units', 'kilocalorie/mole/angstrom')
-                forces[:] = np.asarray(range(self.spatial), dtype=np.float32)
+                forces[:] = np.asarray(range(params['spatial']),
+                                       dtype=np.float32)
 
             # self.scale_factor overrides which variable gets a scale_factor
-            if self.scale_factor:
-                setattr(ncrst.variables[self.scale_factor],
+            if params['scale_factor']:
+                setattr(ncrst.variables[params['scale_factor']],
                         'scale_factor', 2.0)
 
-    # Default definitions
-    filename = 'test.ncrst'
-    version_byte = 2
-    Conventions = 'AMBERRESTART'
-    ConventionVersion = '1.0'
-    program = 'mda test_writer'
-    programVersion = 'V42'
-    n_atoms = 1
-    spatial = 3
-    coords = 'angstrom'
-    time = 'picosecond'
-    scale_factor = None
+    def gen_params(self, key=None, value=None):
+        """Generate writer parameters, key and value can be used to overwrite
+        a given dictionary entry
+        """
+
+        params = {
+            'filename': 'test.ncrst',
+            'version_byte': 2,
+            'Conventions': 'AMBERRESTART',
+            'ConventionVersion': '1.0',
+            'program': 'mda test_writer',
+            'programVersion': 'V42',
+            'n_atoms': 1,
+            'spatial': 3,
+            'coords': 'angstrom',
+            'time': 'picosecond',
+            'scale_factor': None
+        }
+
+        if key:
+            params[key] = value
+
+        return params
 
 
-def TestNCRSTReaderExceptions(ExceptionsNCRSTGenerator):
+class TestNCRSTReaderExceptionsWarnings(_NCRSTGenerator):
 
-   # TO DO: merge these so you get TypeErrors, KeyErrors, etc...
-
-    def test_VersionbyteError(self, tmpdir):
-        self.version_byte = 1
+    @pytest.mark.parametrize('key,value', (
+        ('version_byte', 1),
+        ('Conventions', 'Foo'),
+        ('spatial', 2)
+    ))
+    def test_read_type_errors(self, tmpdir, key, value):
+        params = self.gen_params(key=key, value=value)
         with tmpdir.as_cwd():
-            self.create_ncrst()
+            self.create_ncrst(params)
             with pytest.raises(TypeError):
-                NCRSTReader(self.filename)
+                NCRSTReader(params['filename'])
 
-    def test_WrongConventionsError(self, tmpdir):
-        self.Conventions = 'Foo'
+    @pytest.mark.parametrize('key,value', (
+        ('Conventions', None),
+        ('ConventionVersion', None)
+    ))
+    def test_attribute_errors(self, tmpdir, key, value):
+        params = self.gen_params(key=key, value=value)
         with tmpdir.as_cwd():
-            self.create_ncrst()
-            with pytest.raises(TypeError):
-                NCRSTReader(self.filename)
+            self.create_ncrst(params)
+            with pytest.raises(AttributeError):
+                NCRSTReader(params['filename'])
 
-    def test_NoConventionsError(self, tmpdir):
-        self.Conventions = None
+    @pytest.mark.parametrize('key,value', (
+        ('spatial', None),
+        ('n_atoms', None),
+        ('coords', None)
+    ))
+    def test_key_errors(self, tmpdir, key, value):
+        params = self.gen_params(key=key, value=value)
         with tmpdir.as_cwd():
-            self.create_ncrst()
+            self.create_ncrst(params)
             with pytest.raises(KeyError):
-                NCRSTReader(self.filename)
+                NCRSTReader(params['filename'])
 
-    def test_WrongConventionVersionError(self, tmpdir):
-        self.ConventionVersion = '2.0'
+    @pytest.mark.parametrize('key,value', (
+        ('time', 'femtosecond'),
+        ('coords', 'nanometer')
+    ))
+    def test_not_implemented_errors(self, tmpdir, key, value):
+        params = self.gen_params(key=key, value=value)
         with tmpdir.as_cwd():
-            self.create_ncrst()
-            with pytest.raises(TypeError):
-                NCRSTReader(self.filename)
-
-    def test_NoConventionVersionError(self, tmpdir):
-        self.ConventionVersion = None
-        with tmpdir.as_cwd():
-            self.create_ncrst()
-            with pytest.raises(KeyError):
-                NCRSTReader(self.filename)
-
-    def test_WrongSpatialError(self, tmpdir):
-        self.spatial = 2
-        with tmpdir.as_cwd():
-            self.create_ncrst()
-            with pytest.raises(TypeError):
-                NCRSTReader(self.filename)
-
-    def test_NoSpatialError(self, tmpdir):
-        self.spatial = None
-        with tmpdir.as_cwd():
-            self.create_ncrst()
-            with pytest.raises(KeyError):
-                NCRSTReader(self.filename)
-
-    def test_NoAtomsError(self, tmpdir):
-        self.n_atoms = None
-        with tmpdir.as_cwd():
-            self.create_ncrst()
-            with pytest.raises(KeyError):
-                NCRSTReader(self.filename)
-
-    def test_WrongTimeError(self, tmpdir):
-        self.time = 'femtosecond'
-        with tmpdir.as_cwd():
-            self.create_ncrst()
+            self.create_ncrst(params)
             with pytest.raises(NotImplementedError):
-                NCRSTReader(self.filename)
+                NCRSTReader(params['filename'])
 
-    def test_WrongCoordsError(self, tmpdir):
-        self.coords = 'nanometer'
-        with tmpdir.as_cwd():
-            self.create_ncrst()
-            with pytest.raises(NotImplementedError):
-                NCRSTReader(self.filename)
-
-    def test_NoCoordsError(self, tmpdir):
-        self.coords = None
-        with tmpdir.as_cwd():
-            self.create_ncrst()
-            with pytest.raises(KeyError):
-                NCRSTReader(self.filename)
-
-    @pytest.mark.parametrize('variable', [
+    @pytest.mark.parametrize('value', [
         'time', 'coordinates', 'spatial',
         'velocities', 'forces'
     ])
-    def test_scale_factor(self, tmpdir, variable):
-        self.scale_factor = variable
+    def test_scale_factor(self, tmpdir, value):
+        params = self.gen_params(key='scale_factor', value=value)
         with tmpdir.as_cwd():
-            self.create_ncrst()
+            self.create_ncrst(params)
             with pytest.raises(NotImplementedError):
-                NCRSTReader(self.filename)
+                NCRSTReader(params['filename'])
 
-# Errors:
-# scale_factor
-# Warnings:
-# Wrong ConventionVersion
-# Missing program value
-# Missing programVersion value
-# No time
+    def test_conventionversion_warn(self, tmpdir):
+        params = self.gen_params(key='ConventionVersion', value='2.0')
+        with tmpdir.as_cwd():
+            self.create_ncrst(params)
+            with pytest.warns(UserWarning) as record:
+                NCRSTReader(params['filename'])
+
+            assert len(record) == 1
+            wmsg = "NCRST format is 2.0 but the reader implements format 1.0"
+            assert str(record[0].message.args[0]) == wmsg
+
+    @pytest.mark.parametrize('key,value', (
+        ('program', None),
+        ('programVersion', None)
+    ))
+    def test_program_warn(self, tmpdir, key, value):
+        params = self.gen_params(key=key, value=value)
+        with tmpdir.as_cwd():
+            self.create_ncrst(params)
+            with pytest.warns(UserWarning) as record:
+                NCRSTReader(params['filename'])
+
+            assert len(record) == 1
+            wmsg = ("This NCRST file may not fully adhere to AMBER "
+                    "standards as either the `program` or `programVersion` "
+                    "attributes are missing")
+            assert str(record[0].message.args[0]) == wmsg
+
+    def test_notime_warn(self, tmpdir):
+        params = self.gen_params(key='time', value=None)
+        with tmpdir.as_cwd():
+            self.create_ncrst(params)
+            with pytest.warns(UserWarning) as record:
+                NCRSTReader(params['filename'])
+
+            # Lack of time triggers two warnings
+            assert len(record) == 2
+            wmsg1 = ("NCRestart file {0} does not contain time information. "
+                     "This should be expected if the file was not created "
+                     "from an MD trajectory (e.g. a minimization)".format(
+                      params['filename']))
+            assert str(record[0].message.args[0]) == wmsg1
+            wmsg2 = ("Reader has no dt information, set to 1.0 ps")
+            assert str(record[1].message.args[0]) == wmsg2

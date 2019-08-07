@@ -95,7 +95,8 @@ __all__ = [
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
     "PRMcs", # Amber (format, Issue 1331)
-    "PRMNCRST", # Amber ncrst with positions/forces/velocities
+    "PRMNCRST", # Amber topology for ACE in gas phase
+    "PRMNCRSTbox", "NCRSTbox", # Amber: ACE in tip3p w/ coords, vels, forces, and box dimensions
     "PRMNEGATIVE", # Amber negative ATOMIC_NUMBER (Issue 2306)
     "PRMErr1", "PRMErr2", "PRMErr3", # Amber TOP files to check raised errors
     "PQR",  # PQR v1
@@ -345,6 +346,8 @@ NCDFtruncoct =  resource_filename(__name__, 'data/Amber/tz2.truncoct.nc')
 PRMcs = resource_filename(__name__, 'data/Amber/chitosan.prmtop')
 
 PRMNCRST = resource_filename(__name__, 'data/Amber/ace_mbondi3.parm7')
+PRMNCRSTbox = resource_filename(__name__, 'data/Amber/ace_tip3p.parm7')
+NCRSTbox = resource_filename(__name__, 'data/Amber/ace_tip3p.ncrst')
 
 PRMNEGATIVE = resource_filename(__name__, 'data/Amber/ace_mbondi3.negative.parm7')
 

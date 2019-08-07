@@ -205,7 +205,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
     units = {'time': 'ps',
              'length': 'Angstrom',
              'velocity': 'Angstrom/ps',
-             'forces': 'kcal/(mol*Angstrom)'}
+             'force': 'kcal/(mol*Angstrom)'}
 
     class Timestep(base.Timestep):
         """ Modified Timestep class for AMBER
@@ -256,7 +256,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
                               "attribute Conventions)".format(self.filename))
                     logger.fatal(errmsg)
                     raise TypeError(errmsg)
-            except KeyError:
+            except AttributeError:
                 errmsg = "NetCDF file is missign Conventions"
                 raise KeyError(errmsg)
 
@@ -281,8 +281,8 @@ class NCRSTReader(base.SingleFrameReaderBase):
 
             try:
                 # ConventionVersion should exist and be equal to 1.0
-                if not rstfile.ConventionVersion.decode('utf-8') == 
-                       self.version:
+                if not (rstfile.ConventionVersion.decode('utf-8') == 
+                       self.version):
                     wmsg = ("NCRST format is {0!s} but the reader implements "
                             "format {1!s}".format(
                              rstfile.ConventionVersion, self.version))
@@ -290,7 +290,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
                     logger.warning(wmsg)
             except KeyError:
                 errmsg = "ConventionVersion not present in NetCDF file"
-                raise KeyError(errmsg)
+                raise AttributeError(errmsg)
 
             # The specs define Program and ProgramVersion as required. Here we
             # just warn the users instead of raising an Error.
@@ -356,8 +356,8 @@ class NCRSTReader(base.SingleFrameReaderBase):
                 self.ts.time = rstfile.variables['time'].getValue()
             except KeyError:
                 # Warn the user and move on
-                wmsg = ("Restart file {0} does not contain time information. "
-                        "This is should be expected if the file was not "
+                wmsg = ("NCRestart file {0} does not contain time information. "
+                        "This should be expected if the file was not "
                         "created from an MD trajectory (e.g. a "
                         "minimization)".format(self.filename))
                 warnings.warn(wmsg)
