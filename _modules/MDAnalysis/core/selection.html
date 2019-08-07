@@ -802,6 +802,12 @@
     <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># queries are in 1 based indices</span>
 
 
+<span class="k">class</span> <span class="nc">IndexSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;index&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;indices&#39;</span>
+    <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># queries now 0 based indices</span>
+
+
 <span class="k">class</span> <span class="nc">MolidSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;molnum&#39;</span>
     <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;molnums&#39;</span>

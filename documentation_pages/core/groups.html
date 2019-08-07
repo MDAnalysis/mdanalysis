@@ -1465,6 +1465,13 @@ e.g. <code class="docutils literal notranslate"><span class="pre">bynum</span> <
 in the <a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> are
 consecutively numbered, and the index runs from 1 up to the
 total number of atoms.</dd>
+<dt>index <em>index-range</em></dt>
+<dd>selects all atoms within a range of (0-based) inclusive indices,
+e.g. <code class="docutils literal notranslate"><span class="pre">index</span> <span class="pre">0</span></code> selects the first atom in the universe;
+<code class="docutils literal notranslate"><span class="pre">index</span> <span class="pre">5:10</span></code> selects atoms 6 through 11 inclusive. All atoms
+in the <a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> are
+consecutively numbered, and the index runs from 0 up to the
+total number of atoms - 1.</dd>
 </dl>
 </div></blockquote>
 <p><strong>Preexisting selections</strong></p>
