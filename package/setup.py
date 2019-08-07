@@ -559,7 +559,10 @@ if __name__ == '__main__':
           'mock',
     ]
     if not os.name == 'nt':
-        install_requires.append('gsd>=1.4.0')
+        if sys.version_info[:2] == (2, 7):
+            install_requires.append('gsd>=1.4.0,<1.8.0')
+        else:
+            install_requires.append('gsd>=1.4.0')
 
     setup(name='MDAnalysis',
           version=RELEASE,
