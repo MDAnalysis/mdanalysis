@@ -83,6 +83,7 @@ class MOL2Parser(TopologyReaderBase):
        Now subclasses TopologyReaderBase
     .. versionchanged:: 0.20.0
        Allows for comments at the top of the file
+       Ignores status bit strings
     """
     format = 'MOL2'
 
