@@ -683,6 +683,8 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       (It should be noted that the `padding` keyword is not used when a user
       defined grid is assigned).
 
+    .. versionchanged:: 0.20.0
+       ProgressMeter now iterates over the number of frames analysed.
     .. versionchanged:: 0.19.0
        *gridcenter*, *xdim*, *ydim* and *zdim* keywords added to allow for user
        defined boxes
@@ -751,22 +753,24 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     grid *= 0.0
     h = grid.copy()
 
-    pm = ProgressMeter(u.trajectory.n_frames, interval=interval,
+    start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
+    n_frames = len(range(start, stop, step))
+
+    pm = ProgressMeter(n_frames, interval=interval,
                        verbose=verbose,
                        format="Histogramming %(n_atoms)6d atoms in frame "
-                       "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
-    start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
-    for ts in u.trajectory[start:stop:step]:
+                       "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]")
+
+    for index, ts in enumerate(u.trajectory[start:stop:step]):
         coord = current_coordinates()
 
-        pm.echo(ts.frame, n_atoms=len(coord))
+        pm.echo(index, n_atoms=len(coord))
         if len(coord) == 0:
             continue
 
         h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
 
-    n_frames = len(range(start, stop, step))
     grid /= float(n_frames)
 
     metadata = metadata if metadata is not None else {}

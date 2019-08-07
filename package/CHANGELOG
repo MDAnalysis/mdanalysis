@@ -21,6 +21,7 @@ mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
   * 0.20.0
 
 Enhancements
+  * added the zero-based index selection keyword (Issue #1959)
   * added position averaging transformation that makes use of the 
     transformations API (PR #2208)
   * added find_hydrogen_donors to analysis.bonds.hbond_autocorrel to
@@ -73,6 +74,8 @@ Changes
   * bump minimum numpy version to 1.13.3
 
 Fixes
+  * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
+  * fixes ProgressMeter behaviour for non-AnalysisBase methods (Issue #2084)
   * fixed mol2 parser for status bit strings (Issue ##2318)
   * fixed reading AMBER topologies with negative ATOMIC_NUMBERS (Issue #2306)
   * fixed reading bz2 compressed psf files (Issue #2232)
