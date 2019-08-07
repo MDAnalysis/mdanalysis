@@ -139,7 +139,10 @@ class MOL2Parser(TopologyReaderBase):
         charges = []
 
         for a in atom_lines:
-            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()
+            try:
+                aid, name, x, y, z, atom_type, resid, resname, charge = a.split()
+            except ValueError:
+                aid, name, x, y, z, atom_type, resid, resname, charge, _ = a.split()
             ids.append(aid)
             names.append(name)
             types.append(atom_type)
@@ -174,7 +177,10 @@ class MOL2Parser(TopologyReaderBase):
         bondorder = []
         for b in bond_lines:
             # bond_type can be: 1, 2, am, ar
-            bid, a0, a1, bond_type = b.split()
+            try:
+                bid, a0, a1, bond_type = b.split()
+            except ValueError:
+                bid, a0, a1, bond_type, _ = b.split()
             a0, a1 = int(a0) - 1, int(a1) - 1
             bond = tuple(sorted([a0, a1]))
             bondorder.append(bond_type)
