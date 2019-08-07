@@ -1,9 +1,4 @@
-#	Name:			2w73_ligand
-#	Creating user name:	wangrx
-#	Creation time:		Thu Sep 13 11:19:21 2018
-
-#	Modifying user name:	wangrx
-#	Modification time:	Thu Sep 13 11:21:31 2018
+# Ligand PDB 2w73
 
 @<TRIPOS>MOLECULE
 2w73_ligand
