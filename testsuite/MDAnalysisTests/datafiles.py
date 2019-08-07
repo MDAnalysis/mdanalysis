@@ -382,6 +382,7 @@ merge_water = resource_filename(__name__, "data/merge/2zmm/water.pdb")
 
 mol2_molecules = resource_filename(__name__, "data/mol2/Molecules.mol2")
 mol2_molecule = resource_filename(__name__, "data/mol2/Molecule.mol2")
+mol2_ligand = resource_filename(__name__, "data/mol2/Ligand.mol2")
 mol2_broken_molecule = resource_filename(__name__, "data/mol2/BrokenMolecule.mol2")
 mol2_comments_header = resource_filename(__name__, "data/mol2/Molecule_comments_header.mol2")
 # MOL2 file without substructure field
