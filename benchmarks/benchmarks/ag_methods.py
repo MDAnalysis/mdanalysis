@@ -2,6 +2,7 @@ from __future__ import division, absolute_import, print_function
 
 import MDAnalysis
 import numpy as np
+from packaging import version
 
 try:
     from MDAnalysisTests.datafiles import (GRO, TPR, XTC, 
@@ -264,7 +265,7 @@ class AtomGroupMethodsBenchWithUnwrap(object):
         self.u_unwrap = mda.Universe(TRZ_psf, TRZ)
         self.ag_unwrap = self.u_unwrap.residues[0:3]
 
-        if MDAnalysis.__version__ < '0.20':
+        if version.parse(MDAnalysis.__version__) < version.parse("0.20.0"):
             raise NotImplementedError
 
     def time_center_of_geometry_unwrap(self, num_atoms):
