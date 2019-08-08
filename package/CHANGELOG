@@ -76,7 +76,7 @@ Changes
 Fixes
   * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
   * fixes ProgressMeter behaviour for non-AnalysisBase methods (Issue #2084)
-  * fixed mol2 parser for status bit strings (Issue ##2318)
+  * fixed mol2 parser for status bit strings (Issue #2318)
   * fixed reading AMBER topologies with negative ATOMIC_NUMBERS (Issue #2306)
   * fixed reading bz2 compressed psf files (Issue #2232)
   * fixed mol2 comment header handling (Issue #2261)
