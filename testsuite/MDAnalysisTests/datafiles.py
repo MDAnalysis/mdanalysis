@@ -115,7 +115,7 @@ __all__ = [
     "TRR_multi_frame",
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
-    "mol2_zinc", "mol2_comments_header",
+    "mol2_zinc", "mol2_comments_header", "mol2_ligand",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
     "contacts_villin_folded", "contacts_villin_unfolded", "contacts_file",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
@@ -383,6 +383,7 @@ merge_water = resource_filename(__name__, "data/merge/2zmm/water.pdb")
 
 mol2_molecules = resource_filename(__name__, "data/mol2/Molecules.mol2")
 mol2_molecule = resource_filename(__name__, "data/mol2/Molecule.mol2")
+mol2_ligand = resource_filename(__name__, "data/mol2/Ligand.mol2")
 mol2_broken_molecule = resource_filename(__name__, "data/mol2/BrokenMolecule.mol2")
 mol2_comments_header = resource_filename(__name__, "data/mol2/Molecule_comments_header.mol2")
 # MOL2 file without substructure field
