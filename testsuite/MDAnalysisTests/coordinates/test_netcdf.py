@@ -128,9 +128,82 @@ class TestNCDFReader_mmap_False(_NCDFReaderTest_mmap_False, RefVGV):
     pass
 
 
-
 class TestNCDFReaderTZ2(_NCDFReaderTest, RefTZ2):
     pass
+
+
+class TestNCDFReader3(object):
+    """NCDF trajectory with positions, forces and velocities
+
+    Added to address Issue #2323
+    """
+    prec =3
+
+    coord_refs = np.array([
+        [[-1.1455358, -2.0177484, -0.55771565],
+         [-0.19042611, -2.2511053, -1.0282656 ],
+         [0.53238064, -1.5778863, -0.56737846]],
+        [[-2.1551325, 4.0865736, -0.34680057],
+         [-1.1811734, 3.6655416, -0.09732878],
+         [-0.48546398, 4.4371443, 0.23238336]],
+    ], dtype=np.float32)
+
+    frc_refs = np.array([
+        [[-2.3246236, -0.0899322, -5.9270463],
+         [-7.7518754, 8.957417, -2.9766319],
+         [ 5.7622824, -4.733791, -4.0858593]],
+        [[  6.1867957, 6.179768, -15.256828 ],
+         [ -9.173471, 5.9323792, 6.8299603],
+         [ -4.3352, 2.3313527, 0.8262475]]
+    ], dtype=np.float32)
+
+    vel_refs = np.array([
+        [[0.5800398, 1.5263301, -0.19728106],
+         [0.36014488, -0.22881219, 0.08708137],
+         [0.62902725, 0.06811271, -0.73194367]],
+        [[0.37188563, 0.13850331, -0.96506],
+         [-0.01777611, -0.0309779, 0.44891647],
+         [-0.06432493, 0.13316621, 0.1691637 ]]
+    ], dtype=np.float32)
+   
+
+    @pytest.fixture(scope='class')
+    def universe(self):
+        return mda.Universe(PRMNCRST, NCDFvel)
+
+    @pytest.mark.parametrize('index,expected', ((0, 0), (8, 1)))
+    def test_positions(self, universe, index, expected):
+        universe.trajectory[index]
+        assert_almost_equal(self.coord_refs[expected],
+                            universe.atoms.positions[:3], self.prec)
+    
+    @pytest.mark.parametrize('index,expected', ((0, 0), (8, 1)))
+    def test_forces(self, universe, index, expected):
+        universe.trajectory[index]
+        assert_almost_equal(self.frc_refs[expected],
+                            universe.atoms.forces[:3], self.prec)
+
+    @pytest.mark.parameterize('index,expected', ((0, 0), (8, 1)))
+    def test_velocities(self, universe, index, expected):
+        """Here we multiply the velocities by 20.455 to match the value of
+        `scale_factor`
+        """
+        universe.trajectory[index]
+        assert_almost_equal(self.vel_refs[expected] * 20.455,
+                            universe.atoms.velocities[:3], self.prec)
+
+    @pytest.mark.parameterize('index,expected', ((0, 5.0), (8, 45.0)))
+    def test_time(self, universe, index, expected):
+        assert_almost_equal(expected, universe.trajectory[index].time,
+                            self.prec)
+
+    def test_nframes(self, universe):
+        assert_equal(10, universe.trajectory.n_frames)
+
+    def test_dt(self, universe):
+        ref = 0.02
+        assert_almost_equal(ref, universe.trajectory.dt, self.prec)
+        assert_almost_equal(ref, universe.trajectory.ts.dt, self.prec)
 
 
 class TestNCDFReader2(object):

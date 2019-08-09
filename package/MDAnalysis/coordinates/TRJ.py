@@ -504,7 +504,7 @@ class NCDFReader(base.ReaderBase):
         #
 
         # checks for not-implemented features (other units would need to be
-        # hacked into MDAnalysis.units)
+        # hacked into MDAnalysis.units) TODO: extend to forces and velocities
         if self.trjfile.variables['time'].units.decode('utf-8') != "picosecond":
             raise NotImplementedError(
                 "NETCDFReader currently assumes that the trajectory was written "
@@ -515,8 +515,19 @@ class NCDFReader(base.ReaderBase):
                 "NETCDFReader currently assumes that the trajectory was written "
                 "with a length unit of Angstroem and not {0}.".format(
                     self.trjfile.variables['coordinates'].units))
-        if hasattr(self.trjfile.variables['coordinates'], 'scale_factor'):
-            raise NotImplementedError("scale_factors are not implemented")
+
+        # Check for scale_factor attributes for all data variables and
+        # temporarily we only accept the case of velocities with 
+        # scale_factor == 20.455 (Issue #2323)
+        for variable in self.trjfile.variables:
+            if hasattr(self.trjfile.variables[variable], 'scale_factor'):
+                scale_factor = self.trjfile.variables[variable].scale_factor
+                if variable == 'velocities' and scale_factor == 20.455:
+                    self.units['velocity'] = 'Angstrom/AKMA'
+                else:
+                    errmsg = "abitrary scale_factors are not implemented"
+                    raise NotImplementedError(errmsg)
+
         if n_atoms is not None and n_atoms != self.n_atoms:
             raise ValueError("Supplied n_atoms ({0}) != natom from ncdf ({1}). "
                              "Note: n_atoms can be None and then the ncdf value "
