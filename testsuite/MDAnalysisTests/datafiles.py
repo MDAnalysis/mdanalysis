@@ -96,6 +96,7 @@ __all__ = [
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
     "PRMcs", # Amber (format, Issue 1331)
     "PRMNCRST", # Amber ncrst with positions/forces/velocities
+    "PRMNEGATIVE", # Amber negative ATOMIC_NUMBER (Issue 2306)
     "PRMErr1", "PRMErr2", "PRMErr3", # Amber TOP files to check raised errors
     "PQR",  # PQR v1
     "PQR_icodes",  # PQR v2 with icodes
@@ -103,6 +104,7 @@ __all__ = [
     "PDBQT_querypdb",
     "FASTA",  # sequence alignment, Issue 112 + 113
     "HELANAL_BENDING_MATRIX",  # HELANAL test (from PSF+DCD (AdK) helix 8)
+    "HELANAL_BENDING_MATRIX_SUBSET", # As above, slice of frames 10 to 79
     "PDB_HOLE",  # gramicidin A
     "MULTIPDB_HOLE", # gramicidin A, normal mode 7 from ElNemo
     "DMS",
@@ -113,7 +115,7 @@ __all__ = [
     "TRR_multi_frame",
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
-    "mol2_zinc",
+    "mol2_zinc", "mol2_comments_header", "mol2_ligand",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
     "contacts_villin_folded", "contacts_villin_unfolded", "contacts_file",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
@@ -127,6 +129,7 @@ __all__ = [
     "GMS_SYMOPT",   # GAMESS D4h optimization
     "GMS_ASYMSURF", # GAMESS C1  surface
     "two_water_gro", "two_water_gro_nonames",  # for bond guessing, 2 water molecules, one with weird names
+    "two_water_gro_multiframe",
     "two_water_gro_widebox",  # Issue #548
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal",  # dl_poly 4 history file
@@ -344,6 +347,8 @@ PRMcs = resource_filename(__name__, 'data/Amber/chitosan.prmtop')
 
 PRMNCRST = resource_filename(__name__, 'data/Amber/ace_mbondi3.parm7')
 
+PRMNEGATIVE = resource_filename(__name__, 'data/Amber/ace_mbondi3.negative.parm7')
+
 PRMErr1 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error1.parm7')
 PRMErr2 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error2.parm7')
 PRMErr3 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error3.parm7')
@@ -356,7 +361,7 @@ PDBQT_querypdb = resource_filename(__name__, 'data/pdbqt_querypdb.pdb')
 
 FASTA = resource_filename(__name__, 'data/test.fasta')
 HELANAL_BENDING_MATRIX = resource_filename(__name__, 'data/helanal_bending_matrix_AdK_DIMS_H8.dat')
-
+HELANAL_BENDING_MATRIX_SUBSET = resource_filename(__name__, 'data/helanal_bending_matrix_AdK_DIMS_H8_frames10to79.dat')
 
 PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
 MULTIPDB_HOLE = resource_filename(__name__, 'data/1grm_elNemo_mode7.pdb.bz2')
@@ -378,7 +383,9 @@ merge_water = resource_filename(__name__, "data/merge/2zmm/water.pdb")
 
 mol2_molecules = resource_filename(__name__, "data/mol2/Molecules.mol2")
 mol2_molecule = resource_filename(__name__, "data/mol2/Molecule.mol2")
+mol2_ligand = resource_filename(__name__, "data/mol2/Ligand.mol2")
 mol2_broken_molecule = resource_filename(__name__, "data/mol2/BrokenMolecule.mol2")
+mol2_comments_header = resource_filename(__name__, "data/mol2/Molecule_comments_header.mol2")
 # MOL2 file without substructure field
 mol2_zinc = resource_filename(__name__, "data/mol2/zinc_856218.mol2")
 
@@ -410,6 +417,7 @@ GMS_SYMOPT        = resource_filename(__name__, "data/gms/symopt.gms")
 GMS_ASYMSURF      = resource_filename(__name__, "data/gms/surf2wat.gms")
 
 two_water_gro = resource_filename(__name__, "data/two_water_gro.gro")
+two_water_gro_multiframe = resource_filename(__name__, "data/two_water_gro_multiframe.gro")
 two_water_gro_nonames = resource_filename(__name__, "data/two_water_gro_nonames.gro")
 two_water_gro_widebox = resource_filename(__name__, "data/two_water_gro_widebox.gro")
 

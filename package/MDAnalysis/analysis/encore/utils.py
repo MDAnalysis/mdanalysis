@@ -122,7 +122,7 @@ class TriangularMatrix(object):
         fname : str
             Name of the file to be loaded.
         """
-        loaded = np.load(fname)
+        loaded = np.load(fname, allow_pickle=True)
 
         if loaded['metadata'].shape != ():
             if loaded['metadata']['number of frames'] != self.size:

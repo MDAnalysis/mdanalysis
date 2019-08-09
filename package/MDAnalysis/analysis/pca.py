@@ -229,7 +229,7 @@ class PCA(AnalysisBase):
             interval = int(self.n_frames // 100)
             interval = interval if interval > 0 else 1
             format = ("Mean Calculation Step"
-                      "%(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r")
+                      "%(step)5d/%(numsteps)d [%(percentage)5.1f%%]")
             mean_pm = ProgressMeter(self.n_frames if self.n_frames else 1,
                                     interval=interval, verbose=self._verbose,
                                     format=format)

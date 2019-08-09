@@ -148,9 +148,9 @@ def test_tors_zeta(u, seg, i, expected_value):
 
 
 @pytest.mark.parametrize('seg, i, expected_value', (
-        ('RNAA',  1, 177.12643),
-        ('RNAA',  2, 212.08998),
-        ('RNAA',  7, 209.56533),
+        ('RNAA',  1, 178.37435),
+        ('RNAA',  2, 202.03418),
+        ('RNAA',  7, 200.91674),
         ('RNAA', 15, 209.32109),
 ))
 def test_tors_chi(u, seg, i, expected_value):
