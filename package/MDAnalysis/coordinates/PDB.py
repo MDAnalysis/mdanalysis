@@ -948,7 +948,7 @@ class PDBWriter(base.WriterBase):
         """
         if not hasattr(trajectory, 'header'):
             return
-        header = trajectory.header
+        header = trajectory.header.strip()
         self.pdbfile.write(self.fmt['HEADER'].format(header))
 
     def TITLE(self, *title):
