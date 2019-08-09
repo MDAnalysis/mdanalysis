@@ -474,6 +474,9 @@ class PDBWriter(base.WriterBase):
     .. versionchanged:: 0.14.0
        PDB doesn't save charge information
 
+    .. versionchanged:: 0.20.0
+       Strip trajectory header of spaces and newlines
+
     """
     fmt = {
         'ATOM': (
