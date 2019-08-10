@@ -448,6 +448,9 @@ class NCDFReader(base.ReaderBase):
        kwarg `delta` renamed to `dt`, for uniformity with other Readers.
     .. versionchanged:: 0.17.0
        Uses :mod:`scipy.io.netcdf` and supports the *mmap* kwarg.
+    .. versionchanged:: 0.20.0
+       Now reads scale_factors for coordinates, forces and evelocities.
+       Timestep variables are now reported in standard MDAnalysis units.
 
     """
 
@@ -458,9 +461,18 @@ class NCDFReader(base.ReaderBase):
              'length': 'Angstrom',
              'velocity': 'Angstrom/ps',
              'force': 'kcal/(mol*Angstrom)'}
+
     _Timestep = Timestep
 
     def __init__(self, filename, n_atoms=None, mmap=None, **kwargs):
+
+        def verify_units(eval_unit, expected_units):
+            if eval_unit.decode('utf-8') not in expected_units:
+                errmsg = ("NETCDFReader currently assumes that the trajectory "
+                          "was written in units of {0} instead of {1}".format(
+                          expected_units, eval_unit.decode('utf-8')))
+                raise NotImplementedError(errmsg)
+
         self._mmap = mmap
 
         super(NCDFReader, self).__init__(filename, **kwargs)
@@ -504,28 +516,27 @@ class NCDFReader(base.ReaderBase):
         #
 
         # checks for not-implemented features (other units would need to be
-        # hacked into MDAnalysis.units) TODO: extend to forces and velocities
-        if self.trjfile.variables['time'].units.decode('utf-8') != "picosecond":
-            raise NotImplementedError(
-                "NETCDFReader currently assumes that the trajectory was written "
-                "with a time unit of picoseconds and not {0}.".format(
-                    self.trjfile.variables['time'].units))
-        if self.trjfile.variables['coordinates'].units.decode('utf-8') != "angstrom":
-            raise NotImplementedError(
-                "NETCDFReader currently assumes that the trajectory was written "
-                "with a length unit of Angstroem and not {0}.".format(
-                    self.trjfile.variables['coordinates'].units))
+        # hacked into MDAnalysis.units)
+        verify_units(self.trjfile.variables['time'].units, 'picosecond')
+        verify_units(self.trjfile.variables['coordinates'].units, 'angstrom')
 
         # Check for scale_factor attributes for all data variables and
-        # temporarily we only accept the case of velocities with 
-        # scale_factor == 20.455 (Issue #2323)
+        # store this to multiply through later (Issue #2323)
+        self.scale_factors = {'time': 1.0,
+                              'cell_lengths': 1.0,
+                              'cell_angles': 1.0,
+                              'coordinates': 1.0,
+                              'velocities': 1.0,
+                              'forces': 1.0 }
+
         for variable in self.trjfile.variables:
             if hasattr(self.trjfile.variables[variable], 'scale_factor'):
-                scale_factor = self.trjfile.variables[variable].scale_factor
-                if variable == 'velocities' and scale_factor == 20.455:
-                    self.units['velocity'] = 'Angstrom/AKMA'
+                if variable in self.scale_factors:
+                    scale_factor = self.trjfile.variables[variable].scale_factor
+                    self.scale_factors[variable] = scale_factor
                 else:
-                    errmsg = "abitrary scale_factors are not implemented"
+                    errmsg = ("scale_factors for variable {0} are "
+                              "not implemented".format(variable))
                     raise NotImplementedError(errmsg)
 
         if n_atoms is not None and n_atoms != self.n_atoms:
@@ -534,9 +545,22 @@ class NCDFReader(base.ReaderBase):
                              "is used!".format(n_atoms, self.n_atoms))
 
         self.has_velocities = 'velocities' in self.trjfile.variables
+        if self.has_velocities:
+            verify_units(self.trjfile.variables['velocities'].units,
+                         ('angstrom/picosecond', 'angstrom/ps'))
+
         self.has_forces = 'forces' in self.trjfile.variables
+        if self.has_forces:
+            verify_units(self.trjfile.variables['forces'].units,
+                         ('kilocalorie/mole/angstrom', 'kcal/mol/angstrom'))
 
         self.periodic = 'cell_lengths' in self.trjfile.variables
+        if self.periodic:
+            verify_units(self.trjfile.variables['cell_lengths'].units,
+                         ('angstrom',))
+            verify_units(self.trjfile.variables['cell_angles'].units,
+                         ('degree', 'degrees'))
+
         self._current_frame = 0
 
         self.ts = self._Timestep(self.n_atoms,
@@ -566,15 +590,21 @@ class NCDFReader(base.ReaderBase):
             raise IndexError("frame index must be 0 <= frame < {0}".format(
                 self.n_frames))
         # note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)
-        ts._pos[:] = self.trjfile.variables['coordinates'][frame]
-        ts.time = self.trjfile.variables['time'][frame]
+        ts._pos[:] = (self.trjfile.variables['coordinates'][frame] *
+                      self.scale_factors['coordinates'])
+        ts.time = (self.trjfile.variables['time'][frame] *
+                   self.scale_factors['time'])
         if self.has_velocities:
-            ts._velocities[:] = self.trjfile.variables['velocities'][frame]
+            ts._velocities[:] = (self.trjfile.variables['velocities'][frame] *
+                                 self.scale_factors['velocities'])
         if self.has_forces:
-            ts._forces[:] = self.trjfile.variables['forces'][frame]
+            ts._forces[:] = (self.trjfile.variables['forces'][frame] *
+                             self.scale_factors['forces'])
         if self.periodic:
-            ts._unitcell[:3] = self.trjfile.variables['cell_lengths'][frame]
-            ts._unitcell[3:] = self.trjfile.variables['cell_angles'][frame]
+            ts._unitcell[:3] = (self.trjfile.variables['cell_lengths'][frame] *
+                                self.scale_factors['cell_lengths'])
+            ts._unitcell[3:] = (self.trjfile.variables['cell_angles'][frame] *
+                                self.scale_factors['cell_angles'])
         if self.convert_units:
             self.convert_pos_from_native(ts._pos)  # in-place !
             self.convert_time_from_native(

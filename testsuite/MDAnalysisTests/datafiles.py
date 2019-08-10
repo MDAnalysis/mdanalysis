@@ -95,7 +95,8 @@ __all__ = [
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
     "PRMcs", # Amber (format, Issue 1331)
-    "PRMNCRST", "NCDFvel", # Amber top and ncdf with positions/forces/velocities
+    "PRMNCRST", # Amber ncrst with positions/forces/velocities
+    "PRM_NCBOX", "TRJ_NCBOX", # Amber parm7 + nc w/ pos/forces/vels/box
     "PRMNEGATIVE", # Amber negative ATOMIC_NUMBER (Issue 2306)
     "PRMErr1", "PRMErr2", "PRMErr3", # Amber TOP files to check raised errors
     "PQR",  # PQR v1
@@ -346,7 +347,9 @@ NCDFtruncoct =  resource_filename(__name__, 'data/Amber/tz2.truncoct.nc')
 PRMcs = resource_filename(__name__, 'data/Amber/chitosan.prmtop')
 
 PRMNCRST = resource_filename(__name__, 'data/Amber/ace_mbondi3.parm7')
-NCDFvel = resource_filename(__name__, 'data/Amber/ace_mbondi3.nc')
+
+PRM_NCBOX = resource_filename(__name__, 'data/Amber/ace_tip3p.parm7')
+TRJ_NCBOX = resource_filename(__name__, 'data/Amber/ace_tip3p.nc')
 
 PRMNEGATIVE = resource_filename(__name__, 'data/Amber/ace_mbondi3.negative.parm7')
 
