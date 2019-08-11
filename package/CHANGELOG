@@ -73,6 +73,7 @@ Changes
     PR #2201)
   * changed fudge_factor in guess_bonds to deal with new vdw radii (#2138, PR #2142)
   * bump minimum numpy version to 1.13.3
+  * changed the water bridge analysis output format (PR #2087)
 
 Fixes
   * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)

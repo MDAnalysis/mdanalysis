@@ -37,7 +37,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_DA():
-        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond donor'''
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond
+        donor'''
         grofile = '''Test gro file
 3
     1ALA      N    1   0.000   0.000   0.000
@@ -50,7 +51,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_DA_PBC():
-        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond donor but in a PBC condition'''
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond
+        donor but in a PBC condition'''
         grofile = '''Test gro file
 3
     1ALA      N    1   0.800   0.000   0.000
@@ -63,7 +65,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_AD():
-        '''A universe with one hydrogen bond donor bonding to a hydrogen bond acceptor'''
+        '''A universe with one hydrogen bond donor bonding to a hydrogen bond
+        acceptor'''
         grofile = '''Test gro file
 3
     1ALA      O    1   0.000   0.000   0.000
@@ -76,8 +79,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_loop():
-        '''A universe with one hydrogen bond acceptor bonding to a water which bonds back to the first hydrogen bond
-        acceptor and thus form a loop'''
+        '''A universe with one hydrogen bond acceptor bonding to a water which
+        bonds back to the first hydrogen bond  acceptor and thus form a loop'''
         grofile = '''Test gro file
 5
     1ALA      O    1   0.000   0.001   0.000
@@ -92,7 +95,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_DWA():
-        '''A universe with one hydrogen bond donor bonding to a hydrogen bond acceptor through a water'''
+        '''A universe with one hydrogen bond donor bonding to a hydrogen bond
+        acceptor through a water'''
         grofile = '''Test gro file
 5
     1ALA      N    1   0.000   0.000   0.000
@@ -107,7 +111,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_DWD():
-        '''A universe with one hydrogen bond donor bonding to a hydrogen bond donor through a water'''
+        '''A universe with one hydrogen bond donor bonding to a hydrogen bond
+        donor through a water'''
         grofile = '''Test gro file
 5
     1ALA      N    1   0.000   0.000   0.000
@@ -137,7 +142,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_AWD():
-        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond donor through a water'''
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen
+        bond donor through a water'''
         grofile = '''Test gro file
 5
     1ALA      O    1   0.000   0.000   0.000
@@ -152,7 +158,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_AWWA():
-        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through two waters'''
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond
+        acceptor through two waters'''
         grofile = '''Test gro file
 7
     1ALA      O    1   0.000   0.000   0.000
@@ -169,7 +176,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_AWWWA():
-        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through three waters'''
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond
+        acceptor through three waters'''
         grofile = '''Test gro file
 9
     1ALA      O    1   0.000   0.000   0.000
@@ -188,7 +196,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_AWWWWA():
-        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through three waters'''
+        '''A universe with one hydrogen bond acceptor bonding to a hydrogen bond
+        acceptor through three waters'''
         grofile = '''Test gro file
 11
     1ALA      O    1   0.000   0.000   0.000
@@ -209,7 +218,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_branch():
-        '''A universe with one hydrogen bond acceptor bonding to two hydrogen bond acceptor in selection 2'''
+        '''A universe with one hydrogen bond acceptor bonding to two hydrogen
+        bond acceptor in selection 2'''
         grofile = '''Test gro file
 9
     1ALA      O    1   0.000   0.000   0.000
@@ -228,7 +238,8 @@ class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe_AWA_AWWA():
-        '''A universe with one hydrogen bond acceptors are bonded through one or two water'''
+        '''A universe with one hydrogen bond acceptors are bonded through one or
+        two water'''
         grofile = '''Test gro file
 12
     1ALA      O    1   0.000   0.000   0.000
@@ -268,20 +279,25 @@ class TestWaterBridgeAnalysis(object):
     6ALA      O   13   1.400   0.000   0.000
    10.0   10.0   10.0'''
         u = MDAnalysis.Universe(StringIO(grofile), format='gro')
-        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)', order=4)
+        wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)',
+                                 order=4)
         # Build an dummy WaterBridgeAnalysis object for testing
         wb._network = []
         wb._network.append({(1, 0, 12, None, 2.0, 180.0): None})
         wb._network.append({(0, None, 12, 13, 2.0, 180.0): None})
-        wb._network.append({(1, 0, 3, None, 2.0, 180.0): {(4, 2, 12, None, 2.0, 180.0): None}})
-        wb._network.append({(0, None, 3, 2, 2.0, 180.0): {(4, 2, 5, None, 2.0, 180.0): {(5, None, 11, 12, 2.0, 180.0): None}}})
+        wb._network.append({(1, 0, 3, None, 2.0, 180.0):
+                            {(4, 2, 12, None, 2.0, 180.0): None}})
+        wb._network.append({(0, None, 3, 2, 2.0, 180.0):
+                            {(4, 2, 5, None, 2.0, 180.0):
+                             {(5, None, 11, 12, 2.0, 180.0): None}}})
         wb.timesteps = range(len(wb._network))
         return wb
 
     def test_nodata(self, universe_DA):
         '''Test if the funtions can run when there is no data.
         This is achieved by not runing the run() first.'''
-        wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
+        wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)',
+                                 'protein and (resid 4)', order=0)
         wb.generate_table()
         assert_equal(wb.timesteps_by_type(), None)
         assert_equal(wb.count_by_time(), None)
@@ -290,7 +306,8 @@ class TestWaterBridgeAnalysis(object):
     def test_selection_type_error(self, universe_DA):
         '''Test the case when the wrong selection1_type is given'''
         try:
-            wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)', 'protein and (resid 4)', order=0, selection1_type='aaa')
+            wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)',
+                'protein and (resid 4)', order=0, selection1_type='aaa')
         except ValueError:
             pass
         else:
@@ -298,33 +315,38 @@ class TestWaterBridgeAnalysis(object):
 
     def test_empty_selection(self, universe_DA):
         '''Test the case when selection yields empty result'''
-        wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 9)', 'protein and (resid 10)', order=0)
+        wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 9)',
+                                 'protein and (resid 10)', order=0)
         wb.run()
         assert wb._network == [{}]
 
     def test_loop(self, universe_loop):
         '''Test if loop can be handled correctly'''
-        wb = WaterBridgeAnalysis(universe_loop, 'protein and (resid 1)', 'protein and (resid 1 or resid 4)')
+        wb = WaterBridgeAnalysis(universe_loop, 'protein and (resid 1)',
+                                 'protein and (resid 1 or resid 4)')
         wb.run()
         assert_equal(len(wb._network[0].keys()), 2)
 
     def test_donor_accepter(self, universe_DA):
         '''Test zeroth order donor to acceptor hydrogen bonding'''
-        wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)', 'protein and (resid 4)', order=0, update_selection=True, debug=True)
+        wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)',
+        'protein and (resid 4)', order=0, update_selection=True, debug=True)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
 
     def test_donor_accepter_pbc(self, universe_DA_PBC):
         '''Test zeroth order donor to acceptor hydrogen bonding in PBC conditions'''
-        wb = WaterBridgeAnalysis(universe_DA_PBC, 'protein and (resid 1)', 'protein and (resid 4)', order=0, pbc=True)
+        wb = WaterBridgeAnalysis(universe_DA_PBC, 'protein and (resid 1)',
+            'protein and (resid 4)', order=0, pbc=True)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
 
     def test_accepter_donor(self, universe_AD):
         '''Test zeroth order acceptor to donor hydrogen bonding'''
-        wb = WaterBridgeAnalysis(universe_AD, 'protein and (resid 1)', 'protein and (resid 4)', order=0)
+        wb = WaterBridgeAnalysis(universe_AD, 'protein and (resid 1)',
+                                 'protein and (resid 4)', order=0)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 1, 2))
@@ -332,7 +354,8 @@ class TestWaterBridgeAnalysis(object):
     def test_acceptor_water_accepter(self, universe_AWA):
         '''Test case where the hydrogen bond acceptor from selection 1 form
         water bridge with hydrogen bond acceptor from selection 2'''
-        wb = WaterBridgeAnalysis(universe_AWA, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb = WaterBridgeAnalysis(universe_AWA, 'protein and (resid 1)',
+                                 'protein and (resid 4)')
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
@@ -343,7 +366,8 @@ class TestWaterBridgeAnalysis(object):
     def test_donor_water_accepter(self, universe_DWA):
         '''Test case where the hydrogen bond donor from selection 1 form
         water bridge with hydrogen bond acceptor from selection 2'''
-        wb = WaterBridgeAnalysis(universe_DWA, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb = WaterBridgeAnalysis(universe_DWA, 'protein and (resid 1)',
+                                 'protein and (resid 4)')
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
@@ -354,7 +378,8 @@ class TestWaterBridgeAnalysis(object):
     def test_acceptor_water_donor(self, universe_AWD):
         '''Test case where the hydrogen bond acceptor from selection 1 form
         water bridge with hydrogen bond donor from selection 2'''
-        wb = WaterBridgeAnalysis(universe_AWD, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb = WaterBridgeAnalysis(universe_AWD, 'protein and (resid 1)',
+                                 'protein and (resid 4)')
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
@@ -365,7 +390,8 @@ class TestWaterBridgeAnalysis(object):
     def test_donor_water_donor(self, universe_DWD):
         '''Test case where the hydrogen bond donor from selection 1 form
         water bridge with hydrogen bond donor from selection 2'''
-        wb = WaterBridgeAnalysis(universe_DWD, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb = WaterBridgeAnalysis(universe_DWD, 'protein and (resid 1)',
+                                 'protein and (resid 4)')
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
@@ -385,7 +411,8 @@ class TestWaterBridgeAnalysis(object):
         However, the protein only forms one hydrogen bond with the water.
         This entry won't be included.
         '''
-        wb = WaterBridgeAnalysis(universe_DWA, 'protein and resid 1', 'protein and resid 1')
+        wb = WaterBridgeAnalysis(universe_DWA, 'protein and resid 1',
+                                 'protein and resid 1')
         wb.run(verbose=False)
         assert_equal(wb._network[0], defaultdict(dict))
 
@@ -393,11 +420,13 @@ class TestWaterBridgeAnalysis(object):
         '''Test case where the hydrogen bond acceptor from selection 1 form second order
         water bridge with hydrogen bond acceptor from selection 2'''
         # test first order
-        wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)',
+                                 'protein and (resid 4)')
         wb.run(verbose=False)
         assert_equal(wb._network[0], defaultdict(dict))
         # test second order
-        wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)', 'protein and (resid 4)', order=2)
+        wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)',
+                                'protein and (resid 4)', order=2)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
@@ -407,7 +436,8 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(list(third.keys())[0][:4], (5, 4, 6, None))
         assert_equal(third[list(third.keys())[0]], None)
         # test third order
-        wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)', 'protein and (resid 4)', order=3)
+        wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)',
+                                 'protein and (resid 4)', order=3)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
@@ -420,11 +450,13 @@ class TestWaterBridgeAnalysis(object):
     def test_acceptor_3water_accepter(self, universe_AWWWA):
         '''Test case where the hydrogen bond acceptor from selection 1 form third order
         water bridge with hydrogen bond acceptor from selection 2'''
-        wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)', 'protein and (resid 5)', order=2)
+        wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)',
+                                 'protein and (resid 5)', order=2)
         wb.run(verbose=False)
         assert_equal(wb._network[0], defaultdict(dict))
 
-        wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)', 'protein and (resid 5)', order=3)
+        wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)',
+                                 'protein and (resid 5)', order=3)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
@@ -436,7 +468,8 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(list(fourth.keys())[0][:4], (7, 6, 8, None))
         assert_equal(fourth[list(fourth.keys())[0]], None)
 
-        wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)', 'protein and (resid 5)', order=4)
+        wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)',
+                                 'protein and (resid 5)', order=4)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
@@ -451,11 +484,13 @@ class TestWaterBridgeAnalysis(object):
     def test_acceptor_4water_accepter(self, universe_AWWWWA):
         '''Test case where the hydrogen bond acceptor from selection 1 form fourth order
         water bridge with hydrogen bond acceptor from selection 2'''
-        wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)', 'protein and (resid 6)', order=3)
+        wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)',
+                                 'protein and (resid 6)', order=3)
         wb.run(verbose=False)
         assert_equal(wb._network[0], defaultdict(dict))
 
-        wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)', 'protein and (resid 6)', order=4)
+        wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)',
+                                 'protein and (resid 6)', order=4)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
@@ -469,7 +504,8 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(list(fifth.keys())[0][:4], (9, 8, 10, None))
         assert_equal(fifth[list(fifth.keys())[0]], None)
 
-        wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)', 'protein and (resid 6)', order=5)
+        wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)',
+                                 'protein and (resid 6)', order=5)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
@@ -487,7 +523,8 @@ class TestWaterBridgeAnalysis(object):
         '''Test case where the hydrogen bond acceptor from selection 1 form a second order
         water bridge with hydrogen bond acceptor from selection 2
         and the last water is linked to two residues in selection 2'''
-        wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)', 'protein and (resid 4 or resid 5)', order=2)
+        wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)',
+                                 'protein and (resid 4 or resid 5)', order=2)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
@@ -499,7 +536,8 @@ class TestWaterBridgeAnalysis(object):
 
     def test_timeseries_wba(self, universe_branch):
         '''Test if the time series data is correctly generated in water bridge analysis format'''
-        wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)', 'protein and (resid 4 or resid 5)', order=2)
+        wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)',
+                                 'protein and (resid 4 or resid 5)', order=2)
         wb.output_format = 'sele1_sele2'
         wb.run(verbose=False)
         timeseries = sorted(wb.timeseries[0])
@@ -511,7 +549,8 @@ class TestWaterBridgeAnalysis(object):
 
     def test_timeseries_hba(self, universe_branch):
         '''Test if the time series data is correctly generated in hydrogen bond analysis format'''
-        wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)', 'protein and (resid 4 or resid 5)', order=2)
+        wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)',
+                                 'protein and (resid 4 or resid 5)', order=2)
         wb.output_format = 'donor_acceptor'
         wb.run(verbose=False)
         timeseries = sorted(wb.timeseries[0])
@@ -523,7 +562,8 @@ class TestWaterBridgeAnalysis(object):
 
     def test_acceptor_12water_accepter(self, universe_AWA_AWWA):
         '''Test of independent first order and second can be recognised correctely'''
-        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=1)
+        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)',
+                                 'protein and (resid 4 or resid 8)', order=1)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
@@ -531,7 +571,8 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
         assert_equal(second[list(second.keys())[0]], None)
         network = wb._network[0]
-        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
+        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)',
+                                 'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
         network = wb._network[0]
         assert_equal([(0, None, 2, 1), (5, None, 7, 6)],
@@ -541,7 +582,8 @@ class TestWaterBridgeAnalysis(object):
         '''
         This test tests the simplest water bridge to see if count_by_type() works.
         '''
-        wb = WaterBridgeAnalysis(universe_DWA, 'protein and (resid 1)', 'protein and (resid 4)')
+        wb = WaterBridgeAnalysis(universe_DWA, 'protein and (resid 1)',
+                                 'protein and (resid 4)')
         wb.run(verbose=False)
         assert_equal(wb.count_by_type(), [(1, 4, 'ALA', 1, 'H', 'ALA', 4, 'O',  1.)])
 
@@ -549,9 +591,12 @@ class TestWaterBridgeAnalysis(object):
         '''
         This test tests if count_by_type() can give the correct result for more than 1 links.
         '''
-        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
+        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)',
+                                 'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
-        assert_equal(sorted(wb.count_by_type()), [[0, 4, 'ALA', 1, 'O', 'ALA', 4, 'O', 1.0], [5, 11, 'ALA', 5, 'O', 'ALA', 8, 'O', 1.0]])
+        assert_equal(sorted(wb.count_by_type()),
+        [[0, 4, 'ALA', 1, 'O', 'ALA', 4, 'O', 1.0],
+         [5, 11, 'ALA', 5, 'O', 'ALA', 8, 'O', 1.0]])
 
 
     def test_count_by_type_multiple_frame(self, wb_multiframe):
@@ -637,7 +682,8 @@ class TestWaterBridgeAnalysis(object):
         in count_by_type().
         :return:
         '''
-        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
+        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)',
+                                 'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
         def analysis(current, output, u):
             sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = current[0]
@@ -655,7 +701,8 @@ class TestWaterBridgeAnalysis(object):
         See if count_by_time() can handle zero well.
         :return:
         '''
-        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)', 'protein and (resid 4 or resid 8)', order=2)
+        wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)',
+                                 'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
         def analysis(current, output, u):
             pass

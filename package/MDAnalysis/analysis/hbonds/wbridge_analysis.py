@@ -276,8 +276,9 @@ of hydrogen bonds from selection 1 to selection 2, formatted in the same fashion
 Where ``current[0]`` is the first hydrogen bond originating from selection 1 and ``current[-1]`` is
 the final hydrogen bond ending in selection 2. The output sums up all the information in the
 current frame and is a dictionary with a user-defined key and the value is the weight of the
-corresponding key. At the end of the analysis, the keys from all the frames are collected
-and the corresponding values will be summed up and returned. ::
+corresponding key. During the analysis phase, the function analysis iterates through all the
+water bridges and modify the output in-place. At the end of the analysis, the keys from
+all the frames are collected and the corresponding values will be summed up and returned. ::
 
   def analysis(current, output, u):
       r'''This function defines how the type of water bridge should be specified.
@@ -288,8 +289,8 @@ and the corresponding values will be summed up and returned. ::
             The current water bridge being analysed is a list of hydrogen bonds from
             selection 1 to selection 2.
         output : dict
-            A dictionary where the key is the type of the water bridge and the value
-            is the weight of this type of water bridge.
+            A dictionary which is modified in-place where the key is the type of
+            the water bridge and the value is the weight of this type of water bridge.
         u : MDAnalysis.universe
             The current Universe for looking up atoms.'''
 
@@ -318,7 +319,10 @@ Returns ::
   [(('ARG', 1, 'O', 'ASP', 3, 'OD'), 1.0),]
 
 Note that the result is arranged in the format of ``(key, the proportion of time)``. When no
-custom analysis function is supplied, the key is expended for backward compatibility.
+custom analysis function is supplied, the key is expanded for backward compatibility. So
+that when the same code is executed, the result returned will be the same as the result
+given since version 0.17.0 and the same as the
+:meth:`HydrogenBondAnalysis.count_by_type`.
 
 Some people might only interested in contacts between residues and pay no attention
 to the details regarding the atom name. However, since multiple water bridges can
@@ -337,8 +341,8 @@ to :meth:`~WaterBridgeAnalysis.count_by_type`. ::
             The current water bridge being analysed is a list of hydrogen bonds from
             selection 1 to selection 2.
         output : dict
-            A dictionary where the key is the type of the water bridge and the value
-            is the weight of this type of water bridge.
+            A dictionary which is modified in-place where the key is the type of
+            the water bridge and the value is the weight of this type of water bridge.
         u : MDAnalysis.universe
             The current Universe for looking up atoms.
       '''
@@ -377,8 +381,8 @@ function to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
             The current water bridge being analysed is a list of hydrogen bonds from
             selection 1 to selection 2.
         output : dict
-            A dictionary where the key is the type of the water bridge and the value
-            is the weight of this type of water bridge.
+            A dictionary which is modified in-place where the key is the type of
+            the water bridge and the value is the weight of this type of water bridge.
         u : MDAnalysis.universe
             The current Universe for looking up atoms.
       '''
@@ -418,8 +422,8 @@ interactions can be discarded by supplying an analysis function to
             The current water bridge being analysed is a list of hydrogen bonds from
             selection 1 to selection 2.
         output : dict
-            A dictionary where the key is the type of the water bridge and the value
-            is the number of this type of water bridge.
+            A dictionary which is modified in-place where the key is the type of
+            the water bridge and the value is the number of this type of water bridge.
         u : MDAnalysis.universe
             The current Universe for looking up atoms.
       '''
@@ -491,8 +495,8 @@ The analysis function can be written as::
             The current water bridge being analysed is a list of hydrogen bonds from
             selection 1 to selection 2.
         output : dict
-            A dictionary where the key is the type of the water bridge and the value
-            is the number of this type of water bridge.
+            A dictionary which is modified in-place where the key is the type of
+            the water bridge and the value is the number of this type of water bridge.
         u : MDAnalysis.universe
             The current Universe for looking up atoms.
       '''
@@ -585,10 +589,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     .. versionadded:: 0.17.0
 
-    The :attr:`WaterBridgeAnalysis.timeseries` has been updated to cope with
-    higher order water bridge and zero-order hydrogen bonds.
 
-    .. versionchanged 0.20.0
     """
     # use tuple(set()) here so that one can just copy&paste names from the
     # table; set() takes care for removing duplicates. At the end the
@@ -599,7 +600,8 @@ class WaterBridgeAnalysis(AnalysisBase):
     #: use the keyword `donors` to add a list of additional donor names.
     DEFAULT_DONORS = {
         'CHARMM27': tuple(set([
-            'N', 'OH2', 'OW', 'NE', 'NH1', 'NH2', 'ND2', 'SG', 'NE2', 'ND1', 'NZ', 'OG', 'OG1', 'NE1', 'OH'])),
+            'N', 'OH2', 'OW', 'NE', 'NH1', 'NH2', 'ND2', 'SG', 'NE2', 'ND1',
+            'NZ', 'OG', 'OG1', 'NE1', 'OH'])),
         'GLYCAM06': tuple(set(['N', 'NT', 'N3', 'OH', 'OW'])),
         'other': tuple(set([]))}
 
@@ -608,7 +610,8 @@ class WaterBridgeAnalysis(AnalysisBase):
     #: use the keyword `acceptors` to add a list of additional acceptor names.
     DEFAULT_ACCEPTORS = {
         'CHARMM27': tuple(set([
-            'O', 'OC1', 'OC2', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2', 'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
+            'O', 'OC1', 'OC2', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1',
+            'OE2', 'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
         'GLYCAM06': tuple(set(['N', 'NT', 'O', 'O2', 'OH', 'OS', 'OW', 'OY', 'SM'])),
         'other': tuple(set([]))}
 
@@ -748,6 +751,14 @@ class WaterBridgeAnalysis(AnalysisBase):
         moving farther than 4 Å + `order` * (2 Å + `distance`)), you might
         consider setting the `update_selection` keywords to ``True``
         to ensure correctness.
+
+        .. versionchanged 0.20.0
+           The :attr:`WaterBridgeAnalysis.timeseries` has been updated
+           see :attr:`WaterBridgeAnalysis.timeseries` for detail.
+           This class is now based on
+           :class:`~MDAnalysis.analysis.base.AnalysisBase`.
+
+
         """
         super(WaterBridgeAnalysis, self).__init__(universe.trajectory,
                                           **kwargs)
@@ -786,7 +797,8 @@ class WaterBridgeAnalysis(AnalysisBase):
         self.acceptors = tuple(set(self.DEFAULT_ACCEPTORS[forcefield]).union(acceptors))
 
         if self.selection1_type not in ('both', 'donor', 'acceptor'):
-            raise ValueError('HydrogenBondAnalysis: Invalid selection type {0!s}'.format(self.selection1_type))
+            raise ValueError('HydrogenBondAnalysis: Invalid selection type {0!s}'.format(
+            self.selection1_type))
 
         self._network = []  # final result accessed as self.network
         self.timesteps = None  # time for each frame
@@ -1213,6 +1225,9 @@ class WaterBridgeAnalysis(AnalysisBase):
     def _expand_timeseries(self, entry, output_format=None):
         '''
         Expand the compact data format into the old timeseries form.
+        The old is defined as the format for release up to 0.19.2.
+        As is discussed in Issue #2177, the internal storage of the hydrogen
+        bond information has been changed to the compact format.
         The function takes in the argument `output_format` to see which output format will be chosen.
         if `output_format` is not specified, the value will be taken from :attr:`output_format`.
         If `output_format` is 'sele1_sele2', the output will be the old water bridge analysis format::
@@ -1246,7 +1261,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                 # atom1 is hydrogen bond donor, position not swapped.
                 atom1, atom2 = atom1, atom2
         else:
-            raise KeyError('Only \'sele1_sele2\' or \'donor_acceptor\' are allowed as output format.')
+            raise KeyError("Only 'sele1_sele2' or 'donor_acceptor' are allowed as output format")
 
         return (atom1, atom2, self._expand_index(atom1), self._expand_index(atom2), dist, angle)
 
@@ -1274,7 +1289,12 @@ class WaterBridgeAnalysis(AnalysisBase):
            w.run()
            timeseries = w.timeseries
 
-        .. versionchanged:: 0.20.0
+        .. versionchanged 0.20.0
+           The :attr:`WaterBridgeAnalysis.timeseries` has been updated where
+           the donor and acceptor string has been changed to tuple
+           (resname string, resid, name_string).
+
+
         '''
         output_format = output_format or self.output_format
         def analysis(current, output, *args, **kwargs):
@@ -1283,7 +1303,8 @@ class WaterBridgeAnalysis(AnalysisBase):
         timeseries = []
         for frame in self._network:
             new_frame = []
-            self._traverse_water_network(frame, new_frame, analysis_func=analysis, output=new_frame, link_func=self._compact_link)
+            self._traverse_water_network(frame, new_frame, analysis_func=analysis,
+            output=new_frame, link_func=self._compact_link)
             timeseries.append([self._expand_timeseries(entry, output_format) for entry in new_frame])
         return timeseries
 
@@ -1386,7 +1407,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             result_dict = defaultdict(int)
             for frame in self._network:
                 frame_dict = defaultdict(int)
-                self._traverse_water_network(frame, [], analysis_func=analysis_func, output=frame_dict,
+                self._traverse_water_network(frame, [], analysis_func=analysis_func,
+                                             output=frame_dict,
                                              link_func=self._full_link, **kwargs)
                 for key, value in frame_dict.items():
                     result_dict[key] += frame_dict[key]
@@ -1427,7 +1449,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             result = []
             for time, frame in zip(self.timesteps, self._network):
                 result_dict = defaultdict(int)
-                self._traverse_water_network(frame, [], analysis_func=analysis_func, output=result_dict,
+                self._traverse_water_network(frame, [], analysis_func=analysis_func,
+                                             output=result_dict,
                                              link_func=self._full_link, **kwargs)
                 result.append((time, sum([result_dict[key] for key in result_dict])))
             return result
@@ -1471,7 +1494,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             else:
                 timesteps = self.timesteps
             for time, frame in zip(timesteps, self._network):
-                self._traverse_water_network(frame, [], analysis_func=analysis_func, output=result,
+                self._traverse_water_network(frame, [], analysis_func=analysis_func,
+                                             output=result,
                                              link_func=self._full_link, time=time, **kwargs)
 
             result_list = []
