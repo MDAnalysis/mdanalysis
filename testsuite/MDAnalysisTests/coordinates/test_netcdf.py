@@ -287,6 +287,109 @@ class TestNCDFReader3(object):
         assert_almost_equal(self.box_refs[expected], universe.dimensions)
 
 
+class _NCDFGenerator(object):
+    """A basic modular ncdf writer based on :class:`NCDFWriter`"""
+
+    def create_ncrst(self, params):
+        # Create under context manager
+        with netcdf.netcdf_file(params['filename'], mode='w',
+                                version=params['version_byte']) as ncdf:
+            # Top level attributes
+            if params['Conventions']:
+                setattr(ncdf, 'Conventions', params['Conventions'])
+            if params['ConventionVersion']:
+                setattr(ncdf, 'ConventionVersion',
+                        params['ConventionVersion'])
+            if params['program']:
+                setattr(ncdf, 'program', params['program'])
+            if params['programVersion']:
+                setattr(ncdf, 'programVersion', params['programVersion'])
+
+            # Dimensions
+            if params['n_atoms']:
+                ncdf.createDimension('atom', params['n_atoms'])
+            if params['spatial']:
+                ncdf.createDimension('spatial', params['spatial'])
+            if params['time']:
+                ncdf.createDimension('time', 1)
+            if params['frame']:
+                ncdf.createDimension('frame', None)
+            ncdf.createDimension('label', 5)
+            ncdf.createDimension('cell_spatial', 3)
+            ncdf.createDimension('cell_angular', 3)
+
+            # Variables
+            if params['time']:
+                time = ncdf.createVariable('time', 'd', ('time',))
+                setattr(time, 'units', params['time'])
+                time[:] = 1.0
+            # Spatial or atom dependent variables
+            if (params['spatial']) and (params['n_atoms']):
+                if params['coords']:
+                    if params['frame']:
+                        coords = ncdf.createVariable('coordinates', 'f4',
+                                                     ('frame', 'atom',
+                                                      'spatial'))
+                    else:
+                        coords = ncdf.createVariable('coordinates', 'f8',
+                                                     ('atom', 'spatial'))
+                    setattr(coords, 'units', params['coords'])
+                    # Need to fix
+                    coords[:] = np.asarray(range(params['spatial']),
+                                           dtype=np.float32)
+                spatial = ncdf.createVariable('spatial', 'c', ('spatial',))
+                spatial[:] = np.asarray(list('xyz')[:params['spatial']])
+                if params['frame']:
+                    velocs = ncdf.createVariable('velocities', 'f4',
+                                                 ('frame', 'atom', 'spatial'))
+                    forces = ncdf.createVariable('forces', 'f4',
+                                                 ('frame', 'atom', 'spatial'))
+                else:
+                    velocs = ncdf.createVariable('velocities', 'f8',
+                                                 ('atom', 'spatial'))
+                    forces = ncdf.createVariable('forces', 'f8',
+                                                 ('atom', 'spatial'))
+                setattr(velocs, 'units', 'angstrom/picosecond')
+                setattr(forces, 'units', 'kilocalorie/mole/angstrom')
+                velocs[:] = np.asarray(range(params['spatial']),
+                                       dtype=np.float32)
+                forces[:] = np.asarray(range(params['spatial']),
+                                       dtype=np.float32)
+
+            # self.scale_factor overrides which variable gets a scale_factor
+            if params['scale_factor']:
+                setattr(ncdf.variables[params['scale_factor']],
+                        'scale_factor', 2.0)
+
+    def gen_params(self, keypair=None):
+        """Generate writer parameters, keypair can be used to overwrite
+        given dictonary entries (expects dictionary)
+        """
+
+        params = {
+            'filename': 'test.ncrst',
+            'version_byte': 2,
+            'Conventions': 'AMBER',
+            'ConventionVersion': '1.0',
+            'program': 'mda test_writer',
+            'programVersion': 'V42',
+            'n_atoms': 1,
+            'spatial': 3,
+            'coords': 'angstrom',
+            'time': 'picosecond',
+            'scale_factor': None,
+            'frame': None
+        }
+
+        if keypair:
+            for entry in keypair:
+                params[entry] = keypair[entry]
+
+        return params
+
+
+
+
 class _NCDFWriterTest(object):
     prec = 5
 
