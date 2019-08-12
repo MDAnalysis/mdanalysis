@@ -294,7 +294,7 @@ class PDBReader(base.ReaderBase):
                 # classification = line[10:50]
                 # date = line[50:59]
                 # idCode = line[62:66]
-                header = line[10:66].decode()
+                header = line[10:66].strip().decode()
             elif line[:5] == b'TITLE':
                 title.append(line[8:80].strip().decode())
             elif line[:6] == b'COMPND':
