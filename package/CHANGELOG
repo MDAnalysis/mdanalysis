@@ -74,6 +74,7 @@ Changes
   * bump minimum numpy version to 1.13.3
 
 Fixes
+  * fixed PDBReader and PDBWriter newlines for PDB header (Issue #2324)
   * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
   * fixes ProgressMeter behaviour for non-AnalysisBase methods (Issue #2084)
   * fixed mol2 parser for status bit strings (Issue #2318)
