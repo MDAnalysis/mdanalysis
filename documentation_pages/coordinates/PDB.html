@@ -280,6 +280,8 @@ details):</p>
 </dd>
 <dt><code class="xref py py-class docutils literal notranslate"></code></dt>
 <dd>Can now read PDB files with DOS line endings</dd>
+<dt><code class="xref py py-class docutils literal notranslate"></code></dt>
+<dd>Strip trajectory header of trailing spaces and newlines</dd>
 </dl>
 </div>
 <p>Read coordinates from <em>filename</em>.</p>
@@ -353,6 +355,9 @@ but can be enabled with the <em>bonds</em> keyword.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.14.0: </span>PDB doesn’t save charge information</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Strip trajectory header of trailing spaces and newlines</p>
 </div>
 <p>Create a new PDBWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -468,6 +473,10 @@ method right before closing the file it is recommended to <em>not</em> call
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.HEADER">
 <code class="descname">HEADER</code><span class="sig-paren">(</span><em>trajectory</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.HEADER"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.HEADER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER">HEADER</a> record.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Strip <cite>trajectory.header</cite> since it can be modified by the user and should be
+sanitized (Issue #2324)</p>
+</div>
 </dd></dl>
 
 <dl class="method">
