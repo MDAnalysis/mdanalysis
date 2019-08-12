@@ -937,6 +937,7 @@ class Masses(AtomAttr):
         ('moment_of_inertia', moment_of_inertia))
 
     @warn_if_not_unique
+    @check_pbc_and_unwrap
     def radius_of_gyration(group, **kwargs):
         """Radius of gyration.
 
@@ -945,6 +946,10 @@ class Masses(AtomAttr):
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
 
         Note
         ----
@@ -953,15 +958,23 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter
 
         """
         atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
+        unwrap = kwargs.pop('unwrap', False)
+        compound = kwargs.pop('compound', 'group')
 
-        com = atomgroup.center_of_mass(pbc=pbc)
+        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound is not 'group':
+            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+
         if pbc:
             recenteredpos = atomgroup.pack_into_box(inplace=False) - com
+        elif unwrap:
+            recenteredpos = atomgroup.unwrap(compound=compound) - com
         else:
             recenteredpos = atomgroup.positions - com
 
