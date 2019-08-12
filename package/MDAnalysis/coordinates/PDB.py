@@ -229,6 +229,8 @@ class PDBReader(base.ReaderBase):
        * New :attr:`title` (list with all TITLE lines).
     .. versionchanged:: 0.19.1
        Can now read PDB files with DOS line endings
+    .. versionchanged:: 0.20.0
+       Strip trajectory header of trailing spaces and newlines
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
@@ -475,7 +477,7 @@ class PDBWriter(base.WriterBase):
        PDB doesn't save charge information
 
     .. versionchanged:: 0.20.0
-       Strip trajectory header of spaces and newlines
+       Strip trajectory header of trailing spaces and newlines
 
     """
     fmt = {
@@ -948,6 +950,9 @@ class PDBWriter(base.WriterBase):
 
         .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER
 
+        .. versionchanged:: 0.20.0
+            Strip `trajectory.header` since it can be modified by the user and should be
+            sanitized (Issue #2324)
         """
         if not hasattr(trajectory, 'header'):
             return
