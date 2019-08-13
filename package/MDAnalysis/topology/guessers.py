@@ -106,7 +106,8 @@ def guess_atom_type(atomname):
     return guess_atom_element(atomname)
 
 
-SYMBOLS = re.compile(r'[0-9\*\+\-]')
+NUMBERS = re.compile(r'[0-9]') # match numbers
+SYMBOLS = re.compile(r'[\*\+\-]')  # match *, +, -
 
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.
@@ -129,8 +130,9 @@ def guess_atom_element(atomname):
     try:
         return tables.atomelements[atomname]
     except KeyError:
-        # strip symbols
-        name = re.sub(SYMBOLS, '', atomname)
+        # strip symbols and numbers
+        no_symbols = re.sub(SYMBOLS, '', atomname)
+        name = re.sub(NUMBERS, '', no_symbols).upper()
         while name:
             if name in tables.elements:
                 return name
@@ -143,7 +145,7 @@ def guess_atom_element(atomname):
             name = name[:-1]  # probably element is on left not right
 
         # if it's numbers
-        return atomname
+        return no_symbols
 
 
 def guess_bonds(atoms, coords, box=None, **kwargs):
