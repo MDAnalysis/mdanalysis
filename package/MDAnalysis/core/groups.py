@@ -2759,6 +2759,13 @@ class AtomGroup(GroupBase):
                 in the :class:`~MDAnalysis.core.universe.Universe` are
                 consecutively numbered, and the index runs from 1 up to the
                 total number of atoms.
+            index *index-range*
+                selects all atoms within a range of (0-based) inclusive indices,
+                e.g. ``index 0`` selects the first atom in the universe;
+                ``index 5:10`` selects atoms 6 through 11 inclusive. All atoms
+                in the :class:`~MDAnalysis.core.universe.Universe` are
+                consecutively numbered, and the index runs from 0 up to the
+                total number of atoms - 1.
 
         **Preexisting selections**
 
