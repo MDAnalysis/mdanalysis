@@ -65,6 +65,7 @@ Enhancements
   * add high order water bridge support to water bridge analysis. (PR #2087)
 
 Changes
+  * added support for scale_factor in NCDFReader (Issue #2323)
   * added official support for Python 3.7 (PR #1963)
   * stopped official support of Python 3.4 (#2066, PR #2174)
   * In lib.mdamath, calculations within triclinic_box(), triclinic_vectors(),
@@ -76,6 +77,7 @@ Changes
   * changed the water bridge analysis output format (PR #2087)
 
 Fixes
+  * fixed lack of check for scaling of NCDFReader velocities (Issue #2323)
   * fixed PDBReader and PDBWriter newlines for PDB header (Issue #2324)
   * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
   * fixes ProgressMeter behaviour for non-AnalysisBase methods (Issue #2084)
