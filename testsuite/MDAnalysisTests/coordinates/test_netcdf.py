@@ -323,6 +323,14 @@ class _NCDFGenerator(object):
                 time = ncdf.createVariable('time', 'd', ('time',))
                 setattr(time, 'units', params['time'])
                 time[:] = 1.0
+            cell_spatial = ncdf.createVariable('cell_spatial', 'c',
+                                               ('cell_spatial', ))
+            cell_spatial[:] = np.asarray(list('abc'))
+            cell_angular = ncdf.createVariable('cell_angular', 'c',
+                                               ('cell_angular', 'label'))
+            cell_angular[:] np.asarray([list('alpha'), list('beta'),
+                                        list('gamma')])
+
             # Spatial or atom dependent variables
             if (params['spatial']) and (params['n_atoms']):
                 if params['coords']:
@@ -334,7 +342,6 @@ class _NCDFGenerator(object):
                         coords = ncdf.createVariable('coordinates', 'f8',
                                                      ('atom', 'spatial'))
                     setattr(coords, 'units', params['coords'])
-                    # Need to fix
                     coords[:] = np.asarray(range(params['spatial']),
                                            dtype=np.float32)
                 spatial = ncdf.createVariable('spatial', 'c', ('spatial',))
@@ -344,13 +351,25 @@ class _NCDFGenerator(object):
                                                  ('frame', 'atom', 'spatial'))
                     forces = ncdf.createVariable('forces', 'f4',
                                                  ('frame', 'atom', 'spatial'))
+                    cell_lengths = ncdf.createVariable('cell_lengths', 'f8',
+                                                       ('frame', 'cell_spatial'))
+                    cell_angles = ncdf.createVariable('cell_angles', 'f8',
+                                                      ('frame', 'cell_angular'))
                 else:
+                    cell_lengths = ncdf.createVariable('cell_lengths', 'f8',
+                                                       ('cell_spatial',))
+                    cell_angles = ncdf.createVariable('cell_angles', 'f8',
+                                                      ('cell_angular',))
                     velocs = ncdf.createVariable('velocities', 'f8',
                                                  ('atom', 'spatial'))
                     forces = ncdf.createVariable('forces', 'f8',
                                                  ('atom', 'spatial'))
                 setattr(velocs, 'units', 'angstrom/picosecond')
                 setattr(forces, 'units', 'kilocalorie/mole/angstrom')
+                setattr(cell_lengths, 'units', 'angstrom')
+                setattr(cell_angles, 'units', 'degree')
+                cell_lengths[:] = 
+                cell_angles[:] = 
                 velocs[:] = np.asarray(range(params['spatial']),
                                        dtype=np.float32)
                 forces[:] = np.asarray(range(params['spatial']),
