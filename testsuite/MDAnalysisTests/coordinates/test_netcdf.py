@@ -33,6 +33,7 @@ from numpy.testing import (
     assert_equal,
     assert_almost_equal
 )
+from MDAnalysis.coordinates.TRJ import NCDFReader
 
 from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini,
@@ -296,7 +297,7 @@ class _NCDFGenerator(object):
     """A class for generating abitrary ncdf files and exhaustively test
     edge cases which might not be found in the wild"""
 
-    def create_ncrst(self, params):
+    def create_ncdf(self, params):
         """A basic modular ncdf writer based on :class:`NCDFWriter`"""
         # Create under context manager
         with netcdf.netcdf_file(params['filename'], mode='w',
@@ -335,7 +336,7 @@ class _NCDFGenerator(object):
             cell_spatial[:] = np.asarray(list('abc'))
             cell_angular = ncdf.createVariable('cell_angular', 'c',
                                                ('cell_angular', 'label'))
-            cell_angular[:] = np.asarray([list('alpha'), list('beta'),
+            cell_angular[:] = np.asarray([list('alpha'), list('beta '),
                                           list('gamma')])
 
             # Spatial or atom dependent variables
@@ -343,7 +344,7 @@ class _NCDFGenerator(object):
                 spatial = ncdf.createVariable('spatial', 'c', ('spatial',))
                 spatial[:] = np.asarray(list('xyz')[:params['spatial']])
                 if params['frame']:
-                    if params['coords']:
+                    if params['coordinates']:
                         coords = ncdf.createVariable('coordinates', 'f4',
                                                      ('frame', 'atom',
                                                       'spatial'))
@@ -358,7 +359,7 @@ class _NCDFGenerator(object):
                                                       ('frame',
                                                        'cell_angular'))
                 else:
-                    if params['coords']:
+                    if params['coordinates']:
                         coords = ncdf.createVariable('coordinates', 'f8',
                                                      ('atom', 'spatial'))
                     cell_lengths = ncdf.createVariable('cell_lengths', 'f8',
@@ -371,17 +372,17 @@ class _NCDFGenerator(object):
                                                  ('atom', 'spatial'))
 
                 # Set units
-                if params['coords']:
-                    setattr(coords, 'units', params['coords'])
-                setattr(velocs, 'units', 'angstrom/picosecond')
-                setattr(forces, 'units', 'kilocalorie/mole/angstrom')
-                setattr(cell_lengths, 'units', 'angstrom')
-                setattr(cell_angles, 'units', 'degree')
+                if params['coordinates']:
+                    setattr(coords, 'units', params['coordinates'])
+                setattr(velocs, 'units', params['velocities'])
+                setattr(forces, 'units', params['forces'])
+                setattr(cell_lengths, 'units', params['cell_lengths'])
+                setattr(cell_angles, 'units', params['cell_angles'])
 
                 # Assign value
                 if params['frame']:
                     for index in range(params['frame']):
-                        if params['coords']:
+                        if params['coordinates']:
                             coords[index, :] = np.asarray(
                              range(params['spatial']), dtype=np.float32)
                         cell_lengths[index, :] = np.array([20., 20., 20.],
@@ -393,30 +394,30 @@ class _NCDFGenerator(object):
                         forces[index, :] = np.asarray(range(params['spatial']),
                                                       dtype=np.float32)
                 else:
-                    if params['coords']:
+                    if params['coordinates']:
                         coords[:] = np.asarray(range(params['spatial']),
                                                dtype=np.float32)
                     cell_lengths[:] = np.array([20., 20., 20.],
                                                dtype=np.float32)
                     cell_angles[:] = np.array([90., 90., 90.],
                                               dtype=np.float32)
-                    velocs[:] = np.asarray(range(params['spatial'],
-                                           dtype=np.float32))
-                    forces[:] = np.asarray(range(params['spatial'],
-                                           dtype=np.float32))
+                    velocs[:] = np.asarray(range(params['spatial']),
+                                           dtype=np.float32)
+                    forces[:] = np.asarray(range(params['spatial']),
+                                           dtype=np.float32)
 
             # self.scale_factor overrides which variable gets a scale_factor
             if params['scale_factor']:
                 setattr(ncdf.variables[params['scale_factor']],
-                        'scale_factor', 2.0)
+                        'scale_factor', params['scale_factor_value'])
 
-    def gen_params(self, keypair=None):
+    def gen_params(self, keypair=None, restart=False):
         """Generate writer parameters, keypair can be used to overwrite
         given dictonary entries (expects dictionary)
         """
 
         params = {
-            'filename': 'test.ncrst',
+            'filename': 'test.nc',
             'version_byte': 2,
             'Conventions': 'AMBER',
             'ConventionVersion': '1.0',
@@ -424,11 +425,20 @@ class _NCDFGenerator(object):
             'programVersion': 'V42',
             'n_atoms': 1,
             'spatial': 3,
-            'coords': 'angstrom',
+            'coordinates': 'angstrom',
+            'velocities': 'angstrom/picosecond',
+            'forces': 'kilocalorie/mole/angstrom',
+            'cell_lengths': 'angstrom',
+            'cell_angles': 'degree',
             'time': 'picosecond',
             'scale_factor': None,
-            'frame': None
+            'scale_factor_value': 2.0,
+            'frame': 2
         }
+
+        if restart:
+            params['filename'] = 'test.ncrst'
+            params['frame'] = None
 
         if keypair:
             for entry in keypair:
@@ -437,8 +447,146 @@ class _NCDFGenerator(object):
         return params
 
 
-class TestNCDFReader_Errors(_NCDFGenerator):
-    
+class TestScaleFactorImplementation(_NCDFGenerator):
+
+    prec = 5
+
+    def test_scale_factor_coordinates(self, tmpdir):
+        mutation = {'scale_factor': 'coordinates'}
+        params = self.gen_params(keypair=mutation, restart=False)
+        expected = np.asarray(range(3), dtype=np.float32) * 2.0
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            u = mda.Universe(params['filename'])
+            for ts in u.trajectory:
+                assert_almost_equal(ts.positions[0], expected, self.prec)
+
+    def test_scale_factor_velocities(self, tmpdir):
+        mutation = {'scale_factor': 'velocities', 'scale_factor_value': 3.0}
+        params = self.gen_params(keypair=mutation, restart=False)
+        expected = np.asarray(range(3), dtype=np.float32) * 3.0
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            u = mda.Universe(params['filename'])
+            for ts in u.trajectory:
+                assert_almost_equal(ts.velocities[0], expected, self.prec)
+
+    def test_scale_factor_forces(self, tmpdir):
+        mutation = {'scale_factor': 'forces', 'scale_factor_value': 10.0}
+        params = self.gen_params(keypair=mutation, restart=False)
+        expected = np.asarray(range(3), dtype=np.float32) * 10.0 * 4.184
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            u = mda.Universe(params['filename'])
+            for ts in u.trajectory:
+                assert_almost_equal(ts.forces[0], expected, self.prec)
+
+    @pytest.mark.parametrize('mutation,expected', (
+        ({'scale_factor': 'cell_lengths', 'scale_factor_value': 0.75},
+         np.array([15., 15., 15., 90., 90., 90.])),
+        ({'scale_factor': 'cell_angles', 'scale_factor_value': 0.5},
+         np.array([20., 20., 20., 45., 45., 45.]))
+    ))
+    def test_scale_factor_box(self, tmpdir, mutation, expected):
+        params = self.gen_params(keypair=mutation, restart=False)
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            u = mda.Universe(params['filename'])
+            for ts in u.trajectory:
+                assert_almost_equal(ts.dimensions, expected, self.prec)
+
+
+class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
+
+    @pytest.mark.parametrize('mutation', [
+        {'Conventions': 'Foo'},
+        {'version_byte': 1},
+        {'spatial': 2}
+    ])
+    def test_type_errors(self, tmpdir, mutation):
+        params = self.gen_params(keypair=mutation, restart=False)
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            with pytest.raises(TypeError):
+                NCDFReader(params['filename'])
+
+    @pytest.mark.parametrize('mutation', [
+        {'Conventions': None},
+        {'ConventionVersion': None}
+    ])
+    def test_attibute_errors(self, tmpdir, mutation):
+        params = self.gen_params(keypair=mutation, restart=False)
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            with pytest.raises(AttributeError):
+                NCDFReader(params['filename'])
+
+    @pytest.mark.parametrize('mutation', [
+        {'spatial': None},
+        {'n_atoms': None},
+        {'frame': None}
+    ])
+    def test_key_errors(self, tmpdir, mutation):
+        params = self.gen_params(keypair=mutation, restart=False)
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            with pytest.raises(KeyError):
+                NCDFReader(params['filename'])
+
+    @pytest.mark.parametrize('mutation', [
+        {'scale_factor': 'cell_spatial'},
+        {'time': 'femtosecond'},
+        {'coordinates': 'nanometer'},
+        {'velocities': 'angstrom/akma'},
+        {'forces': 'kilojoule/mole/angstrom'},
+        {'cell_lengths': 'nanometer'},
+        {'cell_angles': 'radians'}
+    ])
+    def test_notimplemented_errors(self, tmpdir, mutation):
+        params = self.gen_params(keypair=mutation, restart=False)
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            with pytest.raises(NotImplementedError):
+                NCDFReader(params['filename'])
+
+    def test_ioerror(self, tmpdir):
+        params = self.gen_params(restart=False)
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            with pytest.raises(IOError):
+                u = mda.Universe(params['filename'])
+                u.trajectory.close()
+                u.trajectory[-1]
+
+    def test_conventionversion_warn(self, tmpdir):
+        mutation = {'ConventionVersion': '2.0'}
+        params = self.gen_params(keypair=mutation, restart=False)
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            with pytest.warns(UserWarning) as record:
+                NCDFReader(params['filename'])
+
+            assert len(record) == 1
+            wmsg = ("NCDF trajectory format is b'2.0' but the reader "
+                    "implements format 1.0")
+            assert str(record[0].message.args[0]) == wmsg
+
+    @pytest.mark.parametrize('mutation', [
+        {'program': None},
+        {'programVersion': None}
+    ])
+    def test_program_warn(self, tmpdir, mutation):
+        params = self.gen_params(keypair=mutation, restart=False)
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            with pytest.warns(UserWarning) as record:
+                NCDFReader(params['filename'])
+
+            assert len(record) == 1
+            wmsg = ("NCDF trajectory test.nc may not fully adhere to AMBER "
+                    "standards as either the `program` or `programVersion` "
+                    "attributes are missing")
+            assert str(record[0].message.args[0]) == wmsg
 
 
 class _NCDFWriterTest(object):
