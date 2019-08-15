@@ -16,7 +16,7 @@ The rules for this file:
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay, tyler.je.reddy, aakognole, RMeli
+         IAlibay, tyler.je.reddy, aakognole, RMeli 
 
   * 0.20.0
 
@@ -62,6 +62,7 @@ Enhancements
   * added unwrap keyword to center_of_mass (PR #2286)
   * added unwrap keyword to moment_of_inertia (PR #2287)
   * added unwrap keyword to asphericity (PR #2290)
+  * add high order water bridge support to water bridge analysis. (PR #2087)
 
 Changes
   * added official support for Python 3.7 (PR #1963)
@@ -72,8 +73,10 @@ Changes
     PR #2201)
   * changed fudge_factor in guess_bonds to deal with new vdw radii (#2138, PR #2142)
   * bump minimum numpy version to 1.13.3
+  * changed the water bridge analysis output format (PR #2087)
 
 Fixes
+  * fixed PDBReader and PDBWriter newlines for PDB header (Issue #2324)
   * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
   * fixes ProgressMeter behaviour for non-AnalysisBase methods (Issue #2084)
   * fixed mol2 parser for status bit strings (Issue #2318)
@@ -125,6 +128,9 @@ Fixes
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
     method to be used, this is done automatically in run()
+    
+Testsuite
+  * Add tests for the new water bridge analysis (PR #2087)
 
 11/06/18 richardjgowers
   * 0.19.2
