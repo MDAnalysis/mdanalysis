@@ -567,7 +567,7 @@ class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
                 NCDFReader(params['filename'])
 
             assert len(record) == 1
-            wmsg = ("NCDF trajectory format is b'2.0' but the reader "
+            wmsg = ("NCDF trajectory format is 2.0 but the reader "
                     "implements format 1.0")
             assert str(record[0].message.args[0]) == wmsg
 
