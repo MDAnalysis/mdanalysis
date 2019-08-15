@@ -98,6 +98,7 @@ class _NCDFReaderTest_mmap_None(_NCDFReaderTest):
     def universe(self):
         return mda.Universe(self.topology, self.filename, mmap=None)
 
+
 class _NCDFReaderTest_mmap_True(_NCDFReaderTest):
     @pytest.fixture()
     def universe(self):
@@ -106,6 +107,7 @@ class _NCDFReaderTest_mmap_True(_NCDFReaderTest):
     def test_mmap_kwarg(self, universe):
         # default is None
         assert universe.trajectory._mmap == True
+
 
 class _NCDFReaderTest_mmap_False(_NCDFReaderTest):
     @pytest.fixture()
@@ -119,11 +121,14 @@ class _NCDFReaderTest_mmap_False(_NCDFReaderTest):
 class TestNCDFReader(_NCDFReaderTest, RefVGV):
     pass
 
+
 class TestNCDFReader_mmap_None(_NCDFReaderTest_mmap_None, RefVGV):
     pass
 
+
 class TestNCDFReader_mmap_True(_NCDFReaderTest_mmap_True, RefVGV):
     pass
+
 
 class TestNCDFReader_mmap_False(_NCDFReaderTest_mmap_False, RefVGV):
     pass
@@ -288,9 +293,11 @@ class TestNCDFReader3(object):
 
 
 class _NCDFGenerator(object):
-    """A basic modular ncdf writer based on :class:`NCDFWriter`"""
+    """A class for generating abitrary ncdf files and exhaustively test
+    edge cases which might not be found in the wild"""
 
     def create_ncrst(self, params):
+        """A basic modular ncdf writer based on :class:`NCDFWriter`"""
         # Create under context manager
         with netcdf.netcdf_file(params['filename'], mode='w',
                                 version=params['version_byte']) as ncdf:
@@ -306,14 +313,14 @@ class _NCDFGenerator(object):
                 setattr(ncdf, 'programVersion', params['programVersion'])
 
             # Dimensions
+            if params['frame']:
+                ncdf.createDimension('frame', None)
             if params['n_atoms']:
                 ncdf.createDimension('atom', params['n_atoms'])
             if params['spatial']:
                 ncdf.createDimension('spatial', params['spatial'])
             if params['time']:
                 ncdf.createDimension('time', 1)
-            if params['frame']:
-                ncdf.createDimension('frame', None)
             ncdf.createDimension('label', 5)
             ncdf.createDimension('cell_spatial', 3)
             ncdf.createDimension('cell_angular', 3)
@@ -328,34 +335,32 @@ class _NCDFGenerator(object):
             cell_spatial[:] = np.asarray(list('abc'))
             cell_angular = ncdf.createVariable('cell_angular', 'c',
                                                ('cell_angular', 'label'))
-            cell_angular[:] np.asarray([list('alpha'), list('beta'),
-                                        list('gamma')])
+            cell_angular[:] = np.asarray([list('alpha'), list('beta'),
+                                          list('gamma')])
 
             # Spatial or atom dependent variables
             if (params['spatial']) and (params['n_atoms']):
-                if params['coords']:
-                    if params['frame']:
-                        coords = ncdf.createVariable('coordinates', 'f4',
-                                                     ('frame', 'atom',
-                                                      'spatial'))
-                    else:
-                        coords = ncdf.createVariable('coordinates', 'f8',
-                                                     ('atom', 'spatial'))
-                    setattr(coords, 'units', params['coords'])
-                    coords[:] = np.asarray(range(params['spatial']),
-                                           dtype=np.float32)
                 spatial = ncdf.createVariable('spatial', 'c', ('spatial',))
                 spatial[:] = np.asarray(list('xyz')[:params['spatial']])
                 if params['frame']:
+                    if params['coords']:
+                        coords = ncdf.createVariable('coordinates', 'f4',
+                                                     ('frame', 'atom',
+                                                      'spatial'))
                     velocs = ncdf.createVariable('velocities', 'f4',
                                                  ('frame', 'atom', 'spatial'))
                     forces = ncdf.createVariable('forces', 'f4',
                                                  ('frame', 'atom', 'spatial'))
                     cell_lengths = ncdf.createVariable('cell_lengths', 'f8',
-                                                       ('frame', 'cell_spatial'))
+                                                       ('frame',
+                                                        'cell_spatial'))
                     cell_angles = ncdf.createVariable('cell_angles', 'f8',
-                                                      ('frame', 'cell_angular'))
+                                                      ('frame',
+                                                       'cell_angular'))
                 else:
+                    if params['coords']:
+                        coords = ncdf.createVariable('coordinates', 'f8',
+                                                     ('atom', 'spatial'))
                     cell_lengths = ncdf.createVariable('cell_lengths', 'f8',
                                                        ('cell_spatial',))
                     cell_angles = ncdf.createVariable('cell_angles', 'f8',
@@ -364,16 +369,41 @@ class _NCDFGenerator(object):
                                                  ('atom', 'spatial'))
                     forces = ncdf.createVariable('forces', 'f8',
                                                  ('atom', 'spatial'))
+
+                # Set units
+                if params['coords']:
+                    setattr(coords, 'units', params['coords'])
                 setattr(velocs, 'units', 'angstrom/picosecond')
                 setattr(forces, 'units', 'kilocalorie/mole/angstrom')
                 setattr(cell_lengths, 'units', 'angstrom')
                 setattr(cell_angles, 'units', 'degree')
-                cell_lengths[:] = 
-                cell_angles[:] = 
-                velocs[:] = np.asarray(range(params['spatial']),
-                                       dtype=np.float32)
-                forces[:] = np.asarray(range(params['spatial']),
-                                       dtype=np.float32)
+
+                # Assign value
+                if params['frame']:
+                    for index in range(params['frame']):
+                        if params['coords']:
+                            coords[index, :] = np.asarray(
+                             range(params['spatial']), dtype=np.float32)
+                        cell_lengths[index, :] = np.array([20., 20., 20.],
+                                                          dtype=np.float32)
+                        cell_angles[index, :] = np.array([90., 90., 90.],
+                                                         dtype=np.float32)
+                        velocs[index, :] = np.asarray(range(params['spatial']),
+                                                      dtype=np.float32)
+                        forces[index, :] = np.asarray(range(params['spatial']),
+                                                      dtype=np.float32)
+                else:
+                    if params['coords']:
+                        coords[:] = np.asarray(range(params['spatial']),
+                                               dtype=np.float32)
+                    cell_lengths[:] = np.array([20., 20., 20.],
+                                               dtype=np.float32)
+                    cell_angles[:] = np.array([90., 90., 90.],
+                                              dtype=np.float32)
+                    velocs[:] = np.asarray(range(params['spatial'],
+                                           dtype=np.float32))
+                    forces[:] = np.asarray(range(params['spatial'],
+                                           dtype=np.float32))
 
             # self.scale_factor overrides which variable gets a scale_factor
             if params['scale_factor']:
@@ -407,6 +437,8 @@ class _NCDFGenerator(object):
         return params
 
 
+class TestNCDFReader_Errors(_NCDFGenerator):
+    
 
 
 class _NCDFWriterTest(object):
