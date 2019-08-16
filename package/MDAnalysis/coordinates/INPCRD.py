@@ -154,9 +154,8 @@ class NCRSTReader(base.SingleFrameReaderBase):
     The number of atoms (`n_atoms`) does not have to be provided as it can
     be read from the input NETCDF file.
 
-    Current simulation time is autodetected and read into the
-    :attr:`Timestep.time` attribute. (If this is not available in the restart
-    file, then :attr:`Timestep.time` will return 0.0 ps).
+    Current simulation time is autodetected and if available is read into the
+    :attr:`Timestep.time` attribute.
 
     Velocities are autodetected and read into the :attr:`Timestep._velocities`
     attribute.
@@ -184,8 +183,8 @@ class NCRSTReader(base.SingleFrameReaderBase):
 
     .. rubric:: Limitations
 
-    * Only NCRST files with time in ps and lengths in Angstroem are processed.
-    * scale_factors are not supported (raises NotImplementedError).
+    * Only NCRST files with time in ps, lengths in Angstroem and angles in
+      degree are processed.
     * Restart files without coordinate information are not supported.
     * Replica exchange variables are not supported.
 
@@ -233,6 +232,14 @@ class NCRSTReader(base.SingleFrameReaderBase):
             n_atoms = f.dimensions['atom']
         return n_atoms
 
+    @staticmethod
+    def verify_units(eval_units, expected_units):
+        if eval_units.decode('utf-8') not in expected_units:
+            errmsg = ("NCRSTReader currently assumes that the trajectory "
+                      "aws written in units of {0} instead of {1}".format(
+                       expected_units, eval_units.decode('utf-8')))
+            raise NotImplementedError(errmsg)
+
     def _read_first_frame(self):
         """Function to read NetCDF restart file and fill timestep
 
@@ -257,13 +264,27 @@ class NCRSTReader(base.SingleFrameReaderBase):
                     logger.fatal(errmsg)
                     raise TypeError(errmsg)
             except AttributeError:
-                errmsg = "NetCDF file is missign Conventions"
+                errmsg = "NetCDF file is missing Conventions"
+                raise AttributeError(errmsg)
+
+            # ConventionVersion should exist and be equal to 1.0
+            try:
+                if not (rstfile.ConventionVersion.decode('utf-8') ==
+                        self.version):
+                    wmsg = ("NCRST format is {0!s} but the reader implements "
+                            "format {1!s}".format(
+                             rstfile.ConventionVersion.decode('utf-8'),
+                             self.version))
+                    warnings.warn(wmsg)
+                    logger.warning(wmsg)
+            except KeyError:
+                errmsg = "ConventionVersion not present in NetCDF file"
                 raise AttributeError(errmsg)
 
             # The AMBER NetCDF standard enforces 64 bit offsets
             if not rstfile.version_byte == 2:
                 errmsg = ("NetCDF restart file {0} does not conform to AMBER "
-                          "specifications, as details in "
+                          "specifications, as detailed in "
                           "http://ambermd.org/netcdf/nctraj.xhtml "
                           "(NetCDF file does not use 64 bit offsets "
                           "[version_byte = 2]) ".format(self.filename))
@@ -276,24 +297,10 @@ class NCRSTReader(base.SingleFrameReaderBase):
                     errmsg = "Incorrect spatial value for NCRST file"
                     raise TypeError(errmsg)
             except KeyError:
-                errmsg = "NCRST file does not contain sptial dimension"
+                errmsg = "NCRST file does not contain spatial dimension"
                 raise KeyError(errmsg)
 
-            try:
-                # ConventionVersion should exist and be equal to 1.0
-                if not (rstfile.ConventionVersion.decode('utf-8') == 
-                       self.version):
-                    wmsg = ("NCRST format is {0!s} but the reader implements "
-                            "format {1!s}".format(
-                             rstfile.ConventionVersion.decode('utf-8'),
-                             self.version))
-                    warnings.warn(wmsg)
-                    logger.warning(wmsg)
-            except KeyError:
-                errmsg = "ConventionVersion not present in NetCDF file"
-                raise AttributeError(errmsg)
-
-            # The specs define Program and ProgramVersion as required. Here we
+            # The specs define program and programVersion as required. Here we
             # just warn the users instead of raising an Error.
             if not (hasattr(rstfile, 'program') and
                     hasattr(rstfile, 'programVersion')):
@@ -302,13 +309,6 @@ class NCRSTReader(base.SingleFrameReaderBase):
                         "`programVersion` attributes are missing")
                 warnings.warn(wmsg)
                 logger.warning(wmsg)
-
-            # The use of scale_factor is currently unsupported
-            # Note scale_factor can be an attribute of any variable
-            for variable in rstfile.variables:
-                if hasattr(rstfile.variables[variable], 'scale_factor'):
-                    errmsg = "scale_factors are not implemented"
-                    raise NotImplementedError(errmsg)
 
             # Note: SingleFrameReaderBase class sets parsed n_atoms value to
             # self.n_atom which makes for a confusing check
@@ -326,6 +326,12 @@ class NCRSTReader(base.SingleFrameReaderBase):
                 logger.fatal(errmsg)
                 raise KeyError(errmsg)
 
+            # NetCDF file title is optional
+            try:
+                self.remarks = rstfile.title
+            except AttributeError:
+                self.remarks = ""
+
             # Optional variables
             self.has_velocities = 'velocities' in rstfile.variables
             self.has_forces = 'forces' in rstfile.variables
@@ -338,28 +344,36 @@ class NCRSTReader(base.SingleFrameReaderBase):
                                      reader=self,
                                      **self._ts_kwargs)
 
-            # NetCDF file title is optional
-            try:
-                self.remarks = rstfile.title
-            except AttributeError:
-                self.remarks = ""
+            # Check for scale_factor attributes and store them
+            scale_factors = {'time': 1.0,
+                             'cell_lengths': 1.0,
+                             'cell_angles': 1.0,
+                             'coordinates': 1.0,
+                             'velocities': 1.0,
+                             'forces': 1.0}
 
-            # Default to time units of picoseconds
+            for variable in rstfile.variables:
+                if hasattr(rstfile.variables[variable], 'scale_factor'):
+                    if variable in scale_factors:
+                        factor = rstfile.variables[variable].scale_factor
+                        scale_factors[variable] = factor
+                    else:
+                        errmsg = ("scale_factors for variable {0} are not "
+                                  "implemented".format(variable))
+                        raise NotImplementedError(errmsg)
+
             # Note: unlike trajectories the AMBER NetCDF convention allows
             # restart files to omit time when unecessary (i.e. minimizations)
             try:
-                units = rstfile.variables['time'].units.decode('utf-8')
-                if units != "picosecond":
-                    raise NotImplementedError(
-                        "NCRSTReader currently assumes that the restart file "
-                        "uses a time unit of picoseconds and not {0}.".format(
-                         rstfile.variables['time'].units))
-                self.ts.time = rstfile.variables['time'].getValue()
+                self.verify_units(rstfile.variables['time'].units,
+                                  ('picosecond',))
+                self.ts.time = (rstfile.variables['time'].getValue() *
+                                scale_factors['time'])
             except KeyError:
                 # Warn the user and move on
-                wmsg = ("NCRestart file {0} does not contain time information. "
-                        "This should be expected if the file was not "
-                        "created from an MD trajectory (e.g. a "
+                wmsg = ("NCRestart file {0} does not contain time "
+                        "information. This should be expected if the file was "
+                        "not created from an MD trajectory (e.g. a "
                         "minimization)".format(self.filename))
                 warnings.warn(wmsg)
                 logger.warning(wmsg)
@@ -367,15 +381,12 @@ class NCRSTReader(base.SingleFrameReaderBase):
             # Single frame so we assign it to 0
             self.ts.frame = 0
 
-            # Default to length units of Angstroem
+            # Default to length units of Angstrom
             try:
-                units = rstfile.variables['coordinates'].units.decode('utf-8')
-                if units != "angstrom":
-                    raise NotImplementedError(
-                        "NCRSTReader currently expects that the restart file "
-                        "uses a length unit of Angstroem and not {0}.".format(
-                         rstfile.variables['coordinates'].units))
-                self.ts._pos[:] = rstfile.variables['coordinates'][:]
+                self.verify_units(rstfile.variables['coordinates'].units,
+                                  ('angstrom',))
+                self.ts._pos[:] = (rstfile.variables['coordinates'][:] *
+                                   scale_factors['coordinates'])
             except KeyError:
                 # Technically coordinate information is not required, however
                 # the lack of it in a restart file is highly unlikely
@@ -385,17 +396,29 @@ class NCRSTReader(base.SingleFrameReaderBase):
                 raise KeyError(errmsg)
 
             if self.has_velocities:
-                self.ts._velocities[:] = rstfile.variables['velocities'][:]
+                self.verify_units(rstfile.variables['velocities'].units,
+                                  ('angstrom/picosecond',))
+                self.ts._velocities[:] = (rstfile.variables['velocities'][:] *
+                                          scale_factors['velocities'])
 
             # The presence of forces in a restart file is very rare, but
             # according to AMBER convention, it can exist.
             if self.has_forces:
-                self.ts._forces[:] = rstfile.variables['forces'][:]
+                self.verify_units(rstfile.variables['forces'].units,
+                                  ('kilocalorie/mole/angstrom',))
+                self.ts._forces[:] = (rstfile.variables['forces'][:] *
+                                      scale_factors['forces'])
 
             # If false u.dimensions is set to [0., 0., 0., 0., 0., 0]
             if self.periodic:
-                self.ts._unitcell[:3] = rstfile.variables['cell_lengths'][:]
-                self.ts._unitcell[3:] = rstfile.variables['cell_angles'][:]
+                self.verify_units(rstfile.variables['cell_lengths'].units,
+                                  ('angstrom',))
+                self.verify_units(rstfile.variables['cell_angles'].units,
+                                  ('degree', 'degrees'))
+                self.ts._unitcell[:3] = (rstfile.variables['cell_lengths'][:] *
+                                         scale_factors['cell_lengths'])
+                self.ts._unitcell[3:] = (rstfile.variables['cell_angles'][:] *
+                                         scale_factors['cell_angles'])
 
             # Convert units inplace
             if self.convert_units:
