@@ -214,6 +214,7 @@ class TestNCDFReader3(object):
     """
     prec = 3
 
+    # Expected coordinates as stored in Angstrom units
     coord_refs = np.array([
         [[15.249873, 12.578178, 15.191731],
          [14.925511, 13.58888, 14.944009],
@@ -223,6 +224,7 @@ class TestNCDFReader3(object):
          [16.03358, 16.183628, 14.02995]]
     ], dtype=np.float32)
 
+    # Expected forces as stored in kcal/(mol*Angstrom)
     frc_refs = np.array([
         [[8.583388, 1.8023694, -15.0033455],
          [-21.594835, 39.09166, 6.567963],
@@ -232,6 +234,8 @@ class TestNCDFReader3(object):
          [-4.637955, 11.597565, -6.463743]]
     ], dtype=np.float32)
 
+    # Expected velocities as stored in Angstrom per AKMA time unit
+    # These are usually associated with a scale_factor of 20.455
     vel_refs = np.array([
         [[-0.5301689, -0.16311595, -0.31390688],
          [0.00188578, 0.02513031, -0.2687525],
@@ -241,6 +245,8 @@ class TestNCDFReader3(object):
          [-0.6182481, 1.6396415, 0.46686798]]
     ], dtype=np.float32)
 
+    # Expected box values as stored in cell_lengths ([:3]) of Angstrom
+    # and cell_angles ([:3]) of degree
     box_refs = np.array([
         [28.81876287, 28.27875261, 27.72616397, 90., 90., 90.],
         [27.06266081, 26.55555665, 26.03664058, 90., 90., 90.]
@@ -259,7 +265,8 @@ class TestNCDFReader3(object):
     @pytest.mark.parametrize('index,expected', ((0, 0), (8, 1)))
     def test_forces(self, universe, index, expected):
         """Here we multiply the forces by 4.184 to convert from
-        kcal to kj
+        kcal to kj in order to verify that MDA has correctly read
+        and converted the units from those stored in the NetCDF file.
         """
         universe.trajectory[index]
         assert_almost_equal(self.frc_refs[expected] * 4.184,
@@ -268,7 +275,8 @@ class TestNCDFReader3(object):
     @pytest.mark.parametrize('index,expected', ((0, 0), (8, 1)))
     def test_velocities(self, universe, index, expected):
         """Here we multiply the velocities by 20.455 to match the value of
-        `scale_factor`
+        `scale_factor` which has been declared in the NetCDF file, which
+        should change the values from Angstrom/AKMA time unit to Angstrom/ps.
         """
         universe.trajectory[index]
         assert_almost_equal(self.vel_refs[expected] * 20.455,
@@ -512,25 +520,16 @@ class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
 
     @pytest.mark.parametrize('mutation', [
         {'Conventions': None},
-        {'ConventionVersion': None}
-    ])
-    def test_attibute_errors(self, tmpdir, mutation):
-        params = self.gen_params(keypair=mutation, restart=False)
-        with tmpdir.as_cwd():
-            self.create_ncdf(params)
-            with pytest.raises(AttributeError):
-                NCDFReader(params['filename'])
-
-    @pytest.mark.parametrize('mutation', [
+        {'ConventionVersion': None},
         {'spatial': None},
         {'n_atoms': None},
         {'frame': None}
     ])
-    def test_key_errors(self, tmpdir, mutation):
+    def test_value_errors(self, tmpdir, mutation):
         params = self.gen_params(keypair=mutation, restart=False)
         with tmpdir.as_cwd():
             self.create_ncdf(params)
-            with pytest.raises(KeyError):
+            with pytest.raises(ValueError):
                 NCDFReader(params['filename'])
 
     @pytest.mark.parametrize('mutation', [
@@ -548,6 +547,15 @@ class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
             self.create_ncdf(params)
             with pytest.raises(NotImplementedError):
                 NCDFReader(params['filename'])
+
+    @pytest.mark.parametrize('evaluate,expected', (
+        ('yard', 'foot'),
+        ('second', 'minute')
+    ))
+    def test_verify_units_errors(self, evaluate, expected):
+        """Directly tests expected failures of _verify_units"""
+        with pytest.raises(NotImplementedError):
+            NCDFReader._verify_units(evaluate.encode('utf-8'), expected)
 
     def test_ioerror(self, tmpdir):
         params = self.gen_params(restart=False)
@@ -586,6 +594,24 @@ class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
             wmsg = ("NCDF trajectory test.nc may not fully adhere to AMBER "
                     "standards as either the `program` or `programVersion` "
                     "attributes are missing")
+            assert str(record[0].message.args[0]) == wmsg
+
+    def test_degrees_warn(self, tmpdir):
+        """Checks that plural degrees throws an user deprecation warning
+        TODO: remove in MDAnalysis version 1.0 (Issue #2327)"""
+        mutation = {'cell_angles': 'degrees'}
+        params = self.gen_params(keypair=mutation, restart=False)
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            with pytest.warns(UserWarning) as record:
+                NCDFReader(params['filename'])
+
+            assert len(record) == 1
+            wmsg = ("NCDF trajectory {0} uses units of `degrees` for "
+                    "the `cell_angles` variable instead of `degree`. "
+                    "Support for non-AMBER convention units is now "
+                    "deprecated and will end in MDAnalysis version 1.0. "
+                    "Afterwards, reading this file will raise an error.")
             assert str(record[0].message.args[0]) == wmsg
 
 

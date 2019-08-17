@@ -417,12 +417,13 @@ class NCDFReader(base.ReaderBase):
     Periodic unit cell information is detected and used to populate the
     :attr:`Timestep.dimensions` attribute. (If no unit cell is available in
     the trajectory, then :attr:`Timestep.dimensions` will return
-    ``[0,0,0,0,0,0]``.)
+    ``[0,0,0,0,0,0]``).
 
     Current limitations:
 
     * only trajectories with time in ps and lengths in Angstroem are processed
-    * scale_factors are supported but are not kept for writing
+    * scale_factors are supported on read but are currently not kept/used when
+      writing
 
     The NCDF reader uses :mod:`scipy.io.netcdf` and therefore :mod:`scipy` must
     be installed. It supports the *mmap* keyword argument (when reading):
@@ -449,10 +450,16 @@ class NCDFReader(base.ReaderBase):
     .. versionchanged:: 0.17.0
        Uses :mod:`scipy.io.netcdf` and supports the *mmap* kwarg.
     .. versionchanged:: 0.20.0
-       Now reads scale_factors for expected AMBER convention variables.
-       Timestep variables now adhere standard MDAnalysis units, with 0.19.2
-       and earlier versions, velocities would have often been reported in
-       values of angstrom/AKMA time units (Issue #2323)
+       Now reads scale_factors for all expected AMBER convention variables.
+       Timestep variables now adhere standard MDAnalysis units, with lengths
+       of angstrom, time of ps, velocity of angstrom/ps and force of
+       kJ/(mol*Angstrom). It is noted that with 0.19.2 and earlier versions,
+       velocities would have often been reported in values of angstrom/AKMA
+       time units instead (Issue #2323).
+
+    .. TODO:
+       * Remove support for `degrees` units in MDAnalysis version > 1.0
+         (Issue #2327, PR #2326).
 
     """
 
@@ -467,13 +474,6 @@ class NCDFReader(base.ReaderBase):
     _Timestep = Timestep
 
     def __init__(self, filename, n_atoms=None, mmap=None, **kwargs):
-
-        def verify_units(eval_unit, expected_units):
-            if eval_unit.decode('utf-8') not in expected_units:
-                errmsg = ("NETCDFReader currently assumes that the trajectory "
-                          "was written in units of {0} instead of {1}".format(
-                           expected_units, eval_unit.decode('utf-8')))
-                raise NotImplementedError(errmsg)
 
         self._mmap = mmap
 
@@ -498,7 +498,7 @@ class NCDFReader(base.ReaderBase):
             errmsg = "NCDF trajectory {0} is missing Conventions".format(
                       self.filename)
             logger.fatal(errmsg)
-            raise AttributeError(errmsg)
+            raise ValueError(errmsg)
 
         # AMBER NetCDF files should also have a ConventionVersion
         try:
@@ -513,7 +513,7 @@ class NCDFReader(base.ReaderBase):
         except AttributeError:
             errmsg = "NCDF trajectory {0} is missing ConventionVersion".format(
                       self.filename)
-            raise AttributeError(errmsg)
+            raise ValueError(errmsg)
 
         # The AMBER NetCDF standard enforces 64 bit offsets
         if not self.trjfile.version_byte == 2:
@@ -532,7 +532,7 @@ class NCDFReader(base.ReaderBase):
                 raise TypeError(errmsg)
         except KeyError:
             errmsg = "NCDF trajectory does not contain spatial dimension"
-            raise KeyError(errmsg)
+            raise ValueError(errmsg)
 
         # AMBER NetCDF specs require program and programVersion. Warn users
         # if those attributes do not exist
@@ -548,13 +548,13 @@ class NCDFReader(base.ReaderBase):
             self.n_atoms = self.trjfile.dimensions['atom']
             if n_atoms is not None and n_atoms != self.n_atoms:
                 errmsg = ("Supplied n_atoms ({0}) != natom from ncdf ({1}). "
-                          "Note: n_atoms can be None and t hen the ncdf value "
+                          "Note: n_atoms can be None and then the ncdf value "
                           "is used!".format(n_atoms, self.n_atoms))
                 raise ValueError(errmsg)
         except KeyError:
             errmsg = ("NCDF trajectory {0} does not contain atom "
                       "information".format(self.filename))
-            raise KeyError(errmsg)
+            raise ValueError(errmsg)
 
         try:
             self.n_frames = self.trjfile.dimensions['frame']
@@ -568,7 +568,7 @@ class NCDFReader(base.ReaderBase):
         except KeyError:
             errmsg = ("NCDF trajectory {0} does not contain frame "
                       "information".format(self.filename))
-            raise KeyError(errmsg)
+            raise ValueError(errmsg)
 
         try:
             self.remarks = self.trjfile.title
@@ -580,9 +580,9 @@ class NCDFReader(base.ReaderBase):
 
         # checks for not-implemented features (other units would need to be
         # hacked into MDAnalysis.units)
-        verify_units(self.trjfile.variables['time'].units, ('picosecond',))
-        verify_units(self.trjfile.variables['coordinates'].units,
-                     ('angstrom',))
+        self._verify_units(self.trjfile.variables['time'].units, 'picosecond')
+        self._verify_units(self.trjfile.variables['coordinates'].units,
+                           'angstrom')
 
         # Check for scale_factor attributes for all data variables and
         # store this to multiply through later (Issue #2323)
@@ -605,21 +605,32 @@ class NCDFReader(base.ReaderBase):
 
         self.has_velocities = 'velocities' in self.trjfile.variables
         if self.has_velocities:
-            verify_units(self.trjfile.variables['velocities'].units,
-                         ('angstrom/picosecond',))
+            self._verify_units(self.trjfile.variables['velocities'].units,
+                               'angstrom/picosecond')
 
         self.has_forces = 'forces' in self.trjfile.variables
         if self.has_forces:
-            verify_units(self.trjfile.variables['forces'].units,
-                         ('kilocalorie/mole/angstrom',))
+            self._verify_units(self.trjfile.variables['forces'].units,
+                               'kilocalorie/mole/angstrom')
 
         self.periodic = 'cell_lengths' in self.trjfile.variables
         if self.periodic:
-            verify_units(self.trjfile.variables['cell_lengths'].units,
-                         ('angstrom',))
-            # Accept plural as this is what MDA writes as of 0.19.2
-            verify_units(self.trjfile.variables['cell_angles'].units,
-                         ('degree', 'degrees'))
+            self._verify_units(self.trjfile.variables['cell_lengths'].units,
+                               'angstrom')
+            # Currently the MDA writer outputs 'degrees' rather than the
+            # singular form 'degree' agreed in the conventions. As discussed
+            # in PR #2326 from MDA 1.0 only and 'degree' will be accepted.
+            cell_angle_units = self.trjfile.variables['cell_angles'].units
+            if (cell_angle_units.decode('utf-8') == 'degrees'):
+                wmsg = ("NCDF trajectory {0} uses units of `degrees` for "
+                        "the `cell_angles` variable instead of `degree`. "
+                        "Support for non-AMBER convention units is now "
+                        "deprecated and will end in MDAnalysis version 1.0. "
+                        "Afterwards, reading this file will raise an error.")
+                warnings.warn(wmsg)
+                logger.warning(wmsg)
+            else:
+                self._verify_units(cell_angle_units, 'degree')
 
         self._current_frame = 0
 
@@ -631,6 +642,14 @@ class NCDFReader(base.ReaderBase):
 
         # load first data frame
         self._read_frame(0)
+
+    @staticmethod
+    def _verify_units(eval_unit, expected_units):
+        if eval_unit.decode('utf-8') != expected_units:
+            errmsg = ("NETCDFReader currently assumes that the trajectory "
+                      "was written in units of {0} instead of {1}".format(
+                       expected_units, eval_unit.decode('utf-8')))
+            raise NotImplementedError(errmsg)
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
@@ -794,7 +813,7 @@ class NCDFWriter(base.WriterBase):
         File "<string>", line 1, in <module>
         File "/scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/__init__.py", line 3, in <module>
           from ._netCDF4 import *
-      ImportError: /scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/_netCDF4.cpython-35m-x86_64-linux-gnu.so: undefined symbol: nc_inq_var_fletcher32
+      ImportError: /scratch2/minicthis will be changedonda/envs/py35/lib/python3.5/site-packages/netCDF4/_netCDF4.cpython-35m-x86_64-linux-gnu.so: undefined symbol: nc_inq_var_fletcher32
 
     The reason for this (figured out via :program:`ldd`) is that AMBER builds
     its own NetCDF library that it now inserts into :envvar:`LD_LIBRARY_PATH`
@@ -828,6 +847,10 @@ class NCDFWriter(base.WriterBase):
     .. versionchanged:: 0.17.0
        Use fast :mod:`netCDF4` for writing but fall back to slow
        :mod:`scipy.io.netcdf` if :mod:`netCDF4` is not available.
+
+    .. TODO:
+       * Change the `cell_angles` units to `degree`, implement `scale_factor`
+         handling (Issue #2327).
 
     """
 
