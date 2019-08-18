@@ -622,12 +622,13 @@ class NCDFReader(base.ReaderBase):
             # in PR #2326 from MDA 1.0 only and 'degree' will be accepted.
             cell_angle_units = self.trjfile.variables['cell_angles'].units
             if (cell_angle_units.decode('utf-8') == 'degrees'):
-                wmsg = ("NCDF trajectory {0} uses units of `degrees` for "
-                        "the `cell_angles` variable instead of `degree`. "
-                        "Support for non-AMBER convention units is now "
-                        "deprecated and will end in MDAnalysis version 1.0. "
-                        "Afterwards, reading this file will raise an error.")
-                warnings.warn(wmsg)
+                wmsg = ("DEPRECATED (1.0): NCDF trajectory {0} uses units of "
+                        "`degrees` for the `cell_angles` variable instead of "
+                        "`degree`. Support for non-AMBER convention units is "
+                        "now deprecated and will end in MDAnalysis version "
+                        "1.0. Afterwards, reading this file will raise an "
+                        "error.")
+                warnings.warn(wmsg, category=DeprecationWarning)
                 logger.warning(wmsg)
             else:
                 self._verify_units(cell_angle_units, 'degree')
@@ -813,7 +814,7 @@ class NCDFWriter(base.WriterBase):
         File "<string>", line 1, in <module>
         File "/scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/__init__.py", line 3, in <module>
           from ._netCDF4 import *
-      ImportError: /scratch2/minicthis will be changedonda/envs/py35/lib/python3.5/site-packages/netCDF4/_netCDF4.cpython-35m-x86_64-linux-gnu.so: undefined symbol: nc_inq_var_fletcher32
+      ImportError: /scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/_netCDF4.cpython-35m-x86_64-linux-gnu.so: undefined symbol: nc_inq_var_fletcher32
 
     The reason for this (figured out via :program:`ldd`) is that AMBER builds
     its own NetCDF library that it now inserts into :envvar:`LD_LIBRARY_PATH`

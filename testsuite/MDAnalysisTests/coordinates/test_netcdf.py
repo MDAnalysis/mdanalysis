@@ -603,14 +603,14 @@ class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
         params = self.gen_params(keypair=mutation, restart=False)
         with tmpdir.as_cwd():
             self.create_ncdf(params)
-            with pytest.warns(UserWarning) as record:
+            with pytest.warns(DeprecationWarning) as record:
                 NCDFReader(params['filename'])
 
             assert len(record) == 1
-            wmsg = ("NCDF trajectory {0} uses units of `degrees` for "
-                    "the `cell_angles` variable instead of `degree`. "
-                    "Support for non-AMBER convention units is now "
-                    "deprecated and will end in MDAnalysis version 1.0. "
+            wmsg = ("DEPRECATED (1.0): NCDF trajectory {0} uses units of "
+                    "`degrees` for the `cell_angles` variable instead of "
+                    "`degree`. Support for non-AMBER convention units is "
+                    "now deprecated and will end in MDAnalysis version 1.0. "
                     "Afterwards, reading this file will raise an error.")
             assert str(record[0].message.args[0]) == wmsg
 
