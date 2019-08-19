@@ -38,7 +38,9 @@ from MDAnalysisTests.datafiles import (
     PRM_UreyBradley
 )
 
-
+ATOMIC_NUMBER_MSG = ("ATOMIC_NUMBER record not found, guessing atom elements "
+                     "based on their atom types")
+COORDINATE_READER_MSG = ("No coordinate reader found")
 class TOPBase(ParserBase):
     parser = mda.topology.TOPParser.TOPParser
     expected_attrs = [
@@ -180,10 +182,9 @@ class TestPRMParser(TOPBase):
         with pytest.warns(UserWarning) as record:
             u = mda.Universe(filename)
 
-        assert len(record) == 1
-        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
-                "based on their atom types")
-        assert str(record[0].message.args[0]) == wmsg
+        assert len(record) == 2
+        assert str(record[0].message.args[0]) == ATOMIC_NUMBER_MSG
+        assert COORDINATE_READER_MSG in str(record[1].message.args[0])
 
 
 class TestPRM12Parser(TOPBase):
@@ -293,10 +294,9 @@ class TestParm7Parser(TOPBase):
         with pytest.warns(UserWarning) as record:
             u = mda.Universe(filename)
 
-        assert len(record) == 1
-        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
-                "based on their atom types")
-        assert str(record[0].message.args[0]) == wmsg
+        assert len(record) == 2
+        assert str(record[0].message.args[0]) == ATOMIC_NUMBER_MSG
+        assert COORDINATE_READER_MSG in str(record[1].message.args[0])
 
 
 class TestPRM2(TOPBase):
@@ -341,10 +341,10 @@ class TestPRM2(TOPBase):
         with pytest.warns(UserWarning) as record:
             u = mda.Universe(filename)
 
-        assert len(record) == 1
-        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
-                "based on their atom types")
-        assert str(record[0].message.args[0]) == wmsg
+        assert len(record) == 2
+        assert str(record[0].message.args[0]) == ATOMIC_NUMBER_MSG
+        assert COORDINATE_READER_MSG in str(record[1].message.args[0])
+        
 
 
 class TestPRMNCRST(TOPBase):
@@ -413,13 +413,14 @@ class TestPRMNCRST_negative(TOPBase):
         with pytest.warns(UserWarning) as record:
             u = mda.Universe(filename)
 
-        assert len(record) == 2
+        assert len(record) == 3
         wmsg1 = ("Unknown ATOMIC_NUMBER value found, guessing atom element "
                  "from type: CT assigned to C")
         wmsg2 = ("Unknown ATOMIC_NUMBER value found, guessing atom element "
                  "from type: O assigned to O")
         assert str(record[0].message.args[0]) == wmsg1
         assert str(record[1].message.args[0]) == wmsg2
+        assert COORDINATE_READER_MSG in str(record[2].message.args[0])
 
 
 class TestErrors(object):

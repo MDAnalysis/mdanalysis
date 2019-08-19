@@ -98,12 +98,12 @@ class TestUniverseCreation(object):
         u = mda.Universe(StringIO(CHOL_GRO), StringIO(CHOL_GRO),  format='GRO', topology_format='GRO')
         assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
 
-    def test_make_universe_no_args(self):
-        # universe creation without args should work
-        u = mda.Universe()
+    # def test_make_universe_no_args(self):
+    #     # universe creation without args should work
+    #     u = mda.Universe()
 
-        assert isinstance(u, mda.Universe)
-        assert u.atoms is None
+    #     assert isinstance(u, mda.Universe)
+    #     assert u.atoms is None
 
     def test_make_universe_stringio_no_format(self):
         # Loading from StringIO without format arg should raise TypeError
@@ -187,7 +187,7 @@ class TestUniverseCreation(object):
             temp_dir.dissolve()
 
     def test_load_new_VE(self):
-        u = mda.Universe()
+        u = mda.Universe.empty()
 
         with pytest.raises(TypeError):
             u.load_new('thisfile', format = 'soup')
