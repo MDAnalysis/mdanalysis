@@ -132,6 +132,8 @@ Deprecations
     method to be used, this is done automatically in run()
     
 Testsuite
+  * Raised minimum pytest version to 3.3.0, warns now uses the `match` 
+    argument instead of `match_expr` (Issue #2329)
   * Add tests for the new water bridge analysis (PR #2087)
 
 11/06/18 richardjgowers
