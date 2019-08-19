@@ -506,8 +506,7 @@ class NCDFReader(base.ReaderBase):
             if not ConventionVersion == self.version:
                 wmsg = ("NCDF trajectory format is {0!s} but the reader "
                         "implements format {1!s}".format(
-                         self.trjfile.ConventionVersion.decode('utf-8'),
-                         self.version))
+                         ConventionVersion, self.version))
                 warnings.warn(wmsg)
                 logger.warning(wmsg)
         except AttributeError:
