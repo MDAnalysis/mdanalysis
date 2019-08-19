@@ -649,7 +649,7 @@ class NCDFReader(base.ReaderBase):
         if eval_unit.decode('utf-8') != expected_units:
             errmsg = ("NETCDFReader currently assumes that the trajectory "
                       "was written in units of {0} instead of {1}".format(
-                       expected_units, eval_unit.decode('utf-8')))
+                       eval_unit.decode('utf-8'), expected_units))
             raise NotImplementedError(errmsg)
 
     @staticmethod
