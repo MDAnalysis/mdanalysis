@@ -306,8 +306,7 @@ class DiffusionMap(object):
             Parameters to be passed for the initialization of a
             :class:`DistanceMatrix`.
         """
-        # if isinstance(u, Universe):  # doesn't work with reformat_universe wrapper
-        if hasattr(u, 'trajectory') and hasattr(u, 'select_atoms'):
+        if isinstance(u, Universe):
             self._dist_matrix = DistanceMatrix(u, **kwargs)
         elif isinstance(u, DistanceMatrix):
             self._dist_matrix = u
