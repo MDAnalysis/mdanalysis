@@ -101,6 +101,9 @@ class INPReader(base.SingleFrameReaderBase):
     * Box information is not read (or checked for).
     * Velocities are currently *not supported*.
 
+    .. versionchanged: 0.20.0
+       Now automatically detects files with .rst7 extension.
+
     """
 
     format = ['INPCRD', 'RESTRT', 'RST7']
@@ -233,11 +236,11 @@ class NCRSTReader(base.SingleFrameReaderBase):
         return n_atoms
 
     @staticmethod
-    def verify_units(eval_units, expected_units):
-        if eval_units.decode('utf-8') not in expected_units:
+    def _verify_units(eval_units, expected_units):
+        if eval_units.decode('utf-8') != expected_units:
             errmsg = ("NCRSTReader currently assumes that the trajectory "
-                      "aws written in units of {0} instead of {1}".format(
-                       expected_units, eval_units.decode('utf-8')))
+                      "was written in units of {0} instead of {1}".format(
+                       eval_units.decode('utf-8'), expected_units))
             raise NotImplementedError(errmsg)
 
     def _read_first_frame(self):
@@ -249,13 +252,11 @@ class NCRSTReader(base.SingleFrameReaderBase):
         # Open netcdf file via context manager
         with scipy.io.netcdf.netcdf_file(self.filename, mode='r',
                                          mmap=self._mmap) as rstfile:
-            # Global attribute checks
-            # Conventions should contain the AMBERRESTART string
+            # Conventions should exist and contain the AMBERRESTART string
             try:
-                if not ('AMBERRESTART' in
-                        rstfile.Conventions.decode('utf-8').split(',') or
-                        'AMBERRESTART' in
-                        rstfile.Conventions.decode('utf-8').split()):
+                conventions = rstfile.Conventions.decode('utf-8')
+                if not ('AMBERRESTART' in conventions.split(',') or
+                        'AMBERRESTART' in conventions.split()):
                     errmsg = ("NetCDF restart file {0} does not conform to "
                               "AMBER specifications, as detailed in "
                               "http://ambermd.org/netcdf/nctraj.xhtml "
@@ -264,22 +265,24 @@ class NCRSTReader(base.SingleFrameReaderBase):
                     logger.fatal(errmsg)
                     raise TypeError(errmsg)
             except AttributeError:
-                errmsg = "NetCDF file is missing Conventions"
-                raise AttributeError(errmsg)
+                errmsg = ("NetCDF restart file {0} is missing  a "
+                          "Conventions value".format(self.filename))
+                raise ValueError(errmsg)
 
             # ConventionVersion should exist and be equal to 1.0
             try:
-                if not (rstfile.ConventionVersion.decode('utf-8') ==
-                        self.version):
+                ConventionVersion = rstfile.ConventionVersion.decode('utf-8')
+                if not (ConventionVersion == self.version):
                     wmsg = ("NCRST format is {0!s} but the reader implements "
                             "format {1!s}".format(
                              rstfile.ConventionVersion.decode('utf-8'),
                              self.version))
                     warnings.warn(wmsg)
                     logger.warning(wmsg)
-            except KeyError:
-                errmsg = "ConventionVersion not present in NetCDF file"
-                raise AttributeError(errmsg)
+            except AttributeError:
+                errmsg = ("NCDF restart file {0} is missing a "
+                          "ConventionVersion value".format(self.filename))
+                raise ValueError(errmsg)
 
             # The AMBER NetCDF standard enforces 64 bit offsets
             if not rstfile.version_byte == 2:
@@ -297,16 +300,18 @@ class NCRSTReader(base.SingleFrameReaderBase):
                     errmsg = "Incorrect spatial value for NCRST file"
                     raise TypeError(errmsg)
             except KeyError:
-                errmsg = "NCRST file does not contain spatial dimension"
-                raise KeyError(errmsg)
+                errmsg = ("NCDF restart file {0} does not contain spatial "
+                          "dimension".format(self.filename))
+                raise ValueError(errmsg)
 
             # The specs define program and programVersion as required. Here we
             # just warn the users instead of raising an Error.
             if not (hasattr(rstfile, 'program') and
                     hasattr(rstfile, 'programVersion')):
-                wmsg = ("This NCRST file may not fully adhere to AMBER "
+                wmsg = ("This NCRST file {0} may not fully adhere to AMBER "
                         "standards as either the `program` or "
-                        "`programVersion` attributes are missing")
+                        "`programVersion` attributes are missing".format(
+                        self.filename))
                 warnings.warn(wmsg)
                 logger.warning(wmsg)
 
@@ -324,7 +329,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
                 errmsg = ("NetCDF restart file {0} does not contain "
                           "atom information ".format(self.filename))
                 logger.fatal(errmsg)
-                raise KeyError(errmsg)
+                raise ValueError(errmsg)
 
             # NetCDF file title is optional
             try:
@@ -365,8 +370,8 @@ class NCRSTReader(base.SingleFrameReaderBase):
             # Note: unlike trajectories the AMBER NetCDF convention allows
             # restart files to omit time when unecessary (i.e. minimizations)
             try:
-                self.verify_units(rstfile.variables['time'].units,
-                                  ('picosecond',))
+                self._verify_units(rstfile.variables['time'].units,
+                                   'picosecond')
                 self.ts.time = (rstfile.variables['time'].getValue() *
                                 scale_factors['time'])
             except KeyError:
