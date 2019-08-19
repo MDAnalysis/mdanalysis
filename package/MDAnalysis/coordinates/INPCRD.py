@@ -274,8 +274,7 @@ class NCRSTReader(base.SingleFrameReaderBase):
                 ConventionVersion = rstfile.ConventionVersion.decode('utf-8')
                 if not (ConventionVersion == self.version):
                     wmsg = ("NCRST format is {0!s} but the reader implements "
-                            "format {1!s}".format(
-                             rstfile.ConventionVersion.decode('utf-8'),
+                            "format {1!s}".format(ConventionVersion,
                              self.version))
                     warnings.warn(wmsg)
                     logger.warning(wmsg)
@@ -388,8 +387,8 @@ class NCRSTReader(base.SingleFrameReaderBase):
 
             # Default to length units of Angstrom
             try:
-                self.verify_units(rstfile.variables['coordinates'].units,
-                                  ('angstrom',))
+                self._verify_units(rstfile.variables['coordinates'].units,
+                                   'angstrom')
                 self.ts._pos[:] = (rstfile.variables['coordinates'][:] *
                                    scale_factors['coordinates'])
             except KeyError:
@@ -398,28 +397,28 @@ class NCRSTReader(base.SingleFrameReaderBase):
                 errmsg = ("NetCDF restart file {0} is missing coordinate "
                           "information ".format(self.filename))
                 logger.fatal(errmsg)
-                raise KeyError(errmsg)
+                raise ValueError(errmsg)
 
             if self.has_velocities:
-                self.verify_units(rstfile.variables['velocities'].units,
-                                  ('angstrom/picosecond',))
+                self._verify_units(rstfile.variables['velocities'].units,
+                                   'angstrom/picosecond')
                 self.ts._velocities[:] = (rstfile.variables['velocities'][:] *
                                           scale_factors['velocities'])
 
-            # The presence of forces in a restart file is very rare, but
-            # according to AMBER convention, it can exist.
+            # The presence of forces in an ncrst is rare but possible
             if self.has_forces:
-                self.verify_units(rstfile.variables['forces'].units,
-                                  ('kilocalorie/mole/angstrom',))
+                self._verify_units(rstfile.variables['forces'].units,
+                                   'kilocalorie/mole/angstrom')
                 self.ts._forces[:] = (rstfile.variables['forces'][:] *
                                       scale_factors['forces'])
 
             # If false u.dimensions is set to [0., 0., 0., 0., 0., 0]
+            # Unlike the NCDFReader, `degrees` is not accepted
             if self.periodic:
-                self.verify_units(rstfile.variables['cell_lengths'].units,
-                                  ('angstrom',))
-                self.verify_units(rstfile.variables['cell_angles'].units,
-                                  ('degree', 'degrees'))
+                self._verify_units(rstfile.variables['cell_lengths'].units,
+                                   'angstrom')
+                self._verify_units(rstfile.variables['cell_angles'].units,
+                                   'degree')
                 self.ts._unitcell[:3] = (rstfile.variables['cell_lengths'][:] *
                                          scale_factors['cell_lengths'])
                 self.ts._unitcell[3:] = (rstfile.variables['cell_angles'][:] *
