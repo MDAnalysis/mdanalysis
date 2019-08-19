@@ -389,10 +389,10 @@ class HydrogenBondAutoCorrel(object):
 
         pm = ProgressMeter(self.nruns, interval=1,
                            format="Performing run %(step)5d/%(numsteps)d"
-                                  "[%(percentage)5.1f%%]\r")
+                                  "[%(percentage)5.1f%%]")
 
         for i, (start, stop) in enumerate(zip(self._starts, self._stops)):
-            pm.echo(i + 1)
+            pm.echo(i)
 
             # needed else trj seek thinks a np.int64 isn't an int?
             results = self._single_run(int(start), int(stop))

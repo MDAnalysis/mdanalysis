@@ -1861,7 +1861,8 @@ def test_deprecate(old_name, new_name, remove, message, release="2.7.1"):
                              new_name=new_name,
                              release=release, remove=remove,
                              message=message)
-    with pytest.warns(DeprecationWarning, match_expr="`.+` is deprecated"):
+    # match_expr changed to match (Issue 2329)
+    with pytest.warns(DeprecationWarning, match="`.+` is deprecated"):
         oldfunc(42)
 
     doc = oldfunc.__doc__
