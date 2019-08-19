@@ -129,6 +129,7 @@ class MOL2Reader(base.ReaderBase):
        previously created a new instance of Timestep each frame.
     .. versionchanged:: 0.20.0
        Allows for comments at top of file.
+       Ignores status bit strings
     """
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
@@ -197,7 +198,8 @@ class MOL2Reader(base.ReaderBase):
 
         coords = np.zeros((self.n_atoms, 3), dtype=np.float32)
         for i, a in enumerate(atom_lines):
-            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()
+            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
+
             #x, y, z = float(x), float(y), float(z)
             coords[i, :] = x, y, z
 

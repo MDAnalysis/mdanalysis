@@ -176,8 +176,8 @@ del weakref
 
 # custom exceptions and warnings
 from .exceptions import (
-    SelectionError, FinishTimeException, NoDataError, ApplicationError,
-    SelectionWarning, MissingDataWarning, ConversionWarning, FileFormatWarning,
+    SelectionError, NoDataError, ApplicationError, SelectionWarning,
+    MissingDataWarning, ConversionWarning, FileFormatWarning,
     StreamWarning
 )
 

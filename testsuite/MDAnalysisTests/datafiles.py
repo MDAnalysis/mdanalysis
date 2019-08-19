@@ -104,6 +104,7 @@ __all__ = [
     "PDBQT_querypdb",
     "FASTA",  # sequence alignment, Issue 112 + 113
     "HELANAL_BENDING_MATRIX",  # HELANAL test (from PSF+DCD (AdK) helix 8)
+    "HELANAL_BENDING_MATRIX_SUBSET", # As above, slice of frames 10 to 79
     "PDB_HOLE",  # gramicidin A
     "MULTIPDB_HOLE", # gramicidin A, normal mode 7 from ElNemo
     "DMS",
@@ -114,7 +115,7 @@ __all__ = [
     "TRR_multi_frame",
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
-    "mol2_zinc", "mol2_comments_header",
+    "mol2_zinc", "mol2_comments_header", "mol2_ligand",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
     "contacts_villin_folded", "contacts_villin_unfolded", "contacts_file",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
@@ -360,7 +361,7 @@ PDBQT_querypdb = resource_filename(__name__, 'data/pdbqt_querypdb.pdb')
 
 FASTA = resource_filename(__name__, 'data/test.fasta')
 HELANAL_BENDING_MATRIX = resource_filename(__name__, 'data/helanal_bending_matrix_AdK_DIMS_H8.dat')
-
+HELANAL_BENDING_MATRIX_SUBSET = resource_filename(__name__, 'data/helanal_bending_matrix_AdK_DIMS_H8_frames10to79.dat')
 
 PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
 MULTIPDB_HOLE = resource_filename(__name__, 'data/1grm_elNemo_mode7.pdb.bz2')
@@ -382,6 +383,7 @@ merge_water = resource_filename(__name__, "data/merge/2zmm/water.pdb")
 
 mol2_molecules = resource_filename(__name__, "data/mol2/Molecules.mol2")
 mol2_molecule = resource_filename(__name__, "data/mol2/Molecule.mol2")
+mol2_ligand = resource_filename(__name__, "data/mol2/Ligand.mol2")
 mol2_broken_molecule = resource_filename(__name__, "data/mol2/BrokenMolecule.mol2")
 mol2_comments_header = resource_filename(__name__, "data/mol2/Molecule_comments_header.mol2")
 # MOL2 file without substructure field
