@@ -131,31 +131,72 @@ from .topologyobjects import TopologyObject
 
 logger = logging.getLogger("MDAnalysis.core.universe")
 
-def reformat_universe(cls):
-    class Wrapper(cls):  # Must return class for deprecate_class subclassing
-        def __new__(klass, topology, *coordinates, **kwargs):
-            _type = type(topology)
-            if _type is not Topology:
-                warnings.warn('Universes should be created with an explicit'
-                                'classmethod, eg. Universe.from_files or '
-                                'Universe.from_streams. Only MDAnalysis.Topology '
-                                'objects should be passed to Universe(); {} '
-                                'passed instead'.format(_type), DeprecationWarning)
-                if isinstance(topology, NamedStream) or isstream(topology):
-                    return klass.from_streams(topology, *coordinates, **kwargs)
-                else:
-                    return klass.from_files(topology, *coordinates, **kwargs)
 
-            else:
-                return super(Wrapper, klass).__new__(klass)
-        
-        def __init__(self, topology, *coordinates, **kwargs):
-            if not self._topology:  # ugly ugly ugly but passes tests
-                super(Wrapper, self).__init__(topology, *coordinates, **kwargs)
-        
-    return Wrapper
 
-@reformat_universe
+def _check_file_like(topology):
+    if isstream(topology):
+        if hasattr(topology, 'name'):
+            _name = topology.name
+        else:
+            _name = None
+        return NamedStream(topology, _name)
+
+    return topology
+    
+    # raise ValueError('topology parameter must be a stream, file, '
+    #                  'numpy array, or MDAnalysis.Topology object. '
+    #                  'Given: {}'.format(type(topology)))
+
+
+def _topology_from_file_like(topology_file, topology_format=None,
+                             **kwargs):
+    parser = get_parser_for(topology_file, format=topology_format)
+
+    try:
+        with parser(topology_file) as p:
+            topology = p.parse(**kwargs)
+    except (IOError, OSError) as err:
+        # There are 2 kinds of errors that might be raised here:
+        # one because the file isn't present
+        # or the permissions are bad, second when the parser fails
+        if (err.errno is not None and
+            errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
+            # Runs if the error is propagated due to no permission / file not found
+            six.reraise(*sys.exc_info())
+        else:
+            # Runs when the parser fails
+            raise IOError("Failed to load from the topology file {0}"
+                            " with parser {1}.\n"
+                            "Error: {2}".format(topology_file, parser, err))
+    except (ValueError, NotImplementedError) as err:
+        raise ValueError(
+            "Failed to construct topology from file {0}"
+            " with parser {1}.\n"
+            "Error: {2}".format(topology_file, parser, err))
+    return topology
+
+def _resolve_formats(*coordinates, format=None, topology_format=None):
+    if not coordinates:
+        if format is None:
+            format = topology_format
+        elif topology_format is None:
+            topology_format = format
+    return format, topology_format
+
+def _resolve_coordinates(filename, *coordinates, format=None,
+                         all_coordinates=False):
+    if all_coordinates or not coordinates and filename is not None:
+        try:
+            get_reader_for(filename, format=format)
+        except ValueError:
+            warnings.warn('No coordinate reader found for {}. Skipping '
+                            'this file.'.format(filename))
+        else:
+            coordinates = (filename,) + coordinates
+    return coordinates
+    
+
+
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
@@ -195,8 +236,10 @@ class Universe(object):
 
     Parameters
     ----------
-    topology : `~MDAnalysis.core.topology.Topology`
-        The topology defines the list of atoms. 
+    topology : `~MDAnalysis.core.topology.Topology`, str, stream, `np.ndarray`, None
+        The topology defines the list of atoms. This can be provided 
+        as filenames, streams of filenames, numpy arrays, or None for 
+        an empty universe.
     coordinates : str, stream, list of str, list of stream (optional)
         Coordinates can be provided as streams of filenames either of 
         a single frame (eg a PDB, CRD, or GRO file); a list of single 
@@ -272,156 +315,56 @@ class Universe(object):
     """
     _topology = None
 
-    @classmethod
-    def from_streams(cls, topology, *coordinates, **kwargs):
-        """
-        Construct a Universe with the topology from a stream.
-
-        Parameters
-        ----------
-        topology : stream
-            A stream of a CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
-            define the list of atoms. If the file includes bond information,
-            partial charges, atom masses, ... then these data will be available to
-            MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
-            topology) is always required.
-        coordinates : str, stream, list of str, list of stream (optional)
-            Coordinates can be provided either as a single frame (eg a PDB, CRD, 
-            or GRO file); a list of single frames; or a trajectory file (in 
-            CHARMM/NAMD/LAMMPS DCD, Gromacs XTC/TRR, or generic XYZ format). 
-            The coordinates have to be ordered in the same way as the list of 
-            atoms in the topology. See :ref:`Supported coordinate formats` 
-            for what can be read as coordinates.
-        kwargs:
-            Optional arguments for file formats, transformations, vdwradii and 
-            anchoring are passed to :func:`~MDAnalysis.Universe.from_files`.
-        """
-        if isinstance(topology, NamedStream):
-            filename = topology
-        elif isstream(topology):
-            if hasattr(topology, 'name'):
-                _name = topology.name
-            else:
-                _name = None
-            filename = NamedStream(topology, _name)
-        else:
-            raise ValueError('topology parameter must be a stream. '
-                             'Given: {}'.format(type(topology)))
-        return cls.from_files(filename, *coordinates, **kwargs)
-
-    @classmethod
-    def from_files(cls, topology_file, *coordinates, topology_format=None,
-                   format=None, **kwargs):
-        """
-        Parameters
-        ----------
-        topology : str
-            A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
-            define the list of atoms. If the file includes bond information,
-            partial charges, atom masses, ... then these data will be available to
-            MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
-            topology) is always required.
-        coordinates : str, stream, list of str, list of stream (optional)
-            Coordinates can be provided as streams of filenames either of 
-            a single frame (eg a PDB, CRD, or GRO file); a list of single 
-            frames; or a trajectory file (in CHARMM/NAMD/LAMMPS DCD, Gromacs 
-            XTC/TRR, or generic XYZ format). The coordinates have to be 
-            ordered in the same way as the list of atoms in the topology. 
-            See :ref:`Supported coordinate formats` for what can be read 
-            as coordinates.
-        topology_format: str, ``None``, default ``None``
-            Provide the file format of the topology file; ``None`` guesses it from
-            the file extension. Can also pass a subclass of
-            :class:`MDAnalysis.topology.base.TopologyReaderBase` to define a custom
-            reader to be used on the topology file.
-        format: str, ``None``, default ``None``
-            Provide the file format of the coordinate or trajectory file; ``None``
-            guesses it from the file extension. Note that this keyword has no
-            effect if a list of file names is supplied because the "chained" reader
-            has to guess the file format for each individual list member.
-            Can also pass a subclass of :class:`MDAnalysis.coordinates.base.ProtoReader` 
-            to define a custom reader to be used on the trajectory file.
-        all_coordinates : bool, default ``False``
-            If set to ``True`` specifies that if more than one filename is passed
-            they are all to be used, if possible, as coordinate files (employing a
-            :class:`MDAnalysis.coordinates.chain.ChainReader`). The
-            default behavior is to take the first file as a topology and the
-            remaining as coordinates. The first argument will always always be used
-            to infer a topology regardless of *all_coordinates*. 
-        kwargs:
-            Optional arguments for transformations, vdwradii and 
-            anchoring are passed to :func:`~MDAnalysis.Universe`.
-        """
-        
-        if not coordinates:
-            if format is None:
-                format = topology_format
-            elif topology_format is None:
-                topology_format = format
-        
-        parser = get_parser_for(topology_file, format=topology_format)
-        try:
-            with parser(topology_file) as p:
-                topology = p.parse(**kwargs)
-        except (IOError, OSError) as err:
-            # There are 2 kinds of errors that might be raised here:
-            # one because the file isn't present
-            # or the permissions are bad, second when the parser fails
-            if (err.errno is not None and
-                errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
-                # Runs if the error is propagated due to no permission / file not found
-                six.reraise(*sys.exc_info())
-            else:
-                # Runs when the parser fails
-                raise IOError("Failed to load from the topology file {0}"
-                              " with parser {1}.\n"
-                              "Error: {2}".format(topology_file, parser, err))
-        except (ValueError, NotImplementedError) as err:
-            raise ValueError(
-                "Failed to construct topology from file {0}"
-                " with parser {1}.\n"
-                "Error: {2}".format(topology_file, parser, err))
-        
-        obj = cls(topology, *coordinates, topology_file=topology_file, format=format,
-                  topology_format=topology_format, **kwargs)
-        return obj
-
     
-    def __init__(self, topology, *coordinates, topology_file=None, 
-                 all_coordinates=False, 
-                 format=None, transformations=None, guess_bonds=False,
-                 vdwradii=None, anchor_name=None, is_anchor=False,
-                 in_memory=False, in_memory_step=1, **kwargs):
-        _type = type(topology)
-        if _type is not Topology:
-            raise ValueError('Only MDAnalysis.Topology objects should be '
-                             'passed to Universe(); {} passed '
-                             'instead.'.format(_type))
+    def __init__(self, topology, *coordinates, all_coordinates=False,
+                 format=None, topology_format=None, transformations=None,
+                 guess_bonds=False, vdwradii=None, anchor_name=None,
+                 is_anchor=True, in_memory=False, in_memory_step=1,
+                 **kwargs):
 
         self._instant_selectors = {}  # for storing segments. Deprecated?
         self._trajectory = None  # managed attribute holding Reader
         self._cache = {}
         self._anchor_name = anchor_name
-        self._is_anchor = is_anchor
+        self.is_anchor = is_anchor
         self.atoms = None
         self.residues = None
         self.segments = None
+        self.filename = None
+
+        self._kwargs = {
+            'transformations': transformations,
+            'guess_bonds': guess_bonds,
+            'vdwradii': vdwradii,
+            'anchor_name': anchor_name,
+            'is_anchor': is_anchor,
+            'in_memory': in_memory,
+            'in_memory_step': in_memory_step,
+            'format': format,
+            'topology_format': topology_format,
+            'all_coordinates': all_coordinates
+        }
+        self._kwargs.update(kwargs)
+
+        format, topology_format = _resolve_formats(*coordinates, format=format,
+                                                   topology_format=topology_format)
+
+        if not isinstance(topology, Topology) and not topology is None:
+            self.filename = _check_file_like(topology)
+            topology = _topology_from_file_like(self.filename, 
+                                                topology_format=topology_format,
+                                                **kwargs)
+
         self._topology = topology
-        self.filename = topology_file
 
         if topology is not None:
             self._generate_from_topology()  # make real atoms, res, segments
         
-        if all_coordinates or not len(coordinates) and topology_file is not None:
-            try:
-                get_reader_for(topology_file, format)
-            except ValueError:
-                warnings.warn('No coordinate reader found for {}. Skipping '
-                              'this file.'.format(topology_file))
-            else:
-                coordinates = (topology_file,) + coordinates
+        coordinates = _resolve_coordinates(self.filename, *coordinates,
+                                           format=format,
+                                           all_coordinates=all_coordinates)
         
-        self.load_new(coordinates, format=format, in_memory=in_memory, 
+        self.load_new(coordinates, format=format, in_memory=in_memory,
                       in_memory_step=in_memory_step, **kwargs)
 
         if transformations:
@@ -431,15 +374,6 @@ class Universe(object):
         
         if guess_bonds:
             self.atoms.guess_bonds(vdwradii=vdwradii)
-        
-        self._kwargs = {
-            'transformations': transformations,
-            'guess_bonds': guess_bonds,
-            'vdwradii': vdwradii,
-            'anchor_name': anchor_name,
-            'is_anchor': is_anchor,
-        }
-        self._kwargs.update(kwargs)
         
 
     def copy(self):
@@ -500,7 +434,7 @@ class Universe(object):
                 self._instant_selectors[name] = segment
 
     @classmethod
-    def empty(cls, n_atoms, n_residues=None, n_segments=None,
+    def empty(cls, n_atoms=0, n_residues=1, n_segments=1,
               atom_resindex=None, residue_segindex=None,
               trajectory=False, velocities=False, forces=False):
         """Create a blank Universe
@@ -516,9 +450,9 @@ class Universe(object):
         ----------
         n_atoms : int
           number of Atoms in the Universe
-        n_residues : int, optional
+        n_residues : int, default 1
           number of Residues in the Universe, defaults to 1
-        n_segments : int, optional
+        n_segments : int, default 1
           number of Segments in the Universe, defaults to 1
         atom_resindex : array like, optional
           mapping of atoms to residues, e.g. with 6 atoms,
@@ -556,35 +490,17 @@ class Universe(object):
            Universes can now be created with 0 atoms
         """
         if not n_atoms:
-            n_residues = 0
-            n_segments = 0
+            return cls(None)
             
-        if n_residues is None and n_atoms:
-            n_residues = 1
-        elif atom_resindex is None:
+        if atom_resindex is None:
             warnings.warn(
-                'Multiple residues specified but no atom_resindex given.  '
+                'Residues specified but no atom_resindex given.  '
                 'All atoms will be placed in first Residue.',
                 UserWarning)
-        if n_segments is None and n_atoms:
-            n_segments = 1
-        elif residue_segindex is None:
+        if residue_segindex is None:
             warnings.warn(
-                'Multiple segments specified but no segment_resindex given.  '
-                'All residues will be placed in first Segment',
-                UserWarning)
-
-        top = Topology(n_atoms, n_residues, n_segments,
-                       atom_resindex=atom_resindex,
-                       residue_segindex=residue_segindex,
-        )
-
-        u = cls(top)
-
-        if trajectory:
-            coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
+                'Segments specified but no segment_resindex given.  '
             dims = np.zeros(6, dtype=np.float32)
-            vels = np.zeros_like(coords) if velocities else None
             forces = np.zeros_like(coords) if forces else None
 
             # grab and attach a MemoryReader
