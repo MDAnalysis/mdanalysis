@@ -21,6 +21,7 @@ mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
   * 0.20.0
 
 Enhancements
+  * improved metal atom guess (Issue #2323)
   * improved atom element guessing in topology.guessers to check for elements
     after the first element (#2313)
   * added the zero-based index selection keyword (Issue #1959)
