@@ -32,6 +32,7 @@ from __future__ import absolute_import
 
 import numpy as np
 import warnings
+import re
 
 from ..lib import distances
 from . import tables
@@ -88,7 +89,6 @@ def guess_types(atom_names):
     return np.array([guess_atom_element(name) for name in atom_names], dtype=object)
 
 
-
 def guess_atom_type(atomname):
     """Guess atom type from the name.
 
@@ -105,6 +105,9 @@ def guess_atom_type(atomname):
     """
     return guess_atom_element(atomname)
 
+
+NUMBERS = re.compile(r'[0-9]') # match numbers
+SYMBOLS = re.compile(r'[\*\+\-]')  # match *, +, -
 
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.
@@ -127,13 +130,22 @@ def guess_atom_element(atomname):
     try:
         return tables.atomelements[atomname]
     except KeyError:
-        if atomname[0].isdigit():
-            # catch 1HH etc
-            try:
-                return atomname[1]
-            except IndexError:
-                pass
-        return atomname[0]
+        # strip symbols and numbers
+        no_symbols = re.sub(SYMBOLS, '', atomname)
+        name = re.sub(NUMBERS, '', no_symbols).upper()
+        while name:
+            if name in tables.elements:
+                return name
+            if name[:-1] in tables.elements:
+                return name[:-1]
+            if name[1:] in tables.elements:
+                return name[1:]
+            if len(name) <= 2:
+                return name[0]
+            name = name[:-1]  # probably element is on left not right
+
+        # if it's numbers
+        return no_symbols
 
 
 def guess_bonds(atoms, coords, box=None, **kwargs):

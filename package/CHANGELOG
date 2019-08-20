@@ -16,11 +16,13 @@ The rules for this file:
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay, tyler.je.reddy, aakognole, RMeli 
+         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
 
   * 0.20.0
 
 Enhancements
+  * improved atom element guessing in topology.guessers to check for elements
+    after the first element (#2313)
   * added the zero-based index selection keyword (Issue #1959)
   * added position averaging transformation that makes use of the 
     transformations API (PR #2208)
