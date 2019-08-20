@@ -178,7 +178,7 @@ if __name__ == '__main__':
           },
           install_requires=[
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
-              'pytest>=3.1.2',
+              'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329
               'hypothesis',
               'psutil>=4.0.2',
               'mock>=2.0.0',  # replace with unittest.mock in python 3 only version

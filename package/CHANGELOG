@@ -16,11 +16,13 @@ The rules for this file:
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay, tyler.je.reddy, aakognole, RMeli 
+         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
 
   * 0.20.0
 
 Enhancements
+  * improved atom element guessing in topology.guessers to check for elements
+    after the first element (#2313)
   * added the zero-based index selection keyword (Issue #1959)
   * added position averaging transformation that makes use of the 
     transformations API (PR #2208)
@@ -65,6 +67,7 @@ Enhancements
   * add high order water bridge support to water bridge analysis. (PR #2087)
 
 Changes
+  * added support for scale_factor in NCDFReader (Issue #2323)
   * added official support for Python 3.7 (PR #1963)
   * stopped official support of Python 3.4 (#2066, PR #2174)
   * In lib.mdamath, calculations within triclinic_box(), triclinic_vectors(),
@@ -76,6 +79,7 @@ Changes
   * changed the water bridge analysis output format (PR #2087)
 
 Fixes
+  * fixed lack of check for scaling of NCDFReader velocities (Issue #2323)
   * fixed PDBReader and PDBWriter newlines for PDB header (Issue #2324)
   * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
   * fixes ProgressMeter behaviour for non-AnalysisBase methods (Issue #2084)
@@ -130,6 +134,8 @@ Deprecations
     method to be used, this is done automatically in run()
     
 Testsuite
+  * Raised minimum pytest version to 3.3.0, warns now uses the `match` 
+    argument instead of `match_expr` (Issue #2329)
   * Add tests for the new water bridge analysis (PR #2087)
 
 11/06/18 richardjgowers
