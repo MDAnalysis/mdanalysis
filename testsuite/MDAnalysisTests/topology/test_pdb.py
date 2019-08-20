@@ -233,4 +233,10 @@ def test_PDB_hex():
 
 @pytest.mark.filterwarnings("error")
 def test_PDB_metals():
+    from MDAnalysis.topology import tables
+
     u = mda.Universe(PDB_metal, format='PDB')
+
+    assert u.atoms[0].mass == pytest.approx(tables.masses["CU"])
+    assert u.atoms[1].mass == pytest.approx(tables.masses["FE"])
+    
