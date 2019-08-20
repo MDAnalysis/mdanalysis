@@ -237,6 +237,8 @@ def test_PDB_metals():
 
     u = mda.Universe(PDB_metal, format='PDB')
 
+    assert len(u.atoms) == 4
     assert u.atoms[0].mass == pytest.approx(tables.masses["CU"])
     assert u.atoms[1].mass == pytest.approx(tables.masses["FE"])
-    
+    assert u.atoms[2].mass == pytest.approx(tables.masses["CA"])
+    assert u.atoms[3].mass == pytest.approx(tables.masses["MG"])
