@@ -66,6 +66,9 @@ def validate_atom_types(atom_types):
     Returns
     -------
     None
+
+    .. versionchanged:: 0.20.0
+       Try uppercase atom type name as well
     """
     for atom_type in np.unique(atom_types):
         try:
@@ -370,6 +373,9 @@ def get_atom_mass(element):
     Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.
 
     .. Warning:: Unknown masses are set to 0.0
+
+    .. versionchanged:: 0.20.0
+       Try uppercase atom type name as well
     """
     try:
         return tables.masses[element]
