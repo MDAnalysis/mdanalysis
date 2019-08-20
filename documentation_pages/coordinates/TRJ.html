@@ -144,11 +144,12 @@ indices) and full-feature trajectory iteration, including slicing.</p>
 <p>Periodic unit cell information is detected and used to populate the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.dimensions</span></code> attribute. (If no unit cell is available in
 the trajectory, then <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.dimensions</span></code> will return
-<code class="docutils literal notranslate"><span class="pre">[0,0,0,0,0,0]</span></code>.)</p>
+<code class="docutils literal notranslate"><span class="pre">[0,0,0,0,0,0]</span></code>).</p>
 <p>Current limitations:</p>
 <ul class="simple">
 <li>only trajectories with time in ps and lengths in Angstroem are processed</li>
-<li>scale_factors are not supported (and not checked)</li>
+<li>scale_factors are supported on read but are currently not kept/used when
+writing</li>
 </ul>
 <p>The NCDF reader uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> and therefore <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/index.html#module-scipy" title="(in SciPy v1.3.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a> must
 be installed. It supports the <em>mmap</em> keyword argument (when reading):
@@ -171,6 +172,14 @@ kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other R
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.17.0: </span>Uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> and supports the <em>mmap</em> kwarg.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Now reads scale_factors for all expected AMBER convention variables.
+Timestep variables now adhere standard MDAnalysis units, with lengths
+of angstrom, time of ps, velocity of angstrom/ps and force of
+kJ/(mol*Angstrom). It is noted that with 0.19.2 and earlier versions,
+velocities would have often been reported in values of angstrom/AKMA
+time units instead (Issue #2323).</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader.Writer">
