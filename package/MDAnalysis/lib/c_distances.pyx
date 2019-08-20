@@ -58,6 +58,8 @@ cdef extern from "calc_distances.h":
     void _ortho_pbc(coordinate* coords, int numcoords, float* box)
     void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
     void minimum_image(double* x, float* box, float* inverse_box)
+    void _translate_periodic_ortho(float* reference, float* centre, float* result, float* box)
+    void _translate_periodic_triclinic(float* reference, float* centre, float* result, float* box)
 
 OPENMP_ENABLED = True if USED_OPENMP else False
 
@@ -220,6 +222,17 @@ def triclinic_pbc(numpy.ndarray coords, numpy.ndarray box):
 
     _triclinic_pbc(<coordinate*> coords.data, numcoords, <float*> box.data)
 
+def translate_periodic_ortho(numpy.ndarray coords1, numpy.ndarray coords2,
+                             numpy.ndarray result, numpy.ndarray box):
+
+    _translate_periodic_ortho(<float*> coords1.data, <float*> coords2.data,
+                              <float*> result.data, <float*> box.data)
+
+def translate_periodic_triclinic(numpy.ndarray coords1, numpy.ndarray coords2,
+                                 numpy.ndarray result, numpy.ndarray box):
+
+    _translate_periodic_triclinic(<float*> coords1.data, <float*> coords2.data,
+                                  <float*> result.data, <float*> box.data)
 
 @cython.boundscheck(False)
 def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):

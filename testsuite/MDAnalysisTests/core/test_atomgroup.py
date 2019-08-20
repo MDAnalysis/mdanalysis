@@ -32,6 +32,7 @@ from numpy.testing import (
     assert_almost_equal,
     assert_equal,
     assert_array_almost_equal,
+    assert_array_less
 )
 
 import MDAnalysis as mda
@@ -350,6 +351,10 @@ class TestWriteGRO(_WriteAtoms):
 
 class TestAtomGroupTransformations(object):
 
+    target_pos = (np.array([50, 50, 4.5], dtype=np.float32),
+                           np.array([15.1, 15.45, 15.67], dtype=np.float32),
+                           np.array([-42, -53, -16.76], dtype=np.float32))
+
     @pytest.fixture()
     def u(self):
         return mda.Universe(PSF, DCD)
@@ -370,6 +375,19 @@ class TestAtomGroupTransformations(object):
         cog = u.atoms.center_of_geometry()
         diff = cog - center_of_geometry
         assert_almost_equal(diff, disp, decimal=5)
+
+    @pytest.mark.parametrize('target_position', target_pos)
+    def test_arrange_closest(self, target_position):
+        universe = mda.Universe(TRZ_psf, TRZ)
+        group = universe.residues[0:1]
+        center_before = group.center_of_geometry()
+        group.arrange_closest(target_position=target_position, reference='cog')
+        center_after = group.center_of_geometry()
+        translation = np.divide(center_after-center_before, group.dimensions[:3])
+        print(translation)
+        print(center_after)
+        assert_almost_equal(translation - np.around(translation), np.zeros(3), decimal=4)
+        assert_array_less(np.abs(center_after - target_position), group.dimensions[:3]/2)
 
     def test_rotate(self, u, coords):
         # ensure that selection isn't centered at 0, 0, 0
