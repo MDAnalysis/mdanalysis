@@ -37,7 +37,8 @@ from MDAnalysisTests.datafiles import (
     PDB_conect2TER,
     PDB_singleconect,
     PDB_chainidnewres,
-    PDB_sameresid_diffresname
+    PDB_sameresid_diffresname,
+    PDB_metal,
 )
 from MDAnalysis.topology.PDBParser import PDBParser
 
@@ -229,3 +230,7 @@ def test_PDB_hex():
     assert u.atoms[2].id == 100001
     assert u.atoms[3].id == 100002
     assert u.atoms[4].id == 100003
+
+@pytest.mark.filterwarnings("error")
+def test_PDB_metals():
+    u = mda.Universe(PDB_metal, format='PDB')
