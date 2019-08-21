@@ -230,18 +230,21 @@ class Universe(object):
 
     Parameters
     ----------
-    topology : `~MDAnalysis.core.topology.Topology`, str, stream, `np.ndarray`, None
-        The topology defines the list of atoms. This can be provided 
-        as filenames, streams of filenames, numpy arrays, or None for 
-        an empty universe.
+    topology : str, stream, `~MDAnalysis.core.topology.Topology`, `np.ndarray`, None
+        A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
+        define the list of atoms. If the file includes bond information,
+        partial charges, atom masses, ... then these data will be available to
+        MDAnalysis. Alternatively, an existing 
+        :class:`MDAnalysis.core.topology.Topology` instance may be given, 
+        numpy coordinates, or None for an empty universe.
     coordinates : str, stream, list of str, list of stream (optional)
-        Coordinates can be provided as streams of filenames either of 
+        Coordinates can be provided as files of  
         a single frame (eg a PDB, CRD, or GRO file); a list of single 
         frames; or a trajectory file (in CHARMM/NAMD/LAMMPS DCD, Gromacs 
-        XTC/TRR, or generic XYZ format). The coordinates have to be 
+        XTC/TRR, or generic XYZ format). The coordinates must be 
         ordered in the same way as the list of atoms in the topology. 
         See :ref:`Supported coordinate formats` for what can be read 
-        as coordinates.
+        as coordinates. Alternatively, streams can be given.
     topology_format: str, ``None``, default ``None``
         Provide the file format of the topology file; ``None`` guesses it from
         the file extension. Can also pass a subclass of
@@ -306,8 +309,9 @@ class Universe(object):
     bonds, angles, dihedrals
         master ConnectivityGroups for each connectivity type
 
+    .. versionchanged:: 0.20.0
+        Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.
     """
-    _topology = None
 
     
     def __init__(self, topology, *coordinates, all_coordinates=False,
@@ -442,7 +446,7 @@ class Universe(object):
 
         Parameters
         ----------
-        n_atoms : int
+        n_atoms : int, default 0
           number of Atoms in the Universe
         n_residues : int, default 1
           number of Residues in the Universe, defaults to 1
