@@ -140,13 +140,7 @@ def _check_file_like(topology):
         else:
             _name = None
         return NamedStream(topology, _name)
-
     return topology
-    
-    # raise ValueError('topology parameter must be a stream, file, '
-    #                  'numpy array, or MDAnalysis.Topology object. '
-    #                  'Given: {}'.format(type(topology)))
-
 
 def _topology_from_file_like(topology_file, topology_format=None,
                              **kwargs):
