@@ -380,14 +380,27 @@ class TestAtomGroupTransformations(object):
     def test_arrange_closest(self, target_position):
         universe = mda.Universe(TRZ_psf, TRZ)
         group = universe.residues[0:1]
-        center_before = group.center_of_geometry()
+        masses = group.atoms.masses
+        masses[0] = 10
+        group.atoms.masses = masses
+        cog_before = group.center_of_geometry()
+        com_before = group.center_of_mass()
+
         group.arrange_closest(target_position=target_position, reference='cog')
-        center_after = group.center_of_geometry()
-        translation = np.divide(center_after-center_before, group.dimensions[:3])
-        print(translation)
-        print(center_after)
-        assert_almost_equal(translation - np.around(translation), np.zeros(3), decimal=4)
-        assert_array_less(np.abs(center_after - target_position), group.dimensions[:3]/2)
+        cog_after = group.center_of_geometry()
+        translation_cog = np.divide(cog_after - cog_before, group.dimensions[:3])
+        assert_almost_equal(translation_cog - np.around(translation_cog), np.zeros(3), decimal=4)
+        assert_array_less(np.abs(cog_after - target_position), group.dimensions[:3]/2)
+
+        group.arrange_closest(target_position=target_position, reference='com')
+        com_after = group.center_of_mass()
+        translation_com = np.divide(com_after - com_before, group.dimensions[:3])
+        assert_almost_equal(translation_com - np.around(translation_com), np.zeros(3), decimal=4)
+        assert_array_less(np.abs(com_after - target_position), group.dimensions[:3]/2)
+
+        group.atoms.masses = np.zeros(341)
+        with pytest.raises(ValueError):
+            group.arrange_closest(target_position=target_position, reference='com')
 
     def test_rotate(self, u, coords):
         # ensure that selection isn't centered at 0, 0, 0

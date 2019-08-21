@@ -1595,7 +1595,7 @@ class GroupBase(_MutableBase):
         unique_atoms = atoms.unique
         if reference is not None:
             ref = reference.lower()
-            if ref  == 'com':
+            if ref == 'com':
                 # Don't use hasattr(self, 'masses') because that's incredibly
                 # slow for ResidueGroups or SegmentGroups
                 if not hasattr(unique_atoms, 'masses'):
@@ -1702,7 +1702,7 @@ class GroupBase(_MutableBase):
             # Don't use hasattr(self, 'masses') because that's incredibly
             # slow for ResidueGroups or SegmentGroups
             if not hasattr(unique_atoms, 'masses'):
-                raise NoDataError("Cannot perform unwrap with "
+                raise NoDataError("Cannot perform shift with "
                                   "reference='com', this requires masses.")
         elif ref != 'cog':
             raise ValueError("Unrecognized reference '{}'. Please use one "
@@ -1712,7 +1712,7 @@ class GroupBase(_MutableBase):
             masses = unique_atoms.masses
             total_mass = masses.sum()
             if np.isclose(total_mass, 0.0):
-                raise ValueError("Cannot perform unwrap with "
+                raise ValueError("Cannot perform shift with "
                                  "reference='com' because the total "
                                  "mass of the group is zero.")
             refpos = np.sum(positions * masses[:, None], axis=0)
