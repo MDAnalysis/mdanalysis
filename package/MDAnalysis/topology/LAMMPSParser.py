@@ -619,7 +619,7 @@ class LammpsDumpParser(TopologyReaderBase):
             
             fin.readline()  # ITEM ATOMS
             for i in range(natoms):
-                idx, atype, _, _, _ = fin.readline().split()
+                idx, atype, *_ = fin.readline().split()
 
                 indices[i] = idx
                 types[i] = atype
