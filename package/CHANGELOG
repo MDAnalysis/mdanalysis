@@ -16,11 +16,14 @@ The rules for this file:
 mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay, tyler.je.reddy
+         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
 
   * 0.20.0
 
 Enhancements
+  * improved atom element guessing in topology.guessers to check for elements
+    after the first element (#2313)
+  * added the zero-based index selection keyword (Issue #1959)
   * added position averaging transformation that makes use of the 
     transformations API (PR #2208)
   * added find_hydrogen_donors to analysis.bonds.hbond_autocorrel to
@@ -61,8 +64,10 @@ Enhancements
   * added unwrap keyword to center_of_mass (PR #2286)
   * added unwrap keyword to moment_of_inertia (PR #2287)
   * added unwrap keyword to asphericity (PR #2290)
+  * add high order water bridge support to water bridge analysis. (PR #2087)
 
 Changes
+  * added support for scale_factor in NCDFReader (Issue #2323)
   * added official support for Python 3.7 (PR #1963)
   * stopped official support of Python 3.4 (#2066, PR #2174)
   * In lib.mdamath, calculations within triclinic_box(), triclinic_vectors(),
@@ -71,8 +76,15 @@ Changes
     PR #2201)
   * changed fudge_factor in guess_bonds to deal with new vdw radii (#2138, PR #2142)
   * bump minimum numpy version to 1.13.3
+  * changed the water bridge analysis output format (PR #2087)
 
 Fixes
+  * fixed lack of check for scaling of NCDFReader velocities (Issue #2323)
+  * fixed PDBReader and PDBWriter newlines for PDB header (Issue #2324)
+  * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
+  * fixes ProgressMeter behaviour for non-AnalysisBase methods (Issue #2084)
+  * fixed mol2 parser for status bit strings (Issue #2318)
+  * fixed reading AMBER topologies with negative ATOMIC_NUMBERS (Issue #2306)
   * fixed reading bz2 compressed psf files (Issue #2232)
   * fixed mol2 comment header handling (Issue #2261)
   * fixed reading PDB files with partial CRYST lines (Issue #2252)
@@ -114,11 +126,17 @@ Fixes
     atoms from frame to frame (Issue #1998, PR #2219)
   * Fixed reading multiframe GRO files, currently only the first frame will be
     read. (Issue #2276 PR #2277)
+  * fixed calculation of Chi torsion in nucleic acid analysis (Issue #2248)
   * Fixed parallelization failure in get_distance_matrix() (Issue #2060, PR #2301)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
     method to be used, this is done automatically in run()
+    
+Testsuite
+  * Raised minimum pytest version to 3.3.0, warns now uses the `match` 
+    argument instead of `match_expr` (Issue #2329)
+  * Add tests for the new water bridge analysis (PR #2087)
 
 11/06/18 richardjgowers
   * 0.19.2

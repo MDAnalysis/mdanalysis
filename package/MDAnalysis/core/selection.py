@@ -762,6 +762,12 @@ class ByNumSelection(RangeSelection):
     value_offset = 1  # queries are in 1 based indices
 
 
+class IndexSelection(RangeSelection):
+    token = 'index'
+    field = 'indices'
+    value_offset = 0 # queries now 0 based indices
+
+
 class MolidSelection(RangeSelection):
     token = 'molnum'
     field = 'molnums'
