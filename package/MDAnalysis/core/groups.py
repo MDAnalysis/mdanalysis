@@ -1721,10 +1721,8 @@ class GroupBase(_MutableBase):
             refpos = positions.mean(axis=0)
 
         refpos = refpos.astype(np.float32, copy=False)
-        if target_position is None:
-            target = distances.apply_PBC(refpos, self.dimensions)
-        else:
-            target = distances.minimize_periodic_vector(reference_point=target_position, center_position=refpos,
+
+        target = distances.minimize_periodic_vector(reference_point=target_position, center_position=refpos,
                                                             box=self.dimensions)
         positions += target - refpos
 
