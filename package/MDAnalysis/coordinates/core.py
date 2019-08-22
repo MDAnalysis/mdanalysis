@@ -78,10 +78,14 @@ def reader(filename, format=None, **kwargs):
     if isinstance(filename, tuple):
         Reader = get_reader_for(filename[0],
                                 format=filename[1])
-        return Reader(filename[0], **kwargs)
+        filename = filename[0]
     else:
         Reader = get_reader_for(filename, format=format)
+    try:
         return Reader(filename, **kwargs)
+    except ValueError:
+        raise ValueError('Unable to read {fn} with {r}.'.format(fn=filename,
+                                                                r=Reader))
 
 
 def writer(filename, n_atoms=None, **kwargs):

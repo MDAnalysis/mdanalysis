@@ -178,10 +178,7 @@ class GROReader(base.SingleFrameReaderBase):
         with util.openany(self.filename, 'rt') as grofile:
             # Read first two lines to get number of atoms
             grofile.readline()
-            try:
-                self.n_atoms = n_atoms = int(grofile.readline())
-            except ValueError:
-                raise ValueError('Invalid GRO file: second line is not number of atoms.')
+            self.n_atoms = n_atoms = int(grofile.readline())
             self.ts = ts = self._Timestep(n_atoms, **self._ts_kwargs)
             # Always try, and maybe add them later
             velocities = np.zeros((n_atoms, 3), dtype=np.float32)

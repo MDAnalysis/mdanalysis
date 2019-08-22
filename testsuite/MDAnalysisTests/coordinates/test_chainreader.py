@@ -207,7 +207,7 @@ class TestChainReaderFormats(object):
     def test_set_all_formats(self):
         with pytest.raises(ValueError) as errinfo:
             mda.Universe(PDB, [PDB, GRO], format='gro')
-        assert str(errinfo.value) == 'Invalid GRO file: second line is not number of atoms.'
+        assert 'Unable to read' in str(errinfo.value)
 
 
 def build_trajectories(folder, sequences, fmt='xtc'):
