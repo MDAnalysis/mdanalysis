@@ -205,8 +205,9 @@ class TestChainReaderFormats(object):
         assert universe.trajectory.n_frames == 99
 
     def test_set_all_formats(self):
-        universe = mda.Universe(PSF, [PDB_small, PDB_closed], format='pdb')
-        assert universe.trajectory.n_frames == 2
+        with pytest.raises(ValueError) as errinfo:
+            mda.Universe(PDB, [PDB, GRO], format='gro')
+        assert str(errinfo.value) == 'Invalid GRO file: second line is not number of atoms.'
 
 
 def build_trajectories(folder, sequences, fmt='xtc'):

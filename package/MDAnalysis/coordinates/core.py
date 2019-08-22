@@ -46,7 +46,7 @@ from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
 from ..core._get_readers import get_reader_for, get_writer_for
 
 
-def reader(filename, **kwargs):
+def reader(filename, format=None, **kwargs):
     """Provide a trajectory reader instance for *filename*.
 
     This function guesses the file format from the extension of *filename* and
@@ -80,7 +80,7 @@ def reader(filename, **kwargs):
                                 format=filename[1])
         return Reader(filename[0], **kwargs)
     else:
-        Reader = get_reader_for(filename)
+        Reader = get_reader_for(filename, format=format)
         return Reader(filename, **kwargs)
 
 

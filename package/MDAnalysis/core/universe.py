@@ -601,7 +601,7 @@ class Universe(object):
         # supply number of atoms for readers that cannot do it for themselves
         kwargs['n_atoms'] = self.atoms.n_atoms
 
-        self.trajectory = reader(filename, **kwargs)
+        self.trajectory = reader(filename, format=format, **kwargs)
         if self.trajectory.n_atoms != len(self.atoms):
             raise ValueError("The topology and {form} trajectory files don't"
                              " have the same number of atoms!\n"
