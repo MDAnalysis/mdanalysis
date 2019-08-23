@@ -553,7 +553,7 @@ if __name__ == '__main__':
           'GridDataFormats>=0.4.0',
           'six>=1.4.0',
           'mmtf-python>=1.0.0',
-          'joblib',
+          'joblib>=0.12',
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
           'mock',
