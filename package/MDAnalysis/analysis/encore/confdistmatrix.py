@@ -169,7 +169,7 @@ def conformational_distance_matrix(ensemble,
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
     indices = trm_indices((0, 0), (framesn - 1, framesn - 1))
-    Parallel(n_jobs=n_jobs, verbose=verbose, prefer='threads')(delayed(conf_dist_function)(
+    Parallel(n_jobs=n_jobs, verbose=verbose, require='sharedmem')(delayed(conf_dist_function)(
         np.int64(element),
         rmsd_coordinates,
         distmat,
