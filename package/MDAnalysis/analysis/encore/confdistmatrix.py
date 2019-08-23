@@ -57,7 +57,8 @@ from .utils import TriangularMatrix, trm_indices
 def conformational_distance_matrix(ensemble,
                                    conf_dist_function, selection="",
                                    superimposition_selection="", n_jobs=1, pairwise_align=True, weights='mass',
-                                   metadata=True, verbose=False):
+                                   metadata=True, verbose=False,
+                                   max_nbytes=None):
     """
     Run the conformational distance matrix calculation.
     args and kwargs are passed to conf_dist_function.
@@ -86,6 +87,9 @@ def conformational_distance_matrix(ensemble,
     n_jobs : int, optional
         Number of cores to be used for parallel calculation
         Default is 1. -1 uses all available cores
+    max_nbytes : str, optional
+        Threshold on the size of arrays passed to the workers that triggers automated memory mapping in temp_folder (default is None).
+        See https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html for detailed documentation.
     verbose : bool, optional
         enable verbose output
 
@@ -169,7 +173,8 @@ def conformational_distance_matrix(ensemble,
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
     indices = trm_indices((0, 0), (framesn - 1, framesn - 1))
-    Parallel(n_jobs=n_jobs, verbose=verbose, require='sharedmem')(delayed(conf_dist_function)(
+    Parallel(n_jobs=n_jobs, verbose=verbose, require='sharedmem', 
+            max_nbytes=max_nbytes)(delayed(conf_dist_function)(
         np.int64(element),
         rmsd_coordinates,
         distmat,
@@ -256,6 +261,7 @@ def get_distance_matrix(ensemble,
                         superimposition_subset="name CA",
                         weights='mass',
                         n_jobs=1,
+                        max_nbytes=None,
                         verbose=False,
                         *conf_dist_args,
                         **conf_dist_kwargs):
@@ -296,6 +302,9 @@ def get_distance_matrix(ensemble,
         weights to be used for fit. Can be either 'mass' or an array_like
     n_jobs : int, optional
         Maximum number of cores to be used (default is 1). If -1 use all cores.
+    max_nbytes : str, optional
+        Threshold on the size of arrays passed to the workers that triggers automated memory mapping in temp_folder (default is None).
+        See https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html for detailed documentation.
     verbose : bool, optional
         print progress
 
@@ -361,6 +370,7 @@ def get_distance_matrix(ensemble,
                                                         pairwise_align=superimpose,
                                                         weights=weights,
                                                         n_jobs=n_jobs,
+                                                        max_nbytes=max_nbytes,
                                                         verbose=verbose)
 
         logging.info("    Done!")
