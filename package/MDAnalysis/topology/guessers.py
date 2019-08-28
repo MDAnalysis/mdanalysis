@@ -66,12 +66,18 @@ def validate_atom_types(atom_types):
     Returns
     -------
     None
+
+    .. versionchanged:: 0.20.0
+       Try uppercase atom type name as well
     """
     for atom_type in np.unique(atom_types):
         try:
             tables.masses[atom_type]
         except KeyError:
-            warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
+            try:
+                tables.masses[atom_type.upper()]
+            except KeyError:
+                warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
 
 
 def guess_types(atom_names):
@@ -366,12 +372,18 @@ def get_atom_mass(element):
 
     Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.
 
-    .. Warning:: Unknown masses are set to 0.00
+    .. Warning:: Unknown masses are set to 0.0
+
+    .. versionchanged:: 0.20.0
+       Try uppercase atom type name as well
     """
     try:
         return tables.masses[element]
     except KeyError:
-        return 0.000
+        try:
+            return tables.masses[element.upper()]
+        except KeyError:
+            return 0.0
 
 
 def guess_atom_mass(atomname):

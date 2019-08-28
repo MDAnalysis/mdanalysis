@@ -168,6 +168,7 @@ __all__ = [
     "RamaArray", "GLYRamaArray", # time series of phi/psi angles
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
     "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
+    "PDB_metal", # PDB with metal atoms
 
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
@@ -232,6 +233,7 @@ PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
 
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
+PDB_metal = resource_filename(__name__, 'data/metals.pdb')
 
 ALIGN = resource_filename(__name__, 'data/align.pdb')
 RNA_PSF = resource_filename(__name__, 'data/analysis/1k5i_c36.psf.gz')
