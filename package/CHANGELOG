@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
+08/28/19 micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
          IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
@@ -133,7 +133,7 @@ Fixes
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
     method to be used, this is done automatically in run()
-    
+
 Testsuite
   * Raised minimum pytest version to 3.3.0, warns now uses the `match` 
     argument instead of `match_expr` (Issue #2329)
