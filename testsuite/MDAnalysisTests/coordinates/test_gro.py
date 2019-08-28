@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -35,6 +36,7 @@ from MDAnalysisTests.datafiles import (
     COORDINATES_GRO_BZ2,
     GRO,
     GRO_large,
+    two_water_gro_multiframe,
 )
 from numpy.testing import (
     assert_almost_equal,
@@ -494,3 +496,10 @@ class TestGROTimestep(BaseTimestepTest):
                         40.00257874, 40.00257874], dtype=np.float32)  # v3x, v3y
         ts.dimensions = box
         assert_almost_equal(ts._unitcell, ref, decimal=2)
+
+def test_multiframe_gro():
+    u = mda.Universe(two_water_gro_multiframe)
+
+    # for now, single frame read
+    assert len(u.trajectory) == 1
+    assert_equal(u.dimensions, np.array([100, 100, 100, 90, 90, 90], dtype=np.float32))

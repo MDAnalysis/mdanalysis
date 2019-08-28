@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -22,6 +23,8 @@
 from __future__ import absolute_import
 from numpy.testing import assert_equal
 
+import pytest
+import bz2
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -48,6 +51,19 @@ class TestPSFParser(ParserBase):
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
+
+    @pytest.fixture(params=['uncompressed', 'bz2'])
+    def filename(self, request, tmpdir):
+        if request.param == 'uncompressed':
+            return self.ref_filename
+        else:
+            fn = str(tmpdir.join('file.psf.bz2'))
+            with open(self.ref_filename, 'rb') as f:
+                stuff = f.read()
+            buf = bz2.compress(stuff)
+            with open(fn, 'wb') as out:
+                out.write(buf)
+            return fn
 
     def test_bonds_total_counts(self, top):
         assert len(top.bonds.values) == 3365

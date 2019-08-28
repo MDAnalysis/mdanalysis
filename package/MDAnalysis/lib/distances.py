@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -72,7 +73,7 @@ import numpy as np
 from numpy.lib.utils import deprecate
 
 from .util import check_coords, check_box
-from .mdamath import triclinic_vectors, triclinic_box
+from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
 
@@ -698,12 +699,12 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
             # to avoid failures for very close particles but with
             # larger cutoff
             boxsize = np.maximum(boxsize, 2 * max_cutoff)
-            pseudobox[:3] = 1.2 * boxsize
+            pseudobox[:3] = boxsize + 2.2*max_cutoff
             pseudobox[3:] = 90.
             shiftref, shiftconf = reference.copy(), configuration.copy()
             # Extra padding near the origin
-            shiftref -= lmin - 0.1*boxsize
-            shiftconf -= lmin - 0.1*boxsize
+            shiftref -= lmin - 0.1*max_cutoff
+            shiftconf -= lmin - 0.1*max_cutoff
             gridsearch = FastNS(max_cutoff, shiftconf, box=pseudobox, pbc=False)
             results = gridsearch.search(shiftref)
         else:
@@ -724,10 +725,10 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
 
 def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
-                         method=None):
+                         method=None, return_distances=True):
     """Calculates pairs of indices corresponding to entries in the `reference`
     array which are separated by a distance lying within the specified
-    cutoff(s). The respective distances are returned as well.
+    cutoff(s). Optionally, these distances can be returned as well.
 
     If the optional argument `box` is supplied, the minimum image convention is
     applied when calculating distances. Either orthogonal or triclinic boxes are
@@ -755,6 +756,8 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
         method.
+    return_distances : bool, optional
+        If set to ``True``, distances will also be returned.
 
     Returns
     -------
@@ -765,14 +768,15 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
         Each row in `pairs` is an index pair ``[i, j]`` corresponding to the
         ``i``-th and the ``j``-th coordinate in `reference`.
     distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)
-        Distances corresponding to each pair of indices. ``distances[k]``
-        corresponds to the ``k``-th pair returned in `pairs` and gives the
-        distance between the coordinates ``reference[pairs[k, 0]]`` and
-        ``reference[pairs[k, 1]]``.
+        Distances corresponding to each pair of indices. Only returned if
+        `return_distances` is ``True``. ``distances[k]`` corresponds to the
+        ``k``-th pair returned in `pairs` and gives the distance between the
+        coordinates ``reference[pairs[k, 0]]`` and ``reference[pairs[k, 1]]``.
 
         .. code-block:: python
 
-            pairs, distances = self_capped_distances(reference, max_cutoff)
+            pairs, distances = self_capped_distances(reference, max_cutoff,
+                                                     return_distances=True)
             for k, [i, j] in enumerate(pairs):
                 coord1 = reference[i]
                 coord2 = reference[j]
@@ -789,6 +793,9 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
     self_distance_array
     MDAnalysis.lib.pkdtree.PeriodicKDTree.search
     MDAnalysis.lib.nsgrid.FastNS.self_search
+
+    .. versionchanged:: 0.20.0
+       Added `return_distances` keyword.
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -799,7 +806,8 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
     method = _determine_method_self(reference, max_cutoff,
                                     min_cutoff=min_cutoff,
                                     box=box, method=method)
-    return method(reference,  max_cutoff, min_cutoff=min_cutoff, box=box)
+    return method(reference,  max_cutoff, min_cutoff=min_cutoff, box=box,
+                  return_distances=return_distances)
 
 
 def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
@@ -857,13 +865,15 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
 
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
-def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
+def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
+                            return_distances=True):
     """Capped distance evaluations using a brute force method.
 
     Computes and returns an array containing pairs of indices corresponding to
     entries in the `reference` array which are separated by a distance lying
     within the specified cutoff(s). Employs naive distance computations (brute
-    force) to find relevant distances. These distances are returned as well.
+    force) to find relevant distances. Optionally, these distances can be
+    returned as well.
 
     If the optional argument `box` is supplied, the minimum image convention is
     applied when calculating distances. Either orthogonal or triclinic boxes are
@@ -883,6 +893,8 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
+    return_distances : bool, optional
+        If set to ``True``, distances will also be returned.
 
     Returns
     -------
@@ -892,11 +904,15 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         (`min_cutoff`, `max_cutoff`].
         Each row in `pairs` is an index pair ``[i, j]`` corresponding to the
         ``i``-th and the ``j``-th coordinate in `reference`.
-    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)
-        Distances corresponding to each pair of indices. ``distances[k]``
-        corresponds to the ``k``-th pair returned in `pairs` and gives the
-        distance between the coordinates ``reference[pairs[k, 0]]`` and
-        ``reference[pairs[k, 1]]``.
+    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional
+        Distances corresponding to each pair of indices. Only returned if
+        `return_distances` is ``True``. ``distances[k]`` corresponds to the
+        ``k``-th pair returned in `pairs` and gives the distance between the
+        coordinates ``reference[pairs[k, 0]]`` and
+        ``configuration[pairs[k, 1]]``.
+
+    .. versionchanged:: 0.20.0
+       Added `return_distances` keyword.
     """
     # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.int64)
@@ -918,17 +934,21 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         if mask[0].size > 0:
             pairs = np.c_[mask[0], mask[1]]
             distances = dist[mask]
-    return pairs, distances
+    if return_distances:
+        return pairs, distances
+    return pairs
 
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
-def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
+def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
+                         return_distances=True):
     """Capped distance evaluations using a KDtree method.
 
     Computes and returns an array containing pairs of indices corresponding to
     entries in the `reference` array which are separated by a distance lying
     within the specified cutoff(s). Employs a (periodic) KDtree algorithm to
-    find relevant distances. These distances are returned as well.
+    find relevant distances. Optionally, these distances can be returned as
+    well.
 
     If the optional argument `box` is supplied, the minimum image convention is
     applied when calculating distances. Either orthogonal or triclinic boxes are
@@ -948,6 +968,8 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
+    return_distances : bool, optional
+        If set to ``True``, distances will also be returned.
 
     Returns
     -------
@@ -958,10 +980,14 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         Each row in `pairs` is an index pair ``[i, j]`` corresponding to the
         ``i``-th and the ``j``-th coordinate in `reference`.
     distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)
-        Distances corresponding to each pair of indices. ``distances[k]``
-        corresponds to the ``k``-th pair returned in `pairs` and gives the
-        distance between the coordinates ``reference[pairs[k, 0]]`` and
+        Distances corresponding to each pair of indices. Only returned if
+        `return_distances` is ``True``. ``distances[k]`` corresponds to the
+        ``k``-th pair returned in `pairs` and gives the distance between
+        the coordinates ``reference[pairs[k, 0]]`` and
         ``reference[pairs[k, 1]]``.
+
+    .. versionchanged:: 0.20.0
+       Added `return_distances` keyword.
     """
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
@@ -978,21 +1004,27 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         _pairs = kdtree.search_pairs(max_cutoff)
         if _pairs.size > 0:
             pairs = _pairs
-            refA, refB = pairs[:, 0], pairs[:, 1]
-            distances = calc_bonds(reference[refA], reference[refB], box=box)
-            if min_cutoff is not None:
-                idx = distances > min_cutoff
-                pairs, distances = pairs[idx], distances[idx]
-    return pairs, distances
+            if (return_distances or (min_cutoff is not None)):
+                refA, refB = pairs[:, 0], pairs[:, 1]
+                distances = calc_bonds(reference[refA], reference[refB], box=box)
+                if min_cutoff is not None:
+                    idx = distances > min_cutoff
+                    pairs, distances = pairs[idx], distances[idx]
+    if return_distances:
+        return pairs, distances
+    return pairs
+
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
-def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
+def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
+                        return_distances=True):
     """Capped distance evaluations using a grid-based search method.
 
     Computes and returns an array containing pairs of indices corresponding to
     entries in the `reference` array which are separated by a distance lying
     within the specified cutoff(s). Employs a grid-based search algorithm to
-    find relevant distances. These distances are returned as well.
+    find relevant distances. Optionally, these distances can be returned as
+    well.
 
     If the optional argument `box` is supplied, the minimum image convention is
     applied when calculating distances. Either orthogonal or triclinic boxes are
@@ -1021,11 +1053,15 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
         (`min_cutoff`, `max_cutoff`].
         Each row in `pairs` is an index pair ``[i, j]`` corresponding to the
         ``i``-th and the ``j``-th coordinate in `reference`.
-    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)
-        Distances corresponding to each pair of indices. ``distances[k]``
-        corresponds to the ``k``-th pair returned in `pairs` and gives the
-        distance between the coordinates ``reference[pairs[k, 0]]`` and
-        ``reference[pairs[k, 1]]``.
+    distances : numpy.ndarray, optional
+        Distances corresponding to each pair of indices. Only returned if
+        `return_distances` is ``True``. ``distances[k]`` corresponds to the
+        ``k``-th pair returned in `pairs` and gives the distance between the
+        coordinates ``reference[pairs[k, 0]]`` and
+        ``configuration[pairs[k, 1]]``.
+
+    .. versionchanged:: 0.20.0
+       Added `return_distances` keyword.
     """
     # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.int64)
@@ -1063,12 +1099,15 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None):
             results = gridsearch.self_search()
 
         pairs = results.get_pairs()[::2, :]
-        distances = results.get_pair_distances()[::2]
-        if min_cutoff is not None:
-            idx = distances > min_cutoff
-            pairs, distances = pairs[idx], distances[idx]
+        if return_distances or (min_cutoff is not None):
+            distances = results.get_pair_distances()[::2]
+            if min_cutoff is not None:
+                idx = distances > min_cutoff
+                pairs, distances = pairs[idx], distances[idx]
 
-    return pairs, distances
+    if return_distances:
+        return pairs, distances
+    return pairs
 
 
 @check_coords('coords')
@@ -1110,10 +1149,11 @@ def transform_RtoS(coords, box, backend="serial"):
     boxtype, box = check_box(box)
     if boxtype == 'ortho':
         box = np.diag(box)
+    box = box.astype(np.float64)
 
     # Create inverse matrix of box
     # need order C here
-    inv = np.array(np.linalg.inv(box), dtype=np.float32, order='C')
+    inv = np.array(np.linalg.inv(box), order='C')
 
     _run("coord_transform", args=(coords, inv), backend=backend)
 
@@ -1158,6 +1198,7 @@ def transform_StoR(coords, box, backend="serial"):
     boxtype, box = check_box(box)
     if boxtype == 'ortho':
         box = np.diag(box)
+    box = box.astype(np.float64)
 
     _run("coord_transform", args=(coords, box), backend=backend)
     return coords
@@ -1477,10 +1518,8 @@ def apply_PBC(coords, box, backend="serial"):
         return coords
     boxtype, box = check_box(box)
     if boxtype == 'ortho':
-        box_inv = box ** (-1)
-        _run("ortho_pbc", args=(coords, box, box_inv), backend=backend)
+        _run("ortho_pbc", args=(coords, box), backend=backend)
     else:
-        box_inv = np.diagonal(box) ** (-1)
-        _run("triclinic_pbc", args=(coords, box, box_inv), backend=backend)
+        _run("triclinic_pbc", args=(coords, box), backend=backend)
 
     return coords

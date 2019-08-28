@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -224,8 +225,9 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | and radius information. Module                       |
    |               |           |       | :mod:`MDAnalysis.coordinates.PQR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (velocities as well). Module   |
-   | [#a]_         |           |       | :mod:`MDAnalysis.coordinates.GRO`                    |
+   | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (velocities as well).  Only    |
+   |               |           |       | the first frame present will be read.                |
+   | [#a]_         |           |       | Module :mod:`MDAnalysis.coordinates.GRO`             |
    +---------------+-----------+-------+------------------------------------------------------+
    | CHARMM        | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
    | CARD [#a]_    |           |       | either standard or EXTended format. Module           |

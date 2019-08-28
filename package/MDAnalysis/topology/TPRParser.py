@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -60,6 +61,7 @@ approximate Gromacs release numbers are listed in the table
 
    110        26             2016                 yes
    112        26             2018                 yes
+   116        26             2019                 yes
    ========== ============== ==================== =====
 
 For further discussion and notes see `Issue 2`_. Please *open a new issue* in

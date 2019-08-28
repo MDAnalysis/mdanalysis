@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -49,17 +50,15 @@ def sels(u):
 def rdf(u, sels):
     return InterRDF_s(u, sels).run()
 
-def test_nbins(u):
-    ags = sels(u)
-    rdf = InterRDF_s(u, ags, nbins=412).run()
+def test_nbins(u, sels):
+    rdf = InterRDF_s(u, sels, nbins=412).run()
 
     assert len(rdf.bins) == 412
 
 
-def test_range(u):
-    ags = sels(u)
+def test_range(u, sels):
     rmin, rmax = 1.0, 13.0
-    rdf = InterRDF_s(u, ags, range=(rmin, rmax)).run()
+    rdf = InterRDF_s(u, sels, range=(rmin, rmax)).run()
 
     assert rdf.edges[0] == rmin
     assert rdf.edges[-1] == rmax
@@ -99,7 +98,7 @@ def test_cdf(rdf):
 
 
 @pytest.mark.parametrize("density, value", [
-    (True, 13275.775528444701),
+    (True, 13275.775440503656),
     (False, 0.021915460340071267)])
 
 def test_density(u, sels, density, value):

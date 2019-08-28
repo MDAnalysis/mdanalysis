@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -25,18 +26,18 @@
 Trajectory transformations --- :mod:`MDAnalysis.transformations`
 ================================================================
 
-The transformations submodule contains a collection of functions to modify the 
+The transformations submodule contains a collection of functions to modify the
 trajectory. Coordinate transformations, such as PBC corrections and molecule fitting
-are often required for some analyses and visualization, and the functions in this 
-module allow transformations to be applied on-the-fly. 
+are often required for some analyses and visualization, and the functions in this
+module allow transformations to be applied on-the-fly.
 These transformation functions can be called by the user for any given
 timestep of the trajectory, added as a workflow using :meth:`add_transformations`
 of the :mod:`~MDAnalysis.coordinates.base` module, or upon Universe creation using
-the keyword argument `transformations`. Note that in the two latter cases, the 
+the keyword argument `transformations`. Note that in the two latter cases, the
 workflow cannot be changed after being defined.
 
-In addition to the specific arguments that each transformation can take, they also 
-contain a wrapped function that takes a `Timestep` object as argument. 
+In addition to the specific arguments that each transformation can take, they also
+contain a wrapped function that takes a `Timestep` object as argument.
 So, a transformation can be roughly defined as follows:
 
 .. code-block:: python
@@ -46,51 +47,18 @@ So, a transformation can be roughly defined as follows:
             def wrapped(ts):
                 # apply changes to the Timestep object
                 return ts
-            
+
             return wrapped
 
 
 See `MDAnalysis.transformations.translate` for a simple example.
 
-Currently implemented transformations are:
-    
-    - translate: translate the coordinates of a given trajectory frame by a given vector.
-    - center_in_box: translate the coordinates of a given trajectory frame so that a given
-      AtomGroup is centered in the unit cell
-    - rotateby: rotates the coordinates by a given angle arround an axis formed by a direction 
-      and a point    
 
-Examples
---------
-
-e.g. translate the coordinates of a frame:
-
-.. code-block:: python
-
-    u = MDAnalysis.Universe(topology, trajectory)
-    new_ts = MDAnalysis.transformations.translate([1,1,1])(u.trajectory.ts)
-
-e.g. create a workflow and adding it to the trajectory:
-
-.. code-block:: python
-
-    u = MDAnalysis.Universe(topology, trajectory)
-    workflow = [MDAnalysis.transformations.translate([1,1,1]), 
-                MDAnalysis.transformations.translate([1,2,3])]
-    u.trajetory.add_transformations(*workflow)
-
-e.g. giving a workflow as a keyword argument when defining the universe:
-
-.. code-block:: python
-    
-    workflow = [MDAnalysis.transformations.translate([1,1,1]), 
-                MDAnalysis.transformations.translate([1,2,3])]
-    u = MDAnalysis.Universe(topology, trajectory, transformations = *workflow)
-    
-    
 """
 
 from __future__ import absolute_import
 
 from .translate import translate, center_in_box
 from .rotate import rotateby
+from .positionaveraging import PositionAverager
+from .fit import fit_translation, fit_rot_trans

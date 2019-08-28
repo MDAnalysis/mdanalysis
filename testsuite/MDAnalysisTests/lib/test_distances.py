@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -67,7 +68,7 @@ def test_transform_StoR_pass(coord_dtype):
     box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
     s = np.array([[0.5, -0.1, 0.5]], dtype=coord_dtype)
 
-    original_r = np.array([[ 5.75,  0.36066014, 0.75000012]], dtype=np.float32)
+    original_r = np.array([[ 5.75,  0.36066014, 0.75]], dtype=np.float32)
 
     test_r = distances.transform_StoR(s, box)
 
@@ -170,14 +171,20 @@ def test_capped_distance_return(npoints, box, query, method, min_cutoff):
 @pytest.mark.parametrize('box', boxes_1)
 @pytest.mark.parametrize('method', method_1)
 @pytest.mark.parametrize('min_cutoff', min_cutoff_1)
-def test_self_capped_distance(npoints, box, method, min_cutoff):
+@pytest.mark.parametrize('ret_dist', (False, True))
+def test_self_capped_distance(npoints, box, method, min_cutoff, ret_dist):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
                          size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
     max_cutoff = 0.2
-    pairs, distance = distances.self_capped_distance(points, max_cutoff,
-                                                     min_cutoff=min_cutoff,
-                                                     box=box, method=method)
+    result = distances.self_capped_distance(points, max_cutoff,
+                                            min_cutoff=min_cutoff, box=box,
+                                            method=method,
+                                            return_distances=ret_dist)
+    if ret_dist:
+        pairs, cdists = result
+    else:
+        pairs = result
     found_pairs, found_distance = [], []
     for i, coord in enumerate(points):
         dist = distances.distance_array(coord, points[i+1:], box=box)
@@ -189,7 +196,21 @@ def test_self_capped_distance(npoints, box, method, min_cutoff):
             j = other_idx + 1 + i
             found_pairs.append((i, j))
             found_distance.append(dist[0, other_idx])
+    # check number of found pairs:
     assert_equal(len(pairs), len(found_pairs))
+    # check pair/distance correspondence:
+    if ret_dist and len(pairs) > 0:
+        # get result pairs and distances in one array:
+        res = np.hstack((pairs.astype(cdists.dtype), cdists[:, None]))
+        # get reference pairs and distances in one array:
+        ref = np.hstack((np.array(found_pairs, dtype=np.float64),
+                         np.array(found_distance, dtype=np.float64)[:, None]))
+        # sort both arrays by column 1 and 0:
+        res = res[res[:, 1].argsort()] # no stable sort needed.
+        res = res[res[:, 0].argsort(kind='mergesort')] # sort must be stable!
+        ref = ref[ref[:, 1].argsort()]
+        ref = ref[ref[:, 0].argsort(kind='mergesort')]
+        assert_almost_equal(res, ref, decimal=5)
 
 
 @pytest.mark.parametrize('box', (None,
@@ -822,6 +843,54 @@ class Test_apply_PBC(object):
 
         assert_almost_equal([5.75, 7.3606596, 0.75], r_in_cell, self.prec)
 
+    def test_coords_strictly_in_central_image_ortho(self, backend):
+        box = np.array([10.1, 10.1, 10.1, 90.0, 90.0, 90.0], dtype=np.float32)
+        # coordinates just below lower or exactly at the upper box boundaries:
+        coords = np.array([[-1.0e-7, -1.0e-7, -1.0e-7],
+                           [-1.0e-7, -1.0e-7,  box[2]],
+                           [-1.0e-7,  box[1], -1.0e-7],
+                           [ box[0], -1.0e-7, -1.0e-7],
+                           [ box[0],  box[1], -1.0e-7],
+                           [ box[0], -1.0e-7,  box[2]],
+                           [-1.0e-7,  box[1],  box[2]],
+                           [ box[0],  box[1],  box[2]]], dtype=np.float32)
+        # Check that all test coordinates actually lie below the lower or
+        # exactly at the upper box boundary:
+        assert np.all((coords < 0.0) | (coords == box[:3]))
+        res = distances.apply_PBC(coords, box, backend=backend)
+        # Assert all result coordinates lie strictly within the primary image:
+        assert np.all(res >= 0.0)
+        assert np.all(res < box[:3])
+
+    def test_coords_in_central_image_tric(self, backend):
+        # Triclinic box corresponding to this box matrix:
+        tbx = np.array([[10.1      ,  0.       ,  0.       ],
+                        [ 1.0100002, 10.1      ,  0.       ],
+                        [ 1.0100006,  1.0100021, 10.1      ]],
+                       dtype=np.float32)
+        box = mdamath.triclinic_box(*tbx)
+        # coordinates just below lower or exactly at the upper box boundaries:
+        coords = np.array([[  -1.0e-7,   -1.0e-7,   -1.0e-7],
+                           [tbx[0, 0],   -1.0e-7,   -1.0e-7],
+                           [   1.01  , tbx[1, 1],   -1.0e-7],
+                           [   1.01  ,    1.01  , tbx[2, 2]],
+                           [tbx[0, 0] + tbx[1, 0], tbx[1, 1], -1.0e-7],
+                           [tbx[0, 0] + tbx[2, 0], 1.01, tbx[2, 2]],
+                           [2.02, tbx[1, 1] + tbx[2, 1], tbx[2, 2]],
+                           [tbx[0, 0] + tbx[1, 0] + tbx[2, 0],
+                            tbx[1, 1] + tbx[2, 1], tbx[2, 2]]],
+                          dtype=np.float32)
+        relcoords = distances.transform_RtoS(coords, box)
+        # Check that all test coordinates actually lie below the lower or
+        # exactly at the upper box boundary:
+        assert np.all((relcoords < 0.0) | (relcoords == 1.0))
+        res = distances.apply_PBC(coords, box, backend=backend)
+        relres = distances.transform_RtoS(res, box)
+        # Assert all result coordinates lie strictly within the primary image:
+        assert np.all(relres >= 0.0)
+        assert np.all(relres < 1.0)
+
+
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestPeriodicAngles(object):
     """Test case for properly considering minimum image convention when calculating angles and dihedrals
@@ -1047,15 +1116,19 @@ class TestEmptyInputCoordinates(object):
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('min_cut', [min_cut, None])
+    @pytest.mark.parametrize('ret_dist', [False, True])
     @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
     def test_empty_input_self_capped_distance(self, empty_coord, min_cut, box,
-                                              met):
+                                              met, ret_dist):
         res = distances.self_capped_distance(empty_coord,
                                              max_cutoff=self.max_cut,
                                              min_cutoff=min_cut, box=box,
-                                             method=met)
-        assert_equal(res[0], np.empty((0, 2), dtype=np.int64))
-        assert_equal(res[1], np.empty((0,), dtype=np.float64))
+                                             method=met, return_distances=ret_dist)
+        if ret_dist:
+            assert_equal(res[0], np.empty((0, 2), dtype=np.int64))
+            assert_equal(res[1], np.empty((0,), dtype=np.float64))
+        else:
+            assert_equal(res, np.empty((0, 2), dtype=np.int64))
     
     @pytest.mark.parametrize('box', boxes[:2])
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
@@ -1182,21 +1255,28 @@ class TestOutputTypes(object):
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('min_cut', [min_cut, None])
+    @pytest.mark.parametrize('ret_dist', [False, True])
     @pytest.mark.parametrize('incoords', coords)
     @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
     def test_output_type_self_capped_distance(self, incoords, min_cut, box,
-                                              met):
-        pairs, dist = distances.self_capped_distance(incoords,
+                                              met, ret_dist):
+        res = distances.self_capped_distance(incoords,
                                                      max_cutoff=self.max_cut,
                                                      min_cutoff=min_cut,
-                                                     box=box, method=met)
+                                                     box=box, method=met,
+                                                     return_distances=ret_dist)
+        if ret_dist:
+            pairs, dist = res
+        else:
+            pairs = res
         assert type(pairs) == np.ndarray
-        assert type(dist) == np.ndarray
         assert pairs.dtype.type == np.int64
-        assert dist.dtype.type == np.float64
         assert pairs.ndim == 2
         assert pairs.shape[1] == 2
-        assert dist.shape == (pairs.shape[0],)
+        if ret_dist:
+            assert type(dist) == np.ndarray
+            assert dist.dtype.type == np.float64
+            assert dist.shape == (pairs.shape[0],)
 
     @pytest.mark.parametrize('box', boxes[:2])
     @pytest.mark.parametrize('incoords', coords)

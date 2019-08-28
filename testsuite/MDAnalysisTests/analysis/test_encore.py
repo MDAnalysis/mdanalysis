@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -290,6 +291,7 @@ inconsistent results")
         assert result_value < upper_bound, "Unexpected value for Dim. " \
                                             "reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, upper_bound)
 
+    @pytest.mark.xfail  # sporadically fails, see Issue #2158
     def test_dres_without_superimposition(self, ens1, ens2):
         distance_matrix = encore.get_distance_matrix(
             encore.merge_universes([ens1, ens2]),
@@ -331,6 +333,7 @@ inconsistent results")
                                             "reduction Ensemble similarity in "
                                             "convergence estimation")
 
+    @pytest.mark.xfail  # sporadically fails, see Issue #2158
     def test_hes_error_estimation(self, ens1):
         expected_average = 10
         expected_stdev = 12

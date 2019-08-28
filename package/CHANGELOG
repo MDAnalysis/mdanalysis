@@ -13,11 +13,138 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+08/28/19 micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
+         dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
+         ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
+         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
+
+  * 0.20.0
+
+Enhancements
+  * improved metal atom guess (Issue #2323)
+  * improved atom element guessing in topology.guessers to check for elements
+    after the first element (#2313)
+  * added the zero-based index selection keyword (Issue #1959)
+  * added position averaging transformation that makes use of the 
+    transformations API (PR #2208)
+  * added find_hydrogen_donors to analysis.bonds.hbond_autocorrel to
+    automatically determine donors where possible (#2181)
+  * added analysis.polymer.sort_backbone to rearrange backbone atoms into
+    sequential order (bondwise) (PR #2141)
+  * added record_type to select_atoms language (PR #2179)
+  * center, centroid, center_of_geometry, center_of_mass can now be computed per
+    molecule or per fragment (PR #2182)
+  * Atoms (AtomGroups) have a new fragindex (fragindices) property corresponding
+    to the respective fragment (fragments) (PR #2182)
+  * Atom-, Residue-, and SegmentGroups have a new unwrap() method allowing to
+    make compounds (group/residues/segments/fragments/molecules) that are broken
+    across periodic boundaries whole (Issues #1004 and #1185, PR #2189)
+  * lib.mdamath.make_whole() now returns the resulting coordinates and is able
+    to operate out-of-place, i.e., without modifying atom coordinates (PR #2189)
+  * lib.mdamath.triclinic_vectors() got an optional argument allowing to specify
+    the dtype of the returned box matrix. (Issue #2200, PR #2201)
+  * added return_distances kwarg to self_capped_distance (Issue #2101, PR #2202)
+  * *Group.wrap() now returns wrapped positions and can optionally work
+    out-of-place (Issue #2203, PR #2204)
+  * Improved performance of AtomGroup creation from ResidueGroups and
+    SegmentGroups via ResidueGroup.atoms or SegmentGroup.atoms, respectively.
+    This speeds up all methods using these mechanisms. (Issue #2203, PR #2204)
+  * added more Van-der-Waals radii to improve guess_bonds (#2138, PR #2142)
+  * added *Group.accumulate() (PR #2192)
+  * added compound kwarg to total_mass and total_charge (PR #2192)
+  * updated HydrogenBondAutoCorrel to use capped_distance in place of
+    distance_array. (Issue #2103, PR #2209)
+  * updated analysis.distances.contact_matrix to use capped_distance. (Issue #2102,
+    PR #2215)
+  * added functionality to write files in compressed form(gz,bz2). (Issue #2216,
+    PR #2221)
+  * survival probability additions: residues, intermittency, step with performance,
+    (PR #2226)   
+  * added unwrap keyword to center (PR #2275)
+  * added unwrap keyword to center_of_geometry (PR #2279)
+  * added unwrap keyword to center_of_mass (PR #2286)
+  * added unwrap keyword to moment_of_inertia (PR #2287)
+  * added unwrap keyword to asphericity (PR #2290)
+  * add high order water bridge support to water bridge analysis. (PR #2087)
+
+Changes
+  * added support for scale_factor in NCDFReader (Issue #2323)
+  * added official support for Python 3.7 (PR #1963)
+  * stopped official support of Python 3.4 (#2066, PR #2174)
+  * In lib.mdamath, calculations within triclinic_box(), triclinic_vectors(),
+    and box_volume() are performed in double precision. If a supplied box is
+    invalid, an all-zero array or zero is returned, respectively. (Issue #2200,
+    PR #2201)
+  * changed fudge_factor in guess_bonds to deal with new vdw radii (#2138, PR #2142)
+  * bump minimum numpy version to 1.13.3
+  * changed the water bridge analysis output format (PR #2087)
+
+Fixes
+  * fixed lack of check for scaling of NCDFReader velocities (Issue #2323)
+  * fixed PDBReader and PDBWriter newlines for PDB header (Issue #2324)
+  * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
+  * fixes ProgressMeter behaviour for non-AnalysisBase methods (Issue #2084)
+  * fixed mol2 parser for status bit strings (Issue #2318)
+  * fixed reading AMBER topologies with negative ATOMIC_NUMBERS (Issue #2306)
+  * fixed reading bz2 compressed psf files (Issue #2232)
+  * fixed mol2 comment header handling (Issue #2261)
+  * fixed reading PDB files with partial CRYST lines (Issue #2252)
+  * fixed transformation tests not being run (Issue #2241)
+  * fixed the segmentation fault in capped_distances (Issue #2164, PR #2169)
+  * fixed gcc support in MacOS (Issue #2162, PR #2163)
+  * fixed error when reading bonds/angles/dihedrals from gsd file (Issue #2152,
+    PR #2154)
+  * fixed error when reading bonds/angles/dihedrals from hoomdxml file
+    (Issue #2151, PR #2153)
+  * fixed MacOS (XCode) library compatibility
+    (Issue #2144)
+  * fixed lib.nsgrid segfault for coordinates very close to the box boundary
+    (Issue #2132, PR #2136)
+  * fixed Lint error
+    (Issue #2148, PR #2149)
+  * Fixed Empty select_atoms string, now raises warning and returns empty
+    AtomGroup (Issue #2112)
+  * Read TPR files from Gromacs 2019 (PR #2161)
+  * Fixed copying Universes created from PDB files (record_type attribute
+    was problematic) (Issue #2178 #1926, PR #2179)
+  * Fixed writing CONECT records when writing PDB files that are a
+    subsection of original Universe (Issue #2194)
+  * PDBReader now correctly reads HEADER information (Issue #2195)
+  * Fixed reading MMTF files with some optional fields missing
+    (Issue #2193)
+  * Wrapped coordinates, i.e., coordinates resulting from *Group.wrap(),
+    *Group.pack_into_box(), or lib.distances.apply_PBC() are now guaranteed
+    to lie within the central periodic image (including its lower but
+    *exluding* its upper boundaries) (Issue #2200, PR #2201)
+  * *Group.wrap() is now guaranteed to only work on atoms actually belonging to
+    the calling group. (Issue #2203, PR #2204)
+  * Fixed documentation of MDAnalysis.analysis.contacts
+  * Enforced consistent dtype (numpy.float32) of Universe.dimensions and
+    Timestep.dimensions for all Universes and Readers (Issue #2190, PR #2213)
+  * Fixed analysis.nucleic.hydroxyl() function: correctly recognize the
+    2'-hydroxyl hydrogen H2'; gave wrong results (Issue #2218)
+  * A clear message that the .pdb universe cannot contain a different number of
+    atoms from frame to frame (Issue #1998, PR #2219)
+  * Fixed reading multiframe GRO files, currently only the first frame will be
+    read. (Issue #2276 PR #2277)
+  * fixed calculation of Chi torsion in nucleic acid analysis (Issue #2248)
+
+
+Deprecations
+  * analysis.polymer.PersistenceLength no longer requires the perform_fit()
+    method to be used, this is done automatically in run()
+
+Testsuite
+  * Raised minimum pytest version to 3.3.0, warns now uses the `match` 
+    argument instead of `match_expr` (Issue #2329)
+  * Add tests for the new water bridge analysis (PR #2087)
+
 11/06/18 richardjgowers
   * 0.19.2
 
 Changes
   * Added Windows support
+
 
 11/05/18 orbeckst, PicoCentauri, richardjgowers, zemanj
   * 0.19.1

@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -28,9 +29,9 @@ from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.helanal
-from MDAnalysis import FinishTimeException
 from MDAnalysisTests.datafiles import (GRO, XTC, PSF, DCD, PDB_small,
-                                       HELANAL_BENDING_MATRIX)
+                                       HELANAL_BENDING_MATRIX,
+                                       HELANAL_BENDING_MATRIX_SUBSET)
 
 # reference data from a single PDB file:
 #   data = MDAnalysis.analysis.helanal.helanal_main(PDB_small,
@@ -126,6 +127,28 @@ def test_helanal_trajectory(tmpdir, reference=HELANAL_BENDING_MATRIX,
                 "stats for {0} mismatch".format(label))
 
 
+def test_helanal_trajectory_slice(tmpdir,
+                                  reference=HELANAL_BENDING_MATRIX_SUBSET,
+                                  outfile="helanal_bending_matrix.dat"):
+    """Simple regression test to validate that begin/finish work as
+    intended. In this case, frames 10 (time: 10.999999031120204) through to
+    79 (time: 79.99999295360149) should be picked up."""
+    u = mda.Universe(PSF, DCD)
+    with tmpdir.as_cwd():
+        # Helix 8: 161 - 187 http://www.rcsb.org/pdb/explore.do?structureId=4AKE
+        MDAnalysis.analysis.helanal.helanal_trajectory(
+            u, selection="name CA and resnum 161-187", begin=10, finish=80
+        )
+        bendingmatrix = read_bending_matrix(outfile)
+        ref = read_bending_matrix(reference)
+        assert_equal(sorted(bendingmatrix.keys()), sorted(ref.keys()),
+                     err_msg="different contents in bending matrix data file")
+        for label in ref.keys():
+            assert_almost_equal(
+                bendingmatrix[label], ref[label], err_msg="bending matrix "
+                "starts for {0} mismatch".format(label))
+
+
 def test_helanal_main(reference=HELANAL_SINGLE_DATA):
     u = mda.Universe(PDB_small)
     # Helix 8: 161 - 187 http://www.rcsb.org/pdb/explore.do?structureId=4AKE
@@ -139,13 +162,50 @@ def test_helanal_main(reference=HELANAL_SINGLE_DATA):
                                   err_msg="data[{0}] mismatch".format(label))
 
 
-def test_xtc_striding(tmpdir):
-    """testing MDAnalysis.analysis.helanal xtc striding: Check for resolution of Issue #188."""
+def test_exceptions(tmpdir):
+    """Testing exceptions which can be raised"""
+    u = MDAnalysis.Universe(GRO, XTC)
+    u.trajectory[1]
+
+    # Testing xtc striding: Check for resolution of Issue #188
+    with tmpdir.as_cwd():
+        with pytest.raises(ValueError):
+            MDAnalysis.analysis.helanal.helanal_trajectory(
+                u, selection="name CA", finish=5
+            )
+
+    with tmpdir.as_cwd():
+        with pytest.raises(ValueError):
+            MDAnalysis.analysis.helanal.helanal_trajectory(
+                u, selection="name CA", begin=1, finish=0
+            )
+
+    with tmpdir.as_cwd():
+        with pytest.raises(ValueError):
+            MDAnalysis.analysis.helanal.helanal_trajectory(
+                u, selection="name CA", begin=99999
+            )
+
+
+def test_warnings(tmpdir):
+    """Testing that a warning which can be raised"""
     u = MDAnalysis.Universe(GRO, XTC)
     u.trajectory[1]
 
     with tmpdir.as_cwd():
-        with pytest.raises(FinishTimeException):
+        with pytest.warns(UserWarning) as record:
             MDAnalysis.analysis.helanal.helanal_trajectory(
-                u, selection="name CA", finish=5
+                u, selection="name CA", begin=-1, finish=99999
             )
+
+            assert len(record) == 2
+            wmsg1 = ("The input begin time (-1 ps) precedes the starting "
+                   "trajectory time --- Setting starting frame to 0".format(
+                    -1,0))
+            assert str(record[0].message.args[0]) == wmsg1
+            wmsg2 = ("The input finish time ({0} ps) occurs after the end of "
+                     "the trajectory ({1} ps). Finish time will be set to "
+                     "the end of the trajectory".format(
+                      99999,1000.0000762939453))
+            assert str(record[1].message.args[0]) == wmsg2
+

@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -46,7 +47,7 @@ class TestDuecredit(object):
         assert mda.due.active == True
 
     @pytest.mark.parametrize("module,path,citekey", [
-        ("MDAnalysis", "MDAnalysis", "gowers2016"),
+        ("MDAnalysis", "MDAnalysis", "10.25080/majora-629e541a-00e"),
         ("MDAnalysis", "MDAnalysis", "10.1002/jcc.21787"),
     ])
     def test_duecredit_collector_primary(self, module, path, citekey):

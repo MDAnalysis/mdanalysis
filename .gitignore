@@ -36,3 +36,5 @@ package/doc/html/
 MDAnalysis.log
 # Ignore the authors.py files as they are generated files
 authors.py
+# Ignore the .DS_Store file in the osx file system
+*.DS_Store

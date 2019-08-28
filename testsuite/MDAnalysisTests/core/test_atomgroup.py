@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -34,7 +35,7 @@ from numpy.testing import (
 )
 
 import MDAnalysis as mda
-from MDAnalysis.exceptions import DuplicateWarning
+from MDAnalysis.exceptions import DuplicateWarning, NoDataError
 from MDAnalysis.lib import distances, transformations
 from MDAnalysis.core.topologyobjects import (
     Bond,
@@ -47,9 +48,11 @@ from MDAnalysisTests.datafiles import (
     PSF, DCD,
     TRZ_psf, TRZ,
     two_water_gro,
+    TPR_xvf, TRR_xvf,
+    GRO
 )
 from MDAnalysisTests import make_Universe, no_deprecated_call
-
+from MDAnalysisTests.core.util import UnWrapUniverse
 import pytest
 
 
@@ -153,7 +156,7 @@ class TestAtomGroupWriting(object):
 
         assert_array_almost_equal(new_positions, ref_positions)
 
-    @pytest.mark.parametrize('extension', ('xtc', 'dcd', 'pdb', 'xyz'))
+    @pytest.mark.parametrize('extension', ('xtc', 'dcd', 'pdb', 'xyz', 'PDB'))
     def test_write_frame_none(self, u, tmpdir, extension):
         destination = str(tmpdir / 'test.' + extension)
         u.atoms.write(destination, frames=None)
@@ -163,6 +166,26 @@ class TestAtomGroupWriting(object):
         assert_array_almost_equal(
             u.atoms.positions[None, ...], new_positions, decimal=2
         )
+
+    @pytest.mark.parametrize('extension', ('xtc', 'dcd', 'pdb', 'xyz', 'PDB'))
+    def test_compressed_write_frame_none(self, u, tmpdir, extension):
+        for ext in ('.gz', '.bz2'):
+            destination = str(tmpdir / 'test.' + extension + ext)
+            u.atoms.write(destination, frames=None)
+            u_new = mda.Universe(destination)
+            new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+            assert_array_almost_equal(
+                u.atoms.positions[None, ...], new_positions, decimal=2
+        )
+
+    def test_compressed_write_frames_all(self, u, tmpdir):
+        for ext in ('.gz', '.bz2'):
+            destination = str(tmpdir / 'test.dcd') + ext
+            u.atoms.write(destination, frames='all')
+            u_new = mda.Universe(destination)
+            ref_positions = np.stack([ts.positions for ts in u.trajectory])
+            new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+            assert_array_almost_equal(new_positions, ref_positions)
 
     def test_write_frames_all(self, u, tmpdir):
         destination = str(tmpdir / 'test.dcd')
@@ -234,6 +257,16 @@ class _WriteAtoms(object):
             self.precision,
             err_msg=("atom coordinate mismatch between original and {0!s} file"
                      "".format(self.ext)))
+
+    def test_compressed_write_atoms(self, universe, outfile):
+        for compressed_ext in ('.gz', '.bz2'):
+            universe.atoms.write(outfile + compressed_ext)
+            u2 = self.universe_from_tmp(outfile + compressed_ext)
+            assert_almost_equal(
+                universe.atoms.positions, u2.atoms.positions,
+                self.precision,
+                err_msg=("atom coordinate mismatch between original and {0!s} file"
+                        "".format(self.ext)))
 
     def test_write_empty_atomgroup(self, universe, outfile):
         sel = universe.select_atoms('name doesntexist')
@@ -482,8 +515,40 @@ class TestCenter(object):
     def test_center_wrong_shape(self, ag):
         weights = np.ones((ag.n_atoms, 2))
 
-        with pytest.raises(TypeError):
+        with pytest.raises(ValueError):
             ag.center(weights)
+
+    @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
+    @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
+                                          'group', 'segments'))
+    @pytest.mark.parametrize('is_triclinic', (False, True))
+    def test_center_unwrap(self, level, compound, is_triclinic):
+        u = UnWrapUniverse(is_triclinic=is_triclinic)
+        # select group appropriate for compound:
+        if compound == 'group':
+            group = u.atoms[39:47] # molecule 12
+        elif compound == 'segments':
+            group = u.atoms[23:47] # molecules 10, 11, 12
+        else:
+            group = u.atoms
+        # select topology level:
+        if level == 'residues':
+            group = group.residues
+        elif level == 'segments':
+            group = group.segments
+
+        # get the expected results
+        center = group.center(weights=None, pbc=False, compound=compound, unwrap=True)
+
+        ref_center = u.center(compound=compound)
+        assert_almost_equal(ref_center, center, decimal=4)
+
+    def test_center_unwrap_pbc_true_group(self):
+        u = UnWrapUniverse(is_triclinic=False)
+        # select group appropriate for compound:
+        group = u.atoms[39:47]  # molecule 12
+        with pytest.raises(ValueError):
+            group.center(weights=None, compound="group", unwrap=True, pbc=True)
 
 
 class TestSplit(object):
@@ -530,73 +595,6 @@ class TestSplit(object):
 
         with pytest.raises(ValueError):
             ag.split('something')
-
-
-class TestWrap(object):
-
-    @pytest.fixture()
-    def u(self):
-        return mda.Universe(TRZ_psf, TRZ)
-
-    @pytest.fixture()
-    def ag(self, u):
-        return u.atoms[:100]
-
-    def test_wrap_comp_fail(self, ag):
-        with pytest.raises(ValueError):
-            ag.wrap(compound = 'strawberries')
-
-    def test_wrap_cent_fail(self, ag):
-        with pytest.raises(ValueError):
-            ag.wrap(compound = 'residues', center = 'avacado')
-
-    def test_wrap_box_fail(self, ag):
-        with pytest.raises(ValueError):
-            ag.wrap(box = np.array([0, 1]))
-
-    def _in_box(self, coords, u):
-        """Check that a set of coordinates are 0.0 <= r <= box"""
-        box = u.dimensions[:3]
-
-        return (coords >= 0.0).all() and (coords <= box).all()
-
-    def test_wrap_atoms(self, u):
-        ag = u.atoms[100:200]
-        ag.wrap(compound='atoms')
-
-        assert self._in_box(ag.positions, u)
-
-    def test_wrap_group(self, u):
-        ag = u.atoms[:100]
-        ag.wrap(compound='group')
-
-        cen = ag.center_of_mass()
-
-        assert self._in_box(cen, u)
-
-    def test_wrap_residues(self, u):
-        ag = u.atoms[300:400]
-        ag.wrap(compound='residues')
-
-        cen = np.vstack([r.atoms.center_of_mass() for r in ag.residues])
-
-        assert self._in_box(cen, u)
-
-    def test_wrap_segments(self, u):
-        ag = u.atoms[1000:1200]
-        ag.wrap(compound='segments')
-
-        cen = np.vstack([s.atoms.center_of_mass() for s in ag.segments])
-
-        assert self._in_box(cen, u)
-
-    def test_wrap_fragments(self, u):
-        ag = u.atoms[:250]
-        ag.wrap(compound='fragments')
-
-        cen = np.vstack([f.center_of_mass() for f in ag.fragments])
-
-        assert self._in_box(cen, u)
 
 
 class TestAtomGroupProperties(object):
@@ -836,6 +834,106 @@ class TestDihedralSelections(object):
             sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
 
 
+class TestUnwrapFlag(object):
+
+    prec = 3
+
+    @pytest.fixture()
+    def ag(self):
+        universe = mda.Universe(TRZ_psf, TRZ)
+        group = universe.residues[0:3]
+        group.wrap(inplace=True)
+        return group
+
+    @pytest.fixture()
+    def ref_noUnwrap_residues(self):
+        return {
+            'COG': np.array([[21.356, 28.52, 36.762],
+                             [32.062, 36.16, 27.679],
+                             [27.071, 29.997, 28.506]], dtype=np.float32),
+            'COM': np.array([[21.286, 28.407, 36.629],
+                             [31.931, 35.814, 27.916],
+                             [26.817, 29.41, 29.05]]),
+            'MOI': np.array([
+                [7333.79167791, -211.8997285, -721.50785456],
+                [-211.8997285, 7059.07470427, -91.32156884],
+                [-721.50785456, -91.32156884, 6509.31735029]]),
+            'Asph': 0.02060121,
+        }
+
+    @pytest.fixture()
+    def ref_Unwrap_residues(self):
+        return {
+            'COG': np.array([[21.356, 41.685, 40.501],
+                             [44.577, 43.312, 79.039],
+                             [ 2.204, 27.722, 54.023]], dtype=np.float32),
+            'COM': np.array([[20.815, 42.013, 39.802],
+                             [44.918, 43.282, 79.325],
+                             [2.045, 28.243, 54.127]], dtype=np.float32),
+            'MOI': np.array([[16747.486, -1330.489,  2938.243],
+                             [-1330.489, 19315.253,  3306.212],
+                             [ 2938.243,  3306.212,  8990.481]]),
+            'Asph': 0.2969491080,
+        }
+
+    @pytest.fixture()
+    def ref_noUnwrap(self):
+        return {
+            'COG': np.array([5.1, 7.5, 7. ], dtype=np.float32),
+            'COM': np.array([6.48785, 7.5, 7.0], dtype=np.float32),
+            'MOI': np.array([
+                [0.0, 0.0, 0.0],
+                [0.0, 98.6542, 0.0],
+                [0.0, 0.0, 98.65421327]]),
+            'Asph': 1.0,
+        }
+
+    @pytest.fixture()
+    def ref_Unwrap(self):
+        return {
+            'COG': np.array([10.1,  7.5,  7. ], dtype=np.float32),
+            'COM': np.array([6.8616, 7.5, 7.], dtype=np.float32),
+            'MOI': np.array([
+                [0.0, 0.0, 0.0],
+                [0.0, 132.673, 0.0],
+                [0.0, 0.0, 132.673]]),
+            'Asph': 1.0,
+        }
+
+    def test_default_residues(self, ag, ref_noUnwrap_residues):
+        assert_almost_equal(ag.center_of_geometry(compound='residues'), ref_noUnwrap_residues['COG'], self.prec)
+        assert_almost_equal(ag.center_of_mass(compound='residues'), ref_noUnwrap_residues['COM'], self.prec)
+        assert_almost_equal(ag.moment_of_inertia(compound='residues'), ref_noUnwrap_residues['MOI'], self.prec)
+        assert_almost_equal(ag.asphericity(compound='residues'), ref_noUnwrap_residues['Asph'], self.prec)
+
+    def test_UnWrapFlag_residues(self, ag, ref_Unwrap_residues):
+        assert_almost_equal(ag.center_of_geometry(unwrap=True, compound='residues'), ref_Unwrap_residues['COG'], self.prec)
+        assert_almost_equal(ag.center_of_mass(unwrap=True, compound='residues'), ref_Unwrap_residues['COM'], self.prec)
+        assert_almost_equal(ag.moment_of_inertia(unwrap=True, compound='residues'), ref_Unwrap_residues['MOI'], self.prec)
+        assert_almost_equal(ag.asphericity(unwrap=True, compound='residues'), ref_Unwrap_residues['Asph'], self.prec)
+
+    def test_default(self, ref_noUnwrap):
+        u = UnWrapUniverse(is_triclinic=False)
+        group = u.atoms[31:39]  # molecules  11
+        # Changing masses for center_of_mass
+        group.masses = [100.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        assert_almost_equal(group.center_of_geometry(), ref_noUnwrap['COG'], self.prec)
+        assert_almost_equal(group.center_of_mass(), ref_noUnwrap['COM'], self.prec)
+        assert_almost_equal(group.moment_of_inertia(), ref_noUnwrap['MOI'], self.prec)
+        assert_almost_equal(group.asphericity(), ref_noUnwrap['Asph'], self.prec)
+
+    def test_UnWrapFlag(self, ref_Unwrap):
+        u = UnWrapUniverse(is_triclinic=False)
+        group = u.atoms[31:39]  # molecules  11
+        # Changing masses for center_of_mass
+        group.masses = [100.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        assert_almost_equal(group.center_of_geometry(unwrap=True), ref_Unwrap['COG'], self.prec)
+        assert_almost_equal(group.center_of_mass(unwrap=True), ref_Unwrap['COM'], self.prec)
+        assert_almost_equal(group.moment_of_inertia(unwrap=True), ref_Unwrap['MOI'], self.prec)
+        assert_almost_equal(group.asphericity(unwrap=True), ref_Unwrap['Asph'], self.prec)
+
+
 class TestPBCFlag(object):
 
     prec = 3
@@ -936,6 +1034,22 @@ class TestAtomGroup(object):
     def ag(self, universe):
         return universe.atoms
 
+    @pytest.fixture()
+    def universe_molfrg(self):
+        return mda.Universe(TPR_xvf, TRR_xvf)
+
+    @pytest.fixture()
+    def ag_molfrg(self, universe_molfrg):
+        return universe_molfrg.atoms
+
+    @pytest.fixture()
+    def universe_no_molfrg(self):
+        return mda.Universe(GRO)
+
+    @pytest.fixture()
+    def ag_no_molfrg(self, universe_no_molfrg):
+        return universe_no_molfrg.atoms
+
     def test_getitem_int(self, universe):
         assert_equal(universe.atoms[0].ix, universe.atoms.ix[0])
 
@@ -967,7 +1081,7 @@ class TestAtomGroup(object):
 
     def test_n_residues(self, ag):
         assert ag.n_residues == 214
-        
+
     def test_zero_atoms_residues(self, ag):
         new_ag = ag[[]].residues.atoms
 
@@ -976,7 +1090,7 @@ class TestAtomGroup(object):
 
     def test_n_segments(self, ag):
         assert ag.n_segments == 1
-        
+
     def test_zero_atoms_segments(self, ag):
         new_ag = ag[[]].segments.atoms
 
@@ -1022,14 +1136,14 @@ class TestAtomGroup(object):
                                                 ('segids', 'segments')))
     def test_center_of_geometry_compounds(self, ag, name, compound):
         ref = [a.center_of_geometry() for a in ag.groupby(name).values()]
-        cog = ag.center_of_geometry(compound=compound)
+        cog = ag.center_of_geometry(pbc=False, compound=compound)
         assert_almost_equal(cog, ref, decimal=5)
 
     @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
                                                 ('segids', 'segments')))
     def test_center_of_mass_compounds(self, ag, name, compound):
         ref = [a.center_of_mass() for a in ag.groupby(name).values()]
-        com = ag.center_of_mass(compound=compound)
+        com = ag.center_of_mass(pbc=False, compound=compound)
         assert_almost_equal(com, ref, decimal=5)
 
     @pytest.mark.parametrize('name, compound', (('resids', 'residues'),
@@ -1052,9 +1166,108 @@ class TestAtomGroup(object):
         com = ag.center_of_mass(pbc=True, compound=compound)
         assert_almost_equal(com, ref, decimal=5)
 
+    @pytest.mark.parametrize('name, compound', (('molnums', 'molecules'),
+                                                ('fragindices', 'fragments')))
+    def test_center_of_geometry_compounds_special(self, ag_molfrg,
+                                                  name, compound):
+        ref = [a.center_of_geometry() for a in ag_molfrg.groupby(name).values()]
+        cog = ag_molfrg.center_of_geometry(pbc=False, compound=compound)
+        assert_almost_equal(cog, ref, decimal=5)
+
+    @pytest.mark.parametrize('name, compound', (('molnums', 'molecules'),
+                                                ('fragindices', 'fragments')))
+    def test_center_of_mass_compounds_special(self, ag_molfrg,
+                                              name, compound):
+        ref = [a.center_of_mass() for a in ag_molfrg.groupby(name).values()]
+        com = ag_molfrg.center_of_mass(pbc=False, compound=compound)
+        assert_almost_equal(com, ref, decimal=5)
+
+    @pytest.mark.parametrize('name, compound', (('molnums', 'molecules'),
+                                                ('fragindices', 'fragments')))
+    def test_center_of_geometry_compounds_special_pbc(self, ag_molfrg,
+                                                      name, compound):
+        ag_molfrg.dimensions = [50, 50, 50, 90, 90, 90]
+        ref = [a.center_of_geometry() for a in ag_molfrg.groupby(name).values()]
+        ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
+                                  ag_molfrg.dimensions)
+        cog = ag_molfrg.center_of_geometry(pbc=True, compound=compound)
+        assert_almost_equal(cog, ref, decimal=5)
+
+    @pytest.mark.parametrize('name, compound', (('molnums', 'molecules'),
+                                                ('fragindices', 'fragments')))
+    def test_center_of_mass_compounds_special_pbc(self, ag_molfrg,
+                                                  name, compound):
+        ag_molfrg.dimensions = [50, 50, 50, 90, 90, 90]
+        ref = [a.center_of_mass() for a in ag_molfrg.groupby(name).values()]
+        ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
+                                  ag_molfrg.dimensions)
+        com = ag_molfrg.center_of_mass(pbc=True, compound=compound)
+        assert_almost_equal(com, ref, decimal=5)
+
     def test_center_wrong_compound(self, ag):
         with pytest.raises(ValueError):
             ag.center(weights=None, compound="foo")
+
+    @pytest.mark.parametrize('compound', ('molecules', 'fragments'))
+    def test_center_compounds_special_fail(self, ag_no_molfrg, compound):
+        with pytest.raises(NoDataError):
+            ag_no_molfrg.center(weights=None, compound=compound)
+
+    @pytest.mark.parametrize('weights', (None, np.array([0.0]),
+                                         np.array([2.0])))
+    @pytest.mark.parametrize('compound', ('group', 'residues', 'segments',
+                                          'molecules', 'fragments'))
+    def test_center_compounds_single(self, ag_molfrg, weights, compound):
+        at = ag_molfrg[0]
+        if weights is None or weights[0] != 0.0:
+            ref = at.position.astype(np.float64)
+        else:
+            ref = np.full((3,), np.nan,np.float64)
+        if compound != 'group':
+            ref = ref.reshape((1, 3))
+        ag_s = mda.AtomGroup([at])
+        assert_equal(ref, ag_s.center(weights, pbc=False, compound=compound))
+
+    @pytest.mark.parametrize('weights', (None, np.array([0.0]),
+                                         np.array([2.0])))
+    @pytest.mark.parametrize('compound', ('group', 'residues', 'segments',
+                                          'molecules', 'fragments'))
+    def test_center_compounds_single_pbc(self, ag_molfrg, weights, compound):
+        at = ag_molfrg[0]
+        if weights is None or weights[0] != 0.0:
+            ref = distances.apply_PBC(at.position, ag_molfrg.dimensions)
+            ref = ref.astype(np.float64)
+        else:
+            ref = np.full((3,), np.nan,np.float64)
+        if compound != 'group':
+            ref = ref.reshape((1, 3))
+        ag_s = mda.AtomGroup([at])
+        assert_equal(ref, ag_s.center(weights, pbc=True, compound=compound))
+
+    @pytest.mark.parametrize('pbc', (False, True))
+    @pytest.mark.parametrize('weights', (None, np.array([])))
+    @pytest.mark.parametrize('compound', ('group', 'residues', 'segments',
+                                          'molecules', 'fragments'))
+    def test_center_compounds_empty(self, ag_molfrg, pbc, weights, compound):
+        ref = np.empty((0, 3), dtype=np.float64)
+        ag_e = mda.AtomGroup([], ag_molfrg.universe)
+        assert_equal(ref, ag_e.center(weights, pbc=pbc, compound=compound))
+
+    @pytest.mark.parametrize('pbc', (False, True))
+    @pytest.mark.parametrize('name, compound', (('', 'group'),
+                                                ('resids', 'residues'),
+                                                ('segids', 'segments'),
+                                                ('molnums', 'molecules'),
+                                                ('fragindices', 'fragments')))
+    def test_center_compounds_zero_weights(self, ag_molfrg, pbc, name,
+                                           compound):
+        if compound == 'group':
+            ref = np.full((3,), np.nan)
+        else:
+            n_compounds = len(ag_molfrg.groupby(name))
+            ref = np.full((n_compounds, 3), np.nan, dtype=np.float64)
+        weights = np.zeros(len(ag_molfrg))
+        assert_equal(ref, ag_molfrg.center(weights, pbc=pbc, compound=compound))
 
     def test_coordinates(self, ag):
         assert_almost_equal(
@@ -1094,26 +1307,6 @@ class TestAtomGroup(object):
         ref = ag.radius_of_gyration()
         with pytest.warns(DuplicateWarning) as w:
             assert not np.allclose(ag2.radius_of_gyration(), ref)
-            assert len(w) == 1
-
-    def test_total_charge(self, ag):
-        assert_almost_equal(ag.total_charge(), -4.0, decimal=4)
-
-    def test_total_charge_duplicates(self, ag):
-        ag2 = ag + ag[0]
-        ref = ag.total_charge() + ag[0].charge
-        with pytest.warns(DuplicateWarning) as w:
-            assert_almost_equal(ag2.total_charge(), ref)
-            assert len(w) == 1
-
-    def test_total_mass(self, ag):
-        assert_almost_equal(ag.total_mass(), 23582.043)
-
-    def test_total_mass_duplicates(self, ag):
-        ag2 = ag + ag[0]
-        ref = ag.total_mass() + ag[0].mass
-        with pytest.warns(DuplicateWarning) as w:
-            assert_almost_equal(ag2.total_mass(), ref)
             assert len(w) == 1
 
     def test_indices_ndarray(self, ag):

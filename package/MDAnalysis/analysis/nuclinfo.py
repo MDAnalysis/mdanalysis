@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -444,13 +445,13 @@ def tors(universe, seg, i):
                               " atom {0!s} {1!s} O5\' ".format(seg, i + 1))
     c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                               " atom {0!s} {1!s} C1\' ".format(seg, i),
-                              " atom {0!s} {1!s} N1 ".format(seg, i),
-                              " atom {0!s} {1!s} C2  ".format(seg, i))
+                              " atom {0!s} {1!s} N9 ".format(seg, i),
+                              " atom {0!s} {1!s} C4  ".format(seg, i))
     if len(c) < 4:
         c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                                   " atom {0!s} {1!s} C1\' ".format(seg, i),
-                                  " atom {0!s} {1!s} N9 ".format(seg, i),
-                                  " atom {0!s} {1!s} C4  ".format(seg, i))
+                                  " atom {0!s} {1!s} N1 ".format(seg, i),
+                                  " atom {0!s} {1!s} C2  ".format(seg, i))
 
     alpha = a.dihedral.value() % 360
     beta = b.dihedral.value() % 360
@@ -667,13 +668,13 @@ def tors_chi(universe, seg, i):
     """
     c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                               " atom {0!s} {1!s} C1\' ".format(seg, i),
-                              " atom {0!s} {1!s} N1 ".format(seg, i),
-                              " atom {0!s} {1!s} C2  ".format(seg, i))
+                              " atom {0!s} {1!s} N9 ".format(seg, i),
+                              " atom {0!s} {1!s} C4  ".format(seg, i))
     if len(c) < 4:
         c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                                   " atom {0!s} {1!s} C1\' ".format(seg, i),
-                                  " atom {0!s} {1!s} N9 ".format(seg, i),
-                                  " atom {0!s} {1!s} C4  ".format(seg, i))
+                                  " atom {0!s} {1!s} N1 ".format(seg, i),
+                                  " atom {0!s} {1!s} C2  ".format(seg, i))
     chi = c.dihedral.value() % 360
     return chi
 
@@ -703,10 +704,10 @@ def hydroxyl(universe, seg, i):
     .. versionadded:: 0.7.6
 
     """
-    h = universe.select_atoms(" atom {0!s} {1!s} C1\' ".format(seg, i),
-                              " atom {0!s} {1!s} C2\' ".format(seg, i),
-                              " atom {0!s} {1!s} O2\' ".format(seg, i),
-                              " atom {0!s} {1!s} H2\'\' ".format(seg, i))
+    h = universe.select_atoms("atom {0!s} {1!s} C1'".format(seg, i),
+                              "atom {0!s} {1!s} C2'".format(seg, i),
+                              "atom {0!s} {1!s} O2'".format(seg, i),
+                              "atom {0!s} {1!s} H2'".format(seg, i))
     try:
         hydr = h.dihedral.value() % 360
     except ValueError:

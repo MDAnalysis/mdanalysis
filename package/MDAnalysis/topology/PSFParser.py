@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -121,14 +122,14 @@ class PSFParser(TopologyReaderBase):
             next(psffile)
             title = next(psffile).split()
             if not (title[1] == "!NTITLE"):
-                err = "{0} is not a valid PSF file".format(psffile.name)
+                err = "{0} is not a valid PSF file".format(self.filename)
                 logger.error(err)
                 raise ValueError(err)
             # psfremarks = [psffile.next() for i in range(int(title[0]))]
             for _ in range(int(title[0])):
                 next(psffile)
             logger.debug("PSF file {0}: format {1}"
-                         "".format(psffile.name, self._format))
+                         "".format(self.filename, self._format))
 
             # Atoms first and mandatory
             top = self._parse_sec(

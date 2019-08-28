@@ -16,6 +16,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -539,7 +540,9 @@ cdef class _NSGrid(object):
     cdef ns_int ncoords  # number of coordinates
     cdef ns_int[DIM] ncells  # individual cells in every dimension
     cdef ns_int[DIM] cell_offsets  # Cell Multipliers
-    cdef real[DIM] cellsize  # cell size in every dimension
+    # cellsize MUST be double precision, otherwise coord2cellid() may fail for
+    # coordinates very close to the upper box boundaries! See Issue #2132
+    cdef dreal[DIM] cellsize  # cell size in every dimension
     cdef ns_int nbeads_per_cell  # maximum beads
     cdef ns_int *nbeads  # size (Number of beads in every cell)
     cdef ns_int *beadids  # size * nbeads_per_cell (Beadids in every cell)
@@ -572,14 +575,14 @@ cdef class _NSGrid(object):
 
         # Calculate best cutoff
         self.cutoff = cutoff
-        # First, we add a small margin to the cell size so that we can safely
-        # use the condition d <= cutoff (instead of d < cutoff) for neighbor
-        # search.
-        relative_cutoff_margin = 1.0e-8
-        while self.cutoff == cutoff:
-            self.cutoff = cutoff * (1.0 + relative_cutoff_margin)
-            relative_cutoff_margin *= 10.0
         if not force:
+            # First, we add a small margin to the cell size so that we can safely
+            # use the condition d <= cutoff (instead of d < cutoff) for neighbor
+            # search.
+            relative_cutoff_margin = 1.0e-8
+            while self.cutoff == cutoff:
+                self.cutoff = cutoff * (1.0 + relative_cutoff_margin)
+                relative_cutoff_margin *= 10.0
             bbox_vol = box.c_pbcbox.box[XX][XX] * box.c_pbcbox.box[YY][YY] * box.c_pbcbox.box[YY][YY]
             while bbox_vol/self.cutoff**3 > max_size:
                 self.cutoff *= 1.2
@@ -976,7 +979,7 @@ cdef class FastNS(object):
                                     if probe[m] < 0:
                                         check = False
                                         break
-                                    elif probe[m] >= self.box.c_pbcbox.box[m][m]:
+                                    elif probe[m] > self.box.c_pbcbox.box[m][m]:
                                         check = False
                                         break
                             if not check:

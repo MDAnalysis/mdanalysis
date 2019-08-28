@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -222,15 +223,14 @@ class PDBReader(base.ReaderBase):
     --------
     :class:`PDBWriter`
     :class:`PDBReader`
-       implements a larger subset of the header records,
-       which are accessible as :attr:`PDBReader.metadata`.
-
 
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based
        * New :attr:`title` (list with all TITLE lines).
     .. versionchanged:: 0.19.1
        Can now read PDB files with DOS line endings
+    .. versionchanged:: 0.20.0
+       Strip trajectory header of trailing spaces and newlines
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
@@ -258,11 +258,11 @@ class PDBReader(base.ReaderBase):
             self.n_atoms = top.n_atoms
 
         self.model_offset = kwargs.pop("model_offset", 0)
-
-        self.header = header = ""
-        self.title = title = []
-        self.compound = compound = []
-        self.remarks = remarks = []
+        # dummy/default variables as these are read
+        header = ""
+        title = []
+        compound = []
+        remarks = []
 
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
@@ -296,7 +296,7 @@ class PDBReader(base.ReaderBase):
                 # classification = line[10:50]
                 # date = line[50:59]
                 # idCode = line[62:66]
-                header = line[10:66].decode()
+                header = line[10:66].strip().decode()
             elif line[:5] == b'TITLE':
                 title.append(line[8:80].strip().decode())
             elif line[:6] == b'COMPND':
@@ -305,6 +305,11 @@ class PDBReader(base.ReaderBase):
                 remarks.append(line[6:].strip().decode())
 
         end = pdbfile.tell()  # where the file ends
+
+        self.header = header
+        self.title = title
+        self.compound = compound
+        self.remarks = remarks
 
         if not models:
             # No model entries
@@ -386,18 +391,26 @@ class PDBReader(base.ReaderBase):
                 pos += 1
             elif line[:6] == 'CRYST1':
                 # does an implicit str -> float conversion
-                self.ts._unitcell[:] = [line[6:15], line[15:24],
-                                        line[24:33], line[33:40],
-                                        line[40:47], line[47:54]]
-
-        # doing the conversion from list to array at the end is faster
-        self.ts.positions = tmp_buf
+                try:
+                    self.ts._unitcell[:] = [line[6:15], line[15:24],
+                                            line[24:33], line[33:40],
+                                            line[40:47], line[47:54]]
+                except ValueError:
+                    warnings.warn("Failed to read CRYST1 record, "
+                                  "possibly invalid PDB file, got:\n{}"
+                                  "".format(line))
 
         # check if atom number changed
         if pos != self.n_atoms:
-            raise ValueError("Read an incorrect number of atoms\n"
-                             "Expected {expected} got {actual}"
-                             "".format(expected=self.n_atoms, actual=pos+1))
+            raise ValueError("Inconsistency in file '{}': The number of atoms "
+                             "({}) in trajectory frame {} differs from the "
+                             "number of atoms ({}) in the corresponding "
+                             "topology.\nTrajectories with varying numbers of "
+                             "atoms are currently not supported."
+                             "".format(self.filename, pos, frame, self.n_atoms))
+
+        # doing the conversion from list to array at the end is faster
+        self.ts.positions = tmp_buf
 
         if self.convert_units:
             # both happen inplace
@@ -462,6 +475,9 @@ class PDBWriter(base.WriterBase):
 
     .. versionchanged:: 0.14.0
        PDB doesn't save charge information
+
+    .. versionchanged:: 0.20.0
+       Strip trajectory header of trailing spaces and newlines
 
     """
     fmt = {
@@ -670,12 +686,11 @@ class PDBWriter(base.WriterBase):
         if not self.obj or not hasattr(self.obj.universe, 'bonds'):
             return
 
-        bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
-
         mapping = {index: i for i, index in enumerate(self.obj.atoms.indices)}
 
-        # Write out only the bonds that were defined in CONECT records
+        bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
         if self.bonds == "conect":
+            # Write out only the bonds that were defined in CONECT records
             bonds = ((bond[0].index, bond[1].index) for bond in bondset if not bond.is_guessed)
         elif self.bonds == "all":
             bonds = ((bond[0].index, bond[1].index) for bond in bondset)
@@ -691,9 +706,8 @@ class PDBWriter(base.WriterBase):
 
         atoms = np.sort(self.obj.atoms.indices)
 
-        conect = ([a] + sorted(con[a])
+        conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
                   for a in atoms if a in con)
-        connect = ([mapping[x] for x in row] for row in conect)
 
         for c in conect:
             self.CONECT(c)
@@ -936,10 +950,13 @@ class PDBWriter(base.WriterBase):
 
         .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER
 
+        .. versionchanged:: 0.20.0
+            Strip `trajectory.header` since it can be modified by the user and should be
+            sanitized (Issue #2324)
         """
         if not hasattr(trajectory, 'header'):
             return
-        header = trajectory.header
+        header = trajectory.header.strip()
         self.pdbfile.write(self.fmt['HEADER'].format(header))
 
     def TITLE(self, *title):

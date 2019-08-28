@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -163,6 +164,9 @@ class Timestep(base.Timestep):
 class GROReader(base.SingleFrameReaderBase):
     """Reader for the Gromacs GRO structure format.
 
+    .. note::
+       This Reader will only read the first frame present in a file.
+
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
@@ -175,27 +179,29 @@ class GROReader(base.SingleFrameReaderBase):
             # Read first two lines to get number of atoms
             grofile.readline()
             self.n_atoms = n_atoms = int(grofile.readline())
+            self.ts = ts = self._Timestep(n_atoms, **self._ts_kwargs)
+            # Always try, and maybe add them later
+            velocities = np.zeros((n_atoms, 3), dtype=np.float32)
+            missed_vel = False
+
             # and the third line to get the spacing between coords (cs)
             # (dependent upon the GRO file precision)
             first_atomline = grofile.readline()
             cs = first_atomline[25:].find('.') + 1
+            ts._pos[0] = [first_atomline[20 + cs * i:20 + cs * (i + 1)]
+                          for i in range(3)]
+            try:
+                velocities[0] = [first_atomline[20 + cs * i:20 + cs * (i + 1)]
+                                 for i in range(3, 6)]
+            except ValueError:
+                # Remember that we got this error
+                missed_vel = True
 
-            # Always try, and maybe add them later
-            velocities = np.zeros((n_atoms, 3), dtype=np.float32)
-
-            self.ts = ts = self._Timestep(n_atoms,
-                                          **self._ts_kwargs)
-
-            missed_vel = False
-
-            grofile.seek(0)
-            for pos, line in enumerate(grofile, start=-2):
+            for pos, line in enumerate(grofile, start=1):
                 # 2 header lines, 1 box line at end
                 if pos == n_atoms:
                     unitcell = np.float32(line.split())
-                    continue
-                if pos < 0:
-                    continue
+                    break
 
                 ts._pos[pos] = [line[20 + cs * i:20 + cs * (i + 1)] for i in range(3)]
                 try:
@@ -325,7 +331,7 @@ class GROWriter(base.WriterBase):
                w.write(u.atoms)
 
         """
-        self.filename = util.filename(filename, ext='gro')
+        self.filename = util.filename(filename, ext='gro', keep=True)
         self.n_atoms = n_atoms
         self.reindex = kwargs.pop('reindex', True)
 

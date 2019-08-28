@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -267,9 +268,10 @@ class TransTable(object):
 
         """
         try:
-            return np.concatenate([self._RA[r] for r in rix])
-        except TypeError:  # integers aren't iterable, raises TypeError
-            return self._RA[rix].copy()  # don't accidentally send a view!
+            return np.concatenate(self._RA[rix])
+        except ValueError:  # rix is not iterable or empty
+            # don't accidentally return a view!
+            return self._RA[rix].astype(np.intp, copy=True)
 
     def residues2atoms_2d(self, rix):
         """Get atom indices represented by each residue index.
@@ -323,9 +325,10 @@ class TransTable(object):
 
         """
         try:
-            return np.concatenate([self._SR[s] for s in six])
-        except TypeError:
-            return self._SR[six].copy()
+            return np.concatenate(self._SR[six])
+        except ValueError:  # six is not iterable or empty
+            # don't accidentally return a view!
+            return self._SR[six].astype(np.intp, copy=True)
 
     def segments2residues_2d(self, six):
         """Get residue indices represented by each segment index.
@@ -380,9 +383,8 @@ class TransTable(object):
             sorted indices of atoms present in segments, collectively
 
         """
-        rixs = self.segments2residues_2d(six)
-        return np.concatenate([self.residues2atoms_1d(rix)
-                               for rix in rixs])
+        rix = self.segments2residues_1d(six)
+        return self.residues2atoms_1d(rix)
 
     def segments2atoms_2d(self, six):
         """Get atom indices represented by each segment index.

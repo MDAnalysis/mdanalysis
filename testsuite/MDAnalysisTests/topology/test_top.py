@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -30,6 +31,7 @@ from MDAnalysisTests.datafiles import (
     PRM7,  # tz2.truncoct.parm7.bz2
     PRMpbc,
     PRMNCRST,
+    PRMNEGATIVE,
     PRMErr1,
     PRMErr2,
     PRMErr3
@@ -170,6 +172,15 @@ class TestPRMParser(TOPBase):
     atom_i_improper_values = ((74, 79, 77, 78), (77, 80, 79, 83),
                               (79, 81, 80, 82), (79, 84, 83, 85))
 
+    def test_warning(self, filename):
+        with pytest.warns(UserWarning) as record:
+            u = mda.Universe(filename)
+
+        assert len(record) == 1
+        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
+                "based on their atom types")
+        assert str(record[0].message.args[0]) == wmsg
+
 
 class TestPRM12Parser(TOPBase):
     ref_filename = PRM12
@@ -278,6 +289,15 @@ class TestParm7Parser(TOPBase):
     atom_zero_improper_values = ()
     atom_i_improper_values = ((131, 135, 133, 134), (135, 157, 155, 156))
 
+    def test_warning(self, filename):
+        with pytest.warns(UserWarning) as record:
+            u = mda.Universe(filename)
+
+        assert len(record) == 1
+        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
+                "based on their atom types")
+        assert str(record[0].message.args[0]) == wmsg
+
 
 class TestPRM2(TOPBase):
     ref_filename = PRMpbc
@@ -317,6 +337,15 @@ class TestPRM2(TOPBase):
     atom_zero_improper_values = ()
     atom_i_improper_values = ((8, 16, 14, 15), (14, 18, 16, 17))
 
+    def test_warning(self, filename):
+        with pytest.warns(UserWarning) as record:
+            u = mda.Universe(filename)
+
+        assert len(record) == 1
+        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
+                "based on their atom types")
+        assert str(record[0].message.args[0]) == wmsg
+
 
 class TestPRMNCRST(TOPBase):
     # Test case of PARM7 with no non-hydrogen including dihedrals
@@ -345,6 +374,52 @@ class TestPRMNCRST(TOPBase):
     atom_i_dihedral_values = ((0, 1, 4, 5), (2, 1, 4, 5), (3, 1, 4, 5))
     atom_zero_improper_values = ()
     atom_i_improper_values = ()
+
+
+class TestPRMNCRST_negative(TOPBase):
+    # Same as above but with negative ATOMIC_NUMBER values (Issue 2306)
+    ref_filename = PRMNEGATIVE
+    guessed_attrs = ['elements']
+    expected_n_atoms = 6
+    expected_n_residues = 1
+    ref_proteinatoms = 6
+    expected_n_bonds = 5
+    expected_n_angles = 7
+    expected_n_dihedrals = 3
+    expected_n_impropers = 0
+    atom_i = 4
+    expected_n_zero_bonds = 1
+    expected_n_i_bonds = 2
+    expected_n_zero_angles = 3
+    expected_n_i_angles = 4
+    expected_n_zero_dihedrals = 1
+    expected_n_i_dihedrals = 3
+    expected_n_zero_impropers = 0
+    expected_n_i_impropers = 0
+    atom_zero_bond_values = ((0, 1),)
+    atom_i_bond_values = ((1, 4), (4, 5))
+    atom_zero_angle_values = ((0, 1, 2), (0, 1, 3), (0, 1, 4))
+    atom_i_angle_values = ((0, 1, 4), (1, 4, 5), (2, 1, 4), (3, 1, 4))
+    atom_zero_dihedral_values = ((0, 1, 4, 5),)
+    atom_i_dihedral_values = ((0, 1, 4, 5), (2, 1, 4, 5), (3, 1, 4, 5))
+    atom_zero_improper_values = ()
+    atom_i_improper_values = ()
+
+    def test_elements(self, top):
+        assert(top.elements.values[1] == 'C')
+        assert(top.elements.values[5] == 'O')
+
+    def test_warning(self, filename):
+        with pytest.warns(UserWarning) as record:
+            u = mda.Universe(filename)
+
+        assert len(record) == 2
+        wmsg1 = ("Unknown ATOMIC_NUMBER value found, guessing atom element "
+                 "from type: CT assigned to C")
+        wmsg2 = ("Unknown ATOMIC_NUMBER value found, guessing atom element "
+                 "from type: O assigned to O")
+        assert str(record[0].message.args[0]) == wmsg1
+        assert str(record[1].message.args[0]) == wmsg2
 
 
 class TestErrors(object):

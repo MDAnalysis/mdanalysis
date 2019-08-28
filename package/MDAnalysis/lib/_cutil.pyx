@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -24,7 +25,7 @@
 import cython
 import numpy as np
 cimport numpy as np
-from libc.math cimport sqrt
+from libc.math cimport sqrt, fabs
 
 from MDAnalysis import NoDataError
 
@@ -34,12 +35,13 @@ from libcpp.vector cimport vector
 from cython.operator cimport dereference as deref
 
 
-__all__ = ['unique_int_1d', 'make_whole', 'find_fragments']
+__all__ = ['unique_int_1d', 'make_whole', 'find_fragments',
+           '_sarrus_det_single', '_sarrus_det_multiple']
 
 cdef extern from "calc_distances.h":
     ctypedef float coordinate[3]
-    void minimum_image(double *x, float *box, float *inverse_box)
-    void minimum_image_triclinic(double *dx, coordinate *box)
+    void minimum_image(double* x, float* box, float* inverse_box)
+    void minimum_image_triclinic(double* dx, float* box)
 
 ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
@@ -72,7 +74,7 @@ def unique_int_1d(np.int64_t[:] values):
     cdef np.int64_t[:] result = np.empty(n_values, dtype=np.int64)
 
     if n_values == 0:
-        return result
+        return np.array(result)
 
     result[0] = values[0]
     for i in range(1, n_values):
@@ -102,10 +104,9 @@ cdef intset difference(intset a, intset b):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def make_whole(atomgroup, reference_atom=None):
-    """Move all atoms in a single molecule so that bonds don't split over images
-
-    Atom positions are modified in place.
+def make_whole(atomgroup, reference_atom=None, inplace=True):
+    """Move all atoms in a single molecule so that bonds don't split over
+    images.
 
     This function is most useful when atoms have been packed into the primary
     unit cell, causing breaks mid molecule, with the molecule then appearing
@@ -132,6 +133,13 @@ def make_whole(atomgroup, reference_atom=None):
     reference_atom : :class:`~MDAnalysis.core.groups.Atom`
         The atom around which all other atoms will be moved.
         Defaults to atom 0 in the atomgroup.
+    inplace : bool, optional
+        If ``True``, coordinates are modified in place.
+
+    Returns
+    -------
+    coords : numpy.ndarray
+        The unwrapped atom coordinates.
 
     Raises
     ------
@@ -154,12 +162,12 @@ def make_whole(atomgroup, reference_atom=None):
         # This algorithm requires bonds, these can be guessed!
         u = mda.Universe(......, guess_bonds=True)
 
-        # MDAnalysis can split molecules into their fragments
+        # MDAnalysis can split AtomGroups into their fragments
         # based on bonding information.
         # Note that this function will only handle a single fragment
         # at a time, necessitating a loop.
-        for frag in u.fragments:
-          make_whole(frag)
+        for frag in u.atoms.fragments:
+            make_whole(frag)
 
     Alternatively, to keep a single atom in place as the anchor::
 
@@ -168,24 +176,41 @@ def make_whole(atomgroup, reference_atom=None):
         make_whole(atomgroup, reference_atom=atomgroup[10])
 
 
+    See Also
+    --------
+    :meth:`MDAnalysis.core.groups.AtomGroup.unwrap`
+
+
     .. versionadded:: 0.11.0
+    .. versionchanged:: 0.20.0
+        Inplace-modification of atom positions is now optional, and positions
+        are returned as a numpy array.
     """
     cdef intset refpoints, todo, done
-    cdef int i, nloops, ref, atom, other, natoms
+    cdef np.intp_t i, j, nloops, ref, atom, other, natoms
     cdef cmap[int, int] ix_to_rel
     cdef intmap bonding
     cdef int[:, :] bonds
     cdef float[:, :] oldpos, newpos
     cdef bint ortho
     cdef float[:] box
-    cdef float tri_box[3][3]
+    cdef float[:, :] tri_box
+    cdef float half_box[3]
     cdef float inverse_box[3]
     cdef double vec[3]
     cdef ssize_t[:] ix_view
+    cdef bint is_unwrapped
 
     # map of global indices to local indices
     ix_view = atomgroup.ix[:]
     natoms = atomgroup.ix.shape[0]
+    
+    oldpos = atomgroup.positions
+
+    # Nothing to do for less than 2 atoms
+    if natoms < 2:
+        return np.array(oldpos)
+
     for i in range(natoms):
         ix_to_rel[ix_view[i]] = i
 
@@ -198,8 +223,8 @@ def make_whole(atomgroup, reference_atom=None):
         ref = ix_to_rel[reference_atom.ix]
 
     box = atomgroup.dimensions
-
     for i in range(3):
+        half_box[i] = 0.5 * box[i]
         if box[i] == 0.0:
             raise ValueError("One or more dimensions was zero.  "
                              "You can set dimensions using 'atomgroup.dimensions='")
@@ -210,6 +235,17 @@ def make_whole(atomgroup, reference_atom=None):
             ortho = False
 
     if ortho:
+        # If atomgroup is already unwrapped, bail out
+        is_unwrapped = True
+        for i in range(1, natoms):
+            for j in range(3):
+                if fabs(oldpos[i, j] - oldpos[0, j]) >= half_box[j]:
+                    is_unwrapped = False
+                    break
+            if not is_unwrapped:
+                break
+        if is_unwrapped:
+            return np.array(oldpos)
         for i in range(3):
             inverse_box[i] = 1.0 / box[i]
     else:
@@ -232,7 +268,6 @@ def make_whole(atomgroup, reference_atom=None):
             bonding[atom].insert(other)
             bonding[other].insert(atom)
 
-    oldpos = atomgroup.positions
     newpos = np.zeros((oldpos.shape[0], 3), dtype=np.float32)
 
     refpoints = intset()  # Who is safe to use as reference point?
@@ -243,7 +278,7 @@ def make_whole(atomgroup, reference_atom=None):
         newpos[ref, i] = oldpos[ref, i]
 
     nloops = 0
-    while refpoints.size() < natoms and nloops < natoms:
+    while <np.intp_t> refpoints.size() < natoms and nloops < natoms:
         # count iterations to prevent infinite loop here
         nloops += 1
 
@@ -262,7 +297,7 @@ def make_whole(atomgroup, reference_atom=None):
                 if ortho:
                     minimum_image(&vec[0], &box[0], &inverse_box[0])
                 else:
-                    minimum_image_triclinic(&vec[0], <coordinate*>&tri_box[0])
+                    minimum_image_triclinic(&vec[0], &tri_box[0, 0])
                 # Then define position of other based on this vector
                 for i in range(3):
                     newpos[other, i] = newpos[atom, i] + vec[i]
@@ -271,10 +306,11 @@ def make_whole(atomgroup, reference_atom=None):
                 refpoints.insert(other)
             done.insert(atom)
 
-    if refpoints.size() < natoms:
+    if <np.intp_t> refpoints.size() < natoms:
         raise ValueError("AtomGroup was not contiguous from bonds, process failed")
-    else:
+    if inplace:
         atomgroup.positions = newpos
+    return np.array(newpos)
 
 
 @cython.boundscheck(False)
@@ -316,6 +352,36 @@ cdef float _norm(float * a):
         result += a[n]*a[n]
     return sqrt(result)
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
+    """Computes the determinant of a 3x3 matrix."""
+    cdef np.float64_t det
+    det = m[0, 0] * m[1, 1] * m[2, 2]
+    det -= m[0, 0] * m[1, 2] * m[2, 1]
+    det += m[0, 1] * m[1, 2] * m[2, 0]
+    det -= m[0, 1] * m[1, 0] * m[2, 2]
+    det += m[0, 2] * m[1, 0] * m[2, 1]
+    det -= m[0, 2] * m[1, 1] * m[2, 0]
+    return det
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cpdef np.ndarray _sarrus_det_multiple(np.float64_t[:, :, ::1] m):
+    """Computes all determinants of an array of 3x3 matrices."""
+    cdef np.intp_t n
+    cdef np.intp_t i
+    cdef np.float64_t[:] det
+    n = m.shape[0]
+    det = np.empty(n, dtype=np.float64)
+    for i in range(n):
+        det[i] = m[i, 0, 0] * m[i, 1, 1] * m[i, 2, 2]
+        det[i] -= m[i, 0, 0] * m[i, 1, 2] * m[i, 2, 1]
+        det[i] += m[i, 0, 1] * m[i, 1, 2] * m[i, 2, 0]
+        det[i] -= m[i, 0, 1] * m[i, 1, 0] * m[i, 2, 2]
+        det[i] += m[i, 0, 2] * m[i, 1, 0] * m[i, 2, 1]
+        det[i] -= m[i, 0, 2] * m[i, 1, 1] * m[i, 2, 0]
+    return np.array(det)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)

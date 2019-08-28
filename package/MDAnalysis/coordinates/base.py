@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -25,7 +26,7 @@
 Base classes --- :mod:`MDAnalysis.coordinates.base`
 ===================================================
 
-Derive other Timestep, FrameIterator, Reader and Writer classes from the classes 
+Derive other Timestep, FrameIterator, Reader and Writer classes from the classes
 in this module. The derived classes must follow the :ref:`Trajectory API`
 in :mod:`MDAnalysis.coordinates.__init__`.
 
@@ -121,11 +122,11 @@ FrameIterators
 Iterator classes used by the by the :class:`ProtoReader`.
 
 .. autoclass:: FrameIteratorBase
-    
+
 .. autoclass:: FrameIteratorSliced
-    
+
 .. autoclass:: FrameIteratorAll
-    
+
 .. autoclass:: FrameIteratorIndices
 
 
@@ -1325,7 +1326,7 @@ class IOBase(object):
 
     def close(self):
         """Close the trajectory file."""
-        pass
+        pass # pylint: disable=unnecessary-pass
 
     def __enter__(self):
         return self
@@ -1510,7 +1511,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
         Calling next after this should return the first frame
         """
-        pass
+        pass # pylint: disable=unnecessary-pass
 
     def _apply_limits(self, frame):
         if frame < 0:

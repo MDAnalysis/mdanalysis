@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -23,7 +24,7 @@ from __future__ import absolute_import
 import numpy as np
 
 from MDAnalysisTests import datafiles
-from MDAnalysisTests.datafiles import (PDB_small, PDB, PDB_full, LAMMPSdata,
+from MDAnalysisTests.datafiles import (PDB_small, PDB, LAMMPSdata,
                                        LAMMPSdata2, LAMMPSdcd2,
                                        LAMMPSdata_mini, PSF_TRICLINIC,
                                        DCD_TRICLINIC, PSF_NAMD_TRICLINIC,
@@ -79,7 +80,8 @@ class RefAdK(object):
     # CRYST1 80.017   80.017   80.017  60.00  60.00  90.00
     ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.],
                             dtype=np.float32)
-    ref_volume = 362270.0  # computed with Gromacs
+    #ref_volume = 362270.0  # computed with Gromacs ## NOT EXACT!
+    ref_volume = 362269.520669292
 
 
 class Ref2r9r(object):
@@ -95,34 +97,6 @@ class Ref2r9r(object):
     ref_n_atoms = 1284
     ref_sum_centre_of_geometry = -98.24146
     ref_n_frames = 10
-
-
-class Ref4e43(object):
-    """Mixin class for a clean Protein Databank PDB file"""
-    filename = datafiles.PDB_full
-    header = 'HYDROLASE                               11-MAR-12   4E43'
-    title = ['HIV PROTEASE (PR) DIMER WITH ACETATE IN EXO SITE AND PEPTIDE '
-             'IN ACTIVE', '2 SITE']
-    compnd = ['MOL_ID: 1;',
-              '2 MOLECULE: PROTEASE;',
-              '3 CHAIN: A, B;',
-              '4 ENGINEERED: YES;',
-              '5 MUTATION: YES;',
-              '6 MOL_ID: 2;',
-              '7 MOLECULE: RANDOM PEPTIDE;',
-              '8 CHAIN: C;',
-              '9 ENGINEERED: YES;',
-              '10 OTHER_DETAILS: UNKNOWN IMPURITY', ]
-    num_remarks = 333
-    # only first 5 remarks for comparison
-    nmax_remarks = 5
-    remarks = [
-        '2',
-        '2 RESOLUTION.    1.54 ANGSTROMS.',
-        '3',
-        '3 REFINEMENT.',
-        '3   PROGRAM     : REFMAC 5.5.0110',
-    ]
 
 
 class RefACHE(object):

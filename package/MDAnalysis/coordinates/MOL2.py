@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -126,6 +127,9 @@ class MOL2Reader(base.ReaderBase):
        Frames now 0-based instead of 1-based.
        MOL2 now reuses the same Timestep object for every frame,
        previously created a new instance of Timestep each frame.
+    .. versionchanged:: 0.20.0
+       Allows for comments at top of file.
+       Ignores status bit strings
     """
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
@@ -150,7 +154,8 @@ class MOL2Reader(base.ReaderBase):
                 # found new molecules
                 if "@<TRIPOS>MOLECULE" in line:
                     blocks.append({"start_line": i, "lines": []})
-                blocks[-1]["lines"].append(line)
+                if len(blocks):
+                    blocks[-1]["lines"].append(line)
         self.n_frames = len(blocks)
         self.frames = blocks
 
@@ -193,7 +198,8 @@ class MOL2Reader(base.ReaderBase):
 
         coords = np.zeros((self.n_atoms, 3), dtype=np.float32)
         for i, a in enumerate(atom_lines):
-            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()
+            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
+
             #x, y, z = float(x), float(y), float(z)
             coords[i, :] = x, y, z
 

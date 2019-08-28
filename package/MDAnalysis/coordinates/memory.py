@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -371,10 +372,10 @@ class MemoryReader(base.ProtoReader):
         self.ts = self._Timestep(self.n_atoms, **kwargs)
         self.ts.dt = dt
         if dimensions is None:
-            dimensions = np.zeros((self.n_frames, 6), dtype=np.float64)
+            dimensions = np.zeros((self.n_frames, 6), dtype=np.float32)
         else:
             try:
-                dimensions = np.asarray(dimensions, dtype=np.float64)
+                dimensions = np.asarray(dimensions, dtype=np.float32)
             except ValueError:
                 raise TypeError("'dimensions' must be array-like got {}"
                                 "".format(type(dimensions)))

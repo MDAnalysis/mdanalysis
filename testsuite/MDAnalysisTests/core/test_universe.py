@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -287,11 +288,13 @@ class TestUniverse(object):
         with pytest.raises(NotImplementedError):
             cPickle.dumps(u, protocol = cPickle.HIGHEST_PROTOCOL)
 
-    def test_set_dimensions(self):
+    @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
+    def test_set_dimensions(self, dtype):
         u = mda.Universe(PSF, DCD)
-        box = np.array([10, 11, 12, 90, 90, 90])
-        u.dimensions = np.array([10, 11, 12, 90, 90, 90])
+        box = np.array([10, 11, 12, 90, 90, 90], dtype=dtype)
+        u.dimensions = box
         assert_allclose(u.dimensions, box)
+        assert u.dimensions.dtype == np.float32
 
 
 # remove for 1.0
@@ -345,7 +348,7 @@ class TestGuessBonds(object):
     """
     @pytest.fixture()
     def vdw(self):
-        return {'A': 1.05, 'B': 0.4}
+        return {'A': 1.4, 'B': 0.5}
 
     def _check_universe(self, u):
         """Verify that the Universe is created correctly"""

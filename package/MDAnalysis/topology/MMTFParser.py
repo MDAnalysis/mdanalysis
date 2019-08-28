@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -31,6 +32,8 @@ Makes individual models within the MMTF file available via the `models`
 attribute on Universe.
 
 .. versionadded:: 0.16.0
+.. versionchanged:: 0.20.0
+   Can now read files with optional fields missing/empty
 
 Reads the following topology attributes:
 
@@ -172,38 +175,47 @@ class MMTFParser(base.TopologyReaderBase):
         nsegments = mtop.num_chains
         attrs = []
 
-        # Atom things
         # required
-        altlocs = AltLocs(np.array([val.replace('\x00', '').strip()
-                                    for val in mtop.alt_loc_list], dtype=object))
-        atomids = Atomids(np.asarray(mtop.atom_id_list, dtype=np.int64))
-        bfactors = Bfactors(np.asarray(mtop.b_factor_list, dtype=np.float64))
-        charges = Charges(np.array(list(iter_atoms('formalChargeList')), dtype=np.float64))
-        names = Atomnames(np.array(list(iter_atoms('atomNameList')), dtype=object))
-        occupancies = Occupancies(np.asarray(mtop.occupancy_list, dtype=np.float64))
-        types = Atomtypes(np.array(list(iter_atoms('elementList')), dtype=object))
-
+        charges = Charges(list(iter_atoms('formalChargeList')))
+        names = Atomnames(list(iter_atoms('atomNameList')))
+        types = Atomtypes(list(iter_atoms('elementList')))
         masses = Masses(guessers.guess_masses(types.values), guessed=True)
+        attrs.extend([charges, names, types, masses])
 
-        attrs.extend([altlocs, atomids, bfactors, charges, names, occupancies, types, masses])
+        #optional are empty list if empty, sometimes arrays
+        if len(mtop.atom_id_list):
+            attrs.append(Atomids(mtop.atom_id_list))
+        else:
+            # must have this attribute for MDA
+            attrs.append(Atomids(np.arange(natoms), guessed=True))
+        if mtop.alt_loc_list:
+            attrs.append(AltLocs([val.replace('\x00', '').strip()
+                                  for val in mtop.alt_loc_list]))
+        if len(mtop.b_factor_list):
+            attrs.append(Bfactors(mtop.b_factor_list))
+        if len(mtop.occupancy_list):
+            attrs.append(Occupancies(mtop.occupancy_list))
 
         # Residue things
         # required
-        resids = Resids(np.asarray(mtop.group_id_list, dtype=np.int64))
+        resids = Resids(mtop.group_id_list)
         resnums = Resnums(resids.values.copy())
-        resnames = Resnames(np.array([mtop.group_list[i]['groupName']
-                                      for i in mtop.group_type_list], dtype=object))
-        # mmtf empty icode is '\x00' rather than ''
-        icodes = ICodes(np.array([val.replace('\x00', '').strip()
-                                 for val in mtop.ins_code_list], dtype=object))
-        attrs.extend([resids, resnums, resnames, icodes])
+        resnames = Resnames([mtop.group_list[i]['groupName']
+                             for i in mtop.group_type_list])
+        attrs.extend([resids, resnums, resnames])
         # optional
+        # mmtf empty icode is '\x00' rather than ''
+        if mtop.ins_code_list:
+            attrs.append(ICodes([val.replace('\x00', '').strip()
+                                 for val in mtop.ins_code_list]))
 
         # Segment things
-        segids = Segids(np.asarray(mtop.chain_name_list, dtype=object))
-        #chainids = ChainIDs(np.asarray(mtop.chain_id_list, dtype=object))
-
-        attrs.append(segids)
+        # optional
+        if mtop.chain_name_list:
+            attrs.append(Segids(mtop.chain_name_list))
+        else:
+            # required for MDAnalysis
+            attrs.append(Segids(['SYSTEM'] * nsegments, guessed=True))
 
         mods = np.repeat(np.arange(mtop.num_models), mtop.chains_per_model)
         attrs.append(Models(mods))
@@ -235,10 +247,12 @@ class MMTFParser(base.TopologyReaderBase):
 
             offset += groupID_2_natoms[gtype]
         # add inter group bonds
-        for x, y in zip(mtop.bond_atom_list[1::2], mtop.bond_atom_list[::2]):
-            if x > y:
-                x, y = y, x
-            bonds.append((x, y))
+        if not mtop.bond_atom_list is None:  # optional field
+            for x, y in zip(mtop.bond_atom_list[1::2],
+                            mtop.bond_atom_list[::2]):
+                if x > y:
+                    x, y = y, x
+                bonds.append((x, y))
         attrs.append(Bonds(bonds))
 
         top = Topology(natoms, nresidues, nsegments,

@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -58,10 +59,11 @@ As an example we analyze the opening ("unzipping") of salt bridges
 when the AdK enzyme opens up; this is one of the example trajectories
 in MDAnalysis. ::
 
+    import numpy as np
+    import matplotlib.pyplot as plt
     import MDAnalysis as mda
     from MDAnalysis.analysis import contacts
     from MDAnalysis.tests.datafiles import PSF,DCD
-    import matplotlib.pyplot as plt
     # example trajectory (transition of AdK from closed to open)
     u = mda.Universe(PSF,DCD)
     # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and
@@ -83,7 +85,7 @@ in MDAnalysis. ::
     average_contacts = np.mean(ca1.timeseries[:, 1])
     print('average contacts = {}'.format(average_contacts))
     # plot time series q(t)
-    f, ax = plt.subplots()
+    fig, ax = plt.subplots()
     ax.plot(ca1.timeseries[:, 0], ca1.timeseries[:, 1])
     ax.set(xlabel='frame', ylabel='fraction of native contacts',
            title='Native Contacts, average = {:.2f}'.format(average_contacts))

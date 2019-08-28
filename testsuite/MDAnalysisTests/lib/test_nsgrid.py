@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -46,7 +47,6 @@ def run_grid_search(u, ref_id, cutoff=3):
     searcher = nsgrid.FastNS(cutoff, coords, box=u.dimensions)
 
     return searcher.search(searchcoords)
-
 
 def test_pbc_box():
     """Check that PBC box accepts only well-formated boxes"""
@@ -214,3 +214,20 @@ def test_nsgrid_selfsearch(box, result):
         searchresults = searcher.self_search()
     pairs = searchresults.get_pairs()
     assert_equal(len(pairs)//2, result)
+
+def test_nsgrid_probe_close_to_box_boundary():
+    # FastNS.search used to segfault with this box, cutoff and reference
+    # coordinate prior to PR #2136, so we ensure that this remains fixed.
+    # See Issue #2132 for further information.
+    ref = np.array([[55.783722, 44.190044, -54.16671]], dtype=np.float32)
+    box = np.array([53.785854, 43.951054, 57.17597, 90., 90., 90.], dtype=np.float32)
+    cutoff = 3.0
+    # search within a configuration where we know the expected outcome:
+    conf = np.ones((1, 3), dtype=np.float32)
+    searcher = nsgrid.FastNS(cutoff, conf, box)
+    results = searcher.search(ref)
+    # check if results are as expected:
+    expected_pairs = np.zeros((1, 2), dtype=np.int64)
+    expected_dists = np.array([2.3689647], dtype=np.float64)
+    assert_equal(results.get_pairs(), expected_pairs)
+    assert_allclose(results.get_pair_distances(), expected_dists, rtol=1.e-6)

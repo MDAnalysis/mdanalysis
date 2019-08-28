@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -41,9 +42,10 @@ from MDAnalysis.tests.datafiles import (
     PSF, DCD,
     PRMpbc, TRJpbc_bz2,
     PSF_NAMD, PDB_NAMD,
-    GRO, NUCL, NUCLsel, TPR, XTC,
+    GRO, RNA_PSF, NUCLsel, TPR, XTC,
     TRZ_psf, TRZ,
     PDB_icodes,
+    PDB_HOLE,
 )
 from MDAnalysisTests import make_Universe
 
@@ -176,24 +178,44 @@ class TestSelectionsCHARMM(object):
         sel = universe.select_atoms('not backbone')
         assert_equal(len(sel), 2486)
 
-    def test_around(self, universe):
-        sel = universe.select_atoms('around 4.0 bynum 1943')
+    @pytest.mark.parametrize('selstr', [
+        'around 4.0 bynum 1943', 
+        'around 4.0 index 1942'
+    ])
+    def test_around(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 32)
 
-    def test_sphlayer(self, universe):
-        sel = universe.select_atoms('sphlayer 4.0 6.0 bynum 1281')
+    @pytest.mark.parametrize('selstr', [
+        'sphlayer 4.0 6.0 bynum 1281',
+        'sphlayer 4.0 6.0 index 1280'
+    ])
+    def test_sphlayer(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 66)
 
-    def test_sphzone(self, universe):
-        sel = universe.select_atoms('sphzone 6.0 bynum 1281')
+    @pytest.mark.parametrize('selstr', [
+        'sphzone 6.0 bynum 1281',
+        'sphzone 6.0 index 1280'
+    ])
+    def test_sphzone(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 86)
 
-    def test_cylayer(self, universe):
-        sel = universe.select_atoms('cylayer 4.0 6.0 10 -10 bynum 1281')
+    @pytest.mark.parametrize('selstr', [
+        'cylayer 4.0 6.0 10 -10 bynum 1281',
+        'cylayer 4.0 6.0 10 -10 index 1280'
+    ])
+    def test_cylayer(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 88)
 
-    def test_cyzone(self, universe):
-        sel = universe.select_atoms('cyzone 6.0 10 -10 bynum 1281')
+    @pytest.mark.parametrize('selstr', [
+        'cyzone 6.0 10 -10 bynum 1281',
+        'cyzone 6.0 10 -10 index 1280'
+    ])
+    def test_cyzone(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 166)
 
     def test_point(self, universe):
@@ -228,10 +250,28 @@ class TestSelectionsCHARMM(object):
         assert_equal(subsel[0].index, 1)
         assert_equal(subsel[-1].index, 4)
 
-    def test_byres(self, universe):
-        sel = universe.select_atoms('byres bynum 0:5')
+    def test_index(self, universe):
+        "Tests the index selection, also from AtomGroup instances (Issue 275)"
+        sel = universe.select_atoms('index 4')
+        assert_equal(sel[0].index, 4)
+        sel = universe.select_atoms('index 0:9')
+        assert_equal(len(sel), 10)
+        assert_equal(sel[0].index, 0)
+        assert_equal(sel[-1].index, 9)
+        subsel = sel.select_atoms('index 4')
+        assert_equal(subsel[0].index, 4)
+        subsel = sel.select_atoms('index 1:4')
+        assert_equal(len(subsel), 4)
+        assert_equal(subsel[0].index, 1)
+        assert_equal(subsel[-1].index, 4)
 
-        assert_equal(len(sel), len(universe.residues[0].atoms))
+    @pytest.mark.parametrize('selstr,expected', (
+        ['byres bynum 0:5', 19],
+        ['byres index 0:19', 43]
+    ))
+    def test_byres(self, universe, selstr, expected):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), expected)
 
     def test_same_resname(self, universe):
         """Test the 'same ... as' construct (Issue 217)"""
@@ -388,26 +428,41 @@ class TestSelectionsGRO(object):
         assert_equal(sel.n_atoms, 7)
         assert_equal(sel.residues.resnames, ['GLY'])
 
-    def test_same_coordinate(self, universe):
+    @pytest.mark.parametrize('selstr', [
+        'same x as bynum 1 or bynum 10',
+        'same x as bynum 1 10',
+        'same x as index 0 or index 9',
+        'same x as index 0 9'
+    ])
+    def test_same_coordinate(self, universe, selstr):
         """Test the 'same ... as' construct (Issue 217)"""
-        sel = universe.select_atoms("same x as bynum 1 or bynum 10")
-        assert_equal(len(sel), 12,
-                     "Found a wrong number of atoms with same x as ids 1 or 10")
-        target_ids = np.array([0, 8, 9, 224, 643, 3515,
-                               11210, 14121, 18430, 25418, 35811, 43618])
+        sel = universe.select_atoms(selstr)
+        errmsg = ("Found a wrong number of atoms with same "
+                  "x as ids 1 or 10")
+        assert_equal(len(sel), 12, errmsg) 
+        target_ids = np.array([0, 8, 9, 224, 643, 3515, 11210, 14121,
+                               18430, 25418, 35811, 43618])
         assert_equal(sel.indices, target_ids,
                      "Found wrong atoms with same x as ids 1 or 10")
 
-    def test_cylayer(self, universe):
+    @pytest.mark.parametrize('selstr', [
+        'cylayer 10 20 20 -20 bynum 3554',
+        'cylayer 10 20 20 -20 index 3553'
+    ])
+    def test_cylayer(self, universe, selstr):
         """Cylinder layer selections with tricilinic periodicity (Issue 274)"""
         atgp = universe.select_atoms('name OW')
-        sel = atgp.select_atoms('cylayer 10 20 20 -20 bynum 3554')
+        sel = atgp.select_atoms(selstr)
         assert_equal(len(sel), 1155)
 
-    def test_cyzone(self, universe):
+    @pytest.mark.parametrize('selstr', [
+        'cyzone 20 20 -20 bynum 3554',
+        'cyzone 20 20 -20 index 3553'
+    ])
+    def test_cyzone(self, universe, selstr):
         """Cylinder zone selections with tricilinic periodicity (Issue 274)"""
         atgp = universe.select_atoms('name OW')
-        sel = atgp.select_atoms('cyzone 20 20 -20 bynum 3554')
+        sel = atgp.select_atoms(selstr)
         assert_equal(len(sel), 1556)
 
 
@@ -417,17 +472,21 @@ class TestSelectionsTPR(object):
     def universe():
         return MDAnalysis.Universe(TPR,XTC)
 
-    def test_same_fragment(self, universe):
+    @pytest.mark.parametrize('selstr', [
+        'same fragment as bynum 1',
+        'same fragment as index 0'
+    ])
+    def test_same_fragment(self, universe, selstr):
         """Test the 'same ... as' construct (Issue 217)"""
         # This test comes here because it's a system with solvent,
         # and thus multiple fragments.
-        sel = universe.select_atoms("same fragment as bynum 1")
-        assert_equal(
-            len(sel), 3341,
-            "Found a wrong number of atoms on the same fragment as id 1")
-        assert_equal(
-            sel.indices, universe.atoms[0].fragment.indices,
-            "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
+        sel = universe.select_atoms(selstr)
+        errmsg = ("Found a wrong number of atoms "
+                  "on the same fragment as id 1")
+        assert_equal(len(sel), 3341, errmsg)
+        errmsg = ("Found a differ set of atoms when using the 'same "
+                  "fragment as' construct vs. the .fragment property")
+        assert_equal(sel.indices, universe.atoms[0].fragment.indices, errmsg)
 
     def test_moltype(self, universe):
         sel = universe.select_atoms("moltype NA+")
@@ -447,20 +506,22 @@ class TestSelectionsTPR(object):
 
 
 class TestSelectionsNucleicAcids(object):
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def universe(self):
-        return MDAnalysis.Universe(NUCL)
+        return MDAnalysis.Universe(RNA_PSF)
+
+    @pytest.fixture(scope='class')
+    def universe2(self):
+        return MDAnalysis.Universe(NUCLsel)
+
 
     def test_nucleic(self, universe):
         rna = universe.select_atoms("nucleic")
         assert_equal(rna.n_atoms, 739)
         assert_equal(rna.n_residues, 23)
 
-    def test_nucleic_all(self, universe):
-        u = mda.Universe(NUCLsel)
-
-        sel = u.select_atoms('nucleic')
-
+    def test_nucleic_all(self, universe2):
+        sel = universe2.select_atoms('nucleic')
         assert len(sel) == 34
 
     def test_nucleicbackbone(self, universe):
@@ -848,6 +909,7 @@ class TestSelectionErrors(object):
         'resid and name C',  # rangesel not finding vals
         'resnum ',
         'bynum or protein',
+        'index or protein',
         'prop mass < 4.0 hello',  # unused token
         'prop mass > 10. and group this',  # missing group
         'prop mass > 10. and fullgroup this',  # missing fullgroup
@@ -893,7 +955,7 @@ class TestImplicitOr(object):
     def test_string_selections(self, ref, sel, universe):
         self._check_sels(ref, sel, universe)
 
-    @pytest.mark.parametrize("seltype", ['resid', 'resnum', 'bynum'])
+    @pytest.mark.parametrize("seltype", ['resid', 'resnum', 'bynum', 'index'])
     @pytest.mark.parametrize('ref, sel', [
         ('{typ} 1 or {typ} 2', '{typ} 1 2'),
         ('{typ} 1:10 or {typ} 22', '{typ} 1:10 22'),
@@ -1029,3 +1091,22 @@ def test_arbitrary_atom_group_raises_error():
     u = make_Universe(trajectory=True)
     with pytest.raises(TypeError):
         u.select_atoms('around 2.0 group this', this=u.atoms[0])
+
+
+def test_empty_sel():
+    u = make_Universe(trajectory=True)
+    with pytest.warns(UserWarning):
+        ag = u.atoms.select_atoms("")
+    assert_equal(len(ag), 0)
+    assert isinstance(ag, mda.AtomGroup)
+
+
+def test_record_type_sel():
+    u = mda.Universe(PDB_HOLE)
+
+    assert len(u.select_atoms('record_type ATOM')) == 264
+    assert len(u.select_atoms('not record_type HETATM')) == 264
+    assert len(u.select_atoms('record_type HETATM')) == 8
+
+    assert len(u.select_atoms('name CA and not record_type HETATM')) == 30
+    assert len(u.select_atoms('name CA and record_type HETATM')) == 2

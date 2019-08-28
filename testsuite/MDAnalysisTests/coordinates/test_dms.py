@@ -14,6 +14,7 @@
 # MDAnalysis: A Python package for the rapid analysis of molecular dynamics
 # simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
 # Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -92,8 +93,10 @@ class TestDMSTimestep(BaseTimestepTest):
                 'z': np.array([0, 0, 12.])}
     uni_args = (DMS,)
 
-    def test_dimensions_set_box(self, ts):
-        ts.dimensions = self.newbox
+    @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
+    def test_dimensions_set_box(self, ts, dtype):
+        ts.dimensions = self.newbox.astype(dtype)
+        assert ts.dimensions.dtype == np.float32
         assert_equal(ts.dimensions, self.newbox)
         assert_equal(ts._unitcell, self.unitcell)
 
