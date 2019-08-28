@@ -50,7 +50,10 @@ while <cite>guess_Xs</cite> will work on an array of many atoms.</p>
 <p>Masses are looked up in <a class="reference internal" href="tables.html#MDAnalysis.topology.tables.masses" title="MDAnalysis.topology.tables.masses"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.topology.tables.masses</span></code></a>.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">Unknown masses are set to 0.00</p>
+<p class="last">Unknown masses are set to 0.0</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Try uppercase atom type name as well</p>
 </div>
 </dd></dl>
 
@@ -281,9 +284,11 @@ ie the improper dihedral is the angle between the planes formed by
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>atom_types</strong> – Type of each atom</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)">None</a></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><em>None</em></li>
+<li><em>.. versionchanged:: 0.20.0</em> – Try uppercase atom type name as well</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
