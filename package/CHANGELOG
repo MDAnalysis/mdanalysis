@@ -13,12 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy ??? This could be you
+mm/dd/yy IAlibay
 
   * 0.20.1
 Enhancements
 
 Fixes
+  * The NetCDF writer now writes `cell_angle` units as `degree` instead of
+    `degrees` in accordance with the AMBER NetCDF convention (Issue #2327).
 
 
 
