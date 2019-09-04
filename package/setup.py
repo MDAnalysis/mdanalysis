@@ -101,6 +101,7 @@ except ImportError:
         print("*** package: Cython not found ***")
         print("MDAnalysis requires cython for development builds")
         sys.exit(1)
+    cython_linetrace = False
 
 
 class Config(object):
