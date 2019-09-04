@@ -320,6 +320,11 @@ environment before importing MDAnalysis.</p>
 <p><span class="versionmodified">Changed in version 0.17.0: </span>Use fast <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> for writing but fall back to slow
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> if <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> is not available.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.1: </span>Changes the <cite>cell_angles</cite> unit to the AMBER NetCDF convention standard
+of <cite>degree</cite> instead of the <cite>degrees</cite> written in previous version of
+MDAnalysis (Issue #2327).</p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFWriter.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.close" title="Permalink to this definition">¶</a></dt>

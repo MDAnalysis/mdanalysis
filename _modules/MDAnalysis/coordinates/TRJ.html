@@ -887,10 +887,13 @@
 <span class="sd">    .. versionchanged:: 0.17.0</span>
 <span class="sd">       Use fast :mod:`netCDF4` for writing but fall back to slow</span>
 <span class="sd">       :mod:`scipy.io.netcdf` if :mod:`netCDF4` is not available.</span>
+<span class="sd">    .. versionchanged:: 0.20.1</span>
+<span class="sd">       Changes the `cell_angles` unit to the AMBER NetCDF convention standard</span>
+<span class="sd">       of `degree` instead of the `degrees` written in previous version of</span>
+<span class="sd">       MDAnalysis (Issue #2327).</span>
 
 <span class="sd">    .. TODO:</span>
-<span class="sd">       * Change the `cell_angles` units to `degree`, implement `scale_factor`</span>
-<span class="sd">         handling (Issue #2327).</span>
+<span class="sd">       * Implement `scale_factor` handling (Issue #2327).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1007,7 +1010,7 @@
 
             <span class="n">cell_angles</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span>
                                                 <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;cell_angular&#39;</span><span class="p">))</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">cell_angles</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;degrees&#39;</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">cell_angles</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">)</span>
 
             <span class="n">cell_angular</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;cell_angular&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span>
                                                  <span class="p">(</span><span class="s1">&#39;cell_angular&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">))</span>
