@@ -795,6 +795,30 @@ class _NCDFWriterTest(object):
                                       self.prec,
                                       err_msg="unitcells are not identical")
 
+    @pytest.mark.parametrize('var, expected', (
+        ('coordinates', 'angstrom'),
+        ('time', 'picosecond'),
+        ('cell_lengths', 'angstrom'),
+        ('cell_angles', 'degree'),
+        ('velocities', 'angstrom/picosecond'),
+    ))
+    def test_writer_units(self, universe, outfile, var, expected):
+        """Tests that the writer adheres to AMBER convention units
+        TODO: switch to input trajectory that also has force information.
+        """
+        trr = mda.Universe(GRO, TRR)
+
+        with mda.Writer(outfile, trr.trajectory.n_atoms, velocities=True,
+                        format='ncdf') as W:
+            for ts in trr.trajectory:
+                W.write_next_timestep(ts)
+
+        with netcdf.netcdf_file(outfile, mode='r') as ncdf:
+            unit = ncdf.variables[var].units.decode('utf-8')
+            assert_equal(unit, expected)
+
+        del trr
+
 
 class TestNCDFWriter(_NCDFWriterTest, RefVGV):
     pass

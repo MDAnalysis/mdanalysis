@@ -847,10 +847,13 @@ class NCDFWriter(base.WriterBase):
     .. versionchanged:: 0.17.0
        Use fast :mod:`netCDF4` for writing but fall back to slow
        :mod:`scipy.io.netcdf` if :mod:`netCDF4` is not available.
+    .. versionchanged:: 0.20.1
+       Changes the `cell_angles` unit to the AMBER NetCDF convention standard
+       of `degree` instead of the `degrees` written in previous version of
+       MDAnalysis (Issue #2327).
 
     .. TODO:
-       * Change the `cell_angles` units to `degree`, implement `scale_factor`
-         handling (Issue #2327).
+       * Implement `scale_factor` handling (Issue #2327).
 
     """
 
@@ -967,7 +970,7 @@ class NCDFWriter(base.WriterBase):
 
             cell_angles = ncfile.createVariable('cell_angles', 'f8',
                                                 ('frame', 'cell_angular'))
-            setattr(cell_angles, 'units', 'degrees')
+            setattr(cell_angles, 'units', 'degree')
 
             cell_angular = ncfile.createVariable('cell_angular', 'c',
                                                  ('cell_angular', 'label'))
