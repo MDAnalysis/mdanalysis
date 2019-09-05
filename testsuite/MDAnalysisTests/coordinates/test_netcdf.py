@@ -37,7 +37,7 @@ from MDAnalysis.coordinates.TRJ import NCDFReader
 
 from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini,
-                                       PRM_NCBOX, TRJ_NCBOX)
+                                       PRM_NCBOX, TRJ_NCBOX, DLP_CONFIG)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
 from MDAnalysisTests import make_Universe
@@ -873,6 +873,33 @@ class TestNCDFWriterVelsForces(object):
                     getattr(ts, 'forces')
 
         u.trajectory.close()
+
+
+class TestNCDFWriterUnits(object):
+    """Tests that the writer adheres to AMBER convention units"""
+    @pytest.fixture()
+    def outfile(self, tmpdir):
+        return str(tmpdir) + 'ncdf-writer-1.ncdf'
+
+    @pytest.mark.parametrize('var, expected', (
+        ('coordinates', 'angstrom'),
+        ('time', 'picosecond'),
+        ('cell_lengths', 'angstrom'),
+        ('cell_angles', 'degree'),
+        ('velocities', 'angstrom/picosecond'),
+        ('forces', 'kilocalorie/mole/angstrom')
+    ))
+    def test_writer_units(self, outfile, var, expected):
+        trr = mda.Universe(DLP_CONFIG, format='CONFIG')
+
+        with mda.Writer(outfile, trr.trajectory.n_atoms, velocities=True,
+                        forces=True, format='ncdf') as W:
+            for ts in trr.trajectory:
+                W.write_next_timestep(ts)
+
+        with netcdf.netcdf_file(outfile, mode='r') as ncdf:
+            unit = ncdf.variables[var].units.decode('utf-8')
+            assert_equal(unit, expected)
 
 
 class TestNCDFWriterErrors(object):

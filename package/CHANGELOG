@@ -13,6 +13,16 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+09/05/19 IAlibay, richardjgowers
+
+  * 0.20.1
+
+Fixes
+  * The NetCDF writer now writes `cell_angle` units as `degree` instead of
+    `degrees` in accordance with the AMBER NetCDF convention (Issue #2327).
+  * Fixed installation without Cython (Issue #2337)
+
+
 08/28/19 micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
