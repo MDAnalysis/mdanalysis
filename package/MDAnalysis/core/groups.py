@@ -806,7 +806,7 @@ class GroupBase(_MutableBase):
         unique_compound_indices, compound_sizes = np.unique(compound_indices,
                                                             return_counts=True)
         n_compounds = len(unique_compound_indices)
-        unique_compound_sizes = unique_int_1d(compound_sizes)
+        unique_compound_sizes = unique_int_1d(compound_sizes.astype(np.int64))
         # Allocate output array:
         centers = np.zeros((n_compounds, 3), dtype=dtype)
         # Compute centers per compound for each compound size:
@@ -1008,7 +1008,7 @@ class GroupBase(_MutableBase):
         unique_compound_indices, compound_sizes = np.unique(compound_indices,
                                                             return_counts=True)
         n_compounds = len(unique_compound_indices)
-        unique_compound_sizes = unique_int_1d(compound_sizes)
+        unique_compound_sizes = unique_int_1d(compound_sizes.astype(np.int64))
         # Allocate output array:
         accumulation = np.zeros([n_compounds] + higher_dims)
         # Compute sums per compound for each compound size:
@@ -1503,7 +1503,7 @@ class GroupBase(_MutableBase):
                 shifts = target - ctrpos
 
                 # apply the shifts:
-                unique_compound_indices = unique_int_1d(compound_indices)
+                unique_compound_indices = unique_int_1d(compound_indices.astype(np.int64))
                 shift_idx = 0
                 for i in unique_compound_indices:
                     mask = np.where(compound_indices == i)
@@ -1644,7 +1644,7 @@ class GroupBase(_MutableBase):
                     raise NoDataError("Cannot use compound='molecules', this "
                                       "requires molnums.")
             # Now process every compound:
-            unique_compound_indices = unique_int_1d(compound_indices)
+            unique_compound_indices = unique_int_1d(compound_indices.astype(np.int64))
             positions = unique_atoms.positions
             for i in unique_compound_indices:
                 mask = np.where(compound_indices == i)
@@ -2310,7 +2310,7 @@ class AtomGroup(GroupBase):
         """A sorted :class:`ResidueGroup` of the unique
         :class:`Residues<Residue>` present in the :class:`AtomGroup`.
         """
-        rg = self.universe.residues[unique_int_1d(self.resindices)]
+        rg = self.universe.residues[unique_int_1d(self.resindices.astype(np.int64))]
         rg._cache['isunique'] = True
         rg._cache['unique'] = rg
         return rg
@@ -2357,7 +2357,7 @@ class AtomGroup(GroupBase):
         """A sorted :class:`SegmentGroup` of the unique segments present in the
         :class:`AtomGroup`.
         """
-        sg = self.universe.segments[unique_int_1d(self.segindices)]
+        sg = self.universe.segments[unique_int_1d(self.segindices.astype(np.int64))]
         sg._cache['isunique'] = True
         sg._cache['unique'] = sg
         return sg
@@ -2892,7 +2892,7 @@ class AtomGroup(GroupBase):
                                                          accessors.keys()))
 
         return [self[levelindices == index] for index in
-                unique_int_1d(levelindices)]
+                unique_int_1d(levelindices.astype(np.int64))]
 
     def guess_bonds(self, vdwradii=None):
         """Guess bonds that exist within this :class:`AtomGroup` and add them to
@@ -3224,7 +3224,7 @@ class ResidueGroup(GroupBase):
         """Get sorted :class:`SegmentGroup` of the unique segments present in
         the :class:`ResidueGroup`.
         """
-        sg = self.universe.segments[unique_int_1d(self.segindices)]
+        sg = self.universe.segments[unique_int_1d(self.segindices.astype(np.int64))]
         sg._cache['isunique'] = True
         sg._cache['unique'] = sg
         return sg
@@ -3296,7 +3296,7 @@ class ResidueGroup(GroupBase):
         """
         if self.isunique:
             return self
-        _unique = self.universe.residues[unique_int_1d(self.ix)]
+        _unique = self.universe.residues[unique_int_1d(self.ix.astype(np.int64))]
         # Since we know that _unique is a unique ResidueGroup, we set its
         # uniqueness caches from here:
         _unique._cache['isunique'] = True
@@ -3442,7 +3442,7 @@ class SegmentGroup(GroupBase):
         """
         if self.isunique:
             return self
-        _unique = self.universe.segments[unique_int_1d(self.ix)]
+        _unique = self.universe.segments[unique_int_1d(self.ix.astype(np.int64))]
         # Since we know that _unique is a unique SegmentGroup, we set its
         # uniqueness caches from here:
         _unique._cache['isunique'] = True
