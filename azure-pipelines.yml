@@ -21,7 +21,7 @@ jobs:
            cd /mdanalysis/package && \
            python3 setup.py install --user && \
            cd .. && \
-           /root/.local/bin/pytest --disable-pytest-warnings --durations=50 testsuite/MDAnalysisTests"
+           /root/.local/bin/pytest --disable-pytest-warnings --junitxml=junit/test-results.xml --durations=50 testsuite/MDAnalysisTests"
     displayName: 'Run 32-bit Ubuntu Docker Build / Tests'
   - task: PublishTestResults@2
     condition: succeededOrFailed()
