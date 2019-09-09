@@ -538,9 +538,9 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
                 distances = _distances[mask]
 
     if return_distances:
-        return pairs, distances
+        return pairs.astype(np.int64), distances
     else:
-        return pairs
+        return pairs.astype(np.int64)
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
@@ -620,9 +620,9 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
                     pairs, distances = pairs[mask], distances[mask]
 
     if return_distances:
-        return pairs, distances
+        return pairs.astype(np.int64), distances
     else:
-        return pairs
+        return pairs.astype(np.int64)
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
@@ -719,9 +719,9 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
                 pairs, distances = pairs[idx], distances[idx]
 
     if return_distances:
-        return pairs, distances
+        return pairs.astype(np.int64), distances
     else:
-        return pairs
+        return pairs.astype(np.int64)
 
 
 def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
@@ -935,8 +935,8 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
             pairs = np.c_[mask[0], mask[1]]
             distances = dist[mask]
     if return_distances:
-        return pairs, distances
-    return pairs
+        return pairs.astype(np.int64), distances
+    return pairs.astype(np.int64)
 
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
@@ -1011,8 +1011,8 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
                     idx = distances > min_cutoff
                     pairs, distances = pairs[idx], distances[idx]
     if return_distances:
-        return pairs, distances
-    return pairs
+        return pairs.astype(np.int64), distances
+    return pairs.astype(np.int64)
 
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
@@ -1106,8 +1106,8 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
                 pairs, distances = pairs[idx], distances[idx]
 
     if return_distances:
-        return pairs, distances
-    return pairs
+        return pairs.astype(np.int64), distances
+    return pairs.astype(np.int64)
 
 
 @check_coords('coords')
