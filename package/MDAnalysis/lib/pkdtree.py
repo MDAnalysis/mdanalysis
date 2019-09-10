@@ -203,6 +203,49 @@ class PeriodicKDTree(object):
                                      dtype=np.int64)
         self._indices = np.asarray(unique_int_1d(self._indices))
         return self._indices
+    
+    def search_ball(self, centers, radius):
+        """Find all points within radius of each point in centers.
+
+        All the centers coordinates are wrapped around the central cell
+        to enable distance evaluations from points in the tree
+        and their images.
+        
+        Analogous to a cKDTree's query_ball_point.
+
+        Parameters
+        ----------
+        centers: array_like (N,3)
+          coordinate array to search for neighbors
+        radius: float
+          maximum distance to search for neighbors.
+          
+        Returns
+        ------
+        indices : list of list
+          indices of all neighbors within radius of each point in centers.
+        """
+        if not self._built:
+            raise RuntimeError('Unbuilt tree. Run tree.set_coords(...)')
+
+        centers = np.asarray(centers)
+        if centers.shape == (self.dim, ):
+            centers = centers.reshape((1, self.dim))
+
+        # Sanity check
+        if self.pbc:
+            if self.cutoff < radius:
+                raise RuntimeError('Set cutoff greater or equal to the radius.')
+            # Bring all query points to the central cell
+            wrapped_centers = apply_PBC(centers, self.box)
+            indices = self.ckdt.query_ball_point(wrapped_centers, radius)
+
+            indices = [unique_int_1d(undo_augment(np.asarray(i), self.mapping, len(self.coords))) for i in indices]
+        else:
+            wrapped_centers = np.asarray(centers)
+            indices = self.ckdt.query_ball_point(wrapped_centers, radius)
+
+        return indices
 
     def get_indices(self):
         """Return the neighbors from the last query.
