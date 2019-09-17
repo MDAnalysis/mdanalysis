@@ -657,7 +657,7 @@ class TopologyGroup(object):
         if not self:
             # empty TG
             shape = _BTYPE_TO_SHAPE[self.btype]
-            return np.zeros((0, shape), dtype=np.int32)
+            return np.zeros((0, shape), dtype=np.intp)
         else:
             return self._bix
 

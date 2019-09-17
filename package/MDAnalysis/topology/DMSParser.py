@@ -117,20 +117,20 @@ class DMSParser(TopologyReaderBase):
         attrs = {}
 
         # Row factories for different data types
-        facs = {np.int32: lambda c, r: r[0],
+        facs = {np.intp: lambda c, r: r[0],
                 np.float32: lambda c, r: r[0],
                 object: lambda c, r: str(r[0].strip())}
 
         with sqlite3.connect(self.filename) as con:
             # Selecting single column, so just strip tuple
             for attrname, dt in [
-                    ('id', np.int32),
-                    ('anum', np.int32),
+                    ('id', np.intp),
+                    ('anum', np.intp),
                     ('mass', np.float32),
                     ('charge', np.float32),
                     ('name', object),
                     ('resname', object),
-                    ('resid', np.int32),
+                    ('resid', np.intp),
                     ('chain', object),
                     ('segid', object),
             ]:

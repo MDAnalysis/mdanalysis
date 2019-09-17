@@ -1216,8 +1216,8 @@ def Merge(*args):
         residx.extend([res_mapping[x] for x in ag.resindices])
         segidx.extend([seg_mapping[x] for x in ag.segindices])
 
-    residx = np.array(residx, dtype=np.int32)
-    segidx = np.array(segidx, dtype=np.int32)
+    residx = np.array(residx, dtype=np.intp)
+    segidx = np.array(segidx, dtype=np.intp)
 
     _, _, [segidx] = squash_by(residx, segidx)
 

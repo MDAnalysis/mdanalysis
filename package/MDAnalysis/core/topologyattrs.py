@@ -462,7 +462,7 @@ class Atomids(AtomAttr):
     attrname = 'ids'
     singular = 'id'
     per_object = 'atom'
-    dtype = int
+    dtype = np.intp
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1324,7 +1324,7 @@ class Resids(ResidueAttr):
     attrname = 'resids'
     singular = 'resid'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
-    dtype = int
+    dtype = np.intp
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1500,7 +1500,7 @@ class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
-    dtype = int
+    dtype = np.intp
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1537,7 +1537,7 @@ class Molnums(ResidueAttr):
     attrname = 'molnums'
     singular = 'molnum'
     target_classes = [AtomGroup, ResidueGroup, Atom, Residue]
-    dtype = np.int64
+    dtype = np.intp
 
 # segment attributes
 
@@ -1696,7 +1696,7 @@ class _Connection(AtomAttr):
             unique_bonds = self._bondDict[ag.ix]
         bond_idx, types, guessed, order = np.hsplit(
             np.array(sorted(unique_bonds)), 4)
-        bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
+        bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.intp)
         types = types.ravel()
         guessed = guessed.ravel()
         order = order.ravel()
@@ -1789,7 +1789,7 @@ class Bonds(_Connection):
         .. versionadded:: 0.20.0
         """
         fragdict = self.universe._fragdict
-        return np.array([fragdict[aix].ix for aix in self.ix], dtype=np.int64)
+        return np.array([fragdict[aix].ix for aix in self.ix], dtype=np.intp)
 
     def fragment(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` representing the

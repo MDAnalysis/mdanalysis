@@ -89,10 +89,10 @@ class GROParser(TopologyReaderBase):
             n_atoms = int(next(inf))
 
             # Allocate shizznizz
-            resids = np.zeros(n_atoms, dtype=np.int32)
+            resids = np.zeros(n_atoms, dtype=np.intp)
             resnames = np.zeros(n_atoms, dtype=object)
             names = np.zeros(n_atoms, dtype=object)
-            indices = np.zeros(n_atoms, dtype=np.int32)
+            indices = np.zeros(n_atoms, dtype=np.intp)
 
             for i, line in enumerate(inf):
                 if i == n_atoms:

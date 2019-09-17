@@ -43,13 +43,14 @@ cdef extern from "calc_distances.h":
     void minimum_image(double* x, float* box, float* inverse_box)
     void minimum_image_triclinic(double* dx, float* box)
 
-ctypedef cset[int] intset
-ctypedef cmap[int, intset] intmap
+ctypedef cset[np.intp_t] intset
+ctypedef cmap[np.intp_t, intset] intmap
+
 
 
 @cython.boundscheck(False) # turn off bounds-checking for entire function
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
-def unique_int_1d(np.int64_t[:] values):
+def unique_int_1d(np.intp_t[:] values):
     """Find the unique elements of a 1D array of integers.
 
     This function is optimal on sorted arrays.
@@ -57,7 +58,7 @@ def unique_int_1d(np.int64_t[:] values):
     Parameters
     ----------
     values: numpy.ndarray
-        1D array of dtype ``numpy.int64`` in which to find the unique values.
+        1D array of dtype ``numpy.intp`` in which to find the unique values.
 
     Returns
     -------
@@ -68,10 +69,10 @@ def unique_int_1d(np.int64_t[:] values):
     .. versionadded:: 0.19.0
     """
     cdef bint is_monotonic = True
-    cdef int i = 0
-    cdef int j = 0
+    cdef np.intp_t i = 0
+    cdef np.intp_t j = 0
     cdef int n_values = values.shape[0]
-    cdef np.int64_t[:] result = np.empty(n_values, dtype=np.int64)
+    cdef np.intp_t[:] result = np.empty(n_values, dtype=np.intp)
 
     if n_values == 0:
         return np.array(result)
@@ -188,9 +189,9 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     """
     cdef intset refpoints, todo, done
     cdef np.intp_t i, j, nloops, ref, atom, other, natoms
-    cdef cmap[int, int] ix_to_rel
+    cdef cmap[np.intp_t, np.intp_t] ix_to_rel
     cdef intmap bonding
-    cdef int[:, :] bonds
+    cdef np.intp_t[:, :] bonds
     cdef float[:, :] oldpos, newpos
     cdef bint ortho
     cdef float[:] box
@@ -409,13 +410,13 @@ def find_fragments(atoms, bondlist):
     """
     cdef intmap bondmap
     cdef intset todo, frag_todo, frag_done
-    cdef vector[int] this_frag
-    cdef int i, a, b
-    cdef np.int64_t[:] atoms_view
-    cdef np.int32_t[:, :] bonds_view
+    cdef vector[np.intp_t] this_frag
+    cdef np.intp_t i, a, b
+    cdef np.intp_t[:] atoms_view
+    cdef np.intp_t[:, :] bonds_view
 
-    atoms_view = np.asarray(atoms, dtype=np.int64)
-    bonds_view = np.asarray(bondlist, dtype=np.int32)
+    atoms_view = np.asarray(atoms, dtype=np.intp)
+    bonds_view = np.asarray(bondlist, dtype=np.intp)
 
     # grab record of which atoms I have to process
     # ie set of all nodes

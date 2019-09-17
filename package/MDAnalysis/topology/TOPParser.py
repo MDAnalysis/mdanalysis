@@ -243,7 +243,7 @@ class TOPParser(TopologyReaderBase):
 
         resptrs = attrs.pop('respoint')
         resptrs.append(n_atoms)
-        residx = np.zeros(n_atoms, dtype=np.int32)
+        residx = np.zeros(n_atoms, dtype=np.intp)
         for i, (x, y) in enumerate(zip(resptrs[:-1], resptrs[1:])):
             residx[x:y] = i
 
@@ -457,7 +457,7 @@ class TOPParser(TopologyReaderBase):
             index for each atom
         """
         vals = self.parsesection_mapper(numlines, lambda x: int(x))
-        attr = TypeIndices(np.array(vals, dtype=np.int32))
+        attr = TypeIndices(np.array(vals, dtype=np.intp))
         return attr
 
     def parse_residx(self, num_per_record, numlines):

@@ -154,13 +154,13 @@ class MOL2Parser(TopologyReaderBase):
         masses = guessers.guess_masses(types)
 
         attrs = []
-        attrs.append(Atomids(np.array(ids, dtype=np.int32)))
+        attrs.append(Atomids(np.array(ids, dtype=np.intp)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Atomtypes(np.array(types, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Masses(masses, guessed=True))
 
-        resids = np.array(resids, dtype=np.int32)
+        resids = np.array(resids, dtype=np.intp)
         resnames = np.array(resnames, dtype=object)
 
         residx, resids, (resnames,) = squash_by(

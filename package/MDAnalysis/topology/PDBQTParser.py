@@ -151,7 +151,7 @@ class PDBQTParser(TopologyReaderBase):
         attrs = []
         for attrlist, Attr, dtype in (
                 (record_types, RecordTypes, object),
-                (serials, Atomids, np.int32),
+                (serials, Atomids, np.intp),
                 (names, Atomnames, object),
                 (altlocs, AltLocs, object),
                 (occupancies, Occupancies, np.float32),
@@ -162,7 +162,7 @@ class PDBQTParser(TopologyReaderBase):
             attrs.append(Attr(np.array(attrlist, dtype=dtype)))
         attrs.append(Masses(masses, guessed=True))
 
-        resids = np.array(resids, dtype=np.int32)
+        resids = np.array(resids, dtype=np.intp)
         icodes = np.array(icodes, dtype=object)
         resnames = np.array(resnames, dtype=object)
         chainids = np.array(chainids, dtype=object)

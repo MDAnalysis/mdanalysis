@@ -264,16 +264,16 @@ def do_mtop(data, fver):
     # mtop_ffparams_cmap_grid_cmapdata     = 'NULL'
     # do_groups(data, symtab)
 
-    atomids = Atomids(np.array(atomids, dtype=np.int32))
+    atomids = Atomids(np.array(atomids, dtype=np.intp))
     atomnames = Atomnames(np.array(atomnames, dtype=object))
     atomtypes = Atomtypes(np.array(atomtypes, dtype=object))
     charges = Charges(np.array(charges, dtype=np.float32))
     masses = Masses(np.array(masses, dtype=np.float32))
 
     moltypes = np.array(moltypes, dtype=object)
-    molnums = np.array(molnums, dtype=np.int32)
+    molnums = np.array(molnums, dtype=np.intp)
     segids = np.array(segids, dtype=object)
-    resids = np.array(resids, dtype=np.int32)
+    resids = np.array(resids, dtype=np.intp)
     resnames = np.array(resnames, dtype=object)
     (residx, new_resids,
      (new_resnames,

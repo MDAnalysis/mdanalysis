@@ -522,7 +522,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
         ``configuration[pairs[k, 1]]``.
     """
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     if len(reference) > 0 and len(configuration) > 0:
@@ -538,9 +538,9 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
                 distances = _distances[mask]
 
     if return_distances:
-        return pairs.astype(np.int64), distances
+        return pairs, distances
     else:
-        return pairs.astype(np.int64)
+        return pairs
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
@@ -584,7 +584,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
     Returns
     -------
-    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
+    pairs : numpy.ndarray (``dtype=numpy.intp``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` and
         `configuration` arrays such that the distance between them lies within
         the interval (`min_cutoff`, `max_cutoff`].
@@ -601,7 +601,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     if len(reference) > 0 and len(configuration) > 0:
@@ -620,9 +620,9 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
                     pairs, distances = pairs[mask], distances[mask]
 
     if return_distances:
-        return pairs.astype(np.int64), distances
+        return pairs, distances
     else:
-        return pairs.astype(np.int64)
+        return pairs
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
@@ -666,7 +666,7 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
     Returns
     -------
-    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
+    pairs : numpy.ndarray (``dtype=numpy.intp``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` and
         `configuration` arrays such that the distance between them lies within
         the interval (`min_cutoff`, `max_cutoff`].
@@ -681,7 +681,7 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         ``configuration[pairs[k, 1]]``.
     """
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     if len(reference) > 0 and len(configuration) > 0:
@@ -719,9 +719,9 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
                 pairs, distances = pairs[idx], distances[idx]
 
     if return_distances:
-        return pairs.astype(np.int64), distances
+        return pairs, distances
     else:
-        return pairs.astype(np.int64)
+        return pairs
 
 
 def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
@@ -761,7 +761,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
 
     Returns
     -------
-    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
+    pairs : numpy.ndarray (``dtype=numpy.intp``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` array
         such that the distance between them lies within the interval
         (`min_cutoff`, `max_cutoff`].
@@ -898,7 +898,7 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
 
     Returns
     -------
-    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
+    pairs : numpy.ndarray (``dtype=numpy.intp``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` array
         such that the distance between them lies within the interval
         (`min_cutoff`, `max_cutoff`].
@@ -915,7 +915,7 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
        Added `return_distances` keyword.
     """
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     N = len(reference)
@@ -935,8 +935,8 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
             pairs = np.c_[mask[0], mask[1]]
             distances = dist[mask]
     if return_distances:
-        return pairs.astype(np.int64), distances
-    return pairs.astype(np.int64)
+        return pairs, distances
+    return pairs
 
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
@@ -973,7 +973,7 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
 
     Returns
     -------
-    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
+    pairs : numpy.ndarray (``dtype=numpy.intp``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` array
         such that the distance between them lies within the interval
         (`min_cutoff`, `max_cutoff`].
@@ -992,7 +992,7 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     # We're searching within a single coordinate set, so we need at least two
@@ -1011,8 +1011,8 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
                     idx = distances > min_cutoff
                     pairs, distances = pairs[idx], distances[idx]
     if return_distances:
-        return pairs.astype(np.int64), distances
-    return pairs.astype(np.int64)
+        return pairs, distances
+    return pairs
 
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
@@ -1047,7 +1047,7 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
 
     Returns
     -------
-    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)
+    pairs : numpy.ndarray (``dtype=numpy.intp``, ``shape=(n_pairs, 2)``)
         Pairs of indices, corresponding to coordinates in the `reference` array
         such that the distance between them lies within the interval
         (`min_cutoff`, `max_cutoff`].
@@ -1064,7 +1064,7 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
        Added `return_distances` keyword.
     """
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     # We're searching within a single coordinate set, so we need at least two
@@ -1106,8 +1106,8 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
                 pairs, distances = pairs[idx], distances[idx]
 
     if return_distances:
-        return pairs.astype(np.int64), distances
-    return pairs.astype(np.int64)
+        return pairs, distances
+    return pairs
 
 
 @check_coords('coords')

@@ -151,14 +151,14 @@ class GSDParser(TopologyReaderBase):
                     attrs[attrname] = attr(vals)
 
             # get body ids to set residue number and ids
-            blist = snap.particles.body.astype(np.int64)
-            bodies = np.unique(blist).astype(np.int32)
+            blist = snap.particles.body.astype(np.intp)
+            bodies = np.unique(blist).astype(np.intp)
             # this fixes the fact that the Topology constructor gets stuck in an
             # infinite loop if any resid is negative.
             if (blist<0).any() :
                 m = blist.min()
                 blist += abs(m)
-            bodies = np.unique(blist).astype(np.int32)
+            bodies = np.unique(blist).astype(np.intp)
             nbodies = bodies.size
 
         attrs = list(attrs.values())

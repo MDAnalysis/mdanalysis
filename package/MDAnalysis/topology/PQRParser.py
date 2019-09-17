@@ -202,7 +202,7 @@ class PQRParser(TopologyReaderBase):
         masses = guessers.guess_masses(atomtypes)
 
         attrs = []
-        attrs.append(Atomids(np.array(serials, dtype=np.int32)))
+        attrs.append(Atomids(np.array(serials, dtype=np.intp)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Atomtypes(atomtypes, guessed=guessed_types))
@@ -210,7 +210,7 @@ class PQRParser(TopologyReaderBase):
         attrs.append(RecordTypes(np.array(record_types, dtype=object)))
         attrs.append(Radii(np.array(radii, dtype=np.float32)))
 
-        resids = np.array(resids, dtype=np.int32)
+        resids = np.array(resids, dtype=np.intp)
         icodes = np.array(icodes, dtype=object)
         resnames = np.array(resnames, dtype=object)
         chainIDs = np.array(chainIDs, dtype=object)

@@ -65,7 +65,7 @@ class ConfigParser(TopologyReaderBase):
     def parse(self, **kwargs):
         with openany(self.filename) as inf:
             inf.readline()
-            levcfg, imcon, megatm = np.int64(inf.readline().split()[:3])
+            levcfg, imcon, megatm = np.intp(inf.readline().split()[:3])
             if not imcon == 0:
                 inf.readline()
                 inf.readline()
@@ -131,7 +131,7 @@ class HistoryParser(TopologyReaderBase):
     def parse(self, **kwargs):
         with openany(self.filename) as inf:
             inf.readline()
-            levcfg, imcon, megatm = np.int64(inf.readline().split()[:3])
+            levcfg, imcon, megatm = np.intp(inf.readline().split()[:3])
             inf.readline()
             if not imcon == 0:
                 inf.readline()

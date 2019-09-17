@@ -134,12 +134,12 @@ class CRDParser(TopologyReaderBase):
                 segids.append(segid)
 
         # Convert to np arrays
-        atomids = np.array(atomids, dtype=np.int32)
+        atomids = np.array(atomids, dtype=np.intp)
         atomnames = np.array(atomnames, dtype=object)
         tempfactors = np.array(tempfactors, dtype=np.float32)
-        resids = np.array(resids, dtype=np.int32)
+        resids = np.array(resids, dtype=np.intp)
         resnames = np.array(resnames, dtype=object)
-        resnums = np.array(resnums, dtype=np.int32)
+        resnums = np.array(resnums, dtype=np.intp)
         segids = np.array(segids, dtype=object)
 
         # Guess some attributes

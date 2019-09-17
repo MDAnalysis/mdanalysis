@@ -157,7 +157,7 @@ class OrOperation(LogicOperation):
 
         # Find unique indices from both these AtomGroups
         # and slice master list using them
-        idx = np.union1d(lsel.indices, rsel.indices).astype(np.int32)
+        idx = np.union1d(lsel.indices, rsel.indices).astype(np.intp)
 
         return group.universe.atoms[idx]
 

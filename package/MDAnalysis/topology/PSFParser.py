@@ -264,9 +264,9 @@ class PSFParser(TopologyReaderBase):
         #   0:8   9:13   14:18   19:23   24:28   29:33   34:48 48:62 62:70 70:84 84:98
 
         # Allocate arrays
-        atomids = np.zeros(numlines, dtype=np.int32)
+        atomids = np.zeros(numlines, dtype=np.intp)
         segids = np.zeros(numlines, dtype=object)
-        resids = np.zeros(numlines, dtype=np.int32)
+        resids = np.zeros(numlines, dtype=np.intp)
         resnames = np.zeros(numlines, dtype=object)
         atomnames = np.zeros(numlines, dtype=object)
         atomtypes = np.zeros(numlines, dtype=object)
@@ -339,7 +339,7 @@ class PSFParser(TopologyReaderBase):
 
         for i in range(numlines):
             # Subtract 1 from each number to ensure zero-indexing for the atoms
-            fields = np.int64(lines().split()) - 1
+            fields = np.intp(lines().split()) - 1
             for j in range(0, len(fields), atoms_per):
                 section.append(tuple(fields[j:j+atoms_per]))
         return section

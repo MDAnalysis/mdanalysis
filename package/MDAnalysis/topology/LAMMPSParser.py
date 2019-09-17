@@ -356,7 +356,7 @@ class DATAParser(TopologyReaderBase):
         # TODO: could maybe store this from topology parsing?
         # Or try to reach into Universe?
         # but ugly because assumes lots of things, and Reader should be standalone
-        ids = np.zeros(len(pos), dtype=np.int32)
+        ids = np.zeros(len(pos), dtype=np.intp)
 
         if self.style_dict is None:
             if len(datalines[0].split()) in (7, 10):
@@ -473,12 +473,12 @@ class DATAParser(TopologyReaderBase):
         has_resid = 'resid' in sd
 
         # atom ids aren't necessarily sequential
-        atom_ids = np.zeros(n_atoms, dtype=np.int32)
+        atom_ids = np.zeros(n_atoms, dtype=np.intp)
         types = np.zeros(n_atoms, dtype=object)
         if has_resid:
-            resids = np.zeros(n_atoms, dtype=np.int32)
+            resids = np.zeros(n_atoms, dtype=np.intp)
         else:
-            resids = np.ones(n_atoms, dtype=np.int32)
+            resids = np.ones(n_atoms, dtype=np.intp)
         if has_charge:
             charges = np.zeros(n_atoms, dtype=np.float32)
 
@@ -603,7 +603,7 @@ class LammpsDumpParser(TopologyReaderBase):
             fin.readline()  # y
             fin.readline()  # z
 
-            indices = np.zeros(natoms, dtype=int)
+            indices = np.zeros(natoms, dtype=np.intp)
             types = np.zeros(natoms, dtype=object)
             
             fin.readline()  # ITEM ATOMS
@@ -622,8 +622,8 @@ class LammpsDumpParser(TopologyReaderBase):
         attrs.append(Atomtypes(types))
         attrs.append(Masses(np.ones(natoms, dtype=np.float64), guessed=True))
         warnings.warn('Guessed all Masses to 1.0')
-        attrs.append(Resids(np.array([1], dtype=int)))
-        attrs.append(Resnums(np.array([1], dtype=int)))
+        attrs.append(Resids(np.array([1], dtype=np.intp)))
+        attrs.append(Resnums(np.array([1], dtype=np.intp)))
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
         return Topology(natoms, 1, 1, attrs=attrs)
@@ -767,7 +767,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                         data = []
                         for i in range(headers[h]):
                             fields = file_iter.next().strip().split()
-                            data.append(tuple(np.int64(fields[1:])))
+                            data.append(tuple(np.intp(fields[1:])))
                         sections[line] = data
                     elif line == "Atoms":
                         file_iter.next()

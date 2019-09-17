@@ -286,7 +286,7 @@ class PDBParser(TopologyReaderBase):
                 (altlocs, AltLocs, object),
                 (chainids, ChainIDs, object),
                 (record_types, RecordTypes, object),
-                (serials, Atomids, np.int32),
+                (serials, Atomids, np.intp),
                 (tempfactors, Tempfactors, np.float32),
                 (occupancies, Occupancies, np.float32),
         ):
@@ -305,7 +305,7 @@ class PDBParser(TopologyReaderBase):
         attrs.append(Masses(masses, guessed=True))
 
         # Residue level stuff from here
-        resids = np.array(resids, dtype=np.int32)
+        resids = np.array(resids, dtype=np.intp)
         resnames = np.array(resnames, dtype=object)
         if self.format == 'XPDB':  # XPDB doesn't have icodes
             icodes = [''] * n_atoms
