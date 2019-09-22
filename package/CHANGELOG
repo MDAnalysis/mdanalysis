@@ -108,9 +108,12 @@ Changes
   * Removed `MDAnalysis.migration` (Issue #2490, PR #2496)
   * The fasta2select now always assumes that the gap character in a sequence
     is "-" (Issue #2448, PR #2457)
+  * refactored Universe.__init__ with clear arguments. 
+    Universe.empty() now has n_atoms=0 as default. (Issue #2282)
 
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
+
 
 09/05/19 IAlibay, richardjgowers
 
