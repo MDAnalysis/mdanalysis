@@ -200,14 +200,29 @@ class TestChainReaderFormats(object):
         assert universe.trajectory.n_frames == 21
         assert_equal(universe.trajectory.filenames, [PDB, XTC, TRR])
 
+    def test_set_format_tuples_and_format(self):
+        universe = mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
+                                      (TRR, 'trr')], format='gro')
+        assert universe.trajectory.n_frames == 23
+        assert_equal(universe.trajectory.filenames, [PDB, GRO, GRO, XTC, TRR])
+        
+        with pytest.raises(TypeError) as errinfo:
+            mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
+                                      (TRR, 'trr')], format='pdb')
+        assert 'Unable to read' in str(errinfo.value)
+
+
     def test_set_one_format_tuple(self):
         universe = mda.Universe(PSF, [(PDB_small, 'pdb'), DCD])
         assert universe.trajectory.n_frames == 99
 
     def test_set_all_formats(self):
-        with pytest.raises(ValueError) as errinfo:
+        with pytest.raises(TypeError) as errinfo:
             mda.Universe(PDB, [PDB, GRO], format='gro')
         assert 'Unable to read' in str(errinfo.value)
+
+        universe = mda.Universe(GRO, [PDB, PDB, PDB], format='pdb')
+        assert_equal(universe.trajectory.filenames, [PDB, PDB, PDB])
 
 
 def build_trajectories(folder, sequences, fmt='xtc'):

@@ -84,7 +84,7 @@ def reader(filename, format=None, **kwargs):
     try:
         return Reader(filename, **kwargs)
     except ValueError:
-        raise ValueError('Unable to read {fn} with {r}.'.format(fn=filename,
+        raise TypeError('Unable to read {fn} with {r}.'.format(fn=filename,
                                                                 r=Reader))
 
 
