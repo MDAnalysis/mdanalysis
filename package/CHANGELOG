@@ -99,6 +99,7 @@ Changes
   * changed the water bridge analysis output format (PR #2087)
 
 Fixes
+  * fixed ChainReader setting format with format keyword (Issue #2334)
   * fixed lack of check for scaling of NCDFReader velocities (Issue #2323)
   * fixed PDBReader and PDBWriter newlines for PDB header (Issue #2324)
   * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
