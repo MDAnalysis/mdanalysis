@@ -86,7 +86,7 @@
 <span class="kn">from</span> <span class="nn">..core._get_readers</span> <span class="k">import</span> <span class="n">get_reader_for</span><span class="p">,</span> <span class="n">get_writer_for</span>
 
 
-<div class="viewcode-block" id="reader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/core.html#MDAnalysis.coordinates.core.reader">[docs]</a><span class="k">def</span> <span class="nf">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="reader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/core.html#MDAnalysis.coordinates.core.reader">[docs]</a><span class="k">def</span> <span class="nf">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Provide a trajectory reader instance for *filename*.</span>
 
 <span class="sd">    This function guesses the file format from the extension of *filename* and</span>
@@ -118,10 +118,14 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="n">Reader</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                                 <span class="nb">format</span><span class="o">=</span><span class="n">filename</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">Reader</span><span class="p">(</span><span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">Reader</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">Reader</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unable to read </span><span class="si">{fn}</span><span class="s1"> with </span><span class="si">{r}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+                                                                <span class="n">r</span><span class="o">=</span><span class="n">Reader</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/core.html#MDAnalysis.coordinates.core.writer">[docs]</a><span class="k">def</span> <span class="nf">writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
