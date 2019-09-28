@@ -488,8 +488,8 @@ class SelgroupSelection(Selection):
                             .format(grpname))
         try:
             self.grp = parser.selgroups[grpname]
-        except KeyError:
-            raise ValueError("Failed to find group: {0}".format(grpname))
+        except KeyError as e:
+            raise ValueError("Failed to find group: {0}".format(grpname)) from e
 
     def apply(self, group):
         mask = np.in1d(group.indices, self.grp.indices)
@@ -503,8 +503,8 @@ class FullSelgroupSelection(Selection):
         grpname = tokens.popleft()
         try:
             self.grp = parser.selgroups[grpname]
-        except KeyError:
-            raise ValueError("Failed to find group: {0}".format(grpname))
+        except KeyError as e:
+            raise ValueError("Failed to find group: {0}".format(grpname)) from e
 
     @deprecate(old_name='fullgroup', new_name='global group',
                message=' This will be removed in v0.15.0')
@@ -632,13 +632,13 @@ class ResidSelection(Selection):
         vals = group.resids
         try:  # optional attribute
             icodes = group.icodes
-        except (AttributeError, NoDataError):
+        except (AttributeError, NoDataError) as e:
             icodes = None
             # if no icodes and icodes are part of selection, cause a fuss
             if (any(v[1] for v in self.uppers) or
                 any(v[1] for v in self.lowers)):
                 raise ValueError("Selection specified icodes, while the "
-                                 "topology doesn't have any.")
+                                 "topology doesn't have any.") from e
 
         if not icodes is None:
             mask = self._sel_with_icodes(vals, icodes)
@@ -722,12 +722,12 @@ class RangeSelection(Selection):
             try:
                 lower = int(val)
                 upper = None
-            except ValueError:
+            except ValueError from e:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 selrange = re.match("(\d+)[:-](\d+)", val)
                 if not selrange:
                     raise ValueError(
-                        "Failed to parse number: {0}".format(val))
+                        "Failed to parse number: {0}".format(val)) from e
                 lower, upper = np.int64(selrange.groups())
 
             lowers.append(lower)
@@ -996,16 +996,16 @@ class PropertySelection(Selection):
         self.prop = prop
         try:
             self.operator = self.ops[oper]
-        except KeyError:
+        except KeyError as e:
             raise ValueError(
                 "Invalid operator : '{0}' Use one of : '{1}'"
-                "".format(oper, self.ops.keys()))
+                "".format(oper, self.ops.keys())) from e
         self.value = float(value)
 
     def apply(self, group):
         try:
             col = {'x': 0, 'y': 1, 'z': 2}[self.prop]
-        except KeyError:
+        except KeyError as e:
             if self.prop == 'mass':
                 values = group.masses
             elif self.prop == 'charge':
@@ -1013,7 +1013,7 @@ class PropertySelection(Selection):
             else:
                 raise SelectionError(
                     "Expected one of : {0}"
-                    "".format(['x', 'y', 'z', 'mass', 'charge']))
+                    "".format(['x', 'y', 'z', 'mass', 'charge'])) from e
         else:
             values = group.positions[:, col]
 
@@ -1185,10 +1185,10 @@ class SelectionParser(object):
 
         try:
             return _SELECTIONDICT[op](self, self.tokens)
-        except KeyError:
-            raise SelectionError("Unknown selection token: '{0}'".format(op))
+        except KeyError as e:
+            raise SelectionError("Unknown selection token: '{0}'".format(op)) from e
         except ValueError as e:
-            raise SelectionError("Selection failed: '{0}'".format(e))
+            raise SelectionError("Selection failed: '{0}'".format(e)) from e
 
 
 # The module level instance

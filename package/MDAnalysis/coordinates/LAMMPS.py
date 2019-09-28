@@ -160,8 +160,9 @@ class DCDWriter(DCD.DCDWriter):
             try:
                 if units.unit_types[unit] != unit_type:
                     raise TypeError("LAMMPS DCDWriter: wrong unit {0!r} for unit type {1!r}".format(unit, unit_type))
-            except KeyError:
-                raise ValueError("LAMMPS DCDWriter: unknown unit {0!r}".format(unit))
+            except KeyError as e:
+                errmsg = ("LAMMPS DCDWriter: unknown unit {0!r}".format(unit))
+                raise ValueError(errmsg) from e
         super(DCDWriter, self).__init__(*args, **kwargs)
 
 
@@ -340,10 +341,10 @@ class DATAWriter(base.WriterBase):
             try:
                 self.f.write('{:d} {:d} '.format(i, int(bond.type))+\
                         ' '.join((bond.atoms.indices + 1).astype(str))+'\n')
-            except TypeError:
+            except TypeError as e:
                 raise TypeError('LAMMPS DATAWriter: Trying to write bond, '
                                 'but bond type {} is not '
-                                'numerical.'.format(bond.type))
+                                'numerical.'.format(bond.type)) from e
 
     def _write_dimensions(self, dimensions):
         """Convert dimensions to triclinic vectors, convert lengths to native
@@ -401,9 +402,9 @@ class DATAWriter(base.WriterBase):
         # check that types can be converted to ints if they aren't ints already
         try:
             atoms.types.astype(np.int32)
-        except ValueError:
+        except ValueError as e:
             raise ValueError('LAMMPS.DATAWriter: atom types must be '+
-                    'convertible to integers')
+                    'convertible to integers') from e
 
         try:
             velocities = atoms.velocities

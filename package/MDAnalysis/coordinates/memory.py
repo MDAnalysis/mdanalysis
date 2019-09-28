@@ -318,7 +318,7 @@ class MemoryReader(base.ProtoReader):
         except AttributeError as e:
             raise TypeError("The input has to be a numpy.ndarray that "
                             "corresponds to the layout specified by the "
-                            "'order' keyword.")
+                            "'order' keyword.") from e
 
         self.set_array(coordinate_array, order)
         self.n_frames = \
@@ -329,9 +329,9 @@ class MemoryReader(base.ProtoReader):
         if velocities is not None:
             try:
                 velocities = np.asarray(velocities, dtype=np.float32)
-            except ValueError:
+            except ValueError as e:
                 raise TypeError("'velocities' must be array-like got {}"
-                                "".format(type(velocities)))
+                                "".format(type(velocities))) from e
             # if single frame, make into array of 1 frame
             if velocities.ndim == 2:
                 velocities = velocities[np.newaxis, :, :]
@@ -347,9 +347,9 @@ class MemoryReader(base.ProtoReader):
         if forces is not None:
             try:
                 forces = np.asarray(forces, dtype=np.float32)
-            except ValueError:
+            except ValueError as e:
                 raise TypeError("'forces' must be array like got {}"
-                                "".format(type(forces)))
+                                "".format(type(forces))) from e
             if forces.ndim == 2:
                 forces = forces[np.newaxis, :, :]
             if not forces.shape == self.coordinate_array.shape:
@@ -376,9 +376,9 @@ class MemoryReader(base.ProtoReader):
         else:
             try:
                 dimensions = np.asarray(dimensions, dtype=np.float32)
-            except ValueError:
+            except ValueError as e:
                 raise TypeError("'dimensions' must be array-like got {}"
-                                "".format(type(dimensions)))
+                                "".format(type(dimensions))) from e
             if dimensions.shape == (6,):
                 # single box, tile this to trajectory length
                 # allows modifying the box of some frames

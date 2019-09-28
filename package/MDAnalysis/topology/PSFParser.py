@@ -276,11 +276,11 @@ class PSFParser(TopologyReaderBase):
         for i in range(numlines):
             try:
                 line = lines()
-            except StopIteration:
+            except StopIteration as e:
                 err = ("{0} is not valid PSF file"
                        "".format(self.filename))
                 logger.error(err)
-                raise ValueError(err)
+                raise ValueError(err) from e
             try:
                 vals = set_type(atom_parser(line))
             except ValueError:

@@ -96,7 +96,7 @@ def get_reader_for(filename, format=None):
     format = format.upper()
     try:
         return _READERS[format]
-    except KeyError:
+    except KeyError as e:
         raise ValueError(
             "Unknown coordinate trajectory format '{0}' for '{1}'. The FORMATs \n"
             "           {2}\n"
@@ -105,7 +105,7 @@ def get_reader_for(filename, format=None):
             "           Use the format keyword to explicitly set the format: 'Universe(...,format=FORMAT)'\n"
             "           For missing formats, raise an issue at "
             "http://issues.mdanalysis.org".format(
-                format, filename, _READERS.keys()))
+                format, filename, _READERS.keys())) from e
 
 
 def get_writer_for(filename, format=None, multiframe=None):
@@ -163,13 +163,13 @@ def get_writer_for(filename, format=None, multiframe=None):
     elif format is None:
         try:
             root, ext = util.get_ext(filename)
-        except (TypeError, AttributeError):
+        except (TypeError, AttributeError) as e:
             # An AttributeError is raised if filename cannot
             # be manipulated as a string.
             # A TypeError is raised in py3.6
             # "TypeError: expected str, bytes or os.PathLike object"
             raise ValueError('File format could not be guessed from "{0}"'
-                             .format(filename))
+                             .format(filename)) from e
         else:
             format = util.check_compressed_format(root, ext)
     format = format.upper()
@@ -191,8 +191,8 @@ def get_writer_for(filename, format=None, multiframe=None):
 
     try:
         return options[format]
-    except KeyError:
-        raise TypeError(errmsg.format(format))
+    except KeyError as e:
+        raise TypeError(errmsg.format(format)) from e
 
 
 def get_parser_for(filename, format=None):
@@ -230,8 +230,8 @@ def get_parser_for(filename, format=None):
     except KeyError:
         try:
             rdr = get_reader_for(filename)
-        except ValueError:
-            raise ValueError(
+        except ValueError as e:
+            errmsg = (
                 "'{0}' isn't a valid topology format, nor a coordinate format\n"
                 "   from which a topology can be minimally inferred.\n"
                 "   You can use 'Universe(topology, ..., topology_format=FORMAT)'\n"
@@ -241,5 +241,6 @@ def get_parser_for(filename, format=None):
                 "   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
                 "   For missing formats, raise an issue at \n"
                 "   http://issues.mdanalysis.org".format(format, _PARSERS.keys()))
+            raise ValueError(errmsg) from e
         else:
             return _PARSERS['MINIMAL']

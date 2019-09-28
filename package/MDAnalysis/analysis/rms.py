@@ -286,17 +286,17 @@ def process_selection(select):
     elif type(select) is tuple:
         try:
             select = {'mobile': select[0], 'reference': select[1]}
-        except IndexError:
+        except IndexError as e:
             raise IndexError("select must contain two selection strings "
-                             "(reference, mobile)")
+                             "(reference, mobile)") from e
     elif type(select) is dict:
         # compatability hack to use new nomenclature
         try:
             select['mobile']
             select['reference']
-        except KeyError:
+        except KeyError as e:
             raise KeyError("select dictionary must contain entries for keys "
-                           "'mobile' and 'reference'.")
+                           "'mobile' and 'reference'.") from e
     else:
         raise TypeError("'select' must be either a string, 2-tuple, or dict")
     select['mobile'] = asiterable(select['mobile'])

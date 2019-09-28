@@ -148,9 +148,9 @@ class XVGStep(base.AuxStep):
         if isinstance(key, numbers.Integral):
             try:
                 return self._data[key]
-            except IndexError:
+            except IndexError as e:
                 raise ValueError('{} not a valid index for data with {} '
-                                 'columns'.format(key, len(self._data)))
+                                 'columns'.format(key, len(self._data))) from e
         else:
             return np.array([self._select_data(i) for i in key])
 
@@ -318,13 +318,13 @@ class XVGFileReader(base.AuxFileReader):
                 # see if we've set n_cols yet...
                 try:
                     auxstep._n_cols
-                except AttributeError:
+                except AttributeError as e:
                     # haven't set n_cols yet; set now
                     auxstep._n_cols = len(auxstep._data)
                 if len(auxstep._data) != auxstep._n_cols:
                     raise ValueError('Step {0} has {1} columns instead of '
                                      '{2}'.format(self.step, len(auxstep._data),
-                                                  auxstep._n_cols))
+                                                  auxstep._n_cols)) from e
                 return auxstep
             # line is comment only - move to next
             line = next(self.auxfile)

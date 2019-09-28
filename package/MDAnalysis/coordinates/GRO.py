@@ -366,11 +366,11 @@ class GROWriter(base.WriterBase):
             ag_or_ts = obj.atoms
             # can write from selection == Universe (Issue 49)
 
-        except AttributeError:
+        except AttributeError as e:
             if isinstance(obj, base.Timestep):
                 ag_or_ts = obj.copy()
             else:
-                raise TypeError("No Timestep found in obj argument")
+                raise TypeError("No Timestep found in obj argument") from e
 
         try:
             velocities = ag_or_ts.velocities

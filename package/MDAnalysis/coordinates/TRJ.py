@@ -494,11 +494,11 @@ class NCDFReader(base.ReaderBase):
                           "Conventions)".format(self.filename))
                 logger.fatal(errmsg)
                 raise TypeError(errmsg)
-        except AttributeError:
+        except AttributeError as e:
             errmsg = "NCDF trajectory {0} is missing Conventions".format(
                       self.filename)
             logger.fatal(errmsg)
-            raise ValueError(errmsg)
+            raise ValueError(errmsg) from e
 
         # AMBER NetCDF files should also have a ConventionVersion
         try:
@@ -509,10 +509,10 @@ class NCDFReader(base.ReaderBase):
                          ConventionVersion, self.version))
                 warnings.warn(wmsg)
                 logger.warning(wmsg)
-        except AttributeError:
+        except AttributeError as e:
             errmsg = "NCDF trajectory {0} is missing ConventionVersion".format(
                       self.filename)
-            raise ValueError(errmsg)
+            raise ValueError(errmsg) from e
 
         # The AMBER NetCDF standard enforces 64 bit offsets
         if not self.trjfile.version_byte == 2:
@@ -529,9 +529,9 @@ class NCDFReader(base.ReaderBase):
             if not self.trjfile.dimensions['spatial'] == 3:
                 errmsg = "Incorrect spatial value for NCDF trajectory file"
                 raise TypeError(errmsg)
-        except KeyError:
+        except KeyError as e:
             errmsg = "NCDF trajectory does not contain spatial dimension"
-            raise ValueError(errmsg)
+            raise ValueError(errmsg) from e
 
         # AMBER NetCDF specs require program and programVersion. Warn users
         # if those attributes do not exist
@@ -550,10 +550,10 @@ class NCDFReader(base.ReaderBase):
                           "Note: n_atoms can be None and then the ncdf value "
                           "is used!".format(n_atoms, self.n_atoms))
                 raise ValueError(errmsg)
-        except KeyError:
+        except KeyError as e:
             errmsg = ("NCDF trajectory {0} does not contain atom "
                       "information".format(self.filename))
-            raise ValueError(errmsg)
+            raise ValueError(errmsg) from e
 
         try:
             self.n_frames = self.trjfile.dimensions['frame']
@@ -564,10 +564,10 @@ class NCDFReader(base.ReaderBase):
             # the number of frames from somewhere such as the time variable:
             if self.n_frames is None:
                 self.n_frames = self.trjfile.variables['time'].shape[0]
-        except KeyError:
+        except KeyError as e:
             errmsg = ("NCDF trajectory {0} does not contain frame "
                       "information".format(self.filename))
-            raise ValueError(errmsg)
+            raise ValueError(errmsg) from e
 
         try:
             self.remarks = self.trjfile.title
@@ -708,8 +708,8 @@ class NCDFReader(base.ReaderBase):
             ts = self.ts
         try:
             return self._read_frame(self._current_frame + 1)
-        except IndexError:
-            raise IOError
+        except IndexError as e:
+            raise IOError from e
 
     def _get_dt(self):
         t1 = self.trjfile.variables['time'][1]

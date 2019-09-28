@@ -84,7 +84,7 @@ def get_writer(filename, defaultformat):
     format = format.strip().upper()  # canonical for lookup
     try:
         return _SELECTION_WRITERS[format]
-    except KeyError:
+    except KeyError as e:
         raise NotImplementedError(
             "Writing as {0!r} is not implemented;"
-            " only {1!r} will work.".format(format, _SELECTION_WRITERS.keys()))
+            " only {1!r} will work.".format(format, _SELECTION_WRITERS.keys())) from e

@@ -124,11 +124,11 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
             center_method = partial(ag.center_of_mass, pbc=pbc_arg)
         else:
             raise ValueError('{} is not a valid argument for center'.format(center))
-    except AttributeError:
+    except AttributeError as e:
         if center == 'mass':
-            raise AttributeError('{} is not an AtomGroup object with masses'.format(ag))
+            raise AttributeError('{} is not an AtomGroup object with masses'.format(ag)) from e
         else:
-            raise ValueError('{} is not an AtomGroup object'.format(ag))
+            raise ValueError('{} is not an AtomGroup object'.format(ag)) from e
 
     def wrapped(ts):
         if point is None:

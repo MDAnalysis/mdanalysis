@@ -266,9 +266,10 @@ def get_path_metric_func(name):
     try:
         return path_metrics[name]
     except KeyError as key:
-        raise KeyError('Path metric "{}" not found. Valid selections: {}'
-                       ''.format(key, " ".join('"{}"'.format(n)
-                                               for n in path_metrics.keys())))
+        errmsg = ('Path metric "{}" not found. Valid selections: {}'
+                  ''.format(key, " ".join('"{}"'.format(n)
+                                           for n in path_metrics.keys())))
+        raise KeyError(errmsg) from key
 
 
 def sqnorm(v, axis=None):
@@ -1864,7 +1865,7 @@ class PSAnalysis(object):
 
         try:
             import seaborn.apionly as sns
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 """ERROR --- The seaborn package cannot be found!
 
@@ -1880,7 +1881,7 @@ class PSAnalysis(object):
 
                 and install in the usual manner.
                 """
-            )
+            ) from e
 
         if self.D is None:
             raise ValueError(
@@ -1973,7 +1974,7 @@ class PSAnalysis(object):
         from matplotlib.pyplot import figure, savefig, tight_layout, clf, show
         try:
             import seaborn.apionly as sns
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 """ERROR --- The seaborn package cannot be found!
 
@@ -1989,7 +1990,7 @@ class PSAnalysis(object):
 
                 and install in the usual manner.
                 """
-            )
+            ) from e
 
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 

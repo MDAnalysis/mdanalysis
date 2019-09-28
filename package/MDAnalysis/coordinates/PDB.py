@@ -366,8 +366,8 @@ class PDBReader(base.ReaderBase):
         try:
             start = self._start_offsets[frame]
             stop = self._stop_offsets[frame]
-        except IndexError:  # out of range of known frames
-            raise IOError
+        except IndexError as e:  # out of range of known frames
+            raise IOError from e
 
         pos = 0
         occupancy = np.ones(self.n_atoms)
@@ -835,9 +835,9 @@ class PDBWriter(base.WriterBase):
         if ts is None:
             try:
                 ts = self.ts
-            except AttributeError:
+            except AttributeError as e:
                 raise NoDataError("PBDWriter: no coordinate data to write to "
-                                  "trajectory file")
+                                  "trajectory file") from e
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 

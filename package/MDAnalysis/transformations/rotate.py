@@ -112,8 +112,8 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
         if direction.shape != (3, ) and direction.shape != (1, 3):
             raise ValueError('{} is not a valid direction'.format(direction))
         direction = direction.reshape(3, )
-    except ValueError:
-        raise ValueError('{} is not a valid direction'.format(direction))
+    except ValueError as e:
+        raise ValueError('{} is not a valid direction'.format(direction)) from e
     if point is not None:
         point = np.asarray(point, np.float32)
         if point.shape != (3, ) and point.shape != (1, 3):
@@ -122,14 +122,14 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
     elif ag:
         try:
             atoms = ag.atoms
-        except AttributeError:
-            raise ValueError('{} is not an AtomGroup object'.format(ag))
+        except AttributeError as e:
+            raise ValueError('{} is not an AtomGroup object'.format(ag)) from e
         else:
             try:
                 weights = get_weights(atoms, weights=weights)
-            except (ValueError, TypeError):
+            except (ValueError, TypeError) as e:
                 raise TypeError("weights must be {'mass', None} or an iterable of the "
-                                "same size as the atomgroup.")
+                                "same size as the atomgroup.") from e
         center_method = partial(atoms.center, weights, pbc=wrap)
     else:
         raise ValueError('A point or an AtomGroup must be specified')

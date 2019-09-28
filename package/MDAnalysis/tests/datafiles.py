@@ -40,7 +40,7 @@ from __future__ import print_function, absolute_import
 
 try:
     from MDAnalysisTests.datafiles import *
-except ImportError:
+except ImportError as e:
     print("*** ERROR ***")
     print("In order to run the MDAnalysis test cases you must install the")
     print("MDAnalysisTestData package (which has been separated from the ")
@@ -50,4 +50,4 @@ except ImportError:
     print()
     print("and download and install the `MDAnalysisTests-x.y.z.tar.gz'")
     print("that matches your MDAnalysis release.")
-    raise ImportError("MDAnalysisTests package not installed.")
+    raise ImportError("MDAnalysisTests package not installed.") from e

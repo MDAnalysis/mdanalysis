@@ -80,9 +80,9 @@ class CRDReader(base.SingleFrameReaderBase):
                         coords_list.append(np.array(line[45:100].split()[0:3], dtype=float))
                     else:
                         coords_list.append(np.array(line[20:50].split()[0:3], dtype=float))
-                except:
+                except Exception as e:
                     raise ValueError("Check CRD format at line {0}: {1}"
-                                     "".format(linenum, line.rstrip()))
+                                     "".format(linenum, line.rstrip())) from e
 
         self.n_atoms = len(coords_list)
 

@@ -710,9 +710,11 @@ def hydroxyl(universe, seg, i):
                               "atom {0!s} {1!s} H2'".format(seg, i))
     try:
         hydr = h.dihedral.value() % 360
-    except ValueError:
-        raise ValueError("Resid {0} does not contain atoms C1', C2', O2', H2' but atoms {1}"
-                         .format(i, str(list(h.atoms))))
+    except ValueError as e:
+        errmsg = (
+            "Resid {0} does not contain atoms C1', C2', O2', H2' but atoms {1}"
+             )
+        raise ValueError(errmsg.format(i, str(list(h.atoms)))) from e
     return hydr
 
 

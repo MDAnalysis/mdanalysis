@@ -89,19 +89,19 @@ def fit_translation(ag, reference, plane=None, weights=None):
         axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
         try:
             plane = axes[plane]
-        except (TypeError, KeyError):
-            raise ValueError('{} is not a valid plane'.format(plane))
+        except (TypeError, KeyError) as e:
+            raise ValueError('{} is not a valid plane'.format(plane)) from e
     try:
         if ag.atoms.n_residues != reference.atoms.n_residues:
             raise ValueError("{} and {} have mismatched number of residues".format(ag,reference))
-    except AttributeError:
-        raise AttributeError("{} or {} is not valid Universe/AtomGroup".format(ag,reference))
+    except AttributeError as e:
+        raise AttributeError("{} or {} is not valid Universe/AtomGroup".format(ag,reference)) from e
     ref, mobile = align.get_matching_atoms(reference.atoms, ag.atoms)
     try:
         weights = align.get_weights(ref.atoms, weights=weights)
-    except (ValueError, TypeError):
+    except (ValueError, TypeError) as e:
         raise ValueError("weights must be {'mass', None} or an iterable of the "
-                        "same size as the atomgroup.")
+                        "same size as the atomgroup.") from e
     
     ref_com = np.asarray(ref.center(weights), np.float32)
 
@@ -168,19 +168,19 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
         axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
         try:
             plane = axes[plane]
-        except (TypeError, KeyError):
-            raise ValueError('{} is not a valid plane'.format(plane))
+        except (TypeError, KeyError) as e:
+            raise ValueError('{} is not a valid plane'.format(plane)) from e
     try:
         if ag.atoms.n_residues != reference.atoms.n_residues:
             raise ValueError("{} and {} have mismatched number of residues".format(ag,reference))
-    except AttributeError:
-        raise AttributeError("{} or {} is not valid Universe/AtomGroup".format(ag,reference))
+    except AttributeError as e:
+        raise AttributeError("{} or {} is not valid Universe/AtomGroup".format(ag,reference)) from e
     ref, mobile = align.get_matching_atoms(reference.atoms, ag.atoms)
     try:
         weights = align.get_weights(ref.atoms, weights=weights)
-    except (ValueError, TypeError):
+    except (ValueError, TypeError) as e:
         raise ValueError("weights must be {'mass', None} or an iterable of the "
-                        "same size as the atomgroup.")
+                        "same size as the atomgroup.") from e
     ref_com = ref.center(weights)
     ref_coordinates = ref.atoms.positions - ref_com
     

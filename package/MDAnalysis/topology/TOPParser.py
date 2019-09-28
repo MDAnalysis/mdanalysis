@@ -233,10 +233,10 @@ class TOPParser(TopologyReaderBase):
                 else:
                     try:
                         next_section = line.split("%FLAG")[1].strip()
-                    except IndexError:
+                    except IndexError as e:
                         msg = ("%FLAG section not found, formatting error "
                                "for PARM7 file {0} ".format(self.filename))
-                        raise IndexError(msg)
+                        raise IndexError(msg) from e
 
         # strip out a few values to play with them
         n_atoms = len(attrs['name'])

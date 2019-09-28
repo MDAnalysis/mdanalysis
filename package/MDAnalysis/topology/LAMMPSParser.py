@@ -285,12 +285,12 @@ class DATAParser(TopologyReaderBase):
 
         try:
             top = self._parse_atoms(sects['Atoms'], masses)
-        except:
+        except Exception as e:
             raise ValueError(
                 "Failed to parse atoms section.  You can supply a description "
                 "of the atom_style as a keyword argument, "
                 "eg mda.Universe(..., atom_style='id resid x y z')"
-            )
+            ) from e
 
         # create mapping of id to index (ie atom id 10 might be the 0th atom)
         mapping = {atom_id: i for i, atom_id in enumerate(top.ids.values)}
@@ -336,7 +336,8 @@ class DATAParser(TopologyReaderBase):
         try:
             positions, ordering = self._parse_pos(sects['Atoms'])
         except KeyError as err:
-            raise IOError("Position information not found: {}".format(err))
+            errmsg = "Position information not found: {}".format(err)
+            raise IOError(errmsg) from err
 
         if 'Velocities' in sects:
             velocities = self._parse_vel(sects['Velocities'], ordering)

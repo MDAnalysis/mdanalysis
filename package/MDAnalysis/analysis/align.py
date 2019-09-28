@@ -506,9 +506,9 @@ def alignto(mobile, reference, select="all", weights=None,
         try:
             # treat subselection as AtomGroup
             mobile_atoms = subselection.atoms
-        except AttributeError:
+        except AttributeError as e:
             raise TypeError("subselection must be a selection string, an"
-                            " AtomGroup or Universe or None")
+                            " AtomGroup or Universe or None") from e
 
     # _fit_to DOES subtract center of mass, will provide proper min_rmsd
     mobile_atoms, new_rmsd = _fit_to(mobile_coordinates, ref_coordinates,
@@ -1167,7 +1167,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                   "Try to improve your selections for mobile and reference.").format(
                       ag1.n_atoms, ag2.n_atoms)
         logger.error(errmsg)
-        raise SelectionError(errmsg)
+        raise SelectionError(errmsg) from None
 
     if np.any(mass_mismatches):
         # Test 2 failed.

@@ -121,9 +121,9 @@ class CRDParser(TopologyReaderBase):
                 try:
                     (serial, resnum, resName, name,
                      x, y, z, segid, resid, tempFactor) = r.read(line)
-                except:
+                except Exception as e:
                     raise ValueError("Check CRD format at line {0}: {1}"
-                                     "".format(linenum + 1, line.rstrip()))
+                                     "".format(linenum + 1, line.rstrip())) from e
 
                 atomids.append(serial)
                 atomnames.append(name)

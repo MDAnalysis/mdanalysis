@@ -154,7 +154,7 @@ class TXYZReader(base.ReaderBase):
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:
-            raise EOFError(err)
+            raise EOFError(err) from err
 
     def _reopen(self):
         self.close()

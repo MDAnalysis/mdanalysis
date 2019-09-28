@@ -200,11 +200,11 @@ class XYZWriter(base.WriterBase):
         # but this is not tested.)
         try:
             atoms = obj.atoms
-        except AttributeError:
+        except AttributeError as e:
             if isinstance(obj, base.Timestep):
                 ts = obj
             else:
-                raise TypeError("No Timestep found in obj argument")
+                raise TypeError("No Timestep found in obj argument") from e
         else:
             if hasattr(obj, 'universe'):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)
@@ -376,7 +376,7 @@ class XYZReader(base.ReaderBase):
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:
-            raise EOFError(err)
+            raise EOFError(err) from err
 
     def _reopen(self):
         self.close()

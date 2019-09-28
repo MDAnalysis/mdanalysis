@@ -140,9 +140,9 @@ class DMSParser(TopologyReaderBase):
                     cur.execute('SELECT {} FROM particle'
                                 ''.format(attrname))
                     vals = cur.fetchall()
-                except sqlite3.DatabaseError:
-                    raise IOError(
-                        "Failed reading the atoms from DMS Database")
+                except sqlite3.DatabaseError as e:
+                    errmsg = "Failed reading the atoms from DMS Database"
+                    raise IOError(errmsg) from e
                 else:
                     attrs[attrname] = np.array(vals, dtype=dt)
 
@@ -150,8 +150,9 @@ class DMSParser(TopologyReaderBase):
                 cur.row_factory = dict_factory
                 cur.execute('SELECT * FROM bond')
                 bonds = cur.fetchall()
-            except sqlite3.DatabaseError:
-                raise IOError("Failed reading the bonds from DMS Database")
+            except sqlite3.DatabaseError as e:
+                errmsg = "Failed reading the bonds from DMS Database"
+                raise IOError(errmsg) from e
             else:
                 bondlist = []
                 bondorder = {}

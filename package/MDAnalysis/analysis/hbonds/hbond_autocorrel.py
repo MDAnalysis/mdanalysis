@@ -300,8 +300,8 @@ class HydrogenBondAutoCorrel(object):
         # check that slicing is possible
         try:
             self.u.trajectory[0]
-        except:
-            raise ValueError("Trajectory must support slicing")
+        except Exception as e:
+            raise ValueError("Trajectory must support slicing") from e
 
         self.h = hydrogens
         self.a = acceptors

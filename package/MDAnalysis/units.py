@@ -363,14 +363,18 @@ def convert(x, u1, u2):
     """
     try:
         ut1 = unit_types[u1]
-    except KeyError:
-        raise ValueError("unit '{0}' not recognized.\n"
-                          "It must be one of {1}.".format(u1, ", ".join(unit_types)))
+    except KeyError as e:
+        errmsg = ("unit '{0}' not recognized.\n"
+                  "It must be one of {1}.".format(u1, ", ".join(unit_types))
+                  )
+        raise ValueError(errmsg) from e
     try:
         ut2 = unit_types[u2]
-    except KeyError:
-        raise ValueError("unit '{0}' not recognized.\n"
-                          "It must be one of {1}.".format(u2, ", ".join(unit_types)))
+    except KeyError as e:
+        errmsg = ("unit '{0}' not recognized.\n"
+                  "It must be one of {1}.".format(u2, ", ".join(unit_types))
+                  )
+        raise ValueError(errmsg) from e
     if ut1 != ut2:
         raise ValueError("Cannot convert between unit types "
                          "{0} --> {1}".format(u1, u2))

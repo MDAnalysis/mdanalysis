@@ -486,9 +486,9 @@ class Atomnames(AtomAttr):
     def getattr__(atomgroup, name):
         try:
             return atomgroup._get_named_atom(name)
-        except selection.SelectionError:
+        except selection.SelectionError as e:
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    atomgroup.__class__.__name__, name))
+                    atomgroup.__class__.__name__, name)) from e
 
     def _get_named_atom(group, name):
         """Get all atoms with name *name* in the current AtomGroup.
@@ -1346,9 +1346,9 @@ class Resnames(ResidueAttr):
     def getattr__(residuegroup, resname):
         try:
             return residuegroup._get_named_residue(resname)
-        except selection.SelectionError:
+        except selection.SelectionError as e:
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    residuegroup.__class__.__name__, resname))
+                    residuegroup.__class__.__name__, resname)) from e
 
     transplants[ResidueGroup].append(('__getattr__', getattr__))
     # This transplant is hardcoded for now to allow for multiple getattr things
@@ -1483,7 +1483,7 @@ class Resnames(ResidueAttr):
         except KeyError as err:
             raise ValueError("AtomGroup contains a residue name '{0}' that "
                              "does not have a IUPAC protein 1-letter "
-                             "character".format(err.message))
+                             "character".format(err.message)) from err
         if format == "string":
             return sequence
         seq = Bio.Seq.Seq(sequence, alphabet=Bio.Alphabet.IUPAC.protein)
@@ -1588,9 +1588,9 @@ class Segids(SegmentAttr):
     def getattr__(segmentgroup, segid):
         try:
             return segmentgroup._get_named_segment(segid)
-        except selection.SelectionError:
+        except selection.SelectionError as e:
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    segmentgroup.__class__.__name__, segid))
+                    segmentgroup.__class__.__name__, segid)) from e
 
     transplants[SegmentGroup].append(
         ('__getattr__', getattr__))

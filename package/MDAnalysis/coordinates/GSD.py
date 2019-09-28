@@ -105,8 +105,8 @@ class GSDReader(base.ReaderBase):
     def _read_frame(self, frame):
         try :
             myframe = self._file[frame]
-        except IndexError :
-            raise IOError
+        except IndexError as e:
+            raise IOError from e
 
         # set frame number
         self._frame = frame

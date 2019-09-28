@@ -218,9 +218,9 @@ class MOL2Reader(base.ReaderBase):
         unitcell = np.zeros(6, dtype=np.float32)
         try:
             block = self.frames[frame]
-        except IndexError:
+        except IndexError as e:
             raise IOError("Invalid frame {0} for trajectory with length {1}"
-                          "".format(frame, len(self)))
+                          "".format(frame, len(self))) from e
 
         sections, coords = self.parse_block(block)
 
@@ -313,9 +313,9 @@ class MOL2Writer(base.WriterBase):
 
         try:
             molecule = ts.data['molecule']
-        except KeyError:
+        except KeyError as e:
             raise NotImplementedError(
-                "MOL2Writer cannot currently write non MOL2 data")
+                "MOL2Writer cannot currently write non MOL2 data") from e
 
         # Need to remap atom indices to 1 based in this selection
         mapping = {a: i for i, a in enumerate(obj.atoms, start=1)}
