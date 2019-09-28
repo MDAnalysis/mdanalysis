@@ -722,7 +722,7 @@ class RangeSelection(Selection):
             try:
                 lower = int(val)
                 upper = None
-            except ValueError from e:
+            except ValueError as e:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 selrange = re.match("(\d+)[:-](\d+)", val)
                 if not selrange:
