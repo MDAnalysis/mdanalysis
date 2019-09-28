@@ -774,15 +774,15 @@ class GroupBase(_MutableBase):
         elif comp == 'molecules':
             try:
                 compound_indices = atoms.molnums
-            except AttributeError as e:
+            except AttributeError:
                 raise NoDataError("Cannot use compound='molecules': "
-                                  "No molecule information in topology.") from e
+                                  "No molecule information in topology.") from None
         elif comp == 'fragments':
             try:
                 compound_indices = atoms.fragindices
-            except NoDataError as e:
+            except NoDataError:
                 raise NoDataError("Cannot use compound='fragments': "
-                                  "No bond information in topology.") from e
+                                  "No bond information in topology.") from None
         else:
             raise ValueError("Unrecognized compound definition: {}\nPlease use"
                              " one of 'group', 'residues', 'segments', "
@@ -984,15 +984,15 @@ class GroupBase(_MutableBase):
         elif comp == 'molecules':
             try:
                 compound_indices = atoms.molnums
-            except AttributeError as e:
+            except AttributeError:
                 raise NoDataError("Cannot use compound='molecules': "
-                                  "No molecule information in topology.") from e
+                                  "No molecule information in topology.") from None
         elif comp == 'fragments':
             try:
                 compound_indices = atoms.fragindices
-            except NoDataError as e:
+            except NoDataError:
                 raise NoDataError("Cannot use compound='fragments': "
-                                  "No bond information in topology.") from e
+                                  "No bond information in topology.") from None
         else:
             raise ValueError("Unrecognized compound definition: '{}'. Please "
                              "use one of 'group', 'residues', 'segments', "
@@ -1479,15 +1479,15 @@ class GroupBase(_MutableBase):
                 elif comp == 'molecules':
                     try:
                         compound_indices = atoms.molnums
-                    except AttributeError as e:
+                    except AttributeError:
                         raise NoDataError("Cannot use compound='molecules', "
-                                          "this requires molnums.") from e
+                                          "this requires molnums.") from None
                 else:  # comp == 'fragments'
                     try:
                         compound_indices = atoms.fragindices
-                    except NoDataError as e:
+                    except NoDataError:
                         raise NoDataError("Cannot use compound='fragments', "
-                                          "this requires bonds.") from e
+                                          "this requires bonds.") from None
 
                 # compute required shifts:
                 if ctr == 'com':
@@ -1641,9 +1641,9 @@ class GroupBase(_MutableBase):
             else:  # comp == 'molecules'
                 try:
                     compound_indices = unique_atoms.molnums
-                except AttributeError as e:
+                except AttributeError:
                     raise NoDataError("Cannot use compound='molecules', this "
-                                      "requires molnums.") from e
+                                      "requires molnums.") from None
             # Now process every compound:
             unique_compound_indices = unique_int_1d(compound_indices)
             positions = unique_atoms.positions
@@ -2503,16 +2503,16 @@ class AtomGroup(GroupBase):
         ts = self.universe.trajectory.ts
         try:
             return np.array(ts.velocities[self.ix])
-        except (AttributeError, NoDataError) as e:
-            raise NoDataError("Timestep does not contain velocities") from e
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain velocities") from None
 
     @velocities.setter
     def velocities(self, values):
         ts = self.universe.trajectory.ts
         try:
             ts.velocities[self.ix, :] = values
-        except (AttributeError, NoDataError) as e:
-            raise NoDataError("Timestep does not contain velocities") from e
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain velocities") from None
 
     @property
     def forces(self):
@@ -2537,16 +2537,16 @@ class AtomGroup(GroupBase):
         ts = self.universe.trajectory.ts
         try:
             return ts.forces[self.ix]
-        except (AttributeError, NoDataError) as e:
-            raise NoDataError("Timestep does not contain forces") from e
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain forces") from None
 
     @forces.setter
     def forces(self, values):
         ts = self.universe.trajectory.ts
         try:
             ts.forces[self.ix, :] = values
-        except (AttributeError, NoDataError) as e:
-            raise NoDataError("Timestep does not contain forces") from e
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain forces") from None
 
     @property
     def ts(self):
@@ -3648,16 +3648,16 @@ class Atom(ComponentBase):
         ts = self.universe.trajectory.ts
         try:
             return ts.velocities[self.ix].copy()
-        except (AttributeError, NoDataError) as e:
-            raise NoDataError("Timestep does not contain velocities") from e
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain velocities") from None
 
     @velocity.setter
     def velocity(self, values):
         ts = self.universe.trajectory.ts
         try:
             ts.velocities[self.ix, :] = values
-        except (AttributeError, NoDataError) as e:
-            raise NoDataError("Timestep does not contain velocities") from e
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain velocities") from None
 
     @property
     def force(self):
@@ -3679,16 +3679,16 @@ class Atom(ComponentBase):
         ts = self.universe.trajectory.ts
         try:
             return ts.forces[self.ix].copy()
-        except (AttributeError, NoDataError) as e:
-            raise NoDataError("Timestep does not contain forces") from e
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain forces") from None
 
     @force.setter
     def force(self, values):
         ts = self.universe.trajectory.ts
         try:
             ts.forces[self.ix, :] = values
-        except (AttributeError, NoDataError) as e:
-            raise NoDataError("Timestep does not contain forces") from e
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain forces") from None
 
 
 class Residue(ComponentBase):

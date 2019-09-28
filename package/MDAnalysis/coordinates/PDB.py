@@ -835,9 +835,9 @@ class PDBWriter(base.WriterBase):
         if ts is None:
             try:
                 ts = self.ts
-            except AttributeError as e:
+            except AttributeError:
                 raise NoDataError("PBDWriter: no coordinate data to write to "
-                                  "trajectory file") from e
+                                  "trajectory file") from None
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 

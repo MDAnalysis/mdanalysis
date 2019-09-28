@@ -1005,7 +1005,7 @@ class PropertySelection(Selection):
     def apply(self, group):
         try:
             col = {'x': 0, 'y': 1, 'z': 2}[self.prop]
-        except KeyError as e:
+        except KeyError:
             if self.prop == 'mass':
                 values = group.masses
             elif self.prop == 'charge':
@@ -1013,7 +1013,7 @@ class PropertySelection(Selection):
             else:
                 raise SelectionError(
                     "Expected one of : {0}"
-                    "".format(['x', 'y', 'z', 'mass', 'charge'])) from e
+                    "".format(['x', 'y', 'z', 'mass', 'charge'])) from None
         else:
             values = group.positions[:, col]
 
@@ -1185,10 +1185,10 @@ class SelectionParser(object):
 
         try:
             return _SELECTIONDICT[op](self, self.tokens)
-        except KeyError as e:
-            raise SelectionError("Unknown selection token: '{0}'".format(op)) from e
-        except ValueError as e:
-            raise SelectionError("Selection failed: '{0}'".format(e)) from e
+        except KeyError:
+            raise SelectionError("Unknown selection token: '{0}'".format(op)) from None
+        except ValueError:
+            raise SelectionError("Selection failed: '{0}'".format(e)) from None
 
 
 # The module level instance
