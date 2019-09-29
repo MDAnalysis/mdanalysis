@@ -309,7 +309,7 @@ class Universe(object):
                     raise ValueError(
                         "Failed to construct topology from file {0}"
                         " with parser {1}.\n"
-                        "Error: {2}".format(self.filename, parser, err)) from e
+                        "Error: {2}".format(self.filename, parser, err)) from err
 
             # generate and populate Universe version of each class
             self._generate_from_topology()
