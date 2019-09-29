@@ -529,7 +529,7 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     except ValueError as e:
         raise ValueError("Non-number values assigned to gridcenter") from e
     if gridcenter.shape != (3,):
-        raise ValueError("gridcenter must be a 3D coordinate") from e
+        raise ValueError("gridcenter must be a 3D coordinate")
     try:
         xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
     except ValueError as e:
