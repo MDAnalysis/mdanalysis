@@ -13,14 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy ???
+
+mm/dd/yy joaomcteixeira,
 
   * 0.20.2
 
 Fixes
 
 Enhancements
-
+  * Exception handling: exception that derive from other exceptions are now
+    raise `from` catched Exception.
+  * Custom Exceptions are `raise`ed `from None` instead of from catched
+    Exception.
 
 09/05/19 IAlibay, richardjgowers
 
