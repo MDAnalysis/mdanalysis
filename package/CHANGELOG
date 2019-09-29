@@ -22,9 +22,8 @@ Fixes
 
 Enhancements
   * Exception handling: exception that derive from other exceptions are now
-    raise `from` catched Exception.
-  * Custom Exceptions are `raise`ed `from None` instead of from catched
-    Exception.
+    raise `from` caught Exception
+  * Custom Exceptions are `raise`ed `from None`
 
 09/05/19 IAlibay, richardjgowers
 
