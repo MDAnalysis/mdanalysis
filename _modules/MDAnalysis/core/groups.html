@@ -2950,6 +2950,8 @@
 
 
 <span class="sd">        .. versionadded:: 0.10.0</span>
+<span class="sd">        .. versionchanged:: 0.20.2</span>
+<span class="sd">           Now applies periodic boundary conditions when guessing bonds.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..topology.core</span> <span class="k">import</span> <span class="n">guess_bonds</span><span class="p">,</span> <span class="n">guess_angles</span><span class="p">,</span> <span class="n">guess_dihedrals</span>
         <span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="k">import</span> <span class="n">Bonds</span><span class="p">,</span> <span class="n">Angles</span><span class="p">,</span> <span class="n">Dihedrals</span>
@@ -2964,7 +2966,8 @@
                 <span class="k">return</span> <span class="n">attr</span>
 
         <span class="c1"># indices of bonds</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">guess_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="n">vdwradii</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">guess_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="n">vdwradii</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
         <span class="n">bondattr</span> <span class="o">=</span> <span class="n">get_TopAttr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">,</span> <span class="n">Bonds</span><span class="p">)</span>
         <span class="n">bondattr</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
