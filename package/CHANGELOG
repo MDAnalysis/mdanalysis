@@ -20,6 +20,8 @@ mm/dd/yy richardjgowers
 Fixes
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
+  * Fixed issue in make_whole() where small boxes would fool the algorithm into
+    thinking no work is needed (Issue #2358)
 
 Enhancements
 

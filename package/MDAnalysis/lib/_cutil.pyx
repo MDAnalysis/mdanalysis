@@ -185,6 +185,9 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     .. versionchanged:: 0.20.0
         Inplace-modification of atom positions is now optional, and positions
         are returned as a numpy array.
+    .. versionchanged:: 0.20.2
+       Fixed small boxes tricking algorithm into thinking no correction is
+       needed
     """
     cdef intset refpoints, todo, done
     cdef np.intp_t i, j, nloops, ref, atom, other, natoms
@@ -199,7 +202,6 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     cdef float inverse_box[3]
     cdef double vec[3]
     cdef ssize_t[:] ix_view
-    cdef bint is_unwrapped
 
     # map of global indices to local indices
     ix_view = atomgroup.ix[:]
@@ -235,17 +237,6 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
             ortho = False
 
     if ortho:
-        # If atomgroup is already unwrapped, bail out
-        is_unwrapped = True
-        for i in range(1, natoms):
-            for j in range(3):
-                if fabs(oldpos[i, j] - oldpos[0, j]) >= half_box[j]:
-                    is_unwrapped = False
-                    break
-            if not is_unwrapped:
-                break
-        if is_unwrapped:
-            return np.array(oldpos)
         for i in range(3):
             inverse_box[i] = 1.0 / box[i]
     else:
