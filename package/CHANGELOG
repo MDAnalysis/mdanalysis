@@ -13,11 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy ???
+mm/dd/yy richardjgowers
 
   * 0.20.2
 
 Fixes
+  * AtomGroup.guess_bonds now uses periodic boundary information when available
+    (Issue #2350)
 
 Enhancements
 
