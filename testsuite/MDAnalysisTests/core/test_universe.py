@@ -428,6 +428,15 @@ class TestGuessBonds(object):
         ag.guess_bonds(vdwradii=vdw)
         self._check_atomgroup(ag, u)
 
+    def test_guess_bonds_periodicity(self):
+        u = mda.Universe(two_water_gro)
+
+        ag = u.atoms[:3]
+        ag[0].position += u.dimensions[:3] * 10
+        ag.guess_bonds()
+
+        self._check_atomgroup(ag, u)
+
 
 class TestInMemoryUniverse(object):
     def test_reader_w_timeseries(self):
