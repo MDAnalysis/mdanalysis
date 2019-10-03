@@ -150,7 +150,7 @@ Fixes
   * Fixed reading multiframe GRO files, currently only the first frame will be
     read. (Issue #2276 PR #2277)
   * fixed calculation of Chi torsion in nucleic acid analysis (Issue #2248)
-
+  * Fixed parallelization failure in get_distance_matrix() (Issue #2060, PR #2301)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
