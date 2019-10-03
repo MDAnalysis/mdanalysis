@@ -96,6 +96,7 @@ class TriangularMatrix(object):
 
     def as_array(self):
         """Return standard numpy array equivalent"""
+        # pylint: disable=unsubscriptable-object
         a = np.zeros((self.size, self.size))
         a[np.tril_indices(self.size)] = self._elements
         a[np.triu_indices(self.size)] = a.T[np.triu_indices(self.size)]
