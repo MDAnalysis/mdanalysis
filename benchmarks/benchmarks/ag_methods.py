@@ -2,6 +2,7 @@ from __future__ import division, absolute_import, print_function
 
 import MDAnalysis
 import numpy as np
+from packaging import version
 
 try:
     from MDAnalysisTests.datafiles import (GRO, TPR, XTC, 
@@ -202,7 +203,94 @@ class AtomGroupMethodsBench(object):
         atomgroup with default params.
         """
         self.ag.wrap()
-        
+
+    def time_center_of_mass_default(self, num_atoms):
+        """Benchmark center_of_mass calculation with
+        pbc and unwrap inactive.
+        """
+        self.ag.center_of_mass()
+
+    def time_center_of_mass_pbc(self, num_atoms):
+        """Benchmark center_of_mass calculation with
+        pbc active.
+        """
+        self.ag.center_of_mass(pbc=True)
+
+    def time_center_of_geometry_default(self, num_atoms):
+        """Benchmark center_of_geometry calculation with
+        pbc and unwrap inactive.
+        """
+        self.ag.center_of_geometry()
+
+    def time_center_of_geometry_pbc(self, num_atoms):
+        """Benchmark center_of_geometry calculation with
+        pbc active.
+        """
+        self.ag.center_of_geometry(pbc=True)
+
+    def time_moment_of_inertia_default(self, num_atoms):
+        """Benchmark moment_of_inertia calculation with
+        pbc and unwrap inactive.
+        """
+        self.ag.moment_of_inertia()
+
+    def time_moment_of_inertia_pbc(self, num_atoms):
+        """Benchmark moment_of_inertia calculation with
+        pbc active.
+        """
+        self.ag.moment_of_inertia(pbc=True)
+
+    def time_asphericity_default(self, num_atoms):
+        """Benchmark asphericity calculation with
+        pbc and unwrap inactive.
+        """
+        self.ag.asphericity()
+
+    def time_asphericity_pbc(self, num_atoms):
+        """Benchmark asphericity calculation with
+        pbc active.
+        """
+        self.ag.asphericity(pbc=True)
+
+
+class AtomGroupMethodsBenchWithUnwrap(object):
+    """Benchmarks for the various MDAnalysis
+    atomgroup attributes using unwrap.
+    """
+
+    params = (10, 100, 1000, 10000)
+    param_names = ['num_atoms']
+
+    def setup(self, num_atoms):
+        self.u_unwrap = mda.Universe(TRZ_psf, TRZ)
+        self.ag_unwrap = self.u_unwrap.residues[0:3]
+
+        if version.parse(MDAnalysis.__version__) < version.parse("0.20.0"):
+            raise NotImplementedError
+
+    def time_center_of_geometry_unwrap(self, num_atoms):
+        """Benchmark center_of_geometry calculation with
+        unwrap active.
+        """
+        self.ag_unwrap.center_of_geometry(unwrap=True, compound='residues')
+
+    def time_moment_of_inertia_unwrap(self, num_atoms):
+        """Benchmark moment_of_inertia calculation with
+        unwrap active.
+        """
+        self.ag_unwrap.moment_of_inertia(unwrap=True, compound='residues')
+
+    def time_center_of_mass_unwrap(self, num_atoms):
+        """Benchmark center_of_mass calculation with
+        unwrap active.
+        """
+        self.ag_unwrap.center_of_mass(unwrap=True, compound='residues')
+
+    def time_asphericity_unwrap(self, num_atoms):
+        """Benchmark asphericity calculation with
+        unwrap active.
+        """
+        self.ag_unrap.asphericity(unwrap=True, compound='residues')
 
 
 class AtomGroupAttrsBench(object):
