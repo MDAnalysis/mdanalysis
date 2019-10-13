@@ -20,6 +20,8 @@ mm/dd/yy richardjgowers
 Fixes
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
+  * Chainreader and continuous option work correctly when readers work for more 
+    than one format (Issue #2353)
 
 Enhancements
 
