@@ -75,7 +75,7 @@ for more details.</p>
 <p>There are a number flags that influence how MDAnalysis behaves. They are accessible
 through the pseudo-dictionary <code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code>.</p>
 <p>The entries appear as ‘name’-‘value’ pairs. Flags check values and illegal ones
-raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>. Documentation on all flags can be obtained with</p>
+raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>. Documentation on all flags can be obtained with</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">doc</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -217,7 +217,7 @@ accessible through the pseudo-dictionary</p>
 <blockquote>
 <div><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code></div></blockquote>
 <p>The entries appear as ‘name’-‘value’ pairs. Flags check values and illegal ones
-raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>. Documentation on all flags can be obtained with</p>
+raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>. Documentation on all flags can be obtained with</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -283,12 +283,12 @@ for more details.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of the flag, must be a legal python name</li>
+<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the flag, must be a legal python name</li>
 <li><strong>default</strong> – default value</li>
-<li><strong>mapping</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – dict that maps allowed input values to canonical values;
+<li><strong>mapping</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dict that maps allowed input values to canonical values;
 if <code class="docutils literal notranslate"><span class="pre">None</span></code> then no argument checking will be performed and
 all values are directly set.</li>
-<li><strong>doc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – <p>doc string; may contain string interpolation mappings for:</p>
+<li><strong>doc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – <p>doc string; may contain string interpolation mappings for:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span>        <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">flag</span>
 <span class="o">%%</span><span class="p">(</span><span class="n">default</span><span class="p">)</span><span class="n">r</span>     <span class="n">default</span> <span class="n">value</span>
 <span class="o">%%</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="n">r</span>       <span class="n">current</span> <span class="n">value</span>
