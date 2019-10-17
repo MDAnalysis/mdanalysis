@@ -180,6 +180,28 @@
     <span class="k">return</span> <span class="n">used_idx</span>
 
 
+<span class="k">def</span> <span class="nf">check_allowed_filetypes</span><span class="p">(</span><span class="n">readers</span><span class="p">,</span> <span class="n">allowed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make a check that  all readers have the same filetype and are  of the </span>
+<span class="sd">    allowed files types. Throws Exception on failure.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    readers : list of MDA readers</span>
+<span class="sd">    allowed : list of allowed formats</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">classname</span> <span class="o">=</span>  <span class="nb">type</span><span class="p">(</span><span class="n">readers</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">only_one_reader</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span>  <span class="n">classname</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">readers</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">only_one_reader</span><span class="p">:</span>
+        <span class="n">readernames</span> <span class="o">=</span> <span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">readers</span><span class="p">]</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ChainReader: continuous=true only supported&quot;</span>
+                         <span class="s2">&quot; when all files are using the same reader. &quot;</span>
+                         <span class="s2">&quot;Found: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">readernames</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">readers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;ChainReader: continuous=True only &quot;</span>
+                <span class="s2">&quot;supported for formats: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">allowed</span><span class="p">))</span>
+
+
 <div class="viewcode-block" id="ChainReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader">[docs]</a><span class="k">class</span> <span class="nc">ChainReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ProtoReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reader that concatenates multiple trajectories on the fly.</span>
 
@@ -314,18 +336,10 @@
 
         <span class="c1"># calculate new start_frames to have a time continuous trajectory.</span>
         <span class="k">if</span> <span class="n">continuous</span><span class="p">:</span>
-            <span class="n">filetypes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">format</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">])</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">filetypes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ChainReader: continuous=true only supported&quot;</span>
-                                 <span class="s2">&quot; when all files are using the same format. &quot;</span>
-                                 <span class="s2">&quot;found </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filetypes</span><span class="p">))</span>
+            <span class="n">check_allowed_filetypes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;XTC&#39;</span><span class="p">,</span> <span class="s1">&#39;TRR&#39;</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ChainReader: Need at least two frames in &quot;</span>
                                    <span class="s2">&quot;every trajectory with continuous=True&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">filetypes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;XTC&#39;</span><span class="p">,</span> <span class="s1">&#39;TRR&#39;</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;ChainReader: continuous=True only &quot;</span>
-                                          <span class="s2">&quot;supported for xtc and trr format&quot;</span><span class="p">)</span>
-
             <span class="c1"># TODO: allow floating point precision in dt check</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_same</span><span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">)</span>
             <span class="n">n_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;n_frames&#39;</span><span class="p">))</span>
