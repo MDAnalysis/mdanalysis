@@ -359,6 +359,12 @@ class TestChainReaderContinuous(object):
     def test_unsupported_filetypes(self):
         with pytest.raises(NotImplementedError):
             mda.Universe(PSF, [DCD, DCD], continuous=True)
+        # see issue 2353. The PDB reader has multiple format endings. To ensure 
+        # the not implemented error is thrown  we  do a check here. A more  
+        # careful test in the future would be a dummy reader with multiple 
+        # formats, just in case PDB will allow continuous reading in the future.
+        with pytest.raises(ValueError):
+            mda.Universe(PDB, [PDB, XTC], continuous=True)
 
 
 @pytest.mark.parametrize('l, ref', ([((0, 3), (3, 3), (4, 7)), (0, 1, 2)],
