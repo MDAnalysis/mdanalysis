@@ -172,6 +172,7 @@ __all__ = [
 
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
+    "GRO_huge_box", # for testing gro parser with hige box sizes
 ]
 
 from pkg_resources import resource_filename
@@ -200,6 +201,7 @@ AUX_XVG = resource_filename(__name__, 'data/test.xvg')
 ENT = resource_filename(__name__, 'data/testENT.ent')
 GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
 GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
+GRO_huge_box = resource_filename(__name__, 'data/huge_box.gro')
 
 COORDINATES_GRO = resource_filename(__name__, 'data/coordinates/test.gro')
 COORDINATES_GRO_INCOMPLETE_VELOCITY = resource_filename(__name__, 'data/coordinates/test_incomplete_vel.gro')
