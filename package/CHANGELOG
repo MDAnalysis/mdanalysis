@@ -22,6 +22,7 @@ Fixes
     (Issue #2350)
   * Chainreader and continuous option work correctly when readers work for more 
     than one format (Issue #2353)
+  * PDBQTParser now gives icode TopologyAttrs (Issue #2361)
 
 Enhancements
   * Expanded selection wildcards to the start and middle of strings (Issue #2370)
