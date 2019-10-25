@@ -363,6 +363,15 @@ class TestSelectionsCHARMM(object):
             "resname LYS and name NZ and around 4 backbone")
         ag2 = ag.select_atoms("around 4 global backbone")
         assert_equal(ag2.indices, ag1.indices)
+    
+    @pytest.mark.parametrize('selstr',
+        ["resname LYS and name NZ",
+        "protein", "backbone", "resid 100",
+        "resid 100:105",
+        "around 4.0 bynum 1943"])
+    def test_accept_atomgroup(self, universe, selstr):
+        ag = universe.select_atoms(selstr)
+        assert ag is universe.select_atoms(ag)
 
 
 class TestSelectionsAMBER(object):
