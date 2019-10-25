@@ -2837,6 +2837,9 @@ class AtomGroup(GroupBase):
             warnings.warn("Empty string to select atoms, empty group returned.",
                           UserWarning)
             return self[[]]
+        
+        if isinstance(sel, AtomGroup):
+            return sel
 
         # once flags removed, replace with default=True
         periodic = selgroups.pop('periodic', flags['use_periodic_selections'])

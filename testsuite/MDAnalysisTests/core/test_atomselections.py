@@ -372,6 +372,14 @@ class TestSelectionsCHARMM(object):
     def test_accept_atomgroup(self, universe, selstr):
         ag = universe.select_atoms(selstr)
         assert ag is universe.select_atoms(ag)
+    
+    @pytest.mark.parametrize('selstr',
+        ["around 4.0 bynum 1943",
+        "around 10.0 bynum 1943"
+        ])
+    def test_accept_updatingatomgroup(self, universe, selstr):
+        ag = universe.select_atoms(selstr, updating=True)
+        assert ag is universe.select_atoms(ag)
 
 
 class TestSelectionsAMBER(object):
