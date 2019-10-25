@@ -364,21 +364,12 @@ class TestSelectionsCHARMM(object):
         ag2 = ag.select_atoms("around 4 global backbone")
         assert_equal(ag2.indices, ag1.indices)
     
-    @pytest.mark.parametrize('selstr',
-        ["resname LYS and name NZ",
-        "protein", "backbone", "resid 100",
-        "resid 100:105",
-        "around 4.0 bynum 1943"])
-    def test_accept_atomgroup(self, universe, selstr):
-        ag = universe.select_atoms(selstr)
+    def test_accept_AtomGroup(self, universe):
+        ag = universe.select_atoms('protein')
         assert ag is universe.select_atoms(ag)
     
-    @pytest.mark.parametrize('selstr',
-        ["around 4.0 bynum 1943",
-        "around 10.0 bynum 1943"
-        ])
-    def test_accept_updatingatomgroup(self, universe, selstr):
-        ag = universe.select_atoms(selstr, updating=True)
+    def test_accept_UpdatingAtomGroup(self, universe):
+        ag = universe.select_atoms('resid 100', updating=True)
         assert ag is universe.select_atoms(ag)
 
 
