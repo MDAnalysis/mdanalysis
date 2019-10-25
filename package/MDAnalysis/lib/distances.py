@@ -421,12 +421,12 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
     min_cutoff : float, optional
         Minimum cutoff distance between `reference` and `configuration`
         coordinates.
-    box : numpy.ndarray, None (default None)
+    box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : {'bruteforce', 'nsgrid', 'pkdtree', None} (default None)
+    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
         method.
 
