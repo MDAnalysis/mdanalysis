@@ -13,6 +13,21 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+23/10/19 p-j-smith
+
+  * 0.21.0
+
+Fixes
+
+
+Enhancements
+  * New analysis.hydrogenbonds.HydrogenBondAnalysis class for the analysis of
+  hydrogen bonds. Simpler interface, more extensible and better performance
+  than analysis.hbonds.HydrogenBondAnalysis
+
+Deprecations
+  * analysis.hbonds.HydrogenBondAnalysis will be deprecated in 1.0
+
 mm/dd/yy richardjgowers
 
   * 0.20.2
