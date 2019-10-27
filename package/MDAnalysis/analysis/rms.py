@@ -475,7 +475,6 @@ class RMSD(AnalysisBase):
         self.reference = reference if reference is not None else self.atomgroup
 
         select = process_selection(select)
-        print("SELECT IS", select)
         self.groupselections = ([process_selection(s) for s in groupselections]
                                 if groupselections is not None else [])
         self.weights = weights
