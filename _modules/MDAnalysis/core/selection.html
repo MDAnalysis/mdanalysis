@@ -555,7 +555,8 @@
 <div class="viewcode-block" id="StringSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.StringSelection">[docs]</a><span class="k">class</span> <span class="nc">StringSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Selections based on text attributes</span>
 
-<span class="sd">    Supports the use of wildcards at the end of strings</span>
+<span class="sd">    Supports the use of one wildcard at the start, </span>
+<span class="sd">    end, and middle of strings</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="n">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
@@ -567,12 +568,15 @@
     <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="s1">&#39;Can only use one wildcard in a string&#39;</span><span class="p">)</span>
             <span class="n">wc_pos</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">wc_pos</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>  <span class="c1"># No wildcard found</span>
                 <span class="n">mask</span> <span class="o">|=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span> <span class="o">==</span> <span class="n">val</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">)</span>
                 <span class="n">mask</span> <span class="o">|=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">val</span><span class="p">[:</span><span class="n">wc_pos</span><span class="p">])</span>
+                <span class="n">mask</span> <span class="o">&amp;=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">val</span><span class="p">[</span><span class="n">wc_pos</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
 
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
 

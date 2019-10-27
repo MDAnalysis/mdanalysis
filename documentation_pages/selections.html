@@ -74,9 +74,11 @@ notes below on <a class="reference internal" href="#ordered-selections-label"><s
 necessary).</li>
 <li>Selections are parsed left to right and parentheses can be used for
 grouping.</li>
-<li>Currently, only “stemming” is implemented as a primitive form of pattern
-matching: Using the <code class="docutils literal notranslate"><span class="pre">*</span></code> character in a string such as <code class="docutils literal notranslate"><span class="pre">GL*</span></code> selects
-all strings that start with “GL” such as “GLU”, “GLY”, “GLX29”, “GLN”.</li>
+<li>Currently, a single wildcard <code class="docutils literal notranslate"><span class="pre">*</span></code> character can be at the start, middle, or
+end of a string for pattern matching. For example, <code class="docutils literal notranslate"><span class="pre">GL*</span></code> selects
+all strings that start with “GL” such as “GLU”, “GLY”, “GLX29”, “GLN”.
+<code class="docutils literal notranslate"><span class="pre">resname</span> <span class="pre">*N</span></code> selects all residue names that end in “N”, such as “ASN” and
+“GLN”.</li>
 </ul>
 <div class="section" id="simple-selections">
 <h3>3.1.1. Simple selections<a class="headerlink" href="#simple-selections" title="Permalink to this headline">¶</a></h3>
