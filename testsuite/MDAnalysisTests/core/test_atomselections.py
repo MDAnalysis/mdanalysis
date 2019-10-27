@@ -364,13 +364,35 @@ class TestSelectionsCHARMM(object):
         ag2 = ag.select_atoms("around 4 global backbone")
         assert_equal(ag2.indices, ag1.indices)
     
-    def test_accept_AtomGroup(self, universe):
+    def test_returns_equal_AtomGroup_copy(self, universe):
         ag = universe.select_atoms('protein')
-        assert ag is universe.select_atoms(ag)
+        assert ag == universe.select_atoms(ag)
+        assert ag is not universe.select_atoms(ag)
     
-    def test_accept_UpdatingAtomGroup(self, universe):
-        ag = universe.select_atoms('resid 100', updating=True)
-        assert ag is universe.select_atoms(ag)
+    def test_returns_equal_UpdatingAtomGroup_copy(self, universe):
+        ag = universe.select_atoms('resid 100')
+        uag = universe.select_atoms(ag, updating=True)
+        no_uag = universe.select_atoms(uag)
+        assert ag == uag
+        assert no_uag == uag
+        assert isinstance(uag, mda.core.groups.UpdatingAtomGroup)
+        assert isinstance(no_uag, mda.core.groups.AtomGroup)
+        assert not isinstance(no_uag, mda.core.groups.UpdatingAtomGroup)
+    
+    def test_returns_atomgroup_intersection(self, universe):
+        g1 = universe.select_atoms('resid 1:100')
+        g2 = universe.select_atoms('name CA')
+        g3 = universe.select_atoms('name O')
+
+        ag1 = g1.select_atoms(g2)
+        ag2 = g2.select_atoms(g1)
+        ag3 = g1.select_atoms(g2, g3)
+
+        assert ag1 == ag2
+        assert ag1 == (g1 & g2)
+        assert ag3 == ((g1 & g2) + (g1 & g3))
+
+
 
 
 class TestSelectionsAMBER(object):

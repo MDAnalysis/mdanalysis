@@ -2837,9 +2837,6 @@ class AtomGroup(GroupBase):
             warnings.warn("Empty string to select atoms, empty group returned.",
                           UserWarning)
             return self[[]]
-        
-        if isinstance(sel, AtomGroup):
-            return sel
 
         # once flags removed, replace with default=True
         periodic = selgroups.pop('periodic', flags['use_periodic_selections'])
@@ -2853,15 +2850,27 @@ class AtomGroup(GroupBase):
                                 "You provided {} for group '{}'".format(
                                     thing.__class__.__name__, group))
 
-        selections = tuple((selection.Parser.parse(s, selgroups, periodic=periodic)
-                            for s in sel_strs))
+        new_sel_strs = []
+        selections = []
+
+        for s in sel_strs:
+            if isinstance(s, AtomGroup):
+                new_sel_strs.append(repr(s))
+                selections.append(s)
+            else:
+                new_sel_strs.append(s)
+                selections.append(selection.Parser.parse(s, selgroups, periodic=periodic))
+
         if updating:
-            atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
+            atomgrp = UpdatingAtomGroup(self, selections, new_sel_strs)
         else:
             # Apply the first selection and sum to it
             atomgrp = sum([sel.apply(self) for sel in selections[1:]],
                           selections[0].apply(self))
         return atomgrp
+    
+    def apply(self, other):
+        return self.intersection(other)
 
     def split(self, level):
         """Split :class:`AtomGroup` into a :class:`list` of

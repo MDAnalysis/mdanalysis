@@ -212,6 +212,17 @@ class TestRMSD(object):
         R2 = MDAnalysis.analysis.rms.RMSD(universe.atoms.select_atoms("name CA"),
                                           select="resid 1-30").run()
         assert not np.allclose(R1.rmsd[:, 2], R2.rmsd[:, 2])
+    
+    def test_rmsd_atomgroups(self, universe):
+        # compare string vs atomgroup
+        R1 = MDAnalysis.analysis.rms.RMSD(universe.atoms,
+                                          select="resid 1-30").run()
+        ag = universe.select_atoms('resid 1-30')
+        R2 = MDAnalysis.analysis.rms.RMSD(universe.atoms, select=ag).run()
+        
+        assert_almost_equal(R1.rmsd, R2.rmsd, 4, 
+                            err_msg='error: rmsd profile should match ' +
+                            'for selection strings and AtomGroups')
 
     def test_rmsd_single_frame(self, universe):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA',
@@ -235,7 +246,7 @@ class TestRMSD(object):
         assert_almost_equal(RMSD.rmsd, saved, 4,
                             err_msg="error: rmsd profile should match "
                             "saved test values")
-
+    
     def test_custom_weighted(self, universe, correct_values_mass):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, weights="mass").run(step=49)
 
@@ -288,7 +299,7 @@ class TestRMSD(object):
         assert_almost_equal(RMSD.rmsd, correct_values_group, 4,
                             err_msg="error: rmsd profile should match"
                             "test values")
-
+    
     def test_rmsd_backbone_and_group_selection(self, universe,
                                                correct_values_backbone_group):
         RMSD = MDAnalysis.analysis.rms.RMSD(
@@ -299,6 +310,29 @@ class TestRMSD(object):
                              'backbone and resid 10:20']).run(step=49)
         assert_almost_equal(
             RMSD.rmsd, correct_values_backbone_group, 4,
+            err_msg="error: rmsd profile should match test values")
+    
+    def test_rmsd_atomgroup_backbone_and_group_selection(self, universe,
+                                               correct_values_backbone_group):
+        RMSD = MDAnalysis.analysis.rms.RMSD(
+            universe,
+            reference=universe,
+            select=universe.select_atoms('backbone'),
+            groupselections=[universe.select_atoms('backbone and resid 1:10'),
+                             universe.select_atoms('backbone and resid 10:20')
+                            ]).run(step=49)
+        assert_almost_equal(
+            RMSD.rmsd, correct_values_backbone_group, 4,
+            err_msg="error: rmsd profile should match test values")
+    
+    def test_rmsd_select_atomgroup_tuple(self, universe, correct_values):
+        copy = universe.copy()
+        ag = universe.select_atoms('name CA')
+        ag2 = copy.select_atoms('name CA')
+        RMSD = MDAnalysis.analysis.rms.RMSD(universe,
+                                            reference=copy,
+                                            select=(ag, ag2)).run(step=49)
+        assert_almost_equal(RMSD.rmsd, correct_values, 4,
             err_msg="error: rmsd profile should match test values")
 
     def test_ref_length_unequal_len(self, universe):

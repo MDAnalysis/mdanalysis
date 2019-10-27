@@ -148,6 +148,7 @@ from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.util import asiterable, iterable, get_weights, deprecate
+from MDAnalysis.core.groups import AtomGroup
 
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
@@ -283,6 +284,8 @@ def process_selection(select):
 
     if isinstance(select, string_types):
         select = {'reference': str(select), 'mobile': str(select)}
+    elif isinstance(select, AtomGroup):
+        select = {'reference': select, 'mobile': select}
     elif type(select) is tuple:
         try:
             select = {'mobile': select[0], 'reference': select[1]}
@@ -301,6 +304,10 @@ def process_selection(select):
         raise TypeError("'select' must be either a string, 2-tuple, or dict")
     select['mobile'] = asiterable(select['mobile'])
     select['reference'] = asiterable(select['reference'])
+    if isinstance(select['mobile'], AtomGroup):
+        select['mobile'] = [select['mobile']]
+    if isinstance(select['reference'], AtomGroup):
+        select['reference'] = [select['reference']]
     return select
 
 
@@ -468,6 +475,7 @@ class RMSD(AnalysisBase):
         self.reference = reference if reference is not None else self.atomgroup
 
         select = process_selection(select)
+        print("SELECT IS", select)
         self.groupselections = ([process_selection(s) for s in groupselections]
                                 if groupselections is not None else [])
         self.weights = weights
