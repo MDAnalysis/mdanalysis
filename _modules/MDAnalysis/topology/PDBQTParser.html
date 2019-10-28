@@ -109,6 +109,7 @@
     <span class="n">AltLocs</span><span class="p">,</span>
     <span class="n">Atomtypes</span><span class="p">,</span>
     <span class="n">Charges</span><span class="p">,</span>
+    <span class="n">ICodes</span><span class="p">,</span>
     <span class="n">Masses</span><span class="p">,</span>
     <span class="n">Occupancies</span><span class="p">,</span>
     <span class="n">RecordTypes</span><span class="p">,</span>
@@ -212,6 +213,7 @@
         <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resids</span><span class="p">(</span><span class="n">resids</span><span class="p">))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">resids</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ICodes</span><span class="p">(</span><span class="n">icodes</span><span class="p">))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnames</span><span class="p">(</span><span class="n">resnames</span><span class="p">))</span>
 
         <span class="n">segidx</span><span class="p">,</span> <span class="p">(</span><span class="n">segids</span><span class="p">,)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">((</span><span class="n">chainids</span><span class="p">,),</span> <span class="p">(</span><span class="n">chainids</span><span class="p">,))</span>
