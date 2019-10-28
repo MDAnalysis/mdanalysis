@@ -25,6 +25,7 @@ Fixes
 
 Enhancements
   * Expanded selection wildcards to the start and middle of strings (Issue #2370)
+  * Added type checking and conversion to Connection TopologyAttrs (Issue #2373)
 
 
 09/05/19 IAlibay, richardjgowers
