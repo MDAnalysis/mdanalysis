@@ -112,8 +112,9 @@ the attributes they provide.
    ITP               itp        names, types,     Gromacs include topology file;
                                 resids, resnames, :mod:`MDAnalysis.topology.ITPParser`
                                 charges, bonds,
-                                masses, moltypes,
-                                segids
+                                masses, segids,
+                                moltypes,
+                                chargegroups
 
    MOL2 [#a]_        mol2       ids, names,       Tripos MOL2 molecular structure format;
                                 types, resids,    :mod:`MDAnalysis.topology.MOL2Parser`

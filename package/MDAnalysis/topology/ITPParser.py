@@ -25,15 +25,13 @@
 ITP topology parser
 ===================
 
-Reads a CHARMM/NAMD/XPLOR ITP_ file to build the system. The topology will
+Reads a GROMACS ITP_ file to build the system. The topology will
 contain atom IDs, segids, residue IDs, residue names, atom names, atom types,
-charges and masses. Bonds, angles, dihedrals and impropers are also read from
+charges, chargegroups, masses (guessed if not found), and moltypes. 
+Bonds, angles, dihedrals and impropers are also read from
 the file.
 
-It reads both standard and extended ("EXT") ITP formats and can also parse NAMD
-space-separated "ITP" file variants.
-
-.. _ITP: http://www.charmm.org/documentation/c35b1/struct.html
+.. _ITP: http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file
 
 Classes
 -------
