@@ -348,8 +348,9 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
     return mobile_atoms, min_rmsd
 
 
-def alignto(mobile, reference, select="all", weights=None,
-            subselection=None, tol_mass=0.1, strict=False):
+def alignto(mobile, reference, select=None, weights=None,
+            subselection=None, tol_mass=0.1, strict=False,
+            match_atoms=True):
     """Perform a spatial superposition by minimizing the RMSD.
 
     Spatially align the group of atoms `mobile` to `reference` by
@@ -410,6 +411,8 @@ def alignto(mobile, reference, select="all", weights=None,
        be a *list of selection strings* to generate a
        :class:`~MDAnalysis.core.groups.AtomGroup` with defined atom order as
        described under :ref:`ordered-selections-label`).
+    match_atoms : bool (optional)
+        Whether to match the mobile and reference atom-by-atom. Default ``True``. 
     weights : {"mass", ``None``} or array_like (optional)
        choose weights. With ``"mass"`` uses masses as weights; with ``None``
        weigh each atom equally. If a float array of the same length as
@@ -453,6 +456,8 @@ def alignto(mobile, reference, select="all", weights=None,
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
 
+    .. versionchanged:: 0.20.1
+       Added *match_atoms* keyword to toggle atom matching.
 
     .. versionchanged:: 0.8
        Added check that the two groups describe the same atoms including
@@ -471,7 +476,7 @@ def alignto(mobile, reference, select="all", weights=None,
     .. versionchanged:: 0.17.0
        Deprecated keyword `mass_weighted` was removed.
     """
-    if select in ('all', None):
+    if select in ('all', None): # legacy
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
         # orders them by index, which can lead to wrong results if the user
         # has crafted mobile and reference to match atom by atom
@@ -482,9 +487,11 @@ def alignto(mobile, reference, select="all", weights=None,
         mobile_atoms = mobile.select_atoms(*select['mobile'])
         ref_atoms = reference.select_atoms(*select['reference'])
 
+
     ref_atoms, mobile_atoms = get_matching_atoms(ref_atoms, mobile_atoms,
-                                                 tol_mass=tol_mass,
-                                                 strict=strict)
+                                                tol_mass=tol_mass,
+                                                strict=strict,
+                                                match_atoms=match_atoms)
 
     weights = get_weights(ref_atoms, weights)
 
@@ -530,7 +537,7 @@ class AlignTraj(AnalysisBase):
 
     def __init__(self, mobile, reference, select='all', filename=None,
                  prefix='rmsfit_', weights=None,
-                 tol_mass=0.1, strict=False, force=True, in_memory=False,
+                 tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
                  **kwargs):
         """Parameters
         ----------
@@ -554,6 +561,8 @@ class AlignTraj(AnalysisBase):
             selection.
         tol_mass : float (optional)
             Tolerance given to `get_matching_atoms` to find appropriate atoms
+        match_atoms : bool (optional)
+            Whether to match the mobile and reference atom-by-atom. Default ``True``. 
         strict : bool (optional)
             Force `get_matching_atoms` to fail if atoms can't be found using
             exact methods
@@ -652,7 +661,7 @@ class AlignTraj(AnalysisBase):
         natoms = self.mobile.n_atoms
         self.ref_atoms, self.mobile_atoms = get_matching_atoms(
             self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
-            strict=strict)
+            strict=strict, match_atoms=match_atoms)
 
         # with self.filename == None (in_memory), the NullWriter is chosen
         # (which just ignores input) and so only the in_memory trajectory is
@@ -971,7 +980,7 @@ def fasta2select(fastafilename, is_aligned=False,
     return {'reference': ref_selection, 'mobile': target_selection}
 
 
-def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
+def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
     """Return two atom groups with one-to-one matched atoms.
 
     The function takes two :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -1009,6 +1018,11 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
             Will try to prepare a matching selection by dropping
             residues with non-matching atoms. See :func:`get_matching_atoms`
             for details.
+    match_atoms : bool (optional)
+        ``True``
+            Will attempt to match atoms based on mass
+        ``False``
+            Will not attempt to match atoms based on mass
 
     Returns
     -------
@@ -1040,16 +1054,21 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
     """
 
     if ag1.n_atoms != ag2.n_atoms:
+        if not match_atoms:
+            raise SelectionError("Mobile and reference atom selections do not "
+                                 "contain the same number of atoms and atom "
+                                 "matching is turned off. To match atoms based "
+                                 "on residue and mass, try match_atoms=True")
         if ag1.n_residues != ag2.n_residues:
-            errmsg = ("Reference and trajectory atom selections do not contain "
-                      "the same number of atoms: \n"
-                      "atoms:    N_ref={0}, N_traj={1}\n"
-                      "and also not the same number of residues:\n"
-                      "residues: N_ref={2}, N_traj={3}").format(
-                          ag1.n_atoms, ag2.n_atoms,
-                          ag1.n_residues, ag2.n_residues)
-            logger.error(errmsg)
-            raise SelectionError(errmsg)
+                errmsg = ("Reference and trajectory atom selections do not contain "
+                        "the same number of atoms: \n"
+                        "atoms:    N_ref={0}, N_traj={1}\n"
+                        "and also not the same number of residues:\n"
+                        "residues: N_ref={2}, N_traj={3}").format(
+                            ag1.n_atoms, ag2.n_atoms,
+                            ag1.n_residues, ag2.n_residues)
+                logger.error(errmsg)
+                raise SelectionError(errmsg)
         else:
             msg = ("Reference and trajectory atom selections do not contain "
                    "the same number of atoms: \n"
@@ -1156,39 +1175,40 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 logger.error(errmsg)
                 raise SelectionError(errmsg)
 
-    # check again because the residue matching heuristic is not very
-    # good and can easily be misled (e.g., when one of the selections
-    # had fewer atoms but the residues in mobile and reference have
-    # each the same number)
-    try:
-        mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
-    except ValueError:
-        errmsg = ("Failed to find matching atoms: len(reference) = {}, len(mobile) = {} " +
-                  "Try to improve your selections for mobile and reference.").format(
-                      ag1.n_atoms, ag2.n_atoms)
-        logger.error(errmsg)
-        raise SelectionError(errmsg)
+    if match_atoms:
+        # check again because the residue matching heuristic is not very
+        # good and can easily be misled (e.g., when one of the selections
+        # had fewer atoms but the residues in mobile and reference have
+        # each the same number)
+        try:
+            mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
+        except ValueError:
+            errmsg = ("Failed to find matching atoms: len(reference) = {}, len(mobile) = {} " +
+                    "Try to improve your selections for mobile and reference.").format(
+                        ag1.n_atoms, ag2.n_atoms)
+            logger.error(errmsg)
+            raise SelectionError(errmsg)
 
-    if np.any(mass_mismatches):
-        # Test 2 failed.
-        # diagnostic output:
-        logger.error("Atoms: reference | trajectory")
-        for ar, at in zip(ag1[mass_mismatches], ag2[mass_mismatches]):
-            logger.error(
-                "{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(
-                    ar.segid,
-                    ar.resid,
-                    ar.resname,
-                    ar.name,
-                    ar.mass,
-                    at.segid,
-                    at.resid,
-                    at.resname,
-                    at.name,
-                    at.mass))
-        errmsg = ("Inconsistent selections, masses differ by more than {0}; "
-                  "mis-matching atoms are shown above.").format(tol_mass)
-        logger.error(errmsg)
-        raise SelectionError(errmsg)
+        if np.any(mass_mismatches):
+            # Test 2 failed.
+            # diagnostic output:
+            logger.error("Atoms: reference | trajectory")
+            for ar, at in zip(ag1[mass_mismatches], ag2[mass_mismatches]):
+                logger.error(
+                    "{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(
+                        ar.segid,
+                        ar.resid,
+                        ar.resname,
+                        ar.name,
+                        ar.mass,
+                        at.segid,
+                        at.resid,
+                        at.resname,
+                        at.name,
+                        at.mass))
+            errmsg = ("Inconsistent selections, masses differ by more than {0}; "
+                    "mis-matching atoms are shown above.").format(tol_mass)
+            logger.error(errmsg)
+            raise SelectionError(errmsg)
 
     return ag1, ag2
