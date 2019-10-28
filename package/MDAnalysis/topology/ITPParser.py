@@ -81,7 +81,7 @@ class Chargegroups(AtomAttr):
     singular = 'chargegroup'
 
 class ITPParser(TopologyReaderBase):
-    """Read topology information from a CHARMM/NAMD/XPLOR ITP_ file.
+    """Read topology information from a GROMACS ITP_ file.
 
     Creates a Topology with the following Attributes:
     - ids
@@ -98,7 +98,7 @@ class ITPParser(TopologyReaderBase):
     - dihedrals
     - impropers
 
-    .. _ITP: http://www.charmm.org/documentation/c35b1/struct.html
+    .. _ITP: http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file
     """
     format = 'ITP'
 
@@ -132,18 +132,18 @@ class ITPParser(TopologyReaderBase):
 
         # Open and check itp validity
         with openany(self.filename) as itpfile:
-            header = re.compile(r'\[\s*(?P<section>\w+)\s*\]')
             for line in itpfile:
                 line = line.split(';')[0].strip()  # ; is for comments
                 if not line:  # Skip line if empty
                     continue
+                
                 if line.startswith('#'): #ignore include, ifdefs, etc
                     continue
-
-                match = re.match(header, line) # check if new section
-                if match:
-                    section = match.group('section')
+                
+                if '[' in line and ']' in line:
+                    section = line.split('[')[1].split(']')[0].strip()
                     continue
+
                 if not section:
                     continue
                 

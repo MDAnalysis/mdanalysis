@@ -36,7 +36,7 @@ Enhancements
     than analysis.hbonds.HydrogenBondAnalysis (PR #2237)
   * GSD reader is now supported on Windows (Issue #1923, PR #2384)
   * Empty Universe with 0 atoms is possible (Issue #2383)
-  * Added ITPParser
+  * Added ITPParser to parse GROMACS itp topology files (PR #2381)
 
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis will be deprecated in 1.0
