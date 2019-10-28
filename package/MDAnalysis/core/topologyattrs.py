@@ -1642,7 +1642,14 @@ class Segids(SegmentAttr):
 class _Connection(AtomAttr):
     """Base class for connectivity between atoms"""
     def __init__(self, values, types=None, guessed=False, order=None):
-        self.values = list(values)
+        values = [tuple(x) for x in values]
+        if not all(len(x) == self._n_atoms 
+                   and all(isinstance(y, (int, np.integer)) for y in x)
+                   for x in values):
+            raise ValueError(("{} must be an iterable of tuples with {}"
+                              " atom indices").format(self.attrname,
+                              self._n_atoms))
+        self.values = values
         if types is None:
             types = [None] * len(values)
         self.types = types
@@ -1743,6 +1750,7 @@ class Bonds(_Connection):
     # many bonds, so still asks for "bonds" in the plural
     singular = 'bonds'
     transplants = defaultdict(list)
+    _n_atoms = 2
 
     def bonded_atoms(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` of all
@@ -1891,6 +1899,7 @@ class Angles(_Connection):
     attrname = 'angles'
     singular = 'angles'
     transplants = defaultdict(list)
+    _n_atoms = 3
 
 
 class Dihedrals(_Connection):
@@ -1898,6 +1907,7 @@ class Dihedrals(_Connection):
     attrname = 'dihedrals'
     singular = 'dihedrals'
     transplants = defaultdict(list)
+    _n_atoms = 4
 
 
 class Impropers(_Connection):
@@ -1905,3 +1915,4 @@ class Impropers(_Connection):
     attrname = 'impropers'
     singular = 'impropers'
     transplants = defaultdict(list)
+    _n_atoms = 4
