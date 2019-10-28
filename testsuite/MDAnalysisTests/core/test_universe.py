@@ -628,6 +628,35 @@ class TestAddTopologyAttr(object):
 
         assert hasattr(universe.atoms, attrname)
         assert getattr(universe.atoms, attrname)[0] == default
+    
+    @pytest.mark.parametrize(
+        'bonds', (
+            [(1, 0), (1, 2)],
+            [[1, 0], [1, 2]],
+            set([(1, 0), (1, 2)]),
+        )
+    )
+    def test_add_bonds(self, universe, bonds):
+        universe.add_TopologyAttr('bonds', bonds)
+        assert hasattr(universe, 'bonds')
+        assert len(universe.bonds) == 2
+        ix1 = universe.bonds[0].indices
+        assert ix1[0] <= ix1[1]
+        ix2 = universe.bonds[0].indices
+        assert ix2[0] <= ix2[1]
+
+    @pytest.mark.parametrize(
+        'bonds', (
+            [(1, 0, 0), (1, 2)],
+            [['x', 'y'], [1, 2]],
+            'rubbish',
+            [[1.01, 2.0]]
+        )
+    )
+    def add_bond_error(self, universe, bonds):
+        with pytest.raises(ValueError):
+            universe.add_TopologyAttr('bonds', bonds)
+        
 
 
 class TestAllCoordinatesKwarg(object):
