@@ -128,7 +128,7 @@ class TestGetMatchingAtoms(object):
                 with pytest.raises(SelectionError):
                     groups = align.get_matching_atoms(ref, mobile, strict=strict)
     
-    def test_toggle_atom_match_selstr(self, universe, reference):
+    def test_toggle_atom_match(self, universe, reference):
         selection = ('resname ALA and name CA', 'resname ALA and name O')
         with pytest.raises(SelectionError):
             rmsd = align.alignto(universe, reference, select=selection)
@@ -136,17 +136,6 @@ class TestGetMatchingAtoms(object):
             rmsd = align.alignto(universe, reference, select=selection, match_atoms=True)
         rmsd = align.alignto(universe, reference, select=selection, match_atoms=False)
         assert rmsd[0] > 0.01
-    
-    def test_toggle_atom_match_atomgroup(self, universe, reference):
-        u = universe.select_atoms('resname ALA and name CA')
-        ref = universe.select_atoms('resname ALA and name O')
-        with pytest.raises(SelectionError):
-            rmsd = align.alignto(u, ref, select='all', match_atoms=True)
-        with pytest.raises(SelectionError):
-            rmsd = align.alignto(u, ref, select=None)
-        rmsd = align.alignto(u, ref, select='all', match_atoms=False)
-        assert rmsd[0] > 0.01
-
         
 
 
