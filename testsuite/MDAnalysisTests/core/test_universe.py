@@ -630,32 +630,39 @@ class TestAddTopologyAttr(object):
         assert getattr(universe.atoms, attrname)[0] == default
     
     @pytest.mark.parametrize(
-        'bonds', (
-            [(1, 0), (1, 2)],
-            [[1, 0], [1, 2]],
-            set([(1, 0), (1, 2)]),
+        'attr,values', (
+            ('bonds', [(1, 0), (1, 2)]),
+            ('bonds', [[1, 0], [1, 2]]),
+            ('bonds', set([(1, 0), (1, 2)])),
+            ('angles', [(1, 0, 2), (1, 2, 3), (2, 1, 4)]),
+            ('dihedrals', [[1, 2, 3, 1], (3, 1, 5, 2)]),
+            ('impropers', [[1, 2, 3, 1], (3, 1, 5, 2)]),
         )
     )
-    def test_add_bonds(self, universe, bonds):
-        universe.add_TopologyAttr('bonds', bonds)
-        assert hasattr(universe, 'bonds')
-        assert len(universe.bonds) == 2
-        ix1 = universe.bonds[0].indices
-        assert ix1[0] <= ix1[1]
-        ix2 = universe.bonds[0].indices
-        assert ix2[0] <= ix2[1]
+    def test_add_connection(self, universe, attr, values):
+        universe.add_TopologyAttr(attr, values)
+        assert hasattr(universe, attr)
+        attrgroup = getattr(universe, attr)
+        assert len(attrgroup) == len(values)
+        for x in attrgroup:
+            ix = x.indices
+            assert ix[0] <= ix[-1]
 
     @pytest.mark.parametrize(
-        'bonds', (
-            [(1, 0, 0), (1, 2)],
-            [['x', 'y'], [1, 2]],
-            'rubbish',
-            [[1.01, 2.0]]
+        'attr,values', (
+            ('bonds', [(1, 0, 0), (1, 2)]),
+            ('bonds', [['x', 'y'], [1, 2]]),
+            ('bonds', 'rubbish'),
+            ('bonds', [[1.01, 2.0]]),
+            ('angles', [(1, 0), (1, 2)]),
+            ('angles', 'rubbish'),
+            ('dihedrals', [[1, 1, 1, 0.1]]),
+            ('impropers', [(1, 2, 3)]),
         )
     )
-    def add_bond_error(self, universe, bonds):
+    def add_connection_error(self, universe, attr, values):
         with pytest.raises(ValueError):
-            universe.add_TopologyAttr('bonds', bonds)
+            universe.add_TopologyAttr(attr, values)
         
 
 
