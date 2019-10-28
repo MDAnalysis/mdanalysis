@@ -28,6 +28,8 @@
 :Year: 2019
 :Copyright: GNU Public License v3
 
+.. versionadded:: 0.21.0
+
 This module provides methods to find and analyse hydrogen bonds in a Universe.
 
 The :class:`HydrogenBondAnalysis` class is a new version of the original

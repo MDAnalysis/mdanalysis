@@ -46,9 +46,11 @@ selection parser. The following applies to all selections:
   necessary).
 * Selections are parsed left to right and parentheses can be used for
   grouping.
-* Currently, only "stemming" is implemented as a primitive form of pattern
-  matching: Using the ``*`` character in a string such as ``GL*`` selects
-  all strings that start with "GL" such as "GLU", "GLY", "GLX29", "GLN".
+* Currently, a single wildcard ``*`` character can be at the start, middle, or 
+  end of a string for pattern matching. For example, ``GL*`` selects
+  all strings that start with "GL" such as "GLU", "GLY", "GLX29", "GLN". 
+  ``resname *N`` selects all residue names that end in "N", such as "ASN" and 
+  "GLN".
 
 
 Simple selections
