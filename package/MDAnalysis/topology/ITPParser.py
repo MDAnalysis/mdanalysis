@@ -121,9 +121,13 @@ class ITPParser(TopologyReaderBase):
         atom_lists = [ids, types, resids, resnames, names, chargegroups, charges, masses]
 
         bonds = []
+        bondtypes = []
         angles = []
+        angletypes = []
         dihedrals = []
+        dihedraltypes = []
         impropers = []
+        impropertypes = []
 
         segid = 'SYSTEM'
         molnum = 1
@@ -136,7 +140,6 @@ class ITPParser(TopologyReaderBase):
                 line = line.split(';')[0].strip()  # ; is for comments
                 if not line:  # Skip line if empty
                     continue
-                
                 if line.startswith('#'): #ignore include, ifdefs, etc
                     continue
                 
@@ -160,10 +163,14 @@ class ITPParser(TopologyReaderBase):
                             lst.append('')
                 
                 elif section == 'bonds':
-                    bonds.append(line.split()[:2])
+                    values = line.split()
+                    bonds.append(values[:2])
+                    bondtypes.append(values[2])
                 
                 elif section == 'angles':
-                    angles.append(line.split()[:3])
+                    values = line.split()
+                    angles.append(values[:3])
+                    angletypes.append(values[3])
                 
                 elif section == 'dihedrals':
                     # funct == 1: proper
@@ -171,8 +178,10 @@ class ITPParser(TopologyReaderBase):
                     values = line.split()
                     if values[4] == '1':
                         dihedrals.append(values[:4])
+                        dihedraltypes.append(values[4])
                     elif values[4] == '2':
                         impropers.append(values[:4])
+                        impropertypes.append(values[4])
         
         attrs = []
         
@@ -211,16 +220,18 @@ class ITPParser(TopologyReaderBase):
                        attrs=attrs,
                        atom_resindex=residx,
                        residue_segindex=segidx)
-
-        # connectivity
-        for vals, Attr, attrname in (
-            (bonds, Bonds, 'bonds'),
-            (angles, Angles, 'angles'),
-            (dihedrals, Dihedrals, 'dihedrals'),
-            (impropers, Impropers, 'impropers')
-        ):
-            top.add_TopologyAttr(Attr(set(tuple(map(ids.index, x)) for x in vals)))
         
+        # connectivity
+        for vals, Attr, attrname, atype in (
+            (bonds, Bonds, 'bonds', bondtypes),
+            (angles, Angles, 'angles', angletypes),
+            (dihedrals, Dihedrals, 'dihedrals', dihedraltypes),
+            (impropers, Impropers, 'impropers', impropertypes)
+        ):
+            tattr = Attr(set(tuple(map(ids.index, x)) for x in vals),
+                         types=atype)
+            top.add_TopologyAttr(tattr)
+
         return top
 
 
