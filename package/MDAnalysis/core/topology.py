@@ -583,3 +583,7 @@ class Topology(object):
             attr.values = np.concatenate([attr.values, np.array([newval])])
 
         return segidx
+    
+    def add_Bond(self, values, types=None, guessed=None, order=None):
+        pass
+

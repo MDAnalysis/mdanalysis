@@ -1719,6 +1719,14 @@ class _Connection(AtomAttr):
                              order)
 
     def add_bonds(self, values, types=None, guessed=True, order=None):
+        values = [tuple(x) for x in values]
+        if not all(len(x) == self._n_atoms 
+                   and all(isinstance(y, (int, np.integer)) for y in x)
+                   for x in values):
+            raise ValueError(("{} must be an iterable of tuples with {}"
+                              " atom indices").format(self.attrname,
+                              self._n_atoms))
+                              
         if types is None:
             types = itertools.cycle((None,))
         if guessed in (True, False):
