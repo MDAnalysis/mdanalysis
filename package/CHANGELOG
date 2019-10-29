@@ -13,6 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+mm/dd/yy lilyminium, 
+
+  * 0.21.0
+
+Enhancements
+  * Added match_atoms keyword to analysis.align (Issue #2285, PR #2380)
+
+
 mm/dd/yy richardjgowers, kain88-de, lilyminium
 
   * 0.20.2
@@ -26,7 +34,6 @@ Fixes
 
 Enhancements
   * Expanded selection wildcards to the start and middle of strings (Issue #2370)
-  * Added match_atoms keyword to analysis.align (Issue #2285)
 
 09/05/19 IAlibay, richardjgowers
 
