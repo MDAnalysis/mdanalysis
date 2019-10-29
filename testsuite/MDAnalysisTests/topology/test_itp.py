@@ -50,7 +50,6 @@ class TestITP(ParserBase):
         assert len(top.bonds.values) == 62
     
     def test_bonds_atom_counts(self, universe):
-        
         assert len(universe.atoms[[0]].bonds) == 3
         assert len(universe.atoms[[42]].bonds) == 1
 
@@ -58,12 +57,14 @@ class TestITP(ParserBase):
         vals = top.bonds.values
         for b in ((0, 1), (0, 2), (0, 3), (3, 4)):
             assert b in vals
+        
+    def test_bonds_type(self, top):
+        assert top.bonds.types[0] == '2'
 
     def test_angles_total_counts(self, top):
         assert len(top.angles.values) == 91
 
     def test_angles_atom_counts(self, universe):
-        
         assert len(universe.atoms[[0]].angles) == 5
         assert len(universe.atoms[[42]].angles) == 2
 
@@ -71,12 +72,14 @@ class TestITP(ParserBase):
         vals = top.angles.values
         for b in ((1, 0, 2), (1, 0, 3), (2, 0, 3)):
             assert (b in vals) or (b[::-1] in vals)
+    
+    def test_angles_type(self, top):
+        assert top.angles.types[0] == '2'
 
     def test_dihedrals_total_counts(self, top):
         assert len(top.dihedrals.values) == 30
 
     def test_dihedrals_atom_counts(self, universe):
-        
         assert len(universe.atoms[[0]].dihedrals) == 2
 
     def test_dihedrals_identity(self, top):
@@ -84,15 +87,20 @@ class TestITP(ParserBase):
         for b in ((1, 0, 3, 5), (0, 3, 5, 7)):
             assert (b in vals) or (b[::-1] in vals)
     
+    def test_dihedrals_identity(self, top):
+        assert top.dihedrals.types[0] == '1'
+    
     def test_impropers_total_counts(self, top):
         assert len(top.impropers.values) == 29
 
     def test_impropers_atom_counts(self, universe):
-        
         assert len(universe.atoms[[0]].impropers) == 1
 
     def test_impropers_identity(self, top):
         vals = top.impropers.values
         for b in ((3, 0, 5, 4), (5, 3, 7, 6)):
             assert (b in vals) or (b[::-1] in vals)
+    
+    def test_impropers_identity(self, top):
+        assert top.impropers.types[0] == '2'
     
