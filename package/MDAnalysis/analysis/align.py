@@ -456,7 +456,7 @@ def alignto(mobile, reference, select=None, weights=None,
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
 
-    .. versionchanged:: 0.20.1
+    .. versionchanged:: 0.21.0
        Added *match_atoms* keyword to toggle atom matching.
 
     .. versionchanged:: 0.8
@@ -476,7 +476,7 @@ def alignto(mobile, reference, select=None, weights=None,
     .. versionchanged:: 0.17.0
        Deprecated keyword `mass_weighted` was removed.
     """
-    if select in ('all', None): # legacy
+    if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
         # orders them by index, which can lead to wrong results if the user
         # has crafted mobile and reference to match atom by atom
@@ -1055,20 +1055,22 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
 
     if ag1.n_atoms != ag2.n_atoms:
         if not match_atoms:
-            raise SelectionError("Mobile and reference atom selections do not "
-                                 "contain the same number of atoms and atom "
-                                 "matching is turned off. To match atoms based "
-                                 "on residue and mass, try match_atoms=True")
+            errmsg = ("Mobile and reference atom selections do not "
+                      "contain the same number of atoms and atom "
+                      "matching is turned off. To match atoms based "
+                      "on residue and mass, try match_atoms=True")
+            logger.error(errmsg)
+            raise SelectionError(errmsg)
         if ag1.n_residues != ag2.n_residues:
-                errmsg = ("Reference and trajectory atom selections do not contain "
-                        "the same number of atoms: \n"
-                        "atoms:    N_ref={0}, N_traj={1}\n"
-                        "and also not the same number of residues:\n"
-                        "residues: N_ref={2}, N_traj={3}").format(
-                            ag1.n_atoms, ag2.n_atoms,
-                            ag1.n_residues, ag2.n_residues)
-                logger.error(errmsg)
-                raise SelectionError(errmsg)
+            errmsg = ("Reference and trajectory atom selections do not contain "
+                    "the same number of atoms: \n"
+                    "atoms:    N_ref={0}, N_traj={1}\n"
+                    "and also not the same number of residues:\n"
+                    "residues: N_ref={2}, N_traj={3}").format(
+                        ag1.n_atoms, ag2.n_atoms,
+                        ag1.n_residues, ag2.n_residues)
+            logger.error(errmsg)
+            raise SelectionError(errmsg)
         else:
             msg = ("Reference and trajectory atom selections do not contain "
                    "the same number of atoms: \n"
