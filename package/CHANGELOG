@@ -98,6 +98,7 @@ Enhancements
   * added unwrap keyword to asphericity (PR #2290)
   * add high order water bridge support to water bridge analysis. (PR #2087)
 
+
 Changes
   * added support for scale_factor in NCDFReader (Issue #2323)
   * added official support for Python 3.7 (PR #1963)

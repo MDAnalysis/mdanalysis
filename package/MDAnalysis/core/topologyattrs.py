@@ -945,6 +945,10 @@ class Masses(AtomAttr):
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
 
         Note
         ----
@@ -974,6 +978,7 @@ class Masses(AtomAttr):
         ('radius_of_gyration', radius_of_gyration))
 
     @warn_if_not_unique
+    @check_pbc_and_unwrap
     def shape_parameter(group, **kwargs):
         """Shape parameter.
 
@@ -984,6 +989,10 @@ class Masses(AtomAttr):
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
 
         Note
         ----
@@ -1004,21 +1013,28 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.8 Added *pbc* keyword
 
         """
-        atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
-        masses = atomgroup.masses
+        masses = group.atoms.masses
+        unwrap = kwargs.pop('unwrap', False)
+        compound = kwargs.pop('compound', 'group')
 
-        com = atomgroup.center_of_mass(pbc=pbc)
+        com = group.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound is not 'group':
+            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+
         if pbc:
-            recenteredpos = atomgroup.pack_into_box(inplace=False) - com
+            recenteredpos = group.pack_into_box(inplace=False) - com
+        elif unwrap:
+            recenteredpos = group.unwrap(compound=compound) - com
         else:
-            recenteredpos = atomgroup.positions - com
+            recenteredpos = group.atoms.positions - com
+
         tensor = np.zeros((3, 3))
 
         for x in range(recenteredpos.shape[0]):
             tensor += masses[x] * np.outer(recenteredpos[x, :],
                                            recenteredpos[x, :])
-        tensor /= atomgroup.total_mass()
+        tensor /= group.total_mass()
         eig_vals = np.linalg.eigvalsh(tensor)
         shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)) / np.power(np.sum(eig_vals), 3)
 
