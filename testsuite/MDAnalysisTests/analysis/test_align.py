@@ -128,12 +128,18 @@ class TestGetMatchingAtoms(object):
                 with pytest.raises(SelectionError):
                     groups = align.get_matching_atoms(ref, mobile, strict=strict)
     
-    def test_toggle_atom_match(self, universe, reference):
+    def test_toggle_atom_mismatch_default_error(self, universe, reference):
         selection = ('resname ALA and name CA', 'resname ALA and name O')
         with pytest.raises(SelectionError):
             rmsd = align.alignto(universe, reference, select=selection)
+    
+    def test_toggle_atom_mismatch_kwarg_error(self, universe, reference):
+        selection = ('resname ALA and name CA', 'resname ALA and name O')
         with pytest.raises(SelectionError):
             rmsd = align.alignto(universe, reference, select=selection, match_atoms=True)
+    
+    def test_toggle_atom_nomatch(self, universe, reference):
+        selection = ('resname ALA and name CA', 'resname ALA and name O')
         rmsd = align.alignto(universe, reference, select=selection, match_atoms=False)
         assert rmsd[0] > 0.01
         
