@@ -41,18 +41,14 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import, division
-from six.moves import range
+from __future__ import absolute_import
 
 import logging
-import functools
-import re
-from math import ceil
 import numpy as np
 
 from ..lib.util import openany
 from . import guessers
-from .base import TopologyReaderBase, squash_by, change_squash
+from .base import TopologyReaderBase, change_squash
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -71,9 +67,6 @@ from ..core.topologyattrs import (
     AtomAttr,
 )
 from ..core.topology import Topology
-
-logger = logging.getLogger("MDAnalysis.topology.ITP")
-
 
 class Chargegroups(AtomAttr):
     """The charge group for each Atom"""
@@ -197,7 +190,7 @@ class ITPParser(TopologyReaderBase):
                 attrs.append(Attr(np.array(vals, dtype=dtype)))
         
         if not all(masses):
-            masses = guess_masses(types)
+            masses = guessers.guess_masses(types)
             attrs.append(Masses(masses, guessed=True))
         else:
             attrs.append(Masses(np.array(masses, dtype=np.float64)))

@@ -173,8 +173,8 @@ __all__ = [
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
 
-    "ITP_ala", "XTC_ala", # for GROMACS generated itps
-    "ITP_atb", "PDB_atb", # for ATB generated itps
+    "ITP", # for GROMACS generated itps
+    "ITP_nomass", # for ATB generated itps
 ]
 
 from pkg_resources import resource_filename
@@ -476,12 +476,8 @@ LYSJaninArray = resource_filename(__name__, 'data/adk_oplsaa_LYS_janin.npy')
 PDB_rama = resource_filename(__name__, 'data/19hc.pdb.gz')
 PDB_janin = resource_filename(__name__, 'data/1a28.pdb.gz')
 
-ITP_ala = resource_filename(__name__, 'data/gromacs_ala10.itp')
-XTC_ala = resource_filename(__name__, 'data/gromacs_ala10.xtc')
-
-ITP_atb = resource_filename(__name__, 'data/atb_hema.itp')
-PDB_atb = resource_filename(__name__, 'data/atb_hema.pdb')
-
+ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
+ITP_nomass = resource_filename(__name__, 'data/itp_nomass.itp')
 
 # This should be the last line: clean up namespace
 del resource_filename
