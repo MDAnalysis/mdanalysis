@@ -61,7 +61,7 @@
 N2C7     3
 [ atoms ]
 ;  nr  type  resnr  resid  atom  cgnr  charge    mass
-    1    HC    1    N2C7    H31    1    0.094   1.0080
+    1    HC    1    N2C7    H31    1    0.094 
     2  CPos    1    N2C7    C18    2   -0.064  12.0110
     3    HC    1    N2C7    H29    3    0.094   1.0080
     4    HC    1    N2C7    H30    4    0.094   1.0080

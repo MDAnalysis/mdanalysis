@@ -27,12 +27,13 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
-    ITP_ala,  # GROMACS itp
+    ITP,  # GROMACS itp
+    ITP_nomass, # from Automated Topology Builder
 )
 
 class TestITP(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
-    ref_filename = ITP_ala
+    ref_filename = ITP
     expected_attrs = ['ids', 'names', 'types', 'masses',
                       'charges', 'chargegroups',
                       'resids', 'resnames',
@@ -103,4 +104,23 @@ class TestITP(ParserBase):
     
     def test_impropers_identity(self, top):
         assert top.impropers.types[0] == '2'
-    
+
+class TestITPNoMass(ParserBase):
+    parser = mda.topology.ITPParser.ITPParser
+    ref_filename = ITP_nomass
+    expected_attrs = ['ids', 'names', 'types', 'masses',
+                      'charges', 'chargegroups',
+                      'resids', 'resnames',
+                      'segids', 'moltypes',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
+    guessed_attrs = ['masses']
+    expected_n_atoms = 60
+    expected_n_residues = 1
+    expected_n_segments = 1
+
+    @pytest.fixture
+    def universe(self, filename):
+        return mda.Universe(filename)
+
+    def test_mass_guess(self, universe):
+        assert universe.atoms[0].mass not in ('', None)
