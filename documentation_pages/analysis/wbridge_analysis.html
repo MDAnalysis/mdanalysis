@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>4.3.3. Water Bridge analysis — MDAnalysis.analysis.hbonds.WaterBridgeAnalysis &#8212; MDAnalysis 0.20.2-dev0 documentation</title>
+    <title>4.3.4. Water Bridge analysis — MDAnalysis.analysis.hbonds.WaterBridgeAnalysis &#8212; MDAnalysis 0.20.2-dev0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="4.4.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole" href="hole.html" />
-    <link rel="prev" title="4.3.2. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel" href="hbond_autocorrel.html" />
+    <link rel="prev" title="4.3.3. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel" href="hbond_autocorrel.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -40,7 +40,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.analysis.hbonds.wbridge_analysis"></span><div class="section" id="water-bridge-analysis-mdanalysis-analysis-hbonds-waterbridgeanalysis">
-<h1>4.3.3. Water Bridge analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code><a class="headerlink" href="#water-bridge-analysis-mdanalysis-analysis-hbonds-waterbridgeanalysis" title="Permalink to this headline">¶</a></h1>
+<h1>4.3.4. Water Bridge analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code><a class="headerlink" href="#water-bridge-analysis-mdanalysis-analysis-hbonds-waterbridgeanalysis" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -84,7 +84,7 @@ water</li>
 </ul>
 </div></blockquote>
 <div class="section" id="theory">
-<h2>4.3.3.1. Theory<a class="headerlink" href="#theory" title="Permalink to this headline">¶</a></h2>
+<h2>4.3.4.1. Theory<a class="headerlink" href="#theory" title="Permalink to this headline">¶</a></h2>
 <p>This module attempts to find multi-order water bridge by an approach similar
 to breadth-first search, where the first solvation shell of selection 1 is
 selected, followed by the selection of the second solvation shell as well as
@@ -93,7 +93,7 @@ shell, as well as any binding partners from selection 2, are detected. This
 process is repeated until the maximum order of water bridges is reached.</p>
 </div>
 <div class="section" id="output-as-network">
-<span id="wb-analysis-network"></span><h2>4.3.3.2. Output as Network<a class="headerlink" href="#output-as-network" title="Permalink to this headline">¶</a></h2>
+<span id="wb-analysis-network"></span><h2>4.3.4.2. Output as Network<a class="headerlink" href="#output-as-network" title="Permalink to this headline">¶</a></h2>
 <p>Since the waters connecting the two ends of the selections are by nature a network.
 We provide a network representation of the water network. Water bridge data are
 returned per frame, which is stored in <a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.network" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.network"><code class="xref py py-attr docutils literal notranslate"><span class="pre">WaterBridgeAnalysis.network</span></code></a>. Each
@@ -123,7 +123,7 @@ it is followed by the index of the corresponding heavy atom
 If the atom is a hydrogen bond acceptor, it is followed by none.</p>
 </div>
 <div class="section" id="output-as-timeseries">
-<span id="wb-analysis-timeseries"></span><h2>4.3.3.3. Output as Timeseries<a class="headerlink" href="#output-as-timeseries" title="Permalink to this headline">¶</a></h2>
+<span id="wb-analysis-timeseries"></span><h2>4.3.4.3. Output as Timeseries<a class="headerlink" href="#output-as-timeseries" title="Permalink to this headline">¶</a></h2>
 <p>For lower order water bridges, it might be desirable to represent the connections as
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">WaterBridgeAnalysis.timeseries</span></code></a>. The results are returned per frame and
 are a list of hydrogen bonds between the selection 1 or selection 2 and the
@@ -172,7 +172,7 @@ the results as a flat “normalised” table that is easier to import into a
 database or dataframe for further processing.</p>
 </div>
 <div class="section" id="detection-of-water-bridges">
-<h2>4.3.3.4. Detection of water bridges<a class="headerlink" href="#detection-of-water-bridges" title="Permalink to this headline">¶</a></h2>
+<h2>4.3.4.4. Detection of water bridges<a class="headerlink" href="#detection-of-water-bridges" title="Permalink to this headline">¶</a></h2>
 <p>Water bridges are recorded if a bridging water simultaneously forms
 hydrogen bonds with selection 1 and selection 2.</p>
 <p>Hydrogen bonds are detected as is described in <a class="reference internal" href="hbond_analysis.html#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HydrogenBondAnalysis</span></code></a>, see <a class="reference internal" href="hbond_analysis.html#detection-of-hydrogen-bonds"><span class="std std-ref">Detection of hydrogen bonds</span></a>.</p>
@@ -193,7 +193,7 @@ default list oneself:</p>
 atom names to MDAnalysis.</p>
 </div>
 <div class="section" id="how-to-perform-waterbridgeanalysis">
-<h2>4.3.3.5. How to perform WaterBridgeAnalysis<a class="headerlink" href="#how-to-perform-waterbridgeanalysis" title="Permalink to this headline">¶</a></h2>
+<h2>4.3.4.5. How to perform WaterBridgeAnalysis<a class="headerlink" href="#how-to-perform-waterbridgeanalysis" title="Permalink to this headline">¶</a></h2>
 <p>All water bridges between arginine and aspartic acid can be analysed with</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
@@ -243,7 +243,7 @@ group (ASP3:OD2).</p>
 </div>
 </div>
 <div class="section" id="use-count-by-type">
-<span id="wb-count-by-type"></span><h2>4.3.3.6. Use count_by_type<a class="headerlink" href="#use-count-by-type" title="Permalink to this headline">¶</a></h2>
+<span id="wb-count-by-type"></span><h2>4.3.4.6. Use count_by_type<a class="headerlink" href="#use-count-by-type" title="Permalink to this headline">¶</a></h2>
 <p>We can use the <a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">count_by_type()</span></code></a> to
 generate the frequence of all water bridges in the simulation.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">w</span><span class="o">.</span><span class="n">count_by_type</span><span class="p">()</span>
@@ -449,7 +449,7 @@ interactions can be discarded by supplying an analysis function to
 </div>
 </div>
 <div class="section" id="use-count-by-time">
-<span id="wb-count-by-time"></span><h2>4.3.3.7. Use count_by_time<a class="headerlink" href="#use-count-by-time" title="Permalink to this headline">¶</a></h2>
+<span id="wb-count-by-time"></span><h2>4.3.4.7. Use count_by_time<a class="headerlink" href="#use-count-by-time" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">count_by_type()</span></code></a> aggregates data across frames, which
 might be desirable in some cases but not the others. <a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_time" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_time"><code class="xref py py-meth docutils literal notranslate"><span class="pre">count_by_time()</span></code></a>
 provides additional functionality for aggregating results for each frame.</p>
@@ -538,7 +538,7 @@ an analysis function.</p>
 </div>
 </div>
 <div class="section" id="classes">
-<h2>4.3.3.8. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>4.3.4.8. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.hbonds.wbridge_analysis.</code><code class="descname">WaterBridgeAnalysis</code><span class="sig-paren">(</span><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='not resname SOL'</em>, <em>water_selection='resname SOL'</em>, <em>order=1</em>, <em>selection1_type='both'</em>, <em>update_selection=False</em>, <em>update_water_selection=True</em>, <em>filter_first=True</em>, <em>distance_type='hydrogen'</em>, <em>distance=3.0</em>, <em>angle=120.0</em>, <em>forcefield='CHARMM27'</em>, <em>donors=None</em>, <em>acceptors=None</em>, <em>output_format='sele1_sele2'</em>, <em>debug=None</em>, <em>verbose=False</em>, <em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/wbridge_analysis.html#WaterBridgeAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis" title="Permalink to this definition">¶</a></dt>
@@ -668,7 +668,7 @@ of a water bridge existence.</p>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OC1', 'NE2', 'OH', 'OG', 'OH2', 'SD', 'OG1', 'OC2', 'ND1', 'OE2', 'SG', 'OD2', 'OD1', 'OW', 'OE1', 'O'), 'GLYCAM06': ('NT', 'SM', 'N', 'OS', 'OY', 'OW', 'OH', 'O2', 'O'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OC2', 'SD', 'OW', 'OD1', 'OD2', 'NE2', 'OC1', 'OG1', 'OH', 'OE2', 'SG', 'ND1', 'O', 'OH2', 'OG', 'OE1'), 'GLYCAM06': ('N', 'OW', 'OY', 'O2', 'OS', 'OH', 'SM', 'NT', 'O'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="hbond_analysis.html#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -676,7 +676,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('NE2', 'OG', 'OH2', 'NH1', 'OG1', 'NE1', 'NE', 'NH2', 'ND2', 'NZ', 'N', 'SG', 'OW', 'OH', 'ND1'), 'GLYCAM06': ('N3', 'NT', 'N', 'OW', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('NZ', 'OW', 'N', 'NE', 'NH1', 'NE1', 'NH2', 'NE2', 'OH', 'OG1', 'SG', 'ND1', 'ND2', 'OH2', 'OG'), 'GLYCAM06': ('OW', 'N', 'N3', 'OH', 'NT'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="hbond_analysis.html#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
@@ -862,17 +862,18 @@ supplying an analysis_func.</p>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="hbond_analysis.html">4.3.1. Hydrogen Bond analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="hbond_autocorrel.html">4.3.2. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.3.3. Water Bridge analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#theory">4.3.3.1. Theory</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#output-as-network">4.3.3.2. Output as Network</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#output-as-timeseries">4.3.3.3. Output as Timeseries</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#detection-of-water-bridges">4.3.3.4. Detection of water bridges</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#how-to-perform-waterbridgeanalysis">4.3.3.5. How to perform WaterBridgeAnalysis</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#use-count-by-type">4.3.3.6. Use count_by_type</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#use-count-by-time">4.3.3.7. Use count_by_time</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#classes">4.3.3.8. Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hydrogenbonds.html">4.3.1. Hydrogen Bond Analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hbond_analysis.html">4.3.2. Hydrogen Bond analysis (Deprecated) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hbond_autocorrel.html">4.3.3. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.3.4. Water Bridge analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#theory">4.3.4.1. Theory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#output-as-network">4.3.4.2. Output as Network</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#output-as-timeseries">4.3.4.3. Output as Timeseries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#detection-of-water-bridges">4.3.4.4. Detection of water bridges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-to-perform-waterbridgeanalysis">4.3.4.5. How to perform WaterBridgeAnalysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#use-count-by-type">4.3.4.6. Use count_by_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#use-count-by-time">4.3.4.7. Use count_by_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes">4.3.4.8. Classes</a></li>
 </ul>
 </li>
 </ul>
@@ -906,7 +907,7 @@ supplying an analysis_func.</p>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../analysis_modules.html">4. Analysis modules</a><ul>
-      <li>Previous: <a href="hbond_autocorrel.html" title="previous chapter">4.3.2. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a></li>
+      <li>Previous: <a href="hbond_autocorrel.html" title="previous chapter">4.3.3. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a></li>
       <li>Next: <a href="hole.html" title="next chapter">4.4.1. Generation and Analysis of HOLE pore profiles — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code></a></li>
   </ul></li>
   </ul></li>
