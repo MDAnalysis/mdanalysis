@@ -31,6 +31,7 @@ Enhancements
     hydrogen bonds. Simpler interface, more extensible and better performance
     than analysis.hbonds.HydrogenBondAnalysis (PR #2237)
   * GSD reader is now supported on Windows (Issue #1923, PR #2384)
+  * Empty Universe with 0 atoms is possible (Issue #2383)
 
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis will be deprecated in 1.0
