@@ -515,7 +515,8 @@ class FullSelgroupSelection(Selection):
 class StringSelection(Selection):
     """Selections based on text attributes
 
-    Supports the use of wildcards at the end of strings
+    Supports the use of one wildcard at the start, 
+    end, and middle of strings
     """
     def __init__(self, parser, tokens):
         vals = grab_not_keywords(tokens)
@@ -527,12 +528,15 @@ class StringSelection(Selection):
     def apply(self, group):
         mask = np.zeros(len(group), dtype=np.bool)
         for val in self.values:
+            if val.count('*') > 1:
+                raise SelectionError('Can only use one wildcard in a string')
             wc_pos = val.find('*')
             if wc_pos == -1:  # No wildcard found
                 mask |= getattr(group, self.field) == val
             else:
                 values = getattr(group, self.field).astype(np.str_)
                 mask |= np.char.startswith(values, val[:wc_pos])
+                mask &= np.char.endswith(values, val[wc_pos+1:])
 
         return group[mask].unique
 

@@ -33,8 +33,6 @@ from numpy.testing import assert_equal
 import os
 
 
-@pytest.mark.skipif(os.name == 'nt',
-                    reason="gsd not windows compatible")
 class TestGSDParser(ParserBase):
     parser = mda.topology.GSDParser.GSDParser
     ref_filename = GSD
@@ -48,9 +46,7 @@ class TestGSDParser(ParserBase):
         assert len(top.names) == top.n_atoms
         assert len(top.resids) == top.n_residues
         assert len(top.resnames) == top.n_residues
-    
-@pytest.mark.skipif(os.name == 'nt',
-                    reason="gsd not windows compatible")
+
 class TestGSDParserBonds(ParserBase):
     parser = mda.topology.GSDParser.GSDParser
     ref_filename = GSD_bonds
@@ -67,10 +63,10 @@ class TestGSDParserBonds(ParserBase):
         assert len(top.names) == top.n_atoms
         assert len(top.resids) == top.n_residues
         assert len(top.resnames) == top.n_residues
-        
+
     def test_atoms(self, top):
         assert top.n_atoms == self.expected_n_atoms
-        
+
     def test_bonds(self, top):
         assert len(top.bonds.values) == self.expected_n_bonds
         assert isinstance(top.bonds.values[0], tuple)
