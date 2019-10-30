@@ -464,14 +464,18 @@ class Universe(object):
         .. versionchanged:: 0.19.0
            The attached Reader when trajectory=True is now a MemoryReader
         """
-        if n_residues is None:
+        if not n_atoms:
+            n_residues = 0
+            n_segments = 0
+            
+        if n_residues is None and n_atoms:
             n_residues = 1
         elif atom_resindex is None:
             warnings.warn(
                 'Multiple residues specified but no atom_resindex given.  '
                 'All atoms will be placed in first Residue.',
                 UserWarning)
-        if n_segments is None:
+        if n_segments is None and n_atoms:
             n_segments = 1
         elif residue_segindex is None:
             warnings.warn(

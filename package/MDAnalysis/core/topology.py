@@ -113,6 +113,9 @@ def make_downshift_arrays(upshift, nparents):
     .. warning:: This means negative indexing should **never**
                  be used with these arrays.
     """
+    if not list(upshift):
+        return np.array([], dtype=object)
+        
     order = np.argsort(upshift)
 
     upshift_sorted = upshift[order]
