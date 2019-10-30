@@ -561,6 +561,8 @@ if __name__ == '__main__':
     ]
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')
+    else:
+        install_requires.append('gsd>=1.9.3')
 
     setup(name='MDAnalysis',
           version=RELEASE,
