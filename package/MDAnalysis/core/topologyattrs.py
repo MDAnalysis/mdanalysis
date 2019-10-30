@@ -1643,17 +1643,28 @@ class Segids(SegmentAttr):
     transplants[SegmentGroup].append(
         ('_get_named_segment', _get_named_segment))
 
+def check_values(func):
+    """
+    Checks values passed to _Connection methods for appropriate number of 
+    atom indices and coerces them to tuples of ints.
+    """
+    @functools.wraps(func)
+    def wrapper(self, values, **kwargs):
+        values = [tuple(x) for x in values]
+        if not all(len(x) == self._n_atoms 
+                and all(isinstance(y, (int, np.integer)) for y in x)
+                for x in values):
+            raise ValueError(("{} must be an iterable of tuples with {}"
+                            " atom indices").format(self.attrname,
+                            self._n_atoms))
+        return func(self, values, **kwargs)
+    return wrapper
 
 class _Connection(AtomAttr):
     """Base class for connectivity between atoms"""
+
+    @check_values
     def __init__(self, values, types=None, guessed=False, order=None):
-        values = [tuple(x) for x in values]
-        if not all(len(x) == self._n_atoms 
-                   and all(isinstance(y, (int, np.integer)) for y in x)
-                   for x in values):
-            raise ValueError(("{} must be an iterable of tuples with {}"
-                              " atom indices").format(self.attrname,
-                              self._n_atoms))
         self.values = values
         if types is None:
             types = [None] * len(values)
@@ -1718,15 +1729,8 @@ class _Connection(AtomAttr):
                              guessed,
                              order)
 
+    @check_values
     def add_bonds(self, values, types=None, guessed=True, order=None):
-        values = [tuple(x) for x in values]
-        if not all(len(x) == self._n_atoms 
-                   and all(isinstance(y, (int, np.integer)) for y in x)
-                   for x in values):
-            raise ValueError(("{} must be an iterable of tuples with {}"
-                              " atom indices").format(self.attrname,
-                              self._n_atoms))
-                              
         if types is None:
             types = itertools.cycle((None,))
         if guessed in (True, False):
@@ -1736,6 +1740,12 @@ class _Connection(AtomAttr):
 
         existing = set(self.values)
         for v, t, g, o in zip(values, types, guessed, order):
+            # We always want the first index
+            # to be less than the last
+            # eg (0, 1) not (1, 0)
+            # and (4, 10, 8) not (8, 10, 4)
+            if v[0] > v[-1]:
+                v = v[::-1]
             if v not in existing:
                 self.values.append(v)
                 self.types.append(t)
@@ -1746,6 +1756,30 @@ class _Connection(AtomAttr):
             del self._cache['bd']
         except KeyError:
             pass
+    
+    def delete_bonds(self, values):
+        # values = set(tuple(v) for v in values)
+        clean = []
+        for v in values:
+            if v[0] > v[-1]:
+                v = v[::-1]
+            clean.append(tuple(v))
+
+        to_check = set(clean) & set(self.values)
+        idx = [self.values.index(v) for v in to_check]
+        for i in sorted(idx, reverse=True):
+            del self.values[i]
+
+        for attr in ('types', '_guessed', 'order'): # faster
+            arr = np.array(getattr(self, attr), dtype='object')
+            new = np.delete(arr, idx)
+            setattr(self, attr, list(new))
+        # kill the old cache of bond Dict
+        try:
+            del self._cache['bd']
+        except KeyError:
+            pass
+
 
 
 class Bonds(_Connection):

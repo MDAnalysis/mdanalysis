@@ -1025,8 +1025,6 @@ class Universe(object):
         elif isinstance(value, AtomGroup):
             value = value.indices
         
-        value = tuple(x.index if isinstance(x, AtomGroup) else x for x in value)
-
         if type is None:
             try:
                 type = {2: 'bonds',
@@ -1044,10 +1042,7 @@ class Universe(object):
         
         attr.add_bonds([value], types=types, guessed=guessed, order=order)
         if type == 'bonds':
-            try:
-                del self._cache['fragments']
-            except KeyError:
-                pass
+            self.refresh_fragments()
     
     def add_TopologyObjects(self, values, type=None, types=None, guessed=False,
                            order=None):
@@ -1080,14 +1075,17 @@ class Universe(object):
             guessed = first.is_guessed
             order = first.order
         
-        if type is None:
-            if len(set(len(x) for x in values)) == 1:
+        if len(set(len(x) for x in values)) == 1:
+            if type is None:
                 try:
                     type = {2: 'bonds',
                             3: 'angles'}[len(values[0])]
                 except KeyError:
                     raise ValueError('TopologyObject type must be specified')
-        elif not type.endswith('s'):
+        else:
+            raise ValueError('Cannot pass in multiple kinds of TopologyObjects')
+
+        if not type.endswith('s'):
             type += 's'
 
         try:
@@ -1098,10 +1096,7 @@ class Universe(object):
         
         attr.add_bonds(values, types=types, guessed=guessed, order=order)
         if type == 'bonds':
-            try:
-                del self._cache['fragments']
-            except KeyError:
-                pass
+            self.refresh_fragments()
         
         
     
@@ -1112,6 +1107,91 @@ class Universe(object):
     def add_Bonds(self, values, types=None, guessed=None, order=None):
         self.add_TopologyObjects(values, type='bonds', types=types,
                                  guessed=guessed, order=order)
+    
+    def delete_TopologyObject(self, value, type=None):
+        """Delete a TopologyObject from this Universe
+
+        Parameters
+        ----------
+        value : tuple of ints, AtomGroup, or TopologyObject
+            A tuple of atom indices, or an appropriately-sized AtomGroup, 
+            or a TopologyObject. If value is a TopologyObject, ``type`` 
+            is ignored.
+        type : {'bonds', 'angles', 'dihedrals', 'impropers'} (optional)
+            The type of TopologyObject to remove. If this is not provided and 
+            ``value`` is not a TopologyObject, it is guessed from the number 
+            of atoms.
+        """
+        if isinstance(value, TopologyObject):
+            type = value.btype + 's'
+            value = value.indices
+        elif isinstance(value, AtomGroup):
+            value = value.indices
+        
+        if type is None:
+            try:
+                type = {2: 'bonds',
+                        3: 'angles'}[len(value)]
+            except KeyError:
+                raise ValueError('TopologyObject type must be specified for four atoms')
+        elif not type.endswith('s'):
+            type += 's'
+
+        try:
+            attr = getattr(self._topology, type)
+        except AttributeError:
+            raise ValueError('There are no {} to delete'.format(type))
+        
+        attr.delete_bonds([value])
+        if type == 'bonds':
+            self.refresh_fragments()
+    
+    def delete_TopologyObjects(self, values, type=None):
+        """Delete TopologyObjects from this Universe
+
+        Parameters
+        ----------
+        values : iterable of tuples, AtomGroups, or TopologyObjects
+            An iterable of: tuples of atom indices, or AtomGroups, 
+            or TopologyObjects. If every value is a TopologyObject, ``type``
+            is ignored
+        type : {'bonds', 'angles', 'dihedrals', 'impropers'} (optional)
+            The type of TopologyObject to add. If this is not provided and
+            ``values`` are not all TopologyObjects, it is guessed from the number 
+            of atoms.
+        """
+        values = [x.indices if isinstance(x, (AtomGroup, TopologyObject)) 
+                  else x for x in values]
+        if all(isinstance(x, TopologyObject) for x in values):
+            first = values[0]
+            type = first.btype + 's'
+            try:
+                types = value.type
+            except AttributeError:
+                types = None
+            guessed = first.is_guessed
+            order = first.order
+        
+        if len(set(len(x) for x in values)) == 1:
+            if type is None:
+                try:
+                    type = {2: 'bonds',
+                            3: 'angles'}[len(values[0])]
+                except KeyError:
+                    raise ValueError('TopologyObject type must be specified')
+        else:
+            raise ValueError('Cannot pass in multiple kinds of TopologyObjects')
+        if not type.endswith('s'):
+            type += 's'
+
+        try:
+            attr = getattr(self._topology, type)
+        except AttributeError:
+            raise ValueError('There are no {} to delete'.format(type))
+        
+        attr.delete_bonds(values)
+        if type == 'bonds':
+            self.refresh_fragments()
 
 
     # TODO: Maybe put this as a Bond attribute transplant
@@ -1151,6 +1231,15 @@ class Universe(object):
                 fragdict[a.ix] = fraginfo(i, f)
 
         return fragdict
+    
+    def refresh_fragments(self):
+        """
+        Refresh the cache of fragments.
+        """
+        try:
+            del self._cache['fragments']
+        except KeyError:
+            pass
 
 
 # TODO: what is the point of this function???
