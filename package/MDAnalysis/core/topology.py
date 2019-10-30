@@ -583,3 +583,4 @@ class Topology(object):
             attr.values = np.concatenate([attr.values, np.array([newval])])
 
         return segidx
+        

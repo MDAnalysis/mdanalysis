@@ -1099,15 +1099,16 @@ class Universe(object):
             self.refresh_fragments()
         
         
-    
     def add_Bond(self, value, types=None, guessed=None, order=None):
         self.add_TopologyObject(value, type='bonds', types=types,
                                 guessed=guessed, order=order)
     
+
     def add_Bonds(self, values, types=None, guessed=None, order=None):
         self.add_TopologyObjects(values, type='bonds', types=types,
                                  guessed=guessed, order=order)
     
+
     def delete_TopologyObject(self, value, type=None):
         """Delete a TopologyObject from this Universe
 
@@ -1145,6 +1146,7 @@ class Universe(object):
         attr.delete_bonds([value])
         if type == 'bonds':
             self.refresh_fragments()
+    
     
     def delete_TopologyObjects(self, values, type=None):
         """Delete TopologyObjects from this Universe

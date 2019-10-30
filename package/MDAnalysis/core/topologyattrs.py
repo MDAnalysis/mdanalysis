@@ -1758,7 +1758,6 @@ class _Connection(AtomAttr):
             pass
     
     def delete_bonds(self, values):
-        # values = set(tuple(v) for v in values)
         clean = []
         for v in values:
             if v[0] > v[-1]:
