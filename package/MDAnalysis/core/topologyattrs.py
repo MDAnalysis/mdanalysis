@@ -1650,14 +1650,19 @@ def check_values(func):
     """
     @functools.wraps(func)
     def wrapper(self, values, **kwargs):
-        values = [tuple(x) for x in values]
         if not all(len(x) == self._n_atoms 
                 and all(isinstance(y, (int, np.integer)) for y in x)
                 for x in values):
             raise ValueError(("{} must be an iterable of tuples with {}"
                             " atom indices").format(self.attrname,
                             self._n_atoms))
-        return func(self, values, **kwargs)
+        clean = []
+        for v in values:
+            if v[0] > v[-1]:
+                v = v[::-1]
+            clean.append(tuple(v))
+
+        return func(self, clean, **kwargs)
     return wrapper
 
 class _Connection(AtomAttr):
@@ -1740,12 +1745,6 @@ class _Connection(AtomAttr):
 
         existing = set(self.values)
         for v, t, g, o in zip(values, types, guessed, order):
-            # We always want the first index
-            # to be less than the last
-            # eg (0, 1) not (1, 0)
-            # and (4, 10, 8) not (8, 10, 4)
-            if v[0] > v[-1]:
-                v = v[::-1]
             if v not in existing:
                 self.values.append(v)
                 self.types.append(t)
@@ -1757,14 +1756,9 @@ class _Connection(AtomAttr):
         except KeyError:
             pass
     
+    @check_values
     def delete_bonds(self, values):
-        clean = []
-        for v in values:
-            if v[0] > v[-1]:
-                v = v[::-1]
-            clean.append(tuple(v))
-
-        to_check = set(clean) & set(self.values)
+        to_check = set(values) & set(self.values)
         idx = [self.values.index(v) for v in to_check]
         for i in sorted(idx, reverse=True):
             del self.values[i]

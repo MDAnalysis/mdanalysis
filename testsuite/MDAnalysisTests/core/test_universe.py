@@ -663,243 +663,103 @@ class TestAddTopologyAttr(object):
     def add_connection_error(self, universe, attr, values):
         with pytest.raises(ValueError):
             universe.add_TopologyAttr(attr, values)
-        
-class TestAddTopologyObject(object):
-    @pytest.fixture()
-    def universe(self):
-        return make_Universe()
-
-    def test_notype_fail(self, universe):
-        with pytest.raises(ValueError):
-            universe.add_TopologyObject('silly')
-
-    def test_wrong_number_of_atoms_fail(self, universe):
-        with pytest.raises(ValueError):
-            universe.add_TopologyObject((0, 1, 2), type='bonds')
-    
-    @pytest.mark.parametrize(
-        'attr,value', (
-            ('bonds', (0, 1)),
-            ('angle', (2, 1, 2)),
-            ('dihedral', (1, 2, 3, 4)),
-            ('impropers', (1, 2, 3, 4))
-        )
-    )
-    def test_add_index(self, universe, attr, value):
-        universe.add_TopologyObject(value, type=attr)
-        if not attr.endswith('s'):
-            attr += 's'
-        assert hasattr(universe, attr)
-        attrgroup = getattr(universe, attr)
-        assert len(attrgroup) == 1
-
-    def test_add_bond(self, universe):
-        bond = universe.atoms[:2].bond
-        universe.add_TopologyObject(bond)
-        assert len(universe.bonds) == 1
-        assert tuple(universe.bonds[0].indices) == (0, 1)
-    
-    def test_add_improper(self, universe):
-        improper = universe.atoms[:4].improper
-        universe.add_TopologyObject(improper)
-        assert len(universe.impropers) == 1
-        assert tuple(universe.impropers[0].indices) == (0, 1, 2, 3)
-    
-    def test_add_atomgroup(self, universe):
-        universe.add_TopologyObject(universe.atoms[:3])
-        assert len(universe.angles) == 1
-        assert tuple(universe.angles[0].indices) == (0, 1, 2)
-    
-    def test_add_atomgroup_notype_error(self, universe):
-        with pytest.raises(ValueError):
-            universe.add_TopologyObject(universe.atoms[:4])
-        
-    def test_add_atomgroup_type_error(self, universe):
-        with pytest.raises(ValueError):
-            universe.add_TopologyObject(universe.atoms[:4], type='angle')
-    
-    def add_bond_refresh_fragments(self, universe):
-        universe.add_TopologyObject(universe.atoms[:2])
-        assert len(universe.atoms.fragments) == len(universe.atoms)-1
-        universe.add_TopologyObject(universe.atoms[2:4])
-        assert len(universe.atoms.fragments) == len(universe.atoms)-2
     
 
 class TestAddTopologyObjects(object):
     @pytest.fixture()
     def universe(self):
         return make_Universe()
+    
+    def test_add_bond_indices(self, universe):
+        idx = [(1, 0), (1, 2)]
 
-    @pytest.mark.parametrize(
-        'attr,values', (
-            ('bonds', [(1, 0), (1, 2)]),
-            ('bond', [[1, 0], [1, 2]]),
-            ('bonds', set([(1, 0), (1, 2)])),
-            ('angles', [(1, 0, 2), (1, 2, 3), (2, 1, 4)]),
-            ('angle', [(1, 0, 2), (1, 2, 3), (2, 1, 4)]),
-            ('dihedrals', [[1, 2, 3, 1], (3, 1, 5, 2)]),
-            ('impropers', [[1, 2, 3, 1], (3, 1, 5, 2)]),
-        )
-    )
-    def test_add_indices(self, universe, attr, values):
-        universe.add_TopologyObjects(values, type=attr)
-        if not attr.endswith('s'):
-            attr += 's'
-        assert hasattr(universe, attr)
-        attrgroup = getattr(universe, attr)
-        assert len(attrgroup) == len(values)
+        assert not hasattr(universe, 'bonds')
+        universe.add_Bonds(idx)
+        assert len(universe.bonds) == len(idx)
     
-    def test_add_topologyobjects(self, universe):
-        indices = [(0, 1, 2), (2, 3, 0), (4, 2, 1)]
-        angles = [universe.atoms[[i, j, k]].angle for i, j, k in indices]
-        universe.add_TopologyObjects(angles)
-        assert len(universe.angles) == len(indices)
+    def test_add_dihedrals(self, universe):
+        idx = [[1, 2, 3, 1], [3, 1, 5, 2]]
+        dih = [universe.atoms[i].dihedral for i in idx]
+
+        assert not hasattr(universe, 'dihedrals')
+        universe.add_Dihedrals(dih)
+        assert len(universe.dihedrals) == len(idx)
     
-    def add_topologyobjects_notype_error(self, universe):
-        indices = [(0, 1, 2), (2, 3, 0), (4, 2, 1)]
-        angles = [universe.atoms[[i, j, k]].angle for i, j, k in indices]
-        mixed = angles + [(4, 5, 1)]
-        with pytest.raises(ValueError):
-            universe.add_TopologyObjects(mixed)
-    
-    def add_mixed_topologyobjects_type(self, universe):
-        indices = [(0, 1, 2), (2, 3, 0), (4, 2, 1)]
-        angles = [universe.atoms[i, j, k].angle for i, j, k in indices]
-        mixed = angles + [(4, 5, 1)]
-        universe.add_TopologyObjects(mixed, type='angle')
-        assert len(universe.angles) == len(indices) + 1
-    
-    def add_mixed_topologyobjects_error(self, universe):
+    def test_add_atomgroups(self, universe):
+        idx = [[1, 2, 3, 1], [3, 1, 5, 2], [3, 1, 5, 2]]
+        imp = [universe.atoms[i] for i in idx]
+
+        assert not hasattr(universe, 'impropers')
+        universe.add_Impropers(imp)
+        assert len(universe.impropers) == 2
+        
+    def add_angles_wrong_number_of_atoms_error(self, universe):
         indices = [(0, 1, 2), (2, 3, 0), (4, 1)]
         with pytest.raises(ValueError):
-            universe.add_TopologyObjects(indices, type='angles')
+            universe.add_Angles(indices)
     
+    def add_bonds_refresh_fragments(self, universe):
+        assert not hasattr(universe.atoms, 'fragments')
 
-class TestDeleteTopologyObject(object):
-    @pytest.fixture()
-    def universe(self):
-        TOP = {'bonds': [(0, 1), (2, 3), (3, 4), (4, 5), (7, 8)],
-               'angles': [(0, 1, 2), (3, 4, 5), (8, 2, 4)],
-               'dihedrals': [(9, 2, 3, 4), (1, 3, 4, 2)],
-               'impropers': [(1, 3, 5, 2), (1, 6, 7, 2), (5, 3, 4, 2)]}
-        u = make_Universe()
-        for attr, values in TOP.items():
-            u.add_TopologyObjects(values, type=attr)
-        return u
+        universe.add_Bonds([universe.atoms[:2]])
+        assert len(universe.atoms.fragments) == len(universe.atoms)-1
 
-    def test_notype_fail(self, universe):
-        with pytest.raises(ValueError):
-            universe.delete_TopologyObject('silly')
-
-    def test_wrong_number_of_atoms_nofail(self, universe):
-        n_bonds = len(universe.bonds)
-        universe.delete_TopologyObject((0, 1, 2), type='bonds')
-        assert len(universe.bonds) == n_bonds
-    
-    @pytest.mark.parametrize(
-        'attr,value', (
-            ('bonds', (0, 1)),
-            ('angles', (0, 1, 2)),
-            ('dihedrals', (4, 3, 2, 9)),
-            ('impropers', (1, 3, 5, 2))
-        )
-    )
-    def test_delete_index(self, universe, attr, value):
-        n_attr = len(getattr(universe, attr))
-        universe.delete_TopologyObject(value, type=attr)
-        if not attr.endswith('s'):
-            attr += 's'
-        assert hasattr(universe, attr)
-        attrgroup = getattr(universe, attr)
-        assert len(attrgroup) == n_attr-1
-
-    def test_delete_bond(self, universe):
-        assert tuple(universe.bonds[0].indices) == (0, 1)
-        n_bonds = len(universe.bonds)
-        bond = universe.atoms[:2].bond
-        universe.delete_TopologyObject(bond)
-        assert len(universe.bonds) == n_bonds-1
-        assert tuple(universe.bonds[0].indices) != (0, 1)
-    
-    def test_delete_improper(self, universe):
-        n_impropers = len(universe.impropers)
-        improper = universe.atoms[[1, 3, 5, 2]].improper
-        universe.delete_TopologyObject(improper)
-        assert len(universe.impropers) == n_impropers-1
-    
-    def test_delete_atomgroup(self, universe):
-        assert tuple(universe.angles[0].indices) == (0, 1, 2)
-        n_angles = len(universe.angles)
-        universe.delete_TopologyObject(universe.atoms[:3])
-        assert len(universe.angles) == n_angles-1
-        assert tuple(universe.angles[0].indices) != (0, 1, 2)
-    
-    def test_delete_atomgroup_notype_error(self, universe):
-        with pytest.raises(ValueError):
-            universe.delete_TopologyObject(universe.atoms[:4])
-        
-    def test_delete_atomgroup_type_noerror(self, universe):
-        n_attr = len(universe.angles)
-        universe.delete_TopologyObject(universe.atoms[:4], type='angle')
-        assert len(universe.angles) == n_attr
-    
-    def delete_bond_refresh_fragments(self, universe):
-        n_fragments = len(universe.atoms.fragments)
-        universe.delete_TopologyObject(universe.atoms[[2, 3]])
-        assert len(universe.atoms.fragments) == n_fragments + 1
+        universe.add_Bonds([universe.atoms[2:4]])
+        assert len(universe.atoms.fragments) == len(universe.atoms)-2
     
 class TestDeleteTopologyObjects(object):
+
+    TOP = {'bonds': [(0, 1), (2, 3), (3, 4), (4, 5), (7, 8)],
+           'angles': [(0, 1, 2), (3, 4, 5), (8, 2, 4)],
+           'dihedrals': [(9, 2, 3, 4), (1, 3, 4, 2)],
+           'impropers': [(1, 3, 5, 2), (1, 6, 7, 2), (5, 3, 4, 2)]}
+
     @pytest.fixture()
     def universe(self):
-        TOP = {'bonds': [(0, 1), (2, 3), (3, 4), (4, 5), (7, 8)],
-               'angles': [(0, 1, 2), (3, 4, 5), (8, 2, 4)],
-               'dihedrals': [(9, 2, 3, 4), (1, 3, 4, 2)],
-               'impropers': [(1, 3, 5, 2), (1, 6, 7, 2), (5, 3, 4, 2)]}
         u = make_Universe()
-        for attr, values in TOP.items():
-            u.add_TopologyObjects(values, type=attr)
+        for attr, values in self.TOP.items():
+            u._add_TopologyObjects(attr, values)
         return u
 
-    @pytest.mark.parametrize(
-        'attr,values', (
-            ('bonds', [(1, 0), (2, 3)]),
-            ('bonds', set([(1, 0), (2, 3)])),
-            ('angles', [(2, 1, 0), (3, 4, 5)]),
-            ('dihedrals', [[9, 2, 3, 4]]),
-            ('impropers', [[1, 3, 5, 2], (5, 3, 4, 2)]),
-        )
-    )
-    def test_delete_indices(self, universe, attr, values):
-        n_attr = len(getattr(universe, attr))
-        universe.delete_TopologyObjects(values, type=attr)
-        if not attr.endswith('s'):
-            attr += 's'
-        attrgroup = getattr(universe, attr)
-        assert len(attrgroup) == n_attr-len(values)
+    def test_delete_bond_indices(self, universe):
+        assert len(universe.bonds) == 5
+        universe.delete_Bonds([(0, 1), (2, 3)])
+        assert len(universe.bonds) == 3
     
-    def test_delete_topologyobjects(self, universe):
+    def test_delete_angles(self, universe):
         indices = [(0, 1, 2), (3, 4, 5)]
         angles = [universe.atoms[[i, j, k]].angle for i, j, k in indices]
-        universe.delete_TopologyObjects(angles)
+
+        assert len(universe.angles) == 3
+        universe.delete_Angles(angles)
         assert len(universe.angles) == 1
     
-    def delete_topologyobjects_notype_error(self, universe):
-        indices = [(0, 1, 2), (2, 3, 0), (4, 2, 1)]
-        angles = [universe.atoms[[i, j, k]].angle for i, j, k in indices]
-        mixed = angles + [(4, 5, 1)]
-        with pytest.raises(ValueError):
-            universe.delete_TopologyObjects(mixed)
+    def test_delete_atomgroups(self, universe):
+        assert len(universe.dihedrals) == 2
+        ag = universe.atoms[[1, 3, 4, 2]]
+        universe.delete_Dihedrals([ag])
+        assert len(universe.dihedrals) == 1
     
     def delete_mixed_topologyobjects_type(self, universe):
         mixed = [universe.atoms[[0, 1, 2]].angle, (3, 4, 5)]
-        universe.delete_TopologyObjects(mixed, type='angle')
+        universe.delete_Angles(mixed)
         assert len(universe.angles) == 1
+    
+    def delete_angles_wrong_number_of_atoms_error(self, universe):
+        indices = [(0, 1, 2), (2, 3, 0), (4, 1)]
+        with pytest.raises(ValueError):
+            universe.delete_Angles(indices)
     
     def ignore_topologyobjects_not_in_universe(self, universe):
         n_bonds = len(universe.bonds)
         bonds = [(0, 1), (99, 100), (22, 2)]
-        universe.delete_TopologyObjects(bonds, type='bonds')
+        universe.delete_Bonds(bonds)
         assert len(universe.bonds) == n_bonds-1
+    
+    def delete_bonds_refresh_fragments(self, universe):
+        n_fragments = len(universe.atoms.fragments)
+        universe.delete_Bonds([universe.atoms[[2, 3]]])
+        assert len(universe.atoms.fragments) == n_fragments + 1
     
 class TestAllCoordinatesKwarg(object):
     @pytest.fixture(scope='class')

@@ -54,6 +54,8 @@ Enhancements
   * Read TPR files from Gromacs 2020 (Issue #2412 and #2428)
   * Added analysis.align.AverageStructure to get the average structure of an 
     out-of-memory trajectory (Issue #2039)
+  * Added _add_TopologyObjects, _delete_TopologyObjects, and public convenience 
+    methods to Universe. (PR #2382)
 
 Changes
   * The fasta2select now always assumes that the gap character in a sequence

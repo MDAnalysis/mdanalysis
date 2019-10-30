@@ -994,80 +994,29 @@ class Universe(object):
         # return the new segment
         return self.segments[segidx]
     
-    def add_TopologyObject(self, value, type=None, types=None, guessed=False,
-                           order=None):
-        """Add a new TopologyObject to this Universe
-
-        Parameters
-        ----------
-        value : tuple of ints, AtomGroup, or TopologyObject
-            A tuple of atom indices, or an appropriately-sized AtomGroup, 
-            or a TopologyObject. If value is a TopologyObject, all other 
-            keywords are ignored.
-        type : {'bonds', 'angles', 'dihedrals', 'impropers'} (optional)
-            The type of TopologyObject to add. If this is not provided and 
-            ``value`` is not a TopologyObject, it is guessed from the number 
-            of atoms.
-        types : types (optional)
-        guessed : bool (optional)
-            Whether this connection has been guessed.
-        order : int (optional)
-        """
-        if isinstance(value, TopologyObject):
-            type = value.btype + 's'
-            order = value.order
-            guessed = value.is_guessed
-            try:
-                types = value.type
-            except AttributeError:
-                types = None
-            value = value.indices
-        elif isinstance(value, AtomGroup):
-            value = value.indices
-        
-        if type is None:
-            try:
-                type = {2: 'bonds',
-                        3: 'angles'}[len(value)]
-            except KeyError:
-                raise ValueError('TopologyObject type must be specified for four atoms')
-        elif not type.endswith('s'):
-            type += 's'
-
-        try:
-            attr = getattr(self._topology, type)
-        except AttributeError:
-            self.add_TopologyAttr(type, [])
-            attr = getattr(self._topology, type)
-        
-        attr.add_bonds([value], types=types, guessed=guessed, order=order)
-        if type == 'bonds':
-            self.refresh_fragments()
-    
-    def add_TopologyObjects(self, values, type=None, types=None, guessed=False,
+    def _add_TopologyObjects(self, object_type, values, types=None, guessed=False,
                            order=None):
         """Add new TopologyObjects to this Universe
 
         Parameters
         ----------
+        object_type : {'bonds', 'angles', 'dihedrals', 'impropers'}
+            The type of TopologyObject to add.
         values : iterable of tuples, AtomGroups, or TopologyObjects
             An iterable of: tuples of atom indices, or AtomGroups, 
-            or TopologyObjects. If every value is a TopologyObject, all other 
+            or TopologyObjects. If every value is a TopologyObject, all 
             keywords are ignored.
-        type : {'bonds', 'angles', 'dihedrals', 'impropers'} (optional)
-            The type of TopologyObject to add. If this is not provided and 
-            ``value`` is not a TopologyObject, it is guessed from the number 
-            of atoms.
         types : types (optional)
+            Type of bond/angle/dihedral/improper, or atom types
         guessed : bool (optional)
-            Whether these connections has been guessed.
+            Whether these connections have been guessed.
         order : int (optional)
+            Bond order
         """
         values = [x.indices if isinstance(x, (AtomGroup, TopologyObject)) 
                   else x for x in values]
         if all(isinstance(x, TopologyObject) for x in values):
             first = values[0]
-            type = first.btype + 's'
             try:
                 types = value.type
             except AttributeError:
@@ -1075,125 +1024,159 @@ class Universe(object):
             guessed = first.is_guessed
             order = first.order
         
-        if len(set(len(x) for x in values)) == 1:
-            if type is None:
-                try:
-                    type = {2: 'bonds',
-                            3: 'angles'}[len(values[0])]
-                except KeyError:
-                    raise ValueError('TopologyObject type must be specified')
-        else:
-            raise ValueError('Cannot pass in multiple kinds of TopologyObjects')
-
-        if not type.endswith('s'):
-            type += 's'
-
         try:
-            attr = getattr(self._topology, type)
+            attr = getattr(self._topology, object_type)
         except AttributeError:
-            self.add_TopologyAttr(type, [])
-            attr = getattr(self._topology, type)
+            self.add_TopologyAttr(object_type, [])
+            attr = getattr(self._topology, object_type)
         
         attr.add_bonds(values, types=types, guessed=guessed, order=order)
-        if type == 'bonds':
-            self.refresh_fragments()
-        
-        
-    def add_Bond(self, value, types=None, guessed=None, order=None):
-        self.add_TopologyObject(value, type='bonds', types=types,
-                                guessed=guessed, order=order)
-    
 
-    def add_Bonds(self, values, types=None, guessed=None, order=None):
-        self.add_TopologyObjects(values, type='bonds', types=types,
-                                 guessed=guessed, order=order)
-    
-
-    def delete_TopologyObject(self, value, type=None):
-        """Delete a TopologyObject from this Universe
+    def add_Bonds(self, values, types=None, guessed=False, order=None):
+        """Add new Bonds to this Universe and recreate fragments.
 
         Parameters
         ----------
-        value : tuple of ints, AtomGroup, or TopologyObject
-            A tuple of atom indices, or an appropriately-sized AtomGroup, 
-            or a TopologyObject. If value is a TopologyObject, ``type`` 
-            is ignored.
-        type : {'bonds', 'angles', 'dihedrals', 'impropers'} (optional)
-            The type of TopologyObject to remove. If this is not provided and 
-            ``value`` is not a TopologyObject, it is guessed from the number 
-            of atoms.
+        values : iterable of tuples, AtomGroups, or Bonds
+            An iterable of: tuples of atom indices, or AtomGroups, 
+            or Bonds. If every value is a Bond, all 
+            keywords are ignored.
+        types : types (optional, default None)
+            Type of bond, or atom types
+        guessed : bool (optional, default False)
+            Whether these bonds have been guessed.
+        order : int (optional, default None)
+            Bond order
         """
-        if isinstance(value, TopologyObject):
-            type = value.btype + 's'
-            value = value.indices
-        elif isinstance(value, AtomGroup):
-            value = value.indices
-        
-        if type is None:
-            try:
-                type = {2: 'bonds',
-                        3: 'angles'}[len(value)]
-            except KeyError:
-                raise ValueError('TopologyObject type must be specified for four atoms')
-        elif not type.endswith('s'):
-            type += 's'
+        self._add_TopologyObjects('bonds', values, types=types,
+                                 guessed=guessed, order=order)
+        self.refresh_fragments()
+    
+    def add_Angles(self, values, types=None, guessed=False, order=None):
+        """Add new Angles to this Universe.
 
-        try:
-            attr = getattr(self._topology, type)
-        except AttributeError:
-            raise ValueError('There are no {} to delete'.format(type))
-        
-        attr.delete_bonds([value])
-        if type == 'bonds':
-            self.refresh_fragments()
+        Parameters
+        ----------
+        values : iterable of tuples, AtomGroups, or Angles
+            An iterable of: tuples of atom indices, or AtomGroups, 
+            or Angles. If every value is a Angle, all 
+            keywords are ignored.
+        types : types (optional, default None)
+            Type of angle, or atom types
+        guessed : bool (optional, default False)
+            Whether these angles have been guessed.
+        order : int (optional, default None)
+            Bond order.
+        """
+        self._add_TopologyObjects('angles', values, types=types,
+                                 guessed=guessed, order=order)
+    
+    def add_Dihedrals(self, values, types=None, guessed=False, order=None):
+        """Add new Dihedrals to this Universe.
+
+        Parameters
+        ----------
+        values : iterable of tuples, AtomGroups, or Dihedrals
+            An iterable of: tuples of atom indices, or AtomGroups, 
+            or Dihedrals. If every value is a Dihedral, all 
+            keywords are ignored.
+        types : types (optional, default None)
+            Type of dihedral, or atom types
+        guessed : bool (optional, default False)
+            Whether these dihedrals have been guessed.
+        order : int (optional, default None)
+            Bond order.
+        """
+        self._add_TopologyObjects('dihedrals', values, types=types,
+                                 guessed=guessed, order=order)
+    
+    def add_Impropers(self, values, types=None, guessed=False, order=None):
+        """Add new Impropers to this Universe.
+
+        Parameters
+        ----------
+        values : iterable of tuples, AtomGroups, or Impropers
+            An iterable of: tuples of atom indices, or AtomGroups, 
+            or Impropers. If every value is an Improper, all 
+            keywords are ignored.
+        types : types (optional, default None)
+            Type of improper dihedrals, or atom types
+        guessed : bool (optional, default False)
+            Whether these improper dihedrals have been guessed.
+        order : int (optional, default None)
+            Bond order.
+        """
+        self._add_TopologyObjects('impropers', values, types=types,
+                                 guessed=guessed, order=order)
     
     
-    def delete_TopologyObjects(self, values, type=None):
+    
+
+    def _delete_TopologyObjects(self, object_type, values):
         """Delete TopologyObjects from this Universe
 
         Parameters
         ----------
+        object_type : {'bonds', 'angles', 'dihedrals', 'impropers'}
+            The type of TopologyObject to add.
         values : iterable of tuples, AtomGroups, or TopologyObjects
             An iterable of: tuples of atom indices, or AtomGroups, 
-            or TopologyObjects. If every value is a TopologyObject, ``type``
-            is ignored
-        type : {'bonds', 'angles', 'dihedrals', 'impropers'} (optional)
-            The type of TopologyObject to add. If this is not provided and
-            ``values`` are not all TopologyObjects, it is guessed from the number 
-            of atoms.
+            or TopologyObjects.
         """
         values = [x.indices if isinstance(x, (AtomGroup, TopologyObject)) 
                   else x for x in values]
-        if all(isinstance(x, TopologyObject) for x in values):
-            first = values[0]
-            type = first.btype + 's'
-            try:
-                types = value.type
-            except AttributeError:
-                types = None
-            guessed = first.is_guessed
-            order = first.order
-        
-        if len(set(len(x) for x in values)) == 1:
-            if type is None:
-                try:
-                    type = {2: 'bonds',
-                            3: 'angles'}[len(values[0])]
-                except KeyError:
-                    raise ValueError('TopologyObject type must be specified')
-        else:
-            raise ValueError('Cannot pass in multiple kinds of TopologyObjects')
-        if not type.endswith('s'):
-            type += 's'
 
         try:
-            attr = getattr(self._topology, type)
+            attr = getattr(self._topology, object_type)
         except AttributeError:
-            raise ValueError('There are no {} to delete'.format(type))
+            raise ValueError('There are no {} to delete'.format(object_type))
         
         attr.delete_bonds(values)
-        if type == 'bonds':
-            self.refresh_fragments()
+
+    def delete_Bonds(self, values):
+        """Delete Bonds from this Universe and recreate fragments.
+
+        Parameters
+        ----------
+        values : iterable of tuples, AtomGroups, or Bonds
+            An iterable of: tuples of atom indices, or AtomGroups, 
+            or Bonds.
+        """
+        self._delete_TopologyObjects('bonds', values)
+        self.refresh_fragments()
+    
+    def delete_Angles(self, values):
+        """Delete Angles from this Universe.
+
+        Parameters
+        ----------
+        values : iterable of tuples, AtomGroups, or Angles
+            An iterable of: tuples of atom indices, or AtomGroups, 
+            or Angles.
+        """
+        self._delete_TopologyObjects('angles', values)
+    
+    def delete_Dihedrals(self, values):
+        """Delete Dihedrals from this Universe.
+
+        Parameters
+        ----------
+        values : iterable of tuples, AtomGroups, or Dihedrals
+            An iterable of: tuples of atom indices, or AtomGroups, 
+            or Dihedrals.
+        """
+        self._delete_TopologyObjects('dihedrals', values)
+    
+    def delete_Impropers(self, values):
+        """Delete Impropers from this Universe.
+
+        Parameters
+        ----------
+        values : iterable of tuples, AtomGroups, or Impropers
+            An iterable of: tuples of atom indices, or AtomGroups, 
+            or Impropers.
+        """
+        self._delete_TopologyObjects('impropers', values)
 
 
     # TODO: Maybe put this as a Bond attribute transplant
