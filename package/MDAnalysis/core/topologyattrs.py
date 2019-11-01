@@ -1643,32 +1643,10 @@ class Segids(SegmentAttr):
     transplants[SegmentGroup].append(
         ('_get_named_segment', _get_named_segment))
 
-def check_values(func):
-    """
-    Checks values passed to _Connection methods for appropriate number of 
-    atom indices and coerces them to tuples of ints.
-    """
-    @functools.wraps(func)
-    def wrapper(self, values, *args, **kwargs):
-        if not all(len(x) == self._n_atoms 
-                and all(isinstance(y, (int, np.integer)) for y in x)
-                for x in values):
-            raise ValueError(("{} must be an iterable of tuples with {}"
-                            " atom indices").format(self.attrname,
-                            self._n_atoms))
-        clean = []
-        for v in values:
-            if v[0] > v[-1]:
-                v = v[::-1]
-            clean.append(tuple(v))
-
-        return func(self, clean, *args, **kwargs)
-    return wrapper
 
 class _Connection(AtomAttr):
     """Base class for connectivity between atoms"""
 
-    @check_values
     def __init__(self, values, types=None, guessed=False, order=None):
         self.values = values
         if types is None:
@@ -1706,8 +1684,8 @@ class _Connection(AtomAttr):
             # to be less than the last
             # eg (0, 1) not (1, 0)
             # and (4, 10, 8) not (8, 10, 4)
-            if b[0] > b[-1]:
-                b = b[::-1]
+            # if b[0] > b[-1]:
+            #     b = b[::-1]
             for a in b:
                 bd[a].append((b, t, g, o))
         return bd
@@ -1734,7 +1712,6 @@ class _Connection(AtomAttr):
                              guessed,
                              order)
 
-    @check_values
     def add_bonds(self, values, types=None, guessed=True, order=None):
         if types is None:
             types = itertools.cycle((None,))
@@ -1756,7 +1733,6 @@ class _Connection(AtomAttr):
         except KeyError:
             pass
     
-    @check_values
     def delete_bonds(self, values):
         to_check = set(values) & set(self.values)
         idx = [self.values.index(v) for v in to_check]
@@ -1773,9 +1749,35 @@ class _Connection(AtomAttr):
         except KeyError:
             pass
 
+def check_values(func):
+    """
+    Checks values passed to _Connection methods for appropriate number of 
+    atom indices and coerces them to tuples of ints.
+    """
+    @functools.wraps(func)
+    def wrapper(self, values, *args, **kwargs):
+        if not all(len(x) == self._n_atoms 
+                and all(isinstance(y, (int, np.integer)) for y in x)
+                for x in values):
+            raise ValueError(("{} must be an iterable of tuples with {}"
+                            " atom indices").format(self.attrname,
+                            self._n_atoms))
+        clean = []
+        for v in values:
+            if v[0] > v[-1]:
+                v = v[::-1]
+            clean.append(tuple(v))
+
+        return func(self, clean, *args, **kwargs)
+    return wrapper
+
+class _SymmetricConnection(_Connection):
+    __init__ = check_values(_Connection.__init__)
+    add_bonds = check_values(_Connection.add_bonds)
+    delete_bonds = check_values(_Connection.delete_bonds)
 
 
-class Bonds(_Connection):
+class Bonds(_SymmetricConnection):
     """Bonds between two atoms
 
     Must be initialised by a list of zero based tuples.
@@ -1928,7 +1930,7 @@ class Bonds(_Connection):
                                  n_fragments.__doc__)))
 
 
-class Angles(_Connection):
+class Angles(_SymmetricConnection):
     """Angles between three atoms
 
     Initialise with a list of 3 long tuples
@@ -1942,13 +1944,29 @@ class Angles(_Connection):
     _n_atoms = 3
 
 
-class Dihedrals(_Connection):
+class Dihedrals(_SymmetricConnection):
     """A connection between four sequential atoms"""
     attrname = 'dihedrals'
     singular = 'dihedrals'
     transplants = defaultdict(list)
     _n_atoms = 4
 
+def check_types(func):
+    """
+    Checks values passed to _Connection methods for appropriate number of 
+    atom indices and coerces them to tuples of ints.
+    """
+    @functools.wraps(func)
+    def wrapper(self, values, *args, **kwargs):
+        if not all(len(x) == self._n_atoms 
+                and all(isinstance(y, (int, np.integer)) for y in x)
+                for x in values):
+            raise ValueError(("{} must be an iterable of tuples with {}"
+                            " atom indices").format(self.attrname,
+                            self._n_atoms))
+        clean = [tuple(v) for v in values]
+        return func(self, clean, *args, **kwargs)
+    return wrapper
 
 class Impropers(_Connection):
     """An imaginary dihedral between four atoms"""
@@ -1956,3 +1974,8 @@ class Impropers(_Connection):
     singular = 'impropers'
     transplants = defaultdict(list)
     _n_atoms = 4
+
+    __init__ = check_types(_Connection.__init__)
+    add_bonds = check_types(_Connection.add_bonds)
+    delete_bonds = check_types(_Connection.delete_bonds)
+
