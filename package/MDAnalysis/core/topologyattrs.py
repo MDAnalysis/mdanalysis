@@ -1680,12 +1680,6 @@ class _Connection(AtomAttr):
 
         for b, t, g, o in zip(self.values, self.types,
                               self._guessed, self.order):
-            # We always want the first index
-            # to be less than the last
-            # eg (0, 1) not (1, 0)
-            # and (4, 10, 8) not (8, 10, 4)
-            # if b[0] > b[-1]:
-            #     b = b[::-1]
             for a in b:
                 bd[a].append((b, t, g, o))
         return bd
