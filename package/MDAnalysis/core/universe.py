@@ -464,7 +464,7 @@ class Universe(object):
         .. versionchanged:: 0.19.0
            The attached Reader when trajectory=True is now a MemoryReader
         .. versionchanged:: 0.21.0
-           Universes can now be created with 0 atoms with an error
+           Universes can now be created with 0 atoms
         """
         if not n_atoms:
             n_residues = 0
