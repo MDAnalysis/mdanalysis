@@ -1649,7 +1649,7 @@ def check_values(func):
     atom indices and coerces them to tuples of ints.
     """
     @functools.wraps(func)
-    def wrapper(self, values, **kwargs):
+    def wrapper(self, values, *args, **kwargs):
         if not all(len(x) == self._n_atoms 
                 and all(isinstance(y, (int, np.integer)) for y in x)
                 for x in values):
@@ -1662,7 +1662,7 @@ def check_values(func):
                 v = v[::-1]
             clean.append(tuple(v))
 
-        return func(self, clean, **kwargs)
+        return func(self, clean, *args, **kwargs)
     return wrapper
 
 class _Connection(AtomAttr):
