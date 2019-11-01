@@ -771,3 +771,4 @@ class TestEmpty(object):
         assert len(u.atoms) == 0
         assert len(u.residues) == 0
         assert len(u.segments) == 0
+        
