@@ -142,6 +142,15 @@ class TestGetMatchingAtoms(object):
         selection = ('resname ALA and name CA', 'resname ALA and name O')
         rmsd = align.alignto(universe, reference, select=selection, match_atoms=False)
         assert rmsd[0] > 0.01
+    
+    def test_toggle_atom_nomatch_mismatch_atoms(self, universe, reference):
+        # mismatching number of atoms, but same number of residues
+        u = universe.select_atoms('resname ALA and name CA')
+        u += universe.select_atoms('resname ALA and name O')[-1]
+        ref = reference.select_atoms('resname ALA and name CA')
+        with pytest.raises(SelectionError):
+            align.alignto(u, ref, select='all', match_atoms=False)
+
         
 
 
