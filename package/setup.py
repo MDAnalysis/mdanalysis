@@ -554,13 +554,15 @@ if __name__ == '__main__':
           'GridDataFormats>=0.4.0',
           'six>=1.4.0',
           'mmtf-python>=1.0.0',
-          'joblib',
+          'joblib>=0.12',
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
           'mock',
     ]
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')
+    else:
+        install_requires.append('gsd>=1.9.3')
 
     setup(name='MDAnalysis',
           version=RELEASE,

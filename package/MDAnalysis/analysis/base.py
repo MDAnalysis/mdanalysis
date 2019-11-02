@@ -232,9 +232,9 @@ class AnalysisFromFunction(AnalysisBase):
             trajectory to iterate over. If ``None`` the first AtomGroup found in
             args and kwargs is used as a source for the trajectory.
         *args : list
-           arguments for ``function``
+            arguments for ``function``
         **kwargs : dict
-           arugments for ``function`` and ``AnalysisBase``
+            arguments for ``function`` and ``AnalysisBase``
 
         """
         if (trajectory is not None) and (not isinstance(

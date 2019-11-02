@@ -2913,6 +2913,8 @@ class AtomGroup(GroupBase):
 
 
         .. versionadded:: 0.10.0
+        .. versionchanged:: 0.20.2
+           Now applies periodic boundary conditions when guessing bonds.
         """
         from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
@@ -2927,7 +2929,8 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        b = guess_bonds(self.atoms, self.atoms.positions, vdwradii=vdwradii)
+        box = self.dimensions if self.dimensions.all() else None
+        b = guess_bonds(self.atoms, self.atoms.positions, vdwradii=vdwradii, box=box)
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr.add_bonds(b, guessed=True)
 
