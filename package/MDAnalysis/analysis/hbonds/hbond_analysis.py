@@ -22,13 +22,16 @@
 #
 
 # Hydrogen Bonding Analysis
-r"""Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds.hbond_analysis`
-===========================================================================
+r"""Hydrogen Bond analysis (Deprecated) --- :mod:`MDAnalysis.analysis.hbonds.hbond_analysis`
+============================================================================================
 
 :Author: David Caplan, Lukas Grossar, Oliver Beckstein
 :Year: 2010-2017
 :Copyright: GNU Public License v3
 
+..Warning:
+    This module will be deprecated in version 1.0.
+    Please use :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` instead.
 
 Given a :class:`~MDAnalysis.core.universe.Universe` (simulation
 trajectory with 1 or more frames) measure all hydrogen bonds for each
@@ -336,6 +339,11 @@ from MDAnalysis.lib.util import deprecate
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
 
+warnings.warn(
+            "This module will be deprecated in version 1.0."
+            "Please use MDAnalysis.analysis.hydrogenbonds.hbond_analysis instead.",
+            category=DeprecationWarning
+        )
 
 class HydrogenBondAnalysis(base.AnalysisBase):
     """Perform a hydrogen bond analysis
@@ -557,6 +565,13 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         """
         super(HydrogenBondAnalysis, self).__init__(universe.trajectory, **kwargs)
+
+        warnings.warn(
+            "This class will be deprecated in version 1.0."
+            "Please use MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis instead.",
+            category=DeprecationWarning
+        )
+
         # per-frame debugging output?
         self.debug = debug
 
