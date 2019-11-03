@@ -640,7 +640,7 @@ class ResidSelection(Selection):
         vals = group.resids
         try:  # optional attribute
             icodes = group.icodes
-        except (AttributeError, NoDataError) as e:
+        except (AttributeError, NoDataError):
             icodes = None
             # if no icodes and icodes are part of selection, cause a fuss
             if (any(v[1] for v in self.uppers) or
@@ -730,7 +730,7 @@ class RangeSelection(Selection):
             try:
                 lower = int(val)
                 upper = None
-            except ValueError as e:
+            except ValueError:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 selrange = re.match("(\d+)[:-](\d+)", val)
                 if not selrange:

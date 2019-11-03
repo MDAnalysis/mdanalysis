@@ -519,9 +519,11 @@ class Timestep(object):
             vel = self.velocities[sel, :]
         except NoDataError:
             vel = None
-        except Exception as e:
-            raise TypeError("Selection type must be compatible with slicing"
-                            " the coordinates") from e
+        except Exception:
+            six.raise_from(
+                TypeError("Selection type must be compatible with slicing"
+                          " the coordinates"),
+                None)
         try:
             force = self.forces[sel, :]
         except NoDataError:
@@ -2022,9 +2024,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
         try:
             self.transformations = transformations
-        except ValueError as e:
+        except ValueError:
             errmsg = "Can't add transformations again. Please create new Universe object"
-            raise ValueError(errmsg) from e
+            six.raise_from(ValueError(errmsg), None)
         else:
             self.ts = self._apply_transformations(self.ts)
 

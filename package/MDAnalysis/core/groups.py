@@ -335,11 +335,12 @@ class _MutableBase(object):
                                   for parent in cls.mro()
                                   if parent in u._class_bases)
             except StopIteration:
-                raise TypeError("Attempted to instantiate class '{}' but "
+                raise_from(TypeError("Attempted to instantiate class '{}' but "
                                 "none of its parents are known to the "
                                 "universe. Currently possible parent "
                                 "classes are: {}".format(cls.__name__,
-                                    str(sorted(u._class_bases.keys()))))
+                                    str(sorted(u._class_bases.keys())))),
+                           None)
             newcls = u._classes[cls] = parent_cls._mix(cls)
             return object.__new__(newcls)
 
@@ -1494,8 +1495,10 @@ class GroupBase(_MutableBase):
                     try:
                         compound_indices = atoms.fragindices
                     except NoDataError:
-                        raise NoDataError("Cannot use compound='fragments', "
-                                          "this requires bonds.") from None
+                        raise_from(
+                            NoDataError("Cannot use compound='fragments', "
+                                        "this requires bonds."),
+                            None)
 
                 # compute required shifts:
                 if ctr == 'com':
@@ -2546,7 +2549,7 @@ class AtomGroup(GroupBase):
         try:
             return ts.forces[self.ix]
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain forces") from None
+            raise_from(NoDataError("Timestep does not contain forces"), None)
 
     @forces.setter
     def forces(self, values):
@@ -2554,7 +2557,7 @@ class AtomGroup(GroupBase):
         try:
             ts.forces[self.ix, :] = values
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain forces") from None
+            raise_from(NoDataError("Timestep does not contain forces"), None)
 
     @property
     def ts(self):
@@ -3669,7 +3672,7 @@ class Atom(ComponentBase):
         try:
             ts.velocities[self.ix, :] = values
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain velocities") from None
+            raise_from(NoDataError("Timestep does not contain velocities"), None)
 
     @property
     def force(self):
@@ -3700,7 +3703,7 @@ class Atom(ComponentBase):
         try:
             ts.forces[self.ix, :] = values
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain forces") from None
+            raise_from(NoDataError("Timestep does not contain forces"), None)
 
 
 class Residue(ComponentBase):

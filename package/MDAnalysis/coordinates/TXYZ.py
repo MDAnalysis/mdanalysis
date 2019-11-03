@@ -154,7 +154,7 @@ class TXYZReader(base.ReaderBase):
             ts.positions = tmp_buf
             ts.frame += 1
             return ts
-        except (ValueError, IndexError):
+        except (ValueError, IndexError) as err:
             raise_from(EOFError(err), None)
 
     def _reopen(self):

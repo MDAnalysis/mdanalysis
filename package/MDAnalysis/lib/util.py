@@ -1694,9 +1694,11 @@ class Namespace(dict):
     def __delattr__(self, key):
         try:
             dict.__delitem__(self, key)
-        except KeyError as e:
-            raise AttributeError('"{}" is not known in the namespace.'
-                                 .format(key)) from e
+        except KeyError:
+            six.raise_from(
+                AttributeError('"{}" is not known in the namespace.'
+                                 .format(key)),
+                None)
 
     def __eq__(self, other):
         try:

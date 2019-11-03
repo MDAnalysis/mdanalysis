@@ -569,7 +569,7 @@ class NCDFReader(base.ReaderBase):
         except KeyError as e:
             errmsg = ("NCDF trajectory {0} does not contain frame "
                       "information".format(self.filename))
-            raise ValueError(errmsg) from e
+            raise_from(ValueError(errmsg), None)
 
         try:
             self.remarks = self.trjfile.title
