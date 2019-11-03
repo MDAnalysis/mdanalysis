@@ -269,8 +269,8 @@ class TRZReader(base.ReaderBase):
                 ts._forces[:, 0] = data['fx']
                 ts._forces[:, 1] = data['fy']
                 ts._forces[:, 2] = data['fz']
-        except IndexError as e: # Raises indexerror if data has no data (EOF)
-            raise IOError from e
+        except IndexError: # Raises indexerror if data has no data (EOF)
+            six.raise_from(IOError, None)
         else:
             # Convert things read into MDAnalysis' native formats (nm -> angstroms)
             if self.convert_units:

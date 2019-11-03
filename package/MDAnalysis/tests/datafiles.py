@@ -37,10 +37,11 @@ Real MD simulation data, used for examples and the unit tests::
    http://pypi.python.org/pypi/MDAnalysisTests and installed.
 """
 from __future__ import print_function, absolute_import
+from six import raise_from
 
 try:
     from MDAnalysisTests.datafiles import *
-except ImportError as e:
+except ImportError:
     print("*** ERROR ***")
     print("In order to run the MDAnalysis test cases you must install the")
     print("MDAnalysisTestData package (which has been separated from the ")
@@ -50,4 +51,4 @@ except ImportError as e:
     print()
     print("and download and install the `MDAnalysisTests-x.y.z.tar.gz'")
     print("that matches your MDAnalysis release.")
-    raise ImportError("MDAnalysisTests package not installed.") from e
+    raise_from(ImportError("MDAnalysisTests package not installed."), None)

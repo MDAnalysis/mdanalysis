@@ -90,7 +90,7 @@ that two objects are of the same level, or to access a particular class::
 """
 from __future__ import absolute_import, division
 from six.moves import zip
-from six import string_types
+from six import raise_from, string_types
 
 from collections import namedtuple
 import numpy as np
@@ -119,7 +119,7 @@ from ._get_readers import get_writer_for
 def _unpickle(uhash, ix):
     try:
         u = _ANCHOR_UNIVERSES[uhash]
-    except KeyError as e:
+    except KeyError:
         # doesn't provide as nice an error message as before as only hash of universe is stored
         # maybe if we pickled the filename too we could do better...
         errmsg = (
@@ -127,7 +127,7 @@ def _unpickle(uhash, ix):
             "with Universe hash '{}'.  Available hashes: {}"
             "".format(uhash, ', '.join([str(k)
                                         for k in _ANCHOR_UNIVERSES.keys()])))
-        raise RuntimeError(errmsg) from e
+        raise_from(RuntimeError(errmsg), None)
     return u.atoms[ix]
 
 def _unpickle_uag(basepickle, selections, selstrs):
@@ -309,7 +309,7 @@ class _MutableBase(object):
             try:
                 # older AtomGroup init method..
                 u = args[0][0].universe
-            except (TypeError, IndexError, AttributeError) as e:
+            except (TypeError, IndexError, AttributeError):
                 from .universe import Universe
                 # Let's be generic and get the first argument that's either a
                 # Universe, a Group, or a Component, and go from there.
@@ -320,9 +320,12 @@ class _MutableBase(object):
                         u = arg.universe
                         break
                 else:
-                    raise TypeError("No universe, or universe-containing "
-                                   "object passed to the initialization of "
-                                    "{}".format(cls.__name__)) from e
+                    raise_from(
+                        TypeError(
+                            "No universe, or universe-containing "
+                            "object passed to the initialization of "
+                            "{}".format(cls.__name__)),
+                        None)
         try:
             return object.__new__(u._classes[cls])
         except KeyError:
@@ -457,12 +460,13 @@ class GroupBase(_MutableBase):
                 # current/new init method
                 ix, u = args
         except (AttributeError,  # couldn't find ix/universe
-                TypeError) as e:  # couldn't iterate the object we got
-            raise TypeError(
+                TypeError):  # couldn't iterate the object we got
+            raise_from(TypeError(
                 "Can only initialise a Group from an iterable of Atom/Residue/"
                 "Segment objects eg: AtomGroup([Atom1, Atom2, Atom3]) "
                 "or an iterable of indices and a Universe reference "
-                "eg: AtomGroup([0, 5, 7, 8], u).") from e
+                "eg: AtomGroup([0, 5, 7, 8], u)."),
+                       None)
 
         # indices for the objects I hold
         self._ix = np.asarray(ix, dtype=np.intp)
@@ -775,14 +779,14 @@ class GroupBase(_MutableBase):
             try:
                 compound_indices = atoms.molnums
             except AttributeError:
-                raise NoDataError("Cannot use compound='molecules': "
-                                  "No molecule information in topology.") from None
+                raise_from(NoDataError("Cannot use compound='molecules': "
+                                  "No molecule information in topology."), None)
         elif comp == 'fragments':
             try:
                 compound_indices = atoms.fragindices
             except NoDataError:
-                raise NoDataError("Cannot use compound='fragments': "
-                                  "No bond information in topology.") from None
+                raise_from(NoDataError("Cannot use compound='fragments': "
+                                  "No bond information in topology."), None)
         else:
             raise ValueError("Unrecognized compound definition: {}\nPlease use"
                              " one of 'group', 'residues', 'segments', "
@@ -985,14 +989,18 @@ class GroupBase(_MutableBase):
             try:
                 compound_indices = atoms.molnums
             except AttributeError:
-                raise NoDataError("Cannot use compound='molecules': "
-                                  "No molecule information in topology.") from None
+                raise_from(
+                    NoDataError("Cannot use compound='molecules': "
+                                "No molecule information in topology."),
+                    None)
         elif comp == 'fragments':
             try:
                 compound_indices = atoms.fragindices
             except NoDataError:
-                raise NoDataError("Cannot use compound='fragments': "
-                                  "No bond information in topology.") from None
+                raise_from(
+                    NoDataError("Cannot use compound='fragments': "
+                                "No bond information in topology."),
+                    None)
         else:
             raise ValueError("Unrecognized compound definition: '{}'. Please "
                              "use one of 'group', 'residues', 'segments', "
@@ -1480,8 +1488,8 @@ class GroupBase(_MutableBase):
                     try:
                         compound_indices = atoms.molnums
                     except AttributeError:
-                        raise NoDataError("Cannot use compound='molecules', "
-                                          "this requires molnums.") from None
+                        raise_from(NoDataError("Cannot use compound='molecules', "
+                                          "this requires molnums."), None)
                 else:  # comp == 'fragments'
                     try:
                         compound_indices = atoms.fragindices
@@ -1642,8 +1650,8 @@ class GroupBase(_MutableBase):
                 try:
                     compound_indices = unique_atoms.molnums
                 except AttributeError:
-                    raise NoDataError("Cannot use compound='molecules', this "
-                                      "requires molnums.") from None
+                    raise_from(NoDataError("Cannot use compound='molecules', this "
+                                      "requires molnums."), None)
             # Now process every compound:
             unique_compound_indices = unique_int_1d(compound_indices)
             positions = unique_atoms.positions
@@ -2326,12 +2334,12 @@ class AtomGroup(GroupBase):
         else:
             try:
                 r_ix = [r.resindex for r in new]
-            except AttributeError as e:
-                raise TypeError("Can only set AtomGroup residues to Residue "
+            except AttributeError:
+                raise_from(TypeError("Can only set AtomGroup residues to Residue "
                                 "or ResidueGroup not {}".format(
                                     ', '.join(type(r) for r in new
                                               if not isinstance(r, Residue))
-                                )) from e
+                                )), None)
         if not isinstance(r_ix, itertools.cycle) and len(r_ix) != len(self):
             raise ValueError("Incorrect size: {} for AtomGroup of size: {}"
                              "".format(len(new), len(self)))
@@ -2504,7 +2512,7 @@ class AtomGroup(GroupBase):
         try:
             return np.array(ts.velocities[self.ix])
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain velocities") from None
+            raise_from(NoDataError("Timestep does not contain velocities"), None)
 
     @velocities.setter
     def velocities(self, values):
@@ -2512,7 +2520,7 @@ class AtomGroup(GroupBase):
         try:
             ts.velocities[self.ix, :] = values
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain velocities") from None
+            raise_from(NoDataError("Timestep does not contain velocities"), None)
 
     @property
     def forces(self):
@@ -2883,16 +2891,17 @@ class AtomGroup(GroupBase):
         # higher level groupings
         try:
             levelindices = getattr(self, accessors[level])
-        except AttributeError as e:
-            raise AttributeError('This universe does not have {} '
+        except AttributeError:
+            raise_from(AttributeError('This universe does not have {} '
                              'information. Maybe it is not provided in the '
-                             'topology format in use.'.format(level)) from e
-        except KeyError as e:
+                             'topology format in use.'.format(level)),
+                       None)
+        except KeyError:
             errmsg = (
                 "level = '{0}' not supported, "
                 "must be one of {1}".format(level, accessors.keys())
                 )
-            raise ValueError(errmsg) from e
+            raise_from(ValueError(errmsg), None)
 
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]
@@ -3245,13 +3254,13 @@ class ResidueGroup(GroupBase):
         else:
             try:
                 s_ix = [s.segindex for s in new]
-            except AttributeError as e:
+            except AttributeError:
                 errmsg = ("Can only set ResidueGroup segments to Segment "
                                 "or SegmentGroup, not {}".format(
                                     ', '.join(type(r) for r in new
                                               if not isinstance(r, Segment))
                                 ))
-                raise TypeError(errmsg) from e
+                raise_from(TypeError(errmsg), None)
         if not isinstance(s_ix, itertools.cycle) and len(s_ix) != len(self):
             raise ValueError("Incorrect size: {} for ResidueGroup of size: {}"
                              "".format(len(new), len(self)))
@@ -3652,7 +3661,7 @@ class Atom(ComponentBase):
         try:
             return ts.velocities[self.ix].copy()
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain velocities") from None
+            raise_from(NoDataError("Timestep does not contain velocities"), None)
 
     @velocity.setter
     def velocity(self, values):
@@ -3683,7 +3692,7 @@ class Atom(ComponentBase):
         try:
             return ts.forces[self.ix].copy()
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain forces") from None
+            raise_from(NoDataError("Timestep does not contain forces"), None)
 
     @force.setter
     def force(self, values):

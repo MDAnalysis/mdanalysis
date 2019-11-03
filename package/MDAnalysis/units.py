@@ -167,6 +167,7 @@ References and footnotes
 """
 
 from __future__ import unicode_literals, division
+from six import raise_from
 
 #: `Avogadro's constant`_ in mol**-1.
 #:
@@ -363,18 +364,18 @@ def convert(x, u1, u2):
     """
     try:
         ut1 = unit_types[u1]
-    except KeyError as e:
+    except KeyError:
         errmsg = ("unit '{0}' not recognized.\n"
                   "It must be one of {1}.".format(u1, ", ".join(unit_types))
                   )
-        raise ValueError(errmsg) from e
+        raise_from(ValueError(errmsg), None)
     try:
         ut2 = unit_types[u2]
-    except KeyError as e:
+    except KeyError:
         errmsg = ("unit '{0}' not recognized.\n"
                   "It must be one of {1}.".format(u2, ", ".join(unit_types))
                   )
-        raise ValueError(errmsg) from e
+        raise_from(ValueError(errmsg), None)
     if ut1 != ut2:
         raise ValueError("Cannot convert between unit types "
                          "{0} --> {1}".format(u1, u2))

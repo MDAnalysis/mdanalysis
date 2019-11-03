@@ -143,7 +143,7 @@ Classes
 from __future__ import absolute_import
 
 from six.moves import range, zip
-from six import StringIO, BytesIO
+from six import raise_from, StringIO, BytesIO
 
 import io
 import os
@@ -366,8 +366,8 @@ class PDBReader(base.ReaderBase):
         try:
             start = self._start_offsets[frame]
             stop = self._stop_offsets[frame]
-        except IndexError as e:  # out of range of known frames
-            raise IOError from e
+        except IndexError:  # out of range of known frames
+            raise_from(IOError, None)
 
         pos = 0
         occupancy = np.ones(self.n_atoms)
@@ -836,8 +836,12 @@ class PDBWriter(base.WriterBase):
             try:
                 ts = self.ts
             except AttributeError:
-                raise NoDataError("PBDWriter: no coordinate data to write to "
-                                  "trajectory file") from None
+                raise_from(
+                    NoDataError(
+                        "PBDWriter: no coordinate data to write to "
+                        "trajectory file"
+                        ),
+                    None)
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 

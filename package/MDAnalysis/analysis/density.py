@@ -161,7 +161,7 @@ can be used in downstream processing).
 
 from __future__ import print_function, division, absolute_import
 from six.moves import range, zip
-from six import string_types
+from six import raise_from, string_types
 
 import numpy as np
 import sys
@@ -372,12 +372,15 @@ class Density(Grid):
                 try:
                     units.conversion_factor[unit_type][value]
                     self.units[unit_type] = value
-                except KeyError as e:
-                    raise ValueError('Unit ' + str(value) + ' of type ' + str(unit_type) + ' is not recognized.') from e
-        except AttributeError as e:
+                except KeyError:
+                    raise_from(
+                        ValueError('Unit ' + str(value) + ' of type ' + str(unit_type) + ' is not recognized.'),
+                        None,
+                        )
+        except AttributeError:
             errmsg = '"unit" must be a dictionary with keys "length" and "density.'
             logger.fatal(errmsg)
-            raise ValueError(errmsg) from e
+            raise_from(ValueError(errmsg), None)
         # need at least length and density (can be None)
         if 'length' not in self.units:
             raise ValueError('"unit" must contain a unit for "length".')
@@ -485,8 +488,11 @@ class Density(Grid):
         try:
             self.grid *= units.get_conversion_factor('density',
                                                      self.units['density'], unit)
-        except KeyError as e:
-            raise ValueError("The name of the unit ({0!r} supplied) must be one of:\n{1!r}".format(unit, units.conversion_factor['density'].keys())) from e
+        except KeyError:
+            raise_from(
+                ValueError("The name of the unit ({0!r} supplied) must be one of:\n{1!r}".format(unit, units.conversion_factor['density'].keys())),
+                None,
+                )
         self.units['density'] = unit
 
     def __repr__(self):
@@ -526,14 +532,14 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     # Check user inputs
     try:
         gridcenter = np.asarray(gridcenter, dtype=np.float32)
-    except ValueError as e:
-        raise ValueError("Non-number values assigned to gridcenter") from e
+    except ValueError:
+        raise_from(ValueError("Non-number values assigned to gridcenter"), None)
     if gridcenter.shape != (3,):
         raise ValueError("gridcenter must be a 3D coordinate")
     try:
         xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
-    except ValueError as e:
-        raise ValueError("xdim, ydim, and zdim must be numbers") from e
+    except ValueError:
+        raise_from(ValueError("xdim, ydim, and zdim must be numbers"), None)
 
     # Set min/max by shifting by half the edge length of each dimension
     umin = gridcenter - xyzdim/2

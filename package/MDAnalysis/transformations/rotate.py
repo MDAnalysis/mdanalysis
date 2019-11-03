@@ -32,6 +32,7 @@ point
 
 """
 from __future__ import absolute_import
+from six import raise_from
 
 import math
 import numpy as np
@@ -112,8 +113,10 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
         if direction.shape != (3, ) and direction.shape != (1, 3):
             raise ValueError('{} is not a valid direction'.format(direction))
         direction = direction.reshape(3, )
-    except ValueError as e:
-        raise ValueError('{} is not a valid direction'.format(direction)) from e
+    except ValueError:
+        raise_from(
+            ValueError('{} is not a valid direction'.format(direction)),
+            None)
     if point is not None:
         point = np.asarray(point, np.float32)
         if point.shape != (3, ) and point.shape != (1, 3):
@@ -122,14 +125,16 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
     elif ag:
         try:
             atoms = ag.atoms
-        except AttributeError as e:
-            raise ValueError('{} is not an AtomGroup object'.format(ag)) from e
+        except AttributeError:
+            raise_from(ValueError('{} is not an AtomGroup object'.format(ag)), None)
         else:
             try:
                 weights = get_weights(atoms, weights=weights)
-            except (ValueError, TypeError) as e:
-                raise TypeError("weights must be {'mass', None} or an iterable of the "
-                                "same size as the atomgroup.") from e
+            except (ValueError, TypeError):
+                raise_from(
+                    TypeError("weights must be {'mass', None} or an iterable of the "
+                              "same size as the atomgroup."),
+                    None)
         center_method = partial(atoms.center, weights, pbc=wrap)
     else:
         raise ValueError('A point or an AtomGroup must be specified')

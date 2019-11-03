@@ -68,6 +68,7 @@ Functions
 """
 from __future__ import division, absolute_import
 from six.moves import range
+from six import raise_from
 
 import numpy as np
 from numpy.lib.utils import deprecate
@@ -98,10 +99,10 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
     backend = backend.lower()
     try:
         func = getattr(_distances[backend], funcname)
-    except KeyError as e:
+    except KeyError:
         errmsg = ("Function {0} not available with backend {1}; try one "
                   "of: {2}".format(funcname, backend, _distances.keys()))
-        raise ValueError(errmsg) from e
+        raise_from(ValueError(errmsg), None)
     return func(*args, **kwargs)
 
 # serial versions are always available (and are typically used within

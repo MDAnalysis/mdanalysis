@@ -45,6 +45,7 @@ exception of `:func:get_writer`:
 .. autofunction:: get_writer
 """
 from __future__ import absolute_import
+from six import raise_from
 
 import os.path
 
@@ -84,7 +85,8 @@ def get_writer(filename, defaultformat):
     format = format.strip().upper()  # canonical for lookup
     try:
         return _SELECTION_WRITERS[format]
-    except KeyError as e:
-        raise NotImplementedError(
+    except KeyError:
+        raise_from(NotImplementedError(
             "Writing as {0!r} is not implemented;"
-            " only {1!r} will work.".format(format, _SELECTION_WRITERS.keys())) from e
+            " only {1!r} will work.".format(format, _SELECTION_WRITERS.keys())),
+            None)

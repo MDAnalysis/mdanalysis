@@ -124,6 +124,7 @@ Classes
 from __future__ import absolute_import
 
 from six.moves import zip, range, map
+from six import raise_from
 import os
 import numpy as np
 
@@ -160,9 +161,9 @@ class DCDWriter(DCD.DCDWriter):
             try:
                 if units.unit_types[unit] != unit_type:
                     raise TypeError("LAMMPS DCDWriter: wrong unit {0!r} for unit type {1!r}".format(unit, unit_type))
-            except KeyError as e:
+            except KeyError:
                 errmsg = ("LAMMPS DCDWriter: unknown unit {0!r}".format(unit))
-                raise ValueError(errmsg) from e
+                raise_from(ValueError(errmsg), None)
         super(DCDWriter, self).__init__(*args, **kwargs)
 
 
@@ -341,10 +342,11 @@ class DATAWriter(base.WriterBase):
             try:
                 self.f.write('{:d} {:d} '.format(i, int(bond.type))+\
                         ' '.join((bond.atoms.indices + 1).astype(str))+'\n')
-            except TypeError as e:
-                raise TypeError('LAMMPS DATAWriter: Trying to write bond, '
+            except TypeError:
+                raise_from(TypeError('LAMMPS DATAWriter: Trying to write bond, '
                                 'but bond type {} is not '
-                                'numerical.'.format(bond.type)) from e
+                                'numerical.'.format(bond.type)),
+                            None)
 
     def _write_dimensions(self, dimensions):
         """Convert dimensions to triclinic vectors, convert lengths to native

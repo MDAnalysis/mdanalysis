@@ -508,9 +508,13 @@ class Timestep(object):
         except NoDataError:
             # It's cool if there's no Data, we'll live
             pos = None
-        except Exception as e:
-            raise TypeError("Selection type must be compatible with slicing"
-                            " the coordinates") from e
+        except Exception:
+            six.raise_from(
+                TypeError(
+                    "Selection type must be compatible with slicing"
+                    " the coordinates"
+                    ),
+                None)
         try:
             vel = self.velocities[sel, :]
         except NoDataError:
@@ -522,9 +526,13 @@ class Timestep(object):
             force = self.forces[sel, :]
         except NoDataError:
             force = None
-        except Exception as e:
-            raise TypeError("Selection type must be compatible with slicing"
-                            " the coordinates") from e
+        except Exception:
+            six.raise_from(
+                TypeError(
+                    "Selection type must be compatible with slicing"
+                    " the coordinates"
+                    ),
+                None)
 
         new_TS = self.__class__.from_coordinates(
             positions=pos,
@@ -1408,7 +1416,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             ts = self._read_next_timestep()
         except (EOFError, IOError):
             self.rewind()
-            raise StopIteration from None
+            six.raise_from(StopIteration, None)
         else:
             for auxname in self.aux_list:
                 ts = self._auxs[auxname].update_ts(ts)
@@ -1591,9 +1599,12 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             for i in range(start, stop, step):
                 yield self._read_frame_with_aux(i)
             self.rewind()
-        except TypeError as e:  # if _read_frame not implemented
-            raise TypeError("{0} does not support slicing."
-                            "".format(self.__class__.__name__)) from e
+        except TypeError:  # if _read_frame not implemented
+            six.raise_from(
+                TypeError(
+                    "{0} does not support slicing."
+                    "".format(self.__class__.__name__)),
+                None)
 
     def check_slice_indices(self, start, stop, step):
         """Check frame indices are valid and clip to fit trajectory.
@@ -2176,8 +2187,8 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
                 try:
                     # special case: can supply a Universe, too...
                     ts = obj.trajectory.ts
-                except AttributeError as e:
-                    raise TypeError("No Timestep found in obj argument") from e
+                except AttributeError:
+                    six.raise_from(TypeError("No Timestep found in obj argument"), None)
         return self.write_next_timestep(ts)
 
     def __del__(self):

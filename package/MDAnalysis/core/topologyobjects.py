@@ -31,6 +31,7 @@ The building blocks for MDAnalysis' description of topology
 from __future__ import print_function, absolute_import, division
 
 from six.moves import zip
+from six import raise_from
 import numbers
 import numpy as np
 import functools
@@ -810,20 +811,20 @@ class TopologyGroup(object):
         """The third atom in each TopologyObject in this Group"""
         try:
             return self._ags[2]
-        except IndexError as e:
+        except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
             errmsg = "TopologyGroup of {}s only has {} vertical AtomGroups"
-            raise IndexError(errmsg.format(self.btype, nvert)) from e
+            raise_from(IndexError(errmsg.format(self.btype, nvert)), None)
 
     @property
     def atom4(self):
         """The fourth atom in each TopologyObject in this Group"""
         try:
             return self._ags[3]
-        except IndexError as e:
+        except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
             errmsg = "TopologyGroup of {}s only has {} vertical AtomGroups"
-            raise IndexError(errmsg.format(self.btype, nvert)) from e
+            raise_from(IndexError(errmsg.format(self.btype, nvert)), None)
 
     # Distance calculation methods below
     # "Slow" versions exist as a way of testing the Cython implementations

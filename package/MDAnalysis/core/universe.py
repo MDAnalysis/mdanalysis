@@ -304,12 +304,12 @@ class Universe(object):
                             "Failed to load from the topology file {0}"
                             " with parser {1}.\n"
                             "Error: {2}".format(self.filename, parser, err))
-                        raise IOError(errmsg) from err
+                        six.raise_from(IOError(errmsg), None)
                 except (ValueError, NotImplementedError) as err:
-                    raise ValueError(
+                    six.raise_from(ValueError(
                         "Failed to construct topology from file {0}"
                         " with parser {1}.\n"
-                        "Error: {2}".format(self.filename, parser, err)) from err
+                        "Error: {2}".format(self.filename, parser, err)), None)
 
             # generate and populate Universe version of each class
             self._generate_from_topology()
@@ -509,8 +509,8 @@ class Universe(object):
         # created at the beginning of __init__.
         try:
             segment = self._instant_selectors[key]
-        except KeyError as e:
-            raise AttributeError('No attribute "{}".'.format(key)) from e
+        except KeyError:
+            six.raise_from(AttributeError('No attribute "{}".'.format(key)), None)
         else:
             warnings.warn("Instant selector Universe.<segid> "
                           "is deprecated and will be removed in 1.0. "
@@ -860,7 +860,7 @@ class Universe(object):
         if isinstance(topologyattr, six.string_types):
             try:
                 tcls = _TOPOLOGY_ATTRS[topologyattr]
-            except KeyError as e:
+            except KeyError:
                 errmsg = (
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
@@ -868,7 +868,7 @@ class Universe(object):
                     "".format(
                         topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))
                 )
-                raise ValueError(errmsg) from e
+                six.raise_from(ValueError(errmsg), None)
             else:
                 topologyattr = tcls.from_blank(
                     n_atoms=self._topology.n_atoms,

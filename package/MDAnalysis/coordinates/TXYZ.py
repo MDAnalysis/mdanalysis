@@ -47,6 +47,7 @@ Classes
 """
 from __future__ import absolute_import, division
 from six.moves import range
+from six import raise_from
 
 import numpy as np
 import os
@@ -153,8 +154,8 @@ class TXYZReader(base.ReaderBase):
             ts.positions = tmp_buf
             ts.frame += 1
             return ts
-        except (ValueError, IndexError) as err:
-            raise EOFError(err) from err
+        except (ValueError, IndexError):
+            raise_from(EOFError(err), None)
 
     def _reopen(self):
         self.close()

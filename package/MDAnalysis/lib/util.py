@@ -850,9 +850,11 @@ class NamedStream(io.IOBase, PathLike):
         """
         try:
             return self.stream.fileno()
-        except AttributeError as e:
+        except AttributeError:
             # IOBase.fileno does not raise IOError as advertised so we do this here
-            raise IOError("This NamedStream does not use a file descriptor.") from e
+            six.raise_from(
+                IOError("This NamedStream does not use a file descriptor."),
+                None)
 
     def readline(self):
         try:
@@ -955,9 +957,11 @@ def check_compressed_format(root, ext):
     if ext.lower() in ("bz2", "gz"):
         try:
             root, ext = get_ext(root)
-        except Exception as e:
-            raise TypeError("Cannot determine coordinate format for '{0}.{1}'"
-                            "".format(root, ext)) from e
+        except Exception:
+            six.raise_from(
+                TypeError("Cannot determine coordinate format for '{0}.{1}'"
+                          "".format(root, ext)),
+                None)
 
     return ext.upper()
 
@@ -980,11 +984,12 @@ def format_from_filename_extension(filename):
     """
     try:
         root, ext = get_ext(filename)
-    except Exception as e:
-        raise TypeError(
+    except Exception:
+        six.raise_from(TypeError(
             "Cannot determine file format for file '{0}'.\n"
             "           You can set the format explicitly with "
-            "'Universe(..., format=FORMAT)'.".format(filename)) from e
+            "'Universe(..., format=FORMAT)'.".format(filename)),
+            None)
     format = check_compressed_format(root, ext)
     return format
 
@@ -1020,10 +1025,12 @@ def guess_format(filename):
         # perhaps StringIO or open stream
         try:
             format = format_from_filename_extension(filename.name)
-        except AttributeError as e:
+        except AttributeError:
             # format is None so we need to complain:
-            raise ValueError("guess_format requires an explicit format specifier "
-                             "for stream {0}".format(filename)) from e
+            six.raise_from(
+                ValueError("guess_format requires an explicit format specifier "
+                           "for stream {0}".format(filename)),
+                None)
     else:
         # iterator, list, filename: simple extension checking... something more
         # complicated is left for the ambitious.
@@ -1109,9 +1116,9 @@ class FixedcolumnEntry(object):
         """Read the entry from `line` and convert to appropriate type."""
         try:
             return self.convertor(line[self.start:self.stop])
-        except ValueError as e:
+        except ValueError:
             errmsg = "{0!r}: Failed to read&convert {1!r}".format(self, line[self.start:self.stop])
-            raise ValueError(errmsg) from e
+            six.raise_from(ValueError(errmsg), None)
 
     def __len__(self):
         """Length of the field in columns (stop - start)"""
@@ -1344,8 +1351,10 @@ def get_weights(atoms, weights):
     if not iterable(weights) and weights == "mass":
         try:
             weights = atoms.masses
-        except AttributeError as e:
-            raise TypeError("weights='mass' selected but atoms.masses is missing") from e
+        except AttributeError:
+            six.raise_from(
+                TypeError("weights='mass' selected but atoms.masses is missing"),
+                None)
 
     if iterable(weights):
         if len(np.asarray(weights).shape) != 1:
@@ -1424,9 +1433,9 @@ def convert_aa_code(x):
 
     try:
         return d[x.upper()]
-    except KeyError as e:
+    except KeyError:
         errmsg = "No conversion for {0} found (1 letter -> 3 letter or 3/4 letter -> 1 letter)".format(x)
-        raise ValueError(errmsg) from e
+        six.raise_from(ValueError(errmsg), None)
 
 
 #: Regular expression to match and parse a residue-atom selection; will match
@@ -1675,9 +1684,9 @@ class Namespace(dict):
         # a.this causes a __getattr__ call for key = 'this'
         try:
             return dict.__getitem__(self, key)
-        except KeyError as e:
-            raise AttributeError('"{}" is not known in the namespace.'
-                                 .format(key)) from e
+        except KeyError:
+            six.raise_from(AttributeError('"{}" is not known in the namespace.'
+                                 .format(key)), None)
 
     def __setattr__(self, key, value):
         dict.__setitem__(self, key, value)
@@ -1992,10 +2001,10 @@ def check_coords(*coord_names, **options):
                                      "".format(fname, argname, coords.shape))
             try:
                 coords = coords.astype(np.float32, order='C', copy=enforce_copy)
-            except ValueError as e:
+            except ValueError:
                 errmsg = ("{}(): {}.dtype must be convertible to float32,"
                           " got {}.".format(fname, argname, coords.dtype))
-                raise TypeError(errmsg) from e
+                six.raise_from(TypeError(errmsg), None)
             return coords, is_single
 
         @wraps(func)

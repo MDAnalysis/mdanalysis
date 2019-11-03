@@ -112,6 +112,7 @@ MOL2 format notes
 
 """
 from __future__ import absolute_import
+from six import raise_from
 
 import numpy as np
 
@@ -218,9 +219,10 @@ class MOL2Reader(base.ReaderBase):
         unitcell = np.zeros(6, dtype=np.float32)
         try:
             block = self.frames[frame]
-        except IndexError as e:
-            raise IOError("Invalid frame {0} for trajectory with length {1}"
-                          "".format(frame, len(self))) from e
+        except IndexError:
+            raise_from(IOError("Invalid frame {0} for trajectory with length {1}"
+                          "".format(frame, len(self))),
+                       None)
 
         sections, coords = self.parse_block(block)
 
@@ -313,9 +315,10 @@ class MOL2Writer(base.WriterBase):
 
         try:
             molecule = ts.data['molecule']
-        except KeyError as e:
-            raise NotImplementedError(
-                "MOL2Writer cannot currently write non MOL2 data") from e
+        except KeyError:
+            raise_from(NotImplementedError(
+                "MOL2Writer cannot currently write non MOL2 data"),
+                None)
 
         # Need to remap atom indices to 1 based in this selection
         mapping = {a: i for i, a in enumerate(obj.atoms, start=1)}

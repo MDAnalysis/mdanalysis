@@ -136,7 +136,7 @@ Analysis classes
 from __future__ import division, absolute_import
 
 from six.moves import zip
-from six import string_types
+from six import raise_from, string_types
 
 import numpy as np
 
@@ -286,17 +286,25 @@ def process_selection(select):
     elif type(select) is tuple:
         try:
             select = {'mobile': select[0], 'reference': select[1]}
-        except IndexError as e:
-            raise IndexError("select must contain two selection strings "
-                             "(reference, mobile)") from e
+        except IndexError:
+            raise_from(IndexError(
+                "select must contain two selection strings "
+                "(reference, mobile)"),
+                None,
+                )
     elif type(select) is dict:
         # compatability hack to use new nomenclature
         try:
             select['mobile']
             select['reference']
-        except KeyError as e:
-            raise KeyError("select dictionary must contain entries for keys "
-                           "'mobile' and 'reference'.") from e
+        except KeyError:
+            raise_from(
+                KeyError(
+                    "select dictionary must contain entries for keys "
+                    "'mobile' and 'reference'."
+                    ),
+                None,
+                )
     else:
         raise TypeError("'select' must be either a string, 2-tuple, or dict")
     select['mobile'] = asiterable(select['mobile'])

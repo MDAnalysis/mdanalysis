@@ -264,9 +264,9 @@ class Flag(object):
         if value is not None:
             try:
                 self.value = self.mapping[value]
-            except KeyError as e:
+            except KeyError:
                 errmsg = "flag must be None or one of " + str(self.mapping.keys())
-                raise ValueError(errmsg) from e
+                six.raise_from(ValueError(errmsg), None)
         return self.get()
 
     def prop(self):

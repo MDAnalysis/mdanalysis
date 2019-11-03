@@ -81,6 +81,7 @@ Classes
 from __future__ import absolute_import, division
 
 from six.moves import range, zip
+from six import raise_from
 import numpy as np
 import functools
 from math import ceil
@@ -233,10 +234,10 @@ class TOPParser(TopologyReaderBase):
                 else:
                     try:
                         next_section = line.split("%FLAG")[1].strip()
-                    except IndexError as e:
+                    except IndexError:
                         msg = ("%FLAG section not found, formatting error "
                                "for PARM7 file {0} ".format(self.filename))
-                        raise IndexError(msg) from e
+                        raise_from(IndexError(msg), None)
 
         # strip out a few values to play with them
         n_atoms = len(attrs['name'])

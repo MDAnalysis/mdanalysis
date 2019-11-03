@@ -107,6 +107,7 @@ from __future__ import division, absolute_import
 
 import numpy as np
 from math import pi, sin, cos, atan2, sqrt, pow
+from six import raise_from
 
 from MDAnalysis.lib import mdamath
 
@@ -710,11 +711,11 @@ def hydroxyl(universe, seg, i):
                               "atom {0!s} {1!s} H2'".format(seg, i))
     try:
         hydr = h.dihedral.value() % 360
-    except ValueError as e:
+    except ValueError:
         errmsg = (
             "Resid {0} does not contain atoms C1', C2', O2', H2' but atoms {1}"
              )
-        raise ValueError(errmsg.format(i, str(list(h.atoms)))) from e
+        raise_from(ValueError(errmsg.format(i, str(list(h.atoms)))), None)
     return hydr
 
 

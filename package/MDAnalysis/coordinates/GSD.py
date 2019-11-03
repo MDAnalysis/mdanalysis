@@ -46,6 +46,7 @@ Classes
 
 """
 from __future__ import absolute_import, division
+from six import raise_from
 
 import numpy as np
 import os
@@ -101,8 +102,8 @@ class GSDReader(base.ReaderBase):
     def _read_frame(self, frame):
         try :
             myframe = self._file[frame]
-        except IndexError as e:
-            raise IOError from e
+        except IndexError:
+            raise_from(IOError, None)
 
         # set frame number
         self._frame = frame
