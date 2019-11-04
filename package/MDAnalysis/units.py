@@ -166,7 +166,7 @@ References and footnotes
 
 """
 
-from __future__ import unicode_literals, division
+from __future__ import absolute_import, unicode_literals, division
 from six import raise_from
 
 #: `Avogadro's constant`_ in mol**-1.
