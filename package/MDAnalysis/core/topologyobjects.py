@@ -813,8 +813,11 @@ class TopologyGroup(object):
             return self._ags[2]
         except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
-            errmsg = "TopologyGroup of {}s only has {} vertical AtomGroups"
-            raise_from(IndexError(errmsg.format(self.btype, nvert)), None)
+            raise_from(
+                IndexError(
+                    "TopologyGroup of {}s only has {} vertical AtomGroups".format(
+                        self.btype, nvert)),
+                None)
 
     @property
     def atom4(self):
@@ -823,8 +826,11 @@ class TopologyGroup(object):
             return self._ags[3]
         except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
-            errmsg = "TopologyGroup of {}s only has {} vertical AtomGroups"
-            raise_from(IndexError(errmsg.format(self.btype, nvert)), None)
+            raise_from(
+                IndexError(
+                    "TopologyGroup of {}s only has {} vertical AtomGroups".format(
+                        self.btype, nvert)),
+                None)
 
     # Distance calculation methods below
     # "Slow" versions exist as a way of testing the Cython implementations

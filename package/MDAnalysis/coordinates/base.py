@@ -2025,8 +2025,11 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         try:
             self.transformations = transformations
         except ValueError:
-            errmsg = "Can't add transformations again. Please create new Universe object"
-            six.raise_from(ValueError(errmsg), None)
+            six.raise_from(
+                ValueError(
+                    "Can't add transformations again. "
+                    "Please create new Universe object"),
+                None)
         else:
             self.ts = self._apply_transformations(self.ts)
 

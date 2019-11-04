@@ -266,10 +266,14 @@ def get_path_metric_func(name):
     try:
         return path_metrics[name]
     except KeyError as key:
-        errmsg = ('Path metric "{}" not found. Valid selections: {}'
-                  ''.format(key, " ".join('"{}"'.format(n)
-                                           for n in path_metrics.keys())))
-        raise_from(KeyError(errmsg), None)
+        raise_from(
+            KeyError(
+                'Path metric "{}" not found. Valid selections: {}'.format(
+                    key,
+                    " ".join('"{}"'.format(n) for n in path_metrics.keys())
+                    )
+                ),
+            None)
 
 
 def sqnorm(v, axis=None):

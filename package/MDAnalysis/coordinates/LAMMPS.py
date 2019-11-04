@@ -162,8 +162,9 @@ class DCDWriter(DCD.DCDWriter):
                 if units.unit_types[unit] != unit_type:
                     raise TypeError("LAMMPS DCDWriter: wrong unit {0!r} for unit type {1!r}".format(unit, unit_type))
             except KeyError:
-                errmsg = ("LAMMPS DCDWriter: unknown unit {0!r}".format(unit))
-                raise_from(ValueError(errmsg), None)
+                raise_from(
+                    ValueError("LAMMPS DCDWriter: unknown unit {0!r}".format(unit)),
+                    None)
         super(DCDWriter, self).__init__(*args, **kwargs)
 
 

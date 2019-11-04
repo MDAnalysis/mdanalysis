@@ -1117,8 +1117,11 @@ class FixedcolumnEntry(object):
         try:
             return self.convertor(line[self.start:self.stop])
         except ValueError:
-            errmsg = "{0!r}: Failed to read&convert {1!r}".format(self, line[self.start:self.stop])
-            six.raise_from(ValueError(errmsg), None)
+            six.raise_from(
+                ValueError(
+                    "{0!r}: Failed to read&convert {1!r}".format(
+                        self, line[self.start:self.stop])),
+                None)
 
     def __len__(self):
         """Length of the field in columns (stop - start)"""
@@ -1434,8 +1437,11 @@ def convert_aa_code(x):
     try:
         return d[x.upper()]
     except KeyError:
-        errmsg = "No conversion for {0} found (1 letter -> 3 letter or 3/4 letter -> 1 letter)".format(x)
-        six.raise_from(ValueError(errmsg), None)
+        six.raise_from(
+            ValueError(
+                "No conversion for {0} found (1 letter -> 3 letter or 3/4 letter -> 1 letter)".format(x)
+                ),
+            None)
 
 
 #: Regular expression to match and parse a residue-atom selection; will match
@@ -2004,9 +2010,11 @@ def check_coords(*coord_names, **options):
             try:
                 coords = coords.astype(np.float32, order='C', copy=enforce_copy)
             except ValueError:
-                errmsg = ("{}(): {}.dtype must be convertible to float32,"
-                          " got {}.".format(fname, argname, coords.dtype))
-                six.raise_from(TypeError(errmsg), None)
+                six.raise_from(
+                    TypeError(
+                        "{}(): {}.dtype must be convertible to float32,"
+                        " got {}.".format(fname, argname, coords.dtype)),
+                    None)
             return coords, is_single
 
         @wraps(func)

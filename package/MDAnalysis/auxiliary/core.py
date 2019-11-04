@@ -85,8 +85,9 @@ def get_auxreader_for(auxdata=None, format=None):
         try:
             return _AUXREADERS[format]
         except KeyError:
-            errmsg = "Unknown auxiliary data format {0}".format(format)
-            raise_from(ValueError(errmsg), None)
+            raise_from(
+                ValueError("Unknown auxiliary data format {0}".format(format)),
+                None)
 
 def auxreader(auxdata, format=None, **kwargs):
     """ Return an auxiliary reader instance for *auxdata*.

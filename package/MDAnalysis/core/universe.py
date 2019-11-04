@@ -300,11 +300,11 @@ class Universe(object):
                         six.reraise(*sys.exc_info())
                     else:
                         # Runs when the parser fails
-                        errmsg = (
+                        six.raise_from(IOError(
                             "Failed to load from the topology file {0}"
                             " with parser {1}.\n"
-                            "Error: {2}".format(self.filename, parser, err))
-                        six.raise_from(IOError(errmsg), None)
+                            "Error: {2}".format(self.filename, parser, err)),
+                            None)
                 except (ValueError, NotImplementedError) as err:
                     six.raise_from(ValueError(
                         "Failed to construct topology from file {0}"
@@ -861,14 +861,13 @@ class Universe(object):
             try:
                 tcls = _TOPOLOGY_ATTRS[topologyattr]
             except KeyError:
-                errmsg = (
+                six.raise_from(ValueError(
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
                     "To raise an issue go to: http://issues.mdanalysis.org"
                     "".format(
-                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))
-                )
-                six.raise_from(ValueError(errmsg), None)
+                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))),
+                    None)
             else:
                 topologyattr = tcls.from_blank(
                     n_atoms=self._topology.n_atoms,

@@ -122,12 +122,16 @@ def _unpickle(uhash, ix):
     except KeyError:
         # doesn't provide as nice an error message as before as only hash of universe is stored
         # maybe if we pickled the filename too we could do better...
-        errmsg = (
-            "Couldn't find a suitable Universe to unpickle AtomGroup onto "
-            "with Universe hash '{}'.  Available hashes: {}"
-            "".format(uhash, ', '.join([str(k)
-                                        for k in _ANCHOR_UNIVERSES.keys()])))
-        raise_from(RuntimeError(errmsg), None)
+        raise_from(
+            RuntimeError(
+                "Couldn't find a suitable Universe to unpickle AtomGroup onto "
+                "with Universe hash '{}'.  Available hashes: {}"
+                "".format(
+                    uhash,
+                    ', '.join([str(k) for k in _ANCHOR_UNIVERSES.keys()])
+                    )
+                ),
+            None)
     return u.atoms[ix]
 
 def _unpickle_uag(basepickle, selections, selstrs):
@@ -3258,12 +3262,15 @@ class ResidueGroup(GroupBase):
             try:
                 s_ix = [s.segindex for s in new]
             except AttributeError:
-                errmsg = ("Can only set ResidueGroup segments to Segment "
-                                "or SegmentGroup, not {}".format(
-                                    ', '.join(type(r) for r in new
+                raise_from(
+                    TypeError(
+                        "Can only set ResidueGroup segments to Segment "
+                        "or SegmentGroup, not {}".format(
+                            ', '.join(type(r) for r in new
                                               if not isinstance(r, Segment))
-                                ))
-                raise_from(TypeError(errmsg), None)
+                                )
+                        ),
+                    None)
         if not isinstance(s_ix, itertools.cycle) and len(s_ix) != len(self):
             raise ValueError("Incorrect size: {} for ResidueGroup of size: {}"
                              "".format(len(new), len(self)))

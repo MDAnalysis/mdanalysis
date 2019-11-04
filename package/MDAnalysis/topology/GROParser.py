@@ -104,11 +104,11 @@ class GROParser(TopologyReaderBase):
                     names[i] = line[10:15].strip()
                     indices[i] = int(line[15:20])
                 except (ValueError, TypeError):
-                    errmsg = (
+                    raise_from(
+                        IOError((
                         "Couldn't read the following line of the .gro file:\n"
-                        "{0}"
-                        )
-                    raise_from(IOError(errmsg.format(line)), None)
+                        "{0}").format(line)),
+                        None)
         # Check all lines had names
         if not np.all(names):
             missing = np.where(names == '')

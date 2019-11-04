@@ -55,13 +55,14 @@ try:
     import matplotlib
     import matplotlib.path
 except ImportError:
-    errmsg = (
-        '2d streamplot module requires: matplotlib.path for its '
-        'path.Path.contains_points method. The installation '
-        'instructions for the matplotlib module can be found here: '
-        'http://matplotlib.org/faq/installing_faq.html?highlight=install'
-        )
-    raise_from(ImportError(errmsg), None)
+    raise_from(
+        ImportError((
+            '2d streamplot module requires: matplotlib.path for its '
+            'path.Path.contains_points method. The installation '
+            'instructions for the matplotlib module can be found here: '
+            'http://matplotlib.org/faq/installing_faq.html?highlight=install'
+            )),
+        None)
 
 import MDAnalysis
 
