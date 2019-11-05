@@ -300,15 +300,16 @@ class Universe(object):
                         six.reraise(*sys.exc_info())
                     else:
                         # Runs when the parser fails
-                        raise IOError(
+                        six.raise_from(IOError(
                             "Failed to load from the topology file {0}"
                             " with parser {1}.\n"
-                            "Error: {2}".format(self.filename, parser, err))
+                            "Error: {2}".format(self.filename, parser, err)),
+                            None)
                 except (ValueError, NotImplementedError) as err:
-                    raise ValueError(
+                    six.raise_from(ValueError(
                         "Failed to construct topology from file {0}"
                         " with parser {1}.\n"
-                        "Error: {2}".format(self.filename, parser, err))
+                        "Error: {2}".format(self.filename, parser, err)), None)
 
             # generate and populate Universe version of each class
             self._generate_from_topology()
@@ -515,7 +516,7 @@ class Universe(object):
         try:
             segment = self._instant_selectors[key]
         except KeyError:
-            raise AttributeError('No attribute "{}".'.format(key))
+            six.raise_from(AttributeError('No attribute "{}".'.format(key)), None)
         else:
             warnings.warn("Instant selector Universe.<segid> "
                           "is deprecated and will be removed in 1.0. "
@@ -866,13 +867,13 @@ class Universe(object):
             try:
                 tcls = _TOPOLOGY_ATTRS[topologyattr]
             except KeyError:
-                raise ValueError(
+                six.raise_from(ValueError(
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
                     "To raise an issue go to: http://issues.mdanalysis.org"
                     "".format(
-                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))
-                )
+                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))),
+                    None)
             else:
                 topologyattr = tcls.from_blank(
                     n_atoms=self._topology.n_atoms,

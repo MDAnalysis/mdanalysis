@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice
+
+mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
 
   * 0.21.0
 
@@ -25,6 +26,9 @@ Fixes
   * PDBQTParser now gives icode TopologyAttrs (Issue #2361)
 
 Enhancements
+  * Uniforms exception handling between Python 2.7 and Python 3: raised exceptions
+    do not contain previous exceptions traceback. Uses six package to handle
+    py27 and py3 compatibility (PR #2357)
   * Expanded selection wildcards to the start and middle of strings (Issue #2370)
   * Added type checking and conversion to Connection TopologyAttrs (Issue #2373)
   * New analysis.hydrogenbonds.HydrogenBondAnalysis class for the analysis of

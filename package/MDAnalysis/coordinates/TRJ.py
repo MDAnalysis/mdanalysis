@@ -154,6 +154,8 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
+from six import raise_from
+
 import scipy.io.netcdf
 import numpy as np
 import warnings
@@ -498,7 +500,7 @@ class NCDFReader(base.ReaderBase):
             errmsg = "NCDF trajectory {0} is missing Conventions".format(
                       self.filename)
             logger.fatal(errmsg)
-            raise ValueError(errmsg)
+            raise_from(ValueError(errmsg), None)
 
         # AMBER NetCDF files should also have a ConventionVersion
         try:
@@ -512,7 +514,7 @@ class NCDFReader(base.ReaderBase):
         except AttributeError:
             errmsg = "NCDF trajectory {0} is missing ConventionVersion".format(
                       self.filename)
-            raise ValueError(errmsg)
+            raise_from(ValueError(errmsg), None)
 
         # The AMBER NetCDF standard enforces 64 bit offsets
         if not self.trjfile.version_byte == 2:
@@ -531,7 +533,7 @@ class NCDFReader(base.ReaderBase):
                 raise TypeError(errmsg)
         except KeyError:
             errmsg = "NCDF trajectory does not contain spatial dimension"
-            raise ValueError(errmsg)
+            raise_from(ValueError(errmsg), None)
 
         # AMBER NetCDF specs require program and programVersion. Warn users
         # if those attributes do not exist
@@ -553,7 +555,7 @@ class NCDFReader(base.ReaderBase):
         except KeyError:
             errmsg = ("NCDF trajectory {0} does not contain atom "
                       "information".format(self.filename))
-            raise ValueError(errmsg)
+            raise_from(ValueError(errmsg), None)
 
         try:
             self.n_frames = self.trjfile.dimensions['frame']
@@ -565,9 +567,12 @@ class NCDFReader(base.ReaderBase):
             if self.n_frames is None:
                 self.n_frames = self.trjfile.variables['time'].shape[0]
         except KeyError:
-            errmsg = ("NCDF trajectory {0} does not contain frame "
-                      "information".format(self.filename))
-            raise ValueError(errmsg)
+            raise_from(
+                ValueError(
+                    ("NCDF trajectory {0} does not contain frame "
+                     "information").format(self.filename)
+                    ),
+                None)
 
         try:
             self.remarks = self.trjfile.title
@@ -709,7 +714,7 @@ class NCDFReader(base.ReaderBase):
         try:
             return self._read_frame(self._current_frame + 1)
         except IndexError:
-            raise IOError
+            raise_from(IOError, None)
 
     def _get_dt(self):
         t1 = self.trjfile.variables['time'][1]
