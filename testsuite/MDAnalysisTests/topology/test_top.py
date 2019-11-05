@@ -42,7 +42,7 @@ class TOPBase(ParserBase):
     parser = mda.topology.TOPParser.TOPParser
     expected_attrs = [
         "names", "types", "type_indices", "charges", "masses", "resnames",
-        "bonds", "angles", "dihedrals", "impropers"
+        "bonds", "angles", "dihedrals", "impropers", "elements"
     ]
     expected_n_segments = 1
 
@@ -184,10 +184,6 @@ class TestPRMParser(TOPBase):
 
 class TestPRM12Parser(TOPBase):
     ref_filename = PRM12
-    expected_attrs = [
-        "names", "types", "type_indices", "charges", "masses", "resnames",
-        "bonds", "angles", "dihedrals", "impropers"
-    ]
     expected_n_atoms = 8923
     expected_n_residues = 2861
     expected_n_bonds = 8947

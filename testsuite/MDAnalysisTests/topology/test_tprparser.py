@@ -44,8 +44,8 @@ class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
     expected_attrs = ['ids', 'names',
                       'resids', 'resnames',
-                      'moltypes', 'molnums']
-    guessed_attrs = ['elements']
+                      'moltypes', 'molnums', 'charges',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
 
     def test_moltypes(self, top):
         moltypes = top.moltypes.values

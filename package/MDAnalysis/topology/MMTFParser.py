@@ -191,10 +191,16 @@ class MMTFParser(base.TopologyReaderBase):
         if mtop.alt_loc_list:
             attrs.append(AltLocs([val.replace('\x00', '').strip()
                                   for val in mtop.alt_loc_list]))
+        else:
+            attrs.append(AltLocs(['']*natoms))
         if len(mtop.b_factor_list):
             attrs.append(Bfactors(mtop.b_factor_list))
+        else:
+            attrs.append(Bfactors([0]*natoms))
         if len(mtop.occupancy_list):
             attrs.append(Occupancies(mtop.occupancy_list))
+        else:
+            attrs.append(Occupancies([1]*natoms))
 
         # Residue things
         # required
@@ -208,6 +214,8 @@ class MMTFParser(base.TopologyReaderBase):
         if mtop.ins_code_list:
             attrs.append(ICodes([val.replace('\x00', '').strip()
                                  for val in mtop.ins_code_list]))
+        else:
+            attrs.append(ICodes(['']*nresidues))
 
         # Segment things
         # optional

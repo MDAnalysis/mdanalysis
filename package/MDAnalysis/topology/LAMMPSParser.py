@@ -306,9 +306,9 @@ class DATAParser(TopologyReaderBase):
             try:
                 type, sect = self._parse_bond_section(sects[L], nentries, mapping)
             except KeyError:
-                pass
-            else:
-                top.add_TopologyAttr(attr(sect, type))
+                type, sect = [], []
+            
+            top.add_TopologyAttr(attr(sect, type))
 
         return top
 
@@ -421,6 +421,13 @@ class DATAParser(TopologyReaderBase):
           number of integers per line
         mapping : dict
           converts atom_ids to index within topology
+
+        Returns
+        -------
+        types : tuple of strings
+          type of the bond/angle/dihedral/improper
+        indices : tuple of ints
+          indices of atoms involved
         """
         section = []
         type = []
