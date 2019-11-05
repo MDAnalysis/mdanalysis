@@ -566,10 +566,13 @@ class NCDFReader(base.ReaderBase):
             # the number of frames from somewhere such as the time variable:
             if self.n_frames is None:
                 self.n_frames = self.trjfile.variables['time'].shape[0]
-        except KeyError as e:
-            errmsg = ("NCDF trajectory {0} does not contain frame "
-                      "information".format(self.filename))
-            raise_from(ValueError(errmsg), None)
+        except KeyError:
+            raise_from(
+                ValueError(
+                    ("NCDF trajectory {0} does not contain frame "
+                     "information").format(self.filename)
+                    ),
+                None)
 
         try:
             self.remarks = self.trjfile.title

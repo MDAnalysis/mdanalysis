@@ -2904,11 +2904,13 @@ class AtomGroup(GroupBase):
                              'topology format in use.'.format(level)),
                        None)
         except KeyError:
-            errmsg = (
-                "level = '{0}' not supported, "
-                "must be one of {1}".format(level, accessors.keys())
-                )
-            raise_from(ValueError(errmsg), None)
+            raise_from(
+                ValueError(
+                    (
+                        "level = '{0}' not supported, "
+                        "must be one of {1}").format(level, accessors.keys())
+                        ),
+                None)
 
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]

@@ -507,11 +507,12 @@ def alignto(mobile, reference, select="all", weights=None,
             # treat subselection as AtomGroup
             mobile_atoms = subselection.atoms
         except AttributeError:
-            error_ = TypeError(
-                "subselection must be a selection string, an"
-                " AtomGroup or Universe or None"
-                )
-            raise_from(error_, None)
+            raise_from(
+                TypeError(
+                    "subselection must be a selection string, an"
+                    " AtomGroup or Universe or None"
+                    ),
+                None)
 
     # _fit_to DOES subtract center of mass, will provide proper min_rmsd
     mobile_atoms, new_rmsd = _fit_to(mobile_coordinates, ref_coordinates,

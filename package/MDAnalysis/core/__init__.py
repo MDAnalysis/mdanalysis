@@ -266,7 +266,7 @@ class Flag(object):
                 self.value = self.mapping[value]
             except KeyError:
                 six.raise_from(
-                    ValueError("flag must be None or one of " + str(self.mapping.keys()),
+                    ValueError("flag must be None or one of " + str(self.mapping.keys())),
                     None)
 
         return self.get()
