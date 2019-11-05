@@ -201,7 +201,11 @@ class GROReader(base.SingleFrameReaderBase):
             for pos, line in enumerate(grofile, start=1):
                 # 2 header lines, 1 box line at end
                 if pos == n_atoms:
-                    unitcell = np.float32(re.findall(r"(\d+\.\d{5})", line))
+                    try:
+                        unitcell = np.float32(line.split())
+                    except ValueError:
+                        # Try to parse floats with 5 digits if no spaces between values...
+                        unitcell = np.float32(re.findall(r"(\d+\.\d{5})", line))
                     break
 
                 ts._pos[pos] = [line[20 + cs * i:20 + cs * (i + 1)] for i in range(3)]
