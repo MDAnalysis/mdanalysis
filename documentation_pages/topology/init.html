@@ -180,7 +180,18 @@ experimental support for some of the more recent
 versions of the file format);
 <a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.TPRParser</span></code></a></td>
 </tr>
-<tr class="row-even"><td>MOL2 <a class="footnote-reference" href="#a" id="id9">[1]</a></td>
+<tr class="row-even"><td>ITP</td>
+<td>itp</td>
+<td>names, types,
+resids, resnames,
+charges, bonds,
+masses, segids,
+moltypes,
+chargegroups</td>
+<td>Gromacs include topology file;
+<a class="reference internal" href="ITPParser.html#module-MDAnalysis.topology.ITPParser" title="MDAnalysis.topology.ITPParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.ITPParser</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>MOL2 <a class="footnote-reference" href="#a" id="id9">[1]</a></td>
 <td>mol2</td>
 <td>ids, names,
 types, resids,
@@ -189,7 +200,7 @@ resnames,</td>
 <td>Tripos MOL2 molecular structure format;
 <a class="reference internal" href="MOL2Parser.html#module-MDAnalysis.topology.MOL2Parser" title="MDAnalysis.topology.MOL2Parser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.MOL2Parser</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>LAMMPS <a class="footnote-reference" href="#a" id="id10">[1]</a></td>
+<tr class="row-even"><td>LAMMPS <a class="footnote-reference" href="#a" id="id10">[1]</a></td>
 <td>data</td>
 <td>ids, types,
 masses, charges,
@@ -198,20 +209,20 @@ angles, dihedrals</td>
 <td>LAMMPS Data file parser
 <a class="reference internal" href="LAMMPSParser.html#module-MDAnalysis.topology.LAMMPSParser" title="MDAnalysis.topology.LAMMPSParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.LAMMPSParser</span></code></a></td>
 </tr>
-<tr class="row-even"><td>LAMMPS <a class="footnote-reference" href="#a" id="id11">[1]</a></td>
+<tr class="row-odd"><td>LAMMPS <a class="footnote-reference" href="#a" id="id11">[1]</a></td>
 <td>lammpsdump</td>
 <td>id, masses</td>
 <td>LAMMPS ascii dump file reader
 <a class="reference internal" href="LAMMPSParser.html#module-MDAnalysis.topology.LAMMPSParser" title="MDAnalysis.topology.LAMMPSParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.LAMMPSParser</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>XYZ <a class="footnote-reference" href="#a" id="id12">[1]</a></td>
+<tr class="row-even"><td>XYZ <a class="footnote-reference" href="#a" id="id12">[1]</a></td>
 <td>xyz</td>
 <td>names</td>
 <td>XYZ File Parser.  Reads only the labels from atoms
 and constructs minimal topology data.
 <a class="reference internal" href="XYZParser.html#module-MDAnalysis.topology.XYZParser" title="MDAnalysis.topology.XYZParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.XYZParser</span></code></a></td>
 </tr>
-<tr class="row-even"><td>TXYZ <a class="footnote-reference" href="#a" id="id13">[1]</a></td>
+<tr class="row-odd"><td>TXYZ <a class="footnote-reference" href="#a" id="id13">[1]</a></td>
 <td>txyz,
 arc</td>
 <td>names, atomids,
@@ -221,7 +232,7 @@ bonds</td>
 and connectivity; masses are guessed from atoms names.
 <a class="reference internal" href="TXYZParser.html#module-MDAnalysis.topology.TXYZParser" title="MDAnalysis.topology.TXYZParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.TXYZParser</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>GAMESS <a class="footnote-reference" href="#a" id="id14">[1]</a></td>
+<tr class="row-even"><td>GAMESS <a class="footnote-reference" href="#a" id="id14">[1]</a></td>
 <td>gms,
 log</td>
 <td>names,
@@ -231,7 +242,7 @@ section (atom, elems and coords) and construct
 topology.
 <a class="reference internal" href="GMSParser.html#module-MDAnalysis.topology.GMSParser" title="MDAnalysis.topology.GMSParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.GMSParser</span></code></a></td>
 </tr>
-<tr class="row-even"><td>DL_Poly <a class="footnote-reference" href="#a" id="id15">[1]</a></td>
+<tr class="row-odd"><td>DL_Poly <a class="footnote-reference" href="#a" id="id15">[1]</a></td>
 <td>config,
 history</td>
 <td>ids, names</td>
@@ -240,7 +251,7 @@ atom names. If atoms are written out of order, will
 correct the order.
 <a class="reference internal" href="DLPolyParser.html#module-MDAnalysis.topology.DLPolyParser" title="MDAnalysis.topology.DLPolyParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>Hoomd XML</td>
+<tr class="row-even"><td>Hoomd XML</td>
 <td>xml</td>
 <td>types, charges,
 radii, masses
@@ -251,7 +262,7 @@ masses, and charges if possible. Also reads bonds,
 angles, and dihedrals.
 <a class="reference internal" href="HoomdXMLParser.html#module-MDAnalysis.topology.HoomdXMLParser" title="MDAnalysis.topology.HoomdXMLParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.HoomdXMLParser</span></code></a></td>
 </tr>
-<tr class="row-even"><td>GSD <a class="footnote-reference" href="#a" id="id16">[1]</a></td>
+<tr class="row-odd"><td>GSD <a class="footnote-reference" href="#a" id="id16">[1]</a></td>
 <td>gsd</td>
 <td>types, charges,
 radii, masses
@@ -262,17 +273,17 @@ masses, and charges if possible. Also reads bonds,
 angles, and dihedrals.
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.GSDParser</span></code></td>
 </tr>
-<tr class="row-odd"><td>Macromolecular</td>
+<tr class="row-even"><td>Macromolecular</td>
 <td>mmtf</td>
 <td>altLocs,</td>
 <td><a class="reference external" href="https://mmtf.rcsb.org/">Macromolecular Transmission Format (MMTF)</a>.</td>
 </tr>
-<tr class="row-even"><td>transmission</td>
+<tr class="row-odd"><td>transmission</td>
 <td>&#160;</td>
 <td>bfactors, bonds,</td>
 <td>An efficient compact format for biomolecular</td>
 </tr>
-<tr class="row-odd"><td>format</td>
+<tr class="row-even"><td>format</td>
 <td>&#160;</td>
 <td>charges, masses,
 names,
@@ -441,24 +452,25 @@ to the second atom.</p>
 <li class="toctree-l2"><a class="reference internal" href="GMSParser.html">5.5. GAMESS Topology Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="GROParser.html">5.6. GRO topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="HoomdXMLParser.html">5.7. HOOMD XML topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="LAMMPSParser.html">5.8. LAMMPSParser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.9. Minimal topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.10. MMTF Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.11. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.12. PDB Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.13. Extended PDB topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.14. PDBQT topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.15. PQR topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.16. PSF topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.17. AMBER PRMTOP topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.18. Gromacs portable run input TPR format parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.19. TXYZ topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.20. XYZ Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">5.21. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">5.22. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.23. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="tables.html">5.24. MDAnalysis topology tables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.25. Utility functions for the TPR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ITPParser.html">5.8. ITP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPSParser.html">5.9. LAMMPSParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.10. Minimal topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.11. MMTF Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.12. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.13. PDB Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.14. Extended PDB topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.15. PDBQT topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.16. PQR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.17. PSF topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.18. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.19. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.20. TXYZ topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.21. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.22. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.23. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.24. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">5.25. MDAnalysis topology tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.26. Utility functions for the TPR topology parser</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
