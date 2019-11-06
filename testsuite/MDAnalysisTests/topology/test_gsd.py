@@ -55,21 +55,29 @@ class GSDBase(ParserBase):
         assert len(top.bonds.values) == self.expected_n_bonds
         if self.expected_n_bonds:
             assert isinstance(top.bonds.values[0], tuple)
+        else:
+            assert top.bonds.values == []
 
     def test_angles(self, top):
         assert len(top.angles.values) == self.expected_n_angles
         if self.expected_n_angles:
             assert isinstance(top.angles.values[0], tuple)
+        else:
+            assert top.angles.values == []
 
     def test_dihedrals(self, top):
         assert len(top.dihedrals.values) == self.expected_n_dihedrals
         if self.expected_n_dihedrals:
             assert isinstance(top.angles.values[0], tuple)
+        else:
+            assert top.dihedrals.values == []
     
     def test_impropers(self, top):
         assert len(top.impropers.values) == self.expected_n_impropers
         if self.expected_n_impropers:
             assert isinstance(top.angles.values[0], tuple)
+        else:
+            assert top.impropers.values == []
 
 
 class TestGSDParser(GSDBase):
