@@ -24,6 +24,7 @@ Fixes
   * Chainreader and continuous option work correctly when readers work for more 
     than one format (Issue #2353)
   * PDBQTParser now gives icode TopologyAttrs (Issue #2361)
+  * Guess atom element with uppercase name
 
 Enhancements
   * Uniforms exception handling between Python 2.7 and Python 3: raised exceptions
