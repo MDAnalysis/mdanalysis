@@ -723,7 +723,7 @@ class TestAddTopologyObjects(object):
     
     def test_add_bonds_refresh_fragments(self, universe):
         with pytest.raises(NoDataError):
-            assert not hasattr(universe.atoms, 'fragments')
+            getattr(universe.atoms, 'fragments')
 
         universe.add_Bonds([universe.atoms[:2]])
         assert len(universe.atoms.fragments) == len(universe.atoms)-1
