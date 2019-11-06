@@ -1013,16 +1013,19 @@ class Universe(object):
         order : int (optional)
             Bond order
         """
-        values = [x.indices if isinstance(x, (AtomGroup, TopologyObject)) 
-                  else x for x in values]
         if all(isinstance(x, TopologyObject) for x in values):
             first = values[0]
             try:
-                types = value.type
+                types = first.type
             except AttributeError:
                 types = None
             guessed = first.is_guessed
             order = first.order
+        
+        print(types, guessed, order)
+
+        values = [x.indices if isinstance(x, (AtomGroup, TopologyObject)) 
+                  else x for x in values]
         
         try:
             attr = getattr(self._topology, object_type)

@@ -59,6 +59,7 @@ import MDAnalysis.coordinates
 from MDAnalysis.topology.base import TopologyReaderBase
 from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
+from MDAnalysis.exceptions import NoDataError
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -683,7 +684,7 @@ class TestAddTopologyObjects(object):
         assert not hasattr(universe, 'dihedrals')
         universe.add_Dihedrals(dih)
         assert len(universe.dihedrals) == len(idx)
-    
+
     def test_add_atomgroups(self, universe):
         idx = [[1, 2, 3, 1], [3, 1, 5, 2], [3, 1, 5, 2]]
         imp = [universe.atoms[i] for i in idx]
@@ -691,14 +692,38 @@ class TestAddTopologyObjects(object):
         assert not hasattr(universe, 'impropers')
         universe.add_Impropers(imp)
         assert len(universe.impropers) == 2
+
+    def test_add_topologygroups(self, universe):
+        arr = np.array([[1, 0, 2], [1, 2, 3]])
+        tg = mda.core.topologyobjects.TopologyGroup(arr, universe)
+
+        assert not hasattr(universe, 'angles')
+        assert len(tg) == 2
+        universe.add_Angles(tg)
+        assert len(universe.angles) == 2
+
+        ua = universe.angles[-1]
+        tga = tg[0]
+        assert ua.is_guessed == tga.is_guessed
+        assert ua.order == tga.order
+
+        assert list(ua.indices) == list(arr[-1])
+
+    def test_add_topologygroup_error(self, universe):
+        arr = np.array([(1, 0), (1, 2)])
+        tg = mda.core.topologyobjects.TopologyGroup(arr, universe)
+
+        with pytest.raises(ValueError):
+            universe.add_Angles(tg)
         
-    def add_angles_wrong_number_of_atoms_error(self, universe):
+    def test_add_angles_wrong_number_of_atoms_error(self, universe):
         indices = [(0, 1, 2), (2, 3, 0), (4, 1)]
         with pytest.raises(ValueError):
             universe.add_Angles(indices)
     
-    def add_bonds_refresh_fragments(self, universe):
-        assert not hasattr(universe.atoms, 'fragments')
+    def test_add_bonds_refresh_fragments(self, universe):
+        with pytest.raises(NoDataError):
+            assert not hasattr(universe.atoms, 'fragments')
 
         universe.add_Bonds([universe.atoms[:2]])
         assert len(universe.atoms.fragments) == len(universe.atoms)-1
@@ -739,26 +764,33 @@ class TestDeleteTopologyObjects(object):
         universe.delete_Dihedrals([ag])
         assert len(universe.dihedrals) == 1
     
-    def delete_mixed_topologyobjects_type(self, universe):
-        mixed = [universe.atoms[[0, 1, 2]].angle, (3, 4, 5)]
-        universe.delete_Angles(mixed)
-        assert len(universe.angles) == 1
+    def test_delete_mixed_topologyobjects_type(self, universe):
+        mixed = [universe.atoms[[1, 3, 5, 2]].improper, (5, 3, 4, 2)]
+        universe.delete_Impropers(mixed)
+        assert len(universe.impropers) == 1
     
-    def delete_angles_wrong_number_of_atoms_error(self, universe):
+    def test_delete_angles_wrong_number_of_atoms_error(self, universe):
         indices = [(0, 1, 2), (2, 3, 0), (4, 1)]
         with pytest.raises(ValueError):
             universe.delete_Angles(indices)
     
-    def ignore_topologyobjects_not_in_universe(self, universe):
+    def test_ignore_topologyobjects_not_in_universe(self, universe):
         n_bonds = len(universe.bonds)
         bonds = [(0, 1), (99, 100), (22, 2)]
         universe.delete_Bonds(bonds)
         assert len(universe.bonds) == n_bonds-1
     
-    def delete_bonds_refresh_fragments(self, universe):
+    def test_delete_bonds_refresh_fragments(self, universe):
         n_fragments = len(universe.atoms.fragments)
         universe.delete_Bonds([universe.atoms[[2, 3]]])
         assert len(universe.atoms.fragments) == n_fragments + 1
+    
+    def test_delete_bonds_empty_universe(self):
+        u = make_Universe()
+        assert not hasattr(u, 'bonds')
+        bonds = [(0, 1), (99, 100), (22, 2)]
+        with pytest.raises(ValueError):
+            u.delete_Bonds(bonds)
     
 class TestAllCoordinatesKwarg(object):
     @pytest.fixture(scope='class')
