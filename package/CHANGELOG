@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, PicoCentauri
+mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
+         PicoCentauri
 
   * 0.21.0
 
@@ -26,6 +27,9 @@ Fixes
   * GROReader and GROWriter now can handle boxes with box vectors >1000nm
 
 Enhancements
+  * Uniforms exception handling between Python 2.7 and Python 3: raised exceptions
+    do not contain previous exceptions traceback. Uses six package to handle
+    py27 and py3 compatibility (PR #2357)
   * Expanded selection wildcards to the start and middle of strings (Issue #2370)
   * Added type checking and conversion to Connection TopologyAttrs (Issue #2373)
   * New analysis.hydrogenbonds.HydrogenBondAnalysis class for the analysis of
