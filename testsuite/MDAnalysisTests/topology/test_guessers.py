@@ -89,7 +89,9 @@ class TestGuessTypes(object):
         ('3hg2', 'H'),
         ('OH-', 'O'),
         ('HO', 'H'),
-        ('he', 'H')
+        ('he', 'H'), 
+        ('zn', 'ZN'),
+        ('Ca2+', 'CA'),
     ))
     def test_guess_element_from_name(self, name, element):
         assert guessers.guess_atom_element(name) == element
