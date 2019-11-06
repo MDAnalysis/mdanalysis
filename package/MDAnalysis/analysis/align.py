@@ -190,7 +190,7 @@ import warnings
 import logging
 
 from six.moves import range, zip, zip_longest
-from six import string_types
+from six import raise_from, string_types
 
 import numpy as np
 
@@ -514,8 +514,12 @@ def alignto(mobile, reference, select=None, weights=None,
             # treat subselection as AtomGroup
             mobile_atoms = subselection.atoms
         except AttributeError:
-            raise TypeError("subselection must be a selection string, an"
-                            " AtomGroup or Universe or None")
+            raise_from(
+                TypeError(
+                    "subselection must be a selection string, an"
+                    " AtomGroup or Universe or None"
+                    ),
+                None)
 
     # _fit_to DOES subtract center of mass, will provide proper min_rmsd
     mobile_atoms, new_rmsd = _fit_to(mobile_coordinates, ref_coordinates,
@@ -1154,9 +1158,6 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
             assert _ag1.atoms.n_atoms == _ag2.atoms.n_atoms
 
             # diagnostics
-            # (ugly workaround for missing boolean indexing of AtomGroup)
-            # note: ag[arange(len(ag))[boolean]] is ~2x faster than
-            # ag[where[boolean]]
             mismatch_resindex = np.arange(ag1.n_residues)[mismatch_mask]
             logger.warning("Removed {0} residues with non-matching numbers of atoms"
                            .format(mismatch_mask.sum()))
@@ -1176,7 +1177,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
                           "Try to improve your selections for mobile and reference.")
                 logger.error(errmsg)
                 raise SelectionError(errmsg)
-
+                
     if match_atoms:
         # check again because the residue matching heuristic is not very
         # good and can easily be misled (e.g., when one of the selections
@@ -1189,7 +1190,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
                     "Try to improve your selections for mobile and reference.").format(
                         ag1.n_atoms, ag2.n_atoms)
             logger.error(errmsg)
-            raise SelectionError(errmsg)
+            raise_from(SelectionError(errmsg), None)
 
         if np.any(mass_mismatches):
             # Test 2 failed.

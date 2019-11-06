@@ -106,6 +106,8 @@ strings for writing lines in ``.gro`` files.  These are as follows:
 from __future__ import absolute_import
 
 from six.moves import range, zip
+from six import raise_from
+
 import itertools
 import warnings
 
@@ -370,7 +372,7 @@ class GROWriter(base.WriterBase):
             if isinstance(obj, base.Timestep):
                 ag_or_ts = obj.copy()
             else:
-                raise TypeError("No Timestep found in obj argument")
+                raise_from(TypeError("No Timestep found in obj argument"), None)
 
         try:
             velocities = ag_or_ts.velocities

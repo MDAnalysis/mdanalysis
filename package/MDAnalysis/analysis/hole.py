@@ -1030,7 +1030,7 @@ class HOLE(BaseHOLE):
         except subprocess.CalledProcessError as err:
             os.unlink(tmp_sos)
             logger.fatal("sph_process failed ({0})".format(err.returncode))
-            raise OSError(err.returncode, "sph_process failed")
+            six.raise_from(OSError(err.returncode, "sph_process failed"), None)
         except:
             os.unlink(tmp_sos)
             raise
@@ -1045,7 +1045,7 @@ class HOLE(BaseHOLE):
                     stderr=FNULL)
         except subprocess.CalledProcessError as err:
             logger.fatal("sos_triangle failed ({0})".format(err.returncode))
-            raise OSError(err.returncode, "sos_triangle failed")
+            six.raise_from(OSError(err.returncode, "sos_triangle failed"), None)
         finally:
             os.unlink(tmp_sos)
 

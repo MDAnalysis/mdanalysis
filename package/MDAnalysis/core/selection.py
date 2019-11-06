@@ -489,7 +489,9 @@ class SelgroupSelection(Selection):
         try:
             self.grp = parser.selgroups[grpname]
         except KeyError:
-            raise ValueError("Failed to find group: {0}".format(grpname))
+            six.raise_from(
+                ValueError("Failed to find group: {0}".format(grpname)),
+                None)
 
     def apply(self, group):
         mask = np.in1d(group.indices, self.grp.indices)
@@ -504,7 +506,9 @@ class FullSelgroupSelection(Selection):
         try:
             self.grp = parser.selgroups[grpname]
         except KeyError:
-            raise ValueError("Failed to find group: {0}".format(grpname))
+            six.raise_from(
+                ValueError("Failed to find group: {0}".format(grpname)),
+                None)
 
     @deprecate(old_name='fullgroup', new_name='global group',
                message=' This will be removed in v0.15.0')
@@ -641,8 +645,8 @@ class ResidSelection(Selection):
             # if no icodes and icodes are part of selection, cause a fuss
             if (any(v[1] for v in self.uppers) or
                 any(v[1] for v in self.lowers)):
-                raise ValueError("Selection specified icodes, while the "
-                                 "topology doesn't have any.")
+                six.raise_from(ValueError("Selection specified icodes, while the "
+                                 "topology doesn't have any."), None)
 
         if not icodes is None:
             mask = self._sel_with_icodes(vals, icodes)
@@ -730,8 +734,8 @@ class RangeSelection(Selection):
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 selrange = re.match("(\d+)[:-](\d+)", val)
                 if not selrange:
-                    raise ValueError(
-                        "Failed to parse number: {0}".format(val))
+                    six.raise_from(ValueError(
+                        "Failed to parse number: {0}".format(val)), None)
                 lower, upper = np.int64(selrange.groups())
 
             lowers.append(lower)
@@ -1001,9 +1005,10 @@ class PropertySelection(Selection):
         try:
             self.operator = self.ops[oper]
         except KeyError:
-            raise ValueError(
+            six.raise_from(ValueError(
                 "Invalid operator : '{0}' Use one of : '{1}'"
-                "".format(oper, self.ops.keys()))
+                "".format(oper, self.ops.keys())),
+                None)
         self.value = float(value)
 
     def apply(self, group):
@@ -1015,9 +1020,9 @@ class PropertySelection(Selection):
             elif self.prop == 'charge':
                 values = group.charges
             else:
-                raise SelectionError(
+                six.raise_from(SelectionError(
                     "Expected one of : {0}"
-                    "".format(['x', 'y', 'z', 'mass', 'charge']))
+                    "".format(['x', 'y', 'z', 'mass', 'charge'])), None)
         else:
             values = group.positions[:, col]
 
@@ -1190,9 +1195,13 @@ class SelectionParser(object):
         try:
             return _SELECTIONDICT[op](self, self.tokens)
         except KeyError:
-            raise SelectionError("Unknown selection token: '{0}'".format(op))
+            six.raise_from(
+                SelectionError("Unknown selection token: '{0}'".format(op)),
+                None)
         except ValueError as e:
-            raise SelectionError("Selection failed: '{0}'".format(e))
+            six.raise_from(
+                SelectionError("Selection failed: '{0}'".format(e)),
+                None)
 
 
 # The module level instance
