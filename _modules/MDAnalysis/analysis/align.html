@@ -388,8 +388,9 @@
     <span class="k">return</span> <span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">min_rmsd</span></div>
 
 
-<div class="viewcode-block" id="alignto"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.alignto">[docs]</a><span class="k">def</span> <span class="nf">alignto</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">subselection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="alignto"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.alignto">[docs]</a><span class="k">def</span> <span class="nf">alignto</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">subselection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">match_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Perform a spatial superposition by minimizing the RMSD.</span>
 
 <span class="sd">    Spatially align the group of atoms `mobile` to `reference` by</span>
@@ -450,6 +451,8 @@
 <span class="sd">       be a *list of selection strings* to generate a</span>
 <span class="sd">       :class:`~MDAnalysis.core.groups.AtomGroup` with defined atom order as</span>
 <span class="sd">       described under :ref:`ordered-selections-label`).</span>
+<span class="sd">    match_atoms : bool (optional)</span>
+<span class="sd">        Whether to match the mobile and reference atom-by-atom. Default ``True``. </span>
 <span class="sd">    weights : {&quot;mass&quot;, ``None``} or array_like (optional)</span>
 <span class="sd">       choose weights. With ``&quot;mass&quot;`` uses masses as weights; with ``None``</span>
 <span class="sd">       weigh each atom equally. If a float array of the same length as</span>
@@ -493,6 +496,8 @@
 <span class="sd">    .. _ClustalW: http://www.clustal.org/</span>
 <span class="sd">    .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/</span>
 
+<span class="sd">    .. versionchanged:: 0.21.0</span>
+<span class="sd">       Added *match_atoms* keyword to toggle atom matching.</span>
 
 <span class="sd">    .. versionchanged:: 0.8</span>
 <span class="sd">       Added check that the two groups describe the same atoms including</span>
@@ -522,9 +527,11 @@
         <span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])</span>
         <span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">])</span>
 
+
     <span class="n">ref_atoms</span><span class="p">,</span> <span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">get_matching_atoms</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">mobile_atoms</span><span class="p">,</span>
-                                                 <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
-                                                 <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">)</span>
+                                                <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
+                                                <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span>
+                                                <span class="n">match_atoms</span><span class="o">=</span><span class="n">match_atoms</span><span class="p">)</span>
 
     <span class="n">weights</span> <span class="o">=</span> <span class="n">get_weights</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
 
@@ -574,7 +581,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;rmsfit_&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
@@ -598,6 +605,8 @@
 <span class="sd">            selection.</span>
 <span class="sd">        tol_mass : float (optional)</span>
 <span class="sd">            Tolerance given to `get_matching_atoms` to find appropriate atoms</span>
+<span class="sd">        match_atoms : bool (optional)</span>
+<span class="sd">            Whether to match the mobile and reference atom-by-atom. Default ``True``. </span>
 <span class="sd">        strict : bool (optional)</span>
 <span class="sd">            Force `get_matching_atoms` to fail if atoms can&#39;t be found using</span>
 <span class="sd">            exact methods</span>
@@ -696,7 +705,7 @@
         <span class="n">natoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">get_matching_atoms</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
-            <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">)</span>
+            <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="n">match_atoms</span><span class="p">)</span>
 
         <span class="c1"># with self.filename == None (in_memory), the NullWriter is chosen</span>
         <span class="c1"># (which just ignores input) and so only the in_memory trajectory is</span>
@@ -1015,7 +1024,7 @@
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;reference&#39;</span><span class="p">:</span> <span class="n">ref_selection</span><span class="p">,</span> <span class="s1">&#39;mobile&#39;</span><span class="p">:</span> <span class="n">target_selection</span><span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="get_matching_atoms"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.get_matching_atoms">[docs]</a><span class="k">def</span> <span class="nf">get_matching_atoms</span><span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_matching_atoms"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.get_matching_atoms">[docs]</a><span class="k">def</span> <span class="nf">get_matching_atoms</span><span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return two atom groups with one-to-one matched atoms.</span>
 
 <span class="sd">    The function takes two :class:`~MDAnalysis.core.groups.AtomGroup`</span>
@@ -1053,6 +1062,11 @@
 <span class="sd">            Will try to prepare a matching selection by dropping</span>
 <span class="sd">            residues with non-matching atoms. See :func:`get_matching_atoms`</span>
 <span class="sd">            for details.</span>
+<span class="sd">    match_atoms : bool (optional)</span>
+<span class="sd">        ``True``</span>
+<span class="sd">            Will attempt to match atoms based on mass</span>
+<span class="sd">        ``False``</span>
+<span class="sd">            Will not attempt to match atoms based on mass</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1084,14 +1098,21 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">match_atoms</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Mobile and reference atom selections do not &quot;</span>
+                      <span class="s2">&quot;contain the same number of atoms and atom &quot;</span>
+                      <span class="s2">&quot;matching is turned off. To match atoms based &quot;</span>
+                      <span class="s2">&quot;on residue and mass, try match_atoms=True&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span> <span class="o">!=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_residues</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Reference and trajectory atom selections do not contain &quot;</span>
-                      <span class="s2">&quot;the same number of atoms: </span><span class="se">\n</span><span class="s2">&quot;</span>
-                      <span class="s2">&quot;atoms:    N_ref=</span><span class="si">{0}</span><span class="s2">, N_traj=</span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                      <span class="s2">&quot;and also not the same number of residues:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                      <span class="s2">&quot;residues: N_ref=</span><span class="si">{2}</span><span class="s2">, N_traj=</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                          <span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
-                          <span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
+                    <span class="s2">&quot;the same number of atoms: </span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;atoms:    N_ref=</span><span class="si">{0}</span><span class="s2">, N_traj=</span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;and also not the same number of residues:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;residues: N_ref=</span><span class="si">{2}</span><span class="s2">, N_traj=</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+                        <span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1177,9 +1198,6 @@
             <span class="k">assert</span> <span class="n">_ag1</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="n">_ag2</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span>
 
             <span class="c1"># diagnostics</span>
-            <span class="c1"># (ugly workaround for missing boolean indexing of AtomGroup)</span>
-            <span class="c1"># note: ag[arange(len(ag))[boolean]] is ~2x faster than</span>
-            <span class="c1"># ag[where[boolean]]</span>
             <span class="n">mismatch_resindex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)[</span><span class="n">mismatch_mask</span><span class="p">]</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Removed </span><span class="si">{0}</span><span class="s2"> residues with non-matching numbers of atoms&quot;</span>
                            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
@@ -1199,41 +1217,42 @@
                           <span class="s2">&quot;Try to improve your selections for mobile and reference.&quot;</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+                
+    <span class="k">if</span> <span class="n">match_atoms</span><span class="p">:</span>
+        <span class="c1"># check again because the residue matching heuristic is not very</span>
+        <span class="c1"># good and can easily be misled (e.g., when one of the selections</span>
+        <span class="c1"># had fewer atoms but the residues in mobile and reference have</span>
+        <span class="c1"># each the same number)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">masses</span> <span class="o">-</span> <span class="n">ag2</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol_mass</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Failed to find matching atoms: len(reference) = </span><span class="si">{}</span><span class="s2">, len(mobile) = </span><span class="si">{}</span><span class="s2"> &quot;</span> <span class="o">+</span>
+                    <span class="s2">&quot;Try to improve your selections for mobile and reference.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+            <span class="n">raise_from</span><span class="p">(</span><span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
 
-    <span class="c1"># check again because the residue matching heuristic is not very</span>
-    <span class="c1"># good and can easily be misled (e.g., when one of the selections</span>
-    <span class="c1"># had fewer atoms but the residues in mobile and reference have</span>
-    <span class="c1"># each the same number)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">masses</span> <span class="o">-</span> <span class="n">ag2</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol_mass</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Failed to find matching atoms: len(reference) = </span><span class="si">{}</span><span class="s2">, len(mobile) = </span><span class="si">{}</span><span class="s2"> &quot;</span> <span class="o">+</span>
-                  <span class="s2">&quot;Try to improve your selections for mobile and reference.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                      <span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-        <span class="n">raise_from</span><span class="p">(</span><span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mass_mismatches</span><span class="p">):</span>
-        <span class="c1"># Test 2 failed.</span>
-        <span class="c1"># diagnostic output:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Atoms: reference | trajectory&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">ar</span><span class="p">,</span> <span class="n">at</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ag1</span><span class="p">[</span><span class="n">mass_mismatches</span><span class="p">],</span> <span class="n">ag2</span><span class="p">[</span><span class="n">mass_mismatches</span><span class="p">]):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{0!s:&gt;4}</span><span class="s2"> </span><span class="si">{1:3d}</span><span class="s2"> </span><span class="si">{2!s:&gt;3}</span><span class="s2"> </span><span class="si">{3!s:&gt;3}</span><span class="s2"> </span><span class="si">{4:6.3f}</span><span class="s2">  |  </span><span class="si">{5!s:&gt;4}</span><span class="s2"> </span><span class="si">{6:3d}</span><span class="s2"> </span><span class="si">{7!s:&gt;3}</span><span class="s2"> </span><span class="si">{8!s:&gt;3}</span><span class="s2"> </span><span class="si">{9:6.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">ar</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span>
-                    <span class="n">ar</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span>
-                    <span class="n">ar</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span>
-                    <span class="n">ar</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="n">ar</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span>
-                    <span class="n">at</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span>
-                    <span class="n">at</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span>
-                    <span class="n">at</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span>
-                    <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="n">at</span><span class="o">.</span><span class="n">mass</span><span class="p">))</span>
-        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Inconsistent selections, masses differ by more than </span><span class="si">{0}</span><span class="s2">; &quot;</span>
-                  <span class="s2">&quot;mis-matching atoms are shown above.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tol_mass</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mass_mismatches</span><span class="p">):</span>
+            <span class="c1"># Test 2 failed.</span>
+            <span class="c1"># diagnostic output:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Atoms: reference | trajectory&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ar</span><span class="p">,</span> <span class="n">at</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ag1</span><span class="p">[</span><span class="n">mass_mismatches</span><span class="p">],</span> <span class="n">ag2</span><span class="p">[</span><span class="n">mass_mismatches</span><span class="p">]):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">{0!s:&gt;4}</span><span class="s2"> </span><span class="si">{1:3d}</span><span class="s2"> </span><span class="si">{2!s:&gt;3}</span><span class="s2"> </span><span class="si">{3!s:&gt;3}</span><span class="s2"> </span><span class="si">{4:6.3f}</span><span class="s2">  |  </span><span class="si">{5!s:&gt;4}</span><span class="s2"> </span><span class="si">{6:3d}</span><span class="s2"> </span><span class="si">{7!s:&gt;3}</span><span class="s2"> </span><span class="si">{8!s:&gt;3}</span><span class="s2"> </span><span class="si">{9:6.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">ar</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span>
+                        <span class="n">ar</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span>
+                        <span class="n">ar</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span>
+                        <span class="n">ar</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">ar</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span>
+                        <span class="n">at</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span>
+                        <span class="n">at</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span>
+                        <span class="n">at</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span>
+                        <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">at</span><span class="o">.</span><span class="n">mass</span><span class="p">))</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Inconsistent selections, masses differ by more than </span><span class="si">{0}</span><span class="s2">; &quot;</span>
+                    <span class="s2">&quot;mis-matching atoms are shown above.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tol_mass</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span></div>
 </pre></div>

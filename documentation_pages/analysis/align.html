@@ -180,7 +180,7 @@ in favor of <a class="reference internal" href="#MDAnalysis.analysis.align.Align
 </div>
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.alignto">
-<code class="descclassname">MDAnalysis.analysis.align.</code><code class="descname">alignto</code><span class="sig-paren">(</span><em>mobile</em>, <em>reference</em>, <em>select='all'</em>, <em>weights=None</em>, <em>subselection=None</em>, <em>tol_mass=0.1</em>, <em>strict=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#alignto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.alignto" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.align.</code><code class="descname">alignto</code><span class="sig-paren">(</span><em>mobile</em>, <em>reference</em>, <em>select=None</em>, <em>weights=None</em>, <em>subselection=None</em>, <em>tol_mass=0.1</em>, <em>strict=False</em>, <em>match_atoms=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#alignto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.alignto" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a spatial superposition by minimizing the RMSD.</p>
 <p>Spatially align the group of atoms <cite>mobile</cite> to <cite>reference</cite> by
 doing a RMSD fit on <cite>select</cite> atoms.</p>
@@ -238,6 +238,7 @@ be a <em>list of selection strings</em> to generate a
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> with defined atom order as
 described under <a class="reference internal" href="../selections.html#ordered-selections-label"><span class="std std-ref">Ordered selections</span></a>).</p>
 </li>
+<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to match the mobile and reference atom-by-atom. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
 <li><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like (optional)) – choose weights. With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code>
 weigh each atom equally. If a float array of the same length as
 <cite>mobile</cite> is provided, use each element of the <cite>array_like</cite> as a
@@ -286,6 +287,9 @@ protein, ligands and the surrounding water)</dd>
 </dl>
 </div>
 <div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Added <em>match_atoms</em> keyword to toggle atom matching.</p>
+</div>
+<div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added check that the two groups describe the same atoms including
 the new <em>tol_mass</em> keyword.</p>
 </div>
@@ -307,7 +311,7 @@ the old behavior was the equivalent of <code class="docutils literal notranslate
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.align.AlignTraj">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.align.</code><code class="descname">AlignTraj</code><span class="sig-paren">(</span><em>mobile</em>, <em>reference</em>, <em>select='all'</em>, <em>filename=None</em>, <em>prefix='rmsfit_'</em>, <em>weights=None</em>, <em>tol_mass=0.1</em>, <em>strict=False</em>, <em>force=True</em>, <em>in_memory=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#AlignTraj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.align.</code><code class="descname">AlignTraj</code><span class="sig-paren">(</span><em>mobile</em>, <em>reference</em>, <em>select='all'</em>, <em>filename=None</em>, <em>prefix='rmsfit_'</em>, <em>weights=None</em>, <em>tol_mass=0.1</em>, <em>match_atoms=True</em>, <em>strict=False</em>, <em>force=True</em>, <em>in_memory=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#AlignTraj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj" title="Permalink to this definition">¶</a></dt>
 <dd><p>RMS-align trajectory to a reference structure using a selection.</p>
 <p>Both the reference <cite>reference</cite> and the trajectory <cite>mobile</cite> must be
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> instances. If they contain a trajectory then
@@ -332,6 +336,7 @@ the same length as the selection is provided, use each element of
 the <cite>array_like</cite> as a weight for the corresponding atom in the
 selection.</li>
 <li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Tolerance given to <cite>get_matching_atoms</cite> to find appropriate atoms</li>
+<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to match the mobile and reference atom-by-atom. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
 <li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force <cite>get_matching_atoms</cite> to fail if atoms can’t be found using
 exact methods</li>
 <li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force overwrite of filename for rmsd-fitting</li>
@@ -671,7 +676,7 @@ begin, end)</cite></p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.get_matching_atoms">
-<code class="descclassname">MDAnalysis.analysis.align.</code><code class="descname">get_matching_atoms</code><span class="sig-paren">(</span><em>ag1</em>, <em>ag2</em>, <em>tol_mass=0.1</em>, <em>strict=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#get_matching_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.get_matching_atoms" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.align.</code><code class="descname">get_matching_atoms</code><span class="sig-paren">(</span><em>ag1</em>, <em>ag2</em>, <em>tol_mass=0.1</em>, <em>strict=False</em>, <em>match_atoms=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#get_matching_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.get_matching_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return two atom groups with one-to-one matched atoms.</p>
 <p>The function takes two <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
 instances <cite>ag1</cite> and <cite>ag2</cite> and returns two atom groups <cite>g1</cite> and <cite>g2</cite> that
@@ -706,6 +711,13 @@ match between the two selections.</dd>
 <dd>Will try to prepare a matching selection by dropping
 residues with non-matching atoms. See <a class="reference internal" href="#MDAnalysis.analysis.align.get_matching_atoms" title="MDAnalysis.analysis.align.get_matching_atoms"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_matching_atoms()</span></code></a>
 for details.</dd>
+</dl>
+</li>
+<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <dl class="docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">True</span></code></dt>
+<dd>Will attempt to match atoms based on mass</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">False</span></code></dt>
+<dd>Will not attempt to match atoms based on mass</dd>
 </dl>
 </li>
 </ul>
