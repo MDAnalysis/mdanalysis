@@ -24,6 +24,7 @@ Fixes
   * Chainreader and continuous option work correctly when readers work for more 
     than one format (Issue #2353)
   * PDBQTParser now gives icode TopologyAttrs (Issue #2361)
+  * Guess atom element with uppercase name
 
 Enhancements
   * Uniforms exception handling between Python 2.7 and Python 3: raised exceptions
@@ -36,6 +37,7 @@ Enhancements
     than analysis.hbonds.HydrogenBondAnalysis (PR #2237)
   * GSD reader is now supported on Windows (Issue #1923, PR #2384)
   * Empty Universe with 0 atoms is possible (Issue #2383)
+  * Added ITPParser to parse GROMACS itp topology files (PR #2381)
   * Added match_atoms keyword to analysis.align (Issue #2285, PR #2380)
 
 Deprecations
