@@ -127,6 +127,31 @@ class TestGetMatchingAtoms(object):
             with pytest.warns(SelectionWarning):
                 with pytest.raises(SelectionError):
                     groups = align.get_matching_atoms(ref, mobile, strict=strict)
+    
+    def test_toggle_atom_mismatch_default_error(self, universe, reference):
+        selection = ('resname ALA and name CA', 'resname ALA and name O')
+        with pytest.raises(SelectionError):
+            rmsd = align.alignto(universe, reference, select=selection)
+    
+    def test_toggle_atom_mismatch_kwarg_error(self, universe, reference):
+        selection = ('resname ALA and name CA', 'resname ALA and name O')
+        with pytest.raises(SelectionError):
+            rmsd = align.alignto(universe, reference, select=selection, match_atoms=True)
+    
+    def test_toggle_atom_nomatch(self, universe, reference):
+        selection = ('resname ALA and name CA', 'resname ALA and name O')
+        rmsd = align.alignto(universe, reference, select=selection, match_atoms=False)
+        assert rmsd[0] > 0.01
+    
+    def test_toggle_atom_nomatch_mismatch_atoms(self, universe, reference):
+        # mismatching number of atoms, but same number of residues
+        u = universe.select_atoms('resname ALA and name CA')
+        u += universe.select_atoms('resname ALA and name O')[-1]
+        ref = reference.select_atoms('resname ALA and name CA')
+        with pytest.raises(SelectionError):
+            align.alignto(u, ref, select='all', match_atoms=False)
+
+        
 
 
 
