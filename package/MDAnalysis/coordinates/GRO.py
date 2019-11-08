@@ -105,6 +105,7 @@ strings for writing lines in ``.gro`` files.  These are as follows:
 """
 from __future__ import absolute_import
 
+import re
 from six.moves import range, zip
 from six import raise_from
 
@@ -202,7 +203,11 @@ class GROReader(base.SingleFrameReaderBase):
             for pos, line in enumerate(grofile, start=1):
                 # 2 header lines, 1 box line at end
                 if pos == n_atoms:
-                    unitcell = np.float32(line.split())
+                    try:
+                        unitcell = np.float32(line.split())
+                    except ValueError:
+                        # Try to parse floats with 5 digits if no spaces between values...
+                        unitcell = np.float32(re.findall(r"(\d+\.\d{5})", line))
                     break
 
                 ts._pos[pos] = [line[20 + cs * i:20 + cs * (i + 1)] for i in range(3)]
@@ -291,8 +296,8 @@ class GROWriter(base.WriterBase):
         # coordinates output format, see http://chembytes.wikidot.com/g-grofile
         'xyz': "{resid:>5d}{resname:<5.5s}{name:>5.5s}{index:>5d}{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}\n",
         # unitcell
-        'box_orthorhombic': "{box[0]:10.5f}{box[1]:10.5f}{box[2]:10.5f}\n",
-        'box_triclinic': "{box[0]:10.5f}{box[4]:10.5f}{box[8]:10.5f}{box[1]:10.5f}{box[2]:10.5f}{box[3]:10.5f}{box[5]:10.5f}{box[6]:10.5f}{box[7]:10.5f}\n"
+        'box_orthorhombic': "{box[0]:10.5f} {box[1]:9.5f} {box[2]:9.5f}\n",
+        'box_triclinic': "{box[0]:10.5f} {box[4]:9.5f} {box[8]:9.5f} {box[1]:9.5f} {box[2]:9.5f} {box[3]:9.5f} {box[5]:9.5f} {box[6]:9.5f} {box[7]:9.5f}\n"
     }
     fmt['xyz_v'] = fmt['xyz'][:-1] + "{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n"
 

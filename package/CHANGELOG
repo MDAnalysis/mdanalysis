@@ -13,8 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-
-mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
+mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
+         PicoCentauri
 
   * 0.21.0
 
@@ -24,6 +24,7 @@ Fixes
   * Chainreader and continuous option work correctly when readers work for more 
     than one format (Issue #2353)
   * PDBQTParser now gives icode TopologyAttrs (Issue #2361)
+  * GROReader and GROWriter now can handle boxes with box vectors >1000nm
   * Guess atom element with uppercase name
 
 Enhancements
