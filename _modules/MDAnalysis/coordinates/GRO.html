@@ -145,6 +145,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
 <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">raise_from</span>
 
@@ -242,7 +243,11 @@
             <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grofile</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
                 <span class="c1"># 2 header lines, 1 box line at end</span>
                 <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="n">n_atoms</span><span class="p">:</span>
-                    <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="c1"># Try to parse floats with 5 digits if no spaces between values...</span>
+                        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d+\.\d</span><span class="si">{5}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
                     <span class="k">break</span>
 
                 <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
@@ -331,8 +336,8 @@
         <span class="c1"># coordinates output format, see http://chembytes.wikidot.com/g-grofile</span>
         <span class="s1">&#39;xyz&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{resid:&gt;5d}{resname:&lt;5.5s}{name:&gt;5.5s}{index:&gt;5d}{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="c1"># unitcell</span>
-        <span class="s1">&#39;box_orthorhombic&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{box[0]:10.5f}{box[1]:10.5f}{box[2]:10.5f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="s1">&#39;box_triclinic&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{box[0]:10.5f}{box[4]:10.5f}{box[8]:10.5f}{box[1]:10.5f}{box[2]:10.5f}{box[3]:10.5f}{box[5]:10.5f}{box[6]:10.5f}{box[7]:10.5f}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s1">&#39;box_orthorhombic&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{box[0]:10.5f}</span><span class="s2"> </span><span class="si">{box[1]:9.5f}</span><span class="s2"> </span><span class="si">{box[2]:9.5f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;box_triclinic&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{box[0]:10.5f}</span><span class="s2"> </span><span class="si">{box[4]:9.5f}</span><span class="s2"> </span><span class="si">{box[8]:9.5f}</span><span class="s2"> </span><span class="si">{box[1]:9.5f}</span><span class="s2"> </span><span class="si">{box[2]:9.5f}</span><span class="s2"> </span><span class="si">{box[3]:9.5f}</span><span class="s2"> </span><span class="si">{box[5]:9.5f}</span><span class="s2"> </span><span class="si">{box[6]:9.5f}</span><span class="s2"> </span><span class="si">{box[7]:9.5f}</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="p">}</span>
     <span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;xyz_v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;xyz&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
