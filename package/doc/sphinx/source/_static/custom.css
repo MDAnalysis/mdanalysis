@@ -126,7 +126,7 @@ div.admonition p.admonition-title {
 
 /* ----- Field lists ------ */
 
-dl.field-list {
+.section > dl.field-list {
     display: flex;
     flex-wrap: wrap;
     margin: 0;
@@ -135,10 +135,9 @@ dl.field-list {
 
 dl.field-list > dt::after {
     content: ":";
-
 }
 
-.rst-content dl.field-list dt {
+.section > dl.field-list dt {
     background: none;
     color: #000000;
     border-top: none;
@@ -148,13 +147,11 @@ dl.field-list > dt::after {
     display: block;
 }
 
-
-.rst-content dl.field-list > dd {
+.section > dl.field-list > dd {
     flex-basis: 70%;
     margin: 0;
-
 }
 
-.rst-content dl.field-list > dd p {
+.section > dl.field-list > dd p {
     margin: 0;
 }
