@@ -5,8 +5,10 @@
 /* MDAnalysis gray: #808080 */
 /* MDAnalysis white: #FFFFFF */
 /* MDAnalysis black: #000000 */
-
-@import url('readable.css');
+/* Darker orange: e76900 */
+/* Even darker orange: #a24900 */
+/* RTD dark grey: #343131 */
+/* RTD light grey: #e6e6e6 */
 
 /* -- page layout --------------------------------------------------------- */
 
@@ -20,27 +22,53 @@ div.body {
 }
 
 div.sphinxsidebar a:hover {
-    color: #FF9200;
+    text-decoration: none !important;
 }
 
 div.sphinxsidebar p {
     color: #808080;
 }
 
+/* Home MDAnalysis colour */
+.wy-side-nav-search > a {
+    color: #343131;
+}
+
+/* Side MDAnalysis version colour */
+.wy-side-nav-search > div.version {
+    color: #808080;
+}
+
+/* Menubar caption colour */
+div.wy-menu-vertical span.caption-text {
+    color: #FF9200;
+}
+
+/* Mobile layout menubar option */
+nav.wy-nav-top {
+    background: #343131;
+}
+
+/* Menu search bar outline (default blue) */
+.wy-side-nav-search input[type="text"] {
+    border-color: #808080;
+}
+
 
 /* -- body styles --------------------------------------------------------- */
 
-a {
+/* Different coloured links for sidebar vs body) */
+div.rst-content a {
     color: #FF9200;
     text-decoration: none;
 }
 
-a:visited {
+div.rst-content a:visited {
     color: #FF9200;
 }
  
 a:hover {
-    color: #FF9200;
+    color: #FF9200 !important;
     text-decoration: underline;
 }
 
@@ -66,6 +94,7 @@ a.headerlink:hover {
     color: #fff;
 }
 
+/* ------- admonition boxes ------- */
 
 div.admonition {
     margin: 10px 0px;
@@ -75,4 +104,57 @@ div.admonition {
 div.admonition p.admonition-title {
     font-size: 100%;
     font-weight: bolder;
+}
+
+/* ----- Tables ----- */
+
+/* override table width restrictions */
+/* wrap tables instead of scrolling */
+@media screen and (min-width: 767px) {
+
+    .wy-table-responsive table td, .wy-table-responsive table th {
+       /* !important prevents the common CSS stylesheets from overriding
+          this as on RTD they are loaded after this stylesheet */
+       white-space: normal !important;
+    }
+ 
+    .wy-table-responsive {
+       overflow: visible !important;
+       max-width: 100% !important;
+    }
+ }
+
+/* ----- Field lists ------ */
+
+dl.field-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+}
+
+dl.field-list > dt::after {
+    content: ":";
+
+}
+
+.rst-content dl.field-list dt {
+    background: none;
+    color: #000000;
+    border-top: none;
+    margin: 0;
+    padding: 0;
+    flex-basis: 20%;
+    display: block;
+}
+
+
+.rst-content dl.field-list > dd {
+    flex-basis: 70%;
+    margin: 0;
+
+}
+
+.rst-content dl.field-list > dd p {
+    margin: 0;
 }
