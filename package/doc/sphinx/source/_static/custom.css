@@ -106,6 +106,41 @@ div.admonition p.admonition-title {
     font-weight: bolder;
 }
 
+.rst-content .note p.admonition-title {
+    background: #35caca;
+}
+
+.rst-content .note {
+    background: #e7f9fa;
+}
+
+.rst-content .important p.admonition-title {
+    background: #475a91;
+}
+
+.rst-content .important {
+    background: #EDEFF3;
+}
+
+.rst-content  .error p.admonition-title {
+    background: #F45F4B;
+}
+
+.rst-content .error {
+    background: #FFEEED;
+}
+
+.rst-content .caution p.admonition-title {
+    background: #eab310;
+}
+
+.rst-content .caution {
+    background: #faf3e7;
+}
+
+
+
+
 /* ----- Tables ----- */
 
 /* override table width restrictions */
@@ -154,4 +189,16 @@ dl.field-list > dt::after {
 
 .section > dl.field-list > dd p {
     margin: 0;
+}
+
+/* ----- Field lists (classes) ------ */
+
+.rst-content dl.class dt {
+    color: #b95707;
+    background: #FFEBD0;
+    border-top: solid 3px #FF9200;
+}
+
+.rst-content .viewcode-link, .rst-content .viewcode-back {
+    color: #808080;
 }
