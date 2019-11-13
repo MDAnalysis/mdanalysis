@@ -106,41 +106,6 @@ div.admonition p.admonition-title {
     font-weight: bolder;
 }
 
-.rst-content .note p.admonition-title {
-    background: #35caca;
-}
-
-.rst-content .note {
-    background: #e7f9fa;
-}
-
-.rst-content .important p.admonition-title {
-    background: #475a91;
-}
-
-.rst-content .important {
-    background: #EDEFF3;
-}
-
-.rst-content  .error p.admonition-title {
-    background: #F45F4B;
-}
-
-.rst-content .error {
-    background: #FFEEED;
-}
-
-.rst-content .caution p.admonition-title {
-    background: #eab310;
-}
-
-.rst-content .caution {
-    background: #faf3e7;
-}
-
-
-
-
 /* ----- Tables ----- */
 
 /* override table width restrictions */
@@ -172,10 +137,13 @@ dl.field-list > dt::after {
     content: ":";
 }
 
-.section > dl.field-list dt {
+.rst-content dl:not(.docutils) dt {
     background: none;
     color: #000000;
     border-top: none;
+}
+
+.section > dl.field-list dt {
     margin: 0;
     padding: 0;
     flex-basis: 20%;
@@ -191,14 +159,48 @@ dl.field-list > dt::after {
     margin: 0;
 }
 
-/* ----- Field lists (classes) ------ */
+/* ----- MDAnalysis coloured elements ------ */
 
-.rst-content dl.class dt {
-    color: #b95707;
+.rst-content dl.class dt, .rst-content dl.function dt {
+    color: #ca6500;
     background: #FFEBD0;
     border-top: solid 3px #FF9200;
 }
 
 .rst-content .viewcode-link, .rst-content .viewcode-back {
     color: #808080;
+}
+
+.rst-content .guilabel {
+    background: #efefef;
+    border: 1px solid #808080;
+}
+
+
+.rst-content .note p.admonition-title {
+    background: #808080;
+}
+
+.rst-content .note {
+    background: #e3e3e3;
+}
+
+.rst-content  .error p.admonition-title, .rst-content  .warning p.admonition-title {
+    background: #F45F4B;
+}
+
+.rst-content .error, .rst-content .warning {
+    background: #FFEEED;
+}
+
+.rst-content .caution p.admonition-title, .rst-content .seealso p.admonition-title, .rst-content .important p.admonition-title  {
+    background: #F2BC01;
+}
+
+.rst-content .caution, .rst-content .seealso, .rst-content .important {
+    background: #faf3e7;
+}
+
+.rst-content code:not(.xref).literal {
+    color: #ca6500;
 }
