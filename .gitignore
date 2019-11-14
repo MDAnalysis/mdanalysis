@@ -38,3 +38,5 @@ MDAnalysis.log
 authors.py
 # Ignore the .DS_Store file in the osx file system
 *.DS_Store
+# ignore files from tests
+.hypothesis/

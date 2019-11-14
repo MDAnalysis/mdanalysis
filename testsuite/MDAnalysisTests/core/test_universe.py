@@ -628,6 +628,42 @@ class TestAddTopologyAttr(object):
 
         assert hasattr(universe.atoms, attrname)
         assert getattr(universe.atoms, attrname)[0] == default
+    
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [(1, 0), (1, 2)]),
+            ('bonds', [[1, 0], [1, 2]]),
+            ('bonds', set([(1, 0), (1, 2)])),
+            ('angles', [(1, 0, 2), (1, 2, 3), (2, 1, 4)]),
+            ('dihedrals', [[1, 2, 3, 1], (3, 1, 5, 2)]),
+            ('impropers', [[1, 2, 3, 1], (3, 1, 5, 2)]),
+        )
+    )
+    def test_add_connection(self, universe, attr, values):
+        universe.add_TopologyAttr(attr, values)
+        assert hasattr(universe, attr)
+        attrgroup = getattr(universe, attr)
+        assert len(attrgroup) == len(values)
+        for x in attrgroup:
+            ix = x.indices
+            assert ix[0] <= ix[-1]
+
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [(1, 0, 0), (1, 2)]),
+            ('bonds', [['x', 'y'], [1, 2]]),
+            ('bonds', 'rubbish'),
+            ('bonds', [[1.01, 2.0]]),
+            ('angles', [(1, 0), (1, 2)]),
+            ('angles', 'rubbish'),
+            ('dihedrals', [[1, 1, 1, 0.1]]),
+            ('impropers', [(1, 2, 3)]),
+        )
+    )
+    def add_connection_error(self, universe, attr, values):
+        with pytest.raises(ValueError):
+            universe.add_TopologyAttr(attr, values)
+        
 
 
 class TestAllCoordinatesKwarg(object):
@@ -729,3 +765,10 @@ class TestEmpty(object):
 
         assert u.atoms.positions.shape == (10, 3)
         assert u.atoms.forces.shape == (10, 3)
+
+    def test_empty_no_atoms(self):
+        u = mda.Universe.empty(0)
+        assert len(u.atoms) == 0
+        assert len(u.residues) == 0
+        assert len(u.segments) == 0
+        
