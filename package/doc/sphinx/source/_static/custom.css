@@ -177,11 +177,11 @@ dl.field-list > dt::after {
 }
 
 
-.rst-content .note p.admonition-title {
+.rst-content .seealso p.admonition-title {
     background: #808080;
 }
 
-.rst-content .note {
+.rst-content .seealso {
     background: #e3e3e3;
 }
 
@@ -193,12 +193,12 @@ dl.field-list > dt::after {
     background: #FFEEED;
 }
 
-.rst-content .caution p.admonition-title, .rst-content .seealso p.admonition-title, .rst-content .important p.admonition-title  {
-    background: #F2BC01;
+.rst-content .caution p.admonition-title, .rst-content .note p.admonition-title, .rst-content .important p.admonition-title  {
+    background: #FF9200;
 }
 
-.rst-content .caution, .rst-content .seealso, .rst-content .important {
-    background: #faf3e7;
+.rst-content .caution, .rst-content .note, .rst-content .important {
+    background: #FFEBD0;
 }
 
 .rst-content code:not(.xref).literal {
