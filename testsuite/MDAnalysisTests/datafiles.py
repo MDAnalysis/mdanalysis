@@ -169,9 +169,11 @@ __all__ = [
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
     "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
     "PDB_metal", # PDB with metal atoms
-
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
+    "GRO_huge_box", # for testing gro parser with hige box sizes
+    "ITP", # for GROMACS generated itps
+    "ITP_nomass", # for ATB generated itps
 ]
 
 from pkg_resources import resource_filename
@@ -200,6 +202,7 @@ AUX_XVG = resource_filename(__name__, 'data/test.xvg')
 ENT = resource_filename(__name__, 'data/testENT.ent')
 GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
 GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
+GRO_huge_box = resource_filename(__name__, 'data/huge_box.gro')
 
 COORDINATES_GRO = resource_filename(__name__, 'data/coordinates/test.gro')
 COORDINATES_GRO_INCOMPLETE_VELOCITY = resource_filename(__name__, 'data/coordinates/test_incomplete_vel.gro')
@@ -472,6 +475,9 @@ JaninArray = resource_filename(__name__, 'data/adk_oplsaa_janin.npy')
 LYSJaninArray = resource_filename(__name__, 'data/adk_oplsaa_LYS_janin.npy')
 PDB_rama = resource_filename(__name__, 'data/19hc.pdb.gz')
 PDB_janin = resource_filename(__name__, 'data/1a28.pdb.gz')
+
+ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
+ITP_nomass = resource_filename(__name__, 'data/itp_nomass.itp')
 
 # This should be the last line: clean up namespace
 del resource_filename

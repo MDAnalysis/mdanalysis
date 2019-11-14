@@ -37,6 +37,7 @@ from MDAnalysisTests.datafiles import (
     GRO,
     GRO_large,
     two_water_gro_multiframe,
+    GRO_huge_box,
 )
 from numpy.testing import (
     assert_almost_equal,
@@ -503,3 +504,9 @@ def test_multiframe_gro():
     # for now, single frame read
     assert len(u.trajectory) == 1
     assert_equal(u.dimensions, np.array([100, 100, 100, 90, 90, 90], dtype=np.float32))
+
+def test_huge_box_gro():
+    u = mda.Universe(GRO_huge_box)
+
+    assert_equal(u.dimensions, np.array([4.e+05, 4.e+05, 4.e+05, 90, 90, 90],
+                                        dtype=np.float32))

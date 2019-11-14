@@ -124,6 +124,7 @@ Classes
 from __future__ import absolute_import
 
 from six.moves import zip, range, map
+from six import raise_from
 import os
 import numpy as np
 
@@ -161,7 +162,9 @@ class DCDWriter(DCD.DCDWriter):
                 if units.unit_types[unit] != unit_type:
                     raise TypeError("LAMMPS DCDWriter: wrong unit {0!r} for unit type {1!r}".format(unit, unit_type))
             except KeyError:
-                raise ValueError("LAMMPS DCDWriter: unknown unit {0!r}".format(unit))
+                raise_from(
+                    ValueError("LAMMPS DCDWriter: unknown unit {0!r}".format(unit)),
+                    None)
         super(DCDWriter, self).__init__(*args, **kwargs)
 
 
@@ -341,9 +344,10 @@ class DATAWriter(base.WriterBase):
                 self.f.write('{:d} {:d} '.format(i, int(bond.type))+\
                         ' '.join((bond.atoms.indices + 1).astype(str))+'\n')
             except TypeError:
-                raise TypeError('LAMMPS DATAWriter: Trying to write bond, '
+                raise_from(TypeError('LAMMPS DATAWriter: Trying to write bond, '
                                 'but bond type {} is not '
-                                'numerical.'.format(bond.type))
+                                'numerical.'.format(bond.type)),
+                            None)
 
     def _write_dimensions(self, dimensions):
         """Convert dimensions to triclinic vectors, convert lengths to native
@@ -402,8 +406,11 @@ class DATAWriter(base.WriterBase):
         try:
             atoms.types.astype(np.int32)
         except ValueError:
-            raise ValueError('LAMMPS.DATAWriter: atom types must be '+
-                    'convertible to integers')
+            raise_from(
+                ValueError(
+                    'LAMMPS.DATAWriter: atom types must be '
+                    'convertible to integers'),
+                    None)
 
         try:
             velocities = atoms.velocities

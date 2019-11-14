@@ -174,6 +174,7 @@ if __name__ == '__main__':
                          'data/analysis/*',
                          'data/*.gsd',
                          'data/windows/*',
+                         'data/*.itp',
                         ],
           },
           install_requires=[

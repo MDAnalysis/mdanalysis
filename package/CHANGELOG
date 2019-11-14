@@ -13,18 +13,38 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy richardjgowers
+mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
+         PicoCentauri
 
-  * 0.20.2
+  * 0.21.0
 
 Fixes
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
+  * Chainreader and continuous option work correctly when readers work for more 
+    than one format (Issue #2353)
+  * PDBQTParser now gives icode TopologyAttrs (Issue #2361)
+  * GROReader and GROWriter now can handle boxes with box vectors >1000nm
+  * Guess atom element with uppercase name
   * Fixed issue in make_whole() where small boxes would fool the algorithm into
-    thinking no work is needed (Issue #2358)
+    thinking no work is needed (Issue #2358)  
 
 Enhancements
+  * Uniforms exception handling between Python 2.7 and Python 3: raised exceptions
+    do not contain previous exceptions traceback. Uses six package to handle
+    py27 and py3 compatibility (PR #2357)
+  * Expanded selection wildcards to the start and middle of strings (Issue #2370)
+  * Added type checking and conversion to Connection TopologyAttrs (Issue #2373)
+  * New analysis.hydrogenbonds.HydrogenBondAnalysis class for the analysis of
+    hydrogen bonds. Simpler interface, more extensible and better performance
+    than analysis.hbonds.HydrogenBondAnalysis (PR #2237)
+  * GSD reader is now supported on Windows (Issue #1923, PR #2384)
+  * Empty Universe with 0 atoms is possible (Issue #2383)
+  * Added ITPParser to parse GROMACS itp topology files (PR #2381)
+  * Added match_atoms keyword to analysis.align (Issue #2285, PR #2380)
 
+Deprecations
+  * analysis.hbonds.HydrogenBondAnalysis will be deprecated in 1.0
 
 09/05/19 IAlibay, richardjgowers
 
@@ -152,7 +172,7 @@ Fixes
   * Fixed reading multiframe GRO files, currently only the first frame will be
     read. (Issue #2276 PR #2277)
   * fixed calculation of Chi torsion in nucleic acid analysis (Issue #2248)
-
+  * Fixed parallelization failure in get_distance_matrix() (Issue #2060, PR #2301)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()

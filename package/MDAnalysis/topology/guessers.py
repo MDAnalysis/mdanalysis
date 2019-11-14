@@ -134,11 +134,16 @@ def guess_atom_element(atomname):
     if atomname == '':
         return ''
     try:
-        return tables.atomelements[atomname]
+        return tables.atomelements[atomname.upper()]
     except KeyError:
         # strip symbols and numbers
         no_symbols = re.sub(SYMBOLS, '', atomname)
         name = re.sub(NUMBERS, '', no_symbols).upper()
+
+        # just in case
+        if name in tables.atomelements:
+            return tables.atomelements[name]
+
         while name:
             if name in tables.elements:
                 return name

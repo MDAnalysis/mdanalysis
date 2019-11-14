@@ -140,6 +140,28 @@ def filter_times(times, dt):
     return used_idx
 
 
+def check_allowed_filetypes(readers, allowed):
+    """
+    Make a check that  all readers have the same filetype and are  of the 
+    allowed files types. Throws Exception on failure.
+
+    Parameters
+    ----------
+    readers : list of MDA readers
+    allowed : list of allowed formats
+    """
+    classname =  type(readers[0])
+    only_one_reader = np.all([isinstance(r,  classname) for r in readers])
+    if not only_one_reader:
+        readernames = [type(r) for r in readers]
+        raise ValueError("ChainReader: continuous=true only supported"
+                         " when all files are using the same reader. "
+                         "Found: {}".format(readernames))
+    if readers[0].format not in allowed:
+        raise NotImplementedError("ChainReader: continuous=True only "
+                "supported for formats: {}".format(allowed))
+
+
 class ChainReader(base.ProtoReader):
     """Reader that concatenates multiple trajectories on the fly.
 
@@ -274,18 +296,10 @@ class ChainReader(base.ProtoReader):
 
         # calculate new start_frames to have a time continuous trajectory.
         if continuous:
-            filetypes = np.unique([r.format for r in self.readers])
-            if not len(filetypes) == 1:
-                raise ValueError("ChainReader: continuous=true only supported"
-                                 " when all files are using the same format. "
-                                 "found {}".format(filetypes))
+            check_allowed_filetypes(self.readers, ['XTC', 'TRR'])
             if np.any(np.array(n_frames) == 1):
                 raise RuntimeError("ChainReader: Need at least two frames in "
                                    "every trajectory with continuous=True")
-            if filetypes[0] not in ['XTC', 'TRR']:
-                raise NotImplementedError("ChainReader: continuous=True only "
-                                          "supported for xtc and trr format")
-
             # TODO: allow floating point precision in dt check
             dt = self._get_same('dt')
             n_frames = np.asarray(self._get('n_frames'))
