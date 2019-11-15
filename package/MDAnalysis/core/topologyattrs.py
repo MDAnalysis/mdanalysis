@@ -1285,6 +1285,82 @@ class AltLocs(AtomAttr):
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(na)], dtype=object)
 
+class GBScreens(AtomAttr):
+    """Generalized Born screening factor"""
+    attrname = 'gbscreens'
+    singular = 'gbscreen'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class SolventRadii(AtomAttr):
+    """Intrinsic solvation radius"""
+    attrname = 'solventradii'
+    singular = 'solventradius'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class NonbondedIndices(AtomAttr):
+    """Nonbonded index (AMBER)"""
+    attrname = 'nbindices'
+    singular = 'nbindex'
+    per_object = 'atom'
+    dtype = int
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na, dtype=np.int32)
+    
+class RMins(AtomAttr):
+    """The Rmin/2 LJ parameter"""
+    attrname = 'rmins'
+    singular = 'rmin'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class Epsilons(AtomAttr):
+    """The epsilon LJ parameter"""
+    attrname = 'epsilons'
+    singular = 'epsilon'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class RMin14s(AtomAttr):
+    """The Rmin/2 LJ parameter for 1-4 interactions"""
+    attrname = 'rmin14s'
+    singular = 'rmin14'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class Epsilon14s(AtomAttr):
+    """The epsilon LJ parameter for 1-4 interactions"""
+    attrname = 'epsilon14s'
+    singular = 'epsilon14'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
 
 class ResidueAttr(TopologyAttr):
     attrname = 'residueattrs'
@@ -1720,6 +1796,7 @@ class _Connection(AtomAttr):
 
     def get_atoms(self, ag):
         try:
+            print(ag.ix[0], self._bondDict[ag.ix[0]])
             unique_bonds = set(itertools.chain(
                 *[self._bondDict[a] for a in ag.ix]))
         except TypeError:
@@ -1940,6 +2017,17 @@ class Bonds(_Connection):
         ('n_fragments', property(n_fragments, None, None,
                                  n_fragments.__doc__)))
 
+class UreyBradleys(_Connection):
+    """Angles between two atoms
+
+    Initialise with a list of 2 long tuples
+
+    These indices refer to the atom indices.
+    """
+    attrname = 'ureybradleys'
+    singular = 'ureybradleys'
+    transplants = defaultdict(list)
+    _n_atoms = 2
 
 class Angles(_Connection):
     """Angles between three atoms
@@ -1970,3 +2058,9 @@ class Impropers(_Connection):
     transplants = defaultdict(list)
     _n_atoms = 4
 
+class CMaps(_Connection):
+    """A connection between five atoms"""
+    attrname = 'cmaps'
+    singular = 'cmaps'
+    transplants = defaultdict(list)
+    _n_atoms = 5

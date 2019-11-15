@@ -288,7 +288,7 @@ from __future__ import absolute_import
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
            'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
-           'HoomdXMLParser','GSDParser', 'ITPParser']
+           'HoomdXMLParser','GSDParser', 'ITPParser', 'ParmEdParser']
 
 from . import core
 from . import PSFParser
@@ -312,3 +312,4 @@ from . import MMTFParser
 from . import GSDParser
 from . import MinimalParser
 from . import ITPParser
+from . import ParmEdParser

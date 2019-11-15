@@ -207,6 +207,39 @@ class Bond(TopologyObject):
 
     value = length
 
+class UreyBradley(TopologyObject):
+
+    """A Urey-Bradley angle between two :class:`~MDAnalysis.core.groups.Atom` instances.
+
+    Two :class:`UreyBradley` instances can be compared with the ``==`` and
+    ``!=`` operators. A UreyBradley angle is equal to another if the same atom
+    numbers are involved.
+    """
+    btype = 'ureybradley'
+
+    def partner(self, atom):
+        """UreyBradley.partner(Atom)
+
+        Returns
+        -------
+        the other :class:`~MDAnalysis.core.groups.Atom` in this
+        interaction
+        """
+        if atom == self.atoms[0]:
+            return self.atoms[1]
+        elif atom == self.atoms[1]:
+            return self.atoms[0]
+        else:
+            raise ValueError("Unrecognised Atom")
+
+    def distance(self, pbc=True):
+        """Distance between the atoms.
+        """
+        box = self.universe.dimensions if pbc else None
+
+        return distances.calc_bonds(self[0].position, self[1].position, box)
+
+    value = distance
 
 class Angle(TopologyObject):
 
@@ -328,6 +361,13 @@ class ImproperDihedral(Dihedral):
         4 decimals (and is only tested to 3 decimals).
         """
         return self.dihedral()
+
+class CMap(TopologyObject):
+    """
+    Coupled-torsion correction map term between five 
+    :class:`~MDAnalysis.core.groups.Atom` instances.
+    """
+    btype = 'cmap'
 
 
 class TopologyDict(object):
@@ -468,7 +508,8 @@ class TopologyDict(object):
         return other in self.dict or other[::-1] in self.dict
 
 
-_BTYPE_TO_SHAPE = {'bond': 2, 'angle': 3, 'dihedral': 4, 'improper': 4}
+_BTYPE_TO_SHAPE = {'bond': 2, 'ureybradley': 2, 'angle': 3, 
+                   'dihedral': 4, 'improper': 4, 'cmap': 5}
 
 
 class TopologyGroup(object):
@@ -765,9 +806,11 @@ class TopologyGroup(object):
         # Grab a single Item, similar to Atom/AtomGroup relationship
         if isinstance(item, numbers.Integral):
             outclass = {'bond': Bond,
+                        'ureybradley': UreyBradley,
                         'angle': Angle,
                         'dihedral': Dihedral,
-                        'improper': ImproperDihedral}[self.btype]
+                        'improper': ImproperDihedral,
+                        'cmap': CMap}[self.btype]
             return outclass(self._bix[item],
                             self._u,
                             type=self._bondtypes[item],

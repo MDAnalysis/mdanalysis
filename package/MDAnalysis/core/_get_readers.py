@@ -25,6 +25,7 @@ from six import raise_from
 import copy
 import inspect
 import mmtf
+import parmed as pmd
 import numpy as np
 from MDAnalysis.lib.util import isstream
 
@@ -66,6 +67,8 @@ def get_reader_for(filename, format=None):
       :class:`~MDAnalysis.coordinates.memory.MemoryReader` is returned.
     - If `filename` is an MMTF object,
       :class:`~MDAnalysis.coordinates.MMTF.MMTFReader` is returned.
+    - If `filename` is a ParmEd Structure, 
+      :class:`~MDAnalysis.coordinates.ParmEd.ParmEdReader` is returned.
     - If `filename` is an iterable of filenames,
       :class:`~MDAnalysis.coordinates.chain.ChainReader` is returned.
 
@@ -91,6 +94,8 @@ def get_reader_for(filename, format=None):
         elif isinstance(filename, mmtf.MMTFDecoder):
             # mmtf slurps mmtf object
             format = 'MMTF'
+        elif isinstance(filename, pmd.Structure):
+            format = 'PARMED'
         else:
             # else let the guessing begin!
             format = util.guess_format(filename)
@@ -161,7 +166,8 @@ def get_writer_for(filename, format=None, multiframe=None):
        The `filename` argument has been made mandatory.
     """
     if filename is None:
-        format = 'NULL'
+        if format != 'PARMED':
+            format = 'NULL'
     elif format is None:
         try:
             root, ext = util.get_ext(filename)
@@ -234,6 +240,8 @@ def get_parser_for(filename, format=None):
     if format is None:
         if isinstance(filename, mmtf.MMTFDecoder):
             format = 'mmtf'
+        elif isinstance(filename, pmd.Structure):
+            format = 'PARMED'
         else:
             format = util.guess_format(filename)
     format = format.upper()

@@ -3109,6 +3109,9 @@ class AtomGroup(GroupBase):
                 trj_frames = frames
 
         if filename is None:
+            if file_format == 'PARMED':
+                writer = get_writer_for(filename, format=file_format)
+                return writer(n_atoms=self.n_atoms, **kwargs).write(self.atoms)
             trjname, ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt.format(trjname=trjname, frame=trj.frame)
         filename = util.filename(filename,
