@@ -1645,7 +1645,11 @@ class Segids(SegmentAttr):
 
 
 class _Connection(AtomAttr):
-    """Base class for connectivity between atoms"""
+    """Base class for connectivity between atoms
+    
+    .. versionchanged:: 0.21.0
+        Added type checking to atom index values.
+    """
 
     def __init__(self, values, types=None, guessed=False, order=None):
         self.values = values
@@ -1706,7 +1710,7 @@ class _Connection(AtomAttr):
                              guessed,
                              order)
 
-    def add_bonds(self, values, types=None, guessed=True, order=None):
+    def _add_bonds(self, values, types=None, guessed=True, order=None):
         if types is None:
             types = itertools.cycle((None,))
         if guessed in (True, False):
@@ -1727,13 +1731,16 @@ class _Connection(AtomAttr):
         except KeyError:
             pass
     
-    def delete_bonds(self, values):
+    def _delete_bonds(self, values):
+        """
+        .. versionadded:: 0.21.0
+        """
         to_check = set(values) & set(self.values)
         idx = [self.values.index(v) for v in to_check]
         for i in sorted(idx, reverse=True):
             del self.values[i]
 
-        for attr in ('types', '_guessed', 'order'): # faster
+        for attr in ('types', '_guessed', 'order'):
             arr = np.array(getattr(self, attr), dtype='object')
             new = np.delete(arr, idx)
             setattr(self, attr, list(new))
@@ -1743,10 +1750,14 @@ class _Connection(AtomAttr):
         except KeyError:
             pass
 
-def check_values(func):
+def _check_connection_values(func):
     """
     Checks values passed to _Connection methods for appropriate number of 
     atom indices and coerces them to tuples of ints.
+
+
+    .. versionadded:: 0.21.0
+
     """
     @functools.wraps(func)
     def wrapper(self, values, *args, **kwargs):
@@ -1766,9 +1777,18 @@ def check_values(func):
     return wrapper
 
 class _SymmetricConnection(_Connection):
-    __init__ = check_values(_Connection.__init__)
-    add_bonds = check_values(_Connection.add_bonds)
-    delete_bonds = check_values(_Connection.delete_bonds)
+    """
+    Base class for connectivity between atoms where atom indices
+    can be flipped without losing meaning. Values are checked for
+    type and length correctness.
+
+    .. versionadded:: 0.21.0
+
+
+    """
+    __init__ = _check_connection_values(_Connection.__init__)
+    _add_bonds = _check_connection_values(_Connection._add_bonds)
+    _delete_bonds = _check_connection_values(_Connection._delete_bonds)
 
 
 class Bonds(_SymmetricConnection):
@@ -1945,10 +1965,15 @@ class Dihedrals(_SymmetricConnection):
     transplants = defaultdict(list)
     _n_atoms = 4
 
-def check_types(func):
+def _check_conenction_types(func):
     """
     Checks values passed to _Connection methods for appropriate number of 
     atom indices and coerces them to tuples of ints.
+
+
+    .. versionadded:: 0.21.0
+
+
     """
     @functools.wraps(func)
     def wrapper(self, values, *args, **kwargs):
@@ -1969,7 +1994,7 @@ class Impropers(_Connection):
     transplants = defaultdict(list)
     _n_atoms = 4
 
-    __init__ = check_types(_Connection.__init__)
-    add_bonds = check_types(_Connection.add_bonds)
-    delete_bonds = check_types(_Connection.delete_bonds)
+    __init__ = _check_conenction_types(_Connection.__init__)
+    _add_bonds = _check_conenction_types(_Connection._add_bonds)
+    _delete_bonds = _check_conenction_types(_Connection._delete_bonds)
 
