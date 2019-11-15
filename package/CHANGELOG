@@ -26,6 +26,8 @@ Fixes
   * PDBQTParser now gives icode TopologyAttrs (Issue #2361)
   * GROReader and GROWriter now can handle boxes with box vectors >1000nm
   * Guess atom element with uppercase name
+  * TopologyGroup no longer reshapes the type, guessed, and order properties
+    (Issue #2392)
 
 Enhancements
   * Uniforms exception handling between Python 2.7 and Python 3: raised exceptions

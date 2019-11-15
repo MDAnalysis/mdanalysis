@@ -542,15 +542,15 @@ class TopologyGroup(object):
         nbonds = len(bondidx)
         # remove duplicate bonds
         if type is None:
-            type = np.repeat(None, nbonds).reshape(nbonds, 1)
+            type = np.repeat(None, nbonds)
         if guessed is None:
-            guessed = np.repeat(True, nbonds).reshape(nbonds, 1)
+            guessed = np.repeat(True, nbonds)
         elif guessed is True or guessed is False:
-            guessed = np.repeat(guessed, nbonds).reshape(nbonds, 1)
+            guessed = np.repeat(guessed, nbonds)
         else:
-            guessed = np.asarray(guessed, dtype=np.bool).reshape(nbonds, 1)
+            guessed = np.asarray(guessed, dtype=np.bool)
         if order is None:
-            order = np.repeat(None, nbonds).reshape(nbonds, 1)
+            order = np.repeat(None, nbonds)
 
         if nbonds > 0:
             uniq, uniq_idx = util.unique_rows(bondidx, return_index=True)
@@ -736,7 +736,7 @@ class TopologyGroup(object):
                     type=np.concatenate([self._bondtypes,
                                          np.array([other._bondtype])]),
                     guessed=np.concatenate([self._guessed,
-                                            np.array([[other.is_guessed]])]),
+                                            np.array([other.is_guessed])]),
                     order=np.concatenate([self._order,
                                           np.array([other.order])]),
                 )
