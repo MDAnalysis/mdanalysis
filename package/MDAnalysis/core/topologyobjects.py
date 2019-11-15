@@ -523,6 +523,9 @@ class TopologyGroup(object):
     .. versionchanged:: 0.19.0
        Empty TopologyGroup now returns correctly shaped empty array via
        indices property and to_indices()
+    .. versionchanged::0.21.0
+       ``type``, ``guessed``, and ``order`` are no longer reshaped to arrays
+       with an extra dimension
     """
     def __init__(self, bondidx, universe, btype=None, type=None, guessed=None,
                  order=None):
