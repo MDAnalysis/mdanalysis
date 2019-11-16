@@ -1796,7 +1796,6 @@ class _Connection(AtomAttr):
 
     def get_atoms(self, ag):
         try:
-            print(ag.ix[0], self._bondDict[ag.ix[0]])
             unique_bonds = set(itertools.chain(
                 *[self._bondDict[a] for a in ag.ix]))
         except TypeError:
