@@ -41,7 +41,8 @@ class BaseTestParmedParser(ParserBase):
                       'epsilon14s', 'elements',
                       'resids', 'resnames', 'resnums',
                       'segids',
-                      'bonds', 'ureybradleys', 'angles', 'dihedrals', 'impropers', 'cmaps']
+                      'bonds', 'ureybradleys', 'angles', 
+                      'dihedrals', 'impropers', 'cmaps']
 
     expected_n_atoms = 0
     expected_n_residues = 1
@@ -62,22 +63,35 @@ class BaseTestParmedParser(ParserBase):
         return mda.Universe(filename)
 
     def test_bonds_total_counts(self, top, filename):
-        assert len(top.bonds.values) == len(set([(a.atom1.idx, a.atom2.idx) for a in filename.bonds]))
+        unique = set([(a.atom1.idx, a.atom2.idx)
+                      for a in filename.bonds])
+        assert len(top.bonds.values) == len(unique)
     
     def test_angles_total_counts(self, top, filename):
-        assert len(top.angles.values) == len(set([(a.atom1.idx, a.atom2.idx, a.atom3.idx) for a in filename.angles]))
+        unique = set([(a.atom1.idx, a.atom2.idx, a.atom3.idx) 
+                      for a in filename.angles])
+        assert len(top.angles.values) == len(unique)
 
     def test_dihedrals_total_counts(self, top, filename):
-        assert len(top.dihedrals.values) == len(set([(a.atom1.idx, a.atom2.idx, a.atom3.idx, a.atom4.idx) for a in filename.dihedrals]))
+        unique = set([(a.atom1.idx, a.atom2.idx, a.atom3.idx, a.atom4.idx)
+             for a in filename.dihedrals])
+        assert len(top.dihedrals.values) == len(unique)
     
     def test_impropers_total_counts(self, top, filename):
-        assert len(top.impropers.values) == len(set([(a.atom1.idx, a.atom2.idx, a.atom3.idx, a.atom4.idx) for a in filename.impropers]))
+        unique = set([(a.atom1.idx, a.atom2.idx, a.atom3.idx, a.atom4.idx)
+                      for a in filename.impropers])
+        assert len(top.impropers.values) == len(unique)
 
     def test_cmaps_total_counts(self, top, filename):
-        assert len(top.cmaps.values) == len(set([(a.atom1.idx, a.atom2.idx, a.atom3.idx, a.atom4.idx, a.atom5.idx) for a in filename.cmaps]))
+        unique = set([(a.atom1.idx, a.atom2.idx, a.atom3.idx, 
+                       a.atom4.idx, a.atom5.idx)
+                      for a in filename.cmaps])
+        assert len(top.cmaps.values) == len(unique)
     
     def test_ureybradleys_total_counts(self, top, filename):
-        assert len(top.ureybradleys.values) == len(set([(a.atom1.idx, a.atom2.idx) for a in filename.urey_bradleys]))
+        unique = set([(a.atom1.idx, a.atom2.idx)
+                      for a in filename.urey_bradleys])
+        assert len(top.ureybradleys.values) == len(unique)
 
 
 
@@ -210,7 +224,8 @@ class TestParmedParserPRM(BaseTestParmedParser):
         assert value in vals or value[::-1] in vals
     
     def test_dihedral_types(self, universe):
-        dih = universe.dihedrals.atomgroup_intersection(universe.atoms[[10,12,14,16]],
+        ag = universe.atoms[[10,12,14,16]]
+        dih = universe.dihedrals.atomgroup_intersection(ag,
                                                         strict=True)[0]
         assert len(dih.type) == 4
         for i, (phi_k, per) in enumerate((

@@ -49,7 +49,8 @@ class TestParmEdReaderGRO:
 
     def test_dimensions(self):
         assert_array_almost_equal(
-            self.universe.trajectory.ts.dimensions, self.ref.trajectory.ts.dimensions,
+            self.universe.trajectory.ts.dimensions, 
+            self.ref.trajectory.ts.dimensions,
             self.prec,
             "ParmEdReader failed to get unitcell dimensions from ParmEd")
     
@@ -69,7 +70,8 @@ class BaseTestParmEdReader(_SingleFrameReader):
 
     def test_dimensions(self):
         assert_array_almost_equal(
-            self.universe.trajectory.ts.dimensions, self.ref.trajectory.ts.dimensions,
+            self.universe.trajectory.ts.dimensions, 
+            self.ref.trajectory.ts.dimensions,
             self.prec,
             "ParmEdReader failed to get unitcell dimensions from ParmEd")
     
