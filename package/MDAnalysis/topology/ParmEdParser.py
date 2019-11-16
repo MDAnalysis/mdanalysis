@@ -25,7 +25,19 @@
 ParmEd topology parser
 ===================
 
-Converts a ParmEd structure into a Topology.
+Converts a ParmEd_ structure into a Topology.
+
+.. _ParmEd: https://parmed.github.io/ParmEd/html/index.html
+
+Example
+-------
+
+>>> import parmed as pmd
+>>> import MDAnalysis as mda
+>>> from MDAnalysis.tests.datafiles import GRO
+>>> pgro = pmd.load_file(GRO)
+>>> mgro = mda.Universe(pgro)
+>>> parmed_subset = mgro.select_atoms('resname SOL').write(file_format='PARMED')
 
 Classes
 -------
@@ -45,7 +57,7 @@ from math import ceil
 import numpy as np
 
 from ..lib.util import openany
-from .guessers import guess_types
+from .guessers import guess_atom_element
 from .base import TopologyReaderBase, change_squash
 from ..core.topologyattrs import (
     Atomids,
@@ -163,10 +175,14 @@ class ParmEdParser(TopologyReaderBase):
 
         n_atoms = len(names)
 
-        if not all(atomic_numbers):
-            elements = guess_types(names)
-        else:
-            elements = [Z2SYMB[e] for e in atomic_numbers]
+        elements = []
+
+        for z, name in zip(atomic_numbers, names):
+            try:
+                elements.append(Z2SYMB[z])
+            except KeyError:
+                elements.append(guess_atom_element(name))
+
         # Make Atom TopologyAttrs
         for vals, Attr, dtype in (
                 (names, Atomnames, object),

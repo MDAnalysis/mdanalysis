@@ -34,7 +34,9 @@ from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 
 from MDAnalysisTests.datafiles import (
-    GRO
+    GRO,
+    PDB_small,
+    PRM
 )
 
 class TestParmEdReaderGRO:
@@ -94,27 +96,32 @@ class BaseTestParmEdWriter:
 
     prec = 0.01
 
-    def __init__(self):
-        self.ref = pmd.load_file(self.ref_filename)
-        self.universe = mda.Universe(self.ref)
-        self.output = self.universe.atoms.write(file_format='PARMED')
+    @pytest.fixture(scope='class')
+    def ref(self):
+        return pmd.load_file(self.ref_filename)
     
-    def test_equivalent_connectivity_counts(self):
+    @pytest.fixture(scope='class')
+    def universe(self, ref):
+        return mda.Universe(ref)
+    
+    @pytest.fixture(scope='class')
+    def output(self, universe):
+        return universe.atoms.write(file_format='PARMED')
+    
+    def test_equivalent_connectivity_counts(self, ref, output):
         for attr in ('atoms', 'bonds', 'angles', 'dihedrals', 'impropers',
                      'cmaps', 'urey_bradleys'):
-            r = getattr(self.ref, attr)
-            o = getattr(self.output, attr)
+            r = getattr(ref, attr)
+            o = getattr(output, attr)
             assert len(r) == len(o)
     
-    def test_equivalent_connectivity_atom_counts(self):
-        for i in range(len(self.ref.atoms)):
-            assert len(self.ref.atoms[i].bonds) == len(self.output.atoms[i].bonds)
+    def test_equivalent_connectivity_atom_counts(self, ref, output):
+        for i in range(len(ref.atoms)):
+            assert len(ref.atoms[i].bonds) == len(output.atoms[i].bonds)
 
-    def test_equivalent_coordinates(self):
-        assert_array_almost_equal(self.ref.coordinates, self.output.coordinates)
     
-    def test_equivalent_atoms(self):
-        for r, o in zip(self.ref.atoms, self.output.atoms):
+    def test_equivalent_atoms(self, ref, output):
+        for r, o in zip(ref.atoms, output.atoms):
             for attr in ('name',
                          'number', 'altloc', 
                          'atomic_number'):
@@ -127,8 +134,18 @@ class BaseTestParmEdWriter:
                 oa = getattr(o, attr)
                 assert abs(ra-oa) < self.prec
 
-            
+
+class BaseTestCoordinateWriter(BaseTestParmEdWriter):
+
+    def test_equivalent_coordinates(self, ref, output):
+        assert_array_almost_equal(ref.coordinates, output.coordinates)
         
 
-class TestParmEdReaderGRO(BaseTestParmEdWriter):
+class TestParmEdWriterGRO(BaseTestCoordinateWriter):
     ref_filename = GRO
+
+class TestParmEdWriterPDB(BaseTestCoordinateWriter):
+    ref_filename = PDB_small
+
+class TestParmEdWriterPRM(BaseTestParmEdWriter):
+    ref_filename = PRM

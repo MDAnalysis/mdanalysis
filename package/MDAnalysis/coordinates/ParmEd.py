@@ -172,10 +172,11 @@ class ParmEdWriter(base.WriterBase):
                 except AttributeError:
                     pass
                 try:
-                    akwargs['atomic_number'] = SYMB2Z[atom.element]
+                    el = atom.element.lower().capitalize()
+                    akwargs['atomic_number'] = SYMB2Z[el]
                 except (KeyError, AttributeError):
                     try:
-                        akwargs['atomic_number'] = SYMB2Z[atom.type]
+                        akwargs['atomic_number'] = SYMB2Z[atom.type.lower().capitalize()]
                     except (KeyError, AttributeError):
                         pass
                 try:
