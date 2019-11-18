@@ -26,6 +26,7 @@ import copy
 import inspect
 import mmtf
 import numpy as np
+from MDAnalysis.exceptions import FileIOError
 from MDAnalysis.lib.util import isstream
 
 from .. import _READERS, _PARSERS, _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS
@@ -176,6 +177,14 @@ def get_writer_for(filename, format=None, multiframe=None):
                 None)
         else:
             format = util.check_compressed_format(root, ext)
+        
+    if format == '':
+        # Improves detail of error message when ext is not assigned in
+        # output file. Otherwise TypeError is raised when except the
+        # return statement
+        raise FileIOError((
+            "No extension assigned for trajectory output file '{}'."
+            ).format(filename))
     format = format.upper()
     if multiframe is None:
         # Multiframe takes priority, else use singleframe

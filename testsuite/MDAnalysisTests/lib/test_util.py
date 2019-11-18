@@ -41,7 +41,7 @@ import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import (cached, static_variables, warn_if_not_unique,
                                  check_coords)
 from MDAnalysis.core.topologyattrs import Bonds
-from MDAnalysis.exceptions import NoDataError, DuplicateWarning
+from MDAnalysis.exceptions import NoDataError, DuplicateWarning, FileIOError
 
 
 from MDAnalysisTests.datafiles import (
@@ -1103,15 +1103,21 @@ class TestGetWriterFor(object):
     def test_missing_extension(self):
         # Make sure ``get_writer_for`` behave as expected if *filename*
         # has no extension
-        with pytest.raises(TypeError):
+        with pytest.raises(FileIOError):
             mda.coordinates.core.get_writer_for(filename='test', format=None)
+
+    def test_file_no_extension(self):
+        """No format given"""
+        with pytest.raises(FileIOError):
+            mda.coordinates.core.get_writer_for('outtraj')
+
 
     def test_wrong_format(self):
         # Make sure ``get_writer_for`` fails if the format is unknown
         with pytest.raises(TypeError):
             mda.coordinates.core.get_writer_for(filename="fail_me",
                                                 format='UNK')
-
+    
     def test_compressed_extension(self):
         for ext in ('.gz', '.bz2'):
             fn = 'test.gro' + ext
