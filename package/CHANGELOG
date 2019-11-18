@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri
+         PicoCentauri, davidercruz
 
   * 0.21.0
 
@@ -42,6 +42,8 @@ Enhancements
   * Empty Universe with 0 atoms is possible (Issue #2383)
   * Added ITPParser to parse GROMACS itp topology files (PR #2381)
   * Added match_atoms keyword to analysis.align (Issue #2285, PR #2380)
+  * Added wrap/unwrap transformations (PR #2038)
+
 
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis will be deprecated in 1.0
