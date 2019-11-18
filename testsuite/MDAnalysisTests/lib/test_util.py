@@ -41,7 +41,7 @@ import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import (cached, static_variables, warn_if_not_unique,
                                  check_coords)
 from MDAnalysis.core.topologyattrs import Bonds
-from MDAnalysis.exceptions import NoDataError, DuplicateWarning, FileIOError
+from MDAnalysis.exceptions import NoDataError, DuplicateWarning
 
 
 from MDAnalysisTests.datafiles import (
@@ -931,6 +931,10 @@ class TestGuessFormat(object):
 
         assert a == 'file'
         assert b == extention.lower()
+    
+    def test_get_extension_without_extension(self):
+        with pytest.raises(ValueError):
+            util.get_ext('file')
 
     @pytest.mark.parametrize('extention',
                              [format_tuple[0].upper() for format_tuple in
@@ -1103,12 +1107,17 @@ class TestGetWriterFor(object):
     def test_missing_extension(self):
         # Make sure ``get_writer_for`` behave as expected if *filename*
         # has no extension
-        with pytest.raises(FileIOError):
+        with pytest.raises(ValueError):
             mda.coordinates.core.get_writer_for(filename='test', format=None)
+
+    def test_extension_empty_string(self):
+        """Test format=''."""
+        with pytest.raises(ValueError):
+            mda.coordinates.core.get_writer_for(filename='test', format='')
 
     def test_file_no_extension(self):
         """No format given"""
-        with pytest.raises(FileIOError):
+        with pytest.raises(ValueError):
             mda.coordinates.core.get_writer_for('outtraj')
 
 

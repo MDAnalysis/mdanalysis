@@ -26,7 +26,6 @@ import copy
 import inspect
 import mmtf
 import numpy as np
-from MDAnalysis.exceptions import FileIOError
 from MDAnalysis.lib.util import isstream
 
 from .. import _READERS, _PARSERS, _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS
@@ -163,10 +162,10 @@ def get_writer_for(filename, format=None, multiframe=None):
     """
     if filename is None:
         format = 'NULL'
-    elif format is None:
+    elif format in ('', None):
         try:
             root, ext = util.get_ext(filename)
-        except (TypeError, AttributeError):
+        except (TypeError, AttributeError, ValueError):
             # An AttributeError is raised if filename cannot
             # be manipulated as a string.
             # A TypeError is raised in py3.6
@@ -178,13 +177,6 @@ def get_writer_for(filename, format=None, multiframe=None):
         else:
             format = util.check_compressed_format(root, ext)
         
-    if format == '':
-        # Improves detail of error message when ext is not assigned in
-        # output file. Otherwise TypeError is raised when except the
-        # return statement
-        raise FileIOError((
-            "No extension assigned for trajectory output file '{}'."
-            ).format(filename))
     format = format.upper()
     if multiframe is None:
         # Multiframe takes priority, else use singleframe

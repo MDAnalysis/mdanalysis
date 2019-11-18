@@ -925,8 +925,13 @@ def get_ext(filename):
     ext : str
     """
     root, ext = os.path.splitext(filename)
+    
+    if ext == '':
+        raise ValueError
+    
     if ext.startswith(os.extsep):
         ext = ext[1:]
+
     return root, ext.lower()
 
 
