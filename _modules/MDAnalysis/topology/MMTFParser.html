@@ -365,10 +365,16 @@
         <span class="k">if</span> <span class="n">mtop</span><span class="o">.</span><span class="n">alt_loc_list</span><span class="p">:</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">AltLocs</span><span class="p">([</span><span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                                   <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">mtop</span><span class="o">.</span><span class="n">alt_loc_list</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">AltLocs</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">natoms</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mtop</span><span class="o">.</span><span class="n">b_factor_list</span><span class="p">):</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Bfactors</span><span class="p">(</span><span class="n">mtop</span><span class="o">.</span><span class="n">b_factor_list</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Bfactors</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">natoms</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mtop</span><span class="o">.</span><span class="n">occupancy_list</span><span class="p">):</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Occupancies</span><span class="p">(</span><span class="n">mtop</span><span class="o">.</span><span class="n">occupancy_list</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Occupancies</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">natoms</span><span class="p">))</span>
 
         <span class="c1"># Residue things</span>
         <span class="c1"># required</span>
@@ -382,6 +388,8 @@
         <span class="k">if</span> <span class="n">mtop</span><span class="o">.</span><span class="n">ins_code_list</span><span class="p">:</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ICodes</span><span class="p">([</span><span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                                  <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">mtop</span><span class="o">.</span><span class="n">ins_code_list</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ICodes</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">nresidues</span><span class="p">))</span>
 
         <span class="c1"># Segment things</span>
         <span class="c1"># optional</span>

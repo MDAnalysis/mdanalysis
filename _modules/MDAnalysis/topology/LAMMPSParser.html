@@ -480,9 +480,9 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="nb">type</span><span class="p">,</span> <span class="n">sect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_bond_section</span><span class="p">(</span><span class="n">sects</span><span class="p">[</span><span class="n">L</span><span class="p">],</span> <span class="n">nentries</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">pass</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">attr</span><span class="p">(</span><span class="n">sect</span><span class="p">,</span> <span class="nb">type</span><span class="p">))</span>
+                <span class="nb">type</span><span class="p">,</span> <span class="n">sect</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+            
+            <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">attr</span><span class="p">(</span><span class="n">sect</span><span class="p">,</span> <span class="nb">type</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">top</span></div>
 
@@ -595,6 +595,13 @@
 <span class="sd">          number of integers per line</span>
 <span class="sd">        mapping : dict</span>
 <span class="sd">          converts atom_ids to index within topology</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        types : tuple of strings</span>
+<span class="sd">          type of the bond/angle/dihedral/improper</span>
+<span class="sd">        indices : tuple of ints</span>
+<span class="sd">          indices of atoms involved</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">section</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="nb">type</span> <span class="o">=</span> <span class="p">[]</span>

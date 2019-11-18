@@ -449,7 +449,7 @@
 
         <span class="c1"># If segids not present, try to use chainids</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">segids</span><span class="p">):</span>
-            <span class="n">segids</span><span class="p">,</span> <span class="n">chainids</span> <span class="o">=</span> <span class="n">chainids</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="n">segids</span> <span class="o">=</span> <span class="n">chainids</span>
 
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">serials</span><span class="p">)</span>
 
@@ -464,8 +464,7 @@
                 <span class="p">(</span><span class="n">tempfactors</span><span class="p">,</span> <span class="n">Tempfactors</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
                 <span class="p">(</span><span class="n">occupancies</span><span class="p">,</span> <span class="n">Occupancies</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
         <span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">vals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Attr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)))</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Attr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)))</span>
         <span class="c1"># Guessed attributes</span>
         <span class="c1"># masses from types if they exist</span>
         <span class="c1"># OPT: We do this check twice, maybe could refactor to avoid this</span>

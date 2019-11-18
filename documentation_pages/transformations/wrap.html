@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>7.5.1. Trajectory translation — MDAnalysis.transformations.translate &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
+  <title>7.5.5. Wrap/unwrap transformations — MDAnalysis.transformations.wrap &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
   
 
   
@@ -42,8 +42,8 @@
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="7.5.2. Trajectory rotation — MDAnalysis.transformations.rotate" href="rotate.html" />
-    <link rel="prev" title="7. Trajectory transformations (“on-the-fly” transformations)" href="../trajectory_transformations.html" /> 
+    <link rel="next" title="8. Selection exporters" href="../selections_modules.html" />
+    <link rel="prev" title="7.5.4. Fitting transformations — MDAnalysis.transformations.fit" href="fit.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -107,11 +107,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#transformations-in-mdanalysis">7.3. Transformations in MDAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#how-to-transformations">7.4. How to transformations</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../trajectory_transformations.html#currently-implemented-transformations">7.5. Currently implemented transformations</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">7.5.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="translate.html">7.5.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="rotate.html">7.5.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="positionaveraging.html">7.5.3. Trajectory Coordinate Averaging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="fit.html">7.5.4. Fitting transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="wrap.html">7.5.5. Wrap/unwrap transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">7.5.5. Wrap/unwrap transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -172,13 +172,13 @@
         
           <li><a href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a> &raquo;</li>
         
-      <li>7.5.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></li>
+      <li>7.5.5. Wrap/unwrap transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/documentation_pages/transformations/translate.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/documentation_pages/transformations/wrap.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -191,67 +191,98 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <span class="target" id="module-MDAnalysis.transformations.translate"></span><div class="section" id="trajectory-translation-mdanalysis-transformations-translate">
-<h1>7.5.1. Trajectory translation — <a class="reference internal" href="#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a><a class="headerlink" href="#trajectory-translation-mdanalysis-transformations-translate" title="Permalink to this headline">¶</a></h1>
-<p>Translate the coordinates of a given trajectory by a given vector.
-The vector can either be user defined, using the function <a class="reference internal" href="#MDAnalysis.transformations.translate.translate" title="MDAnalysis.transformations.translate.translate"><code class="xref py py-func docutils literal notranslate"><span class="pre">translate()</span></code></a>
-or defined by centering an AtomGroup in the unit cell using the function
-<a class="reference internal" href="#MDAnalysis.transformations.translate.center_in_box" title="MDAnalysis.transformations.translate.center_in_box"><code class="xref py py-func docutils literal notranslate"><span class="pre">center_in_box()</span></code></a></p>
+  <span class="target" id="module-MDAnalysis.transformations.wrap"></span><div class="section" id="wrap-unwrap-transformations-mdanalysis-transformations-wrap">
+<h1>7.5.5. Wrap/unwrap transformations — <a class="reference internal" href="#module-MDAnalysis.transformations.wrap" title="MDAnalysis.transformations.wrap"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a><a class="headerlink" href="#wrap-unwrap-transformations-mdanalysis-transformations-wrap" title="Permalink to this headline">¶</a></h1>
+<p>Wrap/unwrap the atoms of a given AtomGroup in the unit cell. <a class="reference internal" href="#MDAnalysis.transformations.wrap.wrap" title="MDAnalysis.transformations.wrap.wrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap()</span></code></a>
+translates the atoms back in the unit cell. <a class="reference internal" href="#MDAnalysis.transformations.wrap.unwrap" title="MDAnalysis.transformations.wrap.unwrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">unwrap()</span></code></a> translates the
+atoms of each molecule so that bons don’t split over images.</p>
 <dl class="function">
-<dt id="MDAnalysis.transformations.translate.translate">
-<code class="descclassname">MDAnalysis.transformations.translate.</code><code class="descname">translate</code><span class="sig-paren">(</span><em>vector</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.translate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Translates the coordinates of a given <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
-instance by a given vector.</p>
+<dt id="MDAnalysis.transformations.wrap.wrap">
+<code class="descclassname">MDAnalysis.transformations.wrap.</code><code class="descname">wrap</code><span class="sig-paren">(</span><em>ag</em>, <em>compound='atoms'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/wrap.html#wrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.wrap.wrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shift the contents of a given AtomGroup back into the unit cell.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+-----------+          +-----------+
+|           |          |           |
+|         3 | 6        | 6       3 |
+|         ! | !        | !       ! |
+|       1-2-|-5-8  -&gt;  |-5-8   1-2-|
+|         ! | !        | !       ! |
+|         4 | 7        | 7       4 |
+|           |          |           |
++-----------+          +-----------+
+</pre></div>
+</div>
 <p class="rubric">Example</p>
-<p>ts = MDAnalysis.transformations.translate([1,2,3])(ts)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vector</strong> (<em>array-like</em>) – coordinates of the vector to which the coordinates will be translated</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.transformations.translate.center_in_box">
-<code class="descclassname">MDAnalysis.transformations.translate.</code><code class="descname">center_in_box</code><span class="sig-paren">(</span><em>ag</em>, <em>center='geometry'</em>, <em>point=None</em>, <em>wrap=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#center_in_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.center_in_box" title="Permalink to this definition">¶</a></dt>
-<dd><p>Translates the coordinates of a given <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
-instance so that the center of geometry/mass of the given <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
-is centered on the unit cell. The unit cell dimensions are taken from the input Timestep object.
-If a point is given, the center of the atomgroup will be translated to this point instead.</p>
-<p class="rubric">Example</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span>
-<span class="n">ts</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span><span class="n">center</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
+<span class="n">transform</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atom group to be centered on the unit cell.</li>
-<li><strong>center</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – used to choose the method of centering on the given atom group. Can be ‘geometry’
-or ‘mass’</li>
-<li><strong>point</strong> (<em>array-like</em><em>, </em><em>optional</em>) – overrides the unit cell center - the coordinates of the Timestep are translated so
-that the center of mass/geometry of the given AtomGroup is aligned to this position
-instead. Defined as an array of size 3.</li>
-<li><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite>, all the atoms from the given AtomGroup will be moved to the unit cell
-before calculating the center of mass or geometry. Default is <cite>False</cite>, no changes
-to the atom coordinates are done before calculating the center of the AtomGroup.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ag</strong> (<em>Atomgroup</em>) – Atomgroup to be wrapped in the unit cell</li>
+<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'residues'</em><em>, </em><em>'segments'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – The group which will be kept together through the shifting process.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>When specifying a <cite>compound</cite>, the translation is calculated based on
+each compound. The same translation is applied to all atoms
+within this compound, meaning it will not be broken by the shift.
+This might however mean that not all atoms from the compound are
+inside the unit cell, but rather the center of the compound is.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object</p>
-</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep">MDAnalysis.coordinates.base.Timestep</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.transformations.wrap.unwrap">
+<code class="descclassname">MDAnalysis.transformations.wrap.</code><code class="descname">unwrap</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/wrap.html#unwrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.wrap.unwrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move all atoms in an AtomGroup so that bonds don’t split over images</p>
+<p>Atom positions are modified in place.</p>
+<p>This function is most useful when atoms have been packed into the primary
+unit cell, causing breaks mid molecule, with the molecule then appearing
+on either side of the unit cell. This is problematic for operations
+such as calculating the center of mass of the molecule.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+-----------+     +-----------+
+|           |     |           |
+| 6       3 |     |         3 | 6
+| !       ! |     |         ! | !
+|-5-8   1-2-| -&gt;  |       1-2-|-5-8
+| !       ! |     |         ! | !
+| 7       4 |     |         4 | 7
+|           |     |           |
++-----------+     +-----------+
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
+<span class="n">transform</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> to work with.
+The positions of this are modified in place.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep">MDAnalysis.coordinates.base.Timestep</a></td>
 </tr>
 </tbody>
 </table>
@@ -267,10 +298,10 @@ to the atom coordinates are done before calculating the center of the AtomGroup.
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="rotate.html" class="btn btn-neutral float-right" title="7.5.2. Trajectory rotation — MDAnalysis.transformations.rotate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../selections_modules.html" class="btn btn-neutral float-right" title="8. Selection exporters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../trajectory_transformations.html" class="btn btn-neutral float-left" title="7. Trajectory transformations (“on-the-fly” transformations)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="fit.html" class="btn btn-neutral float-left" title="7.5.4. Fitting transformations — MDAnalysis.transformations.fit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
