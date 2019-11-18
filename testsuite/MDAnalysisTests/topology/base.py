@@ -27,6 +27,8 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
 
+mandatory_attrs = ['ids', 'masses', 'types', 
+                   'resids', 'resnums', 'segids']
 
 class ParserBase(object):
     """Base class for testing Topology parsers.
@@ -56,16 +58,21 @@ class ParserBase(object):
     def test_mandatory_attributes(self, top):
         # attributes required as part of the API
         # ALL parsers must provide these
-        mandatory_attrs = ['ids', 'masses', 'types',
-                           'resids', 'resnums', 'segids']
-
         for attr in mandatory_attrs:
             assert hasattr(top, attr), 'Missing required attribute: {}'.format(attr)
 
     def test_expected_attributes(self, top):
         # Extra attributes as declared in specific implementations
-        for attr in self.expected_attrs:
+        for attr in self.expected_attrs+self.guessed_attrs:
             assert hasattr(top, attr), 'Missing expected attribute: {}'.format(attr)
+    
+    def test_no_unexpected_attributes(self, top):
+        attrs = set(self.expected_attrs
+                    + self.guessed_attrs
+                    + mandatory_attrs
+                    + ['indices', 'resindices', 'segindices'])
+        for attr in top.attrs:
+            assert attr.attrname in attrs, 'Unexpected attribute: {}'.format(attr.attrname)
 
     def test_guessed_attributes(self, top):
         # guessed attributes must be declared as guessed

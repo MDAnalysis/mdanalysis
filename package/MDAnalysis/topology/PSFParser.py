@@ -153,7 +153,9 @@ class PSFParser(TopologyReaderBase):
                         attr(self._parse_sec(psffile, info)))
             except StopIteration:
                 # Reached the end of the file before we expected
-                pass
+                for attr in (Bonds, Angles, Dihedrals, Impropers):
+                    if not hasattr(top, attr.attrname):
+                        top.add_TopologyAttr(attr([]))
 
         return top
 

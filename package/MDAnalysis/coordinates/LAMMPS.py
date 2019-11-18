@@ -429,25 +429,18 @@ class DATAWriter(base.WriterBase):
                 ('dihedral', 'dihedrals'), ('improper', 'impropers')]
 
             for btype, attr_name in attrs:
-                try:
-                    features[btype] = atoms.__getattribute__(attr_name)
-                    self.f.write('{:>12d}  {}\n'.format(len(features[btype]),
-                                 attr_name))
-                    features[btype] = features[btype].atomgroup_intersection(
-                                      atoms, strict=True)
-                except AttributeError:
-                    features[btype] = None
-                    self.f.write('{:>12d}  {}\n'.format(0, attr_name))
+                features[btype] = atoms.__getattribute__(attr_name)
+                self.f.write('{:>12d}  {}\n'.format(len(features[btype]),
+                                                    attr_name))
+                features[btype] = features[btype].atomgroup_intersection(
+                                    atoms, strict=True)
 
             self.f.write('\n')
             self.f.write('{:>12d}  atom types\n'.format(max(atoms.types.astype(np.int32))))
 
             for btype, attr in features.items():
-                if attr is None:
-                    self.f.write('{:>12d}  {} types\n'.format(0, btype))
-                else:
-                    self.f.write('{:>12d}  {} types\n'.format(len(attr.types()),
-                                                              btype))
+                self.f.write('{:>12d}  {} types\n'.format(len(attr.types()),
+                                                          btype))
 
             self._write_dimensions(atoms.dimensions)
 
