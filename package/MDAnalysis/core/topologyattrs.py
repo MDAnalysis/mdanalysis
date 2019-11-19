@@ -1965,7 +1965,7 @@ class Dihedrals(_SymmetricConnection):
     transplants = defaultdict(list)
     _n_atoms = 4
 
-def _check_conenction_types(func):
+def _check_connection_types(func):
     """
     Checks values passed to _Connection methods for appropriate number of 
     atom indices and coerces them to tuples of ints.
@@ -1994,7 +1994,7 @@ class Impropers(_Connection):
     transplants = defaultdict(list)
     _n_atoms = 4
 
-    __init__ = _check_conenction_types(_Connection.__init__)
-    _add_bonds = _check_conenction_types(_Connection._add_bonds)
-    _delete_bonds = _check_conenction_types(_Connection._delete_bonds)
+    __init__ = _check_connection_types(_Connection.__init__)
+    _add_bonds = _check_connection_types(_Connection._add_bonds)
+    _delete_bonds = _check_connection_types(_Connection._delete_bonds)
 
