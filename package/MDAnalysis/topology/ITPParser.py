@@ -185,8 +185,7 @@ class ITPParser(TopologyReaderBase):
                     if funct in (1, 3, 5, 8, 9, 10, 11):
                         dihedrals[tuple(values[:4])].append(funct)
                     elif funct in (2, 4):
-                        imp_values = [values[1], values[2], values[0], values[3]]
-                        impropers[tuple(imp_values)].append(funct)
+                        impropers[tuple(values[:4])].append(funct)
         
         attrs = []
         

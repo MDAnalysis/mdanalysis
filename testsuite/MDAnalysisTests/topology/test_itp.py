@@ -105,13 +105,8 @@ class TestITP(ParserBase):
 
     def test_impropers_identity(self, top):
         vals = top.impropers.values
-        for b in ((0, 5, 3, 4), (3, 7, 5, 6)):
-            assert (b in vals) or (b[::-1] in vals)
-
-    def test_improper_rearrangement(self, top):
-        vals = top.impropers.values
         for b in ((3, 0, 5, 4), (5, 3, 7, 6)):
-            assert (b not in vals) and (b[::-1] not in vals)
+            assert (b in vals) and (b[::-1] in vals)
     
     def test_impropers_identity(self, top):
         assert top.impropers.types[0] == 2
