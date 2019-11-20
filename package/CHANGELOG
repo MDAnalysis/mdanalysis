@@ -34,8 +34,7 @@ Fixes
     with an incomplete slice and/or with a negative step (Issue #2413)
   * TXYZ parser uses strings for the atom types like other parsers (Issue #2435)
   * PDB files no longer lose chainIDs when reading files without segIDs (Issue #2389)   
-  * ITPParser now has improper dihedrals where third atom is central and 
-    connectivity attributes can have multiple 'types'
+  * ITPParser now has improper dihedrals where connectivity attributes can have multiple 'types'
 
 Enhancements
   * Enhanges exception message when trajectory output file has no extension assigned.
