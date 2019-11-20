@@ -29,6 +29,7 @@ from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     ITP,  # GROMACS itp
     ITP_nomass, # from Automated Topology Builder
+    edited_ITP,
 )
 
 class TestITP(ParserBase):
@@ -60,7 +61,7 @@ class TestITP(ParserBase):
             assert b in vals
         
     def test_bonds_type(self, top):
-        assert top.bonds.types[0] == '2'
+        assert top.bonds.types[0] == 2
 
     def test_angles_total_counts(self, top):
         assert len(top.angles.values) == 91
@@ -75,7 +76,7 @@ class TestITP(ParserBase):
             assert (b in vals) or (b[::-1] in vals)
     
     def test_angles_type(self, top):
-        assert top.angles.types[0] == '2'
+        assert top.angles.types[0] == 2
 
     def test_dihedrals_total_counts(self, top):
         assert len(top.dihedrals.values) == 30
@@ -83,13 +84,18 @@ class TestITP(ParserBase):
     def test_dihedrals_atom_counts(self, universe):
         assert len(universe.atoms[[0]].dihedrals) == 2
 
+    def test_dihedrals_multiple_types(self, universe):
+        ag = universe.atoms[[0, 3, 5, 7]]
+        dih = universe.dihedrals.atomgroup_intersection(ag, strict=True)[0]
+        assert len(dih.type) == 2
+
     def test_dihedrals_identity(self, top):
         vals = top.dihedrals.values
         for b in ((1, 0, 3, 5), (0, 3, 5, 7)):
             assert (b in vals) or (b[::-1] in vals)
     
     def test_dihedrals_identity(self, top):
-        assert top.dihedrals.types[0] == '1'
+        assert top.dihedrals.types[0] == 1
     
     def test_impropers_total_counts(self, top):
         assert len(top.impropers.values) == 29
@@ -99,11 +105,16 @@ class TestITP(ParserBase):
 
     def test_impropers_identity(self, top):
         vals = top.impropers.values
-        for b in ((3, 0, 5, 4), (5, 3, 7, 6)):
+        for b in ((0, 5, 3, 4), (3, 7, 5, 6)):
             assert (b in vals) or (b[::-1] in vals)
+
+    def test_improper_rearrangement(self, top):
+        vals = top.impropers.values
+        for b in ((3, 0, 5, 4), (5, 3, 7, 6)):
+            assert (b not in vals) and (b[::-1] not in vals)
     
     def test_impropers_identity(self, top):
-        assert top.impropers.types[0] == '2'
+        assert top.impropers.types[0] == 2
 
 class TestITPNoMass(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
@@ -124,3 +135,32 @@ class TestITPNoMass(ParserBase):
 
     def test_mass_guess(self, universe):
         assert universe.atoms[0].mass not in ('', None)
+
+
+class TestDifferentDirectivesITP(TestITP):
+
+    ref_filename = edited_ITP
+
+
+    def test_angles_total_counts(self, top):
+        assert len(top.angles.values) == 88
+
+    def test_no_extra_angles(self, top):
+        for a in ((57, 59, 61), (60, 59, 61), (59, 61, 62)):
+            assert a not in top.angles.values
+
+    def test_dihedrals_total_counts(self, top):
+        assert len(top.dihedrals.values) == 28
+
+    def test_bonds_total_counts(self, top):
+        assert len(top.bonds.values) == (118 + 62)  # 118: pairs -> constraints
+
+    def test_bonds_atom_counts(self, universe):
+        assert len(universe.atoms[[0]].bonds) == 5
+        assert len(universe.atoms[[42]].bonds) == 5
+
+    def test_dihedrals_atom_counts(self, universe):
+        assert len(universe.atoms[[0]].dihedrals) == 1
+
+    def test_dihedrals_identity(self, top):
+        assert top.dihedrals.types[0] == (1, 1)

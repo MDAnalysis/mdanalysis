@@ -42,13 +42,14 @@ Classes
 
 """
 from __future__ import absolute_import
+from collections import defaultdict
 
 import logging
 import numpy as np
 
 from ..lib.util import openany
 from . import guessers
-from .base import TopologyReaderBase, change_squash
+from .base import TopologyReaderBase, change_squash, squash_identical
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -113,14 +114,10 @@ class ITPParser(TopologyReaderBase):
 
         atom_lists = [ids, types, resids, resnames, names, chargegroups, charges, masses]
 
-        bonds = []
-        bondtypes = []
-        angles = []
-        angletypes = []
-        dihedrals = []
-        dihedraltypes = []
-        impropers = []
-        impropertypes = []
+        bonds = defaultdict(list)
+        angles = defaultdict(list)
+        dihedrals = defaultdict(list)
+        impropers = defaultdict(list)
 
         segid = 'SYSTEM'
         molnum = 1
@@ -157,24 +154,39 @@ class ITPParser(TopologyReaderBase):
                 
                 elif section == 'bonds':
                     values = line.split()
-                    bonds.append(values[:2])
-                    bondtypes.append(values[2])
+                    funct = int(values[2])
+                    if funct in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10):
+                        bonds[tuple(values[:2])].append(funct)
+                
+                elif section == 'constraints':
+                    values = line.split()
+                    funct = int(values[2])
+                    if funct in (1, 2):
+                        bonds[tuple(values[:2])].append(funct)
+
+                elif section == 'settles':
+                    values = line.split()
+                    funct = int(values[2])
+                    if funct in (1,):
+                        bonds[tuple(values[:2])].append(funct)
                 
                 elif section == 'angles':
                     values = line.split()
-                    angles.append(values[:3])
-                    angletypes.append(values[3])
+                    funct = int(values[3])
+                    if funct in (1, 2, 3, 4, 5, 6, 8, 10):
+                        angles[tuple(values[:3])].append(funct)
+
                 
                 elif section == 'dihedrals':
                     # funct == 1: proper
                     # funct == 2: improper
                     values = line.split()
-                    if values[4] == '1':
-                        dihedrals.append(values[:4])
-                        dihedraltypes.append(values[4])
-                    elif values[4] == '2':
-                        impropers.append(values[:4])
-                        impropertypes.append(values[4])
+                    funct = int(values[4])
+                    if funct in (1, 3, 5, 8, 9, 10, 11):
+                        dihedrals[tuple(values[:4])].append(funct)
+                    elif funct in (2, 4):
+                        imp_values = [values[1], values[2], values[0], values[3]]
+                        impropers[tuple(imp_values)].append(funct)
         
         attrs = []
         
@@ -215,14 +227,18 @@ class ITPParser(TopologyReaderBase):
                        residue_segindex=segidx)
         
         # connectivity
-        for vals, Attr, attrname, atype in (
-            (bonds, Bonds, 'bonds', bondtypes),
-            (angles, Angles, 'angles', angletypes),
-            (dihedrals, Dihedrals, 'dihedrals', dihedraltypes),
-            (impropers, Impropers, 'impropers', impropertypes)
+        for dct, Attr, attrname in (
+            (bonds, Bonds, 'bonds'),
+            (angles, Angles, 'angles'),
+            (dihedrals, Dihedrals, 'dihedrals'),
+            (impropers, Impropers, 'impropers')
         ):
-            tattr = Attr(set(tuple(map(ids.index, x)) for x in vals),
-                         types=atype)
+            vals, types = zip(*list(dct.items()))
+
+            indices = tuple(map(ids.index, x) for x in vals)
+            types = list(map(squash_identical, types))
+            
+            tattr = Attr(indices, types=types)
             top.add_TopologyAttr(tattr)
 
         return top

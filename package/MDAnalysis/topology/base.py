@@ -181,3 +181,10 @@ def change_squash(criteria, to_squash):
             # Should be the same for self consistency...
 
     return residx, new_others
+
+
+def squash_identical(values):
+     if len(values) == 1:
+         return values[0]
+     else:
+         return tuple(values)
