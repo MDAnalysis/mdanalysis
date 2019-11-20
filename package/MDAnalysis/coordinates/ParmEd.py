@@ -21,10 +21,22 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""ParmEd structure reader --- :mod:`MDAnalysis.coordinates.ParmEd`
+"""ParmEd structure I/O --- :mod:`MDAnalysis.coordinates.ParmEd`
 ================================================================
 
-Reads coordinates data from a ParmEd Structure.
+Read coordinates data from a ParmEd Structure with :class:`ParmEdReader` and convert it back to a ParmEd structure with :class:`ParmEdConverter`.
+
+Example
+-------
+
+::
+
+    import parmed as pmd
+    import MDAnalysis as mda
+    from MDAnalysis.tests.datafiles import GRO
+    universe = mda.Universe(pmd.load_file(GRO))
+    structure = universe.atoms.convert_to('PARMED')
+
 
 Classes
 -------
@@ -32,12 +44,17 @@ Classes
 .. autoclass:: ParmEdReader
    :members:
 
+.. autoclass:: ParmEdConverter
+   :members:
+
+
 """
 from __future__ import absolute_import
 
 import parmed as pmd
 
 from . import base
+from ..topology.tables import SYMB2Z
 from ..core import flags
 from ..core.universe import Universe
 
@@ -66,7 +83,6 @@ class ParmEdReader(base.SingleFrameReaderBase):
             ts._unitcell = None
 
         ts.frame = 0
-
         return ts
 
 
@@ -79,62 +95,37 @@ MDA2PMD = {
     'id': 'number'
 }
 
-SYMB2Z = {'H': 1,                                                   'He': 2, 
-          'Li': 3, 'Be': 4, 'B': 5, 'C': 6, 'N': 7, 'O': 8, 'F': 9, 'Ne': 10, 
-          'Na': 11, 'Mg': 12, 'Al': 13, 'Si': 14, 'P': 15, 'S': 16, 'Cl': 17, 'Ar': 18, 
-          'K': 19, 'Ca': 20, 'Sc': 21, 'Ti': 22, 'V': 23, 'Cr': 24, 'Mn': 25, 'Fe': 26, 
-          'Co': 27, 'Ni': 28, 'Cu': 29, 'Zn': 30, 'Ga': 31, 'Ge': 32, 'As': 33, 'Se': 34, 
-          'Br': 35, 'Kr': 36, 'Rb': 37, 'Sr': 38, 'Y': 39, 'Zr': 40, 'Nb': 41, 'Mo': 42, 
-          'Tc': 43, 'Ru': 44, 'Rh': 45, 'Pd': 46, 'Ag': 47, 'Cd': 48, 'In': 49, 'Sn': 50, 
-          'Sb': 51, 'Te': 52, 'I': 53, 'Xe': 54, 'Cs': 55, 'Ba': 56, 'La': 57, 'Ce': 58, 
-          'Pr': 59, 'Nd': 60, 'Pm': 61, 'Sm': 62, 'Eu': 63, 'Gd': 64, 'Tb': 65, 'Dy': 66, 
-          'Ho': 67, 'Er': 68, 'Tm': 69, 'Yb': 70, 'Lu': 71, 'Hf': 72, 'Ta': 73, 'W': 74, 
-          'Re': 75, 'Os': 76, 'Ir': 77, 'Pt': 78, 'Au': 79, 'Hg': 80, 'Tl': 81, 'Pb': 82, 
-          'Bi': 83, 'Po': 84, 'At': 85, 'Rn': 86, 'Fr': 87, 'Ra': 88, 'Ac': 89, 'Th': 90, 
-          'Pa': 91, 'U': 92, 'Np': 93, 'Pu': 94, 'Am': 95, 'Cm': 96, 'Bk': 97, 'Cf': 98, 
-          'Es': 99}
+class ParmEdConverter(base.ConverterBase):
+    """Convert MDAnalysis AtomGroup or Universe to ParmEd :class:`~parmed.structure.Structure`.
 
+    Example
+    -------
 
-class ParmEdWriter(base.WriterBase):
-    """Convert MDAnalysis AtomGroup or Universe to ParmEd Structure
+    ::
+
+        import parmed as pmd
+        import MDAnalysis as mda
+        from MDAnalysis.tests.datafiles import GRO
+        pgro = pmd.load_file(GRO)
+        mgro = mda.Universe(pgro)
+        parmed_subset = mgro.select_atoms('resname SOL').to_format('PARMED')
+
+        
     """
 
-    format = 'PARMED'
+    lib = 'PARMED'
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, n_atoms=None, convert_units=None, **kwargs):
-        """Set up a ParmEdWriter with a precision of 3 decimal places.
-
-        Parameters
-        -----------
-        filename : str
-            output filename
-
-        n_atoms : int (optional)
-            number of atoms
-
-        """
-        self.n_atoms = n_atoms
-
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
-
-    def write(self, obj):
-        """Write selection at current trajectory frame to ParmEdStructure.
+    def convert(self, obj):
+        """Write selection at current trajectory frame to :class:`~parmed.structure.Structure`.
 
         Parameters
         -----------
         obj : AtomGroup or Universe or :class:`Timestep`
         """
-        # write() method that complies with the Trajectory API
-
         try:
-
             # make sure to use atoms (Issue 46)
             ag_or_ts = obj.atoms
-            # can write from selection == Universe (Issue 49)
-
         except AttributeError:
             if isinstance(obj, base.Timestep):
                 ag_or_ts = obj.copy()
@@ -220,7 +211,6 @@ class ParmEdWriter(base.WriterBase):
             struct.box = ag_or_ts.dimensions
         except AttributeError:
             struct.box = None
-        
         
         
         try:

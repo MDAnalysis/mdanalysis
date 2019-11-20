@@ -102,7 +102,7 @@ import warnings
 
 from numpy.lib.utils import deprecate
 
-from .. import _ANCHOR_UNIVERSES
+from .. import _ANCHOR_UNIVERSES, _CONVERTERS
 from ..lib import util
 from ..lib.util import cached, warn_if_not_unique, unique_int_1d
 from ..lib import distances
@@ -3032,6 +3032,45 @@ class AtomGroup(GroupBase):
                 "improper only makes sense for a group with exactly 4 atoms")
         return topologyobjects.ImproperDihedral(self.ix, self.universe)
 
+    def convert_to(self, format):
+        """
+        Convert `AtomGroup` to structure from another library.
+
+        Example
+        -------
+
+        ::
+
+            import MDAnalysis as mda
+            from MDAnalysis.tests.datafiles import GRO
+            u = mda.Universe(GRO)
+            parmed_structure = u.atoms.convert_to('PARMED')
+
+        
+        Parameters
+        ----------
+        format: str
+            The name of the library to convert to, e.g. ``"PARMED"`
+
+
+        Returns
+        -------
+        output:
+            An instance of the structure type from another library.
+        
+        Raises
+        ------
+        TypeError:
+            No converter was found for the required format
+        
+        """
+        try:
+            writer = _CONVERTERS[format]
+        except KeyError:
+            errmsg = 'No converter found for {} format'
+            raise_from(TypeError(errmsg.format(format)), None)
+        return writer().convert(self.atoms)
+
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
         """Write `AtomGroup` to a file.
@@ -3109,9 +3148,6 @@ class AtomGroup(GroupBase):
                 trj_frames = frames
 
         if filename is None:
-            if file_format == 'PARMED':
-                writer = get_writer_for(filename, format=file_format)
-                return writer(n_atoms=self.n_atoms, **kwargs).write(self.atoms)
             trjname, ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt.format(trjname=trjname, frame=trj.frame)
         filename = util.filename(filename,

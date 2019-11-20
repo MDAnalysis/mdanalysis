@@ -27,7 +27,7 @@ import parmed as pmd
 import MDAnalysis as mda
 
 from numpy.testing import (assert_equal,
-                           assert_array_almost_equal,
+                           assert_almost_equal,
                            assert_almost_equal)
 
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
@@ -40,7 +40,6 @@ from MDAnalysisTests.datafiles import (
 )
 
 class TestParmEdReaderGRO:
-    __test__ = True
     ref_filename = GRO
 
     universe = mda.Universe(pmd.load_file(GRO))
@@ -48,7 +47,7 @@ class TestParmEdReaderGRO:
     prec = 3
 
     def test_dimensions(self):
-        assert_array_almost_equal(
+        assert_almost_equal(
             self.universe.trajectory.ts.dimensions, 
             self.ref.trajectory.ts.dimensions,
             self.prec,
@@ -57,7 +56,7 @@ class TestParmEdReaderGRO:
     def test_coordinates(self):
         up = self.universe.atoms.positions
         rp = self.ref.atoms.positions
-        assert_array_almost_equal(up, rp, decimal=3)
+        assert_almost_equal(up, rp, decimal=3)
     
 
 
@@ -69,7 +68,7 @@ class BaseTestParmEdReader(_SingleFrameReader):
         self.prec = 3
 
     def test_dimensions(self):
-        assert_array_almost_equal(
+        assert_almost_equal(
             self.universe.trajectory.ts.dimensions, 
             self.ref.trajectory.ts.dimensions,
             self.prec,
@@ -78,11 +77,10 @@ class BaseTestParmEdReader(_SingleFrameReader):
     def test_coordinates(self):
         up = self.universe.atoms.positions
         rp = self.ref.atoms.positions
-        assert_array_almost_equal(up, rp, decimal=3)
+        assert_almost_equal(up, rp, decimal=3)
     
 
 class TestParmEdReaderPDB(BaseTestParmEdReader):
-    __test__ = True
 
     ref_filename = RefAdKSmall.filename
     
@@ -92,11 +90,25 @@ class TestParmEdReaderPDB(BaseTestParmEdReader):
         assert isinstance(self.universe.trajectory, ParmEdReader), "failed to choose ParmEdReader"
 
 
+class BaseTestParmEdConverter:
+
+    @pytest.fixture(scope='class')
+    def output(self, universe):
+        return universe.atoms.convert_to('PARMED')
+
+    @pytest.fixture(scope='class')
+    def universe(self, ref):
+        return mda.Universe(self.ref_filename)
+
+    def test_equivalent_connectivity_counts(self, universe, output):
+        for attr in ('atoms', 'bonds', 'angles', 'dihedrals', 'impropers',
+                     'cmaps', 'urey_bradleys'):
+            u = getattr(universe, attr, [])
+            o = getattr(output, attr)
+            assert len(r) == len(o)
 
 
-class BaseTestParmEdWriter:
-
-    prec = 0.01
+class BaseTestParmEdConverterFromParmed(BaseTestParmEdConverter):
 
     @pytest.fixture(scope='class')
     def ref(self):
@@ -105,10 +117,6 @@ class BaseTestParmEdWriter:
     @pytest.fixture(scope='class')
     def universe(self, ref):
         return mda.Universe(ref)
-    
-    @pytest.fixture(scope='class')
-    def output(self, universe):
-        return universe.atoms.write(file_format='PARMED')
     
     def test_equivalent_connectivity_counts(self, ref, output):
         for attr in ('atoms', 'bonds', 'angles', 'dihedrals', 'impropers',
@@ -134,20 +142,19 @@ class BaseTestParmEdWriter:
             for attr in ('mass', 'charge', 'occupancy', 'rmin', 'epsilon'):
                 ra = getattr(r, attr)
                 oa = getattr(o, attr)
-                assert abs(ra-oa) < self.prec
+                assert_almost_equal(ra, oa, decimal=3)
 
-
-class BaseTestCoordinateWriter(BaseTestParmEdWriter):
+class BaseTestCoordinateConverter(BaseTestParmEdConverterFromParmed):
 
     def test_equivalent_coordinates(self, ref, output):
-        assert_array_almost_equal(ref.coordinates, output.coordinates)
+        assert_almost_equal(ref.coordinates, output.coordinates)
         
 
-class TestParmEdWriterGRO(BaseTestCoordinateWriter):
+class TestParmEdConverterGRO(BaseTestParmEdConverterFromParmed):
     ref_filename = GRO
 
-class TestParmEdWriterPDB(BaseTestCoordinateWriter):
+class TestParmEdConverterPDB(BaseTestParmEdConverterFromParmed):
     ref_filename = PDB_small
 
-class TestParmEdWriterPRM(BaseTestParmEdWriter):
+class TestParmEdConverterPRM(BaseTestParmEdConverterFromParmed):
     ref_filename = PRM

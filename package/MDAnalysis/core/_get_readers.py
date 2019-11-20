@@ -166,8 +166,7 @@ def get_writer_for(filename, format=None, multiframe=None):
        The `filename` argument has been made mandatory.
     """
     if filename is None:
-        if format != 'PARMED':
-            format = 'NULL'
+        format = 'NULL'
     elif format is None:
         try:
             root, ext = util.get_ext(filename)
