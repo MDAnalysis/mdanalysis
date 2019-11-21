@@ -235,7 +235,7 @@ class ITPParser(TopologyReaderBase):
             vals, types = zip(*list(dct.items()))
 
             indices = tuple(map(ids.index, x) for x in vals)
-            types = list(map(squash_identical, types))
+            types = [squash_identical(t) for t in types]
             
             tattr = Attr(indices, types=types)
             top.add_TopologyAttr(tattr)
