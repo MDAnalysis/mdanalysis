@@ -60,8 +60,8 @@ class TestITP(ParserBase):
         for b in ((0, 1), (0, 2), (0, 3), (3, 4)):
             assert b in vals
         
-    def test_bonds_type(self, top):
-        assert top.bonds.types[0] == 2
+    def test_bonds_type(self, universe):
+        assert universe.bonds[0].type == 2
 
     def test_angles_total_counts(self, top):
         assert len(top.angles.values) == 91
@@ -75,8 +75,8 @@ class TestITP(ParserBase):
         for b in ((1, 0, 2), (1, 0, 3), (2, 0, 3)):
             assert (b in vals) or (b[::-1] in vals)
     
-    def test_angles_type(self, top):
-        assert top.angles.types[0] == 2
+    def test_angles_type(self, universe):
+        assert universe.angles[0].type == 2
 
     def test_dihedrals_total_counts(self, top):
         assert len(top.dihedrals.values) == 30
@@ -94,8 +94,8 @@ class TestITP(ParserBase):
         for b in ((1, 0, 3, 5), (0, 3, 5, 7)):
             assert (b in vals) or (b[::-1] in vals)
     
-    def test_dihedrals_identity(self, top):
-        assert top.dihedrals.types[0] == 1
+    def test_dihedrals_identity(self, universe):
+        assert universe.dihedrals[0].type == (1, 1)
     
     def test_impropers_total_counts(self, top):
         assert len(top.impropers.values) == 29
@@ -108,8 +108,8 @@ class TestITP(ParserBase):
         for b in ((3, 0, 5, 4), (5, 3, 7, 6)):
             assert (b in vals) and (b[::-1] in vals)
     
-    def test_impropers_identity(self, top):
-        assert top.impropers.types[0] == 2
+    def test_impropers_identity(self, universe):
+        assert universe.impropers[0].type == 2
 
 class TestITPNoMass(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
@@ -157,5 +157,5 @@ class TestDifferentDirectivesITP(TestITP):
     def test_dihedrals_atom_counts(self, universe):
         assert len(universe.atoms[[0]].dihedrals) == 1
 
-    def test_dihedrals_identity(self, top):
-        assert top.dihedrals.types[0] == (1, 1)
+    def test_dihedrals_identity(self, universe):
+        assert universe.dihedrals[0].type == (1, 1)
