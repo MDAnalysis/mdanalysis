@@ -204,7 +204,7 @@ class XYZWriter(base.WriterBase):
             if isinstance(obj, base.Timestep):
                 ts = obj
             else:
-                raise TypeError("No Timestep found in obj argument")
+                six.raise_from(TypeError("No Timestep found in obj argument"), None)
         else:
             if hasattr(obj, 'universe'):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)
@@ -376,7 +376,7 @@ class XYZReader(base.ReaderBase):
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:
-            raise EOFError(err)
+            six.raise_from(EOFError(err), None)
 
     def _reopen(self):
         self.close()

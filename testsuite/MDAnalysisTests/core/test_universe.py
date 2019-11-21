@@ -765,3 +765,10 @@ class TestEmpty(object):
 
         assert u.atoms.positions.shape == (10, 3)
         assert u.atoms.forces.shape == (10, 3)
+
+    def test_empty_no_atoms(self):
+        u = mda.Universe.empty(0)
+        assert len(u.atoms) == 0
+        assert len(u.residues) == 0
+        assert len(u.segments) == 0
+        

@@ -215,7 +215,7 @@ from __future__ import division, absolute_import, print_function
 
 import six
 from six.moves import range, cPickle, zip
-from six import string_types
+from six import raise_from, string_types
 
 import os
 import warnings
@@ -266,9 +266,14 @@ def get_path_metric_func(name):
     try:
         return path_metrics[name]
     except KeyError as key:
-        raise KeyError('Path metric "{}" not found. Valid selections: {}'
-                       ''.format(key, " ".join('"{}"'.format(n)
-                                               for n in path_metrics.keys())))
+        raise_from(
+            KeyError(
+                'Path metric "{}" not found. Valid selections: {}'.format(
+                    key,
+                    " ".join('"{}"'.format(n) for n in path_metrics.keys())
+                    )
+                ),
+            None)
 
 
 def sqnorm(v, axis=None):
@@ -1865,7 +1870,7 @@ class PSAnalysis(object):
         try:
             import seaborn.apionly as sns
         except ImportError:
-            raise ImportError(
+            raise_from(ImportError(
                 """ERROR --- The seaborn package cannot be found!
 
                 The seaborn API could not be imported. Please install it first.
@@ -1880,7 +1885,9 @@ class PSAnalysis(object):
 
                 and install in the usual manner.
                 """
-            )
+                ),
+                None,
+                )
 
         if self.D is None:
             raise ValueError(
@@ -1974,7 +1981,7 @@ class PSAnalysis(object):
         try:
             import seaborn.apionly as sns
         except ImportError:
-            raise ImportError(
+            raise_from(ImportError(
                 """ERROR --- The seaborn package cannot be found!
 
                 The seaborn API could not be imported. Please install it first.
@@ -1989,7 +1996,9 @@ class PSAnalysis(object):
 
                 and install in the usual manner.
                 """
-            )
+                ),
+                None,
+                )
 
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 

@@ -69,6 +69,7 @@ supported (the readers will stop at the first line starting '&').
 from __future__ import absolute_import
 
 from six.moves import range
+from six import raise_from
 
 import numbers
 import os
@@ -149,8 +150,13 @@ class XVGStep(base.AuxStep):
             try:
                 return self._data[key]
             except IndexError:
-                raise ValueError('{} not a valid index for data with {} '
-                                 'columns'.format(key, len(self._data)))
+                raise_from(
+                    ValueError(
+                        '{} not a valid index for data with {} '
+                        'columns'.format(key, len(self._data))
+                        ),
+                    None
+                    )
         else:
             return np.array([self._select_data(i) for i in key])
 
