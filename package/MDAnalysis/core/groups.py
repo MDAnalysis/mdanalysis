@@ -3034,12 +3034,12 @@ class AtomGroup(GroupBase):
 
     def convert_to(self, format):
         """
-        Convert `AtomGroup` to structure from another library.
+        Convert :class:`AtomGroup` to structure from another library.
 
         Example
         -------
 
-        ::
+        .. code-block ::
 
             import MDAnalysis as mda
             from MDAnalysis.tests.datafiles import GRO
@@ -3050,7 +3050,7 @@ class AtomGroup(GroupBase):
         Parameters
         ----------
         format: str
-            The name of the library to convert to, e.g. ``"PARMED"`
+            The name of the library to convert to, e.g. ``"PARMED"``
 
 
         Returns
