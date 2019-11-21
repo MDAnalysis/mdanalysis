@@ -38,7 +38,7 @@ class BaseTestParmedParser(ParserBase):
                       'charges', 'altLocs', 'occupancies',
                       'tempfactors', 'gbscreens', 'solventradii',
                       'nbindices', 'rmins', 'epsilons', 'rmin14s',
-                      'epsilon14s', 'elements',
+                      'epsilon14s', 'elements', 'chainIDs',
                       'resids', 'resnames', 'resnums',
                       'segids',
                       'bonds', 'ureybradleys', 'angles', 
