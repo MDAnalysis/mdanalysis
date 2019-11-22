@@ -932,10 +932,6 @@ class TestGuessFormat(object):
         assert a == 'file'
         assert b == extention.lower()
     
-    def test_get_extension_without_extension(self):
-        with pytest.raises(ValueError):
-            util.get_ext('file')
-
     @pytest.mark.parametrize('extention',
                              [format_tuple[0].upper() for format_tuple in
                               formats] +
@@ -1111,7 +1107,12 @@ class TestGetWriterFor(object):
             mda.coordinates.core.get_writer_for(filename='test', format=None)
 
     def test_extension_empty_string(self):
-        """Test format=''."""
+        """
+        Test format=''.
+        
+        Raises TypeError because format can be only None or
+        valid formats.
+        """
         with pytest.raises(ValueError):
             mda.coordinates.core.get_writer_for(filename='test', format='')
 

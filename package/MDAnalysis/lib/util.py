@@ -926,9 +926,6 @@ def get_ext(filename):
     """
     root, ext = os.path.splitext(filename)
     
-    if ext == '':
-        raise ValueError
-    
     if ext.startswith(os.extsep):
         ext = ext[1:]
 
