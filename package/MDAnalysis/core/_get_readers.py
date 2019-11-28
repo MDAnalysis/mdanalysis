@@ -176,6 +176,14 @@ def get_writer_for(filename, format=None, multiframe=None):
                 None)
         else:
             format = util.check_compressed_format(root, ext)
+    
+    if format == '':
+        raise ValueError((
+            'File format could not be guessed from {}, '
+            'resulting in empty string - '
+            'only None or valid formats are supported.'
+            ).format(filename))
+
     format = format.upper()
     if multiframe is None:
         # Multiframe takes priority, else use singleframe

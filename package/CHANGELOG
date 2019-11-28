@@ -32,6 +32,7 @@ Fixes
   * PDB files no longer lose chainIDs when reading files without segIDs (Issue #2389)    
 
 Enhancements
+  * Enhanges exception message when trajectory output file has no extension assigned.
   * Uniforms exception handling between Python 2.7 and Python 3: raised exceptions
     do not contain previous exceptions traceback. Uses six package to handle
     py27 and py3 compatibility (PR #2357)
