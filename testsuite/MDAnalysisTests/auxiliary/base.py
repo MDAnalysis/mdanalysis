@@ -227,6 +227,11 @@ class BaseAuxReaderTest(object):
         for i, val in enumerate(reader):
             assert val.time == ref.select_time_ref[i], "time for step {} does not match".format(i)
 
+        # Manually set time selector
+        reader.time_selector = ref.time_selector
+        for i, val in enumerate(reader):
+            assert val.time == ref.select_time_ref[i], "time for step {} does not match".format(i)
+
     def test_data_selector(self, ref):
         # reload reader, passing in a data selector
         reader = ref.reader(ref.testdata,
@@ -348,6 +353,8 @@ class BaseAuxReaderTest(object):
         description = reader.get_description()
         new = mda.auxiliary.core.auxreader(**description)
         assert new == reader, "AuxReader reloaded from description does not match"
+
+    
 
 
 def assert_auxstep_equal(A, B):
