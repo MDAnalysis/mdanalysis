@@ -227,6 +227,9 @@ class BaseAuxReaderTest(object):
         for i, val in enumerate(reader):
             assert val.time == ref.select_time_ref[i], "time for step {} does not match".format(i)
 
+    def test_time_selector_manual(self, ref):
+        reader = ref.reader(ref.testdata,
+                            time_selector = ref.time_selector)
         # Manually set time selector
         reader.time_selector = ref.time_selector
         for i, val in enumerate(reader):
