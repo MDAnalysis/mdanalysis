@@ -908,7 +908,7 @@ class AuxFileReader(AuxReader):
 
     def _reopen(self):
         """ Close and then reopen *auxfile*. """
-        if self.auxfile is None:
+        if self.auxfile is not None:
             self.auxfile.close()
         self.auxfile = open(self._auxdata)
         self.auxstep.step = -1
