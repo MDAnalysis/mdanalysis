@@ -174,7 +174,7 @@ class TPRParser(TopologyReaderBase):
         """
         with openany(self.filename, mode='rb') as infile:
             tprf = infile.read()
-        data = xdrlib.Unpacker(tprf)
+        data = tpr_utils.TPXUnpacker(tprf)
         try:
             th = tpr_utils.read_tpxheader(data)                    # tpxheader
         except EOFError:

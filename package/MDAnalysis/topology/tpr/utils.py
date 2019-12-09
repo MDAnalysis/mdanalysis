@@ -50,6 +50,8 @@ from __future__ import absolute_import
 
 from six.moves import range
 import numpy as np
+import xdrlib
+import struct
 
 from . import obj
 from . import setting as S
@@ -72,6 +74,28 @@ from ...core.topologyattrs import (
     Impropers
 )
 
+
+class TPXUnpacker(xdrlib.Unpacker):
+    def __init__(self, data):
+        super().__init__(data)
+        self.__pos = self._Unpacker__pos
+        self.__buf = self._Unpacker__buf
+
+    @property
+    def _pos(self):
+        return self._Unpacker__pos
+
+    @_pos.setter
+    def _pos(self, value):
+        self._Unpacker__pos = value
+
+    def unpack_int64(self):
+        start_position = self._pos
+        end_position = self._pos = start_position + 8
+        content = self.__buf[start_position:end_position]
+        if len(content) != 8:
+            raise EOFError
+        return struct.unpack('>q', content)[0]
 
 
 def do_string(data):
@@ -172,6 +196,9 @@ def read_tpxheader(data):
     bV = data.unpack_int()  # has velocity or not
     bF = data.unpack_int()  # has force or not
     bBox = data.unpack_int()  # has box or not
+
+    if fileVersion >= S.tpxv_AddSizeField and fileGeneration >= 27:
+        sizeOfTprBody = data.unpack_int64()
 
     th = obj.TpxHeader(ver_str, precision, fileVersion, fileGeneration,
                        file_tag, natoms, ngtc, fep_state, lamb,
