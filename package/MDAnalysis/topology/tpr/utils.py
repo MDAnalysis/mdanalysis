@@ -79,7 +79,7 @@ class TPXUnpacker(xdrlib.Unpacker):
     def __init__(self, data):
         super().__init__(data)
         self.__pos = self._Unpacker__pos
-        self.__buf = self._Unpacker__buf
+        self._buf = self._Unpacker__buf
 
     @property
     def _pos(self):
@@ -92,10 +92,75 @@ class TPXUnpacker(xdrlib.Unpacker):
     def unpack_int64(self):
         start_position = self._pos
         end_position = self._pos = start_position + 8
-        content = self.__buf[start_position:end_position]
+        content = self._buf[start_position:end_position]
         if len(content) != 8:
             raise EOFError
         return struct.unpack('>q', content)[0]
+
+
+class TPXUnpacker2020:
+    base_size = 4
+
+    def __init__(self, data):
+        self.reset(data)
+
+    def reset(self, data):
+        self._pos = 0
+        self._buf = data
+
+    @classmethod
+    def from_unpacker(cls, unpacker):
+        new_unpacker = cls(unpacker._buf)
+        new_unpacker._pos = unpacker._pos
+        if hasattr(unpacker, 'unpack_real'):
+            new_unpacker.unpack_real = new_unpacker.unpack_float
+        return new_unpacker
+
+    def _unpack_value(self, item_size, struct_template):
+        padded_size = self.base_size * item_size
+        start_position = self._pos
+        end_position = self._pos = start_position + padded_size
+        full_content = self._buf[start_position:end_position]
+        if len(full_content) != padded_size:
+            raise EOFError
+        content = full_content[self.base_size - 1::self.base_size]
+        return struct.unpack(struct_template, content)[0]
+
+    def unpack_float(self):
+        return self._unpack_value(4, '<f')
+
+    def unpack_double(self):
+        return self._unpack_value(8, '<d')
+
+    def unpack_int(self):
+        return self._unpack_value(4, '<i')
+
+    def unpack_uint(self):
+        return self._unpack_value(4, '<I')
+
+    def unpack_char(self):
+        return self._unpack_value(1, '<c')
+
+    def unpack_string(self):
+        self._pos -= 4 * self.base_size
+        n = self.unpack_int()
+        self.unpack_uint()
+        value = self.unpack_fstring(n)
+        return value.decode()
+
+    def unpack_fstring(self, n):
+        if n < 0:
+            raise ValueError('Size of fstring cannot be negative.')
+        start_position = self._pos
+        end_position = self._pos =  start_position + n * self.base_size
+        if end_position > len(self._buf):
+            raise EOFError
+        full_content = self._buf[start_position:end_position]
+        content = full_content[self.base_size - 1::self.base_size]
+        return content
+
+    def unpack_farray(self, n, unpack_item):
+        return [unpack_item() for _ in range(n)]
 
 
 def do_string(data):
