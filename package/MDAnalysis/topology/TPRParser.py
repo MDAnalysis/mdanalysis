@@ -150,6 +150,7 @@ import xdrlib
 from . import guessers
 from ..lib.util import openany
 from .tpr import utils as tpr_utils
+from .tpr import setting as S
 from .base import TopologyReaderBase
 from ..core.topologyattrs import Resnums
 
@@ -185,6 +186,11 @@ class TPRParser(TopologyReaderBase):
         self._log_header(th)
 
         V = th.fver                                    # since it's used very often
+
+        # Starting with gromacs 2020 (tpx version 119), the body of the file
+        # is encoded differently. We change the unpacker accordingly.
+        if V >= S.tpxv_AddSizeField and th.fgen >= 27:
+            data = tpr_utils.TPXUnpacker2020.from_unpacker(data)
 
         state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
         if th.bBox:
