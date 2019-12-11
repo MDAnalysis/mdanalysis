@@ -89,13 +89,22 @@ class TPXUnpacker(xdrlib.Unpacker):
     def _pos(self, value):
         self._Unpacker__pos = value
 
-    def unpack_int64(self):
+    def _unpack_value(self, item_size, struct_template):
         start_position = self._pos
-        end_position = self._pos = start_position + 8
+        end_position = self._pos = start_position + item_size
         content = self._buf[start_position:end_position]
-        if len(content) != 8:
+        if len(content) != item_size:
             raise EOFError
-        return struct.unpack('>q', content)[0]
+        return struct.unpack(struct_template, content)[0]
+
+    def unpack_int64(self):
+        return self._unpack_value(8, '>q')
+
+    def unpack_ushort(self):
+        return self.unpack_uint()
+
+    def unpack_uchar(self):
+        return self._unpack_value(4, '>I')
 
 
 class TPXUnpacker2020:
@@ -138,15 +147,21 @@ class TPXUnpacker2020:
     def unpack_uint(self):
         return self._unpack_value(4, '<I')
 
+    def unpack_ushort(self):
+        return self._unpack_value(2, '<H')
+
     def unpack_char(self):
         return self._unpack_value(1, '<c')
+
+    def unpack_uchar(self):
+        return self._unpack_value(1, '>B')
 
     def unpack_string(self):
         self._pos -= 4 * self.base_size
         n = self.unpack_int()
         self.unpack_uint()
         value = self.unpack_fstring(n)
-        return value.decode()
+        return value
 
     def unpack_fstring(self, n):
         if n < 0:
@@ -802,8 +817,8 @@ def do_resinfo(data, symtab, fver, nres):
         resnames = []
         for i in range(nres):
             resnames.append(symtab[data.unpack_int()])
-            # assume the uchar in gmx is 8 byte, seems right
-            data.unpack_fstring(8)
+            data.unpack_int()
+            data.unpack_uchar()
     return resnames
 
 
@@ -812,8 +827,8 @@ def do_atom(data, fver):
     q = data.unpack_real()  # charge
     mB = data.unpack_real()
     qB = data.unpack_real()
-    tp = data.unpack_uint()  # type is a keyword in python
-    typeB = data.unpack_uint()
+    tp = data.unpack_ushort()  # type is a keyword in python
+    typeB = data.unpack_ushort()
     ptype = data.unpack_int()  # regular atom, virtual site or others
     resind = data.unpack_int()  # index of residue
 
