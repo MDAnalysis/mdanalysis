@@ -76,11 +76,16 @@ from ...core.topologyattrs import (
 
 
 class TPXUnpacker(xdrlib.Unpacker):
+    """
+    Extend the standard XDR unpacker for the specificity of TPX files.
+    """
     def __init__(self, data):
         super().__init__(data)
-        self.__pos = self._Unpacker__pos
         self._buf = self._Unpacker__buf
 
+    # The parent class uses a double dunder attribute to store the
+    # cursor position. This property makes it easier to manipulate
+    # this attribute that is otherwise "protected".
     @property
     def _pos(self):
         return self._Unpacker__pos
@@ -104,10 +109,21 @@ class TPXUnpacker(xdrlib.Unpacker):
         return self.unpack_uint()
 
     def unpack_uchar(self):
+        # TPX files prior to gromacs 2020 (tpx version < 119) use unsigned ints
+        # (4 bytes) instead of unsigned chars.
         return self._unpack_value(4, '>I')
 
 
 class TPXUnpacker2020:
+    """
+    Unpacker for TPX file later than gromacs 2020.
+
+    The body of TPX files is encoded differently since TPX version 119 (gromacs 2020).
+    On the contrary to regular XDR files, these TPX files are little-endian, and each
+    byte to read in padded to be 4 bytes; so b'\x02\xAB\x03\x01' in a XDR file becomes
+    b'\x00\x00\x00\x01\x00\x00\x00\x03\x00\x00\x00\xAB\x00\x00\x00\x02' in a TPX body
+    since TPX version 119.
+    """
     base_size = 4
 
     def __init__(self, data):
@@ -122,7 +138,12 @@ class TPXUnpacker2020:
         new_unpacker = cls(unpacker._buf)
         new_unpacker._pos = unpacker._pos
         if hasattr(unpacker, 'unpack_real'):
-            new_unpacker.unpack_real = new_unpacker.unpack_float
+            if unpacker.unpack_real == unpacker.unpack_float:
+                new_unpacker.unpack_real = new_unpacker.unpack_float
+            elif unpacker.unpack_real == unpacker.unpack_double:
+                new_unpacker.unpack_real = new_unpacker.unpack_double
+            else:
+                raise ValueError("Unrecognized precision")
         return new_unpacker
 
     def _unpack_value(self, item_size, struct_template):
