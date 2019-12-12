@@ -80,7 +80,7 @@ class TPXUnpacker(xdrlib.Unpacker):
     Extend the standard XDR unpacker for the specificity of TPX files.
     """
     def __init__(self, data):
-        super().__init__(data)
+        super(TPXUnpacker, self).__init__(data)
         self._buf = self._Unpacker__buf
 
     # The parent class uses a double dunder attribute to store the
