@@ -680,7 +680,7 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # settle.doh
             data.unpack_real()  # settle.dhh
 
-        elif i in [S.F_VSITE2]:
+        elif i in [S.F_VSITE2, S.F_VSITE2FD]:
             data.unpack_real()  # vsite.a
 
         elif i in [S.F_VSITE3, S.F_VSITE3FD, S.F_VSITE3FAD]:
