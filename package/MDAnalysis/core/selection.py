@@ -541,6 +541,7 @@ class StringSelection(Selection):
                 values = getattr(group, self.field).astype(np.str_)
                 mask |= np.char.startswith(values, val[:wc_pos])
                 mask &= np.char.endswith(values, val[wc_pos+1:])
+                print(val[wc_pos+1:])
 
         return group[mask].unique
 

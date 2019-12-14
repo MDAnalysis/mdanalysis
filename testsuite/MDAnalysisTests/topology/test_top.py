@@ -120,12 +120,6 @@ class TOPBase(ParserBase):
             for b in ((dih[0], dih[1]), (dih[1], dih[2]), (dih[2], dih[3])):
                 assert (b in vals) or (b[::-1] in vals)
 
-    def test_improper_atoms_bonded(self, top):
-        vals = top.bonds.values
-        for imp in top.impropers.values:
-            for b in ((imp[0], imp[2]), (imp[1], imp[2]), (imp[2], imp[3])):
-                assert (b in vals) or (b[::-1] in vals)
-
 
 class TestPRMParser(TOPBase):
     ref_filename = PRM

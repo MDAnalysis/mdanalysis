@@ -1643,6 +1643,31 @@ class Segids(SegmentAttr):
     transplants[SegmentGroup].append(
         ('_get_named_segment', _get_named_segment))
 
+def _check_connection_values(func):
+    """
+    Checks values passed to _Connection methods for appropriate number of 
+    atom indices and coerces them to tuples of ints.
+
+
+    .. versionadded:: 0.21.0
+
+    """
+    @functools.wraps(func)
+    def wrapper(self, values, *args, **kwargs):
+        if not all(len(x) == self._n_atoms 
+                and all(isinstance(y, (int, np.integer)) for y in x)
+                for x in values):
+            raise ValueError(("{} must be an iterable of tuples with {}"
+                            " atom indices").format(self.attrname,
+                            self._n_atoms))
+        clean = []
+        for v in values:
+            if v[0] > v[-1]:
+                v = v[::-1]
+            clean.append(tuple(v))
+
+        return func(self, clean, *args, **kwargs)
+    return wrapper
 
 class _Connection(AtomAttr):
     """Base class for connectivity between atoms
@@ -1651,6 +1676,7 @@ class _Connection(AtomAttr):
         Added type checking to atom index values.
     """
 
+    @_check_connection_values
     def __init__(self, values, types=None, guessed=False, order=None):
         self.values = values
         if types is None:
@@ -1710,6 +1736,7 @@ class _Connection(AtomAttr):
                              guessed,
                              order)
 
+    @_check_connection_values
     def _add_bonds(self, values, types=None, guessed=True, order=None):
         if types is None:
             types = itertools.cycle((None,))
@@ -1731,6 +1758,7 @@ class _Connection(AtomAttr):
         except KeyError:
             pass
     
+    @_check_connection_values
     def _delete_bonds(self, values):
         """
         .. versionadded:: 0.21.0
@@ -1750,48 +1778,7 @@ class _Connection(AtomAttr):
         except KeyError:
             pass
 
-def _check_connection_values(func):
-    """
-    Checks values passed to _Connection methods for appropriate number of 
-    atom indices and coerces them to tuples of ints.
-
-
-    .. versionadded:: 0.21.0
-
-    """
-    @functools.wraps(func)
-    def wrapper(self, values, *args, **kwargs):
-        if not all(len(x) == self._n_atoms 
-                and all(isinstance(y, (int, np.integer)) for y in x)
-                for x in values):
-            raise ValueError(("{} must be an iterable of tuples with {}"
-                            " atom indices").format(self.attrname,
-                            self._n_atoms))
-        clean = []
-        for v in values:
-            if v[0] > v[-1]:
-                v = v[::-1]
-            clean.append(tuple(v))
-
-        return func(self, clean, *args, **kwargs)
-    return wrapper
-
-class _SymmetricConnection(_Connection):
-    """
-    Base class for connectivity between atoms where atom indices
-    can be flipped without losing meaning. Values are checked for
-    type and length correctness.
-
-    .. versionadded:: 0.21.0
-
-
-    """
-    __init__ = _check_connection_values(_Connection.__init__)
-    _add_bonds = _check_connection_values(_Connection._add_bonds)
-    _delete_bonds = _check_connection_values(_Connection._delete_bonds)
-
-
-class Bonds(_SymmetricConnection):
+class Bonds(_Connection):
     """Bonds between two atoms
 
     Must be initialised by a list of zero based tuples.
@@ -1944,7 +1931,7 @@ class Bonds(_SymmetricConnection):
                                  n_fragments.__doc__)))
 
 
-class Angles(_SymmetricConnection):
+class Angles(_Connection):
     """Angles between three atoms
 
     Initialise with a list of 3 long tuples
@@ -1958,34 +1945,13 @@ class Angles(_SymmetricConnection):
     _n_atoms = 3
 
 
-class Dihedrals(_SymmetricConnection):
+class Dihedrals(_Connection):
     """A connection between four sequential atoms"""
     attrname = 'dihedrals'
     singular = 'dihedrals'
     transplants = defaultdict(list)
     _n_atoms = 4
 
-def _check_connection_types(func):
-    """
-    Checks values passed to _Connection methods for appropriate number of 
-    atom indices and coerces them to tuples of ints.
-
-
-    .. versionadded:: 0.21.0
-
-
-    """
-    @functools.wraps(func)
-    def wrapper(self, values, *args, **kwargs):
-        if not all(len(x) == self._n_atoms 
-                and all(isinstance(y, (int, np.integer)) for y in x)
-                for x in values):
-            raise ValueError(("{} must be an iterable of tuples with {}"
-                            " atom indices").format(self.attrname,
-                            self._n_atoms))
-        clean = [tuple(v) for v in values]
-        return func(self, clean, *args, **kwargs)
-    return wrapper
 
 class Impropers(_Connection):
     """An imaginary dihedral between four atoms"""
@@ -1993,8 +1959,4 @@ class Impropers(_Connection):
     singular = 'impropers'
     transplants = defaultdict(list)
     _n_atoms = 4
-
-    __init__ = _check_connection_types(_Connection.__init__)
-    _add_bonds = _check_connection_types(_Connection._add_bonds)
-    _delete_bonds = _check_connection_types(_Connection._delete_bonds)
 

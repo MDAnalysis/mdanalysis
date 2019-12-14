@@ -560,9 +560,3 @@ def test_static_typing_from_empty():
 
     assert isinstance(u._topology.masses.values, np.ndarray)
     assert isinstance(u.atoms[0].mass, float)
-
-def test_improper_ordering():
-    u = mda.Universe(PRM)
-    top_impropers = set(u._topology.impropers.values)
-    for imp in u.atoms.impropers.indices:
-        assert tuple(imp) in top_impropers
