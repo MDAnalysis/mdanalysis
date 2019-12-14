@@ -378,21 +378,21 @@
 
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">zip</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">raise_from</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.optimize</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="k">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span><span class="p">,</span> <span class="n">calc_bonds</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="k">import</span> <span class="n">deprecate</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="k">import</span> <span class="n">requires</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span><span class="p">,</span> <span class="n">calc_bonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">deprecate</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="kn">import</span> <span class="n">requires</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis.due</span> <span class="k">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 <span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1063/1.4922445&quot;</span><span class="p">),</span>
          <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Hydrogen bonding autocorrelation time&quot;</span><span class="p">,</span>
          <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.hbonds.hbond_autocorrel&#39;</span><span class="p">,</span>
@@ -461,7 +461,7 @@
 <span class="sd">        Whether to consider periodic boundaries in calculations [``True``]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span>
                  <span class="n">hydrogens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acceptors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">bond_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">exclusions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -796,7 +796,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Solution to results not found&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&lt;MDAnalysis HydrogenBondAutoCorrel analysis measuring the &quot;</span>
                 <span class="s2">&quot;</span><span class="si">{btype}</span><span class="s2"> lifetime of </span><span class="si">{n}</span><span class="s2"> different hydrogens&gt;&quot;</span>
                 <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">btype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">)))</span></div>

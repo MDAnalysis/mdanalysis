@@ -238,7 +238,7 @@ coordinates.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.formats.libdcd</span> <span class="k">import</span> <span class="n">DCDFile</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.formats.libdcd</span> <span class="kn">import</span> <span class="n">DCDFile</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">DCDFile</span><span class="p">(</span><span class="s1">&#39;foo.dcd&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="nb">print</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>

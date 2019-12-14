@@ -240,16 +240,16 @@
 <span class="sd">.. autofunction:: uncomment</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">raise_from</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span>
 
 <span class="kn">import</span> <span class="nn">numbers</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">base</span>
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">anyopen</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">anyopen</span>
 
 <div class="viewcode-block" id="uncomment"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.uncomment">[docs]</a><span class="k">def</span> <span class="nf">uncomment</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Remove comments from lines in an .xvg file</span>
@@ -302,7 +302,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    :class:`~MDAnalysis.auxiliary.base.AuxStep`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_selector</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">data_selector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_selector</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">data_selector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">XVGStep</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">time_selector</span><span class="o">=</span><span class="n">time_selector</span><span class="p">,</span>
                                       <span class="n">data_selector</span><span class="o">=</span><span class="n">data_selector</span><span class="p">,</span>
                                       <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -361,7 +361,7 @@
     <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;XVG&quot;</span>
     <span class="n">_Auxstep</span> <span class="o">=</span> <span class="n">XVGStep</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_auxdata</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">anyopen</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">xvg_file</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">xvg_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
@@ -466,7 +466,7 @@
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;XVG-F&#39;</span>
     <span class="n">_Auxstep</span> <span class="o">=</span> <span class="n">XVGStep</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">XVGFileReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_read_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

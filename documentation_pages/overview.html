@@ -204,7 +204,7 @@ can create new objects (in this case, another
 coordinates for every frame. In the following example the end-to-end distance
 of a protein and the radius of gyration of the backbone atoms are calculated:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span>  <span class="c1"># test trajectory</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span>  <span class="c1"># test trajectory</span>
 <span class="kn">import</span> <span class="nn">numpy.linalg</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>  <span class="c1"># always start with a Universe</span>
 <span class="n">nterm</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;segid 4AKE and name N&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># can access structure via segid (s4AKE) and atom name</span>
@@ -221,7 +221,7 @@ of a protein and the radius of gyration of the backbone atoms are calculated:</p
 <h2>1.1. Using MDAnalysis in python<a class="headerlink" href="#using-mdanalysis-in-python" title="Permalink to this headline">¶</a></h2>
 <p>If you’ve installed MDAnalysis in the standard python modules location, load
 from within the interpreter:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="o">*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 </div>
 <p>or</p>
@@ -239,7 +239,7 @@ are typically run from an interactive <strong class="program">ipython</strong> s
 <p>Invariably, a MDAnalysis session starts with loading data into the
 <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> class (which can be accessed
 as <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="o">*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -257,8 +257,8 @@ compressed with gzip or bzip2).</li>
 <p>For the remainder of this introduction we are using a short example trajectory
 that is provided with MDAnalysis (as part of the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests">MDAnalysis test suite</a>). The
 trajectory is loaded with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="n">Universe</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -299,8 +299,8 @@ over time:</p>
 <p>MDAnalysis comes with a number of real trajectories for testing. You
 can also use them to explore the functionality and ensure that
 everything is working properly:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">,</span> <span class="n">PDB</span><span class="p">,</span><span class="n">XTC</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">,</span> <span class="n">PDB</span><span class="p">,</span><span class="n">XTC</span>
 <span class="n">u_dims_adk</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="n">u_eq_adk</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
 </pre></div>

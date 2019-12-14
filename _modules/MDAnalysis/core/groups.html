@@ -262,11 +262,11 @@
 <span class="sd">   at.level.plural  # Returns AtomGroup class</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">zip</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">raise_from</span><span class="p">,</span> <span class="n">string_types</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span><span class="p">,</span> <span class="n">string_types</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -274,20 +274,20 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="k">import</span> <span class="n">deprecate</span>
+<span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="kn">import</span> <span class="n">deprecate</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_ANCHOR_UNIVERSES</span>
-<span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">util</span>
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span> <span class="n">unique_int_1d</span>
-<span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">distances</span>
-<span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">transformations</span>
-<span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">mdamath</span>
-<span class="kn">from</span> <span class="nn">..selections</span> <span class="k">import</span> <span class="n">get_writer</span> <span class="k">as</span> <span class="n">get_selection_writer_for</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">selection</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">flags</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">NoDataError</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">topologyobjects</span>
-<span class="kn">from</span> <span class="nn">._get_readers</span> <span class="k">import</span> <span class="n">get_writer_for</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_ANCHOR_UNIVERSES</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span> <span class="n">unique_int_1d</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">transformations</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">mdamath</span>
+<span class="kn">from</span> <span class="nn">..selections</span> <span class="kn">import</span> <span class="n">get_writer</span> <span class="k">as</span> <span class="n">get_selection_writer_for</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">selection</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">flags</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">topologyobjects</span>
+<span class="kn">from</span> <span class="nn">._get_readers</span> <span class="kn">import</span> <span class="n">get_writer_for</span>
 
 
 <span class="k">def</span> <span class="nf">_unpickle</span><span class="p">(</span><span class="n">uhash</span><span class="p">,</span> <span class="n">ix</span><span class="p">):</span>
@@ -449,7 +449,7 @@
                     <span class="nb">property</span><span class="p">(</span><span class="n">getter</span><span class="p">,</span> <span class="n">setter</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">singledoc</span><span class="p">))</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_SETATTR_WHITELIST</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="c1"># `ag.this = 42` calls setattr(ag, &#39;this&#39;, 42)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">or</span>  <span class="c1"># &#39;private&#39; allowed</span>
                 <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SETATTR_WHITELIST</span> <span class="ow">or</span>  <span class="c1"># known attributes allowed</span>
@@ -476,7 +476,7 @@
 <span class="sd">    in cache retrieval.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># This pre-initialization wrapper must be pretty generic to</span>
         <span class="c1"># allow for different initialization schemes of the possible classes.</span>
         <span class="c1"># All we really need here is to fish a universe out of the arg list.</span>
@@ -488,7 +488,7 @@
                 <span class="c1"># older AtomGroup init method..</span>
                 <span class="n">u</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
-                <span class="kn">from</span> <span class="nn">.universe</span> <span class="k">import</span> <span class="n">Universe</span>
+                <span class="kn">from</span> <span class="nn">.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
                 <span class="c1"># Let&#39;s be generic and get the first argument that&#39;s either a</span>
                 <span class="c1"># Universe, a Group, or a Component, and go from there.</span>
                 <span class="c1"># This is where the UpdatingAtomGroup args get matched.</span>
@@ -629,7 +629,7 @@
 <span class="sd">    |                               |            | ``t`` but not both         |</span>
 <span class="sd">    +-------------------------------+------------+----------------------------+</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="c1"># list of atoms/res/segs, old init method</span>
@@ -652,13 +652,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">=</span> <span class="n">u</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="o">.</span><span class="n">tolist</span><span class="p">())))</span>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="c1"># supports</span>
         <span class="c1"># - integer access</span>
         <span class="c1"># - boolean slicing</span>
@@ -678,13 +678,13 @@
             <span class="c1"># resulting from slicing.</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="o">.</span><span class="n">name</span>
         <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2">Group with </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}{}</span><span class="s2">&gt;&quot;</span>
                 <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">name</span><span class="p">,</span>
                 <span class="s2">&quot;s&quot;</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:]))</span> <span class="c1"># Shorthand for a conditional plural &#39;s&#39;.</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="o">.</span><span class="n">name</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;&lt;</span><span class="si">{}</span><span class="s1">Group </span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
@@ -693,7 +693,7 @@
                                                   <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)[:</span><span class="mi">3</span><span class="p">])[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
                                                   <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])[</span><span class="mi">1</span><span class="p">:])</span>
 
-    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Concatenate the Group with another Group or Component of the same</span>
 <span class="sd">        level.</span>
 
@@ -710,7 +710,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Using built-in sum requires supporting 0 + self. If other is</span>
 <span class="sd">        anything other 0, an exception will be raised.</span>
 
@@ -731,11 +731,11 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unsupported operand type(s) for +:&quot;</span>
                             <span class="s2">&quot; &#39;</span><span class="si">{}</span><span class="s2">&#39; and &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                     <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
-    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
     <span class="nd">@_only_same_level</span>
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test group equality.</span>
 
 <span class="sd">        Two groups are equal if they contain the same indices in</span>
@@ -746,20 +746,20 @@
         <span class="n">o_ix</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">ix</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">o_ix</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">other</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
             <span class="c1"># maybe raise TypeError instead?</span>
             <span class="c1"># eq method raises Error for wrong comparisons</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">ix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span>
 
-    <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -2434,7 +2434,7 @@
 <span class="sd">       release. See :ref:`Instant selectors &lt;instance-selectors&gt;` for details</span>
 <span class="sd">       and alternatives.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="c1"># DEPRECATED in 0.16.2</span>
         <span class="c1"># REMOVE in 1.0</span>
         <span class="c1">#</span>
@@ -2446,7 +2446,7 @@
                 <span class="k">pass</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="c1"># DEPRECATED in 0.16.2</span>
         <span class="c1"># REMOVE in 1.0</span>
         <span class="c1">#</span>
@@ -3108,8 +3108,8 @@
 <span class="sd">        .. versionchanged:: 0.20.2</span>
 <span class="sd">           Now applies periodic boundary conditions when guessing bonds.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..topology.core</span> <span class="k">import</span> <span class="n">guess_bonds</span><span class="p">,</span> <span class="n">guess_angles</span><span class="p">,</span> <span class="n">guess_dihedrals</span>
-        <span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="k">import</span> <span class="n">Bonds</span><span class="p">,</span> <span class="n">Angles</span><span class="p">,</span> <span class="n">Dihedrals</span>
+        <span class="kn">from</span> <span class="nn">..topology.core</span> <span class="kn">import</span> <span class="n">guess_bonds</span><span class="p">,</span> <span class="n">guess_angles</span><span class="p">,</span> <span class="n">guess_dihedrals</span>
+        <span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="kn">import</span> <span class="n">Bonds</span><span class="p">,</span> <span class="n">Angles</span><span class="p">,</span> <span class="n">Dihedrals</span>
 
         <span class="k">def</span> <span class="nf">get_TopAttr</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;either get *name* or create one from *cls*&quot;&quot;&quot;</span>
@@ -3659,29 +3659,29 @@
 
 <span class="sd">    Components are the individual objects that are found in Groups.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
         <span class="c1"># index of component</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ix</span> <span class="o">=</span> <span class="n">ix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">=</span> <span class="n">u</span>
 
-    <span class="k">def</span> <span class="nf">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t compare different level objects&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">ix</span>
 
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t compare different level objects&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">ix</span>
 
-    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 
     <span class="nd">@_only_same_level</span>
-    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Concatenate the Component with another Component or Group of the</span>
 <span class="sd">        same level.</span>
 
@@ -3700,7 +3700,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">ix_array</span><span class="p">,</span> <span class="n">o_ix</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Using built-in sum requires supporting 0 + self. If other is</span>
 <span class="sd">        anything other 0, an exception will be raised.</span>
 
@@ -3758,7 +3758,7 @@
 <span class="sd">    from :class:`ComponentBase`, so this class only includes ad-hoc methods</span>
 <span class="sd">    specific to :class:`Atoms&lt;Atom&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Try and catch known attributes and give better error message&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;fragment&#39;</span><span class="p">,</span> <span class="s1">&#39;fragindex&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Atom has no </span><span class="si">{}</span><span class="s2"> data, this requires Bonds&quot;</span>
@@ -3767,7 +3767,7 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2"> has no attribute </span><span class="si">{attr}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="n">attr</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">me</span> <span class="o">=</span> <span class="s1">&#39;&lt;Atom </span><span class="si">{}</span><span class="s1">:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">):</span>
             <span class="n">me</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -3898,7 +3898,7 @@
 <span class="sd">    from :class:`ComponentBase`, so this class only includes ad-hoc methods</span>
 <span class="sd">    specific to :class:`Residues&lt;Residue&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">me</span> <span class="o">=</span> <span class="s1">&#39;&lt;Residue&#39;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;resname&#39;</span><span class="p">):</span>
             <span class="n">me</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">,&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resname</span><span class="p">)</span>
@@ -3945,7 +3945,7 @@
 <span class="sd">       1.0 release. See :ref:`Instant selectors &lt;instance-selectors&gt;` for</span>
 <span class="sd">       details and alternatives.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">me</span> <span class="o">=</span> <span class="s1">&#39;&lt;Segment&#39;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;segid&#39;</span><span class="p">):</span>
             <span class="n">me</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segid</span><span class="p">)</span>
@@ -3971,7 +3971,7 @@
         <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
         <span class="k">return</span> <span class="n">rg</span>
 
-    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="c1"># DEPRECATED in 0.16.2</span>
         <span class="c1"># REMOVE in 1.0</span>
         <span class="c1">#</span>
@@ -4026,7 +4026,7 @@
     <span class="c1"># __getattribute__ and __getattr__, and a solution might be to add said</span>
     <span class="c1"># attribute to _UAG_SHORTCUT_ATTRS.</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_group</span><span class="p">,</span> <span class="n">selections</span><span class="p">,</span> <span class="n">strings</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_group</span><span class="p">,</span> <span class="n">selections</span><span class="p">,</span> <span class="n">strings</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
@@ -4114,7 +4114,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">update_selection</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">status</span>
 
-    <span class="k">def</span> <span class="nf">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="c1"># ALL attribute access goes through here</span>
         <span class="c1"># If the requested attribute is public (not starting with &#39;_&#39;) and</span>
         <span class="c1"># isn&#39;t in the shortcut list, update ourselves</span>
@@ -4132,7 +4132,7 @@
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_group</span><span class="o">.</span><span class="n">__reduce__</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selections</span><span class="p">,</span>
                  <span class="bp">self</span><span class="o">.</span><span class="n">_selection_strings</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">basestr</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">UpdatingAtomGroup</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection_strings</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">basestr</span>

@@ -563,7 +563,7 @@ is avoided.</p>
 coordinates from a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> data file. For instance, in order to
 produce a PSF file of the topology and a PDB file of the coordinates
 from a data file “lammps.data” you can use:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.topology.LAMMPSParser</span> <span class="k">import</span> <span class="n">LAMPPSData</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.topology.LAMMPSParser</span> <span class="kn">import</span> <span class="n">LAMPPSData</span>
 <span class="n">d</span> <span class="o">=</span> <span class="n">LAMMPSDataConverter</span><span class="p">(</span><span class="s2">&quot;lammps.data&quot;</span><span class="p">)</span>
 <span class="n">d</span><span class="o">.</span><span class="n">writePSF</span><span class="p">(</span><span class="s2">&quot;lammps.psf&quot;</span><span class="p">)</span>
 <span class="n">d</span><span class="o">.</span><span class="n">writePDB</span><span class="p">(</span><span class="s2">&quot;lammps.pdb&quot;</span><span class="p">)</span>

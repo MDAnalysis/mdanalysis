@@ -264,7 +264,7 @@ using backbone atoms</li>
 <p>The trajectory is included with the test data files. The data in
 <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.rmsd</span></code></a> is plotted with <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.1.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">,</span><span class="n">CRD</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">,</span><span class="n">CRD</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="n">ref</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>     <span class="c1"># reference closed AdK (1AKE) (with the default ref_frame=0)</span>
 <span class="c1">#ref = MDAnalysis.Universe(PSF,CRD)    # reference open AdK (4AKE)</span>
@@ -607,9 +607,9 @@ intermediate trajectories</span></a> to disk or
 <a class="reference internal" href="../coordinates/memory.html#creating-in-memory-trajectory-label"><span class="std std-ref">generate an in-memory universe</span></a> that only contains, say, the
 protein):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">align</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">align</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
@@ -639,7 +639,7 @@ whole trajectory to the reference by minimizing the RMSD. We use
 </div>
 <p>The trajectory is now fitted to the reference (the RMSD is stored as
 <cite>aligner.rmsd</cite> for further inspection). Now we can calculate the RMSF:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="k">import</span> <span class="n">RMSF</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="kn">import</span> <span class="n">RMSF</span>
 
 <span class="n">calphas</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name CA&quot;</span><span class="p">)</span>
 <span class="n">rmsfer</span> <span class="o">=</span> <span class="n">RMSF</span><span class="p">(</span><span class="n">calphas</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>

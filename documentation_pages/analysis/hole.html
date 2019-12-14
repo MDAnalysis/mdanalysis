@@ -242,8 +242,8 @@ structure of the Gramicidin A (gA) channel. We use the <a class="reference inter
 class, which acts as a wrapper around <strong class="program">hole</strong>. It therefore
 shares some of the limitations of <a class="reference external" href="http://www.holeprogram.org">HOLE</a>, namely, that it can only
 process PDB files <a class="footnote-reference" href="#holedcd" id="id4">[1]</a>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hole</span> <span class="k">import</span> <span class="n">HOLE</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PDB_HOLE</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hole</span> <span class="kn">import</span> <span class="n">HOLE</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB_HOLE</span>
 
 <span class="n">H</span> <span class="o">=</span> <span class="n">HOLE</span><span class="p">(</span><span class="n">PDB_HOLE</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;~/hole2/exe/hole&quot;</span><span class="p">)</span>  <span class="c1"># set path to your hole binary</span>
 <span class="n">H</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -260,8 +260,8 @@ process PDB files <a class="footnote-reference" href="#holedcd" id="id4">[1]</a>
 <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLEtraj" title="MDAnalysis.analysis.hole.HOLEtraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">HOLEtraj</span></code></a>. In this case, provide a
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hole</span> <span class="k">import</span> <span class="n">HOLEtraj</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">MULTIPDB_HOLE</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hole</span> <span class="kn">import</span> <span class="n">HOLEtraj</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">MULTIPDB_HOLE</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">MULTIPDB_HOLE</span><span class="p">)</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">HOLEtraj</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;~/hole2/exe/hole&quot;</span><span class="p">)</span>
@@ -282,10 +282,10 @@ the <a class="reference internal" href="rms.html#MDAnalysis.analysis.rms.RMSD" t
 profiles <span class="math notranslate nohighlight">\(R_\rho(\zeta)\)</span> can be ordered by the RMSD, which acts as an
 order parameter <span class="math notranslate nohighlight">\(\rho\)</span>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hole</span> <span class="k">import</span> <span class="n">HOLEtraj</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="k">import</span> <span class="n">RMSD</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hole</span> <span class="kn">import</span> <span class="n">HOLEtraj</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="kn">import</span> <span class="n">RMSD</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PDB_HOLE</span><span class="p">,</span> <span class="n">MULTIPDB_HOLE</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB_HOLE</span><span class="p">,</span> <span class="n">MULTIPDB_HOLE</span>
 
 <span class="n">mda</span><span class="o">.</span><span class="n">start_logging</span><span class="p">()</span>
 <span class="n">ref</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB_HOLE</span><span class="p">)</span>    <span class="c1"># reference structure</span>

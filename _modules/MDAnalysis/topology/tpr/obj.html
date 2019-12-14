@@ -205,11 +205,11 @@
 <span class="sd">===================================</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 
 <span class="n">TpxHeader</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
     <span class="s2">&quot;TpxHeader&quot;</span><span class="p">,</span> <span class="p">[</span>
@@ -228,7 +228,7 @@
 
 
 <div class="viewcode-block" id="MoleculeKind"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind">[docs]</a><span class="k">class</span> <span class="nc">MoleculeKind</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">atomkinds</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">atomkinds</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">dihe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">impr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acceptors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># name of the molecule</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomkinds</span> <span class="o">=</span> <span class="n">atomkinds</span>
@@ -239,7 +239,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">donors</span> <span class="o">=</span> <span class="n">donors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span> <span class="o">=</span> <span class="n">acceptors</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;Molecule: </span><span class="si">{0:&lt;20s}</span><span class="s2"> #atoms: </span><span class="si">{1:&lt;10d}</span><span class="s2"> #residues: </span><span class="si">{2:&lt;10d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_residues</span><span class="p">())</span>
 
@@ -278,7 +278,7 @@
 
 
 <div class="viewcode-block" id="AtomKind"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.AtomKind">[docs]</a><span class="k">class</span> <span class="nc">AtomKind</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">charge</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">charge</span><span class="p">):</span>
         <span class="c1"># id is only within the scope of a single molecule, not the whole system</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -288,7 +288,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">mass</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="n">charge</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> \
             <span class="p">(</span><span class="s2">&quot;&lt; AtomKind: id </span><span class="si">{0:6d}</span><span class="s2">, name </span><span class="si">{1:5s}</span><span class="s2">, type </span><span class="si">{2:10s}</span><span class="s2">, resid </span><span class="si">{3:6d}</span><span class="s2">, resname </span><span class="si">{4:4s}</span><span class="s2">, mass </span><span class="si">{5:8.4f}</span><span class="s2">, &quot;</span>
              <span class="s2">&quot;charge </span><span class="si">{6:12.3f}</span><span class="s2"> &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span>
@@ -296,7 +296,7 @@
 
 
 <div class="viewcode-block" id="InteractionKind"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.InteractionKind">[docs]</a><span class="k">class</span> <span class="nc">InteractionKind</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">long_name</span><span class="p">,</span> <span class="n">natoms</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">long_name</span><span class="p">,</span> <span class="n">natoms</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;natoms: number of atoms involved in this type of interaction&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">long_name</span> <span class="o">=</span> <span class="n">long_name</span>

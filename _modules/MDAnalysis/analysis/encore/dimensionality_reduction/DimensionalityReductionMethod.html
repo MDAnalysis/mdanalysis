@@ -207,13 +207,13 @@
 <span class="sd">.. versionadded:: 0.16.0</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="c1"># Import native affinity propagation implementation</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">stochasticproxembed</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">stochasticproxembed</span>
 
 <span class="c1"># Attempt to import scikit-learn clustering algorithms</span>
 <span class="k">try</span><span class="p">:</span>
@@ -234,7 +234,7 @@
     <span class="c1"># Whether the method accepts a distance matrix</span>
     <span class="n">accepts_distance_matrix</span><span class="o">=</span><span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -259,7 +259,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to the natively implemented Affinity propagation procedure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">dimension</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
                  <span class="n">distance_cutoff</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span>
                  <span class="n">min_lam</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
@@ -296,7 +296,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nstep</span> <span class="o">=</span> <span class="n">nstep</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stressfreq</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -337,7 +337,7 @@
         <span class="c1"># Whether the method accepts a distance matrix</span>
         <span class="n">accepts_distance_matrix</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                      <span class="n">dimension</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
                      <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
@@ -351,7 +351,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">pca</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">decomposition</span><span class="o">.</span><span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">dimension</span><span class="p">,</span>
                                                  <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>

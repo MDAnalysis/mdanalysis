@@ -212,7 +212,7 @@
 <span class="sd">:mod:`MDAnalysis.lib.distances`</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;distance_array&#39;</span><span class="p">,</span> <span class="s1">&#39;self_distance_array&#39;</span><span class="p">,</span>
            <span class="s1">&#39;contact_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;dist&#39;</span><span class="p">,</span> <span class="s1">&#39;between&#39;</span><span class="p">]</span>
@@ -220,13 +220,13 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="p">(</span>
            <span class="n">capped_distance</span><span class="p">,</span>
            <span class="n">self_distance_array</span><span class="p">,</span> <span class="n">distance_array</span><span class="p">,</span>  <span class="c1"># legacy reasons</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.c_distances</span> <span class="k">import</span> <span class="n">contact_matrix_no_pbc</span><span class="p">,</span> <span class="n">contact_matrix_pbc</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.NeighborSearch</span> <span class="k">import</span> <span class="n">AtomNeighborSearch</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="k">import</span> <span class="n">calc_bonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.c_distances</span> <span class="kn">import</span> <span class="n">contact_matrix_no_pbc</span><span class="p">,</span> <span class="n">contact_matrix_pbc</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.NeighborSearch</span> <span class="kn">import</span> <span class="n">AtomNeighborSearch</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">calc_bonds</span>
 
 
 <span class="kn">import</span> <span class="nn">warnings</span>

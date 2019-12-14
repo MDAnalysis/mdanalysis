@@ -209,23 +209,23 @@
 <span class="sd">.. versionadded:: 0.16.0</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
 
-<span class="kn">from</span> <span class="nn">joblib</span> <span class="k">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+<span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">getpass</span> <span class="k">import</span> <span class="n">getuser</span>
-<span class="kn">from</span> <span class="nn">socket</span> <span class="k">import</span> <span class="n">gethostname</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">getpass</span> <span class="kn">import</span> <span class="n">getuser</span>
+<span class="kn">from</span> <span class="nn">socket</span> <span class="kn">import</span> <span class="n">gethostname</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">...core.universe</span> <span class="k">import</span> <span class="n">Universe</span>
+<span class="kn">from</span> <span class="nn">...core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
 
-<span class="kn">from</span> <span class="nn">..align</span> <span class="k">import</span> <span class="n">rotation_matrix</span>
+<span class="kn">from</span> <span class="nn">..align</span> <span class="kn">import</span> <span class="n">rotation_matrix</span>
 
-<span class="kn">from</span> <span class="nn">.cutils</span> <span class="k">import</span> <span class="n">PureRMSD</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">TriangularMatrix</span><span class="p">,</span> <span class="n">trm_indices</span>
+<span class="kn">from</span> <span class="nn">.cutils</span> <span class="kn">import</span> <span class="n">PureRMSD</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">TriangularMatrix</span><span class="p">,</span> <span class="n">trm_indices</span>
 
 
 <div class="viewcode-block" id="conformational_distance_matrix"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/confdistmatrix.html#MDAnalysis.analysis.encore.confdistmatrix.conformational_distance_matrix">[docs]</a><span class="k">def</span> <span class="nf">conformational_distance_matrix</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span>

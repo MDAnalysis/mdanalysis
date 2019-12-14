@@ -278,13 +278,13 @@
 <span class="sd">Exceptions to this rule are documented.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">._globals</span> <span class="k">import</span> <span class="n">ModuleDeprecationWarning</span><span class="p">,</span> <span class="n">VisibleDeprecationWarning</span>
-<span class="kn">from</span> <span class="nn">._globals</span> <span class="k">import</span> <span class="n">_NoValue</span>
+<span class="kn">from</span> <span class="nn">._globals</span> <span class="kn">import</span> <span class="n">ModuleDeprecationWarning</span><span class="p">,</span> <span class="n">VisibleDeprecationWarning</span>
+<span class="kn">from</span> <span class="nn">._globals</span> <span class="kn">import</span> <span class="n">_NoValue</span>
 
 <span class="c1"># We first need to detect if we&#39;re being called as part of the numpy setup</span>
 <span class="c1"># procedure itself in a reliable manner.</span>
@@ -297,46 +297,46 @@
     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Running from numpy source directory.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">numpy.__config__</span> <span class="k">import</span> <span class="n">show</span> <span class="k">as</span> <span class="n">show_config</span>
+        <span class="kn">from</span> <span class="nn">numpy.__config__</span> <span class="kn">import</span> <span class="n">show</span> <span class="k">as</span> <span class="n">show_config</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Error importing numpy: you should not try to import numpy from</span>
 <span class="s2">        its source directory; please exit the numpy source tree, and relaunch</span>
 <span class="s2">        your python interpreter from there.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-    <span class="kn">from</span> <span class="nn">.version</span> <span class="k">import</span> <span class="n">git_revision</span> <span class="k">as</span> <span class="n">__git_revision__</span>
-    <span class="kn">from</span> <span class="nn">.version</span> <span class="k">import</span> <span class="n">version</span> <span class="k">as</span> <span class="n">__version__</span>
+    <span class="kn">from</span> <span class="nn">.version</span> <span class="kn">import</span> <span class="n">git_revision</span> <span class="k">as</span> <span class="n">__git_revision__</span>
+    <span class="kn">from</span> <span class="nn">.version</span> <span class="kn">import</span> <span class="n">version</span> <span class="k">as</span> <span class="n">__version__</span>
 
     <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ModuleDeprecationWarning&#39;</span><span class="p">,</span>
                <span class="s1">&#39;VisibleDeprecationWarning&#39;</span><span class="p">]</span>
 
     <span class="c1"># Allow distributors to run custom init code</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">_distributor_init</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_distributor_init</span>
 
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">core</span>
-    <span class="kn">from</span> <span class="nn">.core</span> <span class="k">import</span> <span class="o">*</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">compat</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">lib</span>
-    <span class="kn">from</span> <span class="nn">.lib</span> <span class="k">import</span> <span class="o">*</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">linalg</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">fft</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">polynomial</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">random</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ctypeslib</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ma</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">matrixlib</span> <span class="k">as</span> <span class="n">_mat</span>
-    <span class="kn">from</span> <span class="nn">.matrixlib</span> <span class="k">import</span> <span class="o">*</span>
-    <span class="kn">from</span> <span class="nn">.compat</span> <span class="k">import</span> <span class="n">long</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">core</span>
+    <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">compat</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">lib</span>
+    <span class="kn">from</span> <span class="nn">.lib</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">linalg</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">fft</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">polynomial</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">random</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ctypeslib</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ma</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">matrixlib</span> <span class="k">as</span> <span class="n">_mat</span>
+    <span class="kn">from</span> <span class="nn">.matrixlib</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">.compat</span> <span class="kn">import</span> <span class="n">long</span>
 
     <span class="c1"># Make these accessible from numpy name-space</span>
     <span class="c1"># but not imported in from numpy import *</span>
     <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">str</span>
+        <span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">str</span>
         <span class="n">unicode</span> <span class="o">=</span> <span class="nb">str</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">__builtin__</span> <span class="k">import</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">unicode</span><span class="p">,</span> <span class="nb">str</span>
+        <span class="kn">from</span> <span class="nn">__builtin__</span> <span class="kn">import</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">unicode</span><span class="p">,</span> <span class="nb">str</span>
 
-    <span class="kn">from</span> <span class="nn">.core</span> <span class="k">import</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">abs</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="nb">min</span>
+    <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">abs</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="nb">min</span>
     <span class="c1"># now that numpy modules are imported, can initialize limits</span>
     <span class="n">core</span><span class="o">.</span><span class="n">getlimits</span><span class="o">.</span><span class="n">_register_known_types</span><span class="p">()</span>
 
@@ -358,10 +358,10 @@
 
     <span class="c1"># We don&#39;t actually use this ourselves anymore, but I&#39;m not 100% sure that</span>
     <span class="c1"># no-one else in the world is using it (though I hope not)</span>
-    <span class="kn">from</span> <span class="nn">.testing</span> <span class="k">import</span> <span class="n">Tester</span>
+    <span class="kn">from</span> <span class="nn">.testing</span> <span class="kn">import</span> <span class="n">Tester</span>
 
     <span class="c1"># Pytest testing</span>
-    <span class="kn">from</span> <span class="nn">numpy._pytesttester</span> <span class="k">import</span> <span class="n">PytestTester</span>
+    <span class="kn">from</span> <span class="nn">numpy._pytesttester</span> <span class="kn">import</span> <span class="n">PytestTester</span>
     <span class="n">test</span> <span class="o">=</span> <span class="n">PytestTester</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">PytestTester</span>
 

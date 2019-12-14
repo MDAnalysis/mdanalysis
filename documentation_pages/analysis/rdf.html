@@ -340,7 +340,7 @@ every frame)</li>
 <p>First create the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="MDAnalysis.analysis.rdf.InterRDF_s"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF_s</span></code></a> object, by supplying one Universe and
 one list of pairs of AtomGroups, then use the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.run" title="MDAnalysis.analysis.rdf.InterRDF_s.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a>
 method:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="k">import</span> <span class="n">GRO_MEMPROT</span><span class="p">,</span> <span class="n">XTC_MEMPROT</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">GRO_MEMPROT</span><span class="p">,</span> <span class="n">XTC_MEMPROT</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">GRO_MEMPROT</span><span class="p">,</span> <span class="n">XTC_MEMPROT</span><span class="p">)</span>
 
 <span class="n">s1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name ZND and resid 289&#39;</span><span class="p">)</span>

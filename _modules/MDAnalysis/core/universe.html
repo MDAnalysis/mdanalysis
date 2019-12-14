@@ -254,8 +254,8 @@
 <span class="sd">.. autofunction:: Merge</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
 <span class="kn">import</span> <span class="nn">six</span>
 
 <span class="kn">import</span> <span class="nn">errno</span>
@@ -288,19 +288,19 @@
     <span class="n">os</span><span class="o">.</span><span class="n">fork</span> <span class="o">=</span> <span class="n">_os_dot_fork</span>
     <span class="k">del</span> <span class="n">_os_dot_fork</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_ANCHOR_UNIVERSES</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">,</span> <span class="n">_PARSERS</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">NoDataError</span>
-<span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">util</span>
-<span class="kn">from</span> <span class="nn">..lib.log</span> <span class="k">import</span> <span class="n">ProgressMeter</span>
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">NamedStream</span><span class="p">,</span> <span class="n">isstream</span>
-<span class="kn">from</span> <span class="nn">..lib.mdamath</span> <span class="k">import</span> <span class="n">find_fragments</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">groups</span>
-<span class="kn">from</span> <span class="nn">._get_readers</span> <span class="k">import</span> <span class="n">get_reader_for</span><span class="p">,</span> <span class="n">get_parser_for</span>
-<span class="kn">from</span> <span class="nn">.groups</span> <span class="k">import</span> <span class="p">(</span><span class="n">ComponentBase</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_ANCHOR_UNIVERSES</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">,</span> <span class="n">_PARSERS</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">..lib.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">NamedStream</span><span class="p">,</span> <span class="n">isstream</span>
+<span class="kn">from</span> <span class="nn">..lib.mdamath</span> <span class="kn">import</span> <span class="n">find_fragments</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">groups</span>
+<span class="kn">from</span> <span class="nn">._get_readers</span> <span class="kn">import</span> <span class="n">get_reader_for</span><span class="p">,</span> <span class="n">get_parser_for</span>
+<span class="kn">from</span> <span class="nn">.groups</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ComponentBase</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
                      <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span>
                      <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.topology</span> <span class="k">import</span> <span class="n">Topology</span>
-<span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="k">import</span> <span class="n">AtomAttr</span><span class="p">,</span> <span class="n">ResidueAttr</span><span class="p">,</span> <span class="n">SegmentAttr</span>
+<span class="kn">from</span> <span class="nn">.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="kn">import</span> <span class="n">AtomAttr</span><span class="p">,</span> <span class="n">ResidueAttr</span><span class="p">,</span> <span class="n">SegmentAttr</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.core.universe&quot;</span><span class="p">)</span>
 
@@ -419,7 +419,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Store the segments for the deprecated instant selector feature.</span>
         <span class="c1"># This attribute has to be defined early to avoid recursion in</span>
         <span class="c1"># __getattr__.</span>
@@ -680,7 +680,7 @@
 
         <span class="k">return</span> <span class="n">u</span></div>
 
-    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="c1"># This implements the instant selector of segments from a Universe.</span>
         <span class="c1"># It is implemented as __getattr__ so a deprecation warning can be</span>
         <span class="c1"># issued when the feature is used. Instant selectors are deprecated</span>
@@ -821,7 +821,7 @@
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..coordinates.memory</span> <span class="k">import</span> <span class="n">MemoryReader</span>
+        <span class="kn">from</span> <span class="nn">..coordinates.memory</span> <span class="kn">import</span> <span class="n">MemoryReader</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">MemoryReader</span><span class="p">):</span>
             <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span>
@@ -941,7 +941,7 @@
     <span class="k">def</span> <span class="nf">make_anchor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">_ANCHOR_UNIVERSES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_gen_anchor_hash</span><span class="p">()]</span> <span class="o">=</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># return &quot;&lt;Universe with {n_atoms} atoms{bonds}&gt;&quot;.format(</span>
         <span class="c1">#    n_atoms=len(self.atoms),</span>
         <span class="c1">#    bonds=&quot; and {0} bonds&quot;.format(len(self.bonds)) if self.bonds else &quot;&quot;)</span>
@@ -1298,7 +1298,7 @@
 <span class="sd">       :class:`~MDAnalysis.coordinates.memory.MemoryReader`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">..topology.base</span> <span class="k">import</span> <span class="n">squash_by</span>
+    <span class="kn">from</span> <span class="nn">..topology.base</span> <span class="kn">import</span> <span class="n">squash_by</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need at least one AtomGroup for merging&quot;</span><span class="p">)</span>

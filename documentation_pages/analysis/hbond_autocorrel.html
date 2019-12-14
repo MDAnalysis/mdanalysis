@@ -269,8 +269,8 @@ this will mean that each oxygen appears twice in the <strong>donors</strong> Ato
 The function <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_autocorrel.find_hydrogen_donors" title="MDAnalysis.analysis.hbonds.hbond_autocorrel.find_hydrogen_donors"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_hydrogen_donors()</span></code></a> can be used to construct the donor
 AtomGroup</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">hbonds</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">waterPSF</span><span class="p">,</span> <span class="n">waterDCD</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hbonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">waterPSF</span><span class="p">,</span> <span class="n">waterDCD</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">waterPSF</span><span class="p">,</span> <span class="n">waterDCD</span><span class="p">)</span>
 <span class="n">hydrogens</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name H*&#39;</span><span class="p">)</span>
 <span class="n">donors</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">)</span>
@@ -281,8 +281,8 @@ present in the topology file, the
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds" title="MDAnalysis.core.groups.AtomGroup.guess_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.guess_bonds()</span></code></a> method can be used
 as so</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">hbonds</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">GRO</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hbonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">GRO</span>
 <span class="c1"># we could load the Universe with guess_bonds=True</span>
 <span class="c1"># but this would guess **all** bonds</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">GRO</span><span class="p">)</span>
@@ -339,8 +339,8 @@ sample point within this time window (this relies upon the trajectory being
 sampled frequently enough).  This process is repeated for 20 different start
 points to build a better average.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">hbonds</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">TRZ_psf</span><span class="p">,</span> <span class="n">TRZ</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hbonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">TRZ_psf</span><span class="p">,</span> <span class="n">TRZ</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="c1"># load system</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TRZ_psf</span><span class="p">,</span> <span class="n">TRZ</span><span class="p">)</span>
@@ -477,7 +477,7 @@ expected coefficients</td>
 </tbody>
 </table>
 <p>Continuous defition results are fitted to a double exponential with
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v1.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.optimize.leastsq()</span></code></a>, intermittent definition are fit to a
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v1.3.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.optimize.leastsq()</span></code></a>, intermittent definition are fit to a
 triple exponential.</p>
 <p>The results of this fitting procedure are saved into the <em>fit</em>,
 <em>tau</em> and <em>estimate</em> keywords in the solution dict.</p>
@@ -491,7 +491,7 @@ bonding</li>
 autocorrelation function</li>
 </ul>
 </div></blockquote>
-<p>In addition, the output of the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v1.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">leastsq()</span></code></a> function
+<p>In addition, the output of the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v1.3.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">leastsq()</span></code></a> function
 is saved into the solution dict</p>
 <blockquote>
 <div><ul class="simple">

@@ -315,17 +315,17 @@
 <span class="sd">.. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Zhuyi Xue&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;GNU Public Licence, v2&quot;</span>
 
 <span class="kn">import</span> <span class="nn">xdrlib</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">guessers</span>
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="n">openany</span>
-<span class="kn">from</span> <span class="nn">.tpr</span> <span class="k">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">tpr_utils</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">TopologyReaderBase</span>
-<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="k">import</span> <span class="n">Resnums</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">guessers</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">openany</span>
+<span class="kn">from</span> <span class="nn">.tpr</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">tpr_utils</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span>
+<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="n">Resnums</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.TPRparser&quot;</span><span class="p">)</span>

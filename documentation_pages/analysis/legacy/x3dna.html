@@ -250,8 +250,8 @@ Nat Protoc. 3(7), 1213-27.</td></tr>
 <div class="section" id="single-structure">
 <h3>4.10.1.1.1.1.1. Single structure<a class="headerlink" href="#single-structure" title="Permalink to this headline">¶</a></h3>
 <p>B-DNA structure:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.x3dna</span> <span class="k">import</span> <span class="n">X3DNA</span><span class="p">,</span> <span class="n">X3DNAtraj</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PDB_X3DNA</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.x3dna</span> <span class="kn">import</span> <span class="n">X3DNA</span><span class="p">,</span> <span class="n">X3DNAtraj</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB_X3DNA</span>
 
 <span class="c1"># set path to your x3dna binary in bashrc file</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">X3DNA</span><span class="p">(</span><span class="n">PDB_X3DNA</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;x3dna_ensemble analyze -b 355d.bps -p pdbfile&quot;</span><span class="p">)</span>

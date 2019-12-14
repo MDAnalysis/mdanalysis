@@ -270,7 +270,7 @@ Ignores status bit strings</p>
 If you’re trying to convert, for example, a PDB file to MOL you should
 use other tools, like <a class="reference external" href="http://www.rdkit.org/docs/GettingStartedInPython.html">rdkit</a>.</p>
 <p>Here is an example how to use <a class="reference external" href="http://www.rdkit.org/docs/GettingStartedInPython.html">rdkit</a> to convert a PDB to MOL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rdkit</span> <span class="k">import</span> <span class="n">Chem</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromPDBFile</span><span class="p">(</span><span class="s2">&quot;molecule.pdb&quot;</span><span class="p">,</span> <span class="n">removeHs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">Chem</span><span class="o">.</span><span class="n">MolToMolFile</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;molecule.mol&quot;</span> <span class="p">)</span>
 </pre></div>

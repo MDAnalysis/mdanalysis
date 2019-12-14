@@ -211,10 +211,10 @@ average of the coordinates over the last 3 frames.
 When <code class="docutils literal notranslate"><span class="pre">check_reset=True</span></code>, the averager will be reset once the iteration is
 complete, or if the frames iterated are not sequential.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">N</span><span class="o">=</span><span class="mi">3</span>
-<span class="n">transformation</span> <span class="o">=</span> <span class="n">PositionAverager</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">check_reset</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">transformation</span> <span class="o">=</span> <span class="n">PositionAverager</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">check_reset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In this case, <code class="docutils literal notranslate"><span class="pre">ts.positions</span></code> will return the average coordinates of the
@@ -226,12 +226,12 @@ manually reset before restarting an iteration. In this case,
 iterated frames, despite them not being sequential
 (<code class="docutils literal notranslate"><span class="pre">frames</span> <span class="pre">=</span> <span class="pre">[0,</span> <span class="pre">7,</span> <span class="pre">1,</span> <span class="pre">6]</span></code>).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">N</span><span class="o">=</span><span class="mi">3</span>
-<span class="n">transformation</span> <span class="o">=</span> <span class="n">PositionAverager</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">check_reset</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">transformation</span> <span class="o">=</span> <span class="n">PositionAverager</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">check_reset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
 <span class="n">frames</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
 <span class="n">transformation</span><span class="o">.</span><span class="n">resetarrays</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frames</span><span class="p">]:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If <code class="docutils literal notranslate"><span class="pre">check_reset=True</span></code>, the <code class="docutils literal notranslate"><span class="pre">PositionAverager</span></code> would have automatically
@@ -245,11 +245,11 @@ used to compute the current averaged frame (<code class="docutils literal notran
 requested when calling <code class="docutils literal notranslate"><span class="pre">PositionAverager</span></code> (<code class="docutils literal notranslate"><span class="pre">avg_frames</span></code>) which in
 these examples corresponds to <code class="docutils literal notranslate"><span class="pre">N=3</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">N</span><span class="o">=</span><span class="mi">3</span>
-<span class="n">transformation</span> <span class="o">=</span> <span class="n">PositionAverager</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">check_reset</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">transformation</span> <span class="o">=</span> <span class="n">PositionAverager</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">check_reset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">transformation</span><span class="o">.</span><span class="n">current_avg</span> <span class="o">==</span> <span class="n">transformation</span><span class="o">.</span><span class="n">avg_frames</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In the case of <code class="docutils literal notranslate"><span class="pre">N=3</span></code>, as the average is calculated with the frames
