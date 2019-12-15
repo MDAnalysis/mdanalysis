@@ -106,7 +106,7 @@ class TPXUnpacker(xdrlib.Unpacker):
         # methods defined in the base class.
         # start_position = self._pos
         # end_position = self._pos = start_position + item_size
-        start_position = self._Unpacker__pos
+        start_position = self._Unpacker__pos  # pylint: disable=access-member-before-definition 
         end_position = self._pos = self._Unpacker__pos = start_position + item_size
         content = self._buf[start_position:end_position]
         if len(content) != item_size:
