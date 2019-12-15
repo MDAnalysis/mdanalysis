@@ -80,23 +80,34 @@ class TPXUnpacker(xdrlib.Unpacker):
     Extend the standard XDR unpacker for the specificity of TPX files.
     """
     def __init__(self, data):
-        super(TPXUnpacker, self).__init__(data)
-        self._buf = self._Unpacker__buf
+        # Using super here would be ideal, but it does not work on python2 as
+        # TPXUnpacker is a `classobj` and not a `type`.
+        # super().__init__(data)
+        xdrlib.Unpacker.__init__(self, data)
+        self._buf = self.get_buffer()
 
-    # The parent class uses a double dunder attribute to store the
+    # The parent class uses a dunder attribute to store the
     # cursor position. This property makes it easier to manipulate
     # this attribute that is otherwise "protected".
+    # The use of this property works well in python3, but fails in python2
+    # where direct access to the mangled attribute seems required.
     @property
     def _pos(self):
-        return self._Unpacker__pos
+        return self.get_position()
 
     @_pos.setter
     def _pos(self, value):
-        self._Unpacker__pos = value
+        self.set_position(value)
 
     def _unpack_value(self, item_size, struct_template):
-        start_position = self._pos
-        end_position = self._pos = start_position + item_size
+        # Ideally, we should use the _pos attribute, but it present some
+        # unexpected behaviour on python2 where the position of the cursor is
+        # not kept in sync between the method defined in TPXUnpacker and the
+        # methods defined in the base class.
+        # start_position = self._pos
+        # end_position = self._pos = start_position + item_size
+        start_position = self._Unpacker__pos
+        end_position = self._pos = self._Unpacker__pos = start_position + item_size
         content = self._buf[start_position:end_position]
         if len(content) != item_size:
             raise EOFError
@@ -188,7 +199,7 @@ class TPXUnpacker2020:
         if n < 0:
             raise ValueError('Size of fstring cannot be negative.')
         start_position = self._pos
-        end_position = self._pos =  start_position + n * self.base_size
+        end_position = self._pos = start_position + n * self.base_size
         if end_position > len(self._buf):
             raise EOFError
         full_content = self._buf[start_position:end_position]
@@ -289,7 +300,7 @@ def read_tpxheader(data):
     fep_state = data.unpack_int() if fileVersion >= 79 else 0
 
     # actually, it's lambda, not sure what is it. us lamb because lambda is a
-    # keywod in python
+    # keyword in python
     lamb = data.unpack_real()
     bIr = data.unpack_int()  # has input record or not
     bTop = data.unpack_int()  # has topology or not
@@ -864,6 +875,7 @@ def do_atom(data, fver):
 def do_ilists(data, fver):
     nr = []  # number of ilist
     iatoms = []  # atoms involved in a particular interaction type
+    pos = []
     for j in range(S.F_NRE):  # total number of energies (i.e. interaction types)
         bClear = False
         for k in S.ftupd:
