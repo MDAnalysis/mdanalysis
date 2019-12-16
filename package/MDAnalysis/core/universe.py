@@ -1075,9 +1075,9 @@ class Universe(object):
         """
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
-        self.clear_fragments()
+        self._cache.pop('fragments', None)
     
-    def add_angles(self, values, types=None, guessed=False, order=None):
+    def add_angles(self, values, types=None, guessed=False):
         """Add new Angles to this Universe.
 
         Parameters
@@ -1090,13 +1090,13 @@ class Universe(object):
             None, or an iterable of hashable values with the same length as ``values``
         guessed : bool or iterable (optional, default False)
             bool, or an iterable of hashable values with the same length as ``values``
-        order : iterable (optional, default None)
-            None, or an iterable of hashable values with the same length as ``values``
+
+        .. versionadded:: 0.21.0
         """
         self._add_topology_objects('angles', values, types=types,
-                                 guessed=guessed, order=order)
+                                 guessed=guessed)
     
-    def add_dihedrals(self, values, types=None, guessed=False, order=None):
+    def add_dihedrals(self, values, types=None, guessed=False):
         """Add new Dihedrals to this Universe.
 
         Parameters
@@ -1109,17 +1109,15 @@ class Universe(object):
             None, or an iterable of hashable values with the same length as ``values``
         guessed : bool or iterable (optional, default False)
             bool, or an iterable of hashable values with the same length as ``values``
-        order : iterable (optional, default None)
-            None, or an iterable of hashable values with the same length as ``values``
 
 
         .. versionadded:: 0.21.0
 
         """
         self._add_topology_objects('dihedrals', values, types=types,
-                                 guessed=guessed, order=order)
+                                 guessed=guessed)
     
-    def add_impropers(self, values, types=None, guessed=False, order=None):
+    def add_impropers(self, values, types=None, guessed=False):
         """Add new Impropers to this Universe.
 
         Parameters
@@ -1132,15 +1130,13 @@ class Universe(object):
             None, or an iterable of hashable values with the same length as ``values``
         guessed : bool or iterable (optional, default False)
             bool, or an iterable of hashable values with the same length as ``values``
-        order : iterable (optional, default None)
-            None, or an iterable of hashable values with the same length as ``values``
 
 
         .. versionadded:: 0.21.0
 
         """
         self._add_topology_objects('impropers', values, types=types,
-                                 guessed=guessed, order=order)
+                                 guessed=guessed)
     
     
     
@@ -1182,7 +1178,7 @@ class Universe(object):
 
         """
         self._delete_topology_objects('bonds', values)
-        self.clear_fragments()
+        self._cache.pop('fragments', None)
     
     def delete_angles(self, values):
         """Delete Angles from this Universe.
@@ -1270,19 +1266,6 @@ class Universe(object):
                 fragdict[a.ix] = fraginfo(i, f)
 
         return fragdict
-    
-    def clear_fragments(self):
-        """
-        Clear fragments from the universe's cache.
-
-
-        .. versionadded:: 0.21.0
-
-        """
-        try:
-            del self._cache['fragments']
-        except KeyError:
-            pass
 
 
 # TODO: what is the point of this function???
