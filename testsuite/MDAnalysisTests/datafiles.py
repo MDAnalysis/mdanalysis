@@ -174,7 +174,9 @@ __all__ = [
     "GRO_huge_box", # for testing gro parser with hige box sizes
     "ITP", # for GROMACS generated itps
     "ITP_nomass", # for ATB generated itps
-    "edited_ITP", # to check different directives are read properly
+    "ITP_edited", # to check different directives are read properly
+    "ITP_tip5p", # tip5p water from opls-aa, edited with additional keywords
+    "ITP_spce", # spce water from gromos54a7, edited with additional keywords
 ]
 
 from pkg_resources import resource_filename
@@ -481,7 +483,9 @@ PDB_janin = resource_filename(__name__, 'data/1a28.pdb.gz')
 
 ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
 ITP_nomass = resource_filename(__name__, 'data/itp_nomass.itp')
-edited_ITP = resource_filename(__name__, 'data/edited_itp.itp')
+ITP_edited = resource_filename(__name__, 'data/edited_itp.itp')
+ITP_tip5p = resource_filename(__name__, "data/tip5p.itp")
+ITP_spce = resource_filename(__name__, 'data/spce.itp')
 
 # This should be the last line: clean up namespace
 del resource_filename

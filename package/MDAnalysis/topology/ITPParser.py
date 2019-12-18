@@ -103,7 +103,7 @@ class ITPParser(TopologyReaderBase):
         -------
         MDAnalysis *Topology* object
         """
-        ids = []
+        self.ids = []
         types = []
         resids = []
         resnames = []
@@ -112,7 +112,7 @@ class ITPParser(TopologyReaderBase):
         charges = []
         masses = []
 
-        atom_lists = [ids, types, resids, resnames, names, chargegroups, charges, masses]
+        atom_lists = [self.ids, types, resids, resnames, names, chargegroups, charges, masses]
 
         bonds = defaultdict(list)
         angles = defaultdict(list)
@@ -123,14 +123,34 @@ class ITPParser(TopologyReaderBase):
         molnum = 1
 
         section = None
+        if_queue = []
 
         # Open and check itp validity
-        with openany(self.filename) as itpfile:
-            for line in itpfile:
+        with openany(self.filename) as self.itpfile:
+            for line in self.itpfile:
                 line = line.split(';')[0].strip()  # ; is for comments
                 if not line:  # Skip line if empty
                     continue
-                if line.startswith('#'): #ignore include, ifdefs, etc
+
+                if line.startswith('#ifdef'):
+                    kw = line.split()[1]
+                    if kwargs.get(kw):
+                        continue
+                    else:
+                        self.skip_if()
+
+                if line.startswith('#ifndef'):
+                    kw = line.split()[1]
+                    if not kwargs.get(kw):
+                        continue
+                    else:
+                        self.skip_if()
+                
+                # Only gets triggered when if condition is true
+                if line.startswith('#else'):
+                    self.skip_else()
+
+                if line.startswith('#'): #ignore include, endif, etc
                     continue
                 
                 if '[' in line and ']' in line:
@@ -153,45 +173,45 @@ class ITPParser(TopologyReaderBase):
                             lst.append('')
                 
                 elif section == 'bonds':
-                    values = line.split()
-                    funct = int(values[2])
-                    if funct in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10):
-                        bonds[tuple(values[:2])].append(funct)
+                    self.add_param(line, bonds, n_funct=2, funct_values=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
                 
                 elif section == 'constraints':
-                    values = line.split()
-                    funct = int(values[2])
-                    if funct in (1, 2):
-                        bonds[tuple(values[:2])].append(funct)
+                    self.add_param(line, bonds, n_funct=2, funct_values=(1, 2))
 
                 elif section == 'settles':
-                    values = line.split()
-                    funct = int(values[2])
-                    if funct in (1,):
-                        bonds[tuple(values[:2])].append(funct)
+                    # [ settles ] is a triangular constraint for 
+                    # water molecules.
+                    # In ITP files this is defined with only the 
+                    # oxygen atom index. The next two atoms are 
+                    # assumed to be hydrogens. Unlike TPRParser,  
+                    # the manual only lists this format (as of 2019).
+                    # These are treated as 2 bonds and 1 angle.
+                    oxygen, funct, doh, dhh = line.split()
+                    try:
+                        base = self.index_ids([oxygen])[0]
+                    except ValueError:
+                        pass
+                    else:
+                        bonds[(base, base+1)].append("settles")
+                        bonds[(base, base+2)].append("settles")
+                        angles[(base+1, base, base+2)].append("settles")
                 
                 elif section == 'angles':
-                    values = line.split()
-                    funct = int(values[3])
-                    if funct in (1, 2, 3, 4, 5, 6, 8, 10):
-                        angles[tuple(values[:3])].append(funct)
-
+                    self.add_param(line, angles, n_funct=3, funct_values=(1, 2, 3, 4, 5, 6, 8, 10))
                 
                 elif section == 'dihedrals':
                     # funct == 1: proper
                     # funct == 2: improper
-                    values = line.split()
-                    funct = int(values[4])
-                    if funct in (1, 3, 5, 8, 9, 10, 11):
-                        dihedrals[tuple(values[:4])].append(funct)
-                    elif funct in (2, 4):
-                        impropers[tuple(values[:4])].append(funct)
+
+                    self.add_param(line, dihedrals, n_funct=4, funct_values=(1, 3, 5, 8, 9, 10, 11))
+                    self.add_param(line, impropers, n_funct=4, funct_values=(2, 4))
+                    
         
         attrs = []
         
         # atom stuff
         for vals, Attr, dtype in (
-            (ids, Atomids, np.int32),
+            (self.ids, Atomids, np.int32),
             (types, Atomtypes, object),
             (names, Atomnames, object),
             (chargegroups, Chargegroups, np.int32),
@@ -213,7 +233,7 @@ class ITPParser(TopologyReaderBase):
         attrs.append(Resnums(resids.copy()))
         attrs.append(Resnames(resnames))
         
-        n_atoms = len(ids)
+        n_atoms = len(self.ids)
         n_residues = len(resids)
         n_segments = 1
         attrs.append(Segids(np.array([segid], dtype=object)))
@@ -232,14 +252,49 @@ class ITPParser(TopologyReaderBase):
             (dihedrals, Dihedrals, 'dihedrals'),
             (impropers, Impropers, 'impropers')
         ):
-            vals, types = zip(*list(dct.items()))
+            if dct:
+                indices, types = zip(*list(dct.items()))
+            else:
+                indices, types = [], []
 
-            indices = tuple(map(ids.index, x) for x in vals)
             types = [squash_identical(t) for t in types]
             
             tattr = Attr(indices, types=types)
             top.add_TopologyAttr(tattr)
 
         return top
+    
+    def skip_if(self):
+        """
+        Skip lines in if condition, *inclusive* of the #endif or #else.
+        """
+        line = next(self.itpfile)
+        while not line.startswith('#endif') and not line.startswith('#else'):
+            line = next(self.itpfile)
+        return line
+
+    def skip_else(self):
+        """
+        Skip lines in else condition, *inclusive* of #endif.
+        """
+        line = next(self.itpfile)
+        while not line.startswith('#endif'):
+            line = next(self.itpfile)
+        return line
+
+    def index_ids(self, values):
+        """
+        Get indices of atom ids (list of strings)
+        """
+        return tuple(map(self.ids.index, values))
+    
+    def add_param(self, line, container, n_funct=2, funct_values=[]):
+        values = line.split()
+        funct = int(values[n_funct])
+        if funct in funct_values:
+            try:
+                container[self.index_ids(values[:n_funct])].append(funct)
+            except ValueError:
+                pass
 
 

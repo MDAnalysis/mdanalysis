@@ -29,12 +29,13 @@ from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     ITP,  # GROMACS itp
     ITP_nomass, # from Automated Topology Builder
-    edited_ITP,
+    ITP_edited,
+    ITP_tip5p,
+    ITP_spce,
 )
 
-class TestITP(ParserBase):
+class BaseITP(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
-    ref_filename = ITP
     expected_attrs = ['ids', 'names', 'types', 'masses',
                       'charges', 'chargegroups',
                       'resids', 'resnames',
@@ -44,18 +45,47 @@ class TestITP(ParserBase):
     expected_n_residues = 10
     expected_n_segments = 1
 
+    expected_n_bonds = 0
+    expected_n_angles = 0
+    expected_n_dihedrals = 0
+    expected_n_impropers = 0
+
+
     @pytest.fixture
     def universe(self, filename):
         return mda.Universe(filename)
 
     def test_bonds_total_counts(self, top):
-        assert len(top.bonds.values) == 62
+        assert len(top.bonds.values) == self.expected_n_bonds
+    
+    def test_angles_total_counts(self, top):
+        assert len(top.angles.values) == self.expected_n_angles
+
+    def test_dihedrals_total_counts(self, top):
+        assert len(top.dihedrals.values) == self.expected_n_dihedrals
+    
+    def test_impropers_total_counts(self, top):
+        assert len(top.impropers.values) == self.expected_n_impropers
+
+
+class TestITP(BaseITP):
+    ref_filename = ITP
+
+    expected_n_atoms = 63
+    expected_n_residues = 10
+    expected_n_segments = 1
+
+    expected_n_bonds = 62
+    expected_n_angles = 91
+    expected_n_dihedrals = 30
+    expected_n_impropers = 29
+
     
     def test_bonds_atom_counts(self, universe):
         assert len(universe.atoms[[0]].bonds) == 3
         assert len(universe.atoms[[42]].bonds) == 1
 
-    def test_bonds_identity(self, top):
+    def test_bonds_values(self, top):
         vals = top.bonds.values
         for b in ((0, 1), (0, 2), (0, 3), (3, 4)):
             assert b in vals
@@ -63,23 +93,17 @@ class TestITP(ParserBase):
     def test_bonds_type(self, universe):
         assert universe.bonds[0].type == 2
 
-    def test_angles_total_counts(self, top):
-        assert len(top.angles.values) == 91
-
     def test_angles_atom_counts(self, universe):
         assert len(universe.atoms[[0]].angles) == 5
         assert len(universe.atoms[[42]].angles) == 2
 
-    def test_angles_identity(self, top):
+    def test_angles_values(self, top):
         vals = top.angles.values
         for b in ((1, 0, 2), (1, 0, 3), (2, 0, 3)):
             assert (b in vals) or (b[::-1] in vals)
     
     def test_angles_type(self, universe):
         assert universe.angles[0].type == 2
-
-    def test_dihedrals_total_counts(self, top):
-        assert len(top.dihedrals.values) == 30
 
     def test_dihedrals_atom_counts(self, universe):
         assert len(universe.atoms[[0]].dihedrals) == 2
@@ -89,26 +113,24 @@ class TestITP(ParserBase):
         dih = universe.dihedrals.atomgroup_intersection(ag, strict=True)[0]
         assert len(dih.type) == 2
 
-    def test_dihedrals_identity(self, top):
+    def test_dihedrals_values(self, top):
         vals = top.dihedrals.values
         for b in ((1, 0, 3, 5), (0, 3, 5, 7)):
             assert (b in vals) or (b[::-1] in vals)
     
-    def test_dihedrals_identity(self, universe):
+    def test_dihedrals_type(self, universe):
         assert universe.dihedrals[0].type == (1, 1)
-    
-    def test_impropers_total_counts(self, top):
-        assert len(top.impropers.values) == 29
+
 
     def test_impropers_atom_counts(self, universe):
         assert len(universe.atoms[[0]].impropers) == 1
 
-    def test_impropers_identity(self, top):
+    def test_impropers_values(self, top):
         vals = top.impropers.values
         for b in ((3, 0, 5, 4), (5, 3, 7, 6)):
-            assert (b in vals) and (b[::-1] in vals)
+            assert (b in vals) or (b[::-1] in vals)
     
-    def test_impropers_identity(self, universe):
+    def test_impropers_type(self, universe):
         assert universe.impropers[0].type == 2
 
 class TestITPNoMass(ParserBase):
@@ -132,23 +154,19 @@ class TestITPNoMass(ParserBase):
         assert universe.atoms[0].mass not in ('', None)
 
 
-class TestDifferentDirectivesITP(TestITP):
+class TestDifferentDirectivesITP(BaseITP):
 
-    ref_filename = edited_ITP
+    ref_filename = ITP_edited
 
+    expected_n_bonds = 62 + 118
+    expected_n_angles = 88
+    expected_n_dihedrals = 28
+    expected_n_impropers = 29
 
-    def test_angles_total_counts(self, top):
-        assert len(top.angles.values) == 88
 
     def test_no_extra_angles(self, top):
         for a in ((57, 59, 61), (60, 59, 61), (59, 61, 62)):
             assert a not in top.angles.values
-
-    def test_dihedrals_total_counts(self, top):
-        assert len(top.dihedrals.values) == 28
-
-    def test_bonds_total_counts(self, top):
-        assert len(top.bonds.values) == (118 + 62)  # 118: pairs -> constraints
 
     def test_bonds_atom_counts(self, universe):
         assert len(universe.atoms[[0]].bonds) == 5
@@ -159,3 +177,80 @@ class TestDifferentDirectivesITP(TestITP):
 
     def test_dihedrals_identity(self, universe):
         assert universe.dihedrals[0].type == (1, 1)
+
+class TestITPNoKeywords(BaseITP):
+    """
+    Test reading ITP files *without* defined keywords.
+    """
+    ref_filename = ITP_tip5p
+    expected_n_atoms = 5
+    expected_n_residues = 1
+    expected_n_segments = 1
+
+    guessed_attrs = ['masses']
+
+    expected_n_bonds = 2
+    expected_n_angles = 1
+    expected_n_dihedrals = 0
+    expected_n_impropers = 0
+
+    def test_whether_settles_types(self, universe):
+        for param in list(universe.bonds) + list(universe.angles):
+            assert param.type == 'settles'
+
+    def test_bonds_values(self, top):
+        vals = top.bonds.values
+        for b in [(0, 1), (0, 2)]:
+            assert b in vals
+
+    def test_angles_values(self, top):
+        assert (1, 0, 2) in top.angles.values
+
+    
+class TestITPKeywords(TestITPNoKeywords):
+    """
+    Test reading ITP files *with* defined keywords.
+    """
+
+    expected_n_atoms = 7
+
+    @pytest.fixture
+    def universe(self, filename):
+        return mda.Universe(filename, FLEXIBLE=True, EXTRA_ATOMS=True)
+
+    @pytest.fixture()
+    def top(self, filename):
+        with self.parser(filename) as p:
+            yield p.parse(FLEXIBLE=True, EXTRA_ATOMS=True)
+
+    def test_whether_settles_types(self, universe):
+        for param in list(universe.bonds) + list(universe.angles):
+            assert param.type == 1
+
+    
+
+class TestNestedIfs(BaseITP):
+    """
+    Test reading ITP files with nested ifdef/ifndef conditions.
+    """
+    ref_filename = ITP_spce
+    expected_n_atoms = 7
+    expected_n_residues = 1
+    expected_n_segments = 1
+
+    expected_n_bonds = 2
+    expected_n_angles = 1
+    expected_n_dihedrals = 0
+    expected_n_impropers = 0
+
+    @pytest.fixture
+    def universe(self, filename):
+        return mda.Universe(filename, HEAVY_H=True, EXTRA_ATOMS=True, HEAVY_SIX=True)
+
+    @pytest.fixture()
+    def top(self, filename):
+        with self.parser(filename) as p:
+            yield p.parse(HEAVY_H=True, EXTRA_ATOMS=True, HEAVY_SIX=True)
+    
+    def test_heavy_atom(self, universe):
+        assert universe.atoms[5].mass > 40
