@@ -3039,7 +3039,7 @@ class AtomGroup(GroupBase):
         Example
         -------
 
-        .. code-block ::
+        .. code-block:: python
 
             import MDAnalysis as mda
             from MDAnalysis.tests.datafiles import GRO

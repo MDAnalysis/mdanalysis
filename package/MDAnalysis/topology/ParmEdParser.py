@@ -25,7 +25,7 @@
 ParmEd topology parser
 ======================
 
-Converts a ParmEd_ structure into a Topology.
+Converts a ParmEd_ structure into a MDAnalysis Topology.
 
 .. _ParmEd: https://parmed.github.io/ParmEd/html/index.html
 

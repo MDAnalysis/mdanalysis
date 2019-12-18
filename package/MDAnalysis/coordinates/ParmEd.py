@@ -24,7 +24,7 @@
 """ParmEd structure I/O --- :mod:`MDAnalysis.coordinates.ParmEd`
 ================================================================
 
-Read coordinates data from a ParmEd Structure with :class:`ParmEdReader` and convert it back to a ParmEd structure with :class:`ParmEdConverter`.
+Read coordinates data from a ParmEd Structure with :class:`ParmEdReader` into a MDAnalysis Universe. Convert it back to a ParmEd Structure with :class:`ParmEdConverter`.
 
 Example
 -------
@@ -50,8 +50,6 @@ Classes
 
 """
 from __future__ import absolute_import
-
-import parmed as pmd
 
 from . import base
 from ..topology.tables import SYMB2Z
@@ -101,7 +99,7 @@ class ParmEdConverter(base.ConverterBase):
     Example
     -------
 
-    ::
+    .. code-block:: python
 
         import parmed as pmd
         import MDAnalysis as mda
@@ -123,6 +121,11 @@ class ParmEdConverter(base.ConverterBase):
         -----------
         obj : AtomGroup or Universe or :class:`Timestep`
         """
+        try:
+            import parmed as pmd
+        except ModuleNotFoundError:
+            raise ValueError('Parmed is required for ParmEdConverter but '
+                             'is not installed.')
         try:
             # make sure to use atoms (Issue 46)
             ag_or_ts = obj.atoms
@@ -197,7 +200,7 @@ class ParmEdConverter(base.ConverterBase):
         
 
         struct = pmd.Structure()
-        
+
         for akwarg, resname, resid, kw, xyz, vel in atom_kwargs:
             atom = pmd.Atom(**akwarg)
             if xyz is not None:
@@ -214,20 +217,26 @@ class ParmEdConverter(base.ConverterBase):
         
         
         try:
+            print('trying params')
             params = ag_or_ts.bonds
+            print(params)
         except AttributeError:
             pass
         else:
             for p in params:
                 atoms = [struct.atoms[i] for i in p.indices]
                 try:
+                    print('pre trying', p.type)
                     for obj in p.type:
                         bond = pmd.Bond(*atoms, type=obj.type, order=obj.order)
                         struct.bonds.append(bond)
-                except TypeError:
+                        print(obj, 'trying', bond, len(struct.bonds))
+                except (TypeError, AttributeError):
                     order = p.order if p.order is not None else 1
                     bond = pmd.Bond(*atoms, order=order)
                     struct.bonds.append(bond)
+                    print(bond)
+                    print(len(struct.bonds))
         
         for param, pmdtype, trackedlist in (
             ('ureybradleys', pmd.UreyBradley, struct.urey_bradleys),
@@ -239,16 +248,16 @@ class ParmEdConverter(base.ConverterBase):
             try:
                 values = getattr(ag_or_ts, param)
             except AttributeError:
-                return
-            
-            for v in values:
-                atoms = [struct.atoms[i] for i in v.indices]
+                pass
+            else:
+                for v in values:
+                    atoms = [struct.atoms[i] for i in v.indices]
 
-                try:
-                    for parmed_obj in v.type:
-                        p = pmdtype(*atoms, type=parmed_obj.type)
+                    try:
+                        for parmed_obj in v.type:
+                            p = pmdtype(*atoms, type=parmed_obj.type)
+                            trackedlist.append(p)
+                    except (TypeError, AttributeError):
+                        p = pmdtype(*atoms)
                         trackedlist.append(p)
-                except TypeError:
-                    p = pmdtype(*atoms)
-                    trackedlist.append(p)
         return struct
