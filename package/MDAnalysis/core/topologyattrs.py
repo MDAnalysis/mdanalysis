@@ -2022,6 +2022,8 @@ class UreyBradleys(_Connection):
     Initialise with a list of 2 long tuples
 
     These indices refer to the atom indices.
+
+    .. versionadded:: 0.21.0
     """
     attrname = 'ureybradleys'
     singular = 'ureybradleys'
@@ -2058,7 +2060,10 @@ class Impropers(_Connection):
     _n_atoms = 4
 
 class CMaps(_Connection):
-    """A connection between five atoms"""
+    """
+    A connection between five atoms
+    .. versionadded:: 0.21.0
+    """
     attrname = 'cmaps'
     singular = 'cmaps'
     transplants = defaultdict(list)

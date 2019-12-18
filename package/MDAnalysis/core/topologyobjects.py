@@ -198,6 +198,8 @@ class UreyBradley(TopologyObject):
     Two :class:`UreyBradley` instances can be compared with the ``==`` and
     ``!=`` operators. A UreyBradley angle is equal to another if the same atom
     numbers are involved.
+
+    .. versionadded:: 0.21.0
     """
     btype = 'ureybradley'
 
@@ -332,6 +334,8 @@ class CMap(TopologyObject):
     """
     Coupled-torsion correction map term between five 
     :class:`~MDAnalysis.core.groups.Atom` instances.
+
+    .. versionadded:: 0.21.0
     """
     btype = 'cmap'
 
