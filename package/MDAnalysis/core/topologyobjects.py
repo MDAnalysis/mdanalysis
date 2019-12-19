@@ -1,4 +1,3 @@
-
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
@@ -25,7 +24,9 @@
 """
 Core Topology Objects --- :mod:`MDAnalysis.core.topologyobjects`
 ================================================================
+
 The building blocks for MDAnalysis' description of topology
+
 """
 from __future__ import print_function, absolute_import, division
 
@@ -45,8 +46,10 @@ from ..lib import distances
 class TopologyObject(object):
 
     """Base class for all Topology items.
+
     Defines the behaviour by which Bonds/Angles/etc in MDAnalysis should
     behave.
+
     .. versionadded:: 0.9.0
     .. versionchanged:: 0.10.0
        All TopologyObject now keep track of if they were guessed or not
@@ -58,6 +61,7 @@ class TopologyObject(object):
 
     def __init__(self, ix, universe, type=None, guessed=False, order=None):
         """Create a topology object
+
         Parameters
         ----------
         ix : numpy array
@@ -82,6 +86,7 @@ class TopologyObject(object):
     @property
     def indices(self):
         """Tuple of indices describing this object
+
         .. versionadded:: 0.10.0
         """
         return self._ix
@@ -93,11 +98,14 @@ class TopologyObject(object):
     @property
     def type(self):
         """Type of the bond as a tuple
+
         Note
         ----
         When comparing types, it is important to consider the reverse
         of the type too, i.e.::
+
             a.type == b.type or a.type == b.type[::-1]
+
         """
         if self._bondtype is not None:
             return self._bondtype
@@ -151,14 +159,19 @@ class TopologyObject(object):
 class Bond(TopologyObject):
 
     """A bond between two :class:`~MDAnalysis.core.groups.Atom` instances.
+
     Two :class:`Bond` instances can be compared with the ``==`` and
     ``!=`` operators. A bond is equal to another if the same atom
     numbers are connected and they have the same bond order. The
     ordering of the two atom numbers is ignored as is the fact that a
     bond was guessed.
+
     The presence of a particular atom can also be queried::
+
       >>> Atom in Bond
+
     will return either ``True`` or ``False``.
+
     .. versionchanged:: 0.9.0
        Now a subclass of :class:`TopologyObject`. Changed class to use
        :attr:`__slots__` and stores atoms in :attr:`atoms` attribute.
@@ -167,6 +180,7 @@ class Bond(TopologyObject):
 
     def partner(self, atom):
         """Bond.partner(Atom)
+
         Returns
         -------
         the other :class:`~MDAnalysis.core.groups.Atom` in this
@@ -181,6 +195,7 @@ class Bond(TopologyObject):
 
     def length(self, pbc=True):
         """Length of the bond.
+
         .. versionchanged:: 0.11.0
            Added pbc keyword
         .. versionchanged:: 0.19.0
@@ -191,6 +206,129 @@ class Bond(TopologyObject):
         return distances.calc_bonds(self[0].position, self[1].position, box)
 
     value = length
+
+
+class Angle(TopologyObject):
+
+    """An angle between three :class:`~MDAnalysis.core.groups.Atom` instances.
+    Atom 2 is the apex of the angle
+
+    .. versionadded:: 0.8
+    .. versionchanged:: 0.9.0
+       Now a subclass of :class:`TopologyObject`; now uses
+       :attr:`__slots__` and stores atoms in :attr:`atoms` attribute
+    """
+    btype = 'angle'
+
+    def angle(self, pbc=True):
+        """Returns the angle in degrees of this Angle.
+
+        Angle between atoms 0 and 2 with apex at 1::
+
+              2
+             /
+            /
+           1------0
+
+        Note
+        ----
+        The numerical precision is typically not better than
+        4 decimals (and is only tested to 3 decimals).
+
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.17.0
+           Fixed angles close to 180 giving NaN
+        .. versionchanged:: 0.19.0
+           Added pbc keyword, default True
+        """
+        box = self.universe.dimensions if pbc else None
+
+        return np.rad2deg(distances.calc_angles(
+            self[0].position, self[1].position, self[2].position, box))
+
+    value = angle
+
+
+class Dihedral(TopologyObject):
+
+    """Dihedral (dihedral angle) between four
+    :class:`~MDAnalysis.core.groups.Atom` instances.
+
+    The dihedral is defined as the angle between the planes formed by
+    Atoms (1, 2, 3) and (2, 3, 4).
+
+    .. versionadded:: 0.8
+    .. versionchanged:: 0.9.0
+       Now a subclass of :class:`TopologyObject`; now uses :attr:`__slots__`
+       and stores atoms in :attr:`atoms` attribute.
+    .. versionchanged:: 0.11.0
+       Renamed to Dihedral (was Torsion)
+
+    """
+    # http://cbio.bmt.tue.nl/pumma/uploads/Theory/dihedral.png
+    btype = 'dihedral'
+
+    def dihedral(self, pbc=True):
+        """Calculate the dihedral angle in degrees.
+
+        Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
+        between the planes spanned by atoms (0,1,2) and (1,2,3))::
+
+                  3
+                  |
+            1-----2
+           /
+          0
+
+
+        Note
+        ----
+        The numerical precision is typically not better than
+        4 decimals (and is only tested to 3 decimals).
+
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.19.0
+           Added pbc keyword, default True
+        """
+        box = self.universe.dimensions if pbc else None
+        A, B, C, D = self.atoms
+
+        return np.rad2deg(distances.calc_dihedrals(
+            A.position, B.position, C.position, D.position, box))
+
+    value = dihedral
+
+
+# subclass Dihedral to inherit dihedral method
+class ImproperDihedral(Dihedral):
+    """
+    Improper Dihedral (improper dihedral angle) between four
+    :class:`~MDAnalysis.core.groups.Atom` instances.
+
+    MDAnalysis treats the improper dihedral angle as the angle between
+    the planes formed by Atoms (1, 2, 3) and (2, 3, 4).
+
+    .. warning:: Definitions of Atom ordering in improper dihedrals
+                 can change. Check the definitions here against
+                 your software.
+
+    .. versionadded:: 0.9.0
+    .. versionchanged:: 0.11.0
+       Renamed to ImproperDihedral (was Improper_Torsion)
+    """
+    # http://cbio.bmt.tue.nl/pumma/uploads/Theory/improper.png
+    btype = 'improper'
+
+    def improper(self):
+        """Improper dihedral angle in degrees.
+
+        Note
+        ----
+        The numerical precision is typically not better than
+        4 decimals (and is only tested to 3 decimals).
+        """
+        return self.dihedral()
+
 
 class UreyBradley(TopologyObject):
 
@@ -226,109 +364,6 @@ class UreyBradley(TopologyObject):
 
     value = distance
 
-class Angle(TopologyObject):
-
-    """An angle between three :class:`~MDAnalysis.core.groups.Atom` instances.
-    Atom 2 is the apex of the angle
-    .. versionadded:: 0.8
-    .. versionchanged:: 0.9.0
-       Now a subclass of :class:`TopologyObject`; now uses
-       :attr:`__slots__` and stores atoms in :attr:`atoms` attribute
-    """
-    btype = 'angle'
-
-    def angle(self, pbc=True):
-        """Returns the angle in degrees of this Angle.
-        Angle between atoms 0 and 2 with apex at 1::
-              2
-             /
-            /
-           1------0
-        Note
-        ----
-        The numerical precision is typically not better than
-        4 decimals (and is only tested to 3 decimals).
-        .. versionadded:: 0.9.0
-        .. versionchanged:: 0.17.0
-           Fixed angles close to 180 giving NaN
-        .. versionchanged:: 0.19.0
-           Added pbc keyword, default True
-        """
-        box = self.universe.dimensions if pbc else None
-
-        return np.rad2deg(distances.calc_angles(
-            self[0].position, self[1].position, self[2].position, box))
-
-    value = angle
-
-
-class Dihedral(TopologyObject):
-
-    """Dihedral (dihedral angle) between four
-    :class:`~MDAnalysis.core.groups.Atom` instances.
-    The dihedral is defined as the angle between the planes formed by
-    Atoms (1, 2, 3) and (2, 3, 4).
-    .. versionadded:: 0.8
-    .. versionchanged:: 0.9.0
-       Now a subclass of :class:`TopologyObject`; now uses :attr:`__slots__`
-       and stores atoms in :attr:`atoms` attribute.
-    .. versionchanged:: 0.11.0
-       Renamed to Dihedral (was Torsion)
-    """
-    # http://cbio.bmt.tue.nl/pumma/uploads/Theory/dihedral.png
-    btype = 'dihedral'
-
-    def dihedral(self, pbc=True):
-        """Calculate the dihedral angle in degrees.
-        Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
-        between the planes spanned by atoms (0,1,2) and (1,2,3))::
-                  3
-                  |
-            1-----2
-           /
-          0
-        Note
-        ----
-        The numerical precision is typically not better than
-        4 decimals (and is only tested to 3 decimals).
-        .. versionadded:: 0.9.0
-        .. versionchanged:: 0.19.0
-           Added pbc keyword, default True
-        """
-        box = self.universe.dimensions if pbc else None
-        A, B, C, D = self.atoms
-
-        return np.rad2deg(distances.calc_dihedrals(
-            A.position, B.position, C.position, D.position, box))
-
-    value = dihedral
-
-
-# subclass Dihedral to inherit dihedral method
-class ImproperDihedral(Dihedral):
-    """
-    Improper Dihedral (improper dihedral angle) between four
-    :class:`~MDAnalysis.core.groups.Atom` instances.
-    MDAnalysis treats the improper dihedral angle as the angle between
-    the planes formed by Atoms (1, 2, 3) and (2, 3, 4).
-    .. warning:: Definitions of Atom ordering in improper dihedrals
-                 can change. Check the definitions here against
-                 your software.
-    .. versionadded:: 0.9.0
-    .. versionchanged:: 0.11.0
-       Renamed to ImproperDihedral (was Improper_Torsion)
-    """
-    # http://cbio.bmt.tue.nl/pumma/uploads/Theory/improper.png
-    btype = 'improper'
-
-    def improper(self):
-        """Improper dihedral angle in degrees.
-        Note
-        ----
-        The numerical precision is typically not better than
-        4 decimals (and is only tested to 3 decimals).
-        """
-        return self.dihedral()
 
 class CMap(TopologyObject):
     """
@@ -344,17 +379,24 @@ class TopologyDict(object):
 
     """A customised dictionary designed for sorting the bonds, angles and
     dihedrals present in a group of atoms.
+
     Usage::
+
       topologydict = TopologyDict(members)
+
+
     TopologyDicts are also built lazily from a :class:`TopologyGroup.topDict`
     attribute.
+
     The :class:`TopologyDict` collects all the selected topology type from the
     atoms and categorises them according to the types of the atoms within. A
     :class:`TopologyGroup` containing all of a given bond type can be made by
     querying with the appropriate key. The keys to the :class:`TopologyDict`
     are a tuple of the atom types that the bond represents and can be viewed
     using the :meth:`keys` method.
+
     For example, from a system containing pure ethanol ::
+
       >>> td = u.bonds.topDict
       >>> td.keys()
       [('C', 'C'),
@@ -363,25 +405,34 @@ class TopologyDict(object):
        ('C', 'O')]
       >>> td['C', 'O']
       < TopologyGroup containing 912 bonds >
+
     .. Note::
+
        The key for a bond is taken from the type attribute of the atoms.
+
        Getting and setting types of bonds is done smartly, so a C-C-H
        angle is considered identical to a H-C-C angle.
+
     Duplicate entries are automatically removed upon creation and
     combination of different Dicts.  This means a bond between atoms
     1 and 2 will only ever appear once in a dict despite both atoms 1
     and 2 having the bond in their :attr:`bond` attribute.
+
     Two :class:`TopologyDict` instances can be combined using
     addition and it will not create any duplicate bonds in the process.
+
     Arguments
     ---------
     members :
       A list of :class:`TopologyObject` instances
+
+
     .. versionadded:: 0.8
     .. versionchanged:: 0.9.0
        Changed initialisation to use a list of :class:`TopologyObject`
        instances instead of list of atoms; now used from within
        :class:`TopologyGroup` instead of accessed from :class:`AtomGroup`.
+
     """
 
     def __init__(self, topologygroup):
@@ -456,6 +507,7 @@ class TopologyDict(object):
     def __contains__(self, other):
         """
         Returns boolean on whether a given type exists within this dictionary
+
         For topology groups the key (1,2,3) is considered the same as (3,2,1)
         """
         return other in self.dict or other[::-1] in self.dict
@@ -468,26 +520,37 @@ _BTYPE_TO_SHAPE = {'bond': 2, 'ureybradley': 2, 'angle': 3,
 class TopologyGroup(object):
 
     """A container for a groups of bonds.
+
     All bonds of a certain types can be retrieved from within the
     :class:`TopologyGroup` by querying with a tuple of types::
+
       tg2 = tg.select_bonds([key])
+
     Where *key* describes the desired bond as a tuple of the involved
     :class:`~MDAnalysis.core.groups.Atom` types, as defined by the .type Atom
     attribute). A list of available keys can be displayed using the
     :meth:`types` method.
+
     Alternatively, all the bonds which are in a given
     :class:`~MDAnalysis.core.groups.AtomGroup` can be extracted using
     :meth:`atomgroup_intersection`::
+
       tg2 = tg.atomgroup_intersection(ag)
+
     This allows the keyword *strict* to be given, which forces all members of
     all bonds to be inside the AtomGroup passed to it.
+
     Finally, a TopologyGroup can be sliced similarly to AtomGroups::
+
       tg2 = tg[5:10]
+
     The :meth:`bonds`, :meth:`angles` and :meth:`dihedrals` methods offer
     a "shortcut" to the Cython distance calculation functions in
     :class:`MDAnalysis.lib.distances`.
+
     TopologyGroups can be combined with TopologyGroups of the same bond
     type (ie can combine two angle containing TopologyGroups).
+
     .. versionadded:: 0.8
     .. versionchanged:: 0.9.0
        Overhauled completely: (1) Added internal :class:`TopologyDict`
@@ -568,7 +631,9 @@ class TopologyGroup(object):
 
     def select_bonds(self, selection):
         """Retrieves a selection from this topology group based on types.
+
         .. seeAlso :meth:`types`
+
         .. versionadded 0.9.0
         """
         return self.topDict[selection]
@@ -577,6 +642,7 @@ class TopologyGroup(object):
 
     def types(self):
         """Return a list of the bond types in this TopologyGroup
+
         .. versionadded 0.9.0
         """
         return list(self.topDict.keys())
@@ -586,10 +652,13 @@ class TopologyGroup(object):
     def topDict(self):
         """
         Returns the TopologyDict for this topology group.
+
         This is used for the select_bonds method when fetching a certain type
         of bond.
+
         This is a cached property so will be generated the first time it is
         accessed.
+
         .. versionadded 0.9.0
         """
         return TopologyDict(self)
@@ -597,6 +666,7 @@ class TopologyGroup(object):
     def atomgroup_intersection(self, ag, **kwargs):
         """Retrieve all bonds from within this TopologyGroup that are within
         the AtomGroup which is passed.
+
         Parameters
         ----------
         ag : AtomGroup
@@ -605,6 +675,8 @@ class TopologyGroup(object):
         strict : bool
             Only retrieve bonds which are completely contained within the
             AtomGroup. [``False``]
+
+
         .. versionadded:: 0.9.0
         """
         # Issue #780 - if self is empty, return self to avoid invalid mask
@@ -628,6 +700,7 @@ class TopologyGroup(object):
     @property
     def indices(self):
         """all bond indices
+
         See Also
         --------
         to_indices : function that just returns `indices`
@@ -641,19 +714,23 @@ class TopologyGroup(object):
 
     def to_indices(self):
         """Return a data structure with atom indices describing the bonds.
+
         This format should be identical to the original contents of the
         entries in universe._topology.
         Note that because bonds are sorted as they are initialised, the order
         that atoms are defined in each entry might be reversed.
+
         Returns
         -------
         indices : tuple
             A tuple of tuples which define the contents of this
             TopologyGroup in terms of the atom numbers.  (0 based
             index within u.atoms)
+
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.10.0
            Renamed from "dump_contents" to "to_indices"
+
         """
         return self.indices
 
@@ -665,6 +742,7 @@ class TopologyGroup(object):
 
     def __add__(self, other):
         """Combine two TopologyGroups together.
+
         Can combined two TopologyGroup of the same type, or add a single
         TopologyObject to a TopologyGroup.
         """
@@ -726,16 +804,17 @@ class TopologyGroup(object):
     def __getitem__(self, item):
         """Returns a particular bond as single object or a subset of
         this TopologyGroup as another TopologyGroup
+
         .. versionchanged:: 0.10.0
            Allows indexing via boolean numpy array
         """
         # Grab a single Item, similar to Atom/AtomGroup relationship
         if isinstance(item, numbers.Integral):
             outclass = {'bond': Bond,
-                        'ureybradley': UreyBradley,
                         'angle': Angle,
                         'dihedral': Dihedral,
                         'improper': ImproperDihedral,
+                        'ureybradley': UreyBradley,
                         'cmap': CMap}[self.btype]
             return outclass(self._bix[item],
                             self._u,
@@ -809,6 +888,7 @@ class TopologyGroup(object):
     # "Slow" versions exist as a way of testing the Cython implementations
     def values(self, **kwargs):
         """Return the size of each object in this Group
+
         :Keywords:
            *pbc*
               apply periodic boundary conditions when calculating distance
@@ -816,6 +896,7 @@ class TopologyGroup(object):
            *result*
               allows a predefined results array to be used,
               note that this will be overwritten
+
         .. versionadded:: 0.11.0
         """
         if self.btype == 'bond':
@@ -845,6 +926,7 @@ class TopologyGroup(object):
 
     def bonds(self, pbc=False, result=None):
         """Calculates the distance between all bonds in this TopologyGroup
+
         :Keywords:
            *pbc*
               apply periodic boundary conditions when calculating distance
@@ -852,6 +934,7 @@ class TopologyGroup(object):
            *result*
               allows a predefined results array to be used,
               note that this will be overwritten
+
         Uses cython implementation
         """
         if not self.btype == 'bond':
@@ -882,6 +965,7 @@ class TopologyGroup(object):
     def angles(self, result=None, pbc=False):
         """Calculates the angle in radians formed between a bond
         between atoms 1 and 2 and a bond between atoms 2 & 3
+
         Parameters
         ----------
         result : array_like
@@ -891,11 +975,14 @@ class TopologyGroup(object):
             apply periodic boundary conditions when calculating angles
             [``False``] this is important when connecting vectors between
             atoms might require minimum image convention
+
         Returns
         -------
         angles : ndarray
+
         .. versionchanged :: 0.9.0
            Added *pbc* option (default ``False``)
+
         """
         if not self.btype == 'angle':
             raise TypeError("TopologyGroup is not of type 'angle'")
@@ -927,10 +1014,12 @@ class TopologyGroup(object):
                          for a, b, c in zip(ab, bc, cd)])
 
     def dihedrals(self, result=None, pbc=False):
-        """Calculate the dihedralal angle in radians for this topology
+        """Calculate the dihedral angle in radians for this topology
         group.
+
         Defined as the angle between a plane formed by atoms 1, 2 and
         3 and a plane formed by atoms 2, 3 and 4.
+
         Parameters
         ----------
         result : array_like
@@ -940,9 +1029,11 @@ class TopologyGroup(object):
             apply periodic boundary conditions when calculating angles
             [``False``] this is important when connecting vectors between
             atoms might require minimum image convention
+
         Returns
         -------
         angles : ndarray
+
         .. versionchanged:: 0.9.0
            Added *pbc* option (default ``False``)
         """
