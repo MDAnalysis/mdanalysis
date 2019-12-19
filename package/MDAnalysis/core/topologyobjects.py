@@ -359,7 +359,6 @@ class UreyBradley(TopologyObject):
         """Distance between the atoms.
         """
         box = self.universe.dimensions if pbc else None
-
         return distances.calc_bonds(self[0].position, self[1].position, box)
 
     value = distance

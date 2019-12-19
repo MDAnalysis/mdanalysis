@@ -200,6 +200,23 @@ class TestTopologyObjects(object):
             repr(imp),
             '<ImproperDihedral between: Atom 1, Atom 8, Atom 7, Atom 4>')
 
+    def test_ureybradley_repr(self, PSFDCD):
+        ub = PSFDCD.atoms[[30, 10]].ureybradley
+
+        assert_equal(repr(ub), '<UreyBradley between: Atom 10, Atom 30>')
+
+    def test_ureybradley_partner(self, PSFDCD):
+        ub = PSFDCD.atoms[[30, 10]].ureybradley
+        assert ub.partner(PSFDCD.atoms[30]) == PSFDCD.atoms[10]
+        assert ub.partner(PSFDCD.atoms[10]) == PSFDCD.atoms[30]
+
+    def test_cmap_repr(self, PSFDCD):
+        cmap = PSFDCD.atoms[[4, 7, 8, 1, 2]].cmap
+
+        assert_equal(
+            repr(cmap),
+            '<CMap between: Atom 2, Atom 1, Atom 8, Atom 7, Atom 4>')
+
 class TestTopologyGroup(object):
     """Tests TopologyDict and TopologyGroup classes with psf input"""
 

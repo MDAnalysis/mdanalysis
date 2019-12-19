@@ -3032,6 +3032,43 @@ class AtomGroup(GroupBase):
                 "improper only makes sense for a group with exactly 4 atoms")
         return topologyobjects.ImproperDihedral(self.ix, self.universe)
 
+    @property
+    def ureybradley(self):
+        """This :class:`AtomGroup` represented as an
+        :class:`MDAnalysis.core.topologyobjects.UreyBradley` object
+
+        Raises
+        ------
+        ValueError
+            If the :class:`AtomGroup` is not length 2
+
+
+        .. versionadded:: 0.21.0
+        """
+        if len(self) != 2:
+            raise ValueError(
+                "urey bradley only makes sense for a group with exactly 2 atoms")
+        return topologyobjects.UreyBradley(self.ix, self.universe)
+
+    @property
+    def cmap(self):
+        """This :class:`AtomGroup` represented as an
+        :class:`MDAnalysis.core.topologyobjects.CMap` object
+
+        Raises
+        ------
+        ValueError
+            If the :class:`AtomGroup` is not length 5
+
+
+        .. versionadded:: 0.21.0
+        """
+        if len(self) != 5:
+            raise ValueError(
+                "cmap only makes sense for a group with exactly 5 atoms")
+        return topologyobjects.CMap(self.ix, self.universe)
+
+
     def convert_to(self, format):
         """
         Convert :class:`AtomGroup` to structure from another library.
