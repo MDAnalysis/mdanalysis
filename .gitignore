@@ -40,3 +40,6 @@ authors.py
 *.DS_Store
 # ignore files from tests
 .hypothesis/
+
+# Ignore generated documentation stubs
+package/doc/sphinx/source/documentation_pages/core/*.txt

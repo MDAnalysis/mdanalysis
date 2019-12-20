@@ -17,6 +17,14 @@ import platform
 import datetime
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/
 import sphinx_rtd_theme
+import subprocess
+
+# Generate documentation stubs for transplanted methods. This is needed because
+# methods transplanted from topology attributes into topology components and
+# groups (e.g. Atom, AtomGroup) do not appear in the documentation of the
+# component or group otherwise.
+subprocess.call('./transplant_stub.py')
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
