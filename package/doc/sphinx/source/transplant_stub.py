@@ -41,8 +41,7 @@ def clean_doc(doc):
         return ''
     dedent_doc = textwrap.dedent(INDENT + doc)
     numpy_doc = NumpyDocstring(dedent_doc)
-    # doc_clear = clear_citations(str(numpy_doc))
-    doc_clear = str(numpy_doc)
+    doc_clear = clear_citations(str(numpy_doc))
     return doc_clear
 
 
@@ -131,18 +130,15 @@ class GroupTable:
     
     def write(self):
         with open(self.filename, 'w') as f:
-
             print(TRANSPLANT_EXPLANATION, file=f)
-
             print(tabulate.tabulate(self.table, tablefmt='rst'), file=f)
-        
             print(file=f)
+        print('Wrote ', self.filename)
 
         with open(self.filename2, 'w') as f:
             for method in sorted(self.all_methods):
                 print(method.formatted, file=f)
-        
-        print('Wrote ', self.filename)
+        print('Wrote ', self.filename2)
 
 
 

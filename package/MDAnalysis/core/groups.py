@@ -3359,14 +3359,10 @@ class SegmentGroup(GroupBase):
     :class:`SegmentGroups<SegmentGroup>` can be compared and combined using
     group operators. See the list of these operators on :class:`GroupBase`.
 
-    .. include:: SegmentGroup_methods_table.txt
-
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
        See :ref:`Instant selectors <instance-selectors>` for details and
        alternatives.
-
-    .. include:: SegmentGroup_methods_docs.txt
 
     """
 
