@@ -455,7 +455,9 @@ class GroupBase(_MutableBase):
     |                               |            | ``t`` but not both         |
     +-------------------------------+------------+----------------------------+
 
-    .. include:: GroupBase.txt
+    .. include:: GroupBase_methods_table.txt
+
+    .. include:: GroupBase_methods_docs.txt
 
     """
     def __init__(self, *args):
@@ -2252,7 +2254,7 @@ class AtomGroup(GroupBase):
     new :class:`AtomGroup` for multiple matches.  This makes it difficult to use
     the feature consistently in scripts.
 
-    .. include:: AtomGroup_methods.txt
+    .. include:: AtomGroup_methods_table.txt
 
 
     See Also
@@ -2264,6 +2266,9 @@ class AtomGroup(GroupBase):
        *Instant selectors* of :class:`AtomGroup` will be removed in the 1.0
        release. See :ref:`Instant selectors <instance-selectors>` for details
        and alternatives.
+
+    .. include:: AtomGroup_methods_docs.txt
+
     """
     def __getitem__(self, item):
         # DEPRECATED in 0.16.2
@@ -3186,12 +3191,14 @@ class ResidueGroup(GroupBase):
     ResidueGroups can be compared and combined using group operators. See the
     list of these operators on :class:`GroupBase`.
 
+    .. include:: ResidueGroup_methods_table.txt
+
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
        See :ref:`Instant selectors <instance-selectors>` for details and
        alternatives.
 
-    .. include:: ResidueGroup_methods.txt
+    .. include:: ResidueGroup_methods_docs.txt
 
     """
 
@@ -3352,12 +3359,14 @@ class SegmentGroup(GroupBase):
     :class:`SegmentGroups<SegmentGroup>` can be compared and combined using
     group operators. See the list of these operators on :class:`GroupBase`.
 
+    .. include:: SegmentGroup_methods_table.txt
+
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
        See :ref:`Instant selectors <instance-selectors>` for details and
        alternatives.
 
-    .. include:: SegmentGroup_methods.txt
+    .. include:: SegmentGroup_methods_docs.txt
 
     """
 
@@ -3595,7 +3604,9 @@ class Atom(ComponentBase):
     from :class:`ComponentBase`, so this class only includes ad-hoc methods
     specific to :class:`Atoms<Atom>`.
 
-    .. include:: Atom_methods.txt
+    .. include:: Atom_methods_table.txt
+
+    .. include:: Atom_methods_docs.txt
 
     """
     def __getattr__(self, attr):
@@ -3738,7 +3749,9 @@ class Residue(ComponentBase):
     from :class:`ComponentBase`, so this class only includes ad-hoc methods
     specific to :class:`Residues<Residue>`.
 
-    .. include:: Residue_methods.txt
+    .. include:: Residue_methods_table.txt
+
+    .. include:: Residue_methods_docs.txt
 
     """
     def __repr__(self):

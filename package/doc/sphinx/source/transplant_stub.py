@@ -95,12 +95,16 @@ class TransplantedMethod:
                                                                 signature,
                                                                 indented)
 
+TRANSPLANT_EXPLANATION = """
+Some methods and properties in this class only exist when certain topology attributes are available. They are first listed with the required topology attribute below, and then documented under that.
+"""
+
 class GroupTable:
 
     REQUIRES = '**Requires {}**'
 
     def __init__(self, group_target, attrs):
-        self.attrs = attrs
+        self.attrs = {k:sorted(list(set(v))) for k, v in attrs.items()}
 
         try:
             name = group_target.__name__
@@ -108,8 +112,10 @@ class GroupTable:
             # For some reason, some target are not classes but str
             name = group_target
         
-        file = '{}_methods.txt'.format(name)
+        file = '{}_methods_table.txt'.format(name)
+        file2 = '{}_methods_docs.txt'.format(name)
         self.filename = os.path.join('documentation_pages', 'core', file)
+        self.filename2 = os.path.join('documentation_pages', 'core', file2)
         self.table = []
         self.all_methods = []
 
@@ -117,7 +123,7 @@ class GroupTable:
         for attrname, methods in self.attrs.items():
             self.table.append([self.REQUIRES.format(attrname), ''])
             
-            for method in sorted(methods):
+            for method in methods:
                 self.table.append([method.short_fmt, method.short_desc])
         
             self.all_methods.extend(methods)
@@ -125,9 +131,14 @@ class GroupTable:
     
     def write(self):
         with open(self.filename, 'w') as f:
+
+            print(TRANSPLANT_EXPLANATION, file=f)
+
             print(tabulate.tabulate(self.table, tablefmt='rst'), file=f)
         
             print(file=f)
+
+        with open(self.filename2, 'w') as f:
             for method in sorted(self.all_methods):
                 print(method.formatted, file=f)
         

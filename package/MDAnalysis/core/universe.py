@@ -244,8 +244,10 @@ class Universe(object):
         master ConnectivityGroups for each connectivity type
 
 
-    .. include:: Universe_methods.txt
-    
+    .. include:: Universe_methods_table.txt
+
+    .. include:: Universe_methods_docs.txt
+
     """
 
     def __init__(self, *args, **kwargs):
