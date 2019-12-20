@@ -16,52 +16,9 @@ from sphinx.ext.napoleon import NumpyDocstring
 sys.path.insert(0, os.path.abspath('../../..'))
 import MDAnalysis as mda
 
-class TransplantedMethod:
-    def __init__(self, method):
-        self.method = method
-        try:
-            # We may be dealing with a property; then we need to get the
-            # actual method out of it.
-            self.method = method.fget
-        except AttributeError:
-            # Well, it was not a property
-            pass
-
-    @property
-    def name(self):
-        return self.method.__name__
-
-    @property
-    def doc(self):
-        dedent_doc = textwrap.dedent('        ' + self.method.__doc__)
-        numpy_doc = NumpyDocstring(dedent_doc)
-        doc_clear = clear_citations(str(numpy_doc))
-        return doc_clear
-
-    @property
-    def signature(self):
-        return get_signature(self.method)
-
-    @property
-    def short_desc(self):
-        return self.doc.splitlines()[0].strip()
-
-    @property
-    def is_private(self):
-        return self.name.startswith('_') or self.name.endswith('_')
-
-    @property
-    def formatted(self):
-        text = '.. method:: {}{}\n\n{}\n\n'.format(
-            self.name,
-            self.signature,
-            textwrap.indent(self.doc, prefix=' ' * 8)
-        )
-        return text
-
+INDENT = ' ' * 8
 
 def clear_citations(doc):
-    return doc
     citation_re = re.compile(r'^ *\.\. \[[^]]+\]')
 
     result = []
@@ -78,77 +35,130 @@ def clear_citations(doc):
     return '\n'.join(result)
 
 
-def get_signature(method):
-    signature = str(inspect.signature(method))
-    return re.sub(r'\(self,? *', '(', signature)
+def clean_doc(doc):
+    """Remove whitespace and citations"""
+    if not doc:
+        return ''
+    dedent_doc = textwrap.dedent(INDENT + doc)
+    numpy_doc = NumpyDocstring(dedent_doc)
+    # doc_clear = clear_citations(str(numpy_doc))
+    doc_clear = str(numpy_doc)
+    return doc_clear
 
 
-# Collect the transplanted functions from the topopoly attributes
-targets = collections.defaultdict(lambda : collections.defaultdict(list))
-for attribute_key, attribute in mda.core.topologyattrs._TOPOLOGY_ATTRS.items():
-    for target, methods in attribute.transplants.items():
-        all_methods = []
-        for method in methods:
-            function = TransplantedMethod(method[1])
-            if not function.is_private:
-                all_methods.append(function)
-        if all_methods:
-            targets[target][attribute.attrname] = all_methods
+class TransplantedMethod:
 
+    def __hash__(self):
+        return hash(self.name)
 
-for target_key, target_dict in targets.items():
-    try:
-        target_name = target_key.__name__
-    except AttributeError:
-        # For some reason, some target are not classes but str
-        target_name = target_key
-    if hasattr(target_key, '__mro__'):
-        for parent in target_key.__mro__:
-            for attribute_key, method_list in targets.get(parent, {}).items():
-                if attribute_key not in target_dict:
-                    target_dict[attribute_key] = []
-                for method in method_list:
-                    if method not in target_dict[attribute_key]:
-                        target_dict[attribute_key].append(method)
-
-
-for target_key, target_dict in targets.items():
-    try:
-        target_name = target_key.__name__
-    except AttributeError:
-        # For some reason, some target are not classes but str
-        target_name = target_key
-    table = []
-    for attribute_key, method_list in target_dict.items():
-        table.append(['**Requires {}**'.format(attribute_key), ''])
-        for method in method_list:
-            table.append([method.name, method.short_desc])
-    print(tabulate.tabulate(table, tablefmt='grid'))
-        
+    def __eq__(self, other):
+        return self.name == other.name
     
-for target_key, target_dict in targets.items():
+    def __lt__(self, other):
+        return self.name < other.name
+
+    def __init__(self, name, method):
+        self.method = method
+        self.name = name
+
+        try:
+            # We may be dealing with a property; then we need to get the
+            # actual method out of it.
+            self.method = method.fget
+            self.is_property = True
+        except AttributeError:
+            # Well, it was not a property
+            self.is_property = False
+
+        self.is_private = self.name.startswith('_') or self.name.endswith('_')
+
+        self.doc = clean_doc(self.method.__doc__)
+        indented = textwrap.indent(self.doc, prefix=INDENT)
+
+        raw_sig = str(inspect.signature(self.method))
+        no_group = re.sub(r'\(group *,? *', '(', raw_sig)
+        signature = re.sub(r'\(self *,? *', '(', no_group)
+
+        try:
+            self.short_desc = self.doc.split('.\n')[0].strip() + '.'
+        except IndexError:
+            self.short_desc = ''
+
+        if self.is_property:
+            self.short_fmt = ':attr:`{}`'.format(self.name)
+            self.formatted = '.. method:: {}{}\n    :property:\n\n{}\n\n'.format(self.name,
+                                                                signature,
+                                                                indented)
+        else:
+            self.short_fmt = ':meth:`{}`'.format(self.name)
+            self.formatted = '.. method:: {}{}\n\n{}\n\n'.format(self.name,
+                                                                signature,
+                                                                indented)
+
+class GroupTable:
+
+    REQUIRES = '**Requires {}**'
+
+    def __init__(self, group_target, attrs):
+        self.attrs = attrs
+
+        try:
+            name = group_target.__name__
+        except AttributeError:
+            # For some reason, some target are not classes but str
+            name = group_target
+        
+        file = '{}_methods.txt'.format(name)
+        self.filename = os.path.join('documentation_pages', 'core', file)
+        self.table = []
+        self.all_methods = []
+
+    def make_table(self):
+        for attrname, methods in self.attrs.items():
+            self.table.append([self.REQUIRES.format(attrname), ''])
+            
+            for method in sorted(methods):
+                self.table.append([method.short_fmt, method.short_desc])
+        
+            self.all_methods.extend(methods)
+                
+    
+    def write(self):
+        with open(self.filename, 'w') as f:
+            print(tabulate.tabulate(self.table, tablefmt='rst'), file=f)
+        
+            print(file=f)
+            for method in sorted(self.all_methods):
+                print(method.formatted, file=f)
+        
+        print('Wrote ', self.filename)
+
+
+
+# {Group name: {attribute name: [method]}}
+TRANSPLANTS = collections.defaultdict(lambda: collections.defaultdict(list))
+
+# collect transplanted methods
+for attr in mda._TOPOLOGY_ATTRS.values():
+    for group_target, methods in attr.transplants.items():
+        for name, method in methods:
+            fn = TransplantedMethod(name, method)
+            if not fn.is_private:
+                TRANSPLANTS[group_target][attr.attrname].append(fn)
+
+# copy parent methods into subclasses
+for group_target, attrmethods in TRANSPLANTS.items():
     try:
-        target_name = target_key.__name__
+        for parent in group_target.__mro__:
+            for attrname, parent_methods in TRANSPLANTS.get(parent, {}).items():
+                for method in parent_methods:
+                    if method not in attrmethods[attrname]:
+                        attrmethods[attrname].append(method)
     except AttributeError:
-        # For some reason, some target are not classes but str
-        target_name = target_key
-    file_name = os.path.join(
-        'documentation_pages',
-        'core',
-        '{}.txt'.format(target_name)
-    )
-    with open(file_name, 'w') as outfile:
-        table = []
-        for attribute_key, method_list in target_dict.items():
-            table.append(['**Requires {}**'.format(attribute_key), ''])
-            for method in method_list:
-                table.append([':meth:`{}`'.format(method.name), method.short_desc])
-        print(tabulate.tabulate(table, tablefmt='grid'), file=outfile)
+        pass
 
-        for attribute_key, method_list in target_dict.items():
-            print(file=outfile)
-
-            for method in method_list:
-                print(method.formatted, file=outfile)
-
-
+# write docs
+for group_target, attrs in TRANSPLANTS.items():
+    tablewriter = GroupTable(group_target, attrs)
+    tablewriter.make_table()
+    tablewriter.write()

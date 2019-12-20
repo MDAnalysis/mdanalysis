@@ -2252,7 +2252,7 @@ class AtomGroup(GroupBase):
     new :class:`AtomGroup` for multiple matches.  This makes it difficult to use
     the feature consistently in scripts.
 
-    .. include:: AtomGroup.txt
+    .. include:: AtomGroup_methods.txt
 
 
     See Also
@@ -3191,7 +3191,7 @@ class ResidueGroup(GroupBase):
        See :ref:`Instant selectors <instance-selectors>` for details and
        alternatives.
 
-    .. include:: ResidueGroup.txt
+    .. include:: ResidueGroup_methods.txt
 
     """
 
@@ -3356,6 +3356,8 @@ class SegmentGroup(GroupBase):
        *Instant selectors* of Segments will be removed in the 1.0 release.
        See :ref:`Instant selectors <instance-selectors>` for details and
        alternatives.
+
+    .. include:: SegmentGroup_methods.txt
 
     """
 
@@ -3593,7 +3595,7 @@ class Atom(ComponentBase):
     from :class:`ComponentBase`, so this class only includes ad-hoc methods
     specific to :class:`Atoms<Atom>`.
 
-    .. include:: Atom.txt
+    .. include:: Atom_methods.txt
 
     """
     def __getattr__(self, attr):
@@ -3736,7 +3738,7 @@ class Residue(ComponentBase):
     from :class:`ComponentBase`, so this class only includes ad-hoc methods
     specific to :class:`Residues<Residue>`.
 
-    .. include:: Residue.txt
+    .. include:: Residue_methods.txt
 
     """
     def __repr__(self):

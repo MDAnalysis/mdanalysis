@@ -30,6 +30,8 @@ Fixes
     (Issue #2392)
   * Added test to check for unexpected attributes in TopologyParsers (Issue #2387)
   * PDB files no longer lose chainIDs when reading files without segIDs (Issue #2389)    
+  * Adds docstrings of transplanted methods to core groups (Atom, AtomGroup,
+  Universe, etc.) (Issue #1845)
 
 Enhancements
   * Enhanges exception message when trajectory output file has no extension assigned.

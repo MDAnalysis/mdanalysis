@@ -243,6 +243,9 @@ class Universe(object):
     bonds, angles, dihedrals
         master ConnectivityGroups for each connectivity type
 
+
+    .. include:: Universe_methods.txt
+    
     """
 
     def __init__(self, *args, **kwargs):
