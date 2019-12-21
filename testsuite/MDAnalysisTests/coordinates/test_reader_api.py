@@ -262,6 +262,7 @@ class TestMultiFrameReader(_Multi):
         slice(None, 3, None),
         slice(4, 0, -1),
         slice(None, None, -1),
+        slice(None, None, 2),
     ])
     def test_double_getitem(self, sl1, sl2, reader):
         traj_iterable = reader[sl1][sl2]
