@@ -54,7 +54,7 @@ matrix:
            BUILD_DOCS=true
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
            INSTALL_HOLE="false"
-           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx==2.1 sphinx-sitemap sphinx_rtd_theme"
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx==2.2.0 sphinx-sitemap sphinx_rtd_theme"
 
     - env: NAME="Lint"
            PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
