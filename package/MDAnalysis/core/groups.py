@@ -100,11 +100,15 @@ import numbers
 import os
 import warnings
 
+import Bio.Seq
+import Bio.SeqRecord
+import Bio.Alphabet
+
 from numpy.lib.utils import deprecate
 
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
-from ..lib.util import cached, warn_if_not_unique, unique_int_1d
+from ..lib.util import cached, warn_if_not_unique, unique_int_1d, convert_aa_code
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
@@ -363,7 +367,7 @@ def check_pbc_and_unwrap(function):
     """
     @functools.wraps(function)
     def wrapped(group, *args, **kwargs):
-        if kwargs.get('compound') == 'group':
+        if kwargs.get('compound') == 'self':
             if kwargs.get('pbc') and kwargs.get('unwrap'):
                 raise ValueError("both 'pbc' and 'unwrap' can not be set to true")
         return function(group, *args, **kwargs)
@@ -400,14 +404,14 @@ class GroupBase(_MutableBase):
     +===============================+============+============================+
     | ``len(s)``                    |            | number of elements (atoms, |
     |                               |            | residues or segment) in    |
-    |                               |            | the group                  |
+    |                               |            | the self                  |
     +-------------------------------+------------+----------------------------+
     | ``s == t``                    |            | test if ``s`` and ``t``    |
     |                               |            | contain the same elements  |
     |                               |            | in the same order          |
     +-------------------------------+------------+----------------------------+
     | ``x in s``                    |            | test if component ``x`` is |
-    |                               |            | part of group ``s``        |
+    |                               |            | part of self ``s``        |
     +-------------------------------+------------+----------------------------+
     | ``s.concatenate(t)``          | ``s + t``  | new Group with elements    |
     |                               |            | from ``s`` and from ``t``  |
@@ -562,7 +566,7 @@ class GroupBase(_MutableBase):
 
     @_only_same_level
     def __eq__(self, other):
-        """Test group equality.
+        """Test self equality.
 
         Two groups are equal if they contain the same indices in
         the same order. Groups that are not at the same level or that belong
@@ -590,7 +594,7 @@ class GroupBase(_MutableBase):
 
     @property
     def universe(self):
-        """The underlying :class:`~MDAnalysis.core.universe.Universe` the group
+        """The underlying :class:`~MDAnalysis.core.universe.Universe` the self
         belongs to.
         """
         return self._u
@@ -634,8 +638,8 @@ class GroupBase(_MutableBase):
     @property
     @cached('isunique')
     def isunique(self):
-        """Boolean indicating whether all components of the group are unique,
-        i.e., the group contains no duplicates.
+        """Boolean indicating whether all components of the self are unique,
+        i.e., the self contains no duplicates.
 
         Examples
         --------
@@ -659,21 +663,21 @@ class GroupBase(_MutableBase):
         # Fast check for uniqueness
         # 1. get sorted array of component indices:
         s_ix = np.sort(self._ix)
-        # 2. If the group's components are unique, no pair of adjacent values in
+        # 2. If the self's components are unique, no pair of adjacent values in
         #    the sorted indices array are equal. We therefore compute a boolean
         #    mask indicating equality of adjacent sorted indices:
         mask = s_ix[1:] == s_ix[:-1]
-        # 3. The group is unique if all elements in the mask are False. We could
+        # 3. The self is unique if all elements in the mask are False. We could
         #    return ``not np.any(mask)`` here but using the following is faster:
         return not np.count_nonzero(mask)
 
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def center(self, weights, pbc=None, compound='group', unwrap=False):
-        """Weighted center of (compounds of) the group
+    def center(self, weights, pbc=None, compound='self', unwrap=False):
+        """Weighted center of (compounds of) the self
 
-        Computes the weighted center of :class:`Atoms<Atom>` in the group.
+        Computes the weighted center of :class:`Atoms<Atom>` in the self.
         Weighted centers per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
         accordingly. If the weights of a compound sum up to zero, the
@@ -684,30 +688,30 @@ class GroupBase(_MutableBase):
         ----------
         weights : array_like or None
             Weights to be used. Setting `weights=None` is equivalent to passing
-            identical weights for all atoms of the group.
+            identical weights for all atoms of the self.
         pbc : bool or None, optional
-            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            If ``True`` and `compound` is ``'self'``, move all atoms to the
             primary unit cell before calculation. If ``True`` and `compound` is
             ``'segments'``, ``'residues'``, ``'molecules'``, or ``'fragments'``,
             the center of each compound will be calculated without moving any
             :class:`Atoms<Atom>` to keep the compounds intact. Instead, the
             resulting position vectors will be moved to the primary unit cell
             after calculation.
-        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
-            If ``'group'``, the weighted center of all atoms in the group will
+        compound : {'self', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            If ``'self'``, the weighted center of all atoms in the self will
             be returned as a single position vector. Else, the weighted centers
             of each :class:`Segment`, :class:`Residue`, molecule, or fragment
             will be returned as an array of position vectors, i.e. a 2d array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
-            *belonging to the group* will be taken into account.
+            *belonging to the self* will be taken into account.
         unwrap : bool, optional
             If ``True``, compounds will be unwrapped before computing their centers.
 
         Returns
         -------
         center : numpy.ndarray
-            Position vector(s) of the weighted center(s) of the group.
-            If `compound` was set to ``'group'``, the output will be a single
+            Position vector(s) of the weighted center(s) of the self.
+            If `compound` was set to ``'self'``, the output will be a single
             position vector.
             If `compound` was set to ``'segments'``, ``'residues'``,
             ``'molecules'``, or ``'fragments'``, the output will be a 2d array
@@ -716,7 +720,7 @@ class GroupBase(_MutableBase):
         Raises
         ------
         ValueError
-            If `compound` is not one of ``'group'``, ``'segments'``,
+            If `compound` is not one of ``'self'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
         ValueError
             If both 'pbc' and 'unwrap' set to true.
@@ -759,7 +763,7 @@ class GroupBase(_MutableBase):
         dtype = np.float64
 
         comp = compound.lower()
-        if comp == 'group':
+        if comp == 'self':
             if pbc:
                 coords = atoms.pack_into_box(inplace=False)
             elif unwrap:
@@ -794,7 +798,7 @@ class GroupBase(_MutableBase):
                                   "No bond information in topology."), None)
         else:
             raise ValueError("Unrecognized compound definition: {}\nPlease use"
-                             " one of 'group', 'residues', 'segments', "
+                             " one of 'self', 'residues', 'segments', "
                              "'molecules', or 'fragments'.".format(compound))
 
         # Sort positions and weights by compound index and promote to dtype if
@@ -838,38 +842,38 @@ class GroupBase(_MutableBase):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def center_of_geometry(self, pbc=None, compound='group', unwrap=False):
-        """Center of geometry of (compounds of) the group.
+    def center_of_geometry(self, pbc=None, compound='self', unwrap=False):
+        """Center of geometry of (compounds of) the self.
 
         Computes the center of geometry (a.k.a. centroid) of
-        :class:`Atoms<Atom>` in the group. Centers of geometry per
+        :class:`Atoms<Atom>` in the self. Centers of geometry per
         :class:`Residue`, :class:`Segment`, molecule, or fragment can be
         obtained by setting the `compound` parameter accordingly.
 
         Parameters
         ----------
         pbc : bool or None, optional
-            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            If ``True`` and `compound` is ``'self'``, move all atoms to the
             primary unit cell before calculation. If ``True`` and `compound` is
             ``'segments'`` or ``'residues'``, the center of each compound will
             be calculated without moving any :class:`Atoms<Atom>` to keep the
             compounds intact. Instead, the resulting position vectors will be
             moved to the primary unit cell after calculation.
-        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
-            If ``'group'``, the center of geometry of all :class:`Atoms<Atom>`
-            in the group will be returned as a single position vector. Else, the
+        compound : {'self', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            If ``'self'``, the center of geometry of all :class:`Atoms<Atom>`
+            in the self will be returned as a single position vector. Else, the
             centers of geometry of each :class:`Segment` or :class:`Residue`
             will be returned as an array of position vectors, i.e. a 2d array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
-            *belonging to the group* will be taken into account.
+            *belonging to the self* will be taken into account.
         unwrap : bool, optional
             If ``True``, compounds will be unwrapped before computing their centers.
 
         Returns
         -------
         center : numpy.ndarray
-            Position vector(s) of the geometric center(s) of the group.
-            If `compound` was set to ``'group'``, the output will be a single
+            Position vector(s) of the geometric center(s) of the self.
+            If `compound` was set to ``'self'``, the output will be a single
             position vector.
             If `compound` was set to ``'segments'`` or ``'residues'``, the
             output will be a 2d array of shape ``(n, 3)`` where ``n`` is the
@@ -892,10 +896,71 @@ class GroupBase(_MutableBase):
     centroid = center_of_geometry
 
     @warn_if_not_unique
-    def accumulate(self, attribute, function=np.sum, compound='group'):
-        """Accumulates the attribute associated with (compounds of) the group.
+    @check_pbc_and_unwrap
+    def center_of_mass(self, pbc=None, compound='self', unwrap=False):
+        """Center of mass of (compounds of) the self.
 
-        Accumulates the attribute of :class:`Atoms<Atom>` in the group.
+        Computes the center of mass of :class:`Atoms<Atom>` in the self.
+        Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly. If the masses of a compound sum up to zero, the
+        center of mass coordinates of that compound will be ``nan`` (not a
+        number).
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True`` and `compound` is ``'self'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is ``'segments'`` or ``'residues'``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact. Instead, the resulting
+            center-of-mass position vectors will be moved to the primary unit
+            cell after calculation.
+        compound : {'self', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            If ``'self'``, the center of mass of all atoms in the self will
+            be returned as a single position vector. Otherwise, the centers of
+            mass of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e. a 2d
+            array.
+            Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
+            *belonging to the self* will be taken into account.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+
+        Returns
+        -------
+        center : numpy.ndarray
+            Position vector(s) of the center(s) of mass of the self.
+            If `compound` was set to ``'self'``, the output will be a single
+            position vector.
+            If `compound` was set to ``'segments'`` or ``'residues'``, the
+            output will be a 2d coordinate array of shape ``(n, 3)`` where ``n``
+            is the number of compounds.
+
+        Note
+        ----
+        * This method can only be accessed if the underlying topology has
+          information about atomic masses.
+        * The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+          ``True`` allows the *pbc* flag to be used by default.
+
+
+        .. versionchanged:: 0.8 Added `pbc` parameter
+        .. versionchanged:: 0.19.0 Added `compound` parameter
+        .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
+            compounds
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
+        """
+        atoms = self.atoms
+        return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound, unwrap=unwrap)
+
+    @warn_if_not_unique
+    def accumulate(self, attribute, function=np.sum, compound='self'):
+        """Accumulates the attribute associated with (compounds of) the self.
+
+        Accumulates the attribute of :class:`Atoms<Atom>` in the self.
         The accumulation per :class:`Residue`, :class:`Segment`, molecule,
         or fragment can be obtained by setting the `compound` parameter
         accordingly. By default, the method sums up all attributes per compound,
@@ -909,26 +974,26 @@ class GroupBase(_MutableBase):
             Attribute or array of values to accumulate.
             If a :class:`numpy.ndarray` (or compatible) is provided, its first
             dimension must have the same length as the total number of atoms in
-            the group.
+            the self.
         function : callable, optional
             The function performing the accumulation. It must take the array of
             attribute values to accumulate as its only positional argument and
             accept an (optional) keyword argument ``axis`` allowing to specify
             the axis along which the accumulation is performed.
-        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+        compound : {'self', 'segments', 'residues', 'molecules', 'fragments'},\
                    optional
-            If ``'group'``, the accumulation of all attributes associated with
-            atoms in the group will be returned as a single value. Otherwise,
+            If ``'self'``, the accumulation of all attributes associated with
+            atoms in the self will be returned as a single value. Otherwise,
             the accumulation of the attributes per :class:`Segment`,
             :class:`Residue`, molecule, or fragment will be returned as a 1d
             array. Note that, in any case, *only* the :class:`Atoms<Atom>`
-            *belonging to the group* will be taken into account.
+            *belonging to the self* will be taken into account.
 
         Returns
         -------
         float or numpy.ndarray
             Acuumulation of the `attribute`.
-            If `compound` is set to ``'group'``, the first dimension of the
+            If `compound` is set to ``'self'``, the first dimension of the
             `attribute` array will be contracted to a single value.
             If `compound` is set to ``'segments'``, ``'residues'``,
             ``'molecules'``, or ``'fragments'``, the length of the first
@@ -940,9 +1005,9 @@ class GroupBase(_MutableBase):
         ------
         ValueError
             If the length of a provided `attribute` array does not correspond to
-            the number of atoms in the group.
+            the number of atoms in the self.
         ValueError
-            If `compound` is not one of ``'group'``, ``'segments'``,
+            If `compound` is not one of ``'self'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
         ~MDAnalysis.exceptions.NoDataError
             If `compound` is ``'molecule'`` but the topology doesn't
@@ -979,12 +1044,12 @@ class GroupBase(_MutableBase):
             attribute_values = np.asarray(attribute)
             if len(attribute_values) != len(atoms):
                 raise ValueError("The input array length ({}) does not match "
-                                 "the number of atoms ({}) in the group."
+                                 "the number of atoms ({}) in the self."
                                  "".format(len(attribute_values), len(atoms)))
 
         comp = compound.lower()
 
-        if comp == 'group':
+        if comp == 'self':
             return function(attribute_values, axis=0)
         elif comp == 'residues':
             compound_indices = atoms.resindices
@@ -1008,7 +1073,7 @@ class GroupBase(_MutableBase):
                     None)
         else:
             raise ValueError("Unrecognized compound definition: '{}'. Please "
-                             "use one of 'group', 'residues', 'segments', "
+                             "use one of 'self', 'residues', 'segments', "
                              "'molecules', or 'fragments'.".format(compound))
 
         higher_dims = list(attribute_values.shape[1:])
@@ -1035,6 +1100,356 @@ class GroupBase(_MutableBase):
             _accumulation = function(_elements, axis=1)
             accumulation[compound_mask] = _accumulation
         return accumulation
+
+    @warn_if_not_unique
+    def total_mass(self, compound='self'):
+        """Total mass of (compounds of) the self.
+
+        Computes the total mass of :class:`Atoms<Atom>` in the self.
+        Total masses per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
+
+        Parameters
+        ----------
+        compound : {'self', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            If ``'self'``, the total mass of all atoms in the self will be
+            returned as a single value. Otherwise, the total masses per
+            :class:`Segment`, :class:`Residue`, molecule, or fragment will be
+            returned as a 1d array.
+            Note that, in any case, *only* the masses of :class:`Atoms<Atom>`
+            *belonging to the self* will be taken into account.
+
+        Returns
+        -------
+        float or numpy.ndarray
+            Total mass of (compounds of) the self.
+            If `compound` was set to ``'self'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,)``
+            where ``n`` is the number of compounds.
+
+
+        .. versionchanged:: 0.20.0 Added `compound` parameter
+        """
+        return self.accumulate("masses", compound=compound)
+
+    @warn_if_not_unique
+    def total_charge(self, compound='self'):
+        """Total charge of (compounds of) the self.
+
+        Computes the total charge of :class:`Atoms<Atom>` in the self.
+        Total charges per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
+
+        Parameters
+        ----------
+        compound : {'self', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            If 'self', the total charge of all atoms in the self will
+            be returned as a single value. Otherwise, the total charges per
+            :class:`Segment`, :class:`Residue`, molecule, or fragment
+            will be returned as a 1d array.
+            Note that, in any case, *only* the charges of :class:`Atoms<Atom>`
+            *belonging to the self* will be taken into account.
+
+        Returns
+        -------
+        float or numpy.ndarray
+            Total charge of (compounds of) the self.
+            If `compound` was set to ``'self'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,)``
+            where ``n`` is the number of compounds.
+
+
+        .. versionchanged:: 0.20.0 Added `compound` parameter
+        """
+        return self.accumulate("charges", compound=compound)
+
+    @warn_if_not_unique
+    def radius_of_gyration(self, **kwargs):
+        """Radius of gyration.
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
+
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+
+        """
+        atomgroup = self.atoms
+        pbc = kwargs.pop('pbc', flags['use_pbc'])
+        masses = atomgroup.masses
+
+        com = atomgroup.center_of_mass(pbc=pbc)
+        if pbc:
+            recenteredpos = atomgroup.pack_into_box(inplace=False) - com
+        else:
+            recenteredpos = atomgroup.positions - com
+
+        rog_sq = np.sum(masses * np.sum(recenteredpos**2,
+                                        axis=1)) / atomgroup.total_mass()
+
+        return np.sqrt(rog_sq)
+
+    @warn_if_not_unique
+    def shape_parameter(self, **kwargs):
+        """Shape parameter.
+
+        See [Dima2004a]_ for background information.
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
+
+
+        References
+        ----------
+        .. [Dima2004a] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
+           in the shapes of folded and denatured states of
+           proteins. *J Phys Chem B*, 108(21),
+           6564-6570. doi:`10.1021/jp037128y
+           <https://doi.org/10.1021/jp037128y>`_
+
+
+        .. versionadded:: 0.7.7
+        .. versionchanged:: 0.8 Added *pbc* keyword
+
+        """
+        atomgroup = self.atoms
+        pbc = kwargs.pop('pbc', flags['use_pbc'])
+        masses = atomgroup.masses
+
+        com = atomgroup.center_of_mass(pbc=pbc)
+        if pbc:
+            recenteredpos = atomgroup.pack_into_box(inplace=False) - com
+        else:
+            recenteredpos = atomgroup.positions - com
+        tensor = np.zeros((3, 3))
+
+        for x in range(recenteredpos.shape[0]):
+            tensor += masses[x] * np.outer(recenteredpos[x, :],
+                                           recenteredpos[x, :])
+        tensor /= atomgroup.total_mass()
+        eig_vals = np.linalg.eigvalsh(tensor)
+        shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)) / np.power(np.sum(eig_vals), 3)
+
+        return shape
+
+    @warn_if_not_unique
+    @check_pbc_and_unwrap
+    def asphericity(self, pbc=None, unwrap=None, compound='self'):
+        """Asphericity.
+
+        See [Dima2004b]_ for background information.
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. If ``None`` use value defined in
+            MDAnalysis.core.flags['use_pbc']
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'self', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
+
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
+
+
+        References
+        ----------
+
+        .. [Dima2004b] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
+           in the shapes of folded and denatured states of
+           proteins. *J Phys Chem B*, 108(21),
+           6564-6570. doi:`10.1021/jp037128y
+           <https://doi.org/10.1021/jp037128y>`_
+
+
+
+        .. versionadded:: 0.7.7
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter
+
+        """
+        atomgroup = self.atoms
+        if pbc is None:
+            pbc = flags['use_pbc']
+        masses = atomgroup.masses
+
+        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound is not 'self':
+            com = (com * self.masses[:, None]).sum(axis=0) / self.masses.sum()
+
+        if pbc:
+            recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
+        elif unwrap:
+            recenteredpos = (atomgroup.unwrap(inplace=False) - com)
+        else:
+            recenteredpos = (atomgroup.positions - com)
+
+        tensor = np.zeros((3, 3))
+        for x in range(recenteredpos.shape[0]):
+            tensor += masses[x] * np.outer(recenteredpos[x],
+                                           recenteredpos[x])
+
+        tensor /= atomgroup.total_mass()
+        eig_vals = np.linalg.eigvalsh(tensor)
+        shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
+                               np.sum(eig_vals)**2)
+
+        return shape
+
+    @warn_if_not_unique
+    def principal_axes(self, pbc=None):
+        """Calculate the principal axes from the moment of inertia.
+
+        e1,e2,e3 = AtomGroup.principal_axes()
+
+        The eigenvectors are sorted by eigenvalue, i.e. the first one
+        corresponds to the highest eigenvalue and is thus the first principal
+        axes.
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. If ``None`` use value defined in setup flags.
+
+        Returns
+        -------
+        axis_vectors : array
+            3 x 3 array with ``v[0]`` as first, ``v[1]`` as second, and
+            ``v[2]`` as third eigenvector.
+
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
+
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+
+        """
+        atomgroup = self.atoms
+        if pbc is None:
+            pbc = flags['use_pbc']
+        e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
+
+        # Sort
+        indices = np.argsort(e_val)[::-1]
+        # Return transposed in more logical form. See Issue 33.
+        return e_vec[:, indices].T
+
+    def align_principal_axis(self, axis, vector):
+        """Align principal axis with index `axis` with `vector`.
+
+        Parameters
+        ----------
+        axis : {0, 1, 2}
+            Index of the principal axis (0, 1, or 2), as produced by
+            :meth:`~principal_axes`.
+        vector : array_like
+            Vector to align principal axis with.
+
+        Notes
+        -----
+        To align the long axis of a channel (the first principal axis, i.e.
+        *axis* = 0) with the z-axis::
+
+          u.atoms.align_principal_axis(0, [0,0,1])
+          u.atoms.write("aligned.pdb")
+        """
+        p = self.principal_axes()[axis]
+        angle = np.degrees(mdamath.angle(p, vector))
+        ax = transformations.rotaxis(p, vector)
+        # print "principal[%d] = %r" % (axis, p)
+        # print "axis = %r, angle = %f deg" % (ax, angle)
+        return self.rotateby(angle, ax)
+
+    @warn_if_not_unique
+    @check_pbc_and_unwrap
+    def moment_of_inertia(self, **kwargs):
+        """Tensor moment of inertia relative to center of mass as 3x3 numpy
+        array.
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
+
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.20.0 Added `unwrap` parameter
+
+        """
+        atomgroup = self.atoms
+        pbc = kwargs.pop('pbc', flags['use_pbc'])
+        unwrap = kwargs.pop('unwrap', False)
+        compound = kwargs.pop('compound', 'self')
+
+        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound is not 'self':
+            com = (com * self.masses[:, None]).sum(axis=0) / self.masses.sum()
+
+        if pbc:
+            pos = atomgroup.pack_into_box(inplace=False) - com
+        elif unwrap:
+            pos = atomgroup.unwrap(compound=compound, inplace=False) - com
+        else:
+            pos = atomgroup.positions - com
+
+        masses = atomgroup.masses
+        # Create the inertia tensor
+        # m_i = mass of atom i
+        # (x_i, y_i, z_i) = pos of atom i
+        # Ixx = sum(m_i*(y_i^2+z_i^2));
+        # Iyy = sum(m_i*(x_i^2+z_i^2));
+        # Izz = sum(m_i*(x_i^2+y_i^2))
+        # Ixy = Iyx = -1*sum(m_i*x_i*y_i)
+        # Ixz = Izx = -1*sum(m_i*x_i*z_i)
+        # Iyz = Izy = -1*sum(m_i*y_i*z_i)
+        tens = np.zeros((3, 3), dtype=np.float64)
+        # xx
+        tens[0][0] = (masses * (pos[:, 1] ** 2 + pos[:, 2] ** 2)).sum()
+        # xy & yx
+        tens[0][1] = tens[1][0] = - (masses * pos[:, 0] * pos[:, 1]).sum()
+        # xz & zx
+        tens[0][2] = tens[2][0] = - (masses * pos[:, 0] * pos[:, 2]).sum()
+        # yy
+        tens[1][1] = (masses * (pos[:, 0] ** 2 + pos[:, 2] ** 2)).sum()
+        # yz + zy
+        tens[1][2] = tens[2][1] = - (masses * pos[:, 1] * pos[:, 2]).sum()
+        # zz
+        tens[2][2] = (masses * (pos[:, 0] ** 2 + pos[:, 1] ** 2)).sum()
+
+        return tens
 
     def bbox(self, **kwargs):
         """Return the bounding box of the selection.
@@ -1211,7 +1626,7 @@ class GroupBase(_MutableBase):
         Notes
         -----
         By default, rotates about the origin ``point=(0, 0, 0)``. To rotate
-        a group ``g`` around its center of geometry, use
+        a self ``g`` around its center of geometry, use
         ``g.rotate(R, point=g.center_of_geometry())``.
 
         See Also
@@ -1247,7 +1662,7 @@ class GroupBase(_MutableBase):
             Rotation axis vector.
         point : array_like, optional
             Center of rotation. If ``None`` then the center of geometry of this
-            group is used.
+            self is used.
 
         Returns
         -------
@@ -1280,7 +1695,7 @@ class GroupBase(_MutableBase):
         return self.transform(M)
 
     def pack_into_box(self, box=None, inplace=True):
-        r"""Shift all :class:`Atoms<Atom>` in this group to the primary unit
+        r"""Shift all :class:`Atoms<Atom>` in this self to the primary unit
         cell.
 
         Parameters
@@ -1332,7 +1747,7 @@ class GroupBase(_MutableBase):
         return self.wrap(box=box, inplace=inplace)
 
     def wrap(self, compound="atoms", center="com", box=None, inplace=True):
-        """Shift the contents of this group back into the primary unit cell
+        """Shift the contents of this self back into the primary unit cell
         according to periodic boundary conditions.
 
         Specifying a `compound` will keep the :class:`Atoms<Atom>` in each
@@ -1342,13 +1757,13 @@ class GroupBase(_MutableBase):
 
         Parameters
         ----------
-        compound : {'atoms', 'group', 'segments', 'residues', 'molecules', \
+        compound : {'atoms', 'self', 'segments', 'residues', 'molecules', \
                     'fragments'}, optional
             Which type of component to keep together during wrapping. Note that,
             in any case, *only* the positions of :class:`Atoms<Atom>`
-            *belonging to the group* will be taken into account.
+            *belonging to the self* will be taken into account.
         center : {'com', 'cog'}
-            How to define the center of a given group of atoms. If `compound` is
+            How to define the center of a given self of atoms. If `compound` is
             ``'atoms'``, this parameter is meaningless and therefore ignored.
         box : array_like, optional
             The unitcell dimensions of the system, which can be orthogonal or
@@ -1369,7 +1784,7 @@ class GroupBase(_MutableBase):
         Raises
         ------
         ValueError
-            If `compound` is not one of ``'atoms'``, ``'group'``,
+            If `compound` is not one of ``'atoms'``, ``'self'``,
             ``'segments'``, ``'residues'``, ``'molecules'``, or ``'fragments'``.
         ~MDAnalysis.exceptions.NoDataError
             If `compound` is ``'molecule'`` but the topology doesn't
@@ -1379,7 +1794,7 @@ class GroupBase(_MutableBase):
 
         Notes
         -----
-        All atoms of the group will be moved so that the centers of its
+        All atoms of the self will be moved so that the centers of its
         compounds lie within the primary periodic image. For orthorhombic unit
         cells, the primary periodic image is defined as the half-open interval
         :math:`[0,L_i)` between :math:`0` and boxlength :math:`L_i` in all
@@ -1399,10 +1814,10 @@ class GroupBase(_MutableBase):
         This might however mean that not all atoms of a compound will be
         inside the unit cell after wrapping, but rather will be the center of
         the compound.\n
-        Be aware of the fact that only atoms *belonging to the group* will be
+        Be aware of the fact that only atoms *belonging to the self* will be
         taken into account!
 
-        `center` allows to define how the center of each group is computed.
+        `center` allows to define how the center of each self is computed.
         This can be either ``'com'`` for center of mass, or ``'cog'`` for center
         of geometry.
 
@@ -1424,7 +1839,7 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.9.2
         .. versionchanged:: 0.20.0
-           The method only acts on atoms *belonging to the group* and returns
+           The method only acts on atoms *belonging to the self* and returns
            the wrapped positions as a :class:`numpy.ndarray`.
            Added optional argument `inplace`.
         """
@@ -1438,7 +1853,7 @@ class GroupBase(_MutableBase):
                              "box dimensions are positive. You can specify a "
                              "valid box using the 'box' argument.")
 
-        # no matter what kind of group we have, we need to work on its (unique)
+        # no matter what kind of self we have, we need to work on its (unique)
         # atoms:
         atoms = self.atoms
         if not self.isunique:
@@ -1447,10 +1862,10 @@ class GroupBase(_MutableBase):
             atoms = _atoms
 
         comp = compound.lower()
-        if comp not in ('atoms', 'group', 'segments', 'residues', 'molecules', \
+        if comp not in ('atoms', 'self', 'segments', 'residues', 'molecules', \
                         'fragments'):
             raise ValueError("Unrecognized compound definition '{}'. "
-                             "Please use one of 'atoms', 'group', 'segments', "
+                             "Please use one of 'atoms', 'self', 'segments', "
                              "'residues', 'molecules', or 'fragments'."
                              "".format(compound))
 
@@ -1471,14 +1886,14 @@ class GroupBase(_MutableBase):
                 raise ValueError("Unrecognized center definition '{}'. Please "
                                  "use one of 'com' or 'cog'.".format(center))
             positions = atoms.positions
-            if comp == 'group':
+            if comp == 'self':
                 # compute and apply required shift:
                 if ctr == 'com':
                     ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
                     if np.isnan(ctrpos[0]):
-                        raise ValueError("Cannot use compound='group' with "
+                        raise ValueError("Cannot use compound='self' with "
                                          "center='com' because the total mass "
-                                         "of the group is zero.")
+                                         "of the self is zero.")
                 else:  # ctr == 'cog'
                     ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
                 ctrpos = ctrpos.astype(np.float32, copy=False)
@@ -1533,8 +1948,8 @@ class GroupBase(_MutableBase):
         return positions
 
     def unwrap(self, compound='fragments', reference='com', inplace=True):
-        """Move atoms of this group so that bonds within the
-        group's compounds aren't split across periodic boundaries.
+        """Move atoms of this self so that bonds within the
+        self's compounds aren't split across periodic boundaries.
 
         This function is most useful when atoms have been packed into the
         primary unit cell, causing breaks mid-molecule, with the molecule then
@@ -1553,7 +1968,7 @@ class GroupBase(_MutableBase):
 
         Parameters
         ----------
-        compound : {'group', 'segments', 'residues', 'molecules', \
+        compound : {'self', 'segments', 'residues', 'molecules', \
                     'fragments'}, optional
             Which type of component to unwrap. Note that, in any case, all
             atoms within each compound must be interconnected by bonds, i.e.,
@@ -1584,10 +1999,10 @@ class GroupBase(_MutableBase):
 
         Note
         ----
-        Be aware of the fact that only atoms *belonging to the group* will
+        Be aware of the fact that only atoms *belonging to the self* will
         be unwrapped! If you want entire molecules to be unwrapped, make sure
-        that all atoms of these molecules are part of the group.\n
-        An AtomGroup containing all atoms of all fragments in the group ``ag``
+        that all atoms of these molecules are part of the self.\n
+        An AtomGroup containing all atoms of all fragments in the self ``ag``
         can be created with::
 
           all_frag_atoms = sum(ag.fragments)
@@ -1621,13 +2036,13 @@ class GroupBase(_MutableBase):
                 raise ValueError("Unrecognized reference '{}'. Please use one "
                                  "of 'com', 'cog', or None.".format(reference))
         comp = compound.lower()
-        if comp not in ('fragments', 'group', 'residues', 'segments',
+        if comp not in ('fragments', 'self', 'residues', 'segments',
                         'molecules'):
             raise ValueError("Unrecognized compound definition '{}'. Please "
-                             "use one of 'group', 'residues', 'segments', "
+                             "use one of 'self', 'residues', 'segments', "
                              "'molecules', or 'fragments'.".format(compound))
-        # The 'group' needs no splitting:
-        if comp == 'group':
+        # The 'self' needs no splitting:
+        if comp == 'self':
             positions = mdamath.make_whole(unique_atoms, inplace=False)
             # Apply reference shift if required:
             if reference is not None and len(positions) > 0:
@@ -1637,7 +2052,7 @@ class GroupBase(_MutableBase):
                     if np.isclose(total_mass, 0.0):
                         raise ValueError("Cannot perform unwrap with "
                                          "reference='com' because the total "
-                                         "mass of the group is zero.")
+                                         "mass of the self is zero.")
                     refpos = np.sum(positions * masses[:, None], axis=0)
                     refpos /= total_mass
                 else:  # ref == 'cog'
@@ -1645,7 +2060,7 @@ class GroupBase(_MutableBase):
                 refpos = refpos.astype(np.float32, copy=False)
                 target = distances.apply_PBC(refpos, self.dimensions)
                 positions += target - refpos
-        # We need to split the group into compounds:
+        # We need to split the self into compounds:
         else:
             if comp == 'fragments':
                 compound_indices = unique_atoms.fragindices
@@ -1691,13 +2106,13 @@ class GroupBase(_MutableBase):
         return positions
 
     def copy(self):
-        """Get another group identical to this one.
+        """Get another self identical to this one.
 
 
         .. versionadded:: 0.19.0
         """
         group = self[:]
-        # Try to fill the copied group's uniqueness caches:
+        # Try to fill the copied self's uniqueness caches:
         try:
             group._cache['isunique'] = self._cache['isunique']
             if group._cache['isunique']:
@@ -1707,12 +2122,12 @@ class GroupBase(_MutableBase):
         return group
 
     def groupby(self, topattrs):
-        """Group together items in this group according to values of *topattr*
+        """Group together items in this self according to values of *topattr*
 
         Parameters
         ----------
         topattrs: str or list
-           One or more topology attributes to group components by.
+           One or more topology attributes to self components by.
            Single arguments are passed as a string. Multiple arguments
            are passed as a list.
 
@@ -1724,14 +2139,14 @@ class GroupBase(_MutableBase):
 
         Example
         -------
-        To group atoms with the same mass together:
+        To self atoms with the same mass together:
 
         >>> ag.groupby('masses')
         {12.010999999999999: <AtomGroup with 462 atoms>,
          14.007: <AtomGroup with 116 atoms>,
          15.999000000000001: <AtomGroup with 134 atoms>}
 
-        To group atoms with the same residue name and mass together:
+        To self atoms with the same residue name and mass together:
 
           >>> ag.groupby(['resnames', 'masses'])
           {('ALA', 1.008): <AtomGroup with 95 atoms>,
@@ -1888,7 +2303,7 @@ class GroupBase(_MutableBase):
     def subtract(self, other):
         """Group with elements from this Group that don't appear in other
 
-        The original order of this group is kept, as well as any duplicate
+        The original order of this self is kept, as well as any duplicate
         elements. If an element of this Group is duplicated and appears in
         the other Group or Component, then all the occurences of that element
         are removed from the returned Group.
@@ -2014,7 +2429,7 @@ class GroupBase(_MutableBase):
     def issubset(self, other):
         """If all elements of this Group are part of another Group
 
-        Note that an empty group is a subset of any group of the same level.
+        Note that an empty self is a subset of any self of the same level.
 
         Parameters
         ----------
@@ -2104,7 +2519,7 @@ class AtomGroup(GroupBase):
         ag = AtomGroup([72, 14, 25], u)
 
     Alternatively, an :class:`AtomGroup` is generated by indexing/slicing
-    another :class:`AtomGroup`, such as the group of all :class:`Atoms<Atom>` in
+    another :class:`AtomGroup`, such as the self of all :class:`Atoms<Atom>` in
     the :class:`~MDAnalysis.core.universe.Universe` at
     :attr:`MDAnalysis.core.universe.Universe.atoms`.
 
@@ -2112,7 +2527,7 @@ class AtomGroup(GroupBase):
 
         ag[0], ag[-1]
 
-    will return the first and the last :class:`Atom` in the group whereas the
+    will return the first and the last :class:`Atom` in the self whereas the
     slice::
 
         ag[0:6:2]
@@ -2140,7 +2555,7 @@ class AtomGroup(GroupBase):
         used when the order of atoms is crucial (for instance, in order to
         define angles or dihedrals).
 
-    :class:`AtomGroups<AtomGroup>` can be compared and combined using group
+    :class:`AtomGroups<AtomGroup>` can be compared and combined using self
     operators. For instance, :class:`AtomGroups<AtomGroup>` can be concatenated
     using `+` or :meth:`concatenate`::
 
@@ -2148,19 +2563,19 @@ class AtomGroup(GroupBase):
 
     When groups are concatenated, the order of the :class:`Atoms<Atom>` is
     conserved. If :class:`Atoms<Atom>` appear several times in one of the
-    groups, the duplicates are kept in the resulting group. On the contrary to
+    groups, the duplicates are kept in the resulting self. On the contrary to
     :meth:`concatenate`, :meth:`union` treats the :class:`AtomGroups<AtomGroup>`
-    as sets so that duplicates are removed from the resulting group, and
+    as sets so that duplicates are removed from the resulting self, and
     :class:`Atoms<Atom>` are ordered. The `|` operator is synomymous to
     :meth:`union`::
 
         ag_union = ag1 | ag2  # or ag_union = ag1.union(ag2)
 
     The opposite operation to :meth:`concatenate` is :meth:`subtract`. This
-    method creates a new group with all the :class:`Atoms<Atom>` of the group
-    that are not in a given other group; the order of the :class:`Atoms<Atom>`
+    method creates a new self with all the :class:`Atoms<Atom>` of the self
+    that are not in a given other self; the order of the :class:`Atoms<Atom>`
     is kept, and so are duplicates. :meth:`difference` is the set version of
-    :meth:`subtract`. The resulting group is sorted and deduplicated.
+    :meth:`subtract`. The resulting self is sorted and deduplicated.
 
     All set methods are listed in the table below. These methods treat the
     groups as sorted and deduplicated sets of :class:`Atoms<Atom>`.
@@ -2207,7 +2622,7 @@ class AtomGroup(GroupBase):
     +===============================+============+============================+
     | ``len(s)``                    |            | number of elements (atoms, |
     |                               |            | residues or segment) in    |
-    |                               |            | the group                  |
+    |                               |            | the self                  |
     +-------------------------------+------------+----------------------------+
     | ``s == t``                    |            | test if ``s`` and ``t``    |
     |                               |            | contain the same elements  |
@@ -2238,8 +2653,8 @@ class AtomGroup(GroupBase):
         ag.CA
 
     will provide an :class:`AtomGroup` of all CA :class:`Atoms<Atom>` in the
-    group. These *instant selector* attributes are auto-generated for
-    each atom name encountered in the group.
+    self. These *instant selector* attributes are auto-generated for
+    each atom name encountered in the self.
 
     Notes
     -----
@@ -2421,7 +2836,7 @@ class AtomGroup(GroupBase):
         """An :class:`AtomGroup` containing sorted and unique
         :class:`Atoms<Atom>` only.
 
-        If the :class:`AtomGroup` is unique, this is the group itself.
+        If the :class:`AtomGroup` is unique, this is the self itself.
 
         Examples
         --------
@@ -2442,7 +2857,7 @@ class AtomGroup(GroupBase):
 
         .. versionadded:: 0.16.0
         .. versionchanged:: 0.19.0 If the :class:`AtomGroup` is already unique,
-            :attr:`AtomGroup.unique` now returns the group itself instead of a
+            :attr:`AtomGroup.unique` now returns the self itself instead of a
             copy.
         """
         if self.isunique:
@@ -2621,7 +3036,7 @@ class AtomGroup(GroupBase):
         Existing :class:`AtomGroup` objects can be passed as named arguments,
         which will then be available to the selection parser.
 
-           >>> universe.select_atoms("around 10 group notHO", notHO=sel)
+           >>> universe.select_atoms("around 10 self notHO", notHO=sel)
            <AtomGroup with 1250 atoms>
 
         Selections can be set to update automatically on frame change, by
@@ -2785,16 +3200,16 @@ class AtomGroup(GroupBase):
 
         **Preexisting selections**
 
-            group `group-name`
+            self `self-name`
                 selects the atoms in the :class:`AtomGroup` passed to the
-                function as an argument named `group-name`. Only the atoms
-                common to `group-name` and the instance
+                function as an argument named `self-name`. Only the atoms
+                common to `self-name` and the instance
                 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
-                was called from will be considered, unless ``group`` is
-                preceded by the ``global`` keyword. `group-name` will be
+                was called from will be considered, unless ``self`` is
+                preceded by the ``global`` keyword. `self-name` will be
                 included in the parsing just by comparison of atom indices.
                 This means that it is up to the user to make sure the
-                `group-name` group was defined in an appropriate
+                `self-name` self was defined in an appropriate
                 :class:`~MDAnalysis.core.universe.Universe`.
 
             global *selection*
@@ -2806,7 +3221,7 @@ class AtomGroup(GroupBase):
                 selection to be returned in its entirety.  As an example, the
                 ``global`` keyword allows for
                 ``lipids.select_atoms("around 10 global protein")`` --- where
-                ``lipids`` is a group that does not contain any proteins. Were
+                ``lipids`` is a self that does not contain any proteins. Were
                 ``global`` absent, the result would be an empty selection since
                 the ``protein`` subselection would itself be empty. When issuing
                 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from a
@@ -2824,8 +3239,8 @@ class AtomGroup(GroupBase):
             lazily, only when the
             :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` is accessed so
             that there is no redundant updating going on).
-            Issuing an updating selection from an already updating group will
-            cause later updates to also reflect the updating of the base group.
+            Issuing an updating selection from an already updating self will
+            cause later updates to also reflect the updating of the base self.
             A non-updating selection or a slicing operation made on an
             :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` will return a
             static :class:`~MDAnalysis.core.groups.AtomGroup`, which will no
@@ -2833,9 +3248,9 @@ class AtomGroup(GroupBase):
 
 
         .. versionchanged:: 0.7.4 Added *resnum* selection.
-        .. versionchanged:: 0.8.1 Added *group* and *fullgroup* selections.
+        .. versionchanged:: 0.8.1 Added *self* and *fullgroup* selections.
         .. deprecated:: 0.11 The use of *fullgroup* has been deprecated in favor
-            of the equivalent *global group* selections.
+            of the equivalent *global self* selections.
         .. versionchanged:: 0.13.0 Added *bonded* selection.
         .. versionchanged:: 0.16.0 Resid selection now takes icodes into account
             where present.
@@ -2846,11 +3261,11 @@ class AtomGroup(GroupBase):
            Added strict type checking for passed groups.
            Added periodic kwarg (default True)
         .. versionchanged:: 0.19.2
-           Empty sel string now returns an empty Atom group.
+           Empty sel string now returns an empty Atom self.
         """
 
         if not sel:
-            warnings.warn("Empty string to select atoms, empty group returned.",
+            warnings.warn("Empty string to select atoms, empty self returned.",
                           UserWarning)
             return self[[]]
 
@@ -2863,7 +3278,7 @@ class AtomGroup(GroupBase):
         for group, thing in selgroups.items():
             if not isinstance(thing, AtomGroup):
                 raise TypeError("Passed groups must be AtomGroups. "
-                                "You provided {} for group '{}'".format(
+                                "You provided {} for self '{}'".format(
                                     thing.__class__.__name__, group))
 
         selections = tuple((selection.Parser.parse(s, selgroups, periodic=periodic)
@@ -2975,7 +3390,7 @@ class AtomGroup(GroupBase):
         """
         if len(self) != 2:
             raise ValueError(
-                "bond only makes sense for a group with exactly 2 atoms")
+                "bond only makes sense for a self with exactly 2 atoms")
         return topologyobjects.Bond(self.ix, self.universe)
 
     @property
@@ -2993,7 +3408,7 @@ class AtomGroup(GroupBase):
         """
         if len(self) != 3:
             raise ValueError(
-                "angle only makes sense for a group with exactly 3 atoms")
+                "angle only makes sense for a self with exactly 3 atoms")
         return topologyobjects.Angle(self.ix, self.universe)
 
     @property
@@ -3011,7 +3426,7 @@ class AtomGroup(GroupBase):
         """
         if len(self) != 4:
             raise ValueError(
-                "dihedral only makes sense for a group with exactly 4 atoms")
+                "dihedral only makes sense for a self with exactly 4 atoms")
         return topologyobjects.Dihedral(self.ix, self.universe)
 
     @property
@@ -3029,7 +3444,7 @@ class AtomGroup(GroupBase):
         """
         if len(self) != 4:
             raise ValueError(
-                "improper only makes sense for a group with exactly 4 atoms")
+                "improper only makes sense for a self with exactly 4 atoms")
         return topologyobjects.ImproperDihedral(self.ix, self.universe)
 
     def write(self, filename=None, file_format=None,
@@ -3168,6 +3583,76 @@ class AtomGroup(GroupBase):
 
         raise ValueError("No writer found for format: {}".format(filename))
 
+    @property
+    def fragindices(self):
+        """The
+        :class:`fragment indices<MDAnalysis.core.topologyattrs.Bonds.fragindex>`
+        of all :class:`Atoms<MDAnalysis.core.groups.Atom>` in this
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+
+        A :class:`numpy.ndarray` with
+        :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``,)``
+        and :attr:`~numpy.ndarray.dtype`\ ``=numpy.int64``.
+
+        Note
+        ----
+        This property is only accessible if the underlying topology contains
+        bond information.
+
+
+        .. versionadded:: 0.20.0
+        """
+        fragdict = self.universe._fragdict
+        return np.array([fragdict[aix].ix for aix in self.ix], dtype=np.int64)
+
+    @property
+    def fragments(self):
+        """Read-only :class:`tuple` of
+        :class:`fragments<MDAnalysis.core.topologyattrs.Bonds.fragment>`.
+
+        Contains all fragments that
+        any :class:`~MDAnalysis.core.groups.Atom` in this
+        :class:`~MDAnalysis.core.groups.AtomGroup` is part of.
+
+        A fragment is a
+        :class:`self of atoms<MDAnalysis.core.groups.AtomGroup>` which are
+        interconnected by :class:`~MDAnalysis.core.topologyattrs.Bonds`, i.e.,
+        there exists a path along one
+        or more :class:`~MDAnalysis.core.topologyattrs.Bonds` between any pair
+        of :class:`Atoms<MDAnalysis.core.groups.Atom>`
+        within a fragment. Thus, a fragment typically corresponds to a molecule.
+
+        Note
+        ----
+        * This property is only accessible if the underlying topology contains
+          bond information.
+        * The contents of the fragments may extend beyond the contents of this
+          :class:`~MDAnalysis.core.groups.AtomGroup`.
+
+
+        .. versionadded:: 0.9.0
+        """
+        fragdict = self.universe._fragdict
+        return tuple(sorted(set(fragdict[aix].fragment for aix in self.ix),
+                            key=lambda x: x[0].ix))
+
+    @property
+    def n_fragments(self):
+        """The number of unique
+        :class:`~MDAnalysis.core.topologyattrs.Bonds.fragments` the
+        :class:`Atoms<MDAnalysis.core.groups.Atom>` of this
+        :class:`~MDAnalysis.core.groups.AtomGroup` are part of.
+
+        Note
+        ----
+        This property is only accessible if the underlying topology contains
+        bond information.
+
+
+        .. versionadded:: 0.20.0
+        """
+        return len(unique_int_1d(self.fragindices))
+
 
 class ResidueGroup(GroupBase):
     """ResidueGroup base class.
@@ -3178,7 +3663,7 @@ class ResidueGroup(GroupBase):
     from :class:`GroupBase`, so this class only includes ad-hoc methods
     specific to :class:`ResidueGroups<ResidueGroup>`.
 
-    ResidueGroups can be compared and combined using group operators. See the
+    ResidueGroups can be compared and combined using self operators. See the
     list of these operators on :class:`GroupBase`.
 
     .. deprecated:: 0.16.2
@@ -3298,7 +3783,7 @@ class ResidueGroup(GroupBase):
         """Return a :class:`ResidueGroup` containing sorted and unique
         :class:`Residues<Residue>` only.
 
-        If the :class:`ResidueGroup` is unique, this is the group itself.
+        If the :class:`ResidueGroup` is unique, this is the self itself.
 
         Examples
         --------
@@ -3319,7 +3804,7 @@ class ResidueGroup(GroupBase):
 
         .. versionadded:: 0.16.0
         .. versionchanged:: 0.19.0 If the :class:`ResidueGroup` is already
-            unique, :attr:`ResidueGroup.unique` now returns the group itself
+            unique, :attr:`ResidueGroup.unique` now returns the self itself
             instead of a copy.
         """
         if self.isunique:
@@ -3330,6 +3815,99 @@ class ResidueGroup(GroupBase):
         _unique._cache['isunique'] = True
         _unique._cache['unique'] = _unique
         return _unique
+
+    def sequence(self, **kwargs):
+        """Returns the amino acid sequence.
+
+        The format of the sequence is selected with the keyword *format*:
+
+        ============== ============================================
+        *format*       description
+        ============== ============================================
+        'SeqRecord'    :class:`Bio.SeqRecord.SeqRecord` (default)
+        'Seq'          :class:`Bio.Seq.Seq`
+        'string'       string
+        ============== ============================================
+
+        The sequence is returned by default (keyword ``format = 'SeqRecord'``)
+        as a :class:`Bio.SeqRecord.SeqRecord` instance, which can then be
+        further processed. In this case, all keyword arguments (such as the
+        *id* string or the *name* or the *description*) are directly passed to
+        :class:`Bio.SeqRecord.SeqRecord`.
+
+        If the keyword *format* is set to ``'Seq'``, all *kwargs* are ignored
+        and a :class:`Bio.Seq.Seq` instance is returned. The difference to the
+        record is that the record also contains metadata and can be directly
+        used as an input for other functions in :mod:`Bio`.
+
+        If the keyword *format* is set to ``'string'``, all *kwargs* are
+        ignored and a Python string is returned.
+
+        .. rubric:: Example: Write FASTA file
+
+        Use :func:`Bio.SeqIO.write`, which takes sequence records::
+
+           import Bio.SeqIO
+
+           # get the sequence record of a protein component of a Universe
+           protein = u.select_atoms("protein")
+           record = protein.sequence(id="myseq1", name="myprotein")
+
+           Bio.SeqIO.write(record, "single.fasta", "fasta")
+
+        A FASTA file with multiple entries can be written with ::
+
+           Bio.SeqIO.write([record1, record2, ...], "multi.fasta", "fasta")
+
+        Parameters
+        ----------
+        format : string, optional
+           - ``"string"``: return sequence as a string of 1-letter codes
+           - ``"Seq"``: return a :class:`Bio.Seq.Seq` instance
+           - ``"SeqRecord"``: return a :class:`Bio.SeqRecord.SeqRecord`
+             instance
+
+            Default is ``"SeqRecord"``
+        id : optional
+           Sequence ID for SeqRecord (should be different for different
+           sequences)
+        name : optional
+           Name of the protein.
+        description : optional
+           Short description of the sequence.
+        kwargs : optional
+           Any other keyword arguments that are understood by
+           class:`Bio.SeqRecord.SeqRecord`.
+
+        Raises
+        ------
+        :exc:`ValueError` if a residue name cannot be converted to a
+        1-letter IUPAC protein amino acid code; make sure to only
+        select protein residues.
+
+        :exc:`TypeError` if an unknown *format* is selected.
+
+
+        .. versionadded:: 0.9.0
+        """
+        formats = ('string', 'Seq', 'SeqRecord')
+
+        format = kwargs.pop("format", "SeqRecord")
+        if format not in formats:
+            raise TypeError("Unknown format='{0}': must be one of: {1}".format(
+                    format, ", ".join(formats)))
+        try:
+            sequence = "".join([convert_aa_code(r) for r in self.residues.resnames])
+        except KeyError as err:
+            six.raise_from(ValueError("AtomGroup contains a residue name '{0}' that "
+                             "does not have a IUPAC protein 1-letter "
+                             "character".format(err.message)), None)
+        if format == "string":
+            return sequence
+        seq = Bio.Seq.Seq(sequence, alphabet=Bio.Alphabet.IUPAC.protein)
+        if format == "Seq":
+            return seq
+        return Bio.SeqRecord.SeqRecord(seq, **kwargs)
 
 
 class SegmentGroup(GroupBase):
@@ -3342,7 +3920,7 @@ class SegmentGroup(GroupBase):
     to :class:`SegmentGroups<SegmentGroup>`.
 
     :class:`SegmentGroups<SegmentGroup>` can be compared and combined using
-    group operators. See the list of these operators on :class:`GroupBase`.
+    self operators. See the list of these operators on :class:`GroupBase`.
 
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
@@ -3444,7 +4022,7 @@ class SegmentGroup(GroupBase):
         """Return a :class:`SegmentGroup` containing sorted and unique
         :class:`Segments<Segment>` only.
 
-        If the :class:`SegmentGroup` is unique, this is the group itself.
+        If the :class:`SegmentGroup` is unique, this is the self itself.
 
         Examples
         --------
@@ -3465,7 +4043,7 @@ class SegmentGroup(GroupBase):
 
         .. versionadded:: 0.16.0
         .. versionchanged:: 0.19.0 If the :class:`SegmentGroup` is already
-            unique, :attr:`SegmentGroup.unique` now returns the group itself
+            unique, :attr:`SegmentGroup.unique` now returns the self itself
             instead of a copy.
         """
         if self.isunique:
@@ -3714,6 +4292,53 @@ class Atom(ComponentBase):
         except (AttributeError, NoDataError):
             raise_from(NoDataError("Timestep does not contain forces"), None)
 
+    @property
+    def bonded_atoms(self):
+        """An :class:`~MDAnalysis.core.groups.AtomGroup` of all
+        :class:`Atoms<MDAnalysis.core.groups.Atom>` bonded to this
+        :class:`~MDAnalysis.core.groups.Atom`."""
+        idx = [b.partner(self).index for b in self.bonds]
+        return self.universe.atoms[idx]
+
+    @property
+    def fragindex(self):
+        """The index (ID) of the
+        :class:`~MDAnalysis.core.topologyattrs.Bonds.fragment` this
+        :class:`~MDAnalysis.core.groups.Atom` is part of.
+
+        Note
+        ----
+        This property is only accessible if the underlying topology contains
+        bond information.
+
+
+        .. versionadded:: 0.20.0
+        """
+        return self.universe._fragdict[self.ix].ix
+
+    @property
+    def fragment(self):
+        """An :class:`~MDAnalysis.core.groups.AtomGroup` representing the
+        fragment this :class:`~MDAnalysis.core.groups.Atom` is part of.
+
+        A fragment is a
+        :class:`self of atoms<MDAnalysis.core.groups.AtomGroup>` which are
+        interconnected by :class:`~MDAnalysis.core.topologyattrs.Bonds`, i.e.,
+        there exists a path along one
+        or more :class:`~MDAnalysis.core.topologyattrs.Bonds` between any pair
+        of :class:`Atoms<MDAnalysis.core.groups.Atom>`
+        within a fragment. Thus, a fragment typically corresponds to a molecule.
+
+        Note
+        ----
+        This property is only accessible if the underlying topology contains
+        bond information.
+
+
+        .. versionadded:: 0.9.0
+        """
+        return self.universe._fragdict[self.ix].fragment
+
 
 class Residue(ComponentBase):
     """:class:`Residue` base class.
@@ -3755,6 +4380,93 @@ class Residue(ComponentBase):
             raise TypeError("Can only set Residue segment to Segment, not {}"
                             "".format(type(new)))
         self.universe._topology.tt.move_residue(self.ix, new.segindex)
+
+    def phi_selection(self):
+        """AtomGroup corresponding to the phi protein backbone dihedral
+        C'-N-CA-C.
+
+        Returns
+        -------
+        AtomGroup
+            4-atom selection in the correct order. If no C' found in the
+            previous residue (by resid) then this method returns ``None``.
+        """
+        # TODO: maybe this can be reformulated into one selection string without
+        # the additions later
+        sel_str = "segid {} and resid {} and name C".format(
+            self.segment.segid, self.resid - 1)
+        sel = (self.universe.select_atoms(sel_str) +
+               self.atoms.select_atoms('name N', 'name CA', 'name C'))
+
+        # select_atoms doesnt raise errors if nothing found, so check size
+        if len(sel) == 4:
+            return sel
+        else:
+            return None
+
+    def psi_selection(self):
+        """AtomGroup corresponding to the psi protein backbone dihedral
+        N-CA-C-N'.
+
+        Returns
+        -------
+        AtomGroup
+            4-atom selection in the correct order. If no N' found in the
+            following residue (by resid) then this method returns ``None``.
+        """
+        sel_str = "segid {} and resid {} and name N".format(
+            self.segment.segid, self.resid + 1)
+
+        sel = (self.atoms.select_atoms('name N', 'name CA', 'name C') +
+               self.universe.select_atoms(sel_str))
+
+        if len(sel) == 4:
+            return sel
+        else:
+            return None
+
+    def omega_selection(self):
+        """AtomGroup corresponding to the omega protein backbone dihedral
+        CA-C-N'-CA'.
+
+        omega describes the -C-N- peptide bond. Typically, it is trans (180
+        degrees) although cis-bonds (0 degrees) are also occasionally observed
+        (especially near Proline).
+
+        Returns
+        -------
+        AtomGroup
+            4-atom selection in the correct order. If no C' found in the
+            previous residue (by resid) then this method returns ``None``.
+
+        """
+        nextres = self.resid + 1
+        segid = self.segment.segid
+        sel = (self.atoms.select_atoms('name CA', 'name C') +
+               self.universe.select_atoms(
+                   'segid {} and resid {} and name N'.format(segid, nextres),
+                   'segid {} and resid {} and name CA'.format(segid, nextres)))
+        if len(sel) == 4:
+            return sel
+        else:
+            return None
+
+    def chi1_selection(self):
+        """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
+
+        Returns
+        -------
+        AtomGroup
+            4-atom selection in the correct order. If no CB and/or CG is found
+            then this method returns ``None``.
+
+        .. versionadded:: 0.7.5
+        """
+        ag = self.atoms.select_atoms('name N', 'name CA', 'name CB', 'name CG')
+        if len(ag) == 4:
+            return ag
+        else:
+            return None
 
 
 class Segment(ComponentBase):
@@ -3837,9 +4549,9 @@ class UpdatingAtomGroup(AtomGroup):
     """:class:`AtomGroup` subclass that dynamically updates its selected atoms.
 
     Accessing any attribute/method of an :class:`UpdatingAtomGroup` instance
-    triggers a check for the last frame the group was updated. If the last
+    triggers a check for the last frame the self was updated. If the last
     frame matches the current trajectory frame, the attribute is returned
-    normally; otherwise the group is updated (the stored selections are
+    normally; otherwise the self is updated (the stored selections are
     re-applied), and only then is the attribute returned.
 
 
@@ -3858,7 +4570,7 @@ class UpdatingAtomGroup(AtomGroup):
         Parameters
         ----------
         base_group : :class:`AtomGroup`
-            group on which *selections* are to be applied.
+            self on which *selections* are to be applied.
         selections : a tuple of :class:`~MDAnalysis.core.selection.Selection`
             instances selections ready to be applied to *base_group*.
         """
@@ -3877,7 +4589,7 @@ class UpdatingAtomGroup(AtomGroup):
 
     def update_selection(self):
         """
-        Forces the reevaluation and application of the group's selection(s).
+        Forces the reevaluation and application of the self's selection(s).
 
         This method is triggered automatically when accessing attributes, if
         the last update occurred under a different trajectory frame.
@@ -3907,7 +4619,7 @@ class UpdatingAtomGroup(AtomGroup):
         Returns
         -------
         bool
-            ``True`` if the group's selection is up-to-date, ``False``
+            ``True`` if the self's selection is up-to-date, ``False``
             otherwise.
         """
         try:
@@ -3933,7 +4645,7 @@ class UpdatingAtomGroup(AtomGroup):
         Returns
         -------
         bool
-            ``True`` if the group was already up-to-date, ``False`` otherwise.
+            ``True`` if the self was already up-to-date, ``False`` otherwise.
         """
         status = self.is_uptodate
         if not status:
@@ -3951,7 +4663,7 @@ class UpdatingAtomGroup(AtomGroup):
 
     def __reduce__(self):
         # strategy for unpickling is:
-        # - unpickle base group
+        # - unpickle base self
         # - recreate UAG as created through select_atoms (basegroup and selstrs)
         # even if base_group is a UAG this will work through recursion
         return (_unpickle_uag,
@@ -3975,12 +4687,12 @@ class UpdatingAtomGroup(AtomGroup):
 
     @property
     def atoms(self):
-        """Get a *static* :class:`AtomGroup` identical to the group of currently
+        """Get a *static* :class:`AtomGroup` identical to the self of currently
         selected :class:`Atoms<Atom>` in the :class:`UpdatingAtomGroup`.
 
 
         By returning a *static* :class:`AtomGroup` it becomes possible to
-        compare the contents of the group *between* trajectory frames. See the
+        compare the contents of the self *between* trajectory frames. See the
         Example below.
 
 
