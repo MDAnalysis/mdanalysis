@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz
+         PicoCentauri, davidercruz, jbarnoud
 
   * 0.21.0
 
@@ -46,6 +46,7 @@ Enhancements
   * Added ITPParser to parse GROMACS itp topology files (PR #2381)
   * Added match_atoms keyword to analysis.align (Issue #2285, PR #2380)
   * Added wrap/unwrap transformations (PR #2038)
+  * Read TPR files from Gromacs 2020 (Issue #2412)
 
 
 Deprecations
