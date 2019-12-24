@@ -59,17 +59,17 @@ def _check_length(func):
     Eg:
 
     @_check_length
-    def set_X(self, self, values):
+    def set_X(self, group, values):
 
-    Will check the length of *values* compared to *self* before proceeding with
+    Will check the length of *values* compared to *group* before proceeding with
     anything in the *set_X* method.
 
     Pseudo code for the check:
 
-    if self in (Atom, Residue, Segment):
+    if group in (Atom, Residue, Segment):
         values must be single values, ie int, float or string
     else:
-        values must be single value OR same length as self
+        values must be single value OR same length as group
 
     """
     _SINGLE_VALUE_ERROR = ("Setting {cls} {attrname} with wrong sized input. "
@@ -77,8 +77,8 @@ def _check_length(func):
     # Eg "Setting Residue resid with wrong sized input. Must use single value, length of supplied
     # values: 2."
 
-    _GROUP_VALUE_ERROR = ("Setting {self} {attrname} with wrong sized array. "
-                          "Length {self}: {lengroup}, length of supplied values: {lenvalues}.")
+    _GROUP_VALUE_ERROR = ("Setting {group} {attrname} with wrong sized array. "
+                          "Length {group}: {lengroup}, length of supplied values: {lenvalues}.")
     # Eg "Setting AtomGroup masses with wrong sized array. Length AtomGroup: 100, length of
     # supplied values: 50."
 
@@ -115,10 +115,10 @@ def _wronglevel_error(attr, group):
     """Generate an error for setting attr at wrong level
 
     attr : TopologyAttr that was accessed
-    self : Offending Component/Group
+    group : Offending Component/Group
 
     Eg:
-    setting mass of residue, gets called with attr=Masses, self=residue
+    setting mass of residue, gets called with attr=Masses, group=residue
 
     raises a NotImplementedError with:
     'Cannot set masses from Residue.  Use 'Residue.atoms.masses'
@@ -307,15 +307,15 @@ class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
 # core attributes
 
 class Atomindices(TopologyAttr):
-    """Globally unique indices for each atom in the self.
+    """Globally unique indices for each atom in the group.
 
-    If the self is an AtomGroup, then this gives the index for each atom in
-    the self. This is the unambiguous identifier for each atom in the
+    If the group is an AtomGroup, then this gives the index for each atom in
+    the group. This is the unambiguous identifier for each atom in the
     topology, and it is not alterable.
 
-    If the self is a ResidueGroup or SegmentGroup, then this gives the indices
-    of each atom represented in the self in a 1-D array, in the order of the
-    elements in that self.
+    If the group is a ResidueGroup or SegmentGroup, then this gives the indices
+    of each atom represented in the group in a 1-D array, in the order of the
+    elements in that group.
 
     """
     attrname = 'indices'
@@ -339,15 +339,15 @@ class Atomindices(TopologyAttr):
 
 
 class Resindices(TopologyAttr):
-    """Globally unique resindices for each residue in the self.
+    """Globally unique resindices for each residue in the group.
 
-    If the self is an AtomGroup, then this gives the resindex for each atom in
-    the self. This unambiguously determines each atom's residue membership.
+    If the group is an AtomGroup, then this gives the resindex for each atom in
+    the group. This unambiguously determines each atom's residue membership.
     Resetting these values changes the residue membership of the atoms.
 
-    If the self is a ResidueGroup or SegmentGroup, then this gives the
+    If the group is a ResidueGroup or SegmentGroup, then this gives the
     resindices of each residue represented in the self in a 1-D array, in the
-    order of the elements in that self.
+    order of the elements in that group.
 
     """
     attrname = 'resindices'
@@ -371,16 +371,16 @@ class Resindices(TopologyAttr):
 
 
 class Segindices(TopologyAttr):
-    """Globally unique segindices for each segment in the self.
+    """Globally unique segindices for each segment in the group.
 
-    If the self is an AtomGroup, then this gives the segindex for each atom in
-    the self. This unambiguously determines each atom's segment membership.
+    If the group is an AtomGroup, then this gives the segindex for each atom in
+    the group. This unambiguously determines each atom's segment membership.
     It is not possible to set these, since membership in a segment is an
     attribute of each atom's residue.
 
-    If the self is a ResidueGroup or SegmentGroup, then this gives the
-    segindices of each segment represented in the self in a 1-D array, in the
-    order of the elements in that self.
+    If the group is a ResidueGroup or SegmentGroup, then this gives the
+    segindices of each segment represented in the group in a 1-D array, in the
+    order of the elements in that group.
 
     """
     attrname = 'segindices'
@@ -821,7 +821,7 @@ class Resnames(ResidueAttr):
 
         For more than one residue it returns a
         :class:`MDAnalysis.core.groups.ResidueGroup` instance. A single
-        :class:`MDAnalysis.core.self.Residue` is returned for a single match.
+        :class:`MDAnalysis.core.groups.Residue` is returned for a single match.
         If no residues are found, a :exc:`SelectionError` is raised.
 
         .. versionadded:: 0.9.2
@@ -967,7 +967,7 @@ class Segids(SegmentAttr):
 
         For more than one residue it returns a
         :class:`MDAnalysis.core.groups.SegmentGroup` instance. A single
-        :class:`MDAnalysis.core.self.Segment` is returned for a single match.
+        :class:`MDAnalysis.core.groups.Segment` is returned for a single match.
         If no residues are found, a :exc:`SelectionError` is raised.
 
         .. versionadded:: 0.9.2
