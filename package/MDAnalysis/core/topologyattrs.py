@@ -41,6 +41,7 @@ import itertools
 import numbers
 import numpy as np
 import warnings
+import inspect
 
 
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
@@ -163,6 +164,85 @@ def _wronglevel_error(attr, group):
     ))
 
 
+def _build_stub(method_name, method, attribute_name):
+    """
+    Build a stub for a transplanted method.
+
+    A transplanted stub is a dummy method that get attached to a core class
+    (usually from :mod:`MDAnalysis.core.groups`) and raise a :exc:`NoDataError`.
+    The stub mimics the original method for everything that as traits with the
+    documentation (docstring, name, signature). It gets overwritten by the
+    actual method when the later is transplanted at universe creation.
+
+    Parameters
+    ----------
+    method_name: str
+        The name of the attribute in the destination class.
+    method: Callable
+        The method to be mimicked.
+    attribute_name: str
+        The name topology attribute that is required for the method to be
+        relevant (e.g. masses, charges, ...)
+
+    Returns
+    -------
+    The stub.
+    """
+    def stub_method(self, *args, **kwargs):
+        message = (
+            '{method_name} requires {attribute_name} to '
+            'be defined in the topology'
+        ).format(method_name=method_name, attribute_name=attribute_name)
+        raise NoDataError(message)
+
+    stub_method.__doc__ = method.__doc__
+    stub_method.__name__ = method_name
+    stub_method.__signature__ = inspect.signature(method)
+    return stub_method
+
+
+def _attach_transplant_stubs(attribute_name, topology_attribute_class):
+    """
+    Transplant a stub for every method that will be transplanted from a
+    topology attribute.
+
+    Parameters
+    ----------
+    attribute_name: str
+        User-facing name of the topology attribute (e.g. masses, charges, ...)
+    topology_attribute_class:
+        Topology attribute class to inspect for transplant methods.
+
+    """
+    transplants = topology_attribute_class.transplants
+    for dest_class, methods in transplants.items():
+        if dest_class == 'Universe':
+            # Cannot be imported at the top level, it creates issues with
+            # circular imports.
+            from .universe import Universe
+            dest_class = Universe
+        for method_name, method_callback in methods:
+            # Methods the name of which is prefixed by _ should not be accessed
+            # directly by a user, we do not transplant a stub as the stubs are
+            # only relevant for user-facing method and properties. Also,
+            # methods _-prefixed can be operator methods, and we do not want
+            # to overwrite these with a stub.
+            if method_name.startswith('_'):
+                continue
+
+            is_property = False
+            try:
+                method_callback = method_callback.fget
+                is_property = True
+            except AttributeError:
+                pass
+            stub = _build_stub(method_name, method_callback, attribute_name)
+            if is_property:
+                setattr(dest_class, method_name, property(stub, None, None))
+            else:
+                setattr(dest_class, method_name, stub)
+
+
 class _TopologyAttrMeta(type):
     # register TopologyAttrs
     def __init__(cls, name, bases, classdict):
@@ -185,6 +265,14 @@ class _TopologyAttrMeta(type):
                     _TOPOLOGY_TRANSPLANTS[name] = [attrname, method, clstype]
                     clean = name.lower().replace('_', '')
                     _TOPOLOGY_ATTRNAMES[clean] = name
+
+        for attr in ['attrname', 'singular']:
+            try:
+                attrname = classdict[attr]
+            except KeyError:
+                pass
+            else:
+                _attach_transplant_stubs(attrname, cls)
 
 
 class TopologyAttr(object, metaclass=_TopologyAttrMeta):
