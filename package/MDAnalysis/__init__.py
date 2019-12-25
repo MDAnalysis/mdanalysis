@@ -221,6 +221,9 @@ due.cite(Doi("10.1002/jcc.21787"),
 del Doi, BibTeX
 
 
+import inspect
+
+
 def _build_stub(method_name, method, attribute_name):
     def stub_method(self, *args, **kwargs):
         message = (
@@ -230,6 +233,8 @@ def _build_stub(method_name, method, attribute_name):
         raise exceptions.NoDataError(message)
 
     stub_method.__doc__ = method.__doc__
+    stub_method.__name__ = method_name
+    stub_method.__signature__ = inspect.signature(method)
     return stub_method
 
 
@@ -255,4 +260,4 @@ def _attach_transplant_stubs():
 
 
 _attach_transplant_stubs()
-del _build_stub, _attach_transplant_stubs
+del _build_stub, _attach_transplant_stubs, inspect
