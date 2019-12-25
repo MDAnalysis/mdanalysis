@@ -219,3 +219,40 @@ due.cite(Doi("10.1002/jcc.21787"),
          path="MDAnalysis", cite_module=True)
 
 del Doi, BibTeX
+
+
+def _build_stub(method_name, method, attribute_name):
+    def stub_method(self, *args, **kwargs):
+        message = (
+            '{method_name} requires {attribute_name} to '
+            'be defined in the topology'
+        ).format(method_name=method_name, attribute_name=attribute_name)
+        raise exceptions.NoDataError(message)
+
+    stub_method.__doc__ = method.__doc__
+    return stub_method
+
+
+def _attach_transplant_stubs():
+    for name, class_ in _TOPOLOGY_ATTRS.items():
+        if class_.transplants:
+            for dest_class, methods in class_.transplants.items():
+                if dest_class == 'Universe':
+                    dest_class = Universe
+                for method_name, method_callback in methods:
+                    if not method_name.startswith('_'):
+                        is_property = False
+                        try:
+                            method_callback = method_callback.fget
+                            is_property = True
+                        except AttributeError:
+                            pass
+                        stub = _build_stub(method_name, method_callback, name)
+                        if is_property:
+                            setattr(dest_class, method_name, property(stub, None, None))
+                        else:
+                            setattr(dest_class, method_name, stub)
+
+
+_attach_transplant_stubs()
+del _build_stub, _attach_transplant_stubs
