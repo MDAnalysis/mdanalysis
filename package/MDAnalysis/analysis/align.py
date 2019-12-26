@@ -728,6 +728,13 @@ class AverageStructure(AnalysisBase):
 
         import MDAnalysis as mda
         from MDAnalysis.tests.datafiles import PSF, DCD
+        from MDAnalysis.analysis import align
+
+        u = mda.Universe(PSF, DCD)
+
+        # align to the third frame and average structure
+        av = align.AverageStructure(u, ref_frame=3).run()
+        averaged_universe = av.universe
 
     """
 

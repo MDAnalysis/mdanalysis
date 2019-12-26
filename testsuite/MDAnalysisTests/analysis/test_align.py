@@ -418,6 +418,26 @@ class TestAverageStructure(object):
     def test_average_structure_no_msf(self, universe):
         avg = align.AverageStructure(universe).run()
         assert not hasattr(avg, 'msf')
+
+    def test_mismatch_atoms(self, universe):
+        u = mda.Merge(universe.atoms[:10])
+        with pytest.raises(SelectionError):
+            align.AverageStructure(universe, u)
+    
+    def test_average_structure_ref_frame(self, universe):
+        ref_frame = 3
+        u = mda.Merge(universe.atoms)
+
+        # change to ref_frame
+        universe.trajectory[ref_frame]
+        u.load_new(universe.atoms.positions)
+
+        # back to start
+        universe.trajectory[0]
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
+        avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
+        assert_almost_equal(avg.universe.atoms.positions, ref, decimal=4)
+        assert_almost_equal(avg.rmsd, rmsd)
     
 
 class TestAlignmentProcessing(object):
