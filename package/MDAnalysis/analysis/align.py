@@ -599,7 +599,7 @@ class AlignTraj(AnalysisBase):
             Array of the rmsd values of the least rmsd between the mobile_atoms
             and reference_atoms after superposition and minimimization of rmsd
         filename : str
-            String reflecting the filename of the file where mobile_atoms
+            String reflecting the filename of the file where the aligned
             positions will be written to upon running RMSD alignment
 
 
@@ -708,6 +708,232 @@ class AlignTraj(AnalysisBase):
         # and reference structure
         np.savetxt(rmsdfile, self.rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
+
+class AverageStructure(AnalysisBase):
+    """RMS-align trajectory to a reference structure using a selection, 
+    and calculate the average coordinates of the trajectory.
+
+    Both the reference `reference` and the trajectory `mobile` must be
+    :class:`MDAnalysis.Universe` instances. If they contain a trajectory, then
+    it is used. You can also use the same universe if you want to fit to the
+    current frame.
+
+    The output file format is determined by the file extension of
+    `filename`. 
+
+    Example
+    -------
+
+    ::
+
+        import MDAnalysis as mda
+        from MDAnalysis.tests.datafiles import PSF, DCD
+
+    """
+
+    def __init__(self, mobile, reference=None, select='all', filename=None,
+                 prefix='rmsfit_', weights=None,
+                 tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
+                 ref_frame=0, calc_msf=False,
+                 **kwargs):
+        """Parameters
+        ----------
+        mobile : Universe
+            Universe containing trajectory to be fitted to reference
+        reference : Universe (optional)
+            Universe containing trajectory frame to be used as reference
+        select : str (optional)
+            Set as default to all, is used for Universe.select_atoms to choose
+            subdomain to be fitted against
+        filename : str (optional)
+            Provide a filename for results to be written to
+        prefix : str (optional)
+            Provide a string to prepend to filename for results to be written
+            to
+        weights : {"mass", ``None``} or array_like (optional)
+            choose weights. With ``"mass"`` uses masses of `reference` as
+            weights; with ``None`` weigh each atom equally. If a float array of
+            the same length as the selection is provided, use each element of
+            the `array_like` as a weight for the corresponding atom in the
+            selection.
+        tol_mass : float (optional)
+            Tolerance given to `get_matching_atoms` to find appropriate atoms
+        match_atoms : bool (optional)
+            Whether to match the mobile and reference atom-by-atom. Default ``True``. 
+        strict : bool (optional)
+            Force `get_matching_atoms` to fail if atoms can't be found using
+            exact methods
+        force : bool (optional)
+            Force overwrite of filename for rmsd-fitting
+        start : int (optional)
+            First frame of trajectory to analyse, Default: 0
+        stop : int (optional)
+            Last frame of trajectory to analyse, Default: -1
+        step : int (optional)
+            Step between frames to analyse, Default: 1
+        in_memory : bool (optional)
+            *Permanently* switch `mobile` to an in-memory trajectory
+            so that alignment can be done in-place, which can improve
+            performance substantially in some cases. In this case, no file
+            is written out (`filename` and `prefix` are ignored) and only
+            the coordinates of `mobile` are *changed in memory*.
+        ref_frame : int (optional)
+            frame index to select frame from `reference`
+        calc_msf : bool (optional, default False)
+            whether to compute a mean square fluctuation
+        verbose : bool (optional)
+            Set logger to show more information and show detailed progress of 
+            the calculation if set to ``True``; the default is ``False``.
+
+
+        Attributes
+        ----------
+        reference_atoms : AtomGroup
+            Atoms of the reference structure to be aligned against
+        mobile_atoms : AtomGroup
+            Atoms inside each trajectory frame to be rmsd_aligned
+        universe : mda.Universe
+            New Universe with average positions
+        positions : np.ndarray(dtype=float)
+            Average positions
+        rmsd : float
+            Average RMSD per frame
+        msf: np.ndarray(dtype=float)
+            Mean square fluctuation per atom (only available when ``calc_msf=True``)
+        filename : str
+            String reflecting the filename of the file where the average 
+            structure is written
+
+
+        Notes
+        -----
+        - If set to ``verbose=False``, it is recommended to wrap the statement
+          in a ``try ...  finally`` to guarantee restoring of the log level in
+          the case of an exception.
+        - The ``in_memory`` option changes the `mobile` universe to an
+          in-memory representation (see :mod:`MDAnalysis.coordinates.memory`)
+          for the remainder of the Python session. If ``mobile.trajectory`` is
+          already a :class:`MemoryReader` then it is *always* treated as if
+          ``in_memory`` had been set to ``True``.
+
+        .. versionadded:: 0.21.0
+
+        """
+        if in_memory or isinstance(mobile.trajectory, MemoryReader):
+            mobile.transfer_to_memory()
+            filename = None
+            logger.info("Moved mobile trajectory to in-memory representation")
+        else:
+            if filename is None:
+                # DEPRECATED in 0.19.1
+                # Change in 1.0
+                #
+                # fn = os.path.split(mobile.trajectory.filename)[1]
+                # filename = prefix + fn
+                path, fn = os.path.split(mobile.trajectory.filename)
+                filename = os.path.join(path, prefix + fn)
+                logger.info('filename of rms_averagestructure with no filename given'
+                            ': {0}'.format(filename))
+
+            if os.path.exists(filename) and not force:
+                raise IOError(
+                    'Filename already exists in path and force is not set'
+                    ' to True')
+
+        # do this after setting the memory reader to have a reference to the
+        # right reader.
+        super(AverageStructure, self).__init__(mobile.trajectory, **kwargs)
+        if not self._verbose:
+            logging.disable(logging.WARN)
+
+        self.reference = reference if reference is not None else mobile
+
+        select = rms.process_selection(select)
+        self.ref_atoms = self.reference.select_atoms(*select['reference'])
+        self.mobile_atoms = mobile.select_atoms(*select['mobile'])
+
+        if len(self.ref_atoms) != len(self.mobile_atoms):
+            err = ("Reference and trajectory atom selections do "
+                   "not contain the same number of atoms: "
+                   "N_ref={0:d}, N_traj={1:d}".format(self.ref_atoms.n_atoms,
+                                                      self.mobile_atoms.n_atoms))
+            logger.exception(err)
+            raise SelectionError(err)
+        logger.info("RMS calculation "
+                    "for {0:d} atoms.".format(len(self.ref_atoms)))
+
+        # store reference to mobile atoms
+        self.mobile = mobile.atoms
+        self.ref_frame = ref_frame
+
+        self.filename = filename
+        self.universe = mda.Merge(self.mobile_atoms)
+
+        self.calculate_msf = calc_msf
+
+        natoms = len(self.universe.atoms)
+        self.ref_atoms, self.mobile_atoms = get_matching_atoms(
+            self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
+            strict=strict, match_atoms=match_atoms)
+
+        # with self.filename == None (in_memory), the NullWriter is chosen
+        # (which just ignores input) and so only the in_memory trajectory is
+        # retained
+        self._writer = mda.Writer(self.filename, natoms)
+
+        self._weights = get_weights(self.ref_atoms, weights)
+
+        logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
+
+    def _prepare(self):
+        current_frame = self.reference.universe.trajectory.ts.frame
+        try:
+            # Move to the ref_frame
+            # (coordinates MUST be stored in case the ref traj is advanced
+            # elsewhere or if ref == mobile universe)
+            self.reference.universe.trajectory[self.ref_frame]
+            self._ref_com = self.ref_atoms.center(self._weights)
+            # makes a copy
+            self._ref_coordinates = self.ref_atoms.positions - self._ref_com
+            self._ref_positions = self.ref_atoms.positions.copy()
+        finally:
+            # Move back to the original frame
+            self.reference.universe.trajectory[current_frame]
+
+        # allocate the array for selection atom coords
+        self.positions = np.zeros((len(self.mobile_atoms), 3))
+        self.rmsd = 0
+        if self.calculate_msf:
+            self.msf = np.zeros(len(self.mobile_atoms))
+        
+
+    def _single_frame(self):
+        mobile_com = self.mobile_atoms.center(self._weights)
+        mobile_coordinates = self.mobile_atoms.positions - mobile_com
+        self.rmsd += _fit_to(mobile_coordinates,
+                             self._ref_coordinates,
+                             self.mobile,
+                             mobile_com,
+                             self._ref_com, self._weights)[1]
+        self.positions += self.mobile_atoms.positions
+
+        if self.calculate_msf:
+            disp = self._ref_positions - self.mobile_atoms.positions
+            msf = np.sum(disp**2, axis=1)
+            self.msf += msf
+            
+
+
+    def _conclude(self):
+        self.positions /= self.n_frames
+        self.rmsd /= self.n_frames
+        if self.calculate_msf:
+            self.msf /= self.n_frames
+        self.universe.load_new(self.positions.reshape((1, -1, 3)))
+        self._writer.write(self.universe.atoms)
+        self._writer.close()
+        if not self._verbose:
+            logging.disable(logging.NOTSET)
 
 
 def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
