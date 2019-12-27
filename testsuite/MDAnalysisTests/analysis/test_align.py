@@ -20,7 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.align as align
@@ -438,6 +438,13 @@ class TestAverageStructure(object):
         avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
         assert_almost_equal(avg.universe.atoms.positions, ref, decimal=4)
         assert_almost_equal(avg.rmsd, rmsd)
+
+    def test_average_structure_in_memory(self, universe):
+        avg = align.AverageStructure(universe, in_memory=True).run()
+        reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
+        assert_almost_equal(avg.universe.atoms.positions, reference_coordinates, decimal=4)
+        assert avg.filename is None
+
     
 
 class TestAlignmentProcessing(object):

@@ -739,7 +739,7 @@ class AverageStructure(AnalysisBase):
     """
 
     def __init__(self, mobile, reference=None, select='all', filename=None,
-                 prefix='rmsfit_', weights=None,
+                weights=None,
                  tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
                  ref_frame=0, calc_msf=False,
                  **kwargs):
@@ -754,9 +754,6 @@ class AverageStructure(AnalysisBase):
             subdomain to be fitted against
         filename : str (optional)
             Provide a filename for results to be written to
-        prefix : str (optional)
-            Provide a string to prepend to filename for results to be written
-            to
         weights : {"mass", ``None``} or array_like (optional)
             choose weights. With ``"mass"`` uses masses of `reference` as
             weights; with ``None`` weigh each atom equally. If a float array of
@@ -830,22 +827,6 @@ class AverageStructure(AnalysisBase):
             mobile.transfer_to_memory()
             filename = None
             logger.info("Moved mobile trajectory to in-memory representation")
-        else:
-            if filename is None:
-                # DEPRECATED in 0.19.1
-                # Change in 1.0
-                #
-                # fn = os.path.split(mobile.trajectory.filename)[1]
-                # filename = prefix + fn
-                path, fn = os.path.split(mobile.trajectory.filename)
-                filename = os.path.join(path, prefix + fn)
-                logger.info('filename of rms_averagestructure with no filename given'
-                            ': {0}'.format(filename))
-
-            if os.path.exists(filename) and not force:
-                raise IOError(
-                    'Filename already exists in path and force is not set'
-                    ' to True')
 
         # do this after setting the memory reader to have a reference to the
         # right reader.
