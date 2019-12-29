@@ -236,6 +236,11 @@ class Test_density_from_Universe(object):
             gridcenter=self.gridcenters['static_defined'])
         assert D.grid.shape == (8, 12, 17)
 
+    def test_density_from_Universe_userdefn_padding(self, universe):
+        import MDAnalysis.analysis.density
+        wmsg = ("")
+        do the raise here
+
     def test_density_from_Universe_userdefn_selwarning(self, universe):
         import MDAnalysis.analysis.density
         wmsg = ("Atom selection does not fit grid --- "
@@ -243,7 +248,7 @@ class Test_density_from_Universe(object):
         with pytest.warns(UserWarning) as record:
             D = MDAnalysis.analysis.density.density_from_Universe(
                 universe, atomselection=self.selections['static'],
-                delta=1.0, xdim=1.0, ydim=2.0, zdim=2.0,
+                delta=1.0, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
                 gridcenter=self.gridcenters['static_defined'])
 
         assert len(record) == 2

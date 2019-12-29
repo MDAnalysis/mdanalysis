@@ -558,8 +558,10 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           gridcenter=None, xdim=None, ydim=None, zdim=None):
     """Create a density grid from a :class:`MDAnalysis.Universe` object.
 
-    The trajectory is read, frame by frame, and the atoms selected with `atomselection` are
-    histogrammed on a grid with spacing `delta`.
+    The trajectory is read, frame by frame, and the atoms selected with
+    `atomselection` are histogrammed on a grid with spacing `delta`.
+    A physical density of units [Angstroem^{-3}] is returned (see
+    :class:`Density` for more details).
 
     Parameters
     ----------
@@ -683,6 +685,23 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       (It should be noted that the `padding` keyword is not used when a user
       defined grid is assigned).
 
+    As detailed above, the :class:`Density` object returned contains a
+    physical density in units of Angstroem^{-3}. If you are interested in
+    recovering the underlying probability density, simply divide by the sum::
+
+      physical_density = density_from_Universe(universe, delta=1.0,
+                                               atomselection='name OW')
+
+      probability_density = physical_density / physical_density.grid.sum()
+
+    Similarly, if you would like to recover a grid containing a histogram of
+    atom counts, simply multiply by the volume::
+
+      atom_count_histogram = physical_density * (physical_density.delta[0] ** 3)
+
+
+    .. versionchanged:: 0.21.0
+       Warns users that `padding` value is not used in user defined grids
     .. versionchanged:: 0.20.0
        ProgressMeter now iterates over the number of frames analysed.
     .. versionchanged:: 0.19.0
@@ -721,11 +740,18 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     # so the box information is rather meaningless
     box, angles = u.trajectory.ts.dimensions[:3], u.trajectory.ts.dimensions[3:]
     if tuple(angles) != (90., 90., 90.):
-        msg = "Non-orthorhombic unit-cell --- make sure that it has been remapped properly!"
+        msg = ("Non-orthorhombic unit-cell --- "
+               "make sure that it has been remapped properly!")
         warnings.warn(msg)
         logger.warning(msg)
 
     if gridcenter is not None:
+        # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
+        if padding > 0:
+            msg = ("Box padding (currently set at {0}) "
+                   "is not used in user defined grids.".format(padding))
+            warnings.warn(msg)
+            logger.warning(msg)
         # Generate a copy of smin/smax from coords to later check if the
         # defined box might be too small for the selection
         smin = np.min(coord, axis=0)
