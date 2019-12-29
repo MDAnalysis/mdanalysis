@@ -84,8 +84,14 @@ def reader(filename, format=None, **kwargs):
     try:
         return Reader(filename, **kwargs)
     except ValueError:
-        raise TypeError('Unable to read {fn} with {r}.'.format(fn=filename,
-                                                                r=Reader))
+        six.raise_from(
+            TypeError(
+                'Unable to read {fn} with {r}.'.format(
+                    fn=filename,
+                    r=Reader
+                    )
+                ),
+            None)
 
 
 def writer(filename, n_atoms=None, **kwargs):

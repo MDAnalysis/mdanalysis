@@ -31,6 +31,7 @@ The building blocks for MDAnalysis' description of topology
 from __future__ import print_function, absolute_import, division
 
 from six.moves import zip
+from six import raise_from
 import numbers
 import numpy as np
 import functools
@@ -522,6 +523,9 @@ class TopologyGroup(object):
     .. versionchanged:: 0.19.0
        Empty TopologyGroup now returns correctly shaped empty array via
        indices property and to_indices()
+    .. versionchanged::0.21.0
+       ``type``, ``guessed``, and ``order`` are no longer reshaped to arrays
+       with an extra dimension
     """
     def __init__(self, bondidx, universe, btype=None, type=None, guessed=None,
                  order=None):
@@ -541,15 +545,15 @@ class TopologyGroup(object):
         nbonds = len(bondidx)
         # remove duplicate bonds
         if type is None:
-            type = np.repeat(None, nbonds).reshape(nbonds, 1)
+            type = np.repeat(None, nbonds)
         if guessed is None:
-            guessed = np.repeat(True, nbonds).reshape(nbonds, 1)
+            guessed = np.repeat(True, nbonds)
         elif guessed is True or guessed is False:
-            guessed = np.repeat(guessed, nbonds).reshape(nbonds, 1)
+            guessed = np.repeat(guessed, nbonds)
         else:
-            guessed = np.asarray(guessed, dtype=np.bool).reshape(nbonds, 1)
+            guessed = np.asarray(guessed, dtype=np.bool)
         if order is None:
-            order = np.repeat(None, nbonds).reshape(nbonds, 1)
+            order = np.repeat(None, nbonds)
 
         if nbonds > 0:
             uniq, uniq_idx = util.unique_rows(bondidx, return_index=True)
@@ -735,7 +739,7 @@ class TopologyGroup(object):
                     type=np.concatenate([self._bondtypes,
                                          np.array([other._bondtype])]),
                     guessed=np.concatenate([self._guessed,
-                                            np.array([[other.is_guessed]])]),
+                                            np.array([other.is_guessed])]),
                     order=np.concatenate([self._order,
                                           np.array([other.order])]),
                 )
@@ -812,8 +816,11 @@ class TopologyGroup(object):
             return self._ags[2]
         except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
-            raise IndexError("TopologyGroup of {}s only has {} vertical AtomGroups"
-                             "".format(self.btype, nvert))
+            raise_from(
+                IndexError(
+                    "TopologyGroup of {}s only has {} vertical AtomGroups".format(
+                        self.btype, nvert)),
+                None)
 
     @property
     def atom4(self):
@@ -822,8 +829,11 @@ class TopologyGroup(object):
             return self._ags[3]
         except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
-            raise IndexError("TopologyGroup of {}s only has {} vertical AtomGroups"
-                             "".format(self.btype, nvert))
+            raise_from(
+                IndexError(
+                    "TopologyGroup of {}s only has {} vertical AtomGroups".format(
+                        self.btype, nvert)),
+                None)
 
     # Distance calculation methods below
     # "Slow" versions exist as a way of testing the Cython implementations

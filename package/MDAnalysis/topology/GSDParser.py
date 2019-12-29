@@ -141,9 +141,8 @@ class GSDParser(TopologyReaderBase):
                     val = getattr(snap,attrname)
                     vals = [tuple(b_instance) for b_instance in val.group]
                 except:
-                    pass
-                else:
-                    attrs[attrname] = attr(vals)
+                    vals = []
+                attrs[attrname] = attr(vals)
 
             # get body ids to set residue number and ids
             blist = snap.particles.body.astype(np.int64)

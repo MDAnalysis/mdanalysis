@@ -79,8 +79,8 @@ __all__ = [
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
-    "TPR2018", "TPR2019B3",
-    "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded",
+    "TPR2018", "TPR2019B3", "TPR2020B2",
+    "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded", "TPR2020B2_bonded",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -169,9 +169,11 @@ __all__ = [
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
     "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
     "PDB_metal", # PDB with metal atoms
-
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
+    "GRO_huge_box", # for testing gro parser with hige box sizes
+    "ITP", # for GROMACS generated itps
+    "ITP_nomass", # for ATB generated itps
 ]
 
 from pkg_resources import resource_filename
@@ -200,6 +202,7 @@ AUX_XVG = resource_filename(__name__, 'data/test.xvg')
 ENT = resource_filename(__name__, 'data/testENT.ent')
 GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
 GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
+GRO_huge_box = resource_filename(__name__, 'data/huge_box.gro')
 
 COORDINATES_GRO = resource_filename(__name__, 'data/coordinates/test.gro')
 COORDINATES_GRO_INCOMPLETE_VELOCITY = resource_filename(__name__, 'data/coordinates/test_incomplete_vel.gro')
@@ -307,6 +310,7 @@ TPR510 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.1.tpr')
 TPR2016 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2016.tpr')
 TPR2018 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2018.tpr')
 TPR2019B3 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2019-beta3.tpr')
+TPR2020B2 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020-beta2.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
@@ -316,6 +320,7 @@ TPR510_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_5.1.tpr'
 TPR2016_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2016.tpr')
 TPR2018_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2018.tpr')
 TPR2019B3_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2019-beta3.tpr')
+TPR2020B2_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020-beta2.tpr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
@@ -472,6 +477,9 @@ JaninArray = resource_filename(__name__, 'data/adk_oplsaa_janin.npy')
 LYSJaninArray = resource_filename(__name__, 'data/adk_oplsaa_LYS_janin.npy')
 PDB_rama = resource_filename(__name__, 'data/19hc.pdb.gz')
 PDB_janin = resource_filename(__name__, 'data/1a28.pdb.gz')
+
+ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
+ITP_nomass = resource_filename(__name__, 'data/itp_nomass.itp')
 
 # This should be the last line: clean up namespace
 del resource_filename

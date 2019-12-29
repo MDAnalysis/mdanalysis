@@ -80,6 +80,7 @@ Deprecated classes
 from __future__ import absolute_import, print_function
 
 from six.moves import range
+from six import raise_from
 
 import numpy as np
 import logging
@@ -285,12 +286,13 @@ class DATAParser(TopologyReaderBase):
 
         try:
             top = self._parse_atoms(sects['Atoms'], masses)
-        except:
-            raise ValueError(
+        except Exception:
+            raise_from(ValueError(
                 "Failed to parse atoms section.  You can supply a description "
                 "of the atom_style as a keyword argument, "
                 "eg mda.Universe(..., atom_style='id resid x y z')"
-            )
+            ),
+            None)
 
         # create mapping of id to index (ie atom id 10 might be the 0th atom)
         mapping = {atom_id: i for i, atom_id in enumerate(top.ids.values)}
@@ -304,9 +306,9 @@ class DATAParser(TopologyReaderBase):
             try:
                 type, sect = self._parse_bond_section(sects[L], nentries, mapping)
             except KeyError:
-                pass
-            else:
-                top.add_TopologyAttr(attr(sect, type))
+                type, sect = [], []
+            
+            top.add_TopologyAttr(attr(sect, type))
 
         return top
 
@@ -336,7 +338,9 @@ class DATAParser(TopologyReaderBase):
         try:
             positions, ordering = self._parse_pos(sects['Atoms'])
         except KeyError as err:
-            raise IOError("Position information not found: {}".format(err))
+            raise_from(
+                IOError("Position information not found: {}".format(err)),
+                None)
 
         if 'Velocities' in sects:
             velocities = self._parse_vel(sects['Velocities'], ordering)
@@ -417,6 +421,13 @@ class DATAParser(TopologyReaderBase):
           number of integers per line
         mapping : dict
           converts atom_ids to index within topology
+
+        Returns
+        -------
+        types : tuple of strings
+          type of the bond/angle/dihedral/improper
+        indices : tuple of ints
+          indices of atoms involved
         """
         section = []
         type = []

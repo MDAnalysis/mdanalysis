@@ -62,6 +62,7 @@ approximate Gromacs release numbers are listed in the table
    110        26             2016                 yes
    112        26             2018                 yes
    116        26             2019                 yes
+   119        27             2020                 yes
    ========== ============== ==================== =====
 
 For further discussion and notes see `Issue 2`_. Please *open a new issue* in
@@ -150,6 +151,7 @@ import xdrlib
 from . import guessers
 from ..lib.util import openany
 from .tpr import utils as tpr_utils
+from .tpr import setting as S
 from .base import TopologyReaderBase
 from ..core.topologyattrs import Resnums
 
@@ -174,7 +176,7 @@ class TPRParser(TopologyReaderBase):
         """
         with openany(self.filename, mode='rb') as infile:
             tprf = infile.read()
-        data = xdrlib.Unpacker(tprf)
+        data = tpr_utils.TPXUnpacker(tprf)
         try:
             th = tpr_utils.read_tpxheader(data)                    # tpxheader
         except EOFError:
@@ -185,6 +187,11 @@ class TPRParser(TopologyReaderBase):
         self._log_header(th)
 
         V = th.fver                                    # since it's used very often
+
+        # Starting with gromacs 2020 (tpx version 119), the body of the file
+        # is encoded differently. We change the unpacker accordingly.
+        if V >= S.tpxv_AddSizeField and th.fgen >= 27:
+            data = tpr_utils.TPXUnpacker2020.from_unpacker(data)
 
         state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
         if th.bBox:

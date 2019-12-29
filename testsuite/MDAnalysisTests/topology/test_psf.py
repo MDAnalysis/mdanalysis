@@ -31,23 +31,26 @@ from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PSF,
     PSF_nosegid,
+    PSF_notop,
     PSF_NAMD,
     XYZ_psf,
     XYZ,
 )
 
-
-class TestPSFParser(ParserBase):
-    """
-    Based on small PDB with AdK (:data:`PDB_small`).
-    """
+class PSFBase(ParserBase):
     parser = mda.topology.PSFParser.PSFParser
-    ref_filename = PSF
     expected_attrs = ['ids', 'names', 'types', 'masses',
                       'charges',
                       'resids', 'resnames',
                       'segids',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+
+
+class TestPSFParser(PSFBase):
+    """
+    Based on small PDB with AdK (:data:`PDB_small`).
+    """
+    ref_filename = PSF
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
@@ -104,33 +107,21 @@ class TestPSFParser(ParserBase):
             assert (b in vals) or (b[::-1] in vals)
 
 
-class TestNAMDPSFParser(ParserBase):
+class TestNAMDPSFParser(PSFBase):
     """Testfiles provided by JiyongPark77.
 
     NAMD/VMD XPLOR-style PSF file (using CGENFF residues/atoms).
 
     https://github.com/MDAnalysis/mdanalysis/issues/107
     """
-    parser = mda.topology.PSFParser.PSFParser
     ref_filename = PSF_NAMD
-    expected_attrs = ['ids', 'names', 'types', 'masses',
-                      'charges',
-                      'resids', 'resnames',
-                      'segids',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
-    guessed_attrs = ['elements']
     expected_n_atoms = 130
     expected_n_residues = 6
     expected_n_segments = 1
 
 
-class TestPSFParser2(ParserBase):
-    parser = mda.topology.PSFParser.PSFParser
+class TestPSFParser2(PSFBase):
     ref_filename = XYZ_psf
-    expected_attrs = [
-        'ids', 'names', 'types', 'masses', 'charges', 'resids', 'resnames',
-        'segids', 'bonds', 'angles', 'dihedrals', 'impropers'
-    ]
     expected_n_atoms = 1284
     expected_n_residues = 152
     expected_n_segments = 4
@@ -143,6 +134,23 @@ class TestPSFParser2(ParserBase):
         for seg in u.segments:
             assert_equal(seg.residues.resids[:4], [380, 381, 382, 383])
 
+class TestPSFParserNoTop(PSFBase):
+    ref_filename = PSF_notop
+    expected_n_atoms = 3341
+    expected_n_residues = 214
+    expected_n_segments = 1
+
+    def test_bonds_total_counts(self, top):
+        assert len(top.bonds.values) == 0
+
+    def test_angles_total_counts(self, top):
+        assert len(top.angles.values) == 0
+
+    def test_dihedrals_total_counts(self, top):
+        assert len(top.dihedrals.values) == 0
+    
+    def test_impropers_total_counts(self, top):
+        assert len(top.impropers.values) == 0
 
 def test_psf_nosegid():
     """Issue #121"""

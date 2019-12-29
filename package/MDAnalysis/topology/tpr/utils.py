@@ -50,6 +50,8 @@ from __future__ import absolute_import
 
 from six.moves import range
 import numpy as np
+import xdrlib
+import struct
 
 from . import obj
 from . import setting as S
@@ -72,6 +74,140 @@ from ...core.topologyattrs import (
     Impropers
 )
 
+
+class TPXUnpacker(xdrlib.Unpacker):
+    """
+    Extend the standard XDR unpacker for the specificity of TPX files.
+    """
+    def __init__(self, data):
+        # Using super here would be ideal, but it does not work on python2 as
+        # TPXUnpacker is a `classobj` and not a `type`.
+        # super().__init__(data)
+        xdrlib.Unpacker.__init__(self, data)
+        self._buf = self.get_buffer()
+
+    # The parent class uses a dunder attribute to store the
+    # cursor position. This property makes it easier to manipulate
+    # this attribute that is otherwise "protected".
+    # The use of this property works well in python3, but fails in python2
+    # where direct access to the mangled attribute seems required.
+    @property
+    def _pos(self):
+        return self.get_position()
+
+    @_pos.setter
+    def _pos(self, value):
+        self.set_position(value)
+
+    def _unpack_value(self, item_size, struct_template):
+        # Ideally, we should use the _pos attribute, but it present some
+        # unexpected behaviour on python2 where the position of the cursor is
+        # not kept in sync between the method defined in TPXUnpacker and the
+        # methods defined in the base class.
+        # start_position = self._pos
+        # end_position = self._pos = start_position + item_size
+        start_position = self._Unpacker__pos  # pylint: disable=access-member-before-definition 
+        end_position = self._pos = self._Unpacker__pos = start_position + item_size
+        content = self._buf[start_position:end_position]
+        if len(content) != item_size:
+            raise EOFError
+        return struct.unpack(struct_template, content)[0]
+
+    def unpack_int64(self):
+        return self._unpack_value(8, '>q')
+
+    def unpack_ushort(self):
+        return self.unpack_uint()
+
+    def unpack_uchar(self):
+        # TPX files prior to gromacs 2020 (tpx version < 119) use unsigned ints
+        # (4 bytes) instead of unsigned chars.
+        return self._unpack_value(4, '>I')
+
+
+class TPXUnpacker2020:
+    """
+    Unpacker for TPX file later than gromacs 2020.
+
+    The body of TPX files is encoded differently since TPX version 119 (gromacs 2020).
+    On the contrary to regular XDR files, these TPX files are little-endian, and each
+    byte to read in padded to be 4 bytes; so b'\x02\xAB\x03\x01' in a XDR file becomes
+    b'\x00\x00\x00\x01\x00\x00\x00\x03\x00\x00\x00\xAB\x00\x00\x00\x02' in a TPX body
+    since TPX version 119.
+    """
+    base_size = 4
+
+    def __init__(self, data):
+        self.reset(data)
+
+    def reset(self, data):
+        self._pos = 0
+        self._buf = data
+
+    @classmethod
+    def from_unpacker(cls, unpacker):
+        new_unpacker = cls(unpacker._buf)
+        new_unpacker._pos = unpacker._pos
+        if hasattr(unpacker, 'unpack_real'):
+            if unpacker.unpack_real == unpacker.unpack_float:
+                new_unpacker.unpack_real = new_unpacker.unpack_float
+            elif unpacker.unpack_real == unpacker.unpack_double:
+                new_unpacker.unpack_real = new_unpacker.unpack_double
+            else:
+                raise ValueError("Unrecognized precision")
+        return new_unpacker
+
+    def _unpack_value(self, item_size, struct_template):
+        padded_size = self.base_size * item_size
+        start_position = self._pos
+        end_position = self._pos = start_position + padded_size
+        full_content = self._buf[start_position:end_position]
+        if len(full_content) != padded_size:
+            raise EOFError
+        content = full_content[self.base_size - 1::self.base_size]
+        return struct.unpack(struct_template, content)[0]
+
+    def unpack_float(self):
+        return self._unpack_value(4, '<f')
+
+    def unpack_double(self):
+        return self._unpack_value(8, '<d')
+
+    def unpack_int(self):
+        return self._unpack_value(4, '<i')
+
+    def unpack_uint(self):
+        return self._unpack_value(4, '<I')
+
+    def unpack_ushort(self):
+        return self._unpack_value(2, '<H')
+
+    def unpack_char(self):
+        return self._unpack_value(1, '<c')
+
+    def unpack_uchar(self):
+        return self._unpack_value(1, '>B')
+
+    def unpack_string(self):
+        self._pos -= 4 * self.base_size
+        n = self.unpack_int()
+        self.unpack_uint()
+        value = self.unpack_fstring(n)
+        return value
+
+    def unpack_fstring(self, n):
+        if n < 0:
+            raise ValueError('Size of fstring cannot be negative.')
+        start_position = self._pos
+        end_position = self._pos = start_position + n * self.base_size
+        if end_position > len(self._buf):
+            raise EOFError
+        full_content = self._buf[start_position:end_position]
+        content = full_content[self.base_size - 1::self.base_size]
+        return content
+
+    def unpack_farray(self, n, unpack_item):
+        return [unpack_item() for _ in range(n)]
 
 
 def do_string(data):
@@ -164,7 +300,7 @@ def read_tpxheader(data):
     fep_state = data.unpack_int() if fileVersion >= 79 else 0
 
     # actually, it's lambda, not sure what is it. us lamb because lambda is a
-    # keywod in python
+    # keyword in python
     lamb = data.unpack_real()
     bIr = data.unpack_int()  # has input record or not
     bTop = data.unpack_int()  # has topology or not
@@ -172,6 +308,9 @@ def read_tpxheader(data):
     bV = data.unpack_int()  # has velocity or not
     bF = data.unpack_int()  # has force or not
     bBox = data.unpack_int()  # has box or not
+
+    if fileVersion >= S.tpxv_AddSizeField and fileGeneration >= 27:
+        sizeOfTprBody = data.unpack_int64()
 
     th = obj.TpxHeader(ver_str, precision, fileVersion, fileGeneration,
                        file_tag, natoms, ngtc, fep_state, lamb,
@@ -552,7 +691,7 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # settle.doh
             data.unpack_real()  # settle.dhh
 
-        elif i in [S.F_VSITE2]:
+        elif i in [S.F_VSITE2, S.F_VSITE2FD]:
             data.unpack_real()  # vsite.a
 
         elif i in [S.F_VSITE3, S.F_VSITE3FD, S.F_VSITE3FAD]:
@@ -710,8 +849,8 @@ def do_resinfo(data, symtab, fver, nres):
         resnames = []
         for i in range(nres):
             resnames.append(symtab[data.unpack_int()])
-            # assume the uchar in gmx is 8 byte, seems right
-            data.unpack_fstring(8)
+            data.unpack_int()
+            data.unpack_uchar()
     return resnames
 
 
@@ -720,8 +859,8 @@ def do_atom(data, fver):
     q = data.unpack_real()  # charge
     mB = data.unpack_real()
     qB = data.unpack_real()
-    tp = data.unpack_uint()  # type is a keyword in python
-    typeB = data.unpack_uint()
+    tp = data.unpack_ushort()  # type is a keyword in python
+    typeB = data.unpack_ushort()
     ptype = data.unpack_int()  # regular atom, virtual site or others
     resind = data.unpack_int()  # index of residue
 
@@ -736,6 +875,7 @@ def do_atom(data, fver):
 def do_ilists(data, fver):
     nr = []  # number of ilist
     iatoms = []  # atoms involved in a particular interaction type
+    pos = []
     for j in range(S.F_NRE):  # total number of energies (i.e. interaction types)
         bClear = False
         for k in S.ftupd:
