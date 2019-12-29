@@ -508,23 +508,33 @@ class Timestep(object):
         except NoDataError:
             # It's cool if there's no Data, we'll live
             pos = None
-        except:
-            raise TypeError("Selection type must be compatible with slicing"
-                            " the coordinates")
+        except Exception:
+            six.raise_from(
+                TypeError(
+                    "Selection type must be compatible with slicing"
+                    " the coordinates"
+                    ),
+                None)
         try:
             vel = self.velocities[sel, :]
         except NoDataError:
             vel = None
-        except:
-            raise TypeError("Selection type must be compatible with slicing"
-                            " the coordinates")
+        except Exception:
+            six.raise_from(
+                TypeError("Selection type must be compatible with slicing"
+                          " the coordinates"),
+                None)
         try:
             force = self.forces[sel, :]
         except NoDataError:
             force = None
-        except:
-            raise TypeError("Selection type must be compatible with slicing"
-                            " the coordinates")
+        except Exception:
+            six.raise_from(
+                TypeError(
+                    "Selection type must be compatible with slicing"
+                    " the coordinates"
+                    ),
+                None)
 
         new_TS = self.__class__.from_coordinates(
             positions=pos,
@@ -932,16 +942,7 @@ class FrameIteratorSliced(FrameIteratorBase):
         )
 
     def __len__(self):
-        start, stop, step = self.start, self.stop, self.step
-        if (step > 0 and start < stop):
-            # We go from a lesser number to a larger one.
-            return int(1 + (stop - 1 - start) // step)
-        elif (step < 0 and start > stop):
-            # We count backward from a larger number to a lesser one.
-            return int(1 + (start - 1 - stop) // (-step))
-        else:
-            # The range is empty.
-            return 0
+        return range_length(self.start, self.stop, self.step)
 
     def __iter__(self):
         for i in range(self.start, self.stop, self.step):
@@ -959,20 +960,33 @@ class FrameIteratorSliced(FrameIteratorBase):
             frame = self.start + frame * self.step
             return self.trajectory._read_frame_with_aux(frame)
         elif isinstance(frame, slice):
-            start = self.start + (frame.start or 0) * self.step
+            step = (frame.step or 1) * self.step
+            if frame.start is None:
+                if frame.step is None or frame.step > 0:
+                    start = self.start
+                else:
+                    start = self.start + (len(self) - 1) * self.step
+            else:
+                start = self.start + (frame.start or 0) * self.step
             if frame.stop is None:
-                stop = self.stop
+                if frame.step is None or frame.step > 0:
+                    last = start + (range_length(start, self.stop, step) - 1) * step
+                else:
+                    last = self.start
+                stop = last + np.sign(step)
             else:
                 stop = self.start + (frame.stop or 0) * self.step
-            step = (frame.step or 1) * self.step
-
-            if step > 0:
-                start = max(0, start)
-            else:
-                stop = max(0, stop)
 
             new_slice = slice(start, stop, step)
-            return FrameIteratorSliced(self.trajectory, new_slice)
+            frame_iterator = FrameIteratorSliced(self.trajectory, new_slice)
+            # The __init__ of FrameIteratorSliced does some conversion between
+            # the way indices are handled in slices and the way they are
+            # handled by range. We need to overwrite this conversion as we
+            # already use the logic for range.
+            frame_iterator._start = start
+            frame_iterator._stop = stop
+            frame_iterator._step = step
+            return frame_iterator
         else:
             # Indexing with a lists of bools does not behave the same in all
             # version of numpy.
@@ -1408,7 +1422,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             ts = self._read_next_timestep()
         except (EOFError, IOError):
             self.rewind()
-            raise StopIteration
+            six.raise_from(StopIteration, None)
         else:
             for auxname in self.aux_list:
                 ts = self._auxs[auxname].update_ts(ts)
@@ -1592,8 +1606,11 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
                 yield self._read_frame_with_aux(i)
             self.rewind()
         except TypeError:  # if _read_frame not implemented
-            raise TypeError("{0} does not support slicing."
-                            "".format(self.__class__.__name__))
+            six.raise_from(
+                TypeError(
+                    "{0} does not support slicing."
+                    "".format(self.__class__.__name__)),
+                None)
 
     def check_slice_indices(self, start, stop, step):
         """Check frame indices are valid and clip to fit trajectory.
@@ -2012,7 +2029,11 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         try:
             self.transformations = transformations
         except ValueError:
-            raise ValueError("Can't add transformations again. Please create new Universe object")
+            six.raise_from(
+                ValueError(
+                    "Can't add transformations again. "
+                    "Please create new Universe object"),
+                None)
         else:
             self.ts = self._apply_transformations(self.ts)
 
@@ -2176,7 +2197,7 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
                     # special case: can supply a Universe, too...
                     ts = obj.trajectory.ts
                 except AttributeError:
-                    raise TypeError("No Timestep found in obj argument")
+                    six.raise_from(TypeError("No Timestep found in obj argument"), None)
         return self.write_next_timestep(ts)
 
     def __del__(self):
@@ -2345,3 +2366,15 @@ class SingleFrameReaderBase(ProtoReader):
         # to avoid applying the same transformations multiple times on each frame
 
         return ts
+
+
+def range_length(start, stop, step):
+    if (step > 0 and start < stop):
+        # We go from a lesser number to a larger one.
+        return int(1 + (stop - 1 - start) // step)
+    elif (step < 0 and start > stop):
+        # We count backward from a larger number to a lesser one.
+        return int(1 + (start - 1 - stop) // (-step))
+    else:
+        # The range is empty.
+        return 0

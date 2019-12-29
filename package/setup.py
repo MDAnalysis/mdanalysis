@@ -73,7 +73,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.19.3-dev"
+RELEASE = "0.20.2-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -101,6 +101,7 @@ except ImportError:
         print("*** package: Cython not found ***")
         print("MDAnalysis requires cython for development builds")
         sys.exit(1)
+    cython_linetrace = False
 
 
 class Config(object):
@@ -553,13 +554,15 @@ if __name__ == '__main__':
           'GridDataFormats>=0.4.0',
           'six>=1.4.0',
           'mmtf-python>=1.0.0',
-          'joblib',
+          'joblib>=0.12',
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
           'mock',
     ]
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')
+    else:
+        install_requires.append('gsd>=1.9.3')
 
     setup(name='MDAnalysis',
           version=RELEASE,

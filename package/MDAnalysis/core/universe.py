@@ -300,15 +300,16 @@ class Universe(object):
                         six.reraise(*sys.exc_info())
                     else:
                         # Runs when the parser fails
-                        raise IOError(
+                        six.raise_from(IOError(
                             "Failed to load from the topology file {0}"
                             " with parser {1}.\n"
-                            "Error: {2}".format(self.filename, parser, err))
+                            "Error: {2}".format(self.filename, parser, err)),
+                            None)
                 except (ValueError, NotImplementedError) as err:
-                    raise ValueError(
+                    six.raise_from(ValueError(
                         "Failed to construct topology from file {0}"
                         " with parser {1}.\n"
-                        "Error: {2}".format(self.filename, parser, err))
+                        "Error: {2}".format(self.filename, parser, err)), None)
 
             # generate and populate Universe version of each class
             self._generate_from_topology()
@@ -463,15 +464,21 @@ class Universe(object):
         .. versionadded:: 0.17.0
         .. versionchanged:: 0.19.0
            The attached Reader when trajectory=True is now a MemoryReader
+        .. versionchanged:: 0.21.0
+           Universes can now be created with 0 atoms
         """
-        if n_residues is None:
+        if not n_atoms:
+            n_residues = 0
+            n_segments = 0
+            
+        if n_residues is None and n_atoms:
             n_residues = 1
         elif atom_resindex is None:
             warnings.warn(
                 'Multiple residues specified but no atom_resindex given.  '
                 'All atoms will be placed in first Residue.',
                 UserWarning)
-        if n_segments is None:
+        if n_segments is None and n_atoms:
             n_segments = 1
         elif residue_segindex is None:
             warnings.warn(
@@ -509,7 +516,7 @@ class Universe(object):
         try:
             segment = self._instant_selectors[key]
         except KeyError:
-            raise AttributeError('No attribute "{}".'.format(key))
+            six.raise_from(AttributeError('No attribute "{}".'.format(key)), None)
         else:
             warnings.warn("Instant selector Universe.<segid> "
                           "is deprecated and will be removed in 1.0. "
@@ -601,7 +608,7 @@ class Universe(object):
         # supply number of atoms for readers that cannot do it for themselves
         kwargs['n_atoms'] = self.atoms.n_atoms
 
-        self.trajectory = reader(filename, **kwargs)
+        self.trajectory = reader(filename, format=format, **kwargs)
         if self.trajectory.n_atoms != len(self.atoms):
             raise ValueError("The topology and {form} trajectory files don't"
                              " have the same number of atoms!\n"
@@ -860,13 +867,13 @@ class Universe(object):
             try:
                 tcls = _TOPOLOGY_ATTRS[topologyattr]
             except KeyError:
-                raise ValueError(
+                six.raise_from(ValueError(
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
                     "To raise an issue go to: http://issues.mdanalysis.org"
                     "".format(
-                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))
-                )
+                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))),
+                    None)
             else:
                 topologyattr = tcls.from_blank(
                     n_atoms=self._topology.n_atoms,

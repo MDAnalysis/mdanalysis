@@ -4,8 +4,8 @@ import MDAnalysis
 import numpy as np
 
 try:
-    from MDAnalysisTests.datafiles import (GRO, TPR, XTC, 
-                                           PSF, DCD, 
+    from MDAnalysisTests.datafiles import (GRO, TPR, XTC,
+                                           PSF, DCD,
                                            TRZ_psf, TRZ)
     from MDAnalysis.exceptions import NoDataError
 except:
@@ -190,7 +190,7 @@ class AtomGroupMethodsBench(object):
         coordinates.
         """
         self.ag.translate([0,0.5,1])
-        
+
     def time_union(self, num_atoms):
         """Benchmark union operation
         on atomgroups.
@@ -202,7 +202,7 @@ class AtomGroupMethodsBench(object):
         atomgroup with default params.
         """
         self.ag.wrap()
-        
+
 
 
 class AtomGroupAttrsBench(object):
@@ -232,7 +232,7 @@ class AtomGroupAttrsBench(object):
 
     def time_dihedral(self, num_atoms):
         """Benchmark Dihedral object
-        creation time. Requires ag of 
+        creation time. Requires ag of
         size 4.
         """
         self.ag[:4].dihedral
@@ -336,5 +336,5 @@ class FragmentFinding(object):
     def setup(self, universe):
         self.u = MDAnalysis.Universe(*universe)
 
-    def test_find_fragments(self, universe):
+    def time_find_fragments(self, universe):
         frags = self.u.atoms.fragments

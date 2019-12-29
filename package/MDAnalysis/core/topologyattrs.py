@@ -487,8 +487,10 @@ class Atomnames(AtomAttr):
         try:
             return atomgroup._get_named_atom(name)
         except selection.SelectionError:
-            raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    atomgroup.__class__.__name__, name))
+            six.raise_from(
+                AttributeError("'{0}' object has no attribute '{1}'".format(
+                    atomgroup.__class__.__name__, name)),
+                None)
 
     def _get_named_atom(group, name):
         """Get all atoms with name *name* in the current AtomGroup.
@@ -1347,8 +1349,10 @@ class Resnames(ResidueAttr):
         try:
             return residuegroup._get_named_residue(resname)
         except selection.SelectionError:
-            raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    residuegroup.__class__.__name__, resname))
+            six.raise_from(
+                AttributeError("'{0}' object has no attribute '{1}'".format(
+                    residuegroup.__class__.__name__, resname)),
+                    None)
 
     transplants[ResidueGroup].append(('__getattr__', getattr__))
     # This transplant is hardcoded for now to allow for multiple getattr things
@@ -1481,9 +1485,9 @@ class Resnames(ResidueAttr):
         try:
             sequence = "".join([convert_aa_code(r) for r in self.residues.resnames])
         except KeyError as err:
-            raise ValueError("AtomGroup contains a residue name '{0}' that "
+            six.raise_from(ValueError("AtomGroup contains a residue name '{0}' that "
                              "does not have a IUPAC protein 1-letter "
-                             "character".format(err.message))
+                             "character".format(err.message)), None)
         if format == "string":
             return sequence
         seq = Bio.Seq.Seq(sequence, alphabet=Bio.Alphabet.IUPAC.protein)
@@ -1589,8 +1593,10 @@ class Segids(SegmentAttr):
         try:
             return segmentgroup._get_named_segment(segid)
         except selection.SelectionError:
-            raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    segmentgroup.__class__.__name__, segid))
+            six.raise_from(
+                AttributeError("'{0}' object has no attribute '{1}'".format(
+                    segmentgroup.__class__.__name__, segid)),
+                None)
 
     transplants[SegmentGroup].append(
         ('__getattr__', getattr__))
@@ -1642,7 +1648,14 @@ class Segids(SegmentAttr):
 class _Connection(AtomAttr):
     """Base class for connectivity between atoms"""
     def __init__(self, values, types=None, guessed=False, order=None):
-        self.values = list(values)
+        values = [tuple(x) for x in values]
+        if not all(len(x) == self._n_atoms 
+                   and all(isinstance(y, (int, np.integer)) for y in x)
+                   for x in values):
+            raise ValueError(("{} must be an iterable of tuples with {}"
+                              " atom indices").format(self.attrname,
+                              self._n_atoms))
+        self.values = values
         if types is None:
             types = [None] * len(values)
         self.types = types
@@ -1743,6 +1756,7 @@ class Bonds(_Connection):
     # many bonds, so still asks for "bonds" in the plural
     singular = 'bonds'
     transplants = defaultdict(list)
+    _n_atoms = 2
 
     def bonded_atoms(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` of all
@@ -1891,6 +1905,7 @@ class Angles(_Connection):
     attrname = 'angles'
     singular = 'angles'
     transplants = defaultdict(list)
+    _n_atoms = 3
 
 
 class Dihedrals(_Connection):
@@ -1898,6 +1913,7 @@ class Dihedrals(_Connection):
     attrname = 'dihedrals'
     singular = 'dihedrals'
     transplants = defaultdict(list)
+    _n_atoms = 4
 
 
 class Impropers(_Connection):
@@ -1905,3 +1921,4 @@ class Impropers(_Connection):
     attrname = 'impropers'
     singular = 'impropers'
     transplants = defaultdict(list)
+    _n_atoms = 4

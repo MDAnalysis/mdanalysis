@@ -361,13 +361,13 @@ class TestTopologyGroup(object):
         vals = np.array([[0, 10], [5, 15]])
         tg = TopologyGroup(vals, PSFDCD, guessed=True)
 
-        assert_equal(tg._guessed, np.array([[True], [True]]))
+        assert_equal(tg._guessed, np.array([True, True]))
 
     def test_create_guessed_tg_2(self, PSFDCD):
         vals = np.array([[0, 10], [5, 15]])
         tg = TopologyGroup(vals, PSFDCD, guessed=False)
 
-        assert_equal(tg._guessed, np.array([[False], [False]]))
+        assert_equal(tg._guessed, np.array([False, False]))
 
     def test_TG_equality(self, PSFDCD):
         """Make two identical TGs,

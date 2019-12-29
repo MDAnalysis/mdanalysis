@@ -141,10 +141,8 @@ class HoomdXMLParser(TopologyReaderBase):
                         for line in val.text.strip().split('\n')
                         if line.strip()]
             except:
-                pass
-            else:
-                if vals:
-                    attrs[attrname] = attr(vals)
+                vals = []
+            attrs[attrname] = attr(vals)
 
         if not 'masses' in attrs:
             attrs['masses'] = Masses(np.zeros(natoms))

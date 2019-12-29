@@ -13,14 +13,68 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
+mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
+         PicoCentauri, davidercruz, jbarnoud
+
+  * 0.21.0
+
+Fixes
+  * AtomGroup.guess_bonds now uses periodic boundary information when available
+    (Issue #2350)
+  * Chainreader and continuous option work correctly when readers work for more 
+    than one format (Issue #2353)
+  * PDBQTParser now gives icode TopologyAttrs (Issue #2361)
+  * GROReader and GROWriter now can handle boxes with box vectors >1000nm
+  * Guess atom element with uppercase name
+  * TopologyGroup no longer reshapes the type, guessed, and order properties
+    (Issue #2392)
+  * Added test to check for unexpected attributes in TopologyParsers (Issue #2387)
+  * PDB files no longer lose chainIDs when reading files without segIDs (Issue #2389)
+  * The expected frames are made available when a trajectory slice is sliced itself
+    with an incomplete slice and/or with a negative step (Issue #2413)
+
+Enhancements
+  * Enhanges exception message when trajectory output file has no extension assigned.
+  * Uniforms exception handling between Python 2.7 and Python 3: raised exceptions
+    do not contain previous exceptions traceback. Uses six package to handle
+    py27 and py3 compatibility (PR #2357)
+  * Expanded selection wildcards to the start and middle of strings (Issue #2370)
+  * Added type checking and conversion to Connection TopologyAttrs (Issue #2373)
+  * New analysis.hydrogenbonds.HydrogenBondAnalysis class for the analysis of
+    hydrogen bonds. Simpler interface, more extensible and better performance
+    than analysis.hbonds.HydrogenBondAnalysis (PR #2237)
+  * GSD reader is now supported on Windows (Issue #1923, PR #2384)
+  * Empty Universe with 0 atoms is possible (Issue #2383)
+  * Added ITPParser to parse GROMACS itp topology files (PR #2381)
+  * Added match_atoms keyword to analysis.align (Issue #2285, PR #2380)
+  * Added wrap/unwrap transformations (PR #2038)
+  * Read TPR files from Gromacs 2020 (Issue #2412)
+
+
+Deprecations
+  * analysis.hbonds.HydrogenBondAnalysis will be deprecated in 1.0
+
+09/05/19 IAlibay, richardjgowers
+
+  * 0.20.1
+
+Fixes
+  * The NetCDF writer now writes `cell_angle` units as `degree` instead of
+    `degrees` in accordance with the AMBER NetCDF convention (Issue #2327).
+  * Fixed installation without Cython (Issue #2337)
+
+
+08/28/19 micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay, tyler.je.reddy, aakognole, RMeli 
+         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
 
   * 0.20.0
 
 Enhancements
+  * improved metal atom guess (Issue #2323)
+  * improved atom element guessing in topology.guessers to check for elements
+    after the first element (#2313)
   * added the zero-based index selection keyword (Issue #1959)
   * added position averaging transformation that makes use of the 
     transformations API (PR #2208)
@@ -65,6 +119,7 @@ Enhancements
   * add high order water bridge support to water bridge analysis. (PR #2087)
 
 Changes
+  * added support for scale_factor in NCDFReader (Issue #2323)
   * added official support for Python 3.7 (PR #1963)
   * stopped official support of Python 3.4 (#2066, PR #2174)
   * In lib.mdamath, calculations within triclinic_box(), triclinic_vectors(),
@@ -76,6 +131,8 @@ Changes
   * changed the water bridge analysis output format (PR #2087)
 
 Fixes
+  * fixed ChainReader setting format with format keyword (Issue #2334)
+  * fixed lack of check for scaling of NCDFReader velocities (Issue #2323)
   * fixed PDBReader and PDBWriter newlines for PDB header (Issue #2324)
   * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
   * fixes ProgressMeter behaviour for non-AnalysisBase methods (Issue #2084)
@@ -123,12 +180,12 @@ Fixes
   * Fixed reading multiframe GRO files, currently only the first frame will be
     read. (Issue #2276 PR #2277)
   * fixed calculation of Chi torsion in nucleic acid analysis (Issue #2248)
-
+  * Fixed parallelization failure in get_distance_matrix() (Issue #2060, PR #2301)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
     method to be used, this is done automatically in run()
-    
+
 Testsuite
   * Raised minimum pytest version to 3.3.0, warns now uses the `match` 
     argument instead of `match_expr` (Issue #2329)
