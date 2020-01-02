@@ -49,7 +49,7 @@ Enhancements
   * Added ITPParser to parse GROMACS itp topology files (PR #2381)
   * Added match_atoms keyword to analysis.align (Issue #2285, PR #2380)
   * Added wrap/unwrap transformations (PR #2038)
-  * Read TPR files from Gromacs 2020 (Issue #2412)
+  * Read TPR files from Gromacs 2020 (Issue #2412 and #2428)
 
 
 Deprecations
