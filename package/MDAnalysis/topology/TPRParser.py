@@ -195,6 +195,15 @@ class TPRParser(TopologyReaderBase):
         # Starting with gromacs 2020 (tpx version 119), the body of the file
         # is encoded differently. We change the unpacker accordingly.
         if V >= S.tpxv_AddSizeField and th.fgen >= 27:
+            actual_body_size = len(data.get_buffer()) - data.get_position()
+            if actual_body_size == 4 * th.sizeOfTprBody:
+                # See issue #2428.
+                msg = (
+                    "TPR files produced with beta versions of gromacs 2020 "
+                    "are not supported."
+                )
+                logger.critical(msg)
+                raise IOError(msg)
             data = tpr_utils.TPXUnpacker2020.from_unpacker(data)
 
         state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c

@@ -266,12 +266,13 @@ def read_tpxheader(data):
     bF = data.unpack_int()  # has force or not
     bBox = data.unpack_int()  # has box or not
 
+    sizeOfTprBody = None
     if fileVersion >= S.tpxv_AddSizeField and fileGeneration >= 27:
         sizeOfTprBody = data.unpack_int64()
 
     th = obj.TpxHeader(ver_str, precision, fileVersion, fileGeneration,
                        file_tag, natoms, ngtc, fep_state, lamb,
-                       bIr, bTop, bX, bV, bF, bBox)
+                       bIr, bTop, bX, bV, bF, bBox, sizeOfTprBody)
     return th
 
 
