@@ -125,9 +125,42 @@ class TPXUnpacker(xdrlib.Unpacker):
         return self._unpack_value(4, '>I')
 
 
-class TPXUnpacker2020:
+class TPXUnpacker2020(TPXUnpacker):
     """
-    Unpacker for TPX file later than gromacs 2020.
+    Unpacker for TPX files from and later than gromacs 2020.
+    """
+    @classmethod
+    def from_unpacker(cls, unpacker):
+        new_unpacker = cls(unpacker._buf)
+        new_unpacker._pos = unpacker._pos
+        if hasattr(unpacker, 'unpack_real'):
+            if unpacker.unpack_real == unpacker.unpack_float:
+                new_unpacker.unpack_real = new_unpacker.unpack_float
+            elif unpacker.unpack_real == unpacker.unpack_double:
+                new_unpacker.unpack_real = new_unpacker.unpack_double
+            else:
+                raise ValueError("Unrecognized precision")
+        return new_unpacker
+
+    def unpack_fstring(self, n):
+        if n < 0:
+            raise ValueError('Size of fstring cannot be negative.')
+        start_position = self._pos
+        end_position = self._pos = start_position + n
+        if end_position > len(self._buf):
+            raise EOFError
+        content = self._buf[start_position:end_position]
+        return content
+
+    def unpack_ushort(self):
+        return self._unpack_value(2, '>H')
+
+    def unpack_uchar(self):
+        return self._unpack_value(1, '>B')
+
+
+class TPXUnpacker2020_old:
+    """
 
     The body of TPX files is encoded differently since TPX version 119 (gromacs 2020).
     On the contrary to regular XDR files, these TPX files are little-endian, and each
@@ -186,7 +219,7 @@ class TPXUnpacker2020:
         return self._unpack_value(1, '<c')
 
     def unpack_uchar(self):
-        return self._unpack_value(1, '>B')
+        return self._unpack_value(1, '<B')
 
     def unpack_string(self):
         self._pos -= 4 * self.base_size
