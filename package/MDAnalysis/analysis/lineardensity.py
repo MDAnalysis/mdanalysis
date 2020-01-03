@@ -229,9 +229,9 @@ class LinearDensity(AnalysisBase):
         description = description + "_" + str(self.grouping)
         filename = trajname + "." + description + ".ldens"
 
-        if form is 'txt':
+        if form == 'txt':
             self._savetxt(filename)
-        elif form is 'npz':
+        elif form == 'npz':
             self._savez(filename)
         else:
             raise ValueError('form argument must be either txt or npz')

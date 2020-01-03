@@ -456,11 +456,11 @@ class HydrogenBondAutoCorrel(object):
             winners = (d < self.d_crit) & (a > self.a_crit)
             results[i] = winners.sum()
 
-            if self.bond_type is 'continuous':
+            if self.bond_type == 'continuous':
                 # Remove losers for continuous definition
                 hidx = hidx[np.where(winners)]
                 aidx = aidx[np.where(winners)]
-            elif self.bond_type is 'intermittent':
+            elif self.bond_type == 'intermittent':
                 if self.time_cut:
                     # Add to counter of where losers are
                     count[~ winners] += self._skip * self.u.trajectory.dt
@@ -586,7 +586,7 @@ class HydrogenBondAutoCorrel(object):
             A3 = 1 - (A1 + A2)
             return A1 * np.exp(-x / tau1) + A2 * np.exp(-x / tau2) + A3 * np.exp(-x / tau3)
 
-        if self.bond_type is 'continuous':
+        if self.bond_type == 'continuous':
             self._my_solve = double
 
             if p_guess is None:
