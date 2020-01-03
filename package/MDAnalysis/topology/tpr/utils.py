@@ -116,6 +116,9 @@ class TPXUnpacker(xdrlib.Unpacker):
     def unpack_int64(self):
         return self._unpack_value(8, '>q')
 
+    def unpack_uint64(self):
+        return self._unpack_value(8, '>Q')
+
     def unpack_ushort(self):
         return self.unpack_uint()
 
@@ -123,6 +126,19 @@ class TPXUnpacker(xdrlib.Unpacker):
         # TPX files prior to gromacs 2020 (tpx version < 119) use unsigned ints
         # (4 bytes) instead of unsigned chars.
         return self._unpack_value(4, '>I')
+
+    def do_string(self):
+        """
+        Emulate gmx_fio_do_string
+
+        gmx_fio_do_string reads a string from a XDR file. On the contrary to the
+        python unpack_string, gmx_fio_do_string reads the size as an unsigned
+        integer before reading the actual string.
+
+        See <gromacs-2016-src>/src/gromacs/fileio/gmx_system_xdr.c:454
+        """
+        self.unpack_int()
+        return self.unpack_string()
 
 
 class TPXUnpacker2020(TPXUnpacker):
@@ -166,18 +182,12 @@ class TPXUnpacker2020(TPXUnpacker):
         # on the contrary to the IO serializer.
         return self._unpack_value(1, '>B')
 
-
-def do_string(data):
-    """Emulate gmx_fio_do_string
-
-    gmx_fio_do_string reads a string from a XDR file. On the contrary to the
-    python unpack_string, gmx_fio_do_string reads the size as an unsigned
-    integer before reading the actual string.
-
-    See <gromacs-2016-src>/src/gromacs/fileio/gmx_system_xdr.c:454
-    """
-    data.unpack_int()
-    return data.unpack_string()
+    def do_string(self):
+        """
+        Emulate gmx_fio_do_string
+        """
+        n = self.unpack_uint64()
+        return self.unpack_fstring(n)
 
 
 def ndo_int(data, n):
@@ -225,7 +235,7 @@ def read_tpxheader(data):
     """this function is now compatible with do_tpxheader in tpxio.cpp
     """
     # Last compatibility check with gromacs-2016
-    ver_str = do_string(data)  # version string e.g. VERSION 4.0.5
+    ver_str = data.do_string()  # version string e.g. VERSION 4.0.5
     precision = data.unpack_int()  # e.g. 4
     define_unpack_real(precision, data)
     fileVersion = data.unpack_int()  # version of tpx file
@@ -235,7 +245,7 @@ def read_tpxheader(data):
     # the tag was, mistakenly, placed before the generation.
     if 77 <= fileVersion <= 79:
         data.unpack_int()  # the value is 8, but haven't found the
-        file_tag = do_string(data)
+        file_tag = data.do_string()
 
     fileGeneration = data.unpack_int() if fileVersion >= 26 else 0  # generation of tpx file, e.g. 17
 
@@ -244,7 +254,7 @@ def read_tpxheader(data):
     # tpx_tag from a lower or the same version of gromacs code can be parsed by
     # the tpxio.c
 
-    file_tag = do_string(data) if fileVersion >= 81 else S.TPX_TAG_RELEASE
+    file_tag = data.do_string() if fileVersion >= 81 else S.TPX_TAG_RELEASE
 
     natoms = data.unpack_int()  # total number of atoms
     ngtc = data.unpack_int() if fileVersion >= 28 else 0  # number of groups for T-coupling
@@ -419,7 +429,7 @@ def do_symtab(data):
     symtab_nr = data.unpack_int()  # number of symbols
     symtab = []
     for i in range(symtab_nr):
-        j = do_string(data)
+        j = data.do_string()
         symtab.append(j)
     return symtab
 
