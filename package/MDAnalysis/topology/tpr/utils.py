@@ -136,7 +136,7 @@ class TPXUnpacker2020(TPXUnpacker):
     @classmethod
     def from_unpacker(cls, unpacker):
         new_unpacker = cls(unpacker._buf)
-        new_unpacker._pos = unpacker._pos
+        new_unpacker._pos = new_unpacker._Unpacker__pos = unpacker._Unpacker__pos
         if hasattr(unpacker, 'unpack_real'):
             if unpacker.unpack_real == unpacker.unpack_float:
                 new_unpacker.unpack_real = new_unpacker.unpack_float
@@ -149,8 +149,8 @@ class TPXUnpacker2020(TPXUnpacker):
     def unpack_fstring(self, n):
         if n < 0:
             raise ValueError('Size of fstring cannot be negative.')
-        start_position = self._pos
-        end_position = self._pos = start_position + n
+        start_position = self._Unpacker__pos # pylint: disable=access-member-before-definition
+        end_position = self._pos = self._Unpacker__pos = start_position + n
         if end_position > len(self._buf):
             raise EOFError
         content = self._buf[start_position:end_position]
@@ -170,9 +170,9 @@ class TPXUnpacker2020(TPXUnpacker):
 def do_string(data):
     """Emulate gmx_fio_do_string
 
-    gmx_fio_do_string reads a string from a XDR file. On the contraty to the
+    gmx_fio_do_string reads a string from a XDR file. On the contrary to the
     python unpack_string, gmx_fio_do_string reads the size as an unsigned
-    interger before reading the actual string.
+    integer before reading the actual string.
 
     See <gromacs-2016-src>/src/gromacs/fileio/gmx_system_xdr.c:454
     """
