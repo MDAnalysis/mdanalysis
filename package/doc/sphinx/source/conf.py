@@ -26,7 +26,6 @@ import sphinx_rtd_theme
 
 # make sure sphinx always uses the current branch
 sys.path.insert(0, os.path.abspath('../../..'))
-sys.path.insert(0, os.path.abspath('.'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -39,9 +38,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
               'sphinx.ext.mathjax', 'sphinx.ext.viewcode',
               'sphinx.ext.napoleon', 'sphinx.ext.todo',
               'sphinx_sitemap',
-              'sphinx_rtd_theme',
-              'topologyattrs_annotation',
-              ]
+              'sphinx_rtd_theme']
 
 mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 

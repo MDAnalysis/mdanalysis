@@ -198,7 +198,6 @@ def _build_stub(method_name, method, attribute_name):
     stub_method.__doc__ = method.__doc__
     stub_method.__name__ = method_name
     stub_method.__signature__ = inspect.signature(method)
-    stub_method._required_topologyattrs = attribute_name
     return stub_method
 
 
