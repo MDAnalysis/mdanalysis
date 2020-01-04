@@ -32,6 +32,7 @@ Fixes
   * PDB files no longer lose chainIDs when reading files without segIDs (Issue #2389)
   * The expected frames are made available when a trajectory slice is sliced itself
     with an incomplete slice and/or with a negative step (Issue #2413)
+  * TXYZ parser uses strings for the atom types like other parsers (Issue #2435)
 
 Enhancements
   * Enhanges exception message when trajectory output file has no extension assigned.
