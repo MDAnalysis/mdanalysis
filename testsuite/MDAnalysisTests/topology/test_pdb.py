@@ -25,6 +25,7 @@ from __future__ import absolute_import
 from six.moves import StringIO
 
 import pytest
+import numpy as np
 from numpy.testing import assert_equal
 import MDAnalysis as mda
 
@@ -224,6 +225,7 @@ HETATMA0003  H     2 L 400      10.208  30.067  70.045
 END
 """
 
+
 def test_PDB_hex():
     u = mda.Universe(StringIO(PDB_hex), format='PDB')
     assert len(u.atoms) == 5
@@ -232,6 +234,7 @@ def test_PDB_hex():
     assert u.atoms[2].id == 100001
     assert u.atoms[3].id == 100002
     assert u.atoms[4].id == 100003
+
 
 @pytest.mark.filterwarnings("error")
 def test_PDB_metals():
@@ -244,3 +247,98 @@ def test_PDB_metals():
     assert u.atoms[1].mass == pytest.approx(tables.masses["FE"])
     assert u.atoms[2].mass == pytest.approx(tables.masses["CA"])
     assert u.atoms[3].mass == pytest.approx(tables.masses["MG"])
+
+
+# This is a protein residue and a ligand from PDB_full and the metals
+# from PDB_metals
+PDB_elements = """\
+ATOM      1  N   PRO A   1       0.401  40.138  17.790  1.00 23.44           N  
+ATOM      2  CA  PRO A   1      -0.540  39.114  18.241  1.00 23.00           C  
+ATOM      3  C   PRO A   1      -0.028  38.397  19.491  1.00 22.34           C  
+ATOM      4  O   PRO A   1       1.136  38.550  19.843  1.00 22.20           O  
+ATOM      5  CB  PRO A   1      -0.602  38.136  17.053  1.00 23.21           C  
+ATOM      6  CG  PRO A   1       0.504  38.548  16.115  1.00 24.23           C  
+ATOM      7  CD  PRO A   1       0.728  39.999  16.363  1.00 23.31           C 
+TER       8
+HETATM    9 CU    CU A   9      00.000  00.000  00.000  1.00 00.00          Cu 
+HETATM   10 FE    FE A  10      03.000  03.000  03.000  1.00 00.00          Fe
+HETATM   11 Ca    Ca A  11      03.000  03.000  03.000  1.00 00.00          Ca
+HETATM   12 Mg    Mg A  12      03.000  03.000  03.000  1.00 00.00          Mg
+TER      13
+HETATM 1609  S   DMS A 101      19.762  39.489  18.350  1.00 25.99           S  
+HETATM 1610  O   DMS A 101      19.279  37.904  18.777  1.00 23.69           O  
+HETATM 1611  C1  DMS A 101      21.344  39.260  17.532  1.00 24.07           C  
+HETATM 1612  C2  DMS A 101      18.750  40.066  17.029  1.00 20.50           C  
+HETATM 1613  S   DMS A 102      22.157  39.211  12.217  1.00 27.26           S  
+HETATM 1614  O   DMS A 102      20.622  38.811  11.702  1.00 25.51           O  
+HETATM 1615  C1  DMS A 102      22.715  40.764  11.522  1.00 26.00           C  
+HETATM 1616  C2  DMS A 102      22.343  39.515  13.971  1.00 25.46           C  
+TER    1617
+"""
+
+
+def test_read_atom_elements():
+    """
+    If element symbols are provided, they are exposed as the 'elements'
+    topology attribute.
+
+    `Issue 2422 <https://github.com/MDAnalysis/mdanalysis/issues/2422>`_
+    """
+    u = mda.Universe(StringIO(PDB_elements), format='PDB')
+    expected = np.array([
+        'N', 'C', 'C', 'O', 'C', 'C', 'C',
+        'Cu', 'Fe', 'Ca', 'Mg',
+        'S', 'O', 'C', 'C', 'S', 'O', 'C', 'C',
+    ], dtype=object)
+    assert np.all(u.atoms.elements == expected)
+
+
+PDB_elements_partial = """\
+ATOM      1  N   PRO A   1       0.401  40.138  17.790  1.00 23.44             
+ATOM      2  CA  PRO A   1      -0.540  39.114  18.241  1.00 23.00           C  
+ATOM      3  C   PRO A   1      -0.028  38.397  19.491  1.00 22.34             
+ATOM      4  O   PRO A   1       1.136  38.550  19.843  1.00 22.20           O  
+"""
+
+
+def test_read_partial_atom_elements():
+    """
+    If element symbols are provided but some are missing, the symbols are
+    exposed as the 'elements' topology attribute, the missing symbols are
+    defaulted to an empty string, and a warning is issued.
+    """
+    with pytest.warns(UserWarning) as records:
+        u = mda.Universe(StringIO(PDB_elements_partial), format='PDB')
+    # We expect only one warning because of the missing element symbols,
+    # though there may be other warnings that are unrelated.
+    assert len(records) >= 1
+    warning_is_about_elements = [
+        'element' in str(record.message) for record in records
+    ]
+    print([str(record.message) for record in records])
+    assert any(warning_is_about_elements)
+    expected = np.array(['', 'C', '', 'O'], dtype=object)
+    assert np.all(u.atoms.elements == expected)
+
+
+def test_read_no_atom_elements():
+    """
+    If element symbols are not provided, the 'elements' topology attribute
+    is not created.
+
+    `Issue 2422 <https://github.com/MDAnalysis/mdanalysis/issues/2422>`_
+    """
+    u = mda.Universe(PDB_small)
+    with pytest.raises(AttributeError):
+        _ = u.atoms.elements
+
+
+def test_read_no_atom_elements_no_warning(recwarn):
+    """
+    If no element symbols are provided, no waring is issued.
+    """
+    u = mda.Universe(PDB_small)
+    warning_is_about_elements = [
+        'element' in str(record.message) for record in recwarn
+    ]
+    assert not any(warning_is_about_elements)
