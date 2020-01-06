@@ -335,7 +335,7 @@ def test_read_no_atom_elements():
 
 def test_read_no_atom_elements_no_warning(recwarn):
     """
-    If no element symbols are provided, no waring is issued.
+    If no element symbols are provided, no warning is issued.
     """
     u = mda.Universe(PDB_small)
     warning_is_about_elements = [

@@ -44,6 +44,15 @@ from numpy.testing import (assert_equal,
                            assert_almost_equal)
 
 
+@pytest.fixture
+def dummy_universe_without_elements():
+    n_atoms = 4
+    u = mda.Universe.empty(n_atoms=n_atoms, trajectory=True)
+    u.add_TopologyAttr('resnames', ['RES'])
+    u.add_TopologyAttr('names', ['C1', 'O2', 'N3', 'S4'])
+    return u
+
+
 class TestPDBReader(_SingleFrameReader):
     __test__ = True
     def setUp(self):
@@ -930,3 +939,41 @@ def test_partially_missing_cryst():
     assert len(u.atoms) == 3
     assert len(u.trajectory) == 2
     assert_array_almost_equal(u.dimensions, 0.0)
+
+
+def test_write_no_atoms_elements(dummy_universe_without_elements):
+    """
+    If no element symbols are provided, the PDB writer guesses.
+    """
+    destination = StringIO()
+    with mda.coordinates.PDB.PDBWriter(destination) as writer:
+        writer.write(dummy_universe_without_elements.atoms)
+        content = destination.getvalue()
+    element_symbols = [
+        line[76:78].strip()
+        for line in content.splitlines()
+        if line[:6] == 'ATOM  '
+    ]
+    expectation = ['C', 'O', 'N', 'S']
+    assert element_symbols == expectation
+
+
+def test_write_atom_elements(dummy_universe_without_elements):
+    """
+    If element symbols are provided, they are used when writing the file.
+
+    See `Issue 2423 <https://github.com/MDAnalysis/mdanalysis/issues/2423>`_.
+    """
+    expectation = ['S', 'O', '', 'C']
+    dummy_universe_with_elements = dummy_universe_without_elements
+    dummy_universe_with_elements.add_TopologyAttr('elements', expectation)
+    destination = StringIO()
+    with mda.coordinates.PDB.PDBWriter(destination) as writer:
+        writer.write(dummy_universe_without_elements.atoms)
+        content = destination.getvalue()
+    element_symbols = [
+        line[76:78].strip()
+        for line in content.splitlines()
+        if line[:6] == 'ATOM  '
+    ]
+    assert element_symbols == expectation
