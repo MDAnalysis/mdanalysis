@@ -72,6 +72,7 @@ from ..core.topologyattrs import (
     Bonds,
     ChainIDs,
     Atomtypes,
+    Elements,
     ICodes,
     Masses,
     Occupancies,
@@ -93,6 +94,7 @@ DIGITS_UPPER = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 DIGITS_LOWER = DIGITS_UPPER.lower()
 DIGITS_UPPER_VALUES = dict([pair for pair in zip(DIGITS_UPPER, range(36))])
 DIGITS_LOWER_VALUES = dict([pair for pair in zip(DIGITS_LOWER, range(36))])
+
 
 def decode_pure(digits_values, s):
     """Decodes the string s using the digit, value associations for each
@@ -299,6 +301,13 @@ class PDBParser(TopologyReaderBase):
             attrs.append(Atomtypes(atomtypes, guessed=True))
         else:
             attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
+            attrs.append(Elements(np.array(atomtypes, dtype=object)))
+            if not all(atomtypes):
+                n_undefined = sum(not atom_type for atom_type in atomtypes)
+                warnings.warn("The element symbol for some but not all atoms "
+                              "are missing, the symbol is missing for "
+                              "{}/{} atoms."
+                              .format(n_undefined, len(atomtypes)))
 
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))
