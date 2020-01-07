@@ -183,7 +183,19 @@ def change_squash(criteria, to_squash):
     return residx, new_others
 
 
-def squash_identical(values):
+def reduce_singular(values):
+    """Returns the value in an array of length 1, or
+    the tuple of an array with a longer lengh.
+
+    Parameters
+    ----------
+    values: array-like
+        Array to squash
+
+    Returns
+    -------
+    values: tuple or single value
+    """
      if len(values) == 1:
          return values[0]
      else:

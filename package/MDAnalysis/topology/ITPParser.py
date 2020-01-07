@@ -49,7 +49,7 @@ import numpy as np
 
 from ..lib.util import openany
 from . import guessers
-from .base import TopologyReaderBase, change_squash, squash_identical
+from .base import TopologyReaderBase, change_squash, reduce_singular
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -257,7 +257,7 @@ class ITPParser(TopologyReaderBase):
             else:
                 indices, types = [], []
 
-            types = [squash_identical(t) for t in types]
+            types = [reduce_singular(t) for t in types]
             
             tattr = Attr(indices, types=types)
             top.add_TopologyAttr(tattr)
