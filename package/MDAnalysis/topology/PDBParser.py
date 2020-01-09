@@ -303,7 +303,7 @@ class PDBParser(TopologyReaderBase):
             attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
             attrs.append(Elements(np.array(atomtypes, dtype=object)))
             if not all(atomtypes):
-                n_undefined = sum(not atom_type for atom_type in atomtypes)
+                n_undefined = not all(atomtypes)
                 warnings.warn("The element symbol for some but not all atoms "
                               "are missing, the symbol is missing for "
                               "{}/{} atoms."
