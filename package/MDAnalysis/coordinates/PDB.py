@@ -927,6 +927,13 @@ class PDBWriter(base.WriterBase):
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
         atomnames = get_attr('names', 'X')
+        try:
+            elements = getattr(atoms, 'elements')
+        except AttributeError:
+            elements = [
+                guess_atom_element(name.strip())
+                for name in atomnames
+            ]
 
         for i, atom in enumerate(atoms):
             vals = {}
@@ -941,7 +948,7 @@ class PDBWriter(base.WriterBase):
             vals['occupancy'] = occupancies[i]
             vals['tempFactor'] = tempfactors[i]
             vals['segID'] = segids[i][:4]
-            vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
+            vals['element'] = elements[i][:2]
 
             # .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))
