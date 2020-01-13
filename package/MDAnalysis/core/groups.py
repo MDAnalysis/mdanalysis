@@ -1102,16 +1102,22 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter
         """
         atomgroup = self.atoms.unique
         pbc = kwargs.pop('pbc', flags['use_pbc'])
+        unwrap = kwargs.pop('unwrap', False)
+        compound = kwargs.pop('compound', 'group')
+        centroid = self.center_of_geometry(pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound is not 'group':
+            centroid = (centroid * self.masses[:, None]).sum(axis=0) / self.masses.sum()
 
         if pbc:
             x = atomgroup.pack_into_box(inplace=False)
-            centroid = atomgroup.center_of_geometry(pbc=True)
+        elif unwrap:
+            x = self.unwrap(compound=compound, inplace=False)
         else:
             x = atomgroup.positions
-            centroid = atomgroup.center_of_geometry(pbc=False)
 
         R = np.sqrt(np.max(np.sum(np.square(x - centroid), axis=1)))
 
