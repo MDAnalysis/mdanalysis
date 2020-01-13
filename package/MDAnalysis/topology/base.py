@@ -196,7 +196,7 @@ def reduce_singular(values):
     -------
     values: tuple or single value
     """
-     if len(values) == 1:
-         return values[0]
-     else:
-         return tuple(values)
+    if len(values) == 1:
+        return values[0]
+    else:
+        return tuple(values)
