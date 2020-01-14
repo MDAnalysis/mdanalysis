@@ -575,8 +575,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/selection.html#MDAnalysis.core.selection.BackboneSelection">BackboneSelection (class in MDAnalysis.core.selection)</a>
 </li>
-      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.base_size">base_size (MDAnalysis.topology.tpr.utils.TPXUnpacker2020 attribute)</a>
-</li>
       <li><a href="documentation_pages/core/selection.html#MDAnalysis.core.selection.BaseSelection">BaseSelection (class in MDAnalysis.core.selection)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.TpxHeader.bBox">bBox (MDAnalysis.topology.tpr.obj.TpxHeader attribute)</a>
@@ -603,10 +601,10 @@
 </li>
       <li><a href="documentation_pages/lib/util.html#MDAnalysis.lib.util.blocks_of">blocks_of() (in module MDAnalysis.lib.util)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond">Bond (class in MDAnalysis.core.topologyobjects)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.bond">bond (MDAnalysis.core.groups.AtomGroup attribute)</a>
 </li>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.bonded_atoms">bonded_atoms() (MDAnalysis.core.topologyattrs.Bonds method)</a>
@@ -1863,10 +1861,10 @@
 </li>
       <li><a href="documentation_pages/topology/DMSParser.html#MDAnalysis.topology.DMSParser.DMSParser">DMSParser (class in MDAnalysis.topology.DMSParser)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/coordinates/DMS.html#MDAnalysis.coordinates.DMS.DMSReader">DMSReader (class in MDAnalysis.coordinates.DMS)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atom">do_atom() (in module MDAnalysis.topology.tpr.utils)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atoms">do_atoms() (in module MDAnalysis.topology.tpr.utils)</a>
@@ -1901,8 +1899,12 @@
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_rvec">do_rvec() (in module MDAnalysis.topology.tpr.utils)</a>
 </li>
-      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_string">do_string() (in module MDAnalysis.topology.tpr.utils)</a>
+      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.do_string">do_string() (MDAnalysis.topology.tpr.utils.TPXUnpacker method)</a>
+
+      <ul>
+        <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.do_string">(MDAnalysis.topology.tpr.utils.TPXUnpacker2020 method)</a>
 </li>
+      </ul></li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_symstr">do_symstr() (in module MDAnalysis.topology.tpr.utils)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_symtab">do_symtab() (in module MDAnalysis.topology.tpr.utils)</a>
@@ -4203,21 +4205,17 @@
       <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.resample_factor">resample_factor() (MDAnalysis.analysis.density.Density method)</a>
 </li>
       <li><a href="documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.reset">reset() (MDAnalysis.lib.util.NamedStream method)</a>
-
-      <ul>
-        <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.reset">(MDAnalysis.topology.tpr.utils.TPXUnpacker2020 method)</a>
 </li>
-      </ul></li>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resids">Resids (class in MDAnalysis.core.topologyattrs)</a>
 </li>
       <li><a href="documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidSelection">ResidSelection (class in MDAnalysis.core.selection)</a>
 </li>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.Residue">Residue (class in MDAnalysis.core.groups)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr">ResidueAttr (class in MDAnalysis.core.topologyattrs)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup">ResidueGroup (class in MDAnalysis.core.groups)</a>
 </li>
       <li><a href="documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidueNameSelection">ResidueNameSelection (class in MDAnalysis.core.selection)</a>
@@ -4626,6 +4624,8 @@
         <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.Box.size">(MDAnalysis.topology.tpr.obj.Box attribute)</a>
 </li>
       </ul></li>
+      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.TpxHeader.sizeOfTprBody">sizeOfTprBody (MDAnalysis.topology.tpr.obj.TpxHeader attribute)</a>
+</li>
       <li><a href="documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.sizes">sizes() (MDAnalysis.analysis.leaflet.LeafletFinder method)</a>
 </li>
       <li><a href="documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.skip_timestep">skip_timestep (MDAnalysis.coordinates.TRZ.TRZReader attribute)</a>, <a href="documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.skip_timestep">[1]</a>
@@ -5108,21 +5108,9 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.universes">universes (MDAnalysis.analysis.psa.PSAnalysis attribute)</a>
 </li>
-      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_char">unpack_char() (MDAnalysis.topology.tpr.utils.TPXUnpacker2020 method)</a>
-</li>
-      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_double">unpack_double() (MDAnalysis.topology.tpr.utils.TPXUnpacker2020 method)</a>
-</li>
-      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_farray">unpack_farray() (MDAnalysis.topology.tpr.utils.TPXUnpacker2020 method)</a>
-</li>
-      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_float">unpack_float() (MDAnalysis.topology.tpr.utils.TPXUnpacker2020 method)</a>
-</li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_fstring">unpack_fstring() (MDAnalysis.topology.tpr.utils.TPXUnpacker2020 method)</a>
 </li>
-      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_int">unpack_int() (MDAnalysis.topology.tpr.utils.TPXUnpacker2020 method)</a>
-</li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_int64">unpack_int64() (MDAnalysis.topology.tpr.utils.TPXUnpacker method)</a>
-</li>
-      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_string">unpack_string() (MDAnalysis.topology.tpr.utils.TPXUnpacker2020 method)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uchar">unpack_uchar() (MDAnalysis.topology.tpr.utils.TPXUnpacker method)</a>
 
@@ -5130,7 +5118,7 @@
         <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uchar">(MDAnalysis.topology.tpr.utils.TPXUnpacker2020 method)</a>
 </li>
       </ul></li>
-      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uint">unpack_uint() (MDAnalysis.topology.tpr.utils.TPXUnpacker2020 method)</a>
+      <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uint64">unpack_uint64() (MDAnalysis.topology.tpr.utils.TPXUnpacker method)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_ushort">unpack_ushort() (MDAnalysis.topology.tpr.utils.TPXUnpacker method)</a>
 

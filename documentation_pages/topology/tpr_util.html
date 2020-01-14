@@ -1137,8 +1137,8 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.topology.tpr.obj.TpxHeader">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.tpr.obj.</code><code class="descname">TpxHeader</code><span class="sig-paren">(</span><em>ver_str</em>, <em>precision</em>, <em>fver</em>, <em>fgen</em>, <em>file_tag</em>, <em>natoms</em>, <em>ngtc</em>, <em>fep_state</em>, <em>lamb</em>, <em>bIr</em>, <em>bTop</em>, <em>bX</em>, <em>bV</em>, <em>bF</em>, <em>bBox</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create new instance of TpxHeader(ver_str, precision, fver, fgen, file_tag, natoms, ngtc, fep_state, lamb, bIr, bTop, bX, bV, bF, bBox)</p>
+<em class="property">class </em><code class="descclassname">MDAnalysis.topology.tpr.obj.</code><code class="descname">TpxHeader</code><span class="sig-paren">(</span><em>ver_str</em>, <em>precision</em>, <em>fver</em>, <em>fgen</em>, <em>file_tag</em>, <em>natoms</em>, <em>ngtc</em>, <em>fep_state</em>, <em>lamb</em>, <em>bIr</em>, <em>bTop</em>, <em>bX</em>, <em>bV</em>, <em>bF</em>, <em>bBox</em>, <em>sizeOfTprBody</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of TpxHeader(ver_str, precision, fver, fgen, file_tag, natoms, ngtc, fep_state, lamb, bIr, bTop, bX, bV, bF, bBox, sizeOfTprBody)</p>
 <dl class="attribute">
 <dt id="MDAnalysis.topology.tpr.obj.TpxHeader.bBox">
 <code class="descname">bBox</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bBox" title="Permalink to this definition">¶</a></dt>
@@ -1224,6 +1224,12 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.sizeOfTprBody">
+<code class="descname">sizeOfTprBody</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.sizeOfTprBody" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 15</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="MDAnalysis.topology.tpr.obj.TpxHeader.ver_str">
 <code class="descname">ver_str</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.ver_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
@@ -1253,6 +1259,16 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 <em class="property">class </em><code class="descclassname">MDAnalysis.topology.tpr.utils.</code><code class="descname">TPXUnpacker</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extend the standard XDR unpacker for the specificity of TPX files.</p>
 <dl class="method">
+<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker.do_string">
+<code class="descname">do_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker.do_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker.do_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emulate gmx_fio_do_string</p>
+<p>gmx_fio_do_string reads a string from a XDR file. On the contrary to the
+python unpack_string, gmx_fio_do_string reads the size as an unsigned
+integer before reading the actual string.</p>
+<p>See &lt;gromacs-2016-src&gt;/src/gromacs/fileio/gmx_system_xdr.c:454</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_int64">
 <code class="descname">unpack_int64</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker.unpack_int64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_int64" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1260,6 +1276,11 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 <dl class="method">
 <dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uchar">
 <code class="descname">unpack_uchar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker.unpack_uchar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uchar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uint64">
+<code class="descname">unpack_uint64</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker.unpack_uint64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uint64" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1272,45 +1293,19 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 <dl class="class">
 <dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020">
 <em class="property">class </em><code class="descclassname">MDAnalysis.topology.tpr.utils.</code><code class="descname">TPXUnpacker2020</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unpacker for TPX file later than gromacs 2020.</p>
-<p>The body of TPX files is encoded differently since TPX version 119 (gromacs 2020).
-On the contrary to regular XDR files, these TPX files are little-endian, and each
-byte to read in padded to be 4 bytes; so b’«’ in a XDR file becomes
-b’«’ in a TPX body
-since TPX version 119.</p>
-<dl class="attribute">
-<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.base_size">
-<code class="descname">base_size</code><em class="property"> = 4</em><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.base_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Unpacker for TPX files from and later than gromacs 2020.</p>
+<p>A new implementation of the serializer (InMemorySerializer), introduced in
+gromacs 2020, changes le meaning of some types in the file body (the header
+keep using the previous implementation of the serializer).</p>
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.do_string">
+<code class="descname">do_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020.do_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.do_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emulate gmx_fio_do_string</p>
+</dd></dl>
 
 <dl class="classmethod">
 <dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.from_unpacker">
 <em class="property">classmethod </em><code class="descname">from_unpacker</code><span class="sig-paren">(</span><em>unpacker</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020.from_unpacker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.from_unpacker" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.reset">
-<code class="descname">reset</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.reset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_char">
-<code class="descname">unpack_char</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020.unpack_char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_char" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_double">
-<code class="descname">unpack_double</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020.unpack_double"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_double" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_farray">
-<code class="descname">unpack_farray</code><span class="sig-paren">(</span><em>n</em>, <em>unpack_item</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020.unpack_farray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_farray" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_float">
-<code class="descname">unpack_float</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020.unpack_float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_float" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1319,23 +1314,8 @@ since TPX version 119.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_int">
-<code class="descname">unpack_int</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020.unpack_int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_int" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_string">
-<code class="descname">unpack_string</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020.unpack_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_string" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uchar">
 <code class="descname">unpack_uchar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020.unpack_uchar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uchar" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uint">
-<code class="descname">unpack_uint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker2020.unpack_uint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uint" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1439,16 +1419,6 @@ functions as a starting point for your own code.</p>
 <dt id="MDAnalysis.topology.tpr.utils.do_rvec">
 <code class="descclassname">MDAnalysis.topology.tpr.utils.</code><code class="descname">do_rvec</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_rvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_rvec" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.topology.tpr.utils.do_string">
-<code class="descclassname">MDAnalysis.topology.tpr.utils.</code><code class="descname">do_string</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Emulate gmx_fio_do_string</p>
-<p>gmx_fio_do_string reads a string from a XDR file. On the contraty to the
-python unpack_string, gmx_fio_do_string reads the size as an unsigned
-interger before reading the actual string.</p>
-<p>See &lt;gromacs-2016-src&gt;/src/gromacs/fileio/gmx_system_xdr.c:454</p>
-</dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.tpr.utils.do_symstr">

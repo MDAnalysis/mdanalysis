@@ -290,38 +290,43 @@
 <div class="viewcode-block" id="TPXUnpacker.unpack_int64"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_int64">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_int64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;&gt;q&#39;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TPXUnpacker.unpack_uint64"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uint64">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_uint64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;&gt;Q&#39;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="TPXUnpacker.unpack_ushort"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_ushort">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_ushort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_uint</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TPXUnpacker.unpack_uchar"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uchar">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_uchar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TPX files prior to gromacs 2020 (tpx version &lt; 119) use unsigned ints</span>
         <span class="c1"># (4 bytes) instead of unsigned chars.</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;&gt;I&#39;</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;&gt;I&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TPXUnpacker.do_string"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.do_string">[docs]</a>    <span class="k">def</span> <span class="nf">do_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Emulate gmx_fio_do_string</span>
+
+<span class="sd">        gmx_fio_do_string reads a string from a XDR file. On the contrary to the</span>
+<span class="sd">        python unpack_string, gmx_fio_do_string reads the size as an unsigned</span>
+<span class="sd">        integer before reading the actual string.</span>
+
+<span class="sd">        See &lt;gromacs-2016-src&gt;/src/gromacs/fileio/gmx_system_xdr.c:454</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_string</span><span class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="TPXUnpacker2020"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020">[docs]</a><span class="k">class</span> <span class="nc">TPXUnpacker2020</span><span class="p">:</span>
+<div class="viewcode-block" id="TPXUnpacker2020"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020">[docs]</a><span class="k">class</span> <span class="nc">TPXUnpacker2020</span><span class="p">(</span><span class="n">TPXUnpacker</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unpacker for TPX file later than gromacs 2020.</span>
+<span class="sd">    Unpacker for TPX files from and later than gromacs 2020.</span>
 
-<span class="sd">    The body of TPX files is encoded differently since TPX version 119 (gromacs 2020).</span>
-<span class="sd">    On the contrary to regular XDR files, these TPX files are little-endian, and each</span>
-<span class="sd">    byte to read in padded to be 4 bytes; so b&#39;\x02\xAB\x03\x01&#39; in a XDR file becomes</span>
-<span class="sd">    b&#39;\x00\x00\x00\x01\x00\x00\x00\x03\x00\x00\x00\xAB\x00\x00\x00\x02&#39; in a TPX body</span>
-<span class="sd">    since TPX version 119.</span>
+<span class="sd">    A new implementation of the serializer (InMemorySerializer), introduced in</span>
+<span class="sd">    gromacs 2020, changes le meaning of some types in the file body (the header</span>
+<span class="sd">    keep using the previous implementation of the serializer).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">base_size</span> <span class="o">=</span> <span class="mi">4</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-<div class="viewcode-block" id="TPXUnpacker2020.reset"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span> <span class="o">=</span> <span class="n">data</span></div>
-
 <div class="viewcode-block" id="TPXUnpacker2020.from_unpacker"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.from_unpacker">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_unpacker</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">unpacker</span><span class="p">):</span>
         <span class="n">new_unpacker</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">unpacker</span><span class="o">.</span><span class="n">_buf</span><span class="p">)</span>
-        <span class="n">new_unpacker</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">_pos</span>
+        <span class="n">new_unpacker</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">new_unpacker</span><span class="o">.</span><span class="n">_Unpacker__pos</span> <span class="o">=</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">_Unpacker__pos</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">unpacker</span><span class="p">,</span> <span class="s1">&#39;unpack_real&#39;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">==</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">unpack_float</span><span class="p">:</span>
                 <span class="n">new_unpacker</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">=</span> <span class="n">new_unpacker</span><span class="o">.</span><span class="n">unpack_float</span>
@@ -331,70 +336,32 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized precision&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">new_unpacker</span></div>
 
-    <span class="k">def</span> <span class="nf">_unpack_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_size</span><span class="p">,</span> <span class="n">struct_template</span><span class="p">):</span>
-        <span class="n">padded_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_size</span> <span class="o">*</span> <span class="n">item_size</span>
-        <span class="n">start_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span>
-        <span class="n">end_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">start_position</span> <span class="o">+</span> <span class="n">padded_size</span>
-        <span class="n">full_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">[</span><span class="n">start_position</span><span class="p">:</span><span class="n">end_position</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">full_content</span><span class="p">)</span> <span class="o">!=</span> <span class="n">padded_size</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">EOFError</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">full_content</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">base_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">::</span><span class="bp">self</span><span class="o">.</span><span class="n">base_size</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">struct_template</span><span class="p">,</span> <span class="n">content</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_float"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_float">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_float</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;&lt;f&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_double"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_double">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_double</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;&lt;d&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_int"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_int">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_int</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;&lt;i&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_uint"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uint">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_uint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;&lt;I&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_ushort"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_ushort">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_ushort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;&lt;H&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_char"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_char">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_char</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&lt;c&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_uchar"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uchar">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_uchar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&gt;B&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_string"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_string">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">-=</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_size</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unpack_uint</span><span class="p">()</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_fstring</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">value</span></div>
-
 <div class="viewcode-block" id="TPXUnpacker2020.unpack_fstring"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_fstring">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_fstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Size of fstring cannot be negative.&#39;</span><span class="p">)</span>
-        <span class="n">start_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span>
-        <span class="n">end_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">start_position</span> <span class="o">+</span> <span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_size</span>
+        <span class="n">start_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Unpacker__pos</span> <span class="c1"># pylint: disable=access-member-before-definition</span>
+        <span class="n">end_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Unpacker__pos</span> <span class="o">=</span> <span class="n">start_position</span> <span class="o">+</span> <span class="n">n</span>
         <span class="k">if</span> <span class="n">end_position</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">EOFError</span>
-        <span class="n">full_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">[</span><span class="n">start_position</span><span class="p">:</span><span class="n">end_position</span><span class="p">]</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">full_content</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">base_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">::</span><span class="bp">self</span><span class="o">.</span><span class="n">base_size</span><span class="p">]</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">[</span><span class="n">start_position</span><span class="p">:</span><span class="n">end_position</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">content</span></div>
 
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_farray"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_farray">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_farray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">unpack_item</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">unpack_item</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div></div>
+<div class="viewcode-block" id="TPXUnpacker2020.unpack_ushort"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_ushort">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_ushort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># The InMemorySerializer implements ushort according to the XDR standard</span>
+        <span class="c1"># on the contrary to the IO serializer.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;&gt;H&#39;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TPXUnpacker2020.unpack_uchar"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uchar">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_uchar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># The InMemorySerializer implements uchar according to the XDR standard</span>
+        <span class="c1"># on the contrary to the IO serializer.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&gt;B&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="do_string"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_string">[docs]</a><span class="k">def</span> <span class="nf">do_string</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Emulate gmx_fio_do_string</span>
-
-<span class="sd">    gmx_fio_do_string reads a string from a XDR file. On the contraty to the</span>
-<span class="sd">    python unpack_string, gmx_fio_do_string reads the size as an unsigned</span>
-<span class="sd">    interger before reading the actual string.</span>
-
-<span class="sd">    See &lt;gromacs-2016-src&gt;/src/gromacs/fileio/gmx_system_xdr.c:454</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_string</span><span class="p">()</span></div>
+<div class="viewcode-block" id="TPXUnpacker2020.do_string"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.do_string">[docs]</a>    <span class="k">def</span> <span class="nf">do_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Emulate gmx_fio_do_string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_uint64</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_fstring</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="ndo_int"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_int">[docs]</a><span class="k">def</span> <span class="nf">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
@@ -442,7 +409,7 @@
     <span class="sd">&quot;&quot;&quot;this function is now compatible with do_tpxheader in tpxio.cpp</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Last compatibility check with gromacs-2016</span>
-    <span class="n">ver_str</span> <span class="o">=</span> <span class="n">do_string</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># version string e.g. VERSION 4.0.5</span>
+    <span class="n">ver_str</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">do_string</span><span class="p">()</span>  <span class="c1"># version string e.g. VERSION 4.0.5</span>
     <span class="n">precision</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># e.g. 4</span>
     <span class="n">define_unpack_real</span><span class="p">(</span><span class="n">precision</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
     <span class="n">fileVersion</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># version of tpx file</span>
@@ -452,7 +419,7 @@
     <span class="c1"># the tag was, mistakenly, placed before the generation.</span>
     <span class="k">if</span> <span class="mi">77</span> <span class="o">&lt;=</span> <span class="n">fileVersion</span> <span class="o">&lt;=</span> <span class="mi">79</span><span class="p">:</span>
         <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># the value is 8, but haven&#39;t found the</span>
-        <span class="n">file_tag</span> <span class="o">=</span> <span class="n">do_string</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">file_tag</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">do_string</span><span class="p">()</span>
 
     <span class="n">fileGeneration</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span> <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="mi">26</span> <span class="k">else</span> <span class="mi">0</span>  <span class="c1"># generation of tpx file, e.g. 17</span>
 
@@ -461,7 +428,7 @@
     <span class="c1"># tpx_tag from a lower or the same version of gromacs code can be parsed by</span>
     <span class="c1"># the tpxio.c</span>
 
-    <span class="n">file_tag</span> <span class="o">=</span> <span class="n">do_string</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="mi">81</span> <span class="k">else</span> <span class="n">S</span><span class="o">.</span><span class="n">TPX_TAG_RELEASE</span>
+    <span class="n">file_tag</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">do_string</span><span class="p">()</span> <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="mi">81</span> <span class="k">else</span> <span class="n">S</span><span class="o">.</span><span class="n">TPX_TAG_RELEASE</span>
 
     <span class="n">natoms</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># total number of atoms</span>
     <span class="n">ngtc</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span> <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="mi">28</span> <span class="k">else</span> <span class="mi">0</span>  <span class="c1"># number of groups for T-coupling</span>
@@ -483,12 +450,13 @@
     <span class="n">bF</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># has force or not</span>
     <span class="n">bBox</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># has box or not</span>
 
+    <span class="n">sizeOfTprBody</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="n">S</span><span class="o">.</span><span class="n">tpxv_AddSizeField</span> <span class="ow">and</span> <span class="n">fileGeneration</span> <span class="o">&gt;=</span> <span class="mi">27</span><span class="p">:</span>
         <span class="n">sizeOfTprBody</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int64</span><span class="p">()</span>
 
     <span class="n">th</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">TpxHeader</span><span class="p">(</span><span class="n">ver_str</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">fileVersion</span><span class="p">,</span> <span class="n">fileGeneration</span><span class="p">,</span>
                        <span class="n">file_tag</span><span class="p">,</span> <span class="n">natoms</span><span class="p">,</span> <span class="n">ngtc</span><span class="p">,</span> <span class="n">fep_state</span><span class="p">,</span> <span class="n">lamb</span><span class="p">,</span>
-                       <span class="n">bIr</span><span class="p">,</span> <span class="n">bTop</span><span class="p">,</span> <span class="n">bX</span><span class="p">,</span> <span class="n">bV</span><span class="p">,</span> <span class="n">bF</span><span class="p">,</span> <span class="n">bBox</span><span class="p">)</span>
+                       <span class="n">bIr</span><span class="p">,</span> <span class="n">bTop</span><span class="p">,</span> <span class="n">bX</span><span class="p">,</span> <span class="n">bV</span><span class="p">,</span> <span class="n">bF</span><span class="p">,</span> <span class="n">bBox</span><span class="p">,</span> <span class="n">sizeOfTprBody</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">th</span></div>
 
 
@@ -635,7 +603,7 @@
     <span class="n">symtab_nr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># number of symbols</span>
     <span class="n">symtab</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">symtab_nr</span><span class="p">):</span>
-        <span class="n">j</span> <span class="o">=</span> <span class="n">do_string</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">do_string</span><span class="p">()</span>
         <span class="n">symtab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">symtab</span></div>
 
