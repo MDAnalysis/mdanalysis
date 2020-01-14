@@ -31,6 +31,42 @@ charges, chargegroups, masses (guessed if not found), and moltypes.
 Bonds, angles, dihedrals and impropers are also read from
 the file.
 
+
+Preprocessor variables
+----------------------
+
+ITP files are often defined with lines that depend on 
+whether a keyword flag is given. For example:
+
+    #ifndef FLEXIBLE
+
+    [ settles ]
+    ; i     funct   doh     dhh
+    1       1       0.09572 0.15139
+
+    #else
+
+    [ bonds ]
+    ; i     j       funct   length  force.c.
+    1       2       1       0.09572 502416.0 0.09572        502416.0
+    1       3       1       0.09572 502416.0 0.09572        502416.0
+
+    [ angles ]
+    ; i     j       k       funct   angle   force.c.
+    2       1       3       1       104.52  628.02  104.52  628.02
+
+    #endif
+
+Define these preprocessor variables by passing keyword arguments::
+
+    import MDAnalysis as mda
+    from MDAnalysis.tests.datafiles import ITP_tip5p
+
+    u = mda.Universe(ITP_tip5p, FLEXIBLE=True)
+
+These keyword variables are **case-sensitive**. Currently, 
+MDAnalysis only supports boolean variables in if/else conditions.
+
 .. _ITP: http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file
 
 Classes
