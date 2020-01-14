@@ -1131,9 +1131,6 @@ class Universe(object):
         """
         self._add_topology_objects('impropers', values, types=types,
                                  guessed=guessed)
-    
-    
-    
 
     def _delete_topology_objects(self, object_type, values):
         """Delete TopologyObjects from this Universe
