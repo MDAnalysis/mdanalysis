@@ -899,7 +899,7 @@ class Masses(AtomAttr):
         compound = kwargs.pop('compound', 'group')
 
         com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
-        if compound is not 'group':
+        if compound != 'group':
             com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
 
         if pbc:
@@ -1075,7 +1075,7 @@ class Masses(AtomAttr):
         masses = atomgroup.masses
 
         com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
-        if compound is not 'group':
+        if compound != 'group':
             com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
 
         if pbc:
