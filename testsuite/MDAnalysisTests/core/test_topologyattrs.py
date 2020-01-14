@@ -32,7 +32,7 @@ from numpy.testing import (
     assert_almost_equal,
 )
 import pytest
-from MDAnalysisTests.datafiles import PSF, DCD, PRM
+from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import MDAnalysis as mda

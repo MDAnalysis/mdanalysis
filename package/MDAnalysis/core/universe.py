@@ -1015,7 +1015,6 @@ class Universe(object):
 
 
         .. versionadded:: 0.21.0
-
         """
         if all(isinstance(x, TopologyObject) for x in values):
             try:
@@ -1068,10 +1067,7 @@ class Universe(object):
         >>> u.add_bonds(ow_hw1 + ow_hw2 + ow_mw)
 
 
-
         .. versionadded:: 0.21.0
-
-
         """
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
@@ -1112,7 +1108,6 @@ class Universe(object):
 
 
         .. versionadded:: 0.21.0
-
         """
         self._add_topology_objects('dihedrals', values, types=types,
                                  guessed=guessed)
@@ -1133,7 +1128,6 @@ class Universe(object):
 
 
         .. versionadded:: 0.21.0
-
         """
         self._add_topology_objects('impropers', values, types=types,
                                  guessed=guessed)
@@ -1175,7 +1169,6 @@ class Universe(object):
 
 
         .. versionadded:: 0.21.0
-
         """
         self._delete_topology_objects('bonds', values)
         self._cache.pop('fragments', None)
@@ -1191,8 +1184,6 @@ class Universe(object):
 
         
         .. versionadded:: 0.21.0
-
-
         """
         self._delete_topology_objects('angles', values)
     
@@ -1207,8 +1198,6 @@ class Universe(object):
 
         
         .. versionadded:: 0.21.0
-
-
         """
         self._delete_topology_objects('dihedrals', values)
     
@@ -1223,8 +1212,6 @@ class Universe(object):
 
         
         .. versionadded:: 0.21.0
-
-
         """
         self._delete_topology_objects('impropers', values)
 

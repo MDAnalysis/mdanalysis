@@ -639,7 +639,7 @@ class TestAddTopologyAttr(object):
             ('dihedrals', [[1, 2, 3, 1], (3, 1, 5, 2)]),
         )
     )
-    def test_add_symmetric_connection(self, universe, attr, values):
+    def test_add_connection(self, universe, attr, values):
         universe.add_TopologyAttr(attr, values)
         assert hasattr(universe, attr)
         attrgroup = getattr(universe, attr)
@@ -897,4 +897,3 @@ class TestEmpty(object):
         assert len(u.atoms) == 0
         assert len(u.residues) == 0
         assert len(u.segments) == 0
-        
