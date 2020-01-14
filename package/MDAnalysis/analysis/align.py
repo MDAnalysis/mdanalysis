@@ -741,8 +741,7 @@ class AverageStructure(AnalysisBase):
     def __init__(self, mobile, reference=None, select='all', filename=None,
                 weights=None,
                  tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
-                 ref_frame=0, calc_msf=False,
-                 **kwargs):
+                 ref_frame=0, **kwargs):
         """Parameters
         ----------
         mobile : Universe
@@ -783,8 +782,6 @@ class AverageStructure(AnalysisBase):
             the coordinates of `mobile` are *changed in memory*.
         ref_frame : int (optional)
             frame index to select frame from `reference`
-        calc_msf : bool (optional, default False)
-            whether to compute a mean square fluctuation
         verbose : bool (optional)
             Set logger to show more information and show detailed progress of 
             the calculation if set to ``True``; the default is ``False``.
@@ -802,8 +799,6 @@ class AverageStructure(AnalysisBase):
             Average positions
         rmsd : float
             Average RMSD per frame
-        msf: np.ndarray(dtype=float)
-            Mean square fluctuation per atom (only available when ``calc_msf=True``)
         filename : str
             String reflecting the filename of the file where the average 
             structure is written
@@ -857,8 +852,6 @@ class AverageStructure(AnalysisBase):
         self.filename = filename
         self.universe = mda.Merge(self.mobile_atoms)
 
-        self.calculate_msf = calc_msf
-
         natoms = len(self.universe.atoms)
         self.ref_atoms, self.mobile_atoms = get_matching_atoms(
             self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
@@ -868,7 +861,6 @@ class AverageStructure(AnalysisBase):
         # (which just ignores input) and so only the in_memory trajectory is
         # retained
         self._writer = mda.Writer(self.filename, natoms)
-
         self._weights = get_weights(self.ref_atoms, weights)
 
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
@@ -891,9 +883,6 @@ class AverageStructure(AnalysisBase):
         # allocate the array for selection atom coords
         self.positions = np.zeros((len(self.mobile_atoms), 3))
         self.rmsd = 0
-        if self.calculate_msf:
-            self.msf = np.zeros(len(self.mobile_atoms))
-        
 
     def _single_frame(self):
         mobile_com = self.mobile_atoms.center(self._weights)
@@ -903,20 +892,11 @@ class AverageStructure(AnalysisBase):
                              self.mobile,
                              mobile_com,
                              self._ref_com, self._weights)[1]
-        self.positions += self.mobile_atoms.positions
-
-        if self.calculate_msf:
-            disp = self._ref_positions - self.mobile_atoms.positions
-            msf = np.sum(disp**2, axis=1)
-            self.msf += msf
-            
-
+        self.positions += self.mobile_atoms.positions            
 
     def _conclude(self):
         self.positions /= self.n_frames
         self.rmsd /= self.n_frames
-        if self.calculate_msf:
-            self.msf /= self.n_frames
         self.universe.load_new(self.positions.reshape((1, -1, 3)))
         self._writer.write(self.universe.atoms)
         self._writer.close()
