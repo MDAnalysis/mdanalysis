@@ -637,6 +637,7 @@ class TestAddTopologyAttr(object):
             ('bonds', set([(1, 0), (1, 2)])),
             ('angles', [(1, 0, 2), (1, 2, 3), (2, 1, 4)]),
             ('dihedrals', [[1, 2, 3, 1], (3, 1, 5, 2)]),
+            ('impropers', [[1, 2, 3, 1], (3, 1, 5, 2)]),
         )
     )
     def test_add_connection(self, universe, attr, values):
