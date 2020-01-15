@@ -123,8 +123,11 @@ class TOPBase(ParserBase):
     def test_improper_atoms_bonded(self, top):
         vals = top.bonds.values
         for imp in top.impropers.values:
-            for b in ((imp[0], imp[2]), (imp[1], imp[2]), (imp[2], imp[3])):
-                assert (b in vals) or (b[::-1] in vals)
+            forward = ((imp[0], imp[2]), (imp[1], imp[2]), (imp[2], imp[3]))
+            backward = ((imp[0], imp[1]), (imp[1], imp[2]), (imp[1], imp[3]))
+            for a, b in zip(forward, backward):
+                assert ((b in vals) or (b[::-1] in vals) or 
+                        (a in vals) or (a[::-1] in vals))
 
 
 class TestPRMParser(TOPBase):
