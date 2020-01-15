@@ -70,6 +70,7 @@ matrix:
            CODECOV="true"
            NUMPY_VERSION=1.16
            SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
 
     - os: osx
       env: PYTHON_VERSION=3.6
