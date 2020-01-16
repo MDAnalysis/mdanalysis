@@ -35,7 +35,7 @@ If an ITP file is passed without a ``[ molecules ]`` directive, passing
 1 molecule of each defined ``moleculetype``. 
 If a ``[ molecules ]`` section is present, ``infer_system`` is ignored.
 
-If files are included with the `#include` directive, they will also be read. If they are not in the working directory, :ref:`ITPParser will look for them` in the ``include_dir`` directory. By default, this is set to ``include_dir="/usr/local/gromacs/share/gromacs/top/"``.
+If files are included with the `#include` directive, they will also be read. If they are not in the working directory, ITPParser will look for them in the ``include_dir`` directory. By default, this is set to ``include_dir="/usr/local/gromacs/share/gromacs/top/"``.
 Variables can be defined with the `#define` directive in files, or by passing in 
 :ref:`keyword arguments <itp-define-kwargs>`.
 
@@ -68,27 +68,29 @@ Preprocessor variables
 ITP files are often defined with lines that depend on 
 whether a keyword flag is given. For example, this modified TIP5P water file:
 
-    [ moleculetype ]
-    ; molname       nrexcl
-    SOL             2
+    .. code-block:: none
 
-    #ifndef HW1_CHARGE
-        #define HW1_CHARGE 0.241
-    #endif
+        [ moleculetype ]
+        ; molname       nrexcl
+        SOL             2
 
-    #define HW2_CHARGE 0.241
+        #ifndef HW1_CHARGE
+            #define HW1_CHARGE 0.241
+        #endif
 
-    [ atoms ]
-    ; id    at type res nr  residu name     at name         cg nr   charge
-    1       opls_118     1       SOL              OW             1       0
-    2       opls_119     1       SOL             HW1             1       HW1_CHARGE
-    3       opls_119     1       SOL             HW2             1       HW2_CHARGE
-    4       opls_120     1       SOL             LP1             1      -0.241
-    5       opls_120     1       SOL             LP2             1      -0.241
-    #ifdef EXTRA_ATOMS  ; added for keyword tests
-    6       opls_120     1       SOL             LP3             1      -0.241
-    7       opls_120     1       SOL             LP4             1       0.241
-    #endif
+        #define HW2_CHARGE 0.241
+
+        [ atoms ]
+        ; id    at type res nr  residu name     at name         cg nr   charge
+        1       opls_118     1       SOL              OW             1       0
+        2       opls_119     1       SOL             HW1             1       HW1_CHARGE
+        3       opls_119     1       SOL             HW2             1       HW2_CHARGE
+        4       opls_120     1       SOL             LP1             1      -0.241
+        5       opls_120     1       SOL             LP2             1      -0.241
+        #ifdef EXTRA_ATOMS  ; added for keyword tests
+        6       opls_120     1       SOL             LP3             1      -0.241
+        7       opls_120     1       SOL             LP4             1       0.241
+        #endif
 
 
 Define these preprocessor variables by passing keyword arguments. Any arguments that you 
@@ -194,7 +196,7 @@ class GmxTopIterator:
                     continue
 
                 if line.startswith('#include'):
-                    inc = line.split(maxsplit=1)[1][1:-1]
+                    inc = line.split(None, 1)[1][1:-1]
                     for line in self.iter_from_file(inc):
                         yield line
                 elif line.startswith('#define'):
@@ -212,7 +214,7 @@ class GmxTopIterator:
 
     def define(self, line):
         try:
-            _, variable, value = line.split(maxsplit=2)
+            _, variable, value = line.split(None, 2)
         except ValueError:
             _, variable = line.split()
             value = True
