@@ -328,7 +328,7 @@ class TestErrors:
     parser = mda.topology.ITPParser.ITPParser
 
     def test_no_include(self):
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(IOError):
             with self.parser(GMX_TOP_BAD) as p:
                 top = p.parse(include_dir=GMX_DIR)
 

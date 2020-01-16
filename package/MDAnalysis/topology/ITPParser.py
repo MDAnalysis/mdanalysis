@@ -284,7 +284,7 @@ class GmxTopIterator:
         include_path = os.path.join(self.include_dir, path)
         if os.path.exists(include_path):
             return include_path
-        raise FileNotFoundError('Could not find {}'.format(path))
+        raise IOError('Could not find {}'.format(path))
 
 
 class Molecule:
