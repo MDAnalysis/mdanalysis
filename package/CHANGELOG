@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz
+         PicoCentauri, davidercruz, jbarnoud
 
   * 0.21.0
 
@@ -29,7 +29,10 @@ Fixes
   * TopologyGroup no longer reshapes the type, guessed, and order properties
     (Issue #2392)
   * Added test to check for unexpected attributes in TopologyParsers (Issue #2387)
-  * PDB files no longer lose chainIDs when reading files without segIDs (Issue #2389)    
+  * PDB files no longer lose chainIDs when reading files without segIDs (Issue #2389)
+  * The expected frames are made available when a trajectory slice is sliced itself
+    with an incomplete slice and/or with a negative step (Issue #2413)
+  * TXYZ parser uses strings for the atom types like other parsers (Issue #2435)
 
 Enhancements
   * Enhanges exception message when trajectory output file has no extension assigned.
@@ -46,6 +49,7 @@ Enhancements
   * Added ITPParser to parse GROMACS itp topology files (PR #2381)
   * Added match_atoms keyword to analysis.align (Issue #2285, PR #2380)
   * Added wrap/unwrap transformations (PR #2038)
+  * Read TPR files from Gromacs 2020 (Issue #2412 and #2428)
 
 
 Deprecations
