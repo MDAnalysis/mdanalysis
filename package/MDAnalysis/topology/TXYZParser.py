@@ -90,7 +90,7 @@ class TXYZParser(TopologyReaderBase):
 
             atomids = np.zeros(natoms, dtype=np.int)
             names = np.zeros(natoms, dtype=object)
-            types = np.zeros(natoms, dtype=np.int)
+            types = np.zeros(natoms, dtype=object)
             bonds = []
             # Find first atom line, maybe there's box information
             fline = inf.readline()
