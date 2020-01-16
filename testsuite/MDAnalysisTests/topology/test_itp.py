@@ -24,6 +24,7 @@ from __future__ import absolute_import
 import pytest
 
 import MDAnalysis as mda
+from numpy.testing import assert_almost_equal
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
@@ -32,6 +33,10 @@ from MDAnalysisTests.datafiles import (
     ITP_edited,
     ITP_tip5p,
     ITP_spce,
+    GMX_TOP,
+    GMX_DIR,
+    GMX_TOP_BAD,
+    ITP_no_endif
 )
 
 class BaseITP(ParserBase):
@@ -39,7 +44,7 @@ class BaseITP(ParserBase):
     expected_attrs = ['ids', 'names', 'types', 'masses',
                       'charges', 'chargegroups',
                       'resids', 'resnames',
-                      'segids', 'moltypes',
+                      'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
     expected_n_atoms = 63
     expected_n_residues = 10
@@ -139,7 +144,7 @@ class TestITPNoMass(ParserBase):
     expected_attrs = ['ids', 'names', 'types', 'masses',
                       'charges', 'chargegroups',
                       'resids', 'resnames',
-                      'segids', 'moltypes',
+                      'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
     guessed_attrs = ['masses']
     expected_n_atoms = 60
@@ -181,6 +186,16 @@ class TestDifferentDirectivesITP(BaseITP):
 class TestITPNoKeywords(BaseITP):
     """
     Test reading ITP files *without* defined keywords.
+
+    tip5p.itp has the lines:
+
+        #ifndef HW1_CHARGE
+            #define HW1_CHARGE 0.241
+        #endif
+        
+        [ atoms ]
+            1       opls_118     1       SOL              OW             1       0
+            2       opls_119     1       SOL             HW1             1       HW1_CHARGE
     """
     ref_filename = ITP_tip5p
     expected_n_atoms = 5
@@ -206,6 +221,10 @@ class TestITPNoKeywords(BaseITP):
     def test_angles_values(self, top):
         assert (1, 0, 2) in top.angles.values
 
+    def test_defines(self, top):
+        assert_almost_equal(top.charges.values[1], 0.241)
+        assert_almost_equal(top.charges.values[2], 0.241)
+
     
 class TestITPKeywords(TestITPNoKeywords):
     """
@@ -216,16 +235,24 @@ class TestITPKeywords(TestITPNoKeywords):
 
     @pytest.fixture
     def universe(self, filename):
-        return mda.Universe(filename, FLEXIBLE=True, EXTRA_ATOMS=True)
+        return mda.Universe(filename, FLEXIBLE=True, EXTRA_ATOMS=True, 
+                            HW1_CHARGE=1, HW2_CHARGE=3)
 
     @pytest.fixture()
     def top(self, filename):
         with self.parser(filename) as p:
-            yield p.parse(FLEXIBLE=True, EXTRA_ATOMS=True)
+            yield p.parse(FLEXIBLE=True, EXTRA_ATOMS=True, 
+                          HW1_CHARGE=1, HW2_CHARGE=3)
 
     def test_whether_settles_types(self, universe):
         for param in list(universe.bonds) + list(universe.angles):
             assert param.type == 1
+
+    def test_defines(self, top):
+        assert_almost_equal(top.charges.values[1], 1)
+
+    def test_kwargs_overrides_defines(self, top):
+        assert_almost_equal(top.charges.values[2], 3)
 
     
 
@@ -254,3 +281,47 @@ class TestNestedIfs(BaseITP):
     
     def test_heavy_atom(self, universe):
         assert universe.atoms[5].mass > 40
+
+class TestReadTop(BaseITP):
+    """
+    Test reading top files
+    """
+
+    ref_filename = GMX_TOP
+
+    expected_n_atoms = 135
+    expected_n_residues = 23
+    expected_n_segments = 5
+
+    expected_n_bonds = 130
+    expected_n_angles = 185
+    expected_n_dihedrals = 60
+    expected_n_impropers = 58
+
+    @pytest.fixture()
+    def top(self, filename):
+        with self.parser(filename) as p:
+            yield p.parse(include_dir=GMX_DIR)
+
+    def test_output(self, filename):
+        """Testing the call signature"""
+        with self.parser(filename) as p:
+            top = p.parse(include_dir=GMX_DIR)
+
+    def test_creates_universe(self, filename):
+        """Check that Universe works with this Parser"""
+        u = mda.Universe(filename, topology_format='ITP', include_dir=GMX_DIR)
+
+class TestErrors:
+
+    parser = mda.topology.ITPParser.ITPParser
+
+    def test_no_include(self):
+        with pytest.raises(FileNotFoundError):
+            with self.parser(GMX_TOP_BAD) as p:
+                top = p.parse(include_dir=GMX_DIR)
+
+    def test_missing_endif(self):
+        with pytest.raises(IOError):
+            with self.parser(ITP_no_endif) as p:
+                top = p.parse(include_dir=GMX_DIR)

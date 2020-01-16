@@ -25,49 +25,93 @@
 ITP topology parser
 ===================
 
-Reads a GROMACS ITP_ file to build the system. The topology will
+Reads a GROMACS ITP_ or TOP_ file to build the system. The topology will
 contain atom IDs, segids, residue IDs, residue names, atom names, atom types,
-charges, chargegroups, masses (guessed if not found), and moltypes. 
-Bonds, angles, dihedrals and impropers are also read from
-the file.
+charges, chargegroups, masses (guessed if not found), moltypes, and molnums. 
+Bonds, angles, dihedrals and impropers are also read from the file.
 
+If an ITP file is passed without a ``[ molecules ]`` directive, passing 
+``infer_system=True`` (the default option) will create a Universe with 
+1 molecule of each defined ``moleculetype``. 
+If a ``[ molecules ]`` section is present, ``infer_system`` is ignored.
+
+If files are included with the `#include` directive, they will also be read. If they are not in the working directory, :ref:`ITPParser will look for them` in the ``include_dir`` directory. By default, this is set to ``include_dir="/usr/local/gromacs/share/gromacs/top/"``.
+Variables can be defined with the `#define` directive in files, or by passing in 
+:ref:`keyword arguments <itp-define-kwargs>`.
+
+Examples
+--------
+
+    ::
+        import MDAnalysis as mda
+        from MDAnalysis.tests.datafiles import ITP_tip5p
+
+        #  override charge of HW2 atom (defined in file as HW2_CHARGE)
+        u = mda.Universe(ITP_tip5p, HW2_CHARGE=2, infer_system=True)
+
+    .. note::
+
+        AMBER also uses topology files with the .top extension. To use ITPParser
+        to read GROMACS top files, pass ``topology_format='ITP'``.
+
+        ::
+
+            import MDAnalysis as mda
+            u = mda.Universe('topol.top', topology_format='ITP')
+
+
+
+.. _itp-define-kwargs:
 
 Preprocessor variables
 ----------------------
 
 ITP files are often defined with lines that depend on 
-whether a keyword flag is given. For example:
+whether a keyword flag is given. For example, this modified TIP5P water file:
 
-    #ifndef FLEXIBLE
+    [ moleculetype ]
+    ; molname       nrexcl
+    SOL             2
 
-    [ settles ]
-    ; i     funct   doh     dhh
-    1       1       0.09572 0.15139
-
-    #else
-
-    [ bonds ]
-    ; i     j       funct   length  force.c.
-    1       2       1       0.09572 502416.0 0.09572        502416.0
-    1       3       1       0.09572 502416.0 0.09572        502416.0
-
-    [ angles ]
-    ; i     j       k       funct   angle   force.c.
-    2       1       3       1       104.52  628.02  104.52  628.02
-
+    #ifndef HW1_CHARGE
+        #define HW1_CHARGE 0.241
     #endif
 
-Define these preprocessor variables by passing keyword arguments::
+    #define HW2_CHARGE 0.241
+
+    [ atoms ]
+    ; id    at type res nr  residu name     at name         cg nr   charge
+    1       opls_118     1       SOL              OW             1       0
+    2       opls_119     1       SOL             HW1             1       HW1_CHARGE
+    3       opls_119     1       SOL             HW2             1       HW2_CHARGE
+    4       opls_120     1       SOL             LP1             1      -0.241
+    5       opls_120     1       SOL             LP2             1      -0.241
+    #ifdef EXTRA_ATOMS  ; added for keyword tests
+    6       opls_120     1       SOL             LP3             1      -0.241
+    7       opls_120     1       SOL             LP4             1       0.241
+    #endif
+
+
+Define these preprocessor variables by passing keyword arguments. Any arguments that you 
+pass in *override* any variables defined in the file. For example, the universe below 
+will have charges of 3 for the HW1 and HW2 atoms::
 
     import MDAnalysis as mda
     from MDAnalysis.tests.datafiles import ITP_tip5p
 
-    u = mda.Universe(ITP_tip5p, FLEXIBLE=True)
+    u = mda.Universe(ITP_tip5p, EXTRA_ATOMS=True, HW1_CHARGE=3, HW2_CHARGE=3)
 
-These keyword variables are **case-sensitive**. Currently, 
-MDAnalysis only supports boolean variables in if/else conditions.
+These keyword variables are **case-sensitive**. Note that if you set keywords to 
+``False`` or ``None``, they will be treated as if they are not defined in #ifdef conditions.
+
+For example, the universe below will only have 5 atoms. ::
+
+    u = mda.Universe(ITP_tip5p, EXTRA_ATOMS=False)
+
 
 .. _ITP: http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file
+
+.. _TOP: http://manual.gromacs.org/current/reference-manual/file-formats.html#top
 
 Classes
 -------
@@ -79,6 +123,7 @@ Classes
 """
 from __future__ import absolute_import
 from collections import defaultdict
+from pathlib import Path
 
 import logging
 import numpy as np
@@ -92,6 +137,7 @@ from ..core.topologyattrs import (
     Atomtypes,
     Masses,
     Moltypes,
+    Molnums,
     Charges,
     Resids,
     Resnums,
@@ -110,8 +156,286 @@ class Chargegroups(AtomAttr):
     attrname = 'chargegroups'
     singular = 'chargegroup'
 
+class GmxTopIterator:
+    """
+    Iterate over the lines of a TOP/ITP file and its included files
+
+    The iterator strips comments, deals with #ifdef and #ifndef conditions,
+    and substitutes defined variables.
+
+    Defined variables passed into ``__init__`` *override* anything defined in the file.
+    """
+
+    def __init__(self, path, include_dir, defines):
+        self._original_defines = defines
+        self.defines = dict(**defines)  # copy
+        self.include_dir = Path(include_dir)
+        self.file_stack = [path]
+        self.if_stack = []
+        self.starting_file = path
+
+    @property
+    def current_file(self):
+        return self.file_stack[-1]
+
+    def __iter__(self):
+        for line in self.iter_from_file(self.starting_file):
+            yield line
+
+    def iter_from_file(self, path):
+        found_path = self.find_path(path)
+        with openany(found_path) as infile:
+            self.file_stack.append(infile)
+
+            for line in self.clean_file_lines(infile):
+                if self.if_stack:
+                    while self.if_stack:
+                        func = self.if_stack.pop()
+                        func(infile)
+                    continue
+
+                if line.startswith('#include'):
+                    inc = line.split(maxsplit=1)[1][1:-1]
+                    for line in self.iter_from_file(inc):
+                        yield line
+                elif line.startswith('#define'):
+                    self.define(line)
+                elif line.startswith('#if'):
+                    self.do_if(line, infile)
+                elif line.startswith('#else'):
+                    self.if_stack.append(self.skip_until_endif)
+                elif line.startswith('#'):  # ignore #if and others
+                    pass
+                elif line:
+                    line = self.substitute_defined(line)
+                    yield line
+            self.file_stack.pop()
+
+    def define(self, line):
+        try:
+            _, variable, value = line.split(maxsplit=2)
+        except ValueError:
+            _, variable = line.split()
+            value = True
+        
+        # kwargs overrides files
+        if variable not in self._original_defines:
+            self.defines[variable] = value
+
+    def substitute_defined(self, line):
+        split = line.split()
+        for k, v in self.defines.items():
+            if k in split:
+                split[split.index(k)] = str(v)
+        line = ' '.join(split)
+        return line
+
+    def clean_file_lines(self, infile):
+        for line in infile:
+            line = line.split(';')[0].strip()  # ; is for comments
+            yield line
+
+    def do_if(self, line, infile):
+        ifdef, variable = line.split()
+        if ifdef == '#ifdef':
+            if self.defines.get(variable) in (False, None):
+                self.if_stack.append(self.skip_until_else)
+        elif ifdef == '#ifndef':
+            if self.defines.get(variable) not in (False, None):
+                self.if_stack.append(self.skip_until_else)
+
+    def skip_until_else(self, infile):
+        """Skip lines until #if condition ends"""
+        for line in self.clean_file_lines(infile):
+            if line.startswith('#if'):
+                self.if_stack.append(self.skip_until_endif)
+            elif line.startswith('#endif') or line.startswith('#else'):
+                break
+        else:
+            raise IOError('Missing #endif in {}'.format(self.current_file))
+    
+    def skip_until_endif(self, infile):
+        """Skip lines until #endif"""
+        for line in self.clean_file_lines(infile):
+            if line.startswith('#if'):
+                self.if_stack.append(self.skip_until_endif)
+            elif line.startswith('#endif'):
+                break
+        else:
+            raise IOError('Missing #endif in {}'.format(self.current_file))
+
+    def find_path(self, path):
+        try:
+            # in case of TextIOWrapper
+            current_file = self.current_file.name
+        except AttributeError:
+            current_file = self.current_file
+
+        try:
+            path = path.name
+        except AttributeError:
+            pass
+
+        current_path = Path(current_file)
+        dir_path = current_path.parent / path
+        if dir_path.exists():
+            return str(dir_path)
+        include_path = self.include_dir / path
+        if include_path.exists():
+            return str(include_path)
+        raise FileNotFoundError('Could not find {}'.format(path))
+
+
+class Molecule:
+    """Store moleculetype-specific attributes"""
+
+    def __init__(self, name):
+        self.name = name
+        self.ids = []
+        self.types = []
+        self.resids = []
+        self.resnames = []
+        self.names = []
+        self.chargegroups = []
+        self.charges = []
+        self.masses = []
+
+        self.bonds = defaultdict(list)
+        self.angles = defaultdict(list)
+        self.dihedrals = defaultdict(list)
+        self.impropers = defaultdict(list)
+
+        self.parsers = {
+            'atoms': self.parse_atoms,
+            'bonds': self.parse_bonds,
+            'angles': self.parse_angles,
+            'dihedrals': self.parse_dihedrals,
+            'constraints': self.parse_constraints,
+            'settles': self.parse_settles
+        }
+
+        self.resolved_residue_attrs = False
+
+    @property
+    def atom_order(self):
+        return [self.ids, self.types, self.resids, self.resnames, 
+                self.names, self.chargegroups, self.charges, 
+                self.masses]
+
+    @property
+    def params(self):
+        return [self.bonds, self.angles, self.dihedrals, self.impropers]
+    
+    def parse_atoms(self, line):
+        values = line.split()
+        for lst in self.atom_order:
+            try:
+                lst.append(values.pop(0))
+            except IndexError: # ran out of values
+                lst.append('')
+    
+    def parse_bonds(self, line):
+        self.add_param(line, self.bonds, n_funct=2, 
+                       funct_values=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    
+    def parse_angles(self, line):
+        self.add_param(line, self.angles, n_funct=3, 
+                        funct_values=(1, 2, 3, 4, 5, 6, 8, 10))
+    
+    def parse_dihedrals(self, line):
+        dih = self.add_param(line, self.dihedrals, n_funct=4, 
+                             funct_values=(1, 3, 5, 8, 9, 10, 11))
+        if not dih:
+            self.add_param(line, self.impropers, n_funct=4,
+                           funct_values=(2, 4))
+
+    def parse_constraints(self, line):
+        self.add_param(line, self.bonds, n_funct=2, funct_values=(1, 2))
+
+    def parse_settles(self, line):
+        # [ settles ] is a triangular constraint for 
+        # water molecules.
+        # In ITP files this is defined with only the 
+        # oxygen atom index. The next two atoms are 
+        # assumed to be hydrogens. Unlike TPRParser,  
+        # the manual only lists this format (as of 2019).
+        # These are treated as 2 bonds and 1 angle.
+        oxygen, funct, doh, dhh = line.split()
+        try:
+            base = self.index_ids([oxygen])[0]
+        except ValueError:
+            pass
+        else:
+            self.bonds[(base, base+1)].append("settles")
+            self.bonds[(base, base+2)].append("settles")
+            self.angles[(base+1, base, base+2)].append("settles")
+
+    def resolve_residue_attrs(self):
+        """Figure out residue borders and assign moltypes and molnums"""
+        resids = np.array(self.resids, dtype=np.int32)
+        resnames = np.array(self.resnames, dtype=object)
+        self.residx, (self.resids, resnames) = change_squash((resids,), (resids, resnames))
+        self.resnames = list(resnames)
+        self.moltypes = [self.name] * len(self.resids)
+        self.molnums = np.array([1] * len(self.resids))
+
+        self.resolved_residue_attrs = True
+
+
+    def shift_indices(self, n_atoms=0, n_residues=0, n_chargegroups=0, n_mols=0):
+        """
+        Get attributes ready for adding onto a larger topology.
+
+        Shifts atom indices, residue indices, molnums, and chargegroup numbers.
+        """
+        if not self.resolved_residue_attrs:
+            self.resolve_residue_attrs()
+
+        self.resids = list(np.array(self.resids)+n_residues)
+        self.residx = list(np.array(self.residx)+n_residues)
+        self.molnums = list(np.array(self.molnums) + n_mols)
+        self.ids = list(np.array(self.ids, dtype=int) + n_atoms)
+
+        try:
+            cg = np.array(self.chargegroups, dtype=int)
+        except ValueError:
+            cg = np.arange(1, len(self.chargegroups)+1)
+        self.chargegroups = list(cg+n_chargegroups)
+
+        new_params = []
+        for p in self.params:
+            new = {}
+            for indices, values in p.items():
+                new[tuple(np.array(indices)+n_atoms)] = values
+            new_params.append(new)
+        
+        self.bonds, self.angles, self.dihedrals, self.impropers = new_params
+        
+
+    def add_param(self, line, container, n_funct=2, funct_values=[]):
+        """Add defined GROMACS directive lines, only if the funct is in ``funct_values``"""
+        values = line.split()
+        funct = int(values[n_funct])
+        if funct in funct_values:
+            try:
+                ids = self.index_ids(values[:n_funct])
+                container[ids].append(funct)
+            except ValueError:
+                pass
+            return True
+        else:
+            return False
+
+    def index_ids(self, values):
+        """
+        Get indices of atom ids (list of strings)
+        """
+        return tuple(map(self.ids.index, values))
+
+
+
 class ITPParser(TopologyReaderBase):
-    """Read topology information from a GROMACS ITP_ file.
+    """Read topology information from a GROMACS ITP_ or TOP_ file.
 
     Creates a Topology with the following Attributes:
     - ids
@@ -119,174 +443,124 @@ class ITPParser(TopologyReaderBase):
     - types
     - masses
     - charges
+    - chargegroups
     - resids
     - resnames
     - segids
     - moltypes
+    - molnums
     - bonds
     - angles
     - dihedrals
     - impropers
 
     .. _ITP: http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file
+    .. _TOP: http://manual.gromacs.org/current/reference-manual/file-formats.html#top
     """
     format = 'ITP'
 
-    def parse(self, **kwargs):
+    def parse(self, include_dir='/usr/local/gromacs/share/gromacs/top/',
+              infer_system=True,
+              **kwargs):
         """Parse ITP file into Topology
+
+        Parameters
+        ----------
+        include_dir: str, optional
+            A directory in which to look for other files included
+            from the original file, if the files are not first found
+            in the current directory. 
+            Default: "/usr/local/gromacs/share/gromacs/top/"
+
+        infer_system: bool, optional (default True)
+            If a ``[ molecules ]`` directive is not found within the the
+            topology file, create a Topology with one of every 
+            ``[ moleculetype ]`` defined. If a ``[ molecules ]`` directive is 
+            found, this keyword is ignored.
 
         Returns
         -------
         MDAnalysis *Topology* object
         """
-        self.ids = []
-        types = []
-        resids = []
-        resnames = []
-        names = []
-        chargegroups = []
-        charges = []
-        masses = []
 
-        atom_lists = [self.ids, types, resids, resnames, names, chargegroups, charges, masses]
-
-        bonds = defaultdict(list)
-        angles = defaultdict(list)
-        dihedrals = defaultdict(list)
-        impropers = defaultdict(list)
-
-        segid = 'SYSTEM'
-        molnum = 1
-
-        section = None
-        if_queue = []
+        self.molecules = {}
+        self._molecules = []  # for order
+        self.current_mol = None
+        self.parser = self._pass
+        self.system_molecules = []        
 
         # Open and check itp validity
-        with openany(self.filename) as self.itpfile:
-            for line in self.itpfile:
-                line = line.split(';')[0].strip()  # ; is for comments
-                if not line:  # Skip line if empty
-                    continue
-
-                if line.startswith('#ifdef'):
-                    kw = line.split()[1]
-                    if kwargs.get(kw):
-                        continue
-                    else:
-                        self.skip_if()
-
-                if line.startswith('#ifndef'):
-                    kw = line.split()[1]
-                    if not kwargs.get(kw):
-                        continue
-                    else:
-                        self.skip_if()
-                
-                # Only gets triggered when if condition is true
-                if line.startswith('#else'):
-                    self.skip_else()
-
-                if line.startswith('#'): #ignore include, endif, etc
-                    continue
-                
+        with openany(self.filename) as itpfile:
+            self.lines = GmxTopIterator(itpfile, include_dir, kwargs)
+            for line in self.lines:
                 if '[' in line and ']' in line:
                     section = line.split('[')[1].split(']')[0].strip()
-                    continue
 
-                if not section:
-                    continue
-                
-                if section == 'moleculetype':
-                    segid = line.split()[0]
+                    if section == 'moleculetype':
+                        self.parser = self.parse_moleculetype
 
-                # atoms
-                elif section == 'atoms':
-                    values = line.split()
-                    for lst in atom_lists:
-                        try:
-                            lst.append(values.pop(0))
-                        except IndexError: # ran out of values
-                            lst.append('')
-                
-                elif section == 'bonds':
-                    self.add_param(line, bonds, n_funct=2, funct_values=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
-                
-                elif section == 'constraints':
-                    self.add_param(line, bonds, n_funct=2, funct_values=(1, 2))
-
-                elif section == 'settles':
-                    # [ settles ] is a triangular constraint for 
-                    # water molecules.
-                    # In ITP files this is defined with only the 
-                    # oxygen atom index. The next two atoms are 
-                    # assumed to be hydrogens. Unlike TPRParser,  
-                    # the manual only lists this format (as of 2019).
-                    # These are treated as 2 bonds and 1 angle.
-                    oxygen, funct, doh, dhh = line.split()
-                    try:
-                        base = self.index_ids([oxygen])[0]
-                    except ValueError:
-                        pass
-                    else:
-                        bonds[(base, base+1)].append("settles")
-                        bonds[(base, base+2)].append("settles")
-                        angles[(base+1, base, base+2)].append("settles")
-                
-                elif section == 'angles':
-                    self.add_param(line, angles, n_funct=3, funct_values=(1, 2, 3, 4, 5, 6, 8, 10))
-                
-                elif section == 'dihedrals':
-                    # funct == 1: proper
-                    # funct == 2: improper
-
-                    self.add_param(line, dihedrals, n_funct=4, funct_values=(1, 3, 5, 8, 9, 10, 11))
-                    self.add_param(line, impropers, n_funct=4, funct_values=(2, 4))
+                    elif section == 'molecules':
+                        self.parser = self.parse_molecules
                     
+                    elif self.current_mol:
+                        self.parser = self.current_mol.parsers.get(section, self._pass)
+                    
+                    else:
+                        self.parser = self._pass
+                
+                else:
+                    self.parser(line)
+
+        if not self.system_molecules and infer_system:
+            self.system_molecules = [x.name for x in self._molecules]
+
+        self.build_system()
         
         attrs = []
-        
         # atom stuff
         for vals, Attr, dtype in (
             (self.ids, Atomids, np.int32),
-            (types, Atomtypes, object),
-            (names, Atomnames, object),
-            (chargegroups, Chargegroups, np.int32),
-            (charges, Charges, np.float32),
+            (self.types, Atomtypes, object),
+            (self.names, Atomnames, object),
+            (self.chargegroups, Chargegroups, np.int32),
+            (self.charges, Charges, np.float32),
         ):
             if all(vals):
                 attrs.append(Attr(np.array(vals, dtype=dtype)))
         
-        if not all(masses):
-            masses = guessers.guess_masses(types)
+        if not all(self.masses):
+            masses = guessers.guess_masses(self.types)
             attrs.append(Masses(masses, guessed=True))
         else:
-            attrs.append(Masses(np.array(masses, dtype=np.float64)))
+            attrs.append(Masses(np.array(self.masses, dtype=np.float64)))
 
-        resids = np.array(resids, dtype=np.int32)
-        resnames = np.array(resnames, dtype=object)
-        residx, (resids, resnames) = change_squash((resids,), (resids, resnames))
+        # residue stuff
+        resids = np.array(self.resids, dtype=np.int32)
+        resnames = np.array(self.resnames, dtype=object)
+        molnums = np.array(self.molnums, dtype=np.int32)
         attrs.append(Resids(resids))
         attrs.append(Resnums(resids.copy()))
         attrs.append(Resnames(resnames))
+        attrs.append(Moltypes(np.array(self.moltypes, dtype=object)))
+        attrs.append(Molnums(molnums))
         
         n_atoms = len(self.ids)
-        n_residues = len(resids)
-        n_segments = 1
-        attrs.append(Segids(np.array([segid], dtype=object)))
-        attrs.append(Moltypes(np.array([segid]*n_residues)))
-        segidx = None
+        n_residues = len(self.resids)
+        n_segments = len(self.system_molecules)
+        attrs.append(Segids(np.array(self.system_molecules, dtype=object)))
+        segidx = molnums-1
 
         top = Topology(n_atoms, n_residues, n_segments,
                        attrs=attrs,
-                       atom_resindex=residx,
+                       atom_resindex=self.residx,
                        residue_segindex=segidx)
-        
-        # connectivity
+
+        # connectivity stuff
         for dct, Attr, attrname in (
-            (bonds, Bonds, 'bonds'),
-            (angles, Angles, 'angles'),
-            (dihedrals, Dihedrals, 'dihedrals'),
-            (impropers, Impropers, 'impropers')
+            (self.bonds, Bonds, 'bonds'),
+            (self.angles, Angles, 'angles'),
+            (self.dihedrals, Dihedrals, 'dihedrals'),
+            (self.impropers, Impropers, 'impropers')
         ):
             if dct:
                 indices, types = zip(*list(dct.items()))
@@ -299,38 +573,58 @@ class ITPParser(TopologyReaderBase):
             top.add_TopologyAttr(tattr)
 
         return top
-    
-    def skip_if(self):
-        """
-        Skip lines in if condition, *inclusive* of the #endif or #else.
-        """
-        line = next(self.itpfile)
-        while not line.startswith('#endif') and not line.startswith('#else'):
-            line = next(self.itpfile)
-        return line
-
-    def skip_else(self):
-        """
-        Skip lines in else condition, *inclusive* of #endif.
-        """
-        line = next(self.itpfile)
-        while not line.startswith('#endif'):
-            line = next(self.itpfile)
-        return line
-
-    def index_ids(self, values):
-        """
-        Get indices of atom ids (list of strings)
-        """
-        return tuple(map(self.ids.index, values))
-    
-    def add_param(self, line, container, n_funct=2, funct_values=[]):
-        values = line.split()
-        funct = int(values[n_funct])
-        if funct in funct_values:
-            try:
-                container[self.index_ids(values[:n_funct])].append(funct)
-            except ValueError:
-                pass
 
 
+    def _pass(self, line):
+        pass
+
+    def parse_moleculetype(self, line):
+        name = line.split()[0]
+        self.current_mol = self.molecules[name] = Molecule(name)
+        self._molecules.append(self.current_mol)
+
+    def parse_molecules(self, line):
+        name, n_mol = line.split()
+        self.system_molecules.extend([name]*int(n_mol))
+
+    def build_system(self):
+        self.ids = []
+        self.types = []
+        self.resids = []
+        self.resnames = []
+        self.names = []
+        self.chargegroups = []
+        self.charges = []
+        self.masses = []
+        self.moltypes = []
+        self.molnums = []
+        self.residx = []
+
+        self.atom_order = [self.ids, self.types, self.resids, self.resnames, 
+                           self.names, self.chargegroups, self.charges, 
+                           self.masses]
+
+        self.bonds = defaultdict(list)
+        self.angles = defaultdict(list)
+        self.dihedrals = defaultdict(list)
+        self.impropers = defaultdict(list)
+
+        self.params = [self.bonds, self.angles, self.dihedrals, self.impropers]
+
+        for i, moltype in enumerate(self.system_molecules):
+            mol = self.molecules[moltype]
+            n_atoms = len(self.ids)
+            n_res = len(self.resids), 
+            n_cg = len(self.chargegroups)
+
+            mol.shift_indices(n_atoms, n_res, n_cg, i)
+
+            for system_attr, mol_attr in zip(self.atom_order, mol.atom_order):
+                system_attr.extend(mol_attr)
+
+            self.moltypes.extend(mol.moltypes)
+            self.molnums.extend(mol.molnums)
+            self.residx.extend(mol.residx)
+
+            for system_param, mol_param in zip(self.params, mol.params):
+                system_param.update(mol_param)

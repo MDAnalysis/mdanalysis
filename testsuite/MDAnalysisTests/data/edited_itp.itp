@@ -14,6 +14,10 @@
 ;   Force field was read from the standard GROMACS share directory.
 ;
 
+#ifndef NL_CHARGE
+  #define NL_CHARGE -0.66
+#endif
+
 [ moleculetype ]
 ; Name            nrexcl
 Protein             3
@@ -21,7 +25,7 @@ Protein             3
 [ atoms ]
 ;   nr       type  resnr residue  atom   cgnr     charge       mass  typeB    chargeB      massB
 ; residue   2 ALA rtp ALA  q  0.0
-     1         NL      2    ALA      N      1      -0.66    14.0067   ; qtot -0.66
+     1         NL      2    ALA      N      1      NL_CHARGE    14.0067   ; qtot -0.66
      2          H      2    ALA     H1      1       0.44      1.008   ; qtot -0.22
      3          H      2    ALA     H2      1       0.44      1.008   ; qtot 0.22
      4        CH1      2    ALA     CA      2      -0.22     13.019   ; qtot 0
