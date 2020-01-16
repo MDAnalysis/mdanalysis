@@ -24,7 +24,8 @@ from __future__ import absolute_import
 import pytest
 
 import MDAnalysis as mda
-from numpy.testing import assert_almost_equal
+import numpy as np
+from numpy.testing import assert_almost_equal, assert_equal
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
@@ -303,6 +304,10 @@ class TestReadTop(BaseITP):
         with self.parser(filename) as p:
             yield p.parse(include_dir=GMX_DIR)
 
+    @pytest.fixture()
+    def universe(self, filename):
+        return mda.Universe(filename, topology_format='ITP', include_dir=GMX_DIR)
+
     def test_output(self, filename):
         """Testing the call signature"""
         with self.parser(filename) as p:
@@ -311,6 +316,12 @@ class TestReadTop(BaseITP):
     def test_creates_universe(self, filename):
         """Check that Universe works with this Parser"""
         u = mda.Universe(filename, topology_format='ITP', include_dir=GMX_DIR)
+
+    def test_sequential(self, universe):
+        resids = np.array(list(range(2, 12)) + list(range(13, 23)))
+        assert_equal(universe.residues.resids[:20], resids)
+        assert_equal(universe.residues.resindices, np.arange(self.expected_n_residues))
+        assert_equal(universe.atoms.chargegroups[-1], 63)
 
 class TestErrors:
 

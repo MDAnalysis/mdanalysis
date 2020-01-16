@@ -383,25 +383,41 @@ class Molecule:
         self.resolved_residue_attrs = True
 
 
-    def shift_indices(self, n_atoms=0, n_residues=0, n_chargegroups=0, n_mols=0):
+    def shift_indices(self, atomid=0, resid=0, molnum=0, cgnr=0, n_res=0, n_atoms=0):
         """
         Get attributes ready for adding onto a larger topology.
 
         Shifts atom indices, residue indices, molnums, and chargegroup numbers.
+
+        Returns
+        -------
+        atom_attrs: list of lists
+            attributes in the [ atoms ] section
+
+        new_params: list of dicts
+            Bonds, angles, dihedrals, impropers as dicts of shape {indices: parameters}
+
+        molnums: list
+        moltypes: list
+        residx: list
         """
         if not self.resolved_residue_attrs:
             self.resolve_residue_attrs()
 
-        self.resids = list(np.array(self.resids)+n_residues)
-        self.residx = list(np.array(self.residx)+n_residues)
-        self.molnums = list(np.array(self.molnums) + n_mols)
-        self.ids = list(np.array(self.ids, dtype=int) + n_atoms)
+        resids = list(np.array(self.resids)+resid)
+        residx = list(np.array(self.residx)+n_res)
+        molnums = list(np.array(self.molnums) + molnum)
+        ids = list(np.array(self.ids, dtype=int) + atomid)
 
         try:
             cg = np.array(self.chargegroups, dtype=int)
         except ValueError:
             cg = np.arange(1, len(self.chargegroups)+1)
-        self.chargegroups = list(cg+n_chargegroups)
+        chargegroups = list(cg+cgnr)
+
+        atom_order = [ids, self.types, resids, self.resnames, 
+                      self.names, chargegroups, self.charges, 
+                      self.masses]
 
         new_params = []
         for p in self.params:
@@ -409,8 +425,10 @@ class Molecule:
             for indices, values in p.items():
                 new[tuple(np.array(indices)+n_atoms)] = values
             new_params.append(new)
+
+        return atom_order, new_params, molnums, self.moltypes, residx
         
-        self.bonds, self.angles, self.dihedrals, self.impropers = new_params
+        
         
 
     def add_param(self, line, container, n_funct=2, funct_values=[]):
@@ -615,18 +633,24 @@ class ITPParser(TopologyReaderBase):
 
         for i, moltype in enumerate(self.system_molecules):
             mol = self.molecules[moltype]
+
+            atomid = self.ids[-1] if self.ids else 0
+            resid = self.resids[-1] if self.resids else 0
+            cgnr = self.chargegroups[-1] if self.chargegroups else 0
+            n_res = len(self.resids)
             n_atoms = len(self.ids)
-            n_res = len(self.resids), 
-            n_cg = len(self.chargegroups)
 
-            mol.shift_indices(n_atoms, n_res, n_cg, i)
+            shifted = mol.shift_indices(atomid=atomid, resid=resid, 
+                                        n_res=n_res, cgnr=cgnr, molnum=i,
+                                        n_atoms=n_atoms)
+            atom_order, params, molnums, moltypes, residx = shifted
 
-            for system_attr, mol_attr in zip(self.atom_order, mol.atom_order):
+            for system_attr, mol_attr in zip(self.atom_order, atom_order):
                 system_attr.extend(mol_attr)
 
-            self.moltypes.extend(mol.moltypes)
-            self.molnums.extend(mol.molnums)
-            self.residx.extend(mol.residx)
+            self.moltypes.extend(moltypes)
+            self.molnums.extend(molnums)
+            self.residx.extend(residx)
 
-            for system_param, mol_param in zip(self.params, mol.params):
+            for system_param, mol_param in zip(self.params, params):
                 system_param.update(mol_param)
