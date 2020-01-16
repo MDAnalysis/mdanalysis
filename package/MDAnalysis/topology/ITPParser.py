@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
+r"""
 ITP topology parser
 ===================
 
@@ -58,7 +58,6 @@ Examples
 
             import MDAnalysis as mda
             u = mda.Universe('topol.top', topology_format='ITP')
-
 
 
 .. _itp-define-kwargs:
@@ -123,7 +122,7 @@ Classes
 """
 from __future__ import absolute_import
 from collections import defaultdict
-from pathlib import Path
+import os
 
 import logging
 import numpy as np
@@ -169,7 +168,7 @@ class GmxTopIterator:
     def __init__(self, path, include_dir, defines):
         self._original_defines = defines
         self.defines = dict(**defines)  # copy
-        self.include_dir = Path(include_dir)
+        self.include_dir = include_dir
         self.file_stack = [path]
         self.if_stack = []
         self.starting_file = path
@@ -276,13 +275,13 @@ class GmxTopIterator:
         except AttributeError:
             pass
 
-        current_path = Path(current_file)
-        dir_path = current_path.parent / path
-        if dir_path.exists():
-            return str(dir_path)
-        include_path = self.include_dir / path
-        if include_path.exists():
-            return str(include_path)
+        current_dir = os.path.dirname(current_file)
+        dir_path = os.path.join(current_dir, path)
+        if os.path.exists(dir_path):
+            return dir_path
+        include_path = os.path.join(self.include_dir, path)
+        if os.path.exists(include_path):
+            return include_path
         raise FileNotFoundError('Could not find {}'.format(path))
 
 
@@ -453,6 +452,7 @@ class ITPParser(TopologyReaderBase):
     - angles
     - dihedrals
     - impropers
+
 
     .. _ITP: http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file
     .. _TOP: http://manual.gromacs.org/current/reference-manual/file-formats.html#top
