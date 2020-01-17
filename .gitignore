@@ -42,3 +42,4 @@ authors.py
 *.sw[a-z]
 *~
 .idea
+.vscode
