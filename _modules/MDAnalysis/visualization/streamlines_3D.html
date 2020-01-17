@@ -373,7 +373,7 @@
                 <span class="n">current_index</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">column_z_level</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="n">column_z_level</span> <span class="o">==</span> <span class="n">num_z_values</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># the loop will break but I should also increment the</span>
-                <span class="c1"># current_index</span>
+                    <span class="c1"># current_index</span>
                     <span class="n">current_index</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">current_base_sheet</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="n">total_cubes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dictionary_cubes_centroids_indices</span><span class="p">)</span>
@@ -670,7 +670,7 @@
         <span class="n">z_index_current_column</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">total_cubes_current_sheet</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">z_index_current_column</span> <span class="o">==</span> <span class="n">delta_array_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
-        <span class="c1"># done building current y-column so iterate y value and reset z</span>
+            <span class="c1"># done building current y-column so iterate y value and reset z</span>
             <span class="n">z_index_current_column</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">y_index_current_sheet</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="n">y_index_current_sheet</span> <span class="o">==</span> <span class="n">delta_array_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># current sheet is complete</span>

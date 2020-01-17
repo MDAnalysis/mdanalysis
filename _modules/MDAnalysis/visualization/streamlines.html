@@ -309,11 +309,11 @@
     <span class="c1"># in the parent process</span>
     <span class="n">current_column</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="n">current_column</span> <span class="o">&lt;</span> <span class="n">grid_vertex_cartesian_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="c1"># go through all the columns except the last one and account for the square vertices (the last column</span>
+        <span class="c1"># go through all the columns except the last one and account for the square vertices (the last column</span>
         <span class="c1">#  has no &#39;right neighbour&#39;)</span>
         <span class="n">current_row</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="n">current_row</span> <span class="o">&lt;</span> <span class="n">grid_vertex_cartesian_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="c1"># all rows except the top row, which doesn&#39;t have a row above it for forming squares</span>
+            <span class="c1"># all rows except the top row, which doesn&#39;t have a row above it for forming squares</span>
             <span class="n">bottom_left_vertex_current_square</span> <span class="o">=</span> <span class="n">grid_vertex_cartesian_array</span><span class="p">[</span><span class="n">current_column</span><span class="p">,</span> <span class="n">current_row</span><span class="p">]</span>
             <span class="n">bottom_right_vertex_current_square</span> <span class="o">=</span> <span class="n">grid_vertex_cartesian_array</span><span class="p">[</span><span class="n">current_column</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">current_row</span><span class="p">]</span>
             <span class="n">top_right_vertex_current_square</span> <span class="o">=</span> <span class="n">grid_vertex_cartesian_array</span><span class="p">[</span><span class="n">current_column</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">current_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
@@ -367,14 +367,14 @@
         <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">&lt;</span> <span class="n">start_frame</span><span class="p">:</span>  <span class="c1"># don&#39;t start until first specified frame</span>
             <span class="k">continue</span>
         <span class="n">relevant_particle_coordinate_array_xy</span> <span class="o">=</span> <span class="n">universe_object</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">MDA_selection</span><span class="p">)</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-          <span class="c1"># only 2D / xy coords for now</span>
+        <span class="c1"># only 2D / xy coords for now</span>
         <span class="c1">#I will need a list of indices for relevant particles falling within each square in THIS frame:</span>
         <span class="n">list_indices_in_squares_this_frame</span> <span class="o">=</span> <span class="n">produce_list_indices_point_in_polygon_this_frame</span><span class="p">(</span>
             <span class="n">list_square_vertex_arrays_this_core</span><span class="p">)</span>
         <span class="c1">#likewise, I will need a list of centroids of particles in each square (same order as above list):</span>
         <span class="n">list_centroids_in_squares_this_frame</span> <span class="o">=</span> <span class="n">produce_list_centroids_this_frame</span><span class="p">(</span><span class="n">list_indices_in_squares_this_frame</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">list_previous_frame_indices</span><span class="p">:</span>  <span class="c1"># if the previous frame had indices in at least one square I will need to use</span>
-        <span class="c1">#  those indices to generate the updates to the corresponding centroids in this frame:</span>
+            <span class="c1">#  those indices to generate the updates to the corresponding centroids in this frame:</span>
             <span class="n">list_centroids_this_frame_using_indices_from_last_frame</span> <span class="o">=</span> <span class="n">produce_list_centroids_this_frame</span><span class="p">(</span>
                 <span class="n">list_previous_frame_indices</span><span class="p">)</span>
             <span class="c1">#I need to write a velocity of zero if there are any &#39;empty&#39; squares in either frame:</span>
@@ -398,7 +398,7 @@
             <span class="n">list_previous_frame_centroids</span> <span class="o">=</span> <span class="n">list_centroids_in_squares_this_frame</span><span class="p">[:]</span>
             <span class="n">list_previous_frame_indices</span> <span class="o">=</span> <span class="n">list_indices_in_squares_this_frame</span><span class="p">[:]</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># either no points in squares or after the first frame I&#39;ll just reset the &#39;previous&#39; values so they</span>
-        <span class="c1"># can be used when consecutive frames have proper values</span>
+            <span class="c1"># can be used when consecutive frames have proper values</span>
             <span class="n">list_previous_frame_centroids</span> <span class="o">=</span> <span class="n">list_centroids_in_squares_this_frame</span><span class="p">[:]</span>
             <span class="n">list_previous_frame_indices</span> <span class="o">=</span> <span class="n">list_indices_in_squares_this_frame</span><span class="p">[:]</span>
         <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">&gt;</span> <span class="n">end_frame</span><span class="p">:</span>
@@ -523,7 +523,7 @@
     <span class="n">dy_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_rows</span><span class="p">,</span> <span class="n">total_columns</span><span class="p">))</span>
     <span class="c1">#the parent_list_deltas is shaped like this: [ ([row_index,column_index],[dx,dy]), ... (...),...,]</span>
     <span class="k">for</span> <span class="n">index_array</span><span class="p">,</span> <span class="n">delta_array</span> <span class="ow">in</span> <span class="n">parent_list_deltas</span><span class="p">:</span>  <span class="c1"># go through the list in the parent process and assign to the</span>
-    <span class="c1">#  appropriate positions in the dx and dy matrices:</span>
+        <span class="c1">#  appropriate positions in the dx and dy matrices:</span>
         <span class="c1">#build in a filter to replace all values at the cap (currently between -8,8) with 0 to match Matthieu&#39;s code</span>
         <span class="c1"># (I think eventually we&#39;ll reduce the cap to a narrower boundary though)</span>
         <span class="n">index_1</span> <span class="o">=</span> <span class="n">index_array</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
