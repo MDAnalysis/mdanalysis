@@ -149,14 +149,14 @@ class XYZWriter(base.WriterBase):
             self.convert_units = convert_units
         else:
             self.convert_units = flags['convert_lengths']
-        self.atomnames = self._get_atom_elements_or_names(atoms)
+        self.atomnames = self._get_atoms_elements_or_names(atoms)
         default_remark = "Written by {0} (release {1})".format(
             self.__class__.__name__, __version__)
         self.remark = default_remark if remark is None else remark
         # can also be gz, bz2
         self._xyz = util.anyopen(self.filename, 'wt')
 
-    def _get_atom_elements_or_names(self, atoms):
+    def _get_atoms_elements_or_names(self, atoms):
         """Return a list of atom names"""
         # Default case
         if atoms is None:
@@ -221,7 +221,7 @@ class XYZWriter(base.WriterBase):
                 # For Universe only --- get everything
                 ts = obj.trajectory.ts
             # update atom names
-            self.atomnames = self._get_atom_elements_or_names(atoms)
+            self.atomnames = self._get_atoms_elements_or_names(atoms)
 
         self.write_next_timestep(ts)
 
