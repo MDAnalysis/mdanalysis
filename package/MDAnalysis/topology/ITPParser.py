@@ -172,7 +172,6 @@ class GmxTopIterator:
         self.defines = dict(**defines)  # copy
         self.include_dir = include_dir
         self.file_stack = [path]
-        self.if_stack = []
         self.starting_file = path
 
     @property
@@ -189,12 +188,6 @@ class GmxTopIterator:
             self.file_stack.append(infile)
 
             for line in self.clean_file_lines(infile):
-                if self.if_stack:
-                    while self.if_stack:
-                        func = self.if_stack.pop()
-                        func(infile)
-                    continue
-
                 if line.startswith('#include'):
                     inc = line.split(None, 1)[1][1:-1]
                     for line in self.iter_from_file(inc):
@@ -204,7 +197,7 @@ class GmxTopIterator:
                 elif line.startswith('#if'):
                     self.do_if(line, infile)
                 elif line.startswith('#else'):
-                    self.if_stack.append(self.skip_until_endif)
+                    self.skip_until_endif(infile)
                 elif line.startswith('#'):  # ignore #if and others
                     pass
                 elif line:
@@ -240,16 +233,16 @@ class GmxTopIterator:
         ifdef, variable = line.split()
         if ifdef == '#ifdef':
             if self.defines.get(variable) in (False, None):
-                self.if_stack.append(self.skip_until_else)
+                self.skip_until_else(infile)
         elif ifdef == '#ifndef':
             if self.defines.get(variable) not in (False, None):
-                self.if_stack.append(self.skip_until_else)
+                self.skip_until_else(infile)
 
     def skip_until_else(self, infile):
         """Skip lines until #if condition ends"""
         for line in self.clean_file_lines(infile):
             if line.startswith('#if'):
-                self.if_stack.append(self.skip_until_endif)
+                self.skip_until_endif(infile)
             elif line.startswith('#endif') or line.startswith('#else'):
                 break
         else:
@@ -259,7 +252,7 @@ class GmxTopIterator:
         """Skip lines until #endif"""
         for line in self.clean_file_lines(infile):
             if line.startswith('#if'):
-                self.if_stack.append(self.skip_until_endif)
+                self.skip_until_endif(infile)
             elif line.startswith('#endif'):
                 break
         else:
