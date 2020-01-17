@@ -40,4 +40,5 @@ authors.py
 
 # editors and IDEs
 *.sw[a-z]
+*~
 .idea
