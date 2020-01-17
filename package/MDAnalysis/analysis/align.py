@@ -197,7 +197,6 @@ import numpy as np
 import Bio.SeqIO
 import Bio.AlignIO
 import Bio.Align.Applications
-import Bio.Alphabet
 import Bio.pairwise2
 
 import MDAnalysis as mda
@@ -847,12 +846,11 @@ def fasta2select(fastafilename, is_aligned=False,
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
 
     """
-    protein_gapped = Bio.Alphabet.Gapped(Bio.Alphabet.IUPAC.protein)
     if is_aligned:
         logger.info("Using provided alignment {}".format(fastafilename))
         with open(fastafilename) as fasta:
             alignment = Bio.AlignIO.read(
-                fasta, "fasta", alphabet=protein_gapped)
+                fasta, "fasta")
     else:
         if alnfilename is None:
             filepath, ext = os.path.splitext(fastafilename)
@@ -880,7 +878,7 @@ def fasta2select(fastafilename, is_aligned=False,
             raise
         with open(alnfilename) as aln:
             alignment = Bio.AlignIO.read(
-                aln, "clustal", alphabet=protein_gapped)
+                aln, "clustal")
         logger.info(
             "Using clustalw sequence alignment {0!r}".format(alnfilename))
         logger.info(
@@ -899,7 +897,7 @@ def fasta2select(fastafilename, is_aligned=False,
         if orig_resids[iseq] is None:
             # build default: assume consecutive numbering of all
             # residues in the alignment
-            GAP = a.seq.alphabet.gap_char
+            GAP = "-"
             length = len(a.seq) - a.seq.count(GAP)
             orig_resids[iseq] = np.arange(1, length + 1)
         else:
@@ -941,7 +939,7 @@ def fasta2select(fastafilename, is_aligned=False,
         nseq = len(alignment)
         t = np.zeros((nseq, alignment.get_alignment_length()), dtype=int)
         for iseq, a in enumerate(alignment):
-            GAP = a.seq.alphabet.gap_char
+            GAP = "-"
             t[iseq, :] = seq2resids[iseq][np.cumsum(np.where(
                 np.array(list(a.seq)) == GAP, 0, 1)) - 1]
             # -1 because seq2resid is index-1 based (resids start at 1)
@@ -957,12 +955,6 @@ def fasta2select(fastafilename, is_aligned=False,
     # could collect just resid and type (with/without CB) and
     # then post-process and use ranges for continuous stretches, eg
     # ( resid 1:35 and ( backbone or name CB ) ) or ( resid 36 and backbone )
-
-    # should be the same for both seqs
-    GAP = alignment[0].seq.alphabet.gap_char
-    if GAP != alignment[1].seq.alphabet.gap_char:
-        raise ValueError(
-            "Different gap characters in sequence 'target' and 'mobile'.")
     for ipos in range(alignment.get_alignment_length()):
         aligned = list(alignment[:, ipos])
         if GAP in aligned:
