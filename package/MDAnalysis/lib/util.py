@@ -224,8 +224,8 @@ except NameError:
 try:
     from os import PathLike
 except ImportError:
-   class PathLike(object):
-       pass
+    class PathLike(object):
+        pass
 
 
 
