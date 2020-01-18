@@ -187,7 +187,7 @@ class XYZWriter(base.WriterBase):
     def write(self, obj):
         """Write object `obj` at current trajectory frame to file.
 
-        Atom names in the output are taken from the `obj` or default
+        Atom elements (or names) in the output are taken from the `obj` or default
         to the value of the `atoms` keyword supplied to the
         :class:`XYZWriter` constructor.
 
