@@ -108,6 +108,9 @@ class XYZWriter(base.WriterBase):
 
     .. _xyzplugin:
        http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
+
+    .. versionchanged: 0.20.2
+       Use elements attribute instead of names attribute, if present
     """
 
     format = 'XYZ'
