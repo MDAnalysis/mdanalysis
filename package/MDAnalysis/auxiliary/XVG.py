@@ -140,7 +140,7 @@ class XVGStep(base.AuxStep):
         if isinstance(key, numbers.Integral):
             return self._select_data(key)
         else:
-             raise ValueError('Time selector must be single index')
+            raise ValueError('Time selector must be single index')
 
     def _select_data(self, key):
         if key is None:
@@ -194,12 +194,12 @@ class XVGReader(base.AuxReader):
         auxdata_values = []
         # remove comments before storing
         for i, line in enumerate(uncomment(lines)):
-           if line.lstrip()[0] == '&':
-               # multiple data sets not supported; stop at the end of the first
-               break
-           auxdata_values.append([float(l) for l in line.split()])
-           # check the number of columns is consistent
-           if len(auxdata_values[i]) != len(auxdata_values[0]):
+            if line.lstrip()[0] == '&':
+                # multiple data sets not supported; stop at the end of the first
+                break
+            auxdata_values.append([float(l) for l in line.split()])
+            # check the number of columns is consistent
+            if len(auxdata_values[i]) != len(auxdata_values[0]):
                 raise ValueError('Step {0} has {1} columns instead of '
                                  '{2}'.format(i, auxdata_values[i],
                                               auxdata_values[0]))

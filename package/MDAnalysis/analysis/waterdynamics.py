@@ -669,7 +669,7 @@ class HydrogenBondLifetimes(object):
                 jobs = []
                 k = i
                 for j in range(self.nproc):
-                        # start
+                    # start
                     print("ts=", i + 1)
                     if i >= len(self.universe.trajectory):
                         break
