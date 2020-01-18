@@ -999,7 +999,7 @@
 
     <span class="nd">@time_selector</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">time_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-        <span class="n">olf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_time_selector</span>
+        <span class="n">old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_time_selector</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_time_selector</span> <span class="o">=</span> <span class="n">new</span>
         <span class="k">if</span> <span class="n">old</span> <span class="o">!=</span> <span class="n">new</span><span class="p">:</span>
             <span class="c1"># if constant_dt is False and so we&#39;re using a _times list, this will</span>
