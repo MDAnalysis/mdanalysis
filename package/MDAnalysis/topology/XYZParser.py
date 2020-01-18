@@ -71,7 +71,7 @@ class XYZParser(TopologyReaderBase):
 
     .. versionadded:: 0.9.1
 
-    .. versionchanged: 0.20.2
+    .. versionchanged: 0.21.0
        Store elements attribute, based on XYZ atom names
     """
     format = 'XYZ'

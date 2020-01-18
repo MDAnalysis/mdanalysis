@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz, jbarnoud
+         PicoCentauri, davidercruz, jbarnoud, RMeli
 
   * 0.21.0
 
@@ -35,6 +35,8 @@ Fixes
   * TXYZ parser uses strings for the atom types like other parsers (Issue #2435)
 
 Enhancements
+  * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
+    attribute, if present (#2421).
   * Enhanges exception message when trajectory output file has no extension assigned.
   * Uniforms exception handling between Python 2.7 and Python 3: raised exceptions
     do not contain previous exceptions traceback. Uses six package to handle
